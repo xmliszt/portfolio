@@ -9,7 +9,12 @@ export function NavigationBar(props: NavigationBarProps) {
     <div
       className={cn('absolute top-16 w-32 -left-40 h-full', 'hidden md:block')}
     >
-      <nav className='sticky top-16 flex flex-col gap-2 p-3 border rounded-lg shadow-md'>
+      <nav
+        className={cn(
+          'sticky top-16 flex flex-col gap-2 p-3 border rounded-lg shadow-md bg-card',
+          'hover:scale-105 hover:shadow-xl transition-[transform_box-shadow] ease-out'
+        )}
+      >
         {props.children}
       </nav>
     </div>

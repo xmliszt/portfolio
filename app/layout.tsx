@@ -6,6 +6,8 @@ import { NavigationBar, NavigationBarItem } from './navigation-bar';
 import { GradientBlur } from '@/components/ui/gradient-blur';
 import { FloatingNavigationBar } from './floating-navigation-bar';
 import { FloatingNavigationProvider } from './floating-navigation-bar/floating-navigation-provider';
+import { ThemeSwitch } from './theme-switch';
+import { ThemeProvider } from './theme-provider';
 
 // Metadata for SEO
 export const metadata: Metadata = {
@@ -91,40 +93,46 @@ export default function RootLayout({
 }) {
   return (
     <html lang='en' suppressHydrationWarning>
-      <body
-        className={cn(
-          'bg-background antialiased w-full min-h-screen max-h-screen flex flex-col items-center',
-          fontJunge.className,
-          fontInter.className
-        )}
-      >
-        <GradientBlur placement='top' />
-        <main className='relative h-full'>
-          {/* Show when in desktop view port */}
-          <NavigationBar>
-            <NavigationBarItem href='/'>About me</NavigationBarItem>
-            <NavigationBarItem href='/projects'>Projects</NavigationBarItem>
-            <NavigationBarItem href='/hobbies'>Hobbies</NavigationBarItem>
-            <NavigationBarItem href='/blogs'>Blogs</NavigationBarItem>
-            <NavigationBarItem href='/contacts'>Contacts</NavigationBarItem>
-          </NavigationBar>
-          {/* Main content area */}
-          <div className='px-4 py-16 md:max-w-lg md:min-w-lg md:w-[32rem]'>
-            {children}
+      <ThemeProvider>
+        <body
+          className={cn(
+            'bg-background antialiased w-full min-h-screen max-h-screen flex flex-col items-center',
+            fontJunge.className,
+            fontInter.className
+          )}
+        >
+          <GradientBlur placement='top' />
+          <main className='relative h-full'>
+            {/* Show when in desktop view port */}
+            <NavigationBar>
+              <NavigationBarItem href='/'>About me</NavigationBarItem>
+              <NavigationBarItem href='/projects'>Projects</NavigationBarItem>
+              <NavigationBarItem href='/hobbies'>Hobbies</NavigationBarItem>
+              <NavigationBarItem href='/blogs'>Blogs</NavigationBarItem>
+              <NavigationBarItem href='/contacts'>Contacts</NavigationBarItem>
+            </NavigationBar>
+            {/* Main content area */}
+            <div className='px-4 py-16 md:max-w-lg md:min-w-lg md:w-[32rem]'>
+              {children}
+            </div>
+          </main>
+          <GradientBlur placement='bottom' />
+          {/* Show when in mobile view port */}
+          <FloatingNavigationProvider>
+            <FloatingNavigationBar>
+              <NavigationBarItem href='/'>About me</NavigationBarItem>
+              <NavigationBarItem href='/projects'>Projects</NavigationBarItem>
+              <NavigationBarItem href='/hobbies'>Hobbies</NavigationBarItem>
+              <NavigationBarItem href='/blogs'>Blogs</NavigationBarItem>
+              <NavigationBarItem href='/contacts'>Contacts</NavigationBarItem>
+            </FloatingNavigationBar>
+          </FloatingNavigationProvider>
+          {/* Theme switch */}
+          <div className='hidden md:block fixed bottom-10 right-4 md:right-10 z-50'>
+            <ThemeSwitch />
           </div>
-        </main>
-        <GradientBlur placement='bottom' />
-        {/* Show when in mobile view port */}
-        <FloatingNavigationProvider>
-          <FloatingNavigationBar>
-            <NavigationBarItem href='/'>About me</NavigationBarItem>
-            <NavigationBarItem href='/projects'>Projects</NavigationBarItem>
-            <NavigationBarItem href='/hobbies'>Hobbies</NavigationBarItem>
-            <NavigationBarItem href='/blogs'>Blogs</NavigationBarItem>
-            <NavigationBarItem href='/contacts'>Contacts</NavigationBarItem>
-          </FloatingNavigationBar>
-        </FloatingNavigationProvider>
-      </body>
+        </body>
+      </ThemeProvider>
     </html>
   );
 }
