@@ -2,11 +2,14 @@ import { Metadata, Viewport } from 'next';
 import './globals.css';
 import { Inter, Junge } from 'next/font/google';
 import { cn } from '@/lib/utils';
-import { NavigationBar, NavigationBarItem } from './navigation-bar';
+import {
+  NavigationBar,
+  NavigationBarItem,
+} from '../components/custom/navigation-bar';
 import { GradientBlur } from '@/components/ui/gradient-blur';
-import { FloatingNavigationBar } from './floating-navigation-bar';
-import { FloatingNavigationProvider } from './floating-navigation-bar/floating-navigation-provider';
-import { ThemeSwitch } from './theme-switch';
+import { FloatingNavigationBar } from '../components/custom/floating-navigation-bar';
+import { FloatingNavigationProvider } from '../components/custom/floating-navigation-bar/floating-navigation-provider';
+import { ThemeSwitch } from '../components/custom/theme-switch';
 import { ThemeProvider } from './theme-provider';
 
 // Metadata for SEO

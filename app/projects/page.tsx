@@ -1,4 +1,3 @@
-import Link from 'next/link';
 import { fetchProjects } from './fetch-projects';
 import { CustomLink } from '@/components/ui/custom-link';
 import { Badge } from '@/components/ui/badge';

@@ -1,6 +1,6 @@
 import 'server-only';
 
-import { createServiceRoleClient } from '@/supabase/create-server-client';
+import { createServiceRoleClient } from '@/lib/supabase/create-service-role-client';
 
 export async function fetchProfile() {
   const supabase = createServiceRoleClient();
