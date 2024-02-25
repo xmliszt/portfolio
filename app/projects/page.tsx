@@ -25,7 +25,7 @@ export default async function ProjectsPage() {
                 {project.tags.map((tag) => (
                   <Badge
                     key={tag}
-                    className='pointer-events-none rounded-full'
+                    className='pointer-events-none rounded-full border-border'
                     variant='secondary'
                   >
                     {tag}

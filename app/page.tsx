@@ -13,7 +13,7 @@ export default async function Home() {
           src={profile.profile_url}
           width={100}
           height={100}
-          className='rounded-full border-2 hover:animate-wave'
+          className='rounded-full border-2 hover:animate-wave bg-secondary dark:bg-background'
           alt='profile photo'
         />
       </div>
