@@ -75,11 +75,11 @@ export const viewport: Viewport = {
   initialScale: 1,
 };
 
-export const fontInter = Inter({
+const fontInter = Inter({
   subsets: ['latin'],
 });
 
-export const fontJunge = Junge({
+const fontJunge = Junge({
   subsets: ['latin'],
   weight: '400',
 });
