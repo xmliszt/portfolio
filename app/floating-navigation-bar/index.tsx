@@ -35,7 +35,7 @@ export function FloatingNavigationBar(props: FloatingNavigationBarProps) {
       </DrawerTrigger>
       <DrawerContent
         className={cn(
-          'rounded-none rounded-t-lg',
+          'rounded-none rounded-t-lg focus-visible:outline-none',
           // hide the drawer handle
           '[&>*:first-child]:hidden'
         )}

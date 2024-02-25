@@ -9,7 +9,7 @@ export function NavigationBar(props: NavigationBarProps) {
     <div
       className={cn('absolute top-16 w-32 -left-40 h-full', 'hidden md:block')}
     >
-      <nav className='sticky top-16 flex flex-col gap-2 p-3 border rounded-lg'>
+      <nav className='sticky top-16 flex flex-col gap-2 p-3 border rounded-lg shadow-md'>
         {props.children}
       </nav>
     </div>
