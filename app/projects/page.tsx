@@ -8,9 +8,9 @@ export default async function ProjectsPage() {
   );
 
   return (
-    <div className='flex flex-col gap-4'>
+    <div className='flex flex-col gap-6'>
       <h1>Projects</h1>
-      <div className='flex flex-col gap-4'>
+      <div className='flex flex-col gap-6'>
         {projects.map((project) => (
           <div key={project.id} className='flex flex-col gap-2'>
             <div className='flex flex-row justify-between items-center'>
@@ -21,7 +21,7 @@ export default async function ProjectsPage() {
             </div>
             <p>{project.description}</p>
             {project.tags && (
-              <div className='flex flex-row gap-2'>
+              <div className='flex flex-row gap-2 flex-wrap'>
                 {project.tags.map((tag) => (
                   <Badge
                     key={tag}

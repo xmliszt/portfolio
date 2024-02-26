@@ -105,7 +105,7 @@ export default function RootLayout({
           )}
         >
           <GradientBlur placement='top' />
-          <main className='relative h-full'>
+          <main className='relative h-full px-4 pt-16 pb-24'>
             {/* Show when in desktop view port */}
             <NavigationBar>
               <NavigationBarItem href='/'>About me</NavigationBarItem>
@@ -115,7 +115,7 @@ export default function RootLayout({
               <NavigationBarItem href='/contacts'>Contacts</NavigationBarItem>
             </NavigationBar>
             {/* Main content area */}
-            <div className='px-4 py-16 md:max-w-lg md:min-w-lg md:w-[32rem]'>
+            <div className='md:max-w-lg md:min-w-lg md:w-[32rem]'>
               {children}
             </div>
           </main>
