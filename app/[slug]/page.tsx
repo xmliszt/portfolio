@@ -33,7 +33,6 @@ export default function PagePage({ params }: Props) {
   return (
     <article className='prose prose-stone dark:prose-invert'>
       <h1>{page.title}</h1>
-      <hr />
       <MDXContent code={page.body} />
     </article>
   );

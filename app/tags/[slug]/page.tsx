@@ -12,7 +12,15 @@ interface PostProps {
 }
 
 function getPostsByTag(tag: string) {
-  return posts.filter((post) => post.tags.includes(tag));
+  return posts
+    .filter((post) => post.tags.includes(tag))
+    .sort((a, b) => {
+      if (a.date > b.date) {
+        return -1;
+      } else {
+        return 1;
+      }
+    });
 }
 
 export function generateMetadata({ params }: PostProps): Metadata {
@@ -34,12 +42,13 @@ export default function PostPage({ params }: PostProps) {
   if (posts.length <= 0) notFound();
 
   return (
-    <article className='flex flex-col gap-4'>
+    <article className='flex flex-col gap-12'>
       <h1>Tag: {params.slug}</h1>
-      <hr />
-      {posts.map((post) => (
-        <PostCard key={post.slug} post={post} />
-      ))}
+      <div className='flex flex-col gap-16'>
+        {posts.map((post) => (
+          <PostCard key={post.slug} post={post} />
+        ))}
+      </div>
     </article>
   );
 }

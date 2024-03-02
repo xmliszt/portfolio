@@ -103,7 +103,9 @@ const posts = defineCollection({
       meta: meta,
       toc: s.toc(),
       metadata: s.metadata(),
-      excerpt: s.excerpt(),
+      excerpt: s.excerpt({
+        length: 200,
+      }),
       content: s.mdx(),
     })
     .transform((data) => ({ ...data, permalink: `/blog/${data.slug}` })),

@@ -1,6 +1,7 @@
 import * as runtime from 'react/jsx-runtime';
 import Image from 'next/image';
 
+import { HoverPerspectiveContainer } from './custom/hover-perspective-container';
 import { CustomLink } from './ui/custom-link';
 
 interface MdxProps {
@@ -19,7 +20,20 @@ export function MDXContent({ code, components }: MdxProps) {
     <Component
       components={{
         ...components,
-        img: Image,
+        img: (props: any) => (
+          <HoverPerspectiveContainer>
+            <Image
+              className='rounded-lg shadow-lg'
+              layout='responsive'
+              src={props.src}
+              alt={props.alt}
+              width={300}
+              height={300}
+              unoptimized
+              {...props}
+            />
+          </HoverPerspectiveContainer>
+        ),
         a: (props: any) => (
           <CustomLink href={props.href} {...props}>
             {props.children}

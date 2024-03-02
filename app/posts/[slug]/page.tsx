@@ -3,6 +3,7 @@ import type { Metadata } from 'next';
 import Image from 'next/image';
 import { notFound } from 'next/navigation';
 
+import { CustomBadgeLink } from '@/components/custom/custom-badge-link';
 import { MDXContent } from '@/components/mdx-content';
 
 import { incrementPostView } from './increment-post-view';
@@ -40,6 +41,13 @@ export default async function PostPage({ params }: PostProps) {
   return (
     <article className='prose prose-stone dark:prose-invert'>
       <h1>{post.title}</h1>
+      <div className='flex flex-row flex-wrap gap-2'>
+        {post.tags.map((tag) => (
+          <CustomBadgeLink key={tag} href={`/tags/${tag}`}>
+            {tag}
+          </CustomBadgeLink>
+        ))}
+      </div>
       <p>
         <time dateTime={post.date}>{format(post.date, 'do LLLL, yyyy')}</time>
         <span> - {views} views</span>
@@ -50,6 +58,13 @@ export default async function PostPage({ params }: PostProps) {
       )}
       <hr />
       <MDXContent code={post.content} />
+      <div className='mt-10 flex flex-row flex-wrap gap-2'>
+        {post.tags.map((tag) => (
+          <CustomBadgeLink key={tag} href={`/tags/${tag}`}>
+            {tag}
+          </CustomBadgeLink>
+        ))}
+      </div>
     </article>
   );
 }

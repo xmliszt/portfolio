@@ -9,36 +9,171 @@
     "permalink": "/tag"
   },
   {
-    "name": "engineering",
-    "slug": "engineering",
-    "permalink": "/engineering",
+    "name": "introduction",
+    "slug": "introduction",
+    "permalink": "/introduction",
     "count": {
       "total": 1,
       "posts": 1
     }
   },
   {
-    "name": "hello",
-    "slug": "hello",
-    "permalink": "/hello",
+    "name": "edtech",
+    "slug": "edtech",
+    "permalink": "/edtech",
+    "count": {
+      "total": 7,
+      "posts": 7
+    }
+  },
+  {
+    "name": "epistemic feedback",
+    "slug": "epistemic-feedback",
+    "permalink": "/epistemic-feedback",
     "count": {
       "total": 1,
       "posts": 1
     }
   },
   {
-    "name": "world",
-    "slug": "world",
-    "permalink": "/world",
+    "name": "knowledge-associations",
+    "slug": "knowledge-associations",
+    "permalink": "/knowledge-associations",
+    "count": {
+      "total": 2,
+      "posts": 2
+    }
+  },
+  {
+    "name": "conversation",
+    "slug": "conversation",
+    "permalink": "/conversation",
     "count": {
       "total": 1,
       "posts": 1
     }
   },
   {
-    "name": "test",
-    "slug": "test",
-    "permalink": "/test",
+    "name": "vocabulary",
+    "slug": "vocabulary",
+    "permalink": "/vocabulary",
+    "count": {
+      "total": 1,
+      "posts": 1
+    }
+  },
+  {
+    "name": "taboo-ai",
+    "slug": "taboo-ai",
+    "permalink": "/taboo-ai",
+    "count": {
+      "total": 1,
+      "posts": 1
+    }
+  },
+  {
+    "name": "english-learning",
+    "slug": "english-learning",
+    "permalink": "/english-learning",
+    "count": {
+      "total": 1,
+      "posts": 1
+    }
+  },
+  {
+    "name": "memory",
+    "slug": "memory",
+    "permalink": "/memory",
+    "count": {
+      "total": 1,
+      "posts": 1
+    }
+  },
+  {
+    "name": "learning",
+    "slug": "learning",
+    "permalink": "/learning",
+    "count": {
+      "total": 3,
+      "posts": 3
+    }
+  },
+  {
+    "name": "immersive-experience",
+    "slug": "immersive-experience",
+    "permalink": "/immersive-experience",
+    "count": {
+      "total": 1,
+      "posts": 1
+    }
+  },
+  {
+    "name": "personalisation",
+    "slug": "personalisation",
+    "permalink": "/personalisation",
+    "count": {
+      "total": 2,
+      "posts": 2
+    }
+  },
+  {
+    "name": "generative-ai",
+    "slug": "generative-ai",
+    "permalink": "/generative-ai",
+    "count": {
+      "total": 1,
+      "posts": 1
+    }
+  },
+  {
+    "name": "chatgpt",
+    "slug": "chatgpt",
+    "permalink": "/chatgpt",
+    "count": {
+      "total": 2,
+      "posts": 2
+    }
+  },
+  {
+    "name": "game",
+    "slug": "game",
+    "permalink": "/game",
+    "count": {
+      "total": 1,
+      "posts": 1
+    }
+  },
+  {
+    "name": "custom-model",
+    "slug": "custom-model",
+    "permalink": "/custom-model",
+    "count": {
+      "total": 1,
+      "posts": 1
+    }
+  },
+  {
+    "name": "assistant-api",
+    "slug": "assistant-api",
+    "permalink": "/assistant-api",
+    "count": {
+      "total": 1,
+      "posts": 1
+    }
+  },
+  {
+    "name": "education",
+    "slug": "education",
+    "permalink": "/education",
+    "count": {
+      "total": 1,
+      "posts": 1
+    }
+  },
+  {
+    "name": "openai",
+    "slug": "openai",
+    "permalink": "/openai",
     "count": {
       "total": 1,
       "posts": 1
