@@ -1,7 +1,6 @@
-import { createClient } from '@supabase/supabase-js';
 import { cookies } from 'next/headers';
 
-import { Database } from '@/lib/supabase/__generated__/types';
+import { createServiceRoleClient } from '@/lib/supabase/create-service-role-client';
 
 type IncrementPostViewOptions = {
   slug: string;
@@ -11,10 +10,7 @@ export async function incrementPostView(options: IncrementPostViewOptions) {
   // Force revalidate the cache
   cookies();
 
-  const supabase = createClient<Database>(
-    process.env.SUPABASE_DB_URL!,
-    process.env.SUPABASE_SERVICE_ROLE_KEY!
-  );
+  const supabase = createServiceRoleClient();
   const fetchCurrentViewResponse = await supabase
     .from('post_views')
     .select()
