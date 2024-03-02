@@ -11,6 +11,8 @@
     "vercel:link": "vercel link",
     "vercel:pull": "vercel pull",
     "vercel:dev": "vercel dev",
+    "velite:build": "velite --clean",
+    "velite:dev": "velite --watch",
     "gen-types": "supabase gen types typescript --project-id tvstbbuidvwgelgidaqy --schema public > supabase/__generated__/types.ts"
   },
   "dependencies": {
@@ -23,6 +25,7 @@
     "@supabase/supabase-js": "^2.39.7",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.0",
+    "date-fns": "^3.3.1",
     "lodash": "^4.17.21",
     "next": "14.1.0",
     "next-pwa": "^5.6.0",
@@ -35,19 +38,25 @@
     "vaul": "^0.9.0"
   },
   "devDependencies": {
+    "@tailwindcss/typography": "^0.5.10",
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",
+    "@typescript-eslint/parser": "^7.1.0",
     "autoprefixer": "^10.0.1",
     "eslint": "^8",
     "eslint-config-next": "14.1.0",
     "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-simple-import-sort": "^12.0.0",
+    "eslint-plugin-unused-imports": "^3.1.0",
     "husky": "^9.0.11",
     "postcss": "^8",
     "prettier": "^3.2.5",
+    "rehype-pretty-code": "^0.13.0",
     "stylelint-config-standard": "^36.0.0",
     "tailwindcss": "^3.3.0",
     "typescript": "^5",
+    "velite": "^0.1.0-beta.11",
     "vercel": "^33.5.2"
   }
 }

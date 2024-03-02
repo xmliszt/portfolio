@@ -18,6 +18,24 @@ const config = {
       },
     },
     extend: {
+      typography: {
+        DEFAULT: {
+          css: {
+            h1: {
+              marginBottom: '2px',
+            },
+            hr: {
+              marginTop: '1em',
+              marginBottom: '2em',
+            },
+            pre: {
+              backgroundColor: 'hsl(var(--foreground))',
+              color: 'hsl(var(--background))',
+            },
+            a: {},
+          },
+        },
+      },
       screens: {
         md: '880px',
       },
@@ -83,7 +101,7 @@ const config = {
       },
     },
   },
-  plugins: [require('tailwindcss-animate')],
+  plugins: [require('tailwindcss-animate'), require('@tailwindcss/typography')],
 } satisfies Config;
 
 export default config;

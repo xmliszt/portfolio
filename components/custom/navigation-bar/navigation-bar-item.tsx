@@ -1,8 +1,10 @@
 'use client';
 
-import { cn } from '@/lib/utils';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { useSelectedLayoutSegment } from 'next/navigation';
+
+import { cn } from '@/lib/utils';
+
 import { useFloatingNavigation } from '../floating-navigation-bar/floating-navigation-provider';
 
 type NavigationBarItemProps = {
@@ -11,8 +13,9 @@ type NavigationBarItemProps = {
 };
 
 export function NavigationBarItem(props: NavigationBarItemProps) {
-  const pathname = usePathname();
-  const isCurrentPath = pathname === props.href;
+  const segment = useSelectedLayoutSegment();
+  const resolvedSegment = props.href === '/' ? null : props.href.split('/')[1];
+  const isCurrentPath = segment === resolvedSegment;
   const { isOpen, setIsOpen } = useFloatingNavigation();
 
   return (

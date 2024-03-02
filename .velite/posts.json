@@ -1,0 +1,21 @@
+[
+  {
+    "title": "Hello World",
+    "slug": "hello-world",
+    "date": "2024-03-02T08:10:00.000Z",
+    "draft": false,
+    "featured": false,
+    "tags": [
+      "engineering"
+    ],
+    "meta": {},
+    "toc": [],
+    "metadata": {
+      "readingTime": 1,
+      "wordCount": 15
+    },
+    "excerpt": "This is a test post.\nprint(\"Hello World\")\n\npython hello_world.py\n\nLink to Google",
+    "content": "const{Fragment:e,jsx:n,jsxs:t}=arguments[0];function _createMdxContent(r){const o={a:\"a\",code:\"code\",p:\"p\",pre:\"pre\",...r.components};return t(e,{children:[n(o.p,{children:\"This is a test post.\"}),\"\\n\",n(o.pre,{children:n(o.code,{className:\"language-python\",children:'print(\"Hello World\")\\n'})}),\"\\n\",n(o.pre,{children:n(o.code,{className:\"language-bash\",children:\"python hello_world.py\\n\"})}),\"\\n\",n(o.p,{children:n(o.a,{href:\"https://www.google.com\",children:\"Link to Google\"})})]})}return{default:function(e={}){const{wrapper:t}=e.components||{};return t?n(t,{...e,children:n(_createMdxContent,{...e})}):_createMdxContent(e)}};",
+    "permalink": "/blog/hello-world"
+  }
+]

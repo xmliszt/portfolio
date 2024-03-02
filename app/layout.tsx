@@ -1,16 +1,19 @@
 import { Metadata, Viewport } from 'next';
-import './globals.css';
 import { Inter, Junge } from 'next/font/google';
+
+import { FloatingNavigationBar } from '@/components/custom/floating-navigation-bar';
+import { FloatingNavigationProvider } from '@/components/custom/floating-navigation-bar/floating-navigation-provider';
+import { ThemeSwitch } from '@/components/custom/theme-switch';
+import { ThemeProvider } from '@/components/theme-provider';
+import { GradientBlur } from '@/components/ui/gradient-blur';
 import { cn } from '@/lib/utils';
+
 import {
   NavigationBar,
   NavigationBarItem,
 } from '../components/custom/navigation-bar';
-import { GradientBlur } from '@/components/ui/gradient-blur';
-import { FloatingNavigationBar } from '../components/custom/floating-navigation-bar';
-import { FloatingNavigationProvider } from '../components/custom/floating-navigation-bar/floating-navigation-provider';
-import { ThemeSwitch } from '../components/custom/theme-switch';
-import { ThemeProvider } from './theme-provider';
+
+import './globals.css';
 
 // Metadata for SEO
 export const metadata: Metadata = {
@@ -111,7 +114,7 @@ export default function RootLayout({
               <NavigationBarItem href='/'>About me</NavigationBarItem>
               <NavigationBarItem href='/projects'>Projects</NavigationBarItem>
               <NavigationBarItem href='/hobbies'>Hobbies</NavigationBarItem>
-              <NavigationBarItem href='/blogs'>Blogs</NavigationBarItem>
+              <NavigationBarItem href='/posts'>Posts</NavigationBarItem>
               <NavigationBarItem href='/contacts'>Contacts</NavigationBarItem>
             </NavigationBar>
             {/* Main content area */}
@@ -126,7 +129,7 @@ export default function RootLayout({
               <NavigationBarItem href='/'>About me</NavigationBarItem>
               <NavigationBarItem href='/projects'>Projects</NavigationBarItem>
               <NavigationBarItem href='/hobbies'>Hobbies</NavigationBarItem>
-              <NavigationBarItem href='/blogs'>Blogs</NavigationBarItem>
+              <NavigationBarItem href='/posts'>Posts</NavigationBarItem>
               <NavigationBarItem href='/contacts'>Contacts</NavigationBarItem>
             </FloatingNavigationBar>
           </FloatingNavigationProvider>

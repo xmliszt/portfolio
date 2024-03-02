@@ -1,0 +1,19 @@
+name: Li Yuxuan
+title: Li Yuxuan
+description: Li Yuxuan's personal website
+keywords:
+  - Li Yuxuan
+  - portfolio
+  - personal website
+  - blog
+author:
+  name: Li Yuxuan
+  email: me@liyuxuan.ev
+  url: https://liyuxuan.dev
+socials:
+  - name: GitHub
+    icon: github
+    link: https://github.com/zce
+  - name: YouTube
+    icon: youtube
+    link: https://www.youtube.com/@zceme

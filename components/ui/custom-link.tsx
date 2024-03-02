@@ -1,5 +1,6 @@
-import { cn } from '@/lib/utils';
 import Link from 'next/link';
+
+import { cn } from '@/lib/utils';
 
 export function CustomLink({
   href,
@@ -9,7 +10,7 @@ export function CustomLink({
   children: React.ReactNode;
 }) {
   return (
-    <div className='relative group [&>*]:cursor-alias'>
+    <div className='relative w-fit group [&>*]:cursor-alias'>
       <Link href={href}>{children}</Link>
       <span
         className={cn(

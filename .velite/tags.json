@@ -1,0 +1,29 @@
+[
+  {
+    "name": "Education",
+    "slug": "education",
+    "count": {
+      "total": 0,
+      "posts": 0
+    },
+    "permalink": "/education"
+  },
+  {
+    "name": "Software Engineering",
+    "slug": "software-engineering",
+    "count": {
+      "total": 0,
+      "posts": 0
+    },
+    "permalink": "/software-engineering"
+  },
+  {
+    "name": "engineering",
+    "slug": "engineering",
+    "permalink": "/engineering",
+    "count": {
+      "total": 1,
+      "posts": 1
+    }
+  }
+]

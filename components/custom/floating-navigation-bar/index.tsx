@@ -1,13 +1,13 @@
 'use client';
 
+import { MusicNote } from '@phosphor-icons/react/dist/ssr';
+
 import { Drawer, DrawerContent, DrawerTrigger } from '@/components/ui/drawer';
 import { cn } from '@/lib/utils';
-import { MusicNote } from '@phosphor-icons/react/dist/ssr';
-import {
-  FloatingNavigationProvider,
-  useFloatingNavigation,
-} from './floating-navigation-provider';
+
 import { ThemeSwitch } from '../theme-switch';
+
+import { useFloatingNavigation } from './floating-navigation-provider';
 
 type FloatingNavigationBarProps = {
   children: React.ReactNode;
