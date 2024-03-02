@@ -36,16 +36,20 @@ const config = {
               marginBottom: '1rem',
               marginTop: '1rem',
             },
-            hr: {
-              marginBottom: '1em',
-              marginTop: '1em',
-            },
             pre: {
               backgroundColor: 'hsl(var(--foreground))',
               color: 'hsl(var(--background))',
             },
             a: {
               textDecoration: 'none',
+            },
+            li: {
+              marginTop: '0',
+              marginBottom: '0',
+            },
+            'li>div': {
+              marginTop: '0.2rem',
+              marginBottom: '0.2rem',
             },
           },
         },

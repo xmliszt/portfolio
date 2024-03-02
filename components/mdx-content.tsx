@@ -3,6 +3,8 @@ import Image from 'next/image';
 
 import { HoverPerspectiveContainer } from './custom/hover-perspective-container';
 import { CustomLink } from './ui/custom-link';
+import { BadgeGroup } from './badge-group';
+import { WavingAvatar } from './waving-avatar';
 
 interface MdxProps {
   code: string;
@@ -39,6 +41,8 @@ export function MDXContent({ code, components }: MdxProps) {
             {props.children}
           </CustomLink>
         ),
+        WavingAvatar,
+        BadgeGroup,
       }}
     />
   );
