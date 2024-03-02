@@ -109,7 +109,7 @@ export default function RootLayout({
         >
           <GradientBlur placement='top' />
           <main className='flex h-full w-full justify-center px-4 pb-24 pt-16'>
-            <div className='relative w-[32rem] max-w-lg'>
+            <div className='relative mx-auto w-full px-4 md:max-w-lg [&>article]:mx-auto'>
               {/* Show when in desktop view port */}
               <NavigationBar>
                 <NavigationBarItem href='/'>About me</NavigationBarItem>

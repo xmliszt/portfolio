@@ -13,7 +13,7 @@
     "vercel:dev": "vercel dev",
     "velite:build": "velite --clean",
     "velite:dev": "velite --watch",
-    "gen-types": "supabase gen types typescript --project-id tvstbbuidvwgelgidaqy --schema public > supabase/__generated__/types.ts"
+    "gen-types": "supabase gen types typescript --project-id tvstbbuidvwgelgidaqy --schema public > lib/supabase/__generated__/types.ts"
   },
   "dependencies": {
     "@phosphor-icons/react": "^2.0.15",
@@ -31,6 +31,7 @@
     "next-pwa": "^5.6.0",
     "next-themes": "^0.2.1",
     "react": "^18",
+    "react-device-detect": "^2.2.3",
     "react-dom": "^18",
     "server-only": "^0.0.1",
     "tailwind-merge": "^2.2.1",

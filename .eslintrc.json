@@ -6,7 +6,8 @@
     ".next/*",
     ".out/*",
     "!.prettierrc.js",
-    "./components/ui/*"
+    "./components/ui/*",
+    "./content/*"
   ],
   "rules": {
     "no-unused-vars": "off",

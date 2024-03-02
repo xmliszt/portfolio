@@ -1,8 +1,11 @@
+import { format } from 'date-fns';
 import type { Metadata } from 'next';
 import Image from 'next/image';
 import { notFound } from 'next/navigation';
 
 import { MDXContent } from '@/components/mdx-content';
+
+import { incrementPostView } from './increment-post-view';
 
 import { posts } from '#site/content';
 
@@ -28,19 +31,24 @@ export function generateStaticParams(): PostProps['params'][] {
   }));
 }
 
-export default function PostPage({ params }: PostProps) {
+export default async function PostPage({ params }: PostProps) {
   const post = getPostBySlug(params.slug);
+  if (post == null) return notFound();
 
-  if (post == null) notFound();
+  const { views } = await incrementPostView({ slug: params.slug });
 
   return (
-    <article className='py-6 prose lg:prose-lg dark:prose-invert'>
+    <article className='prose prose-stone dark:prose-invert'>
       <h1>{post.title}</h1>
+      <p>
+        <time dateTime={post.date}>{format(post.date, 'do LLLL, yyyy')}</time>
+        <span> - {views} views</span>
+      </p>
       {post.description && <p>{post.description}</p>}
       {post.cover && (
         <Image src={post.cover} alt={post.title} placeholder='blur' />
       )}
-      <hr className='my-4' />
+      <hr />
       <MDXContent code={post.content} />
     </article>
   );

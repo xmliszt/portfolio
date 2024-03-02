@@ -14,7 +14,8 @@ type NavigationBarItemProps = {
 
 export function NavigationBarItem(props: NavigationBarItemProps) {
   const segment = useSelectedLayoutSegment();
-  const resolvedSegment = props.href === '/' ? null : props.href.split('/')[1];
+  const resolvedSegment =
+    props.href === '/' ? 'about' : props.href.split('/')[1];
   const isCurrentPath = segment === resolvedSegment;
   const { isOpen, setIsOpen } = useFloatingNavigation();
 
@@ -22,7 +23,7 @@ export function NavigationBarItem(props: NavigationBarItemProps) {
     <Link
       href={props.href}
       className={cn(
-        'p-2 rounded-lg hover:bg-secondary transition-colors ease-out',
+        'rounded-lg p-2 transition-colors ease-out hover:bg-secondary',
         isCurrentPath ? 'font-bold' : 'font-normal'
       )}
       onClick={() => {
