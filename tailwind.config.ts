@@ -21,18 +21,32 @@ const config = {
       typography: {
         DEFAULT: {
           css: {
+            article: {
+              width: '100%',
+            },
             h1: {
-              marginBottom: '2px',
+              marginBottom: '1em',
+              marginTop: '0px',
+            },
+            h2: {
+              marginBottom: '1rem',
+              marginTop: '1em',
+            },
+            p: {
+              marginBottom: '1rem',
+              marginTop: '1rem',
             },
             hr: {
+              marginBottom: '1em',
               marginTop: '1em',
-              marginBottom: '2em',
             },
             pre: {
               backgroundColor: 'hsl(var(--foreground))',
               color: 'hsl(var(--background))',
             },
-            a: {},
+            a: {
+              textDecoration: 'none',
+            },
           },
         },
       },

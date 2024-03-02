@@ -102,23 +102,23 @@ export default function RootLayout({
       <ThemeProvider>
         <body
           className={cn(
-            'bg-background antialiased w-full min-h-screen max-h-screen flex flex-col items-center',
+            'flex max-h-screen min-h-screen w-full flex-col items-center bg-background antialiased',
             fontJunge.className,
             fontInter.className
           )}
         >
           <GradientBlur placement='top' />
-          <main className='relative h-full px-4 pt-16 pb-24'>
-            {/* Show when in desktop view port */}
-            <NavigationBar>
-              <NavigationBarItem href='/'>About me</NavigationBarItem>
-              <NavigationBarItem href='/projects'>Projects</NavigationBarItem>
-              <NavigationBarItem href='/hobbies'>Hobbies</NavigationBarItem>
-              <NavigationBarItem href='/posts'>Posts</NavigationBarItem>
-              <NavigationBarItem href='/contacts'>Contacts</NavigationBarItem>
-            </NavigationBar>
-            {/* Main content area */}
-            <div className='md:max-w-lg md:min-w-lg md:w-[32rem]'>
+          <main className='flex h-full w-full justify-center px-4 pb-24 pt-16'>
+            <div className='relative w-[32rem] max-w-lg'>
+              {/* Show when in desktop view port */}
+              <NavigationBar>
+                <NavigationBarItem href='/'>About me</NavigationBarItem>
+                <NavigationBarItem href='/projects'>Projects</NavigationBarItem>
+                <NavigationBarItem href='/hobbies'>Hobbies</NavigationBarItem>
+                <NavigationBarItem href='/posts'>Posts</NavigationBarItem>
+                <NavigationBarItem href='/contacts'>Contacts</NavigationBarItem>
+              </NavigationBar>
+              {/* Main content area */}
               {children}
             </div>
           </main>
@@ -134,7 +134,7 @@ export default function RootLayout({
             </FloatingNavigationBar>
           </FloatingNavigationProvider>
           {/* Theme switch */}
-          <div className='hidden md:block fixed bottom-10 right-4 md:right-10 z-50'>
+          <div className='fixed bottom-10 right-4 z-50 hidden md:right-10 md:block'>
             <ThemeSwitch />
           </div>
         </body>

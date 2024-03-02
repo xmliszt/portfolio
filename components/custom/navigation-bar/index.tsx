@@ -7,7 +7,7 @@ type NavigationBarProps = {
 export function NavigationBar(props: NavigationBarProps) {
   return (
     <div
-      className={cn('absolute top-16 w-32 -left-40 h-full', 'hidden md:block')}
+      className={cn('absolute top-0 w-32 -left-40 h-full', 'hidden md:block')}
     >
       <nav
         className={cn(

@@ -1,6 +1,8 @@
 import * as runtime from 'react/jsx-runtime';
 import Image from 'next/image';
 
+import { CustomLink } from './ui/custom-link';
+
 interface MdxProps {
   code: string;
   components?: Record<string, React.ComponentType>;
@@ -13,5 +15,17 @@ const useMDXComponent = (code: string) => {
 
 export function MDXContent({ code, components }: MdxProps) {
   const Component = useMDXComponent(code);
-  return <Component components={{ Image, ...components }} />;
+  return (
+    <Component
+      components={{
+        ...components,
+        img: Image,
+        a: (props: any) => (
+          <CustomLink href={props.href} {...props}>
+            {props.children}
+          </CustomLink>
+        ),
+      }}
+    />
+  );
 }

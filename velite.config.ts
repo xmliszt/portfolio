@@ -119,7 +119,7 @@ export default defineConfig({
     clean: true,
   },
   collections: { options, tags, pages, posts },
-  markdown: { rehypePlugins: [rehypePrettyCode] },
+  mdx: { rehypePlugins: [rehypePrettyCode] },
   prepare: ({ tags, posts }) => {
     const docs = posts.filter(
       (i) => process.env.NODE_ENV !== 'production' || !i.draft

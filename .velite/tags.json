@@ -1,26 +1,44 @@
 [
   {
-    "name": "Education",
-    "slug": "education",
+    "name": "tag",
+    "slug": "tag",
     "count": {
       "total": 0,
       "posts": 0
     },
-    "permalink": "/education"
-  },
-  {
-    "name": "Software Engineering",
-    "slug": "software-engineering",
-    "count": {
-      "total": 0,
-      "posts": 0
-    },
-    "permalink": "/software-engineering"
+    "permalink": "/tag"
   },
   {
     "name": "engineering",
     "slug": "engineering",
     "permalink": "/engineering",
+    "count": {
+      "total": 1,
+      "posts": 1
+    }
+  },
+  {
+    "name": "hello",
+    "slug": "hello",
+    "permalink": "/hello",
+    "count": {
+      "total": 1,
+      "posts": 1
+    }
+  },
+  {
+    "name": "world",
+    "slug": "world",
+    "permalink": "/world",
+    "count": {
+      "total": 1,
+      "posts": 1
+    }
+  },
+  {
+    "name": "test",
+    "slug": "test",
+    "permalink": "/test",
     "count": {
       "total": 1,
       "posts": 1
