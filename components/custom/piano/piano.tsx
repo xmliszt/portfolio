@@ -3,7 +3,7 @@ import { PianoNote } from './piano-note.type';
 
 export function Piano() {
   return (
-    <div className='mt-32 max-w-fit rotate-90 md:rotate-0'>
+    <div>
       {NOTES.map((note) => (
         <PianoKey key={note} note={note} />
       ))}

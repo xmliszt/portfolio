@@ -6,7 +6,7 @@ export default function NotFound() {
       <h1 className='text-center font-bold'>
         No page here. Why not enjoy some music?
       </h1>
-      <div className='rounded-lg bg-stone-700 p-4 shadow-[inset_0_0_20px_10px_rgba(0,0,0,0.4),0_0_20px_10px_rgba(0,0,0,0.4)]'>
+      <div className='mt-32 max-w-fit rotate-90 rounded-lg bg-stone-700 p-4 shadow-[inset_0_0_20px_10px_rgba(0,0,0,0.4),0_0_20px_10px_rgba(0,0,0,0.4)] md:rotate-0'>
         <Piano />
       </div>
     </div>
