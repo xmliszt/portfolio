@@ -1,6 +1,8 @@
 import * as runtime from 'react/jsx-runtime';
 import Image from 'next/image';
 
+import { slugify } from '@/lib/utils';
+
 import { HoverPerspectiveContainer } from './custom/hover-perspective-container';
 import { CustomLink } from './ui/custom-link';
 import { BadgeGroup } from './badge-group';
@@ -22,7 +24,26 @@ export function MDXContent({ code, components }: MdxProps) {
     <Component
       components={{
         ...components,
-        h2: (props: any) => <h2 id={props.id} {...props} />,
+        h1: (props: any) => (
+          <h1 id={slugify(props.children)} {...props}>
+            {props.children}
+          </h1>
+        ),
+        h2: (props: any) => (
+          <h2 id={slugify(props.children)} {...props}>
+            {props.children}
+          </h2>
+        ),
+        h3: (props: any) => (
+          <h3 id={slugify(props.children)} {...props}>
+            {props.children}
+          </h3>
+        ),
+        h4: (props: any) => (
+          <h4 id={slugify(props.children)} {...props}>
+            {props.children}
+          </h4>
+        ),
         img: (props: any) => (
           <HoverPerspectiveContainer>
             <Image

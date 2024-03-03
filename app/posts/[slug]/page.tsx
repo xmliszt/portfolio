@@ -56,9 +56,9 @@ export default async function PostPage({ params }: PostProps) {
       {post.cover && (
         <Image src={post.cover} alt={post.title} placeholder='blur' />
       )}
-      <hr />
+      <hr className='mb-0' />
       {/* Table of contents */}
-      {/* <nav>
+      <nav>
         <ul>
           {post.toc.map((toc) => (
             <li key={toc.url}>
@@ -66,7 +66,7 @@ export default async function PostPage({ params }: PostProps) {
             </li>
           ))}
         </ul>
-      </nav> */}
+      </nav>
 
       {/* Markdown content */}
       <MDXContent code={post.content} />

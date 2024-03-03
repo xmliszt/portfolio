@@ -33,13 +33,6 @@ const options = defineCollection({
       email: s.string().email(),
       url: s.string().url(),
     }),
-    socials: s.array(
-      s.object({
-        name: s.string(),
-        link: s.string().optional(),
-        image: s.image().optional(),
-      })
-    ),
   }),
 });
 
