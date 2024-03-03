@@ -3,6 +3,8 @@ import { notFound } from 'next/navigation';
 
 import { MDXContent } from '@/components/mdx-content';
 
+import { ShadowSubtitle } from './shadow-subtitle';
+
 import { pages } from '#site/content';
 
 type Props = {
@@ -32,7 +34,10 @@ export default function PagePage({ params }: Props) {
 
   return (
     <article className='prose prose-stone dark:prose-invert'>
-      <h1>{page.title}</h1>
+      <h1 className='group relative'>
+        {page.title}
+        {page.subtitle && <ShadowSubtitle>{page.subtitle}</ShadowSubtitle>}
+      </h1>
       <MDXContent code={page.body} />
     </article>
   );

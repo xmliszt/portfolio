@@ -75,6 +75,7 @@ const pages = defineCollection({
   schema: s
     .object({
       title: s.string().max(99),
+      subtitle: s.string().max(999).optional(),
       slug: s.slug('page'),
       body: s.mdx(),
     })

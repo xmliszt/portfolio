@@ -1,3 +1,5 @@
+import { ShadowSubtitle } from '../[slug]/shadow-subtitle';
+
 import { PostCard } from './post-card';
 
 import { posts } from '#site/content';
@@ -13,7 +15,10 @@ export default function PostsPage() {
 
   return (
     <article className='flex flex-col gap-12'>
-      <h1>Posts</h1>
+      <h1 className='group relative'>
+        Posts
+        <ShadowSubtitle>碎碎念</ShadowSubtitle>
+      </h1>
       <div className='flex flex-col gap-16'>
         {sortedPosts.map((post) => (
           <PostCard key={post.slug} post={post} />
