@@ -29,8 +29,8 @@ export function MDXContent({ code, components }: MdxProps) {
               layout='responsive'
               src={props.src}
               alt={props.alt}
-              width={300}
-              height={300}
+              width={100}
+              height={100}
               unoptimized
               {...props}
             />
