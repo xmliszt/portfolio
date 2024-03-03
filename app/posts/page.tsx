@@ -1,3 +1,5 @@
+import pluralize from 'pluralize';
+
 import { ShadowSubtitle } from '../[slug]/shadow-subtitle';
 
 import { PostCard } from './post-card';
@@ -16,7 +18,7 @@ export default function PostsPage() {
   return (
     <article className='flex flex-col gap-12'>
       <h1 className='group relative'>
-        Posts
+        Posts ({pluralize('post', posts.length, true)})
         <ShadowSubtitle>碎碎念</ShadowSubtitle>
       </h1>
       <div className='flex flex-col gap-16'>

@@ -57,7 +57,21 @@ export default async function PostPage({ params }: PostProps) {
         <Image src={post.cover} alt={post.title} placeholder='blur' />
       )}
       <hr />
+      {/* Table of contents */}
+      {/* <nav>
+        <ul>
+          {post.toc.map((toc) => (
+            <li key={toc.url}>
+              <a href={toc.url}>{toc.title}</a>
+            </li>
+          ))}
+        </ul>
+      </nav> */}
+
+      {/* Markdown content */}
       <MDXContent code={post.content} />
+
+      {/* Tags */}
       <div className='mt-10 flex flex-row flex-wrap gap-2'>
         {post.tags.map((tag) => (
           <CustomBadgeLink key={tag} href={`/tags/${tag}`}>

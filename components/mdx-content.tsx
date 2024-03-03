@@ -22,6 +22,7 @@ export function MDXContent({ code, components }: MdxProps) {
     <Component
       components={{
         ...components,
+        h2: (props: any) => <h2 id={props.id} {...props} />,
         img: (props: any) => (
           <HoverPerspectiveContainer>
             <Image

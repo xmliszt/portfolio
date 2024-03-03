@@ -7,17 +7,6 @@ const slugify = (input: string) =>
     .replace(/\s+/g, '-')
     .replace(/[^a-z0-9-]/g, '');
 
-const icon = s.enum([
-  'email',
-  'linkedin',
-  'github',
-  'reddit',
-  'substack',
-  'instagram',
-  'medium',
-  'twitter',
-  'youtube',
-]);
 const count = s
   .object({ total: s.number(), posts: s.number() })
   .default({ total: 0, posts: 0 });
@@ -47,7 +36,6 @@ const options = defineCollection({
     socials: s.array(
       s.object({
         name: s.string(),
-        icon,
         link: s.string().optional(),
         image: s.image().optional(),
       })

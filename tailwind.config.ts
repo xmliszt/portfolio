@@ -26,7 +26,7 @@ const config = {
             },
             h1: {
               marginBottom: '1em',
-              marginTop: '0px',
+              marginTop: '1em',
             },
             h2: {
               marginBottom: '1rem',
@@ -34,6 +34,9 @@ const config = {
             },
             p: {
               marginBottom: '1rem',
+              marginTop: '1rem',
+            },
+            hr: {
               marginTop: '1rem',
             },
             pre: {
