@@ -29,7 +29,7 @@ const config = {
               marginTop: '1em',
             },
             h2: {
-              marginBottom: '1rem',
+              marginBottom: '1em',
               marginTop: '1em',
             },
             p: {

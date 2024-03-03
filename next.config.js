@@ -22,6 +22,14 @@ const nextConfig = {
         protocol: 'https',
         hostname: 'github.com',
       },
+      {
+        protocol: 'https',
+        hostname: 'tvstbbuidvwgelgidaqy.supabase.co',
+      },
+      {
+        protocol: 'https',
+        hostname: 'liyuxuan.dev',
+      },
     ],
   },
   async headers() {

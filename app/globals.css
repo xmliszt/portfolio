@@ -69,7 +69,7 @@
   }
 
   h1 {
-    @apply mb-4 text-4xl font-bold;
+    @apply my-4 text-4xl font-bold;
   }
 
   h2 {
@@ -103,6 +103,10 @@
 
   pre {
     @apply border !bg-card;
+  }
+
+  iframe {
+    @apply my-8 aspect-video h-auto w-full rounded-lg border !shadow-xl;
   }
 }
 

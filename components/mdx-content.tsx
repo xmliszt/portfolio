@@ -7,6 +7,7 @@ import { HoverPerspectiveContainer } from './custom/hover-perspective-container'
 import { CustomLink } from './ui/custom-link';
 import { BadgeGroup } from './badge-group';
 import { CopyablePre } from './copyable-pre';
+import { PhotoBentoGrid } from './photo-bento-grid';
 import { WavingAvatar } from './waving-avatar';
 
 interface MdxProps {
@@ -69,6 +70,7 @@ export function MDXContent({ code, components }: MdxProps) {
         ),
         WavingAvatar,
         BadgeGroup,
+        PhotoBentoGrid,
       }}
     />
   );

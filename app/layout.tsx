@@ -6,6 +6,7 @@ import { FloatingNavigationProvider } from '@/components/custom/floating-navigat
 import { ThemeSwitch } from '@/components/custom/theme-switch';
 import { ThemeProvider } from '@/components/theme-provider';
 import { GradientBlur } from '@/components/ui/gradient-blur';
+import { ScrollArea } from '@/components/ui/scroll-area';
 import { cn } from '@/lib/utils';
 
 import {
@@ -107,22 +108,28 @@ export default function RootLayout({
             fontInter.className
           )}
         >
-          <GradientBlur placement='top' />
-          <main className='flex h-full w-full justify-center px-4 pb-24 pt-16'>
-            <div className='relative mx-auto w-full px-4 md:max-w-lg [&>article]:mx-auto'>
-              {/* Show when in desktop view port */}
-              <NavigationBar>
-                <NavigationBarItem href='/'>About me</NavigationBarItem>
-                <NavigationBarItem href='/projects'>Projects</NavigationBarItem>
-                <NavigationBarItem href='/hobbies'>Hobbies</NavigationBarItem>
-                <NavigationBarItem href='/posts'>Posts</NavigationBarItem>
-                <NavigationBarItem href='/contacts'>Contacts</NavigationBarItem>
-              </NavigationBar>
-              {/* Main content area */}
-              {children}
-            </div>
+          <GradientBlur placement='top' position='fixed' />
+          <main className='h-full max-h-screen w-full overflow-hidden '>
+            <ScrollArea className='flex h-screen w-full justify-center'>
+              <div className='relative mx-auto h-full w-full px-4 pb-24 pt-16 md:max-w-lg [&>article]:mx-auto'>
+                {/* Show when in desktop view port */}
+                <NavigationBar>
+                  <NavigationBarItem href='/'>About me</NavigationBarItem>
+                  <NavigationBarItem href='/projects'>
+                    Projects
+                  </NavigationBarItem>
+                  <NavigationBarItem href='/hobbies'>Hobbies</NavigationBarItem>
+                  <NavigationBarItem href='/posts'>Posts</NavigationBarItem>
+                  <NavigationBarItem href='/contacts'>
+                    Contacts
+                  </NavigationBarItem>
+                </NavigationBar>
+                {/* Main content area */}
+                {children}
+              </div>
+            </ScrollArea>
           </main>
-          <GradientBlur placement='bottom' />
+          <GradientBlur placement='bottom' position='fixed' />
           {/* Show when in mobile view port */}
           <FloatingNavigationProvider>
             <FloatingNavigationBar>
