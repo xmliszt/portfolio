@@ -111,11 +111,30 @@ const config = {
           '50%': { transform: 'rotate(12deg)' },
           '100%': { transform: 'rotate(0deg)' },
         },
+        greet: {
+          '0%': {
+            opacity: '0',
+            transform: 'translateY(2.5rem) translateX(0px) rotate(-12deg)',
+          },
+          '25%': {
+            opacity: '100',
+            transform: 'translateY(-3.5rem) translateX(4rem) rotate(6deg)',
+          },
+          '75%': {
+            opacity: '100',
+            transform: 'translateY(-3.5rem) translateX(4rem) rotate(6deg)',
+          },
+          '100%': {
+            opacity: '0',
+            transform: 'translateY(2.5rem) translateX(0px) rotate(-12deg)',
+          },
+        },
       },
       animation: {
         'accordion-down': 'accordion-down 0.2s ease-out',
         'accordion-up': 'accordion-up 0.2s ease-out',
         wave: 'wave 400ms 2 ease-out',
+        greet: 'greet 1200ms ease-out',
       },
     },
   },

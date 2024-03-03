@@ -1,9 +1,25 @@
+'use client';
+
+import { useRef } from 'react';
+import { isMobile, isTablet } from 'react-device-detect';
 import Image from 'next/image';
 
 export function WavingAvatar() {
+  const avatarImageRef = useRef<HTMLImageElement>(null);
+  const greetingRef = useRef<HTMLSpanElement>(null);
+
+  function toggleWave() {
+    // Only toggle wave animation on mobile and tablet on touch
+    if (isMobile || isTablet) {
+      avatarImageRef.current?.classList.toggle('animate-wave');
+      greetingRef.current?.classList.toggle('animate-greet');
+    }
+  }
+
   return (
-    <div className='group relative'>
+    <div className='group relative' onTouchStart={toggleWave}>
       <Image
+        ref={avatarImageRef}
         className='z-10 rounded-full border bg-background shadow-lg group-hover:animate-wave'
         src='https://github.com/xmliszt/resources/blob/main/portfolio/avatar.png?raw=true'
         alt='Li Yuxuan avatar'
@@ -11,7 +27,10 @@ export function WavingAvatar() {
         height={150}
         unoptimized
       />
-      <span className='group-hover absolute right-0 top-10 -z-10 -rotate-12 opacity-0 transition-[opacity_transform] duration-300 ease-out group-hover:-translate-y-4 group-hover:translate-x-32 group-hover:rotate-6 group-hover:opacity-100'>
+      <span
+        ref={greetingRef}
+        className='group-hover:animate-greet absolute right-0 top-14 -z-10 opacity-0'
+      >
         ~ Yo! Whatssup! 👋🏻
       </span>
     </div>
