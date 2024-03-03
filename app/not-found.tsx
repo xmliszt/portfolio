@@ -1,13 +1,14 @@
+import { Piano } from '@/components/custom/piano';
+
 export default function NotFound() {
   return (
-    <div className='flex flex-col items-center w-full gap-2'>
-      <h1 className='text-4xl font-bold'>404</h1>
-      <p className='text-lg'>Page not found</p>
-      <p className='border p-4'>
-        {
-          'TODO: Make this a interactive page where user can click on keyboard to play a note 🎵'
-        }
-      </p>
+    <div className='flex w-full flex-col items-center gap-2'>
+      <h1 className='text-center font-bold'>
+        No page here. Why not enjoy some music?
+      </h1>
+      <div className='rounded-lg bg-stone-700 p-4 shadow-[inset_0_0_20px_10px_rgba(0,0,0,0.4),0_0_20px_10px_rgba(0,0,0,0.4)]'>
+        <Piano />
+      </div>
     </div>
   );
 }

@@ -41,6 +41,7 @@
     "tailwind-merge": "^2.2.1",
     "tailwindcss-animate": "^1.0.7",
     "unist-util-visit": "^5.0.0",
+    "use-sound": "^4.0.1",
     "vaul": "^0.9.0"
   },
   "devDependencies": {
