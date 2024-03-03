@@ -1,4 +1,5 @@
 import rehypePrettyCode from 'rehype-pretty-code';
+import { visit } from 'unist-util-visit';
 import { defineCollection, defineConfig, s } from 'velite';
 
 const slugify = (input: string) =>
@@ -103,7 +104,40 @@ export default defineConfig({
     clean: true,
   },
   collections: { options, tags, pages, posts },
-  mdx: { rehypePlugins: [rehypePrettyCode] },
+  mdx: {
+    rehypePlugins: [
+      () => (tree) => {
+        visit(tree, (node) => {
+          if (node?.type === 'element' && node?.tagName === 'pre') {
+            const [codeEl] = node.children;
+
+            if (codeEl.tagName !== 'code') return;
+
+            node.raw = codeEl.children?.[0].value;
+          }
+        });
+      },
+      [
+        rehypePrettyCode,
+        { theme: { light: 'vitesse-light', dark: 'vitesse-dark' } },
+      ],
+      () => (tree) => {
+        visit(tree, (node) => {
+          if (node?.type === 'element' && node?.tagName === 'figure') {
+            if (!('data-rehype-pretty-code-figure' in node.properties)) {
+              return;
+            }
+
+            for (const child of node.children) {
+              if (child.tagName === 'pre') {
+                child.properties['raw'] = node.raw;
+              }
+            }
+          }
+        });
+      },
+    ],
+  },
   prepare: ({ tags, posts }) => {
     const docs = posts.filter(
       (i) => process.env.NODE_ENV !== 'production' || !i.draft

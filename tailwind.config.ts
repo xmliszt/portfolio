@@ -132,12 +132,32 @@ const config = {
             transform: 'translateY(2.5rem) translateX(0px) rotate(-12deg)',
           },
         },
+        'fade-in-from-right-and-fade-out': {
+          '0%': {
+            opacity: '0',
+            transform: 'translateX(2rem)',
+          },
+          '25%': {
+            opacity: '1',
+            transform: 'translateX(0)',
+          },
+          '75%': {
+            opacity: '1',
+            transform: 'translateX(0)',
+          },
+          '100%': {
+            opacity: '0',
+            transform: 'translateX(0)',
+          },
+        },
       },
       animation: {
         'accordion-down': 'accordion-down 0.2s ease-out',
         'accordion-up': 'accordion-up 0.2s ease-out',
         wave: 'wave 400ms 2 ease-out',
         greet: 'greet 1200ms ease-out',
+        'fade-in-from-right-and-fade-out':
+          'fade-in-from-right-and-fade-out 2s ease-out',
       },
     },
   },

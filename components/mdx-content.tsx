@@ -6,6 +6,7 @@ import { slugify } from '@/lib/utils';
 import { HoverPerspectiveContainer } from './custom/hover-perspective-container';
 import { CustomLink } from './ui/custom-link';
 import { BadgeGroup } from './badge-group';
+import { CopyablePre } from './copyable-pre';
 import { WavingAvatar } from './waving-avatar';
 
 interface MdxProps {
@@ -62,6 +63,9 @@ export function MDXContent({ code, components }: MdxProps) {
           <CustomLink href={props.href} {...props}>
             {props.children}
           </CustomLink>
+        ),
+        pre: (props: any) => (
+          <CopyablePre {...props}>{props.children}</CopyablePre>
         ),
         WavingAvatar,
         BadgeGroup,
