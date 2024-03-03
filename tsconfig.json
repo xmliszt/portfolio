@@ -19,8 +19,7 @@
     ],
     "paths": {
       "@/*": ["./*"],
-      "#site/content": ["./.velite"],
-      "use-sound": ["./generated-types/"]
+      "#site/content": ["./.velite"]
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],

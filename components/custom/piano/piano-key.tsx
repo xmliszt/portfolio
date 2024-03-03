@@ -1,9 +1,10 @@
 'use client';
 
+import { Howl } from 'howler';
+
 import { cn } from '@/lib/utils';
 
 import { PianoNote } from './piano-note.type';
-import { usePianoSound } from './use-piano-sound';
 
 import './piano-key.css';
 
@@ -12,7 +13,12 @@ type PianoKeyProps = {
 };
 
 export function PianoKey(props: PianoKeyProps) {
-  const [play] = usePianoSound(props.note);
+  const howler = new Howl({
+    src: [
+      `https://tvstbbuidvwgelgidaqy.supabase.co/storage/v1/object/public/piano-sounds/${props.note}.mp3`,
+    ],
+    volume: 0.5,
+  });
 
   function keyColor(note: PianoNote): 'white' | 'black' {
     const blackNotes: PianoNote[] = ['cs6', 'ds6', 'fs6', 'gs6', 'as6'];
@@ -48,9 +54,7 @@ export function PianoKey(props: PianoKeyProps) {
         isFirstKey(props.note) && '!rounded-tl-lg',
         isLastKey(props.note) && '!rounded-tr-lg'
       )}
-      onClick={() => play()}
-    >
-      {props.note}
-    </button>
+      onClick={() => howler.play()}
+    />
   );
 }

@@ -1,3 +1,5 @@
+'use client';
+
 import { PianoKey } from './piano-key';
 import { PianoNote } from './piano-note.type';
 

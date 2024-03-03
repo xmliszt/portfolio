@@ -59,6 +59,7 @@ const config = {
       },
       screens: {
         md: '880px',
+        piano: '416px',
       },
       colors: {
         border: 'hsl(var(--border))',
