@@ -1,5 +1,7 @@
 'use client';
 
+import { useRef, useState } from 'react';
+import { MusicNote } from '@phosphor-icons/react';
 import { Howl } from 'howler';
 
 import { cn } from '@/lib/utils';
@@ -12,7 +14,12 @@ type PianoKeyProps = {
   note: PianoNote;
 };
 
+let noteCounter = 0;
+
 export function PianoKey(props: PianoKeyProps) {
+  const [musicNoteIds, setMusicNoteIds] = useState<string[]>([]);
+  const timersRef = useRef<{ [key: string]: NodeJS.Timeout | undefined }>({});
+
   const howler = new Howl({
     src: [
       `https://tvstbbuidvwgelgidaqy.supabase.co/storage/v1/object/public/piano-sounds/${props.note}.mp3`,
@@ -38,6 +45,21 @@ export function PianoKey(props: PianoKeyProps) {
     return note === 'c7';
   }
 
+  function addAnimatedMusicNote() {
+    noteCounter++;
+    const id = `music-note-${noteCounter}`;
+    setMusicNoteIds((ids) => [...ids, id]);
+    timersRef.current[id] = setTimeout(() => {
+      removeAnimatedMusicNotes(id);
+    }, 2500);
+  }
+
+  function removeAnimatedMusicNotes(id: string) {
+    clearTimeout(timersRef.current[id]);
+    delete timersRef.current[id];
+    setMusicNoteIds((ids) => ids.filter((musicNoteId) => musicNoteId !== id));
+  }
+
   return (
     <button
       className={cn(
@@ -54,7 +76,22 @@ export function PianoKey(props: PianoKeyProps) {
         isFirstKey(props.note) && '!rounded-tl-lg',
         isLastKey(props.note) && '!rounded-tr-lg'
       )}
-      onClick={() => howler.play()}
-    />
+      onClick={() => {
+        howler.play();
+        addAnimatedMusicNote();
+      }}
+    >
+      {musicNoteIds.map((id) => (
+        <span
+          key={id}
+          id={id}
+          className={
+            'animate-fade-in-float-up-wiggle absolute bottom-2 left-1/3 opacity-0'
+          }
+        >
+          <MusicNote size={16} />
+        </span>
+      ))}
+    </button>
   );
 }
