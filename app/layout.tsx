@@ -103,15 +103,15 @@ export default function RootLayout({
       <ThemeProvider>
         <body
           className={cn(
-            'flex max-h-screen min-h-screen w-full flex-col items-center bg-background antialiased',
+            'flex max-h-screen min-h-screen w-screen flex-col items-center overflow-hidden bg-background antialiased',
             fontJunge.className,
             fontInter.className
           )}
         >
           <GradientBlur placement='top' position='fixed' />
-          <main className='h-full max-h-screen w-full overflow-hidden '>
-            <ScrollArea className='flex h-screen w-full justify-center'>
-              <div className='relative mx-auto h-full w-full px-4 pb-24 pt-16 md:max-w-lg [&>article]:mx-auto'>
+          <main className='h-screen max-h-screen w-screen overflow-hidden'>
+            <ScrollArea className='h-screen w-screen'>
+              <div className='relative mx-auto h-full w-screen px-8 pb-24 pt-16 md:max-w-lg [&>article]:mx-auto'>
                 {/* Show when in desktop view port */}
                 <NavigationBar>
                   <NavigationBarItem href='/'>About me</NavigationBarItem>
