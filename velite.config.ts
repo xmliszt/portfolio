@@ -60,6 +60,7 @@ const pages = defineCollection({
       subtitle: s.string().max(999).optional(),
       slug: s.slug('page'),
       body: s.mdx(),
+      toc: s.toc(),
     })
     .transform((data, { meta }) => ({
       ...data,
