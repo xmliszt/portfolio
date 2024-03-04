@@ -1,5 +1,6 @@
 'use client';
 
+import React from 'react';
 import { isMobile, isTablet } from 'react-device-detect';
 import Link from 'next/link';
 
@@ -8,9 +9,11 @@ import { cn } from '@/lib/utils';
 export function CustomLink({
   href,
   children,
+  target,
 }: {
   href: string;
   children: React.ReactNode;
+  target?: React.HTMLAttributeAnchorTarget;
 }) {
   return (
     <div className='group relative inline-block w-fit [&>*]:cursor-alias'>
@@ -20,7 +23,7 @@ export function CustomLink({
           'font-bold',
           isMobile || isTablet ? 'underline underline-offset-2' : 'no-underline'
         )}
-        target='_blank'
+        target={target ?? '_blank'}
       >
         {children}
       </Link>

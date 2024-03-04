@@ -4,7 +4,9 @@ import { Inter, Junge } from 'next/font/google';
 import { FloatingNavigationBar } from '@/components/custom/floating-navigation-bar';
 import { FloatingNavigationProvider } from '@/components/custom/floating-navigation-bar/floating-navigation-provider';
 import { ThemeSwitch } from '@/components/custom/theme-switch';
+import { TOCTree } from '@/components/custom/toc-tree';
 import { ThemeProvider } from '@/components/theme-provider';
+import { TOCProvider } from '@/components/toc-provider';
 import { GradientBlur } from '@/components/ui/gradient-blur';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { cn } from '@/lib/utils';
@@ -108,37 +110,43 @@ export default function RootLayout({
             fontInter.className
           )}
         >
-          <GradientBlur placement='top' position='fixed' />
-          <main className='h-screen max-h-screen w-screen overflow-hidden'>
-            <ScrollArea className='h-screen w-screen'>
-              <div
-                className={cn(
-                  'relative mx-auto h-full w-screen [&>article]:mx-auto',
-                  'px-8 pb-40 pt-24', // phone
-                  'md:max-w-md md:pb-24', // tablet
-                  'lg:max-w-xl lg:pb-24', // laptop
-                  'xl:max-w-2xl xl:pb-24' // large desktop
-                )}
-              >
-                {/* Show when in desktop view port */}
-                <NavigationBar>
-                  <NavigationBarItem href='/'>About me</NavigationBarItem>
-                  <NavigationBarItem href='/projects'>
-                    Projects
-                  </NavigationBarItem>
-                  <NavigationBarItem href='/hobbies'>Hobbies</NavigationBarItem>
-                  <NavigationBarItem href='/posts'>Posts</NavigationBarItem>
-                  <NavigationBarItem href='/piano'>Piano</NavigationBarItem>
-                  <NavigationBarItem href='/contacts'>
-                    Contacts
-                  </NavigationBarItem>
-                </NavigationBar>
-                {/* Main content area */}
-                {children}
-              </div>
-            </ScrollArea>
-          </main>
-          <GradientBlur placement='bottom' position='fixed' />
+          <TOCProvider>
+            <GradientBlur placement='top' position='fixed' />
+            <main className='h-screen max-h-screen w-screen overflow-hidden'>
+              <ScrollArea className='h-screen w-screen'>
+                <div
+                  className={cn(
+                    'relative mx-auto h-full w-screen [&>article]:mx-auto',
+                    'px-8 pb-40 pt-24', // phone
+                    'md:max-w-md md:pb-24', // tablet
+                    'lg:max-w-xl lg:pb-24', // laptop
+                    'xl:max-w-2xl xl:pb-24' // large desktop
+                  )}
+                >
+                  {/* Show when in desktop view port */}
+                  <NavigationBar>
+                    <NavigationBarItem href='/'>About me</NavigationBarItem>
+                    <NavigationBarItem href='/projects'>
+                      Projects
+                    </NavigationBarItem>
+                    <NavigationBarItem href='/hobbies'>
+                      Hobbies
+                    </NavigationBarItem>
+                    <NavigationBarItem href='/posts'>Posts</NavigationBarItem>
+                    <NavigationBarItem href='/piano'>Piano</NavigationBarItem>
+                    <NavigationBarItem href='/contacts'>
+                      Contacts
+                    </NavigationBarItem>
+                  </NavigationBar>
+                  {/* Main content area */}
+                  {children}
+                  {/* Right side floating TOC tree */}
+                  <TOCTree />
+                </div>
+              </ScrollArea>
+            </main>
+            <GradientBlur placement='bottom' position='fixed' />
+          </TOCProvider>
           {/* Show when in mobile view port */}
           <FloatingNavigationProvider>
             <FloatingNavigationBar>

@@ -10,8 +10,10 @@ export function slugify(input: string) {
   if (typeof input !== 'string') {
     input = JSON.stringify(input);
   }
-  return input
-    .toLowerCase()
-    .replace(/\s+/g, '-')
-    .replace(/[^a-z0-9-]/g, '');
+  const parts = input.split(' ');
+  const encodedParts = parts.map((part) =>
+    encodeURIComponent(part.toLowerCase())
+  );
+  console.log(encodedParts);
+  return encodedParts.join('-');
 }

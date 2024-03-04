@@ -61,6 +61,7 @@ const pages = defineCollection({
       slug: s.slug('page'),
       body: s.mdx(),
       toc: s.toc(),
+      showToc: s.boolean().default(true),
     })
     .transform((data, { meta }) => ({
       ...data,

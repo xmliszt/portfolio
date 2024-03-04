@@ -49,8 +49,7 @@ export function MDXContent({ code, components }: MdxProps) {
         img: (props: any) => (
           <HoverPerspectiveContainer>
             <Image
-              className='rounded-lg shadow-lg'
-              layout='responsive'
+              className='h-auto w-full rounded-lg shadow-lg'
               src={props.src}
               alt={props.alt}
               width={100}
