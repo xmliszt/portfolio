@@ -1,3 +1,7 @@
 export default function Loading() {
-  return <h1 className='w-full text-center'>Loading...</h1>;
+  return (
+    <article className='prose prose-stone h-screen dark:prose-invert'>
+      <h1 className='text-center'>Loading...</h1>
+    </article>
+  );
 }

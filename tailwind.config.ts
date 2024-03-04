@@ -58,7 +58,9 @@ const config = {
         },
       },
       screens: {
-        md: '880px',
+        md: '768px', // tablet
+        lg: '1024px', // laptop
+        xl: '1280px', // large desktop
         piano: '416px',
       },
       colors: {
