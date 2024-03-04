@@ -7,7 +7,8 @@
     ".out/*",
     "!.prettierrc.js",
     "./components/ui/*",
-    "./content/*"
+    "./content/*",
+    "./.velite/*"
   ],
   "rules": {
     "no-unused-vars": "off",

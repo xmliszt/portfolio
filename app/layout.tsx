@@ -111,7 +111,7 @@ export default function RootLayout({
           <GradientBlur placement='top' position='fixed' />
           <main className='h-screen max-h-screen w-screen overflow-hidden'>
             <ScrollArea className='h-screen w-screen'>
-              <div className='relative mx-auto h-full w-screen px-8 pb-24 pt-16 md:max-w-lg [&>article]:mx-auto'>
+              <div className='relative mx-auto h-full w-screen px-8 pb-32 pt-24 md:max-w-lg [&>article]:mx-auto'>
                 {/* Show when in desktop view port */}
                 <NavigationBar>
                   <NavigationBarItem href='/'>About me</NavigationBarItem>
