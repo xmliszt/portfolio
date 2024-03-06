@@ -1,6 +1,8 @@
 import { Metadata, Viewport } from 'next';
 import { Inter, Junge } from 'next/font/google';
 
+import { BGMProvider } from '@/components/bgm-provider';
+import { BGMPlayer } from '@/components/custom/bgm-player';
 import { FloatingNavigationBar } from '@/components/custom/floating-navigation-bar';
 import { FloatingNavigationProvider } from '@/components/custom/floating-navigation-bar/floating-navigation-provider';
 import { ThemeSwitch } from '@/components/custom/theme-switch';
@@ -128,62 +130,76 @@ export default function RootLayout({
             fontInter.className
           )}
         >
-          <TooltipProvider delayDuration={0}>
-            <TOCProvider>
-              <GradientBlur placement='top' position='fixed' />
-              <main className='h-screen max-h-screen w-screen overflow-hidden'>
-                <ScrollAreaWithTOCTracker>
-                  <div
-                    className={cn(
-                      'relative mx-auto h-full w-screen [&>article]:mx-auto',
-                      'px-8 pb-40 pt-24', // phone
-                      'md:max-w-md md:pb-24', // tablet
-                      'lg:max-w-xl lg:pb-24', // laptop
-                      'xl:max-w-2xl xl:pb-24' // large desktop
-                    )}
-                  >
-                    {/* Show when in desktop view port */}
-                    <NavigationBar>
-                      <NavigationBarItem href='/'>About me</NavigationBarItem>
-                      <NavigationBarItem href='/projects'>
-                        Projects
-                      </NavigationBarItem>
-                      <NavigationBarItem href='/hobbies'>
-                        Hobbies
-                      </NavigationBarItem>
-                      <NavigationBarItem href='/posts'>Posts</NavigationBarItem>
-                      <NavigationBarItem href='/piano'>Piano</NavigationBarItem>
-                      <NavigationBarItem href='/contacts'>
-                        Contacts
-                      </NavigationBarItem>
-                    </NavigationBar>
-                    {/* Main content area */}
-                    {children}
-                    {/* Right side floating TOC tree */}
-                    <TOCTree />
-                  </div>
-                </ScrollAreaWithTOCTracker>
-              </main>
-              <GradientBlur placement='bottom' position='fixed' />
-              {/* Right side floating TOC drawer: show when in mobile view port */}
-              <FloatingTOCDrawer />
-            </TOCProvider>
-            {/* Show when in mobile view port */}
-            <FloatingNavigationProvider>
-              <FloatingNavigationBar>
-                <NavigationBarItem href='/'>About me</NavigationBarItem>
-                <NavigationBarItem href='/projects'>Projects</NavigationBarItem>
-                <NavigationBarItem href='/hobbies'>Hobbies</NavigationBarItem>
-                <NavigationBarItem href='/posts'>Posts</NavigationBarItem>
-                <NavigationBarItem href='/piano'>Piano</NavigationBarItem>
-                <NavigationBarItem href='/contacts'>Contacts</NavigationBarItem>
-              </FloatingNavigationBar>
-            </FloatingNavigationProvider>
-            {/* Theme switch */}
-            <div className='fixed bottom-10 right-4 z-50 hidden md:right-10 md:block'>
-              <ThemeSwitch />
-            </div>
-          </TooltipProvider>
+          <BGMProvider>
+            <TooltipProvider delayDuration={0}>
+              <TOCProvider>
+                <GradientBlur placement='top' position='fixed' />
+                <main className='h-screen max-h-screen w-screen overflow-hidden'>
+                  <ScrollAreaWithTOCTracker>
+                    <div
+                      className={cn(
+                        'relative mx-auto h-full w-screen [&>article]:mx-auto',
+                        'px-8 pb-40 pt-24', // phone
+                        'md:max-w-md md:pb-24', // tablet
+                        'lg:max-w-xl lg:pb-24', // laptop
+                        'xl:max-w-2xl xl:pb-24' // large desktop
+                      )}
+                    >
+                      {/* Show when in desktop view port */}
+                      <NavigationBar>
+                        <NavigationBarItem href='/'>About me</NavigationBarItem>
+                        <NavigationBarItem href='/projects'>
+                          Projects
+                        </NavigationBarItem>
+                        <NavigationBarItem href='/hobbies'>
+                          Hobbies
+                        </NavigationBarItem>
+                        <NavigationBarItem href='/posts'>
+                          Posts
+                        </NavigationBarItem>
+                        <NavigationBarItem href='/piano'>
+                          Piano
+                        </NavigationBarItem>
+                        <NavigationBarItem href='/contacts'>
+                          Contacts
+                        </NavigationBarItem>
+                      </NavigationBar>
+                      {/* Main content area */}
+                      {children}
+                      {/* Right side floating TOC tree */}
+                      <TOCTree />
+                    </div>
+                  </ScrollAreaWithTOCTracker>
+                </main>
+                <GradientBlur placement='bottom' position='fixed' />
+                {/* Right side floating TOC drawer: show when in mobile view port */}
+                <FloatingTOCDrawer />
+              </TOCProvider>
+              {/* Show when in mobile view port */}
+              <FloatingNavigationProvider>
+                <FloatingNavigationBar>
+                  <NavigationBarItem href='/'>About me</NavigationBarItem>
+                  <NavigationBarItem href='/projects'>
+                    Projects
+                  </NavigationBarItem>
+                  <NavigationBarItem href='/hobbies'>Hobbies</NavigationBarItem>
+                  <NavigationBarItem href='/posts'>Posts</NavigationBarItem>
+                  <NavigationBarItem href='/piano'>Piano</NavigationBarItem>
+                  <NavigationBarItem href='/contacts'>
+                    Contacts
+                  </NavigationBarItem>
+                </FloatingNavigationBar>
+              </FloatingNavigationProvider>
+              {/* Theme switch */}
+              <div className='fixed bottom-10 right-4 z-50 hidden md:right-10 md:block'>
+                <ThemeSwitch />
+              </div>
+              {/* BGM player */}
+              <div className='fixed right-4 top-10 z-50 hidden md:right-10 md:block'>
+                <BGMPlayer />
+              </div>
+            </TooltipProvider>
+          </BGMProvider>
         </body>
       </ThemeProvider>
     </html>

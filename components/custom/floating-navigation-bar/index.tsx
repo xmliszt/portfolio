@@ -10,6 +10,7 @@ import {
 } from '@/components/ui/tooltip';
 import { cn } from '@/lib/utils';
 
+import { BGMPlayer } from '../bgm-player';
 import { ThemeSwitch } from '../theme-switch';
 
 import { useFloatingNavigation } from './floating-navigation-provider';
@@ -65,6 +66,10 @@ export function FloatingNavigationBar(props: FloatingNavigationBarProps) {
           '[&>*:first-child]:hidden'
         )}
       >
+        {/* BGM Control */}
+        <div className='absolute left-4 top-4 z-10'>
+          <BGMPlayer />
+        </div>
         {/* Custom drawer handle */}
         <div className='mx-auto mb-8 mt-2 h-1 w-[60px] cursor-grab rounded-full bg-foreground'></div>
         {/* Theme switch */}

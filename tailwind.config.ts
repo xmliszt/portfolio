@@ -179,6 +179,20 @@ const config = {
             transform: 'translateY(-50px) rotate(8deg)',
           },
         },
+        'float-up-and-down': {
+          '0%': {
+            transform: 'translateY(0rem) rotate(0deg) scale(1)',
+            opacity: '1',
+          },
+          '50%': {
+            transform: 'translateY(-0.5rem) rotate(180deg) scale(1.05)',
+            opacity: '0.3',
+          },
+          '100%': {
+            transform: 'translateY(0rem) rotate(360deg) scale(1)',
+            opacity: '1',
+          },
+        },
       },
       animation: {
         'accordion-down': 'accordion-down 0.2s ease-out',
@@ -188,6 +202,7 @@ const config = {
         'fade-in-from-right-and-fade-out':
           'fade-in-from-right-and-fade-out 2s ease-out',
         'fade-in-float-up-wiggle': 'fade-in-float-up-wiggle 2s ease-out',
+        'float-up-and-down': 'float-up-and-down 6s ease-in-out infinite',
       },
     },
   },
