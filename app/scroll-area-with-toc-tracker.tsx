@@ -1,7 +1,7 @@
 'use client';
 
-import { useRef } from 'react';
-import { useRouter } from 'next/navigation';
+import { useEffect, useRef } from 'react';
+import { usePathname, useRouter } from 'next/navigation';
 
 import { useTOC } from '@/components/custom/toc/toc-provider';
 import { ScrollArea } from '@/components/ui/scroll-area';
@@ -12,12 +12,21 @@ type ScrollAreaWithTOCTrackerProps = {
 };
 
 export function ScrollAreaWithTOCTracker(props: ScrollAreaWithTOCTrackerProps) {
+  const scrollerRef = useRef<HTMLDivElement | null>(null);
   const { setHash } = useTOC();
   const anchors = useRef<NodeListOf<HTMLAnchorElement> | null>(null);
   const router = useRouter();
+  const pathname = usePathname();
+
+  useEffect(() => {
+    if (scrollerRef.current?.scrollTop ?? 0 > 0) {
+      scrollerRef.current?.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  }, [pathname]);
 
   return (
     <ScrollArea
+      ref={scrollerRef}
       className='h-screen w-screen'
       onLoad={() => {
         anchors.current = document.querySelectorAll('a[id^="anchor:"]');

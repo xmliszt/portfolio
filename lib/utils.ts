@@ -7,9 +7,7 @@ export function cn(...inputs: ClassValue[]) {
 
 export function slugify(input: string) {
   // hash the input if it is not a string
-  if (typeof input !== 'string') {
-    input = JSON.stringify(input);
-  }
+  if (typeof input !== 'string') return '';
   const parts = input.split(' ');
   const encodedParts = parts.map((part) =>
     encodeURIComponent(part.toLowerCase())
