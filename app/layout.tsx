@@ -22,8 +22,9 @@ import './globals.css';
 
 // Metadata for SEO
 export const metadata: Metadata = {
-  title: 'Li Yuxuan',
-  description: "Yuxuan's personal repository",
+  title: "Yuxuan's digital playground",
+  description:
+    'Welcome to my digital playground, a little cozy place where ideas flow freely.',
   manifest: '/manifest.json',
   appleWebApp: {
     title: 'Li Yuxuan',
@@ -49,7 +50,17 @@ export const metadata: Metadata = {
     },
   },
   applicationName: 'Li Yuxuan',
-  keywords: ['Li Yuxuan', 'personal website', 'portfolio', 'blog'],
+  keywords: [
+    'Li Yuxuan',
+    'personal website',
+    'portfolio',
+    'blog',
+    'digital playground',
+    'piano',
+    'hobbies',
+    'contacts',
+    'projects',
+  ],
   authors: [{ name: 'Li Yuxuan', url: 'https://liyuxuan.dev' }],
   creator: 'Li Yuxuan',
   alternates: {
@@ -57,16 +68,17 @@ export const metadata: Metadata = {
   },
   category: 'portfolio',
   openGraph: {
-    title: 'Li Yuxuan',
-    description: "Yuxuan's personal repository",
+    title: "Yuxuan's digital playground",
+    description:
+      'Welcome to my digital playground, a little cozy place where ideas flow freely.',
     url: 'https://liyuxuan.dev',
-    siteName: 'Li Yuxuan',
+    siteName: "Yuxuan's digital playground",
     images: [
       {
-        url: 'https://i.imgur.com/IIP6UzK.jpeg',
-        width: 800,
-        height: 600,
-        alt: "Li Yuxuan's personal website",
+        url: 'https://tvstbbuidvwgelgidaqy.supabase.co/storage/v1/object/public/profile/portfolio%20og%20image.png',
+        width: 2028,
+        height: 1140,
+        alt: "Yuxuan's digital playground",
       },
     ],
     locale: 'en_US',
@@ -74,12 +86,15 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Li Yuxuan',
-    description: "Yuxuan's personal repository",
+    title: "Yuxuan's digital playground",
+    description:
+      'Welcome to my digital playground, a little cozy place where ideas flow freely.',
     siteId: '1704579643',
     creator: '@xmliszt',
     creatorId: '1704579643',
-    images: ['https://i.imgur.com/IIP6UzK.jpeg'],
+    images: [
+      'https://tvstbbuidvwgelgidaqy.supabase.co/storage/v1/object/public/profile/portfolio%20og%20image.png',
+    ],
   },
 };
 

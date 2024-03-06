@@ -21,7 +21,9 @@ function getPageBySlug(slug: string) {
 export function generateMetadata({ params }: Props): Metadata {
   const page = getPageBySlug(params.slug);
   if (page == null) return {};
-  return { title: page.title };
+  return {
+    title: page.title + (page.subtitle ? ` | ${page.subtitle}` : ''),
+  };
 }
 
 export function generateStaticParams(): Props['params'][] {

@@ -1,3 +1,4 @@
+import { Metadata } from 'next';
 import pluralize from 'pluralize';
 
 import { ShadowSubtitle } from '../[slug]/shadow-subtitle';
@@ -5,6 +6,12 @@ import { ShadowSubtitle } from '../[slug]/shadow-subtitle';
 import { PostCard } from './post-card';
 
 import { posts } from '#site/content';
+
+export function generateMetadata(): Metadata {
+  return {
+    title: 'Posts | 碎碎念',
+  };
+}
 
 export default function PostsPage() {
   const sortedPosts = posts.sort((a, b) => {

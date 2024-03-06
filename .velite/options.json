@@ -1,12 +1,17 @@
 {
-  "name": "Li Yuxuan",
-  "title": "Li Yuxuan",
-  "description": "Li Yuxuan's personal website",
+  "name": "Yuxuan's digital playground",
+  "title": "Yuxuan's digital playground",
+  "description": "Welcome to my digital playground, a cozy little space where ideas flow freely.",
   "keywords": [
     "Li Yuxuan",
-    "portfolio",
     "personal website",
-    "blog"
+    "portfolio",
+    "blog",
+    "digital playground",
+    "piano",
+    "hobbies",
+    "contacts",
+    "projects"
   ],
   "author": {
     "name": "Li Yuxuan",
