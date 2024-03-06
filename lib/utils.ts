@@ -14,6 +14,9 @@ export function slugify(input: string) {
   const encodedParts = parts.map((part) =>
     encodeURIComponent(part.toLowerCase())
   );
-  console.log(encodedParts);
-  return encodedParts.join('-');
+  return 'anchor:' + encodedParts.join('-');
+}
+
+export function isAtCurrentTOC(hash: string, tocTitle: string) {
+  return hash === slugify(tocTitle);
 }

@@ -27,23 +27,55 @@ export function MDXContent({ code, components }: MdxProps) {
       components={{
         ...components,
         h1: (props: any) => (
-          <h1 id={slugify(props.children)} {...props}>
-            {props.children}
+          <h1 {...props}>
+            <a
+              id={slugify(props.children)}
+              className='relative -top-16 block max-h-1 w-32 [visibility:hidden]'
+            >
+              {props.children}
+            </a>
+            <a className='' href='#top'>
+              {props.children}
+            </a>
           </h1>
         ),
         h2: (props: any) => (
-          <h2 id={slugify(props.children)} {...props}>
-            {props.children}
+          <h2 {...props}>
+            <a
+              id={slugify(props.children)}
+              className='relative -top-16 block max-h-1 w-32 [visibility:hidden]'
+            >
+              {props.children}
+            </a>
+            <a className='' href='#top'>
+              {props.children}
+            </a>
           </h2>
         ),
         h3: (props: any) => (
-          <h3 id={slugify(props.children)} {...props}>
-            {props.children}
+          <h3 {...props}>
+            <a
+              id={slugify(props.children)}
+              className='relative -top-16 block max-h-1 w-32 [visibility:hidden]'
+            >
+              {props.children}
+            </a>
+            <a className='' href='#top'>
+              {props.children}
+            </a>
           </h3>
         ),
         h4: (props: any) => (
-          <h4 id={slugify(props.children)} {...props}>
-            {props.children}
+          <h4 {...props}>
+            <a
+              id={slugify(props.children)}
+              className='relative -top-16 block max-h-1 w-32 [visibility:hidden]'
+            >
+              {props.children}
+            </a>
+            <a className='' href='#top'>
+              {props.children}
+            </a>
           </h4>
         ),
         img: (props: any) => (

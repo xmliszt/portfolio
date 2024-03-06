@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 
-import { TOCLoader } from '@/components/custom/toc-loader';
+import { TOCLoader } from '@/components/custom/toc/toc-loader';
 import { MDXContent } from '@/components/mdx-content';
 
 import { ShadowSubtitle } from './shadow-subtitle';
@@ -36,6 +36,7 @@ export default function PagePage({ params }: Props) {
   return (
     <article className='prose prose-stone relative dark:prose-invert'>
       <h1 className='group relative'>
+        <a id='top' className='relative -top-16 block [visibility:hidden]'></a>
         {page.title}
         {page.subtitle && <ShadowSubtitle>{page.subtitle}</ShadowSubtitle>}
       </h1>

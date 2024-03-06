@@ -2,7 +2,7 @@
 
 import { useEffect } from 'react';
 
-import { useTOC } from '../toc-provider';
+import { useTOC } from './toc-provider';
 
 type TOCLoaderProps = {
   toc: Page['toc'];

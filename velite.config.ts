@@ -60,7 +60,9 @@ const pages = defineCollection({
       subtitle: s.string().max(999).optional(),
       slug: s.slug('page'),
       body: s.mdx(),
-      toc: s.toc(),
+      toc: s.toc({
+        prefix: 'anchor:',
+      }),
       showToc: s.boolean().default(true),
     })
     .transform((data, { meta }) => ({
@@ -86,7 +88,9 @@ const posts = defineCollection({
       featured: s.boolean().default(false),
       tags: s.array(s.string()).default([]),
       meta: meta,
-      toc: s.toc(),
+      toc: s.toc({
+        prefix: 'anchor:',
+      }),
       metadata: s.metadata(),
       excerpt: s.excerpt({
         length: 200,

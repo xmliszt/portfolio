@@ -4,17 +4,19 @@ import { Inter, Junge } from 'next/font/google';
 import { FloatingNavigationBar } from '@/components/custom/floating-navigation-bar';
 import { FloatingNavigationProvider } from '@/components/custom/floating-navigation-bar/floating-navigation-provider';
 import { ThemeSwitch } from '@/components/custom/theme-switch';
-import { TOCTree } from '@/components/custom/toc-tree';
+import { FloatingTOCDrawer } from '@/components/custom/toc/floating-toc-drawer';
+import { TOCProvider } from '@/components/custom/toc/toc-provider';
+import { TOCTree } from '@/components/custom/toc/toc-tree';
 import { ThemeProvider } from '@/components/theme-provider';
-import { TOCProvider } from '@/components/toc-provider';
 import { GradientBlur } from '@/components/ui/gradient-blur';
-import { ScrollArea } from '@/components/ui/scroll-area';
 import { cn } from '@/lib/utils';
 
 import {
   NavigationBar,
   NavigationBarItem,
 } from '../components/custom/navigation-bar';
+
+import { ScrollAreaWithTOCTracker } from './scroll-area-with-toc-tracker';
 
 import './globals.css';
 
@@ -113,7 +115,7 @@ export default function RootLayout({
           <TOCProvider>
             <GradientBlur placement='top' position='fixed' />
             <main className='h-screen max-h-screen w-screen overflow-hidden'>
-              <ScrollArea className='h-screen w-screen'>
+              <ScrollAreaWithTOCTracker>
                 <div
                   className={cn(
                     'relative mx-auto h-full w-screen [&>article]:mx-auto',
@@ -143,9 +145,11 @@ export default function RootLayout({
                   {/* Right side floating TOC tree */}
                   <TOCTree />
                 </div>
-              </ScrollArea>
+              </ScrollAreaWithTOCTracker>
             </main>
             <GradientBlur placement='bottom' position='fixed' />
+            {/* Right side floating TOC drawer: show when in mobile view port */}
+            <FloatingTOCDrawer />
           </TOCProvider>
           {/* Show when in mobile view port */}
           <FloatingNavigationProvider>

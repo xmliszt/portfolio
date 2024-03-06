@@ -2,7 +2,8 @@
 
 import { cn } from '@/lib/utils';
 
-import { useTOC } from '../toc-provider';
+import { TOCLink } from './toc-link';
+import { useTOC } from './toc-provider';
 
 export function TOCTree() {
   const { toc, showToc } = useTOC();
@@ -14,7 +15,7 @@ export function TOCTree() {
           <li key={heading.url} className='m-0 pl-1'>
             <div className='flex flex-row items-start'>
               <div className='group relative inline-block w-fit [&>*]:cursor-alias'>
-                <a href={heading.url}>{heading.title}</a>
+                <TOCLink entry={heading} />
                 <span
                   className={cn(
                     'absolute bottom-0 left-0 rounded-full bg-foreground',
