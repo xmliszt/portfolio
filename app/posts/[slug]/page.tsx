@@ -4,6 +4,7 @@ import Image from 'next/image';
 import { notFound } from 'next/navigation';
 
 import { CustomBadgeLink } from '@/components/custom/custom-badge-link';
+import { TOCLoader } from '@/components/custom/toc/toc-loader';
 import { MDXContent } from '@/components/mdx-content';
 
 import { incrementPostView } from './increment-post-view';
@@ -40,7 +41,10 @@ export default async function PostPage({ params }: PostProps) {
 
   return (
     <article className='prose prose-stone dark:prose-invert'>
-      <h1>{post.title}</h1>
+      <h1>
+        <a id='top' className='relative -top-16 block [visibility:hidden]'></a>
+        {post.title}
+      </h1>
       <div className='flex flex-row flex-wrap gap-2'>
         {post.tags.map((tag) => (
           <CustomBadgeLink key={tag} href={`/tags/${tag}`}>
@@ -56,17 +60,7 @@ export default async function PostPage({ params }: PostProps) {
       {post.cover && (
         <Image src={post.cover} alt={post.title} placeholder='blur' />
       )}
-      <hr className='mb-0' />
-      {/* Table of contents */}
-      <nav>
-        <ul>
-          {post.toc.map((toc) => (
-            <li key={toc.url}>
-              <a href={toc.url}>{toc.title}</a>
-            </li>
-          ))}
-        </ul>
-      </nav>
+      <hr className='my-6' />
 
       {/* Markdown content */}
       <MDXContent code={post.content} />
@@ -79,6 +73,7 @@ export default async function PostPage({ params }: PostProps) {
           </CustomBadgeLink>
         ))}
       </div>
+      <TOCLoader toc={post.toc} showToc={true} />
     </article>
   );
 }

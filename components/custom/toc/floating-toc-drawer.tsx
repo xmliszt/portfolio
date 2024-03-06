@@ -4,6 +4,11 @@ import { useState } from 'react';
 import { ArticleNyTimes } from '@phosphor-icons/react';
 
 import { Drawer, DrawerContent, DrawerTrigger } from '@/components/ui/drawer';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from '@/components/ui/tooltip';
 import { cn, isAtCurrentTOC, slugify } from '@/lib/utils';
 
 import { ThemeSwitch } from '../theme-switch';
@@ -21,7 +26,7 @@ export function FloatingTOCDrawer() {
           return (
             <li key={heading.url} className='m-0 p-0'>
               <a
-                href={heading.url}
+                href={`#${slugify(heading.title)}`}
                 className={cn(
                   'rounded-lg p-2 text-secondary-foreground transition-colors ease-out hover:bg-secondary',
                   isAtCurrentTOC(hash, heading.title)
@@ -50,31 +55,36 @@ export function FloatingTOCDrawer() {
         setIsOpen(open);
       }}
     >
-      <DrawerTrigger
-        asChild
-        className={cn(
-          'fixed bottom-10 right-4 z-50 md:left-10',
-          'block md:hidden',
-          'cursor-pointer'
-        )}
-      >
-        <div className='group size-10'>
-          <div
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <DrawerTrigger
+            asChild
             className={cn(
-              'absolute z-20 flex h-full w-full items-center justify-center',
-              'transition-transform duration-300 ease-in-out group-hover:rotate-[360deg] group-hover:scale-90'
+              'fixed bottom-10 right-4 z-50 md:left-10',
+              'block md:hidden',
+              'cursor-pointer'
             )}
           >
-            <ArticleNyTimes size={24} />
-          </div>
-          <div
-            className={cn(
-              'z-10 h-full w-full rounded-full border p-2 text-secondary-foreground shadow-sm backdrop-blur-lg',
-              'transition-[transform_background_box-shadow] duration-300 ease-in-out group-hover:scale-105 group-hover:bg-background group-hover:shadow-lg'
-            )}
-          ></div>
-        </div>
-      </DrawerTrigger>
+            <div className='group size-10'>
+              <div
+                className={cn(
+                  'absolute z-20 flex h-full w-full items-center justify-center',
+                  'transition-transform duration-300 ease-in-out group-hover:rotate-[360deg] group-hover:scale-90'
+                )}
+              >
+                <ArticleNyTimes size={24} />
+              </div>
+              <div
+                className={cn(
+                  'z-10 h-full w-full rounded-full border p-2 text-secondary-foreground shadow-sm backdrop-blur-lg',
+                  'transition-[transform_background_box-shadow] duration-300 ease-in-out group-hover:scale-105 group-hover:bg-background group-hover:shadow-lg'
+                )}
+              ></div>
+            </div>
+          </DrawerTrigger>
+        </TooltipTrigger>
+        <TooltipContent>Table of Contents</TooltipContent>
+      </Tooltip>
       <DrawerContent
         className={cn(
           'rounded-none rounded-t-lg focus-visible:outline-none',

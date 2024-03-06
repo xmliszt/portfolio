@@ -12,7 +12,7 @@ export function TOCLink(props: TOCLinkProps) {
   const { hash, setHash } = useTOC();
   return (
     <a
-      href={props.entry.url}
+      href={`#${slugify(props.entry.title)}`}
       className={cn(
         isAtCurrentTOC(hash, props.entry.title) ? 'font-bold' : 'font-normal'
       )}

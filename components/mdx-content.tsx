@@ -5,6 +5,7 @@ import { slugify } from '@/lib/utils';
 
 import { HoverPerspectiveContainer } from './custom/hover-perspective-container';
 import { CustomLink } from './ui/custom-link';
+import { BackToTopLink } from './back-to-top-link';
 import { BadgeGroup } from './badge-group';
 import { CopyablePre } from './copyable-pre';
 import { PhotoBentoGrid } from './photo-bento-grid';
@@ -34,9 +35,7 @@ export function MDXContent({ code, components }: MdxProps) {
             >
               {props.children}
             </a>
-            <a className='' href='#top'>
-              {props.children}
-            </a>
+            <BackToTopLink>{props.children}</BackToTopLink>
           </h1>
         ),
         h2: (props: any) => (
@@ -47,9 +46,7 @@ export function MDXContent({ code, components }: MdxProps) {
             >
               {props.children}
             </a>
-            <a className='' href='#top'>
-              {props.children}
-            </a>
+            <BackToTopLink>{props.children}</BackToTopLink>
           </h2>
         ),
         h3: (props: any) => (
@@ -60,9 +57,7 @@ export function MDXContent({ code, components }: MdxProps) {
             >
               {props.children}
             </a>
-            <a className='' href='#top'>
-              {props.children}
-            </a>
+            <BackToTopLink>{props.children}</BackToTopLink>
           </h3>
         ),
         h4: (props: any) => (
@@ -73,9 +68,7 @@ export function MDXContent({ code, components }: MdxProps) {
             >
               {props.children}
             </a>
-            <a className='' href='#top'>
-              {props.children}
-            </a>
+            <BackToTopLink>{props.children}</BackToTopLink>
           </h4>
         ),
         img: (props: any) => (

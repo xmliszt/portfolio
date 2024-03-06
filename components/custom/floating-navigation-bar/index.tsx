@@ -3,6 +3,11 @@
 import { MusicNote } from '@phosphor-icons/react/dist/ssr';
 
 import { Drawer, DrawerContent, DrawerTrigger } from '@/components/ui/drawer';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from '@/components/ui/tooltip';
 import { cn } from '@/lib/utils';
 
 import { ThemeSwitch } from '../theme-switch';
@@ -22,31 +27,37 @@ export function FloatingNavigationBar(props: FloatingNavigationBarProps) {
         setIsOpen(open);
       }}
     >
-      <DrawerTrigger
-        asChild
-        className={cn(
-          'fixed z-50 bottom-10 left-4 md:left-10',
-          'block md:hidden',
-          'cursor-pointer'
-        )}
-      >
-        <div className='group size-10'>
-          <div
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <DrawerTrigger
+            asChild
             className={cn(
-              'z-20 w-full h-full flex justify-center items-center absolute',
-              'transition-transform ease-in-out duration-300 group-hover:scale-90 group-hover:rotate-[360deg]'
+              'fixed bottom-10 left-4 z-50 md:left-10',
+              'block md:hidden',
+              'cursor-pointer'
             )}
           >
-            <MusicNote size={24} />
-          </div>
-          <div
-            className={cn(
-              'z-10 w-full h-full border rounded-full p-2 backdrop-blur-lg text-secondary-foreground shadow-sm',
-              'group-hover:scale-105 group-hover:bg-background group-hover:shadow-lg transition-[transform_background_box-shadow] ease-in-out duration-300'
-            )}
-          ></div>
-        </div>
-      </DrawerTrigger>
+            <div className='group size-10'>
+              <div
+                className={cn(
+                  'absolute z-20 flex h-full w-full items-center justify-center',
+                  'transition-transform duration-300 ease-in-out group-hover:rotate-[360deg] group-hover:scale-90'
+                )}
+              >
+                <MusicNote size={24} />
+              </div>
+              <div
+                className={cn(
+                  'z-10 h-full w-full rounded-full border p-2 text-secondary-foreground shadow-sm backdrop-blur-lg',
+                  'transition-[transform_background_box-shadow] duration-300 ease-in-out group-hover:scale-105 group-hover:bg-background group-hover:shadow-lg'
+                )}
+              ></div>
+            </div>
+          </DrawerTrigger>
+        </TooltipTrigger>
+        <TooltipContent>Menu</TooltipContent>
+      </Tooltip>
+
       <DrawerContent
         className={cn(
           'rounded-none rounded-t-lg focus-visible:outline-none',
@@ -55,9 +66,9 @@ export function FloatingNavigationBar(props: FloatingNavigationBarProps) {
         )}
       >
         {/* Custom drawer handle */}
-        <div className='mb-8 cursor-grab mx-auto mt-2 h-1 w-[60px] rounded-full bg-foreground'></div>
+        <div className='mx-auto mb-8 mt-2 h-1 w-[60px] cursor-grab rounded-full bg-foreground'></div>
         {/* Theme switch */}
-        <div className='absolute z-10 top-4 right-4'>
+        <div className='absolute right-4 top-4 z-10'>
           <ThemeSwitch />
         </div>
         {/* Navigation items */}
