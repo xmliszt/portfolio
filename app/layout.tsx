@@ -154,9 +154,7 @@ export default function RootLayout({
               <NavigationBarItem href='/projects'>Projects</NavigationBarItem>
               <NavigationBarItem href='/hobbies'>Hobbies</NavigationBarItem>
               <NavigationBarItem href='/posts'>Posts</NavigationBarItem>
-              <NavigationBarItem href='/piano'>
-                Play some piano
-              </NavigationBarItem>
+              <NavigationBarItem href='/piano'>Piano</NavigationBarItem>
               <NavigationBarItem href='/contacts'>Contacts</NavigationBarItem>
             </FloatingNavigationBar>
           </FloatingNavigationProvider>

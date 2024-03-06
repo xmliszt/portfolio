@@ -76,7 +76,7 @@ export function PianoKey(props: PianoKeyProps) {
         isFirstKey(props.note) && '!rounded-tl-lg',
         isLastKey(props.note) && '!rounded-tr-lg'
       )}
-      onClick={() => {
+      onPointerDown={() => {
         howler.play();
         addAnimatedMusicNote();
       }}
@@ -86,7 +86,7 @@ export function PianoKey(props: PianoKeyProps) {
           key={id}
           id={id}
           className={
-            'animate-fade-in-float-up-wiggle absolute bottom-2 left-1/3 opacity-0'
+            'absolute bottom-2 left-1/3 animate-fade-in-float-up-wiggle opacity-0'
           }
         >
           <MusicNote size={16} />
