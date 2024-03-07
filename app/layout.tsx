@@ -1,3 +1,4 @@
+import { Analytics } from '@vercel/analytics/react';
 import { Metadata, Viewport } from 'next';
 import { Inter, Junge } from 'next/font/google';
 
@@ -200,6 +201,7 @@ export default function RootLayout({
               </div>
             </TooltipProvider>
           </BGMProvider>
+          <Analytics />
         </body>
       </ThemeProvider>
     </html>
