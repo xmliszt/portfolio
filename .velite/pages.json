@@ -10,16 +10,6 @@
     "path": "/Users/liyuxuan/Projects/personal/portfolio/content/pages/about/index.mdx"
   },
   {
-    "title": "Contacts",
-    "subtitle": "找我聊聊？",
-    "slug": "contacts",
-    "body": "const{jsx:n,jsxs:e}=arguments[0];function _createMdxContent(i){const t={a:\"a\",li:\"li\",ul:\"ul\",...i.components};return e(t.ul,{children:[\"\\n\",n(t.li,{children:n(t.a,{href:\"mailto:me@liyuxuan.dev\",children:\"Email: me@liyuxuan.dev\"})}),\"\\n\",n(t.li,{children:n(t.a,{href:\"https://read.cv/liyuxuan\",children:\"ReadCV\"})}),\"\\n\",n(t.li,{children:n(t.a,{href:\"https://bento.me/liyuxuan\",children:\"Bento\"})}),\"\\n\",n(t.li,{children:n(t.a,{href:\"https://www.github.com/xmliszt\",children:\"GitHub\"})}),\"\\n\",n(t.li,{children:n(t.a,{href:\"https://www.twitter.com/xmliszt\",children:\"Twitter\"})}),\"\\n\",n(t.li,{children:n(t.a,{href:\"https://www.linkedin.com/in/li-yuxuan/\",children:\"LinkedIn\"})}),\"\\n\",n(t.li,{children:n(t.a,{href:\"https://reddit.com/user/bubbling-fish\",children:\"Reddit\"})}),\"\\n\",n(t.li,{children:n(t.a,{href:\"https://liyuxuan.substack.com/\",children:\"Substack\"})}),\"\\n\",n(t.li,{children:n(t.a,{href:\"https://medium.com/@xmliszt\",children:\"Medium\"})}),\"\\n\",n(t.li,{children:n(t.a,{href:\"https://youtube.com/@bbfishstudio8837\",children:\"YouTube\"})}),\"\\n\",n(t.li,{children:n(t.a,{href:\"https://instagram.com/xmliszt\",children:\"Instagram\"})}),\"\\n\"]})}return{default:function(e={}){const{wrapper:i}=e.components||{};return i?n(i,{...e,children:n(_createMdxContent,{...e})}):_createMdxContent(e)}};",
-    "toc": [],
-    "showToc": false,
-    "permalink": "/contacts",
-    "path": "/Users/liyuxuan/Projects/personal/portfolio/content/pages/contacts/index.mdx"
-  },
-  {
     "title": "Hobbies",
     "subtitle": "兴趣爱好",
     "slug": "hobbies",
@@ -91,6 +81,16 @@
     "showToc": true,
     "permalink": "/hobbies",
     "path": "/Users/liyuxuan/Projects/personal/portfolio/content/pages/hobbies/index.mdx"
+  },
+  {
+    "title": "Contacts",
+    "subtitle": "找我聊聊？",
+    "slug": "contacts",
+    "body": "const{jsx:n,jsxs:e}=arguments[0];function _createMdxContent(i){const t={a:\"a\",li:\"li\",ul:\"ul\",...i.components};return e(t.ul,{children:[\"\\n\",n(t.li,{children:n(t.a,{href:\"mailto:me@liyuxuan.dev\",children:\"Email: me@liyuxuan.dev\"})}),\"\\n\",n(t.li,{children:n(t.a,{href:\"https://read.cv/liyuxuan\",children:\"ReadCV\"})}),\"\\n\",n(t.li,{children:n(t.a,{href:\"https://bento.me/liyuxuan\",children:\"Bento\"})}),\"\\n\",n(t.li,{children:n(t.a,{href:\"https://www.github.com/xmliszt\",children:\"GitHub\"})}),\"\\n\",n(t.li,{children:n(t.a,{href:\"https://www.twitter.com/xmliszt\",children:\"Twitter\"})}),\"\\n\",n(t.li,{children:n(t.a,{href:\"https://www.linkedin.com/in/li-yuxuan/\",children:\"LinkedIn\"})}),\"\\n\",n(t.li,{children:n(t.a,{href:\"https://reddit.com/user/bubbling-fish\",children:\"Reddit\"})}),\"\\n\",n(t.li,{children:n(t.a,{href:\"https://liyuxuan.substack.com/\",children:\"Substack\"})}),\"\\n\",n(t.li,{children:n(t.a,{href:\"https://medium.com/@xmliszt\",children:\"Medium\"})}),\"\\n\",n(t.li,{children:n(t.a,{href:\"https://youtube.com/@bbfishstudio8837\",children:\"YouTube\"})}),\"\\n\",n(t.li,{children:n(t.a,{href:\"https://instagram.com/xmliszt\",children:\"Instagram\"})}),\"\\n\"]})}return{default:function(e={}){const{wrapper:i}=e.components||{};return i?n(i,{...e,children:n(_createMdxContent,{...e})}):_createMdxContent(e)}};",
+    "toc": [],
+    "showToc": false,
+    "permalink": "/contacts",
+    "path": "/Users/liyuxuan/Projects/personal/portfolio/content/pages/contacts/index.mdx"
   },
   {
     "title": "Projects",

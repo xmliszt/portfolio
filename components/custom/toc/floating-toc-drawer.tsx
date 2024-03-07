@@ -17,7 +17,7 @@ import { useTOC } from './toc-provider';
 
 export function FloatingTOCDrawer() {
   const [isOpen, setIsOpen] = useState(false);
-  const { toc, hash, setHash } = useTOC();
+  const { showToc, toc, hash, setHash } = useTOC();
 
   function renderTOCTree(toc: Page['toc']) {
     return (
@@ -47,6 +47,10 @@ export function FloatingTOCDrawer() {
       </ul>
     );
   }
+
+  if (!showToc) return null;
+  if (!toc) return null;
+  if (toc.length === 0) return null;
 
   return (
     <Drawer
