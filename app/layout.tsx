@@ -196,7 +196,7 @@ export default function RootLayout({
               </div>
               {/* BGM player */}
               <div className='fixed right-4 top-10 z-50 hidden md:right-10 md:block'>
-                <BGMPlayer />
+                <BGMPlayer showBgmInfo bgmInfoPosition='left' />
               </div>
             </TooltipProvider>
           </BGMProvider>

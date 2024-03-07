@@ -193,6 +193,26 @@ const config = {
             opacity: '1',
           },
         },
+        'fade-in-float-up': {
+          '0%': {
+            opacity: '0',
+            transform: 'translateY(1rem)',
+          },
+          '100%': {
+            opacity: '1',
+            transform: 'translateY(0)',
+          },
+        },
+        'fade-out-float-down': {
+          '0%': {
+            opacity: '1',
+            transform: 'translateY(0)',
+          },
+          '100%': {
+            opacity: '0',
+            transform: 'translateY(1rem)',
+          },
+        },
       },
       animation: {
         'accordion-down': 'accordion-down 0.2s ease-out',
@@ -203,6 +223,8 @@ const config = {
           'fade-in-from-right-and-fade-out 2s ease-out',
         'fade-in-float-up-wiggle': 'fade-in-float-up-wiggle 2s ease-out',
         'float-up-and-down': 'float-up-and-down 6s ease-in-out infinite',
+        'fade-in-float-up': 'fade-in-float-up 2s ease-out',
+        'fade-out-float-down': 'fade-out-float-down 2s ease-out',
       },
     },
   },

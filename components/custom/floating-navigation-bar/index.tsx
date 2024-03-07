@@ -1,7 +1,9 @@
 'use client';
 
+import { Disc } from '@phosphor-icons/react';
 import { MusicNote } from '@phosphor-icons/react/dist/ssr';
 
+import { useBGM } from '@/components/bgm-provider';
 import { Drawer, DrawerContent, DrawerTrigger } from '@/components/ui/drawer';
 import {
   Tooltip,
@@ -21,6 +23,7 @@ type FloatingNavigationBarProps = {
 
 export function FloatingNavigationBar(props: FloatingNavigationBarProps) {
   const { isOpen, setIsOpen } = useFloatingNavigation();
+  const { isPlaying } = useBGM();
   return (
     <Drawer
       open={isOpen}
@@ -45,7 +48,14 @@ export function FloatingNavigationBar(props: FloatingNavigationBarProps) {
                   'transition-transform duration-300 ease-in-out group-hover:rotate-[360deg] group-hover:scale-90'
                 )}
               >
-                <MusicNote size={24} />
+                {isPlaying ? (
+                  <Disc
+                    size={24}
+                    className='animate-spin transition-transform'
+                  />
+                ) : (
+                  <MusicNote size={24} />
+                )}
               </div>
               <div
                 className={cn(
@@ -66,14 +76,13 @@ export function FloatingNavigationBar(props: FloatingNavigationBarProps) {
           '[&>*:first-child]:hidden'
         )}
       >
-        {/* BGM Control */}
-        <div className='absolute left-4 top-4 z-10'>
-          <BGMPlayer />
-        </div>
         {/* Custom drawer handle */}
-        <div className='mx-auto mb-8 mt-2 h-1 w-[60px] cursor-grab rounded-full bg-foreground'></div>
-        {/* Theme switch */}
-        <div className='absolute right-4 top-4 z-10'>
+        <div className='mx-auto mb-8 mt-2 h-1 w-[60px] cursor-grab rounded-full bg-foreground' />
+        {/* Top control */}
+        <div className='absolute left-4 right-4 top-3 z-10 flex flex-row items-center justify-between'>
+          {/* BGM Control */}
+          <BGMPlayer bgmInfoPosition='right' showBgmInfo />
+          {/* Theme switch */}
           <ThemeSwitch />
         </div>
         {/* Navigation items */}
