@@ -170,6 +170,9 @@ export default function RootLayout({
                         <NavigationBarItem href='/contacts'>
                           Contacts
                         </NavigationBarItem>
+                        <NavigationBarItem href='/the-why'>
+                          The why
+                        </NavigationBarItem>
                       </NavigationBar>
                       {/* Main content area */}
                       {children}
@@ -197,6 +200,7 @@ export default function RootLayout({
                   <NavigationBarItem href='/contacts'>
                     Contacts
                   </NavigationBarItem>
+                  <NavigationBarItem href='/the-why'>The why</NavigationBarItem>
                 </FloatingNavigationBar>
               </FloatingNavigationProvider>
               {/* Theme switch */}

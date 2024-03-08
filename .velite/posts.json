@@ -6,7 +6,6 @@
     "draft": false,
     "featured": false,
     "tags": [
-      "introduction",
       "edtech"
     ],
     "meta": {},
@@ -16,7 +15,7 @@
       "wordCount": 302
     },
     "excerpt": "Greetings, fellow learners and education enthusiasts! 📚🌟\nI'm thrilled to welcome you to my very first blog post, where we'll embark on an exciting journey into the world of Education Technology (EdT",
-    "content": "const{Fragment:e,jsx:n,jsxs:t}=arguments[0];function _createMdxContent(i){const a={a:\"a\",p:\"p\",...i.components};return t(e,{children:[n(a.p,{children:\"Greetings, fellow learners and education enthusiasts! 📚🌟\"}),\"\\n\",n(a.p,{children:\"I'm thrilled to welcome you to my very first blog post, where we'll embark on an exciting journey into the world of Education Technology (EdTech). My name is Li Yuxuan, based in Singapore, and I'm a passionate software engineer with a fervent interest in revolutionizing the way we learn and interact with educational content. 💡🎓\"}),\"\\n\",t(a.p,{children:['One of my recent projects, \"',n(a.a,{href:\"https://taboo-ai.vercel.app\",children:\"Taboo AI\"}),',\" is a testament to my commitment to innovative learning solutions. This gamified tool is designed specifically for English learners, providing an engaging platform to enhance language skills while having a blast. Through interactive gameplay and generative AI live conversations, learners can acquire English expressions and vocabulary in a fun and dynamic way. 🎮🗣️']}),\"\\n\",n(a.p,{children:\"My vision is simple yet profound: I aim to make learning an engaging and enjoyable experience for students worldwide. Education should not be confined to the four walls of a classroom; it should be a dynamic, immersive journey that stretches across borders and transcends limitations. 🌍📖\"}),\"\\n\",n(a.p,{children:\"Through my blog, I'll be sharing insights, discoveries, and valuable resources related to the EdTech industry. Expect to dive deep into topics ranging from innovative learning platforms to cutting-edge tools that facilitate personalized education. My goal is to equip learners and educators alike with the knowledge and tools they need to excel in this ever-evolving digital age. 💡🔧\"}),\"\\n\",n(a.p,{children:\"I believe that in this fast-paced world, staying updated with the latest trends and technologies is crucial. By keeping up with my blog, you'll gain access to a treasure trove of information that can amplify your learning experience. 🚀📰\"}),\"\\n\",t(a.p,{children:[\"I'm excited to share more about the incredible advancements and opportunities that EdTech brings. Together, let's shape a future where learning knows no bounds! Click \",n(a.a,{href:\"https://liyuxuan.dev/blogs/blog\",children:\"here\"}),\" to explore my blog posts and join me in this educational odyssey. 🌟📚\"]}),\"\\n\",n(a.p,{children:\"Happy learning! 🎉\"})]})}return{default:function(e={}){const{wrapper:t}=e.components||{};return t?n(t,{...e,children:n(_createMdxContent,{...e})}):_createMdxContent(e)}};",
+    "content": "const{Fragment:e,jsx:n,jsxs:t}=arguments[0];function _createMdxContent(i){const a={a:\"a\",p:\"p\",...i.components};return t(e,{children:[n(a.p,{children:\"Greetings, fellow learners and education enthusiasts! 📚🌟\"}),\"\\n\",n(a.p,{children:\"I'm thrilled to welcome you to my very first blog post, where we'll embark on an exciting journey into the world of Education Technology (EdTech). My name is Li Yuxuan, based in Singapore, and I'm a passionate software engineer with a fervent interest in revolutionizing the way we learn and interact with educational content. 💡🎓\"}),\"\\n\",t(a.p,{children:['One of my recent projects, \"',n(a.a,{href:\"https://taboo-ai.vercel.app\",children:\"Taboo AI\"}),',\" is a testament to my commitment to innovative learning solutions. This gamified tool is designed specifically for English learners, providing an engaging platform to enhance language skills while having a blast. Through interactive gameplay and generative AI live conversations, learners can acquire English expressions and vocabulary in a fun and dynamic way. 🎮🗣️']}),\"\\n\",n(a.p,{children:\"My vision is simple yet profound: I aim to make learning an engaging and enjoyable experience for students worldwide. Education should not be confined to the four walls of a classroom; it should be a dynamic, immersive journey that stretches across borders and transcends limitations. 🌍📖\"}),\"\\n\",n(a.p,{children:\"Through my blog, I'll be sharing insights, discoveries, and valuable resources related to the EdTech industry. Expect to dive deep into topics ranging from innovative learning platforms to cutting-edge tools that facilitate personalized education. My goal is to equip learners and educators alike with the knowledge and tools they need to excel in this ever-evolving digital age. 💡🔧\"}),\"\\n\",n(a.p,{children:\"I believe that in this fast-paced world, staying updated with the latest trends and technologies is crucial. By keeping up with my blog, you'll gain access to a treasure trove of information that can amplify your learning experience. 🚀📰\"}),\"\\n\",t(a.p,{children:[\"I'm excited to share more about the incredible advancements and opportunities that EdTech brings. Together, let's shape a future where learning knows no bounds! Click \",n(a.a,{href:\"https://liyuxuan.dev/posts\",children:\"here\"}),\" to explore my blog posts and join me in this educational odyssey. 🌟📚\"]}),\"\\n\",n(a.p,{children:\"Happy learning! 🎉\"})]})}return{default:function(e={}){const{wrapper:t}=e.components||{};return t?n(t,{...e,children:n(_createMdxContent,{...e})}):_createMdxContent(e)}};",
     "permalink": "/blog/introduction-empowering-learners"
   },
   {
@@ -26,8 +25,7 @@
     "draft": false,
     "featured": false,
     "tags": [
-      "edtech",
-      "epistemic-feedback"
+      "edtech"
     ],
     "meta": {},
     "toc": [
@@ -83,9 +81,6 @@
     "featured": false,
     "tags": [
       "edtech",
-      "knowledge-associations",
-      "conversation",
-      "vocabulary",
       "taboo-ai",
       "english-learning"
     ],
@@ -180,10 +175,6 @@
     "draft": false,
     "featured": false,
     "tags": [
-      "memory",
-      "learning",
-      "knowledge-associations",
-      "immersive-experience",
       "edtech"
     ],
     "meta": {},
@@ -229,10 +220,7 @@
     "draft": false,
     "featured": false,
     "tags": [
-      "learning",
-      "personalisation",
-      "generative-ai",
-      "chatgpt",
+      "ai",
       "edtech"
     ],
     "meta": {},
@@ -278,9 +266,7 @@
     "draft": false,
     "featured": false,
     "tags": [
-      "game",
-      "edtech",
-      "learning"
+      "edtech"
     ],
     "meta": {},
     "toc": [
@@ -357,13 +343,8 @@
     "draft": false,
     "featured": false,
     "tags": [
-      "chatgpt",
-      "custom-model",
-      "assistant-api",
-      "personalisation",
-      "education",
-      "edtech",
-      "openai"
+      "ai",
+      "edtech"
     ],
     "meta": {},
     "toc": [

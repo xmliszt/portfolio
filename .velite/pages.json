@@ -1,5 +1,15 @@
 [
   {
+    "title": "Contacts",
+    "subtitle": "找我聊聊？",
+    "slug": "contacts",
+    "body": "const{jsx:n,jsxs:e}=arguments[0];function _createMdxContent(i){const t={a:\"a\",li:\"li\",ul:\"ul\",...i.components};return e(t.ul,{children:[\"\\n\",n(t.li,{children:n(t.a,{href:\"mailto:me@liyuxuan.dev\",children:\"Email: me@liyuxuan.dev\"})}),\"\\n\",n(t.li,{children:n(t.a,{href:\"https://read.cv/liyuxuan\",children:\"ReadCV\"})}),\"\\n\",n(t.li,{children:n(t.a,{href:\"https://bento.me/liyuxuan\",children:\"Bento\"})}),\"\\n\",n(t.li,{children:n(t.a,{href:\"https://www.github.com/xmliszt\",children:\"GitHub\"})}),\"\\n\",n(t.li,{children:n(t.a,{href:\"https://www.twitter.com/xmliszt\",children:\"Twitter\"})}),\"\\n\",n(t.li,{children:n(t.a,{href:\"https://www.linkedin.com/in/li-yuxuan/\",children:\"LinkedIn\"})}),\"\\n\",n(t.li,{children:n(t.a,{href:\"https://reddit.com/user/bubbling-fish\",children:\"Reddit\"})}),\"\\n\",n(t.li,{children:n(t.a,{href:\"https://liyuxuan.substack.com/\",children:\"Substack\"})}),\"\\n\",n(t.li,{children:n(t.a,{href:\"https://medium.com/@xmliszt\",children:\"Medium\"})}),\"\\n\",n(t.li,{children:n(t.a,{href:\"https://youtube.com/@bbfishstudio8837\",children:\"YouTube\"})}),\"\\n\",n(t.li,{children:n(t.a,{href:\"https://instagram.com/xmliszt\",children:\"Instagram\"})}),\"\\n\"]})}return{default:function(e={}){const{wrapper:i}=e.components||{};return i?n(i,{...e,children:n(_createMdxContent,{...e})}):_createMdxContent(e)}};",
+    "toc": [],
+    "showToc": false,
+    "permalink": "/contacts",
+    "path": "/Users/xmliszt/Projects/Web Development/portfolio/content/pages/contacts/index.mdx"
+  },
+  {
     "title": "Hi! I'm Li Yuxuan",
     "subtitle": "你好啊！我是李雨轩",
     "slug": "about",
@@ -10,14 +20,82 @@
     "path": "/Users/xmliszt/Projects/Web Development/portfolio/content/pages/about/index.mdx"
   },
   {
-    "title": "Contacts",
-    "subtitle": "找我聊聊？",
-    "slug": "contacts",
-    "body": "const{jsx:n,jsxs:e}=arguments[0];function _createMdxContent(i){const t={a:\"a\",li:\"li\",ul:\"ul\",...i.components};return e(t.ul,{children:[\"\\n\",n(t.li,{children:n(t.a,{href:\"mailto:me@liyuxuan.dev\",children:\"Email: me@liyuxuan.dev\"})}),\"\\n\",n(t.li,{children:n(t.a,{href:\"https://read.cv/liyuxuan\",children:\"ReadCV\"})}),\"\\n\",n(t.li,{children:n(t.a,{href:\"https://bento.me/liyuxuan\",children:\"Bento\"})}),\"\\n\",n(t.li,{children:n(t.a,{href:\"https://www.github.com/xmliszt\",children:\"GitHub\"})}),\"\\n\",n(t.li,{children:n(t.a,{href:\"https://www.twitter.com/xmliszt\",children:\"Twitter\"})}),\"\\n\",n(t.li,{children:n(t.a,{href:\"https://www.linkedin.com/in/li-yuxuan/\",children:\"LinkedIn\"})}),\"\\n\",n(t.li,{children:n(t.a,{href:\"https://reddit.com/user/bubbling-fish\",children:\"Reddit\"})}),\"\\n\",n(t.li,{children:n(t.a,{href:\"https://liyuxuan.substack.com/\",children:\"Substack\"})}),\"\\n\",n(t.li,{children:n(t.a,{href:\"https://medium.com/@xmliszt\",children:\"Medium\"})}),\"\\n\",n(t.li,{children:n(t.a,{href:\"https://youtube.com/@bbfishstudio8837\",children:\"YouTube\"})}),\"\\n\",n(t.li,{children:n(t.a,{href:\"https://instagram.com/xmliszt\",children:\"Instagram\"})}),\"\\n\"]})}return{default:function(e={}){const{wrapper:i}=e.components||{};return i?n(i,{...e,children:n(_createMdxContent,{...e})}):_createMdxContent(e)}};",
+    "title": "The why",
+    "subtitle": "我的初衷",
+    "slug": "the-why",
+    "body": "const{Fragment:e,jsx:t,jsxs:n}=arguments[0];function _createMdxContent(o){const a={p:\"p\",strong:\"strong\",...o.components};return n(e,{children:[t(a.p,{children:\"Why do I want to build this personal website? Previously I had iterated over several versions of my portfolio website actually, but I was never satisfied with how it turned out. I had a few reasons for that:\"}),\"\\n\",n(a.p,{children:[\"I don't want my portfolio site to just be -- \",t(a.strong,{children:\"a portfolio site\"}),\". That's why I don't want to even call it a portfolio site. \",t(a.strong,{children:\"Personal playground\"}),\" sounds better (but I might still tweak the name in the future). Basically, I think it shouldn't just be a place to showcase my work and projects, but also a place to think, to ponder, to learn, to experiment, to connect, to explore, to share, and to grow. I want it to be a place where I can express myself, and where I can be myself. I want it to be a place where I can be creative, and where I can be free. Being a playground of some sort, I can experiment with different ideas, designs, tech, music, things that I love. It is also like a cozy little corner, where I put up things that I like, and things I would want to share with you guys. And hopefully, through all these, you can also understand me better as a holistic person, with emotions, thoughts, and dreams, not just a mere coding machine.\"]}),\"\\n\",t(a.p,{children:\"Therefore, here you go; after much thoughts and design and nights burnt, I have finally put up something I am somewhat satisfied with. I added little bit of animation and details here and there, and gave it a simple and peaceful texture. Feel free to explore in my little digital playground here, enjoy the text, the music, the visuals, and the vibes. I hope you can find something that resonates with you. This site should be updated in sync with my life, so stay tuned for any updates. I hope you enjoy your stay here 😉\"}),\"\\n\",n(a.p,{children:[\"我的个人网站经历了好几次大改动了，但是我一直都不是很满意。我不觉得个人主页只是一个\",t(a.strong,{children:\"简历\"}),\"，我也不想叫它简历，显得很单调很无味。\",t(a.strong,{children:\"游乐场\"}),\"听起来好很多呢（但是我可能以后估计我还得改一改这个名字）。这不仅是一个展示我的作品和项目的地方，而且也应该是一个思考、学习、实验、探索、分享、成长、与世界互动的地方。我希望它是一个我可以表达自我的地方，在这里，我可以发挥天马行空的想象，让创造力无限地伸展。作为一个游乐场，我可以尝试不同的想法、设计、技术、音乐……任何我喜欢的东西。就像一个舒适的小窝，我陈列起我视为珍宝的东西，分享给你看，讲故事给你听。希望通过这一切，你能更全面地了解我。那么话不多说，欢迎来的这里，随便逛逛，走走看看，听听音乐弹弹琴，希望你能喜欢这里 😉\"]})]})}return{default:function(e={}){const{wrapper:n}=e.components||{};return n?t(n,{...e,children:t(_createMdxContent,{...e})}):_createMdxContent(e)}};",
     "toc": [],
-    "showToc": false,
-    "permalink": "/contacts",
-    "path": "/Users/xmliszt/Projects/Web Development/portfolio/content/pages/contacts/index.mdx"
+    "showToc": true,
+    "permalink": "/the-why",
+    "path": "/Users/xmliszt/Projects/Web Development/portfolio/content/pages/the-why/index.mdx"
+  },
+  {
+    "title": "Projects",
+    "subtitle": "小成果展示",
+    "slug": "projects",
+    "body": "const{Fragment:e,jsx:t,jsxs:i}=arguments[0];function _createMdxContent(n){const a={code:\"code\",figcaption:\"figcaption\",figure:\"figure\",h2:\"h2\",h3:\"h3\",hr:\"hr\",img:\"img\",p:\"p\",pre:\"pre\",span:\"span\",strong:\"strong\",...n.components},{BadgeGroup:r,ExternalActionButtonLink:s}=a;return r||_missingMdxReference(\"BadgeGroup\",!0),s||_missingMdxReference(\"ExternalActionButtonLink\",!0),i(e,{children:[t(a.h2,{children:\"Taboo AI\"}),\"\\n\",t(\"a\",{href:\"https://taboo-ai.vercel.app\",target:\"_blank\",children:t(a.p,{children:t(a.img,{src:\"https://github.com/xmliszt/resources/blob/main/taboo-ai/images/v300/poster3.0(features).png?raw=true\",alt:\"Taboo AI\"})})}),\"\\n\",t(a.p,{children:\"Taboo AI offers English learners a gamified experience to practice English expressions and vocabulary, with feedbacks. The game is based on the popular board game Taboo, where players have to describe a word without using a list of forbidden words.\"}),\"\\n\",t(a.p,{children:\"Taboo AI 提供给英语学习者一种游戏化的体验，帮助他们练习英语表达和词汇，并提供反馈。这款游戏是基于流行的桌游Game of Taboo开发的，玩家需要描述一个词，但不能使用一系列禁止使用的词汇，达到让AI猜出这个词是什么的目的。\"}),\"\\n\",t(s,{href:\"https://taboo-ai.vercel.app\"}),\"\\n\",t(r,{tags:[\"typescript\",\"nextjs\",\"tailwindcss\",\"supabase\",\"postgres\"]}),\"\\n\",t(a.hr,{}),\"\\n\",t(a.h2,{children:\"Easy Next\"}),\"\\n\",t(\"a\",{href:\"https://www.npmjs.com/package/easy-next\",target:\"_blank\",children:t(a.p,{children:t(a.img,{src:\"https://firebasestorage.googleapis.com/v0/b/portfolio-35dfd.appspot.com/o/v2%2FtAD6hG0KxDMM1OiiRmfhRgXyY1d2%2Fprojects%2Feasy-next-poster.png?alt=media&token=acd43a73-7806-4aab-8929-18935cda0127\",alt:\"Easy\\nNext\"})})}),\"\\n\",t(a.p,{children:\"Easy Next is a CLI template tool to create a new Next.js App Router Typescript project with a single command. It's a wrapper around the Next.js CLI, with a few extra features, like choosing a template, adding additional libraries and frameworks, setting up linters and formatters, and more.\"}),\"\\n\",t(a.p,{children:\"Easy Next 是一个 CLI 模板工具，可通过单个命令创建新的 Next.js 应用程序路由 TypeScript 项目。它是 Next.js CLI 的封装，具有一些额外的功能，如选择模板、添加额外的库和框架、设置代码检查工具和格式工具等。\"}),\"\\n\",i(a.figure,{\"data-rehype-pretty-code-figure\":\"\",children:[t(a.figcaption,{\"data-rehype-pretty-code-title\":\"\",\"data-language\":\"bash\",\"data-theme\":\"vitesse-light vitesse-dark\",children:\"easy-next usage | easy-next使用方法\"}),t(a.pre,{style:{\"--shiki-light\":\"#393a34\",\"--shiki-dark\":\"#dbd7caee\",\"--shiki-light-bg\":\"#ffffff\",\"--shiki-dark-bg\":\"#121212\"},tabIndex:\"0\",\"data-language\":\"bash\",\"data-theme\":\"vitesse-light vitesse-dark\",raw:\"npx easy-next@latest\\n\",children:t(a.code,{\"data-language\":\"bash\",\"data-theme\":\"vitesse-light vitesse-dark\",style:{display:\"grid\"},children:i(a.span,{\"data-line\":\"\",children:[t(a.span,{style:{\"--shiki-light\":\"#59873A\",\"--shiki-dark\":\"#80A665\"},children:\"npx\"}),t(a.span,{style:{\"--shiki-light\":\"#B56959\",\"--shiki-dark\":\"#C98A7D\"},children:\" easy-next@latest\"})]})})})]}),\"\\n\",t(s,{href:\"https://www.npmjs.com/package/easy-next\"}),\"\\n\",t(r,{tags:[\"javascript\",\"nodejs\",\"npm\"]}),\"\\n\",t(a.hr,{}),\"\\n\",t(a.h2,{children:\"Costume Party\"}),\"\\n\",t(\"a\",{href:\"https://costume-party.web.app/\",target:\"_blank\",children:t(a.p,{children:t(a.img,{src:\"https://firebasestorage.googleapis.com/v0/b/portfolio-35dfd.appspot.com/o/v2%2FtAD6hG0KxDMM1OiiRmfhRgXyY1d2%2Fprojects%2FArtboard%201.png?alt=media&token=75e3fece-c208-4ff2-824f-c088f1c285fe\",alt:\"Costume\\nParty\"})})}),\"\\n\",t(a.p,{children:\"Costume Party brings the fun of Costume Party Assassins board game to the web. It's a last-man-standing game where players have to guess other players' identities through their actions and movements across the rooms, and carry out assassinations to be the last one alive.\"}),\"\\n\",t(a.p,{children:\"Costume Party 将《Costume Party Assassins》桌游的乐趣带到了网络中。这是一个生存至最后的游戏，玩家需要通过其他玩家在房间间的行动和移动来猜测其身份，并进行暗杀行动，以成为最后存活的人。\"}),\"\\n\",t(s,{href:\"https://costume-party.web.app/\"}),\"\\n\",t(r,{tags:[\"typescript\",\"vuejs\",\"firebase\"]}),\"\\n\",t(a.hr,{}),\"\\n\",t(a.h2,{children:\"Unity games\"}),\"\\n\",t(a.h3,{children:\"CB2.0 (COVID-19 themed)\"}),\"\\n\",t(\"iframe\",{width:\"560\",height:\"315\",src:\"https://www.youtube.com/embed/1vXQv4OH5wU?si=Gdg-p0VlOUUx-4sd\",title:\"YouTube video player\",allow:\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share\",allowFullScreen:!0}),\"\\n\",i(a.p,{children:[\"A Unity group project I did with three other friends back in uni as the final project of our game development course. The game is a \",t(a.strong,{children:\"COVID-19 themed\"}),\" 2D platformer which supports up to 4 players. There are in total four mini-games for selection, each game is created with a different theme and mechanics, revolving around the concept of \",t(a.strong,{children:\"swab test\"}),\", \",t(a.strong,{children:\"social distancing\"}),\" and \",t(a.strong,{children:\"fighting for toilet paper\"}),\" and \",t(a.strong,{children:\"crowd control\"}),\". The game is designed to be played with friends, and it's a lot of fun to play together as a party game! Unfortunately, we haven't published the game on Steam yet, so you can visit our GitHub repository to download and build it yourself using Unity engine.\"]}),\"\\n\",i(a.p,{children:[\"一个我在大学时和另外三个朋友一起做的Unity小组项目，作为我们游戏开发课程的期末项目。这个游戏是一个\",t(a.strong,{children:\"COVID-19主题\"}),\"的2D平台游戏，支持最多4个玩家。总共有四个小游戏可供选择，每个游戏都有不同的主题和机制，围绕\",t(a.strong,{children:\"核酸检查\"}),\"、\",t(a.strong,{children:\"社交距离\"}),\"、\",t(a.strong,{children:\"争夺厕纸\"}),\"和\",t(a.strong,{children:\"人群控制\"}),\"等概念。作为一个派对游戏，和朋友们一起玩的时候非常有趣！不幸的是，我们还没有在Steam上发布这个游戏，所以你可以访问我们的GitHub，自己下载并使用Unity引擎构建。\"]}),\"\\n\",t(s,{href:\"https://github.com/xmliszt/CB2.0\",title:\"Download the game | 点这里下载\"}),\"\\n\",t(r,{tags:[\"c#\",\"unity\"]}),\"\\n\",t(a.h3,{children:\"Mario recreated\"}),\"\\n\",t(\"a\",{href:\"https://xmliszt.itch.io/mario-final\",target:\"_blank\",children:t(a.p,{children:t(a.img,{src:\"https://firebasestorage.googleapis.com/v0/b/portfolio-35dfd.appspot.com/o/v2%2FtAD6hG0KxDMM1OiiRmfhRgXyY1d2%2Fprojects%2FMario%20Final.png?alt=media&token=d38ee634-050a-4831-a5fa-7f34d7596e50\",alt:\"Mario\\nrecreated\"})})}),\"\\n\",t(a.p,{children:\"A Unity project back in uni, where I recreated the levels of the original Mario game, with increased difficulties and new mechanics. For example, Mario have a inventory system to store up to 4 power-ups.\"}),\"\\n\",t(a.p,{children:\"一个我在大学里做的Unity项目，我在其中重新制作了原始马里奥游戏的关卡，增加了难度和新的机制。例如，马里奥有一个道具系统，可以存储4个强化道具并依次使用。\"}),\"\\n\",t(s,{href:\"https://xmliszt.itch.io/mario-final\"}),\"\\n\",t(r,{tags:[\"c#\",\"unity\"]}),\"\\n\",t(a.h3,{children:\"Mario infinity\"}),\"\\n\",t(\"a\",{href:\"https://xmliszt.itch.io/mario-infinity\",target:\"_blank\",children:t(a.p,{children:t(a.img,{src:\"https://img.itch.zone/aW1nLzYwMTc3ODEuanBn/347x500/y9h8UQ.jpg\",alt:\"Mario\\ninfinity\"})})}),\"\\n\",i(a.p,{children:[\"Another Unity project done back in school time. I experimented with \",t(a.strong,{children:\"procedual asset generation\"}),\" to create the backgrounds, platforms, enemies and consumables in this game. The game is endless, and the difficulty increases as the player progresses because there will be a firewall catching up from the left 🔥.\"]}),\"\\n\",i(a.p,{children:[\"另一个我在学校时做的Unity项目。我在这个游戏中尝试了\",t(a.strong,{children:\"过程化资源生成\"}),\"，用来创建背景、平台、敌人和可消耗品。游戏是无尽的，我设置了一道火墙从左边追赶🔥，所以到后面会越来越难哦。\"]}),\"\\n\",t(s,{href:\"https://xmliszt.itch.io/mario-infinity\"}),\"\\n\",t(r,{tags:[\"c#\",\"unity\"]}),\"\\n\",t(a.h3,{children:\"Mario defense\"}),\"\\n\",t(\"a\",{href:\"https://xmliszt.itch.io/mario-defense\",target:\"_blank\",children:t(a.p,{children:t(a.img,{src:\"https://img.itch.zone/aW1hZ2UvMTA2MTQyOS82MDc2NDI3LmpwZw==/347x500/1SRIe9.jpg\",alt:\"Mario\\ndefense\"})})}),\"\\n\",i(a.p,{children:[\"Yet another Mario game haha. This time, I tried a little bit of physics, by implementing an \",t(a.strong,{children:\"Angry Bird\"}),\" inspired slingshot tower defense game. The player has to defend the castle from the incoming enemies by \",t(a.strong,{children:\"shooting Mario\"}),\" at them 😂 using a \",t(a.strong,{children:\"slingshot\"}),\". Took me a while to get the slingshot mechanism working, loaded with elastic spring and calculate the impact from Mario's velocity. The game has three levels with increased difficulties. I can't pass the last one 🥵.\"]}),\"\\n\",i(a.p,{children:[\"又是一个马里奥游戏哈哈。这次，我尝试了一点物理，做一个\",t(a.strong,{children:\"愤怒的小鸟\"}),\"风格的弹弓塔防游戏。玩家需要通过使用一个\",t(a.strong,{children:\"弹弓\"}),\"来\",t(a.strong,{children:\"弹射马里奥\"}),\"以防御即将到来的敌人😂。花了我一段时间才让弹弓机制正常工作，装载了弹性弹簧并计算了马里奥速度的影响。游戏有三个难度递增的关卡。我至今无法通关🥵。\"]}),\"\\n\",t(s,{href:\"https://xmliszt.itch.io/mario-defense\"}),\"\\n\",t(r,{tags:[\"c#\",\"unity\"]})]})}return{default:function(e={}){const{wrapper:i}=e.components||{};return i?t(i,{...e,children:t(_createMdxContent,{...e})}):_createMdxContent(e)}};function _missingMdxReference(e,t){throw new Error(\"Expected \"+(t?\"component\":\"object\")+\" `\"+e+\"` to be defined: you likely forgot to import, pass, or provide it.\")}",
+    "toc": [
+      {
+        "title": "Taboo AI",
+        "url": "#anchor:taboo-ai",
+        "items": []
+      },
+      {
+        "title": "Easy Next",
+        "url": "#anchor:easy-next",
+        "items": []
+      },
+      {
+        "title": "Costume Party",
+        "url": "#anchor:costume-party",
+        "items": []
+      },
+      {
+        "title": "Unity games",
+        "url": "#anchor:unity-games",
+        "items": [
+          {
+            "title": "CB2.0 (COVID-19 themed)",
+            "url": "#anchor:cb20-covid-19-themed",
+            "items": []
+          },
+          {
+            "title": "Mario recreated",
+            "url": "#anchor:mario-recreated",
+            "items": []
+          },
+          {
+            "title": "Mario infinity",
+            "url": "#anchor:mario-infinity",
+            "items": []
+          },
+          {
+            "title": "Mario defense",
+            "url": "#anchor:mario-defense",
+            "items": []
+          }
+        ]
+      }
+    ],
+    "showToc": true,
+    "permalink": "/projects",
+    "path": "/Users/xmliszt/Projects/Web Development/portfolio/content/pages/projects/index.mdx"
+  },
+  {
+    "title": "Playground",
+    "subtitle": "Ideas的游乐场",
+    "slug": "playground",
+    "body": "const{Fragment:e,jsx:n,jsxs:t}=arguments[0];function _createMdxContent(a){const i={h2:\"h2\",img:\"img\",p:\"p\",...a.components};return t(e,{children:[n(i.p,{children:\"This is a place I have always wanted to put up in my personal website. I want it to be a free space where I can conduct all kinds of interesting experiments, being design and code related, for example, doing some cool CSS animations or pattern generations, or even some fun little JavaScript games. Or maybe a piece of video effects, or new ways of creating music? Or put up some interesting AI stuff. I want to make it a place where I can freely express my creativity and share it with the world. I hope you enjoy it as much as I do 😉\"}),\"\\n\",n(i.p,{children:\"这是我一直想在我的个人网站上放置的地方。我希望它是一个自由的空间，我可以在这里进行各种有趣的实验，包括设计和代码相关的，例如做一些酷炫的CSS动画或图案生成，甚至一些有趣的小JavaScript游戏。或者一些视频特效，或者创作音乐的新方式？或者放一些有趣的AI相关的小实验。我希望它是一个我可以自由表达我的创造力并与世界分享的地方。希望你和我一样喜欢它😉\"}),\"\\n\",n(i.h2,{children:\"Mini piano 小钢琴\"}),\"\\n\",n(\"a\",{href:\"/experiments/piano\",children:n(i.p,{children:n(i.img,{src:\"https://tvstbbuidvwgelgidaqy.supabase.co/storage/v1/object/public/playgrounds/piano.png\",alt:\"piano\\nscreenshot\"})})}),\"\\n\",n(\"a\",{href:\"/experiments/piano\",children:\"Play the mini piano | 弹弹钢琴试试看？\"})]})}return{default:function(e={}){const{wrapper:t}=e.components||{};return t?n(t,{...e,children:n(_createMdxContent,{...e})}):_createMdxContent(e)}};",
+    "toc": [
+      {
+        "title": "Mini piano 小钢琴",
+        "url": "#anchor:mini-piano-小钢琴",
+        "items": []
+      }
+    ],
+    "showToc": true,
+    "permalink": "/playground",
+    "path": "/Users/xmliszt/Projects/Web Development/portfolio/content/pages/playground/index.mdx"
   },
   {
     "title": "Hobbies",
@@ -91,73 +169,5 @@
     "showToc": true,
     "permalink": "/hobbies",
     "path": "/Users/xmliszt/Projects/Web Development/portfolio/content/pages/hobbies/index.mdx"
-  },
-  {
-    "title": "Playground",
-    "subtitle": "Ideas的游乐场",
-    "slug": "playground",
-    "body": "const{Fragment:e,jsx:n,jsxs:t}=arguments[0];function _createMdxContent(a){const i={h2:\"h2\",img:\"img\",p:\"p\",...a.components};return t(e,{children:[n(i.p,{children:\"This is a place I have always wanted to put up in my personal website. I want it to be a free space where I can conduct all kinds of interesting experiments, being design and code related, for example, doing some cool CSS animations or pattern generations, or even some fun little JavaScript games. Or maybe a piece of video effects, or new ways of creating music? Or put up some interesting AI stuff. I want to make it a place where I can freely express my creativity and share it with the world. I hope you enjoy it as much as I do 😉\"}),\"\\n\",n(i.p,{children:\"这是我一直想在我的个人网站上放置的地方。我希望它是一个自由的空间，我可以在这里进行各种有趣的实验，包括设计和代码相关的，例如做一些酷炫的CSS动画或图案生成，甚至一些有趣的小JavaScript游戏。或者一些视频特效，或者创作音乐的新方式？或者放一些有趣的AI相关的小实验。我希望它是一个我可以自由表达我的创造力并与世界分享的地方。希望你和我一样喜欢它😉\"}),\"\\n\",n(i.h2,{children:\"Mini piano 小钢琴\"}),\"\\n\",n(\"a\",{href:\"/experiments/piano\",children:n(i.p,{children:n(i.img,{src:\"https://tvstbbuidvwgelgidaqy.supabase.co/storage/v1/object/public/playgrounds/piano.png\",alt:\"piano\\nscreenshot\"})})}),\"\\n\",n(\"a\",{href:\"/experiments/piano\",children:\"Play the mini piano | 弹弹钢琴试试看？\"})]})}return{default:function(e={}){const{wrapper:t}=e.components||{};return t?n(t,{...e,children:n(_createMdxContent,{...e})}):_createMdxContent(e)}};",
-    "toc": [
-      {
-        "title": "Mini piano 小钢琴",
-        "url": "#anchor:mini-piano-小钢琴",
-        "items": []
-      }
-    ],
-    "showToc": true,
-    "permalink": "/playground",
-    "path": "/Users/xmliszt/Projects/Web Development/portfolio/content/pages/playground/index.mdx"
-  },
-  {
-    "title": "Projects",
-    "subtitle": "小成果展示",
-    "slug": "projects",
-    "body": "const{Fragment:e,jsx:t,jsxs:i}=arguments[0];function _createMdxContent(n){const a={code:\"code\",figcaption:\"figcaption\",figure:\"figure\",h2:\"h2\",h3:\"h3\",hr:\"hr\",img:\"img\",p:\"p\",pre:\"pre\",span:\"span\",strong:\"strong\",...n.components},{BadgeGroup:r,ExternalActionButtonLink:s}=a;return r||_missingMdxReference(\"BadgeGroup\",!0),s||_missingMdxReference(\"ExternalActionButtonLink\",!0),i(e,{children:[t(a.h2,{children:\"Taboo AI\"}),\"\\n\",t(\"a\",{href:\"https://taboo-ai.vercel.app\",target:\"_blank\",children:t(a.p,{children:t(a.img,{src:\"https://github.com/xmliszt/resources/blob/main/taboo-ai/images/v300/poster3.0(features).png?raw=true\",alt:\"Taboo AI\"})})}),\"\\n\",t(a.p,{children:\"Taboo AI offers English learners a gamified experience to practice English expressions and vocabulary, with feedbacks. The game is based on the popular board game Taboo, where players have to describe a word without using a list of forbidden words.\"}),\"\\n\",t(a.p,{children:\"Taboo AI 提供给英语学习者一种游戏化的体验，帮助他们练习英语表达和词汇，并提供反馈。这款游戏是基于流行的桌游Game of Taboo开发的，玩家需要描述一个词，但不能使用一系列禁止使用的词汇，达到让AI猜出这个词是什么的目的。\"}),\"\\n\",t(s,{href:\"https://taboo-ai.vercel.app\"}),\"\\n\",t(r,{tags:[\"typescript\",\"nextjs\",\"tailwindcss\",\"supabase\",\"postgres\"]}),\"\\n\",t(a.hr,{}),\"\\n\",t(a.h2,{children:\"Easy Next\"}),\"\\n\",t(\"a\",{href:\"https://www.npmjs.com/package/easy-next\",target:\"_blank\",children:t(a.p,{children:t(a.img,{src:\"https://firebasestorage.googleapis.com/v0/b/portfolio-35dfd.appspot.com/o/v2%2FtAD6hG0KxDMM1OiiRmfhRgXyY1d2%2Fprojects%2Feasy-next-poster.png?alt=media&token=acd43a73-7806-4aab-8929-18935cda0127\",alt:\"Easy\\nNext\"})})}),\"\\n\",t(a.p,{children:\"Easy Next is a CLI template tool to create a new Next.js App Router Typescript project with a single command. It's a wrapper around the Next.js CLI, with a few extra features, like choosing a template, adding additional libraries and frameworks, setting up linters and formatters, and more.\"}),\"\\n\",t(a.p,{children:\"Easy Next 是一个 CLI 模板工具，可通过单个命令创建新的 Next.js 应用程序路由 TypeScript 项目。它是 Next.js CLI 的封装，具有一些额外的功能，如选择模板、添加额外的库和框架、设置代码检查工具和格式工具等。\"}),\"\\n\",i(a.figure,{\"data-rehype-pretty-code-figure\":\"\",children:[t(a.figcaption,{\"data-rehype-pretty-code-title\":\"\",\"data-language\":\"bash\",\"data-theme\":\"vitesse-light vitesse-dark\",children:\"easy-next usage | easy-next使用方法\"}),t(a.pre,{style:{\"--shiki-light\":\"#393a34\",\"--shiki-dark\":\"#dbd7caee\",\"--shiki-light-bg\":\"#ffffff\",\"--shiki-dark-bg\":\"#121212\"},tabIndex:\"0\",\"data-language\":\"bash\",\"data-theme\":\"vitesse-light vitesse-dark\",raw:\"npx easy-next@latest\\n\",children:t(a.code,{\"data-language\":\"bash\",\"data-theme\":\"vitesse-light vitesse-dark\",style:{display:\"grid\"},children:i(a.span,{\"data-line\":\"\",children:[t(a.span,{style:{\"--shiki-light\":\"#59873A\",\"--shiki-dark\":\"#80A665\"},children:\"npx\"}),t(a.span,{style:{\"--shiki-light\":\"#B56959\",\"--shiki-dark\":\"#C98A7D\"},children:\" easy-next@latest\"})]})})})]}),\"\\n\",t(s,{href:\"https://www.npmjs.com/package/easy-next\"}),\"\\n\",t(r,{tags:[\"javascript\",\"nodejs\",\"npm\"]}),\"\\n\",t(a.hr,{}),\"\\n\",t(a.h2,{children:\"Costume Party\"}),\"\\n\",t(\"a\",{href:\"https://costume-party.web.app/\",target:\"_blank\",children:t(a.p,{children:t(a.img,{src:\"https://firebasestorage.googleapis.com/v0/b/portfolio-35dfd.appspot.com/o/v2%2FtAD6hG0KxDMM1OiiRmfhRgXyY1d2%2Fprojects%2FArtboard%201.png?alt=media&token=75e3fece-c208-4ff2-824f-c088f1c285fe\",alt:\"Costume\\nParty\"})})}),\"\\n\",t(a.p,{children:\"Costume Party brings the fun of Costume Party Assassins board game to the web. It's a last-man-standing game where players have to guess other players' identities through their actions and movements across the rooms, and carry out assassinations to be the last one alive.\"}),\"\\n\",t(a.p,{children:\"Costume Party 将《Costume Party Assassins》桌游的乐趣带到了网络中。这是一个生存至最后的游戏，玩家需要通过其他玩家在房间间的行动和移动来猜测其身份，并进行暗杀行动，以成为最后存活的人。\"}),\"\\n\",t(s,{href:\"https://costume-party.web.app/\"}),\"\\n\",t(r,{tags:[\"typescript\",\"vuejs\",\"firebase\"]}),\"\\n\",t(a.hr,{}),\"\\n\",t(a.h2,{children:\"Unity games\"}),\"\\n\",t(a.h3,{children:\"CB2.0 (COVID-19 themed)\"}),\"\\n\",t(\"iframe\",{width:\"560\",height:\"315\",src:\"https://www.youtube.com/embed/1vXQv4OH5wU?si=Gdg-p0VlOUUx-4sd\",title:\"YouTube video player\",allow:\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share\",allowFullScreen:!0}),\"\\n\",i(a.p,{children:[\"A Unity group project I did with three other friends back in uni as the final project of our game development course. The game is a \",t(a.strong,{children:\"COVID-19 themed\"}),\" 2D platformer which supports up to 4 players. There are in total four mini-games for selection, each game is created with a different theme and mechanics, revolving around the concept of \",t(a.strong,{children:\"swab test\"}),\", \",t(a.strong,{children:\"social distancing\"}),\" and \",t(a.strong,{children:\"fighting for toilet paper\"}),\" and \",t(a.strong,{children:\"crowd control\"}),\". The game is designed to be played with friends, and it's a lot of fun to play together as a party game! Unfortunately, we haven't published the game on Steam yet, so you can visit our GitHub repository to download and build it yourself using Unity engine.\"]}),\"\\n\",i(a.p,{children:[\"一个我在大学时和另外三个朋友一起做的Unity小组项目，作为我们游戏开发课程的期末项目。这个游戏是一个\",t(a.strong,{children:\"COVID-19主题\"}),\"的2D平台游戏，支持最多4个玩家。总共有四个小游戏可供选择，每个游戏都有不同的主题和机制，围绕\",t(a.strong,{children:\"核酸检查\"}),\"、\",t(a.strong,{children:\"社交距离\"}),\"、\",t(a.strong,{children:\"争夺厕纸\"}),\"和\",t(a.strong,{children:\"人群控制\"}),\"等概念。作为一个派对游戏，和朋友们一起玩的时候非常有趣！不幸的是，我们还没有在Steam上发布这个游戏，所以你可以访问我们的GitHub，自己下载并使用Unity引擎构建。\"]}),\"\\n\",t(s,{href:\"https://github.com/xmliszt/CB2.0\",title:\"Download the game | 点这里下载\"}),\"\\n\",t(r,{tags:[\"c#\",\"unity\"]}),\"\\n\",t(a.h3,{children:\"Mario recreated\"}),\"\\n\",t(\"a\",{href:\"https://xmliszt.itch.io/mario-final\",target:\"_blank\",children:t(a.p,{children:t(a.img,{src:\"https://firebasestorage.googleapis.com/v0/b/portfolio-35dfd.appspot.com/o/v2%2FtAD6hG0KxDMM1OiiRmfhRgXyY1d2%2Fprojects%2FMario%20Final.png?alt=media&token=d38ee634-050a-4831-a5fa-7f34d7596e50\",alt:\"Mario\\nrecreated\"})})}),\"\\n\",t(a.p,{children:\"A Unity project back in uni, where I recreated the levels of the original Mario game, with increased difficulties and new mechanics. For example, Mario have a inventory system to store up to 4 power-ups.\"}),\"\\n\",t(a.p,{children:\"一个我在大学里做的Unity项目，我在其中重新制作了原始马里奥游戏的关卡，增加了难度和新的机制。例如，马里奥有一个道具系统，可以存储4个强化道具并依次使用。\"}),\"\\n\",t(s,{href:\"https://xmliszt.itch.io/mario-final\"}),\"\\n\",t(r,{tags:[\"c#\",\"unity\"]}),\"\\n\",t(a.h3,{children:\"Mario infinity\"}),\"\\n\",t(\"a\",{href:\"https://xmliszt.itch.io/mario-infinity\",target:\"_blank\",children:t(a.p,{children:t(a.img,{src:\"https://img.itch.zone/aW1nLzYwMTc3ODEuanBn/347x500/y9h8UQ.jpg\",alt:\"Mario\\ninfinity\"})})}),\"\\n\",i(a.p,{children:[\"Another Unity project done back in school time. I experimented with \",t(a.strong,{children:\"procedual asset generation\"}),\" to create the backgrounds, platforms, enemies and consumables in this game. The game is endless, and the difficulty increases as the player progresses because there will be a firewall catching up from the left 🔥.\"]}),\"\\n\",i(a.p,{children:[\"另一个我在学校时做的Unity项目。我在这个游戏中尝试了\",t(a.strong,{children:\"过程化资源生成\"}),\"，用来创建背景、平台、敌人和可消耗品。游戏是无尽的，我设置了一道火墙从左边追赶🔥，所以到后面会越来越难哦。\"]}),\"\\n\",t(s,{href:\"https://xmliszt.itch.io/mario-infinity\"}),\"\\n\",t(r,{tags:[\"c#\",\"unity\"]}),\"\\n\",t(a.h3,{children:\"Mario defense\"}),\"\\n\",t(\"a\",{href:\"https://xmliszt.itch.io/mario-defense\",target:\"_blank\",children:t(a.p,{children:t(a.img,{src:\"https://img.itch.zone/aW1hZ2UvMTA2MTQyOS82MDc2NDI3LmpwZw==/347x500/1SRIe9.jpg\",alt:\"Mario\\ndefense\"})})}),\"\\n\",i(a.p,{children:[\"Yet another Mario game haha. This time, I tried a little bit of physics, by implementing an \",t(a.strong,{children:\"Angry Bird\"}),\" inspired slingshot tower defense game. The player has to defend the castle from the incoming enemies by \",t(a.strong,{children:\"shooting Mario\"}),\" at them 😂 using a \",t(a.strong,{children:\"slingshot\"}),\". Took me a while to get the slingshot mechanism working, loaded with elastic spring and calculate the impact from Mario's velocity. The game has three levels with increased difficulties. I can't pass the last one 🥵.\"]}),\"\\n\",i(a.p,{children:[\"又是一个马里奥游戏哈哈。这次，我尝试了一点物理，做一个\",t(a.strong,{children:\"愤怒的小鸟\"}),\"风格的弹弓塔防游戏。玩家需要通过使用一个\",t(a.strong,{children:\"弹弓\"}),\"来\",t(a.strong,{children:\"弹射马里奥\"}),\"以防御即将到来的敌人😂。花了我一段时间才让弹弓机制正常工作，装载了弹性弹簧并计算了马里奥速度的影响。游戏有三个难度递增的关卡。我至今无法通关🥵。\"]}),\"\\n\",t(s,{href:\"https://xmliszt.itch.io/mario-defense\"}),\"\\n\",t(r,{tags:[\"c#\",\"unity\"]})]})}return{default:function(e={}){const{wrapper:i}=e.components||{};return i?t(i,{...e,children:t(_createMdxContent,{...e})}):_createMdxContent(e)}};function _missingMdxReference(e,t){throw new Error(\"Expected \"+(t?\"component\":\"object\")+\" `\"+e+\"` to be defined: you likely forgot to import, pass, or provide it.\")}",
-    "toc": [
-      {
-        "title": "Taboo AI",
-        "url": "#anchor:taboo-ai",
-        "items": []
-      },
-      {
-        "title": "Easy Next",
-        "url": "#anchor:easy-next",
-        "items": []
-      },
-      {
-        "title": "Costume Party",
-        "url": "#anchor:costume-party",
-        "items": []
-      },
-      {
-        "title": "Unity games",
-        "url": "#anchor:unity-games",
-        "items": [
-          {
-            "title": "CB2.0 (COVID-19 themed)",
-            "url": "#anchor:cb20-covid-19-themed",
-            "items": []
-          },
-          {
-            "title": "Mario recreated",
-            "url": "#anchor:mario-recreated",
-            "items": []
-          },
-          {
-            "title": "Mario infinity",
-            "url": "#anchor:mario-infinity",
-            "items": []
-          },
-          {
-            "title": "Mario defense",
-            "url": "#anchor:mario-defense",
-            "items": []
-          }
-        ]
-      }
-    ],
-    "showToc": true,
-    "permalink": "/projects",
-    "path": "/Users/xmliszt/Projects/Web Development/portfolio/content/pages/projects/index.mdx"
   }
 ]

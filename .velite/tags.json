@@ -9,57 +9,12 @@
     "permalink": "/tag"
   },
   {
-    "name": "introduction",
-    "slug": "introduction",
-    "permalink": "/introduction",
-    "count": {
-      "total": 1,
-      "posts": 1
-    }
-  },
-  {
     "name": "edtech",
     "slug": "edtech",
     "permalink": "/edtech",
     "count": {
       "total": 7,
       "posts": 7
-    }
-  },
-  {
-    "name": "epistemic-feedback",
-    "slug": "epistemic-feedback",
-    "permalink": "/epistemic-feedback",
-    "count": {
-      "total": 1,
-      "posts": 1
-    }
-  },
-  {
-    "name": "knowledge-associations",
-    "slug": "knowledge-associations",
-    "permalink": "/knowledge-associations",
-    "count": {
-      "total": 2,
-      "posts": 2
-    }
-  },
-  {
-    "name": "conversation",
-    "slug": "conversation",
-    "permalink": "/conversation",
-    "count": {
-      "total": 1,
-      "posts": 1
-    }
-  },
-  {
-    "name": "vocabulary",
-    "slug": "vocabulary",
-    "permalink": "/vocabulary",
-    "count": {
-      "total": 1,
-      "posts": 1
     }
   },
   {
@@ -81,102 +36,12 @@
     }
   },
   {
-    "name": "memory",
-    "slug": "memory",
-    "permalink": "/memory",
-    "count": {
-      "total": 1,
-      "posts": 1
-    }
-  },
-  {
-    "name": "learning",
-    "slug": "learning",
-    "permalink": "/learning",
-    "count": {
-      "total": 3,
-      "posts": 3
-    }
-  },
-  {
-    "name": "immersive-experience",
-    "slug": "immersive-experience",
-    "permalink": "/immersive-experience",
-    "count": {
-      "total": 1,
-      "posts": 1
-    }
-  },
-  {
-    "name": "personalisation",
-    "slug": "personalisation",
-    "permalink": "/personalisation",
+    "name": "ai",
+    "slug": "ai",
+    "permalink": "/ai",
     "count": {
       "total": 2,
       "posts": 2
-    }
-  },
-  {
-    "name": "generative-ai",
-    "slug": "generative-ai",
-    "permalink": "/generative-ai",
-    "count": {
-      "total": 1,
-      "posts": 1
-    }
-  },
-  {
-    "name": "chatgpt",
-    "slug": "chatgpt",
-    "permalink": "/chatgpt",
-    "count": {
-      "total": 2,
-      "posts": 2
-    }
-  },
-  {
-    "name": "game",
-    "slug": "game",
-    "permalink": "/game",
-    "count": {
-      "total": 1,
-      "posts": 1
-    }
-  },
-  {
-    "name": "custom-model",
-    "slug": "custom-model",
-    "permalink": "/custom-model",
-    "count": {
-      "total": 1,
-      "posts": 1
-    }
-  },
-  {
-    "name": "assistant-api",
-    "slug": "assistant-api",
-    "permalink": "/assistant-api",
-    "count": {
-      "total": 1,
-      "posts": 1
-    }
-  },
-  {
-    "name": "education",
-    "slug": "education",
-    "permalink": "/education",
-    "count": {
-      "total": 1,
-      "posts": 1
-    }
-  },
-  {
-    "name": "openai",
-    "slug": "openai",
-    "permalink": "/openai",
-    "count": {
-      "total": 1,
-      "posts": 1
     }
   }
 ]
