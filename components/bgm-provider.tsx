@@ -77,7 +77,9 @@ export function BGMProvider({ children }: { children: React.ReactNode }) {
       });
       howlers.push(howl);
     }
-    // Start playing the first one
+    // Start playing a random one
+    const randomIndex = Math.floor(Math.random() * bgms.length);
+    currentPlayingIndex = randomIndex;
     const howler = howlers[currentPlayingIndex];
     if (!howler) return;
     setCurrentlyPlayingBGM(bgms[currentPlayingIndex]);
