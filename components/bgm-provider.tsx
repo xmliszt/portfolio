@@ -43,6 +43,8 @@ export function BGMProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     startTransition(async () => {
       const bgms = await fetchBGMs();
+      const randomIndex = Math.floor(Math.random() * bgms.length);
+      currentPlayingIndex = randomIndex;
       setBgms(bgms);
     });
   }, []);
@@ -53,8 +55,12 @@ export function BGMProvider({ children }: { children: React.ReactNode }) {
     for (const bgm of bgms) {
       const howl = new Howl({
         src: [bgm.url], // TODO: Hard coded to be the first one for now, next time can implement playback queue.
-        volume: 0.2,
+        volume: 0.5,
         loop: false,
+        html5: true,
+        onload: () => {
+          console.log('Loaded', bgm.title);
+        },
         onplay: (id) => {
           setIsPlaying(true);
           setPlayerID(id);
@@ -78,11 +84,10 @@ export function BGMProvider({ children }: { children: React.ReactNode }) {
       howlers.push(howl);
     }
     // Start playing a random one
-    const randomIndex = Math.floor(Math.random() * bgms.length);
-    currentPlayingIndex = randomIndex;
     const howler = howlers[currentPlayingIndex];
     if (!howler) return;
     setCurrentlyPlayingBGM(bgms[currentPlayingIndex]);
+    if (playerID) howler.stop(playerID);
     setPlayerID(howler.play());
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isPending, bgms]);
@@ -94,6 +99,7 @@ export function BGMProvider({ children }: { children: React.ReactNode }) {
       howler.pause(playerID);
     } else {
       setPlayerID(howler.play());
+      console.log('Playing from toggle', bgms[currentPlayingIndex].title);
     }
   }
 
@@ -113,6 +119,7 @@ export function BGMProvider({ children }: { children: React.ReactNode }) {
     const howler = howlers[currentPlayingIndex];
     if (!howler) return;
     // Stop the current one
+    howler.fade(howler.volume(), 0, 1000);
     howler.stop();
     // Play the next one
     const nextIndex = (currentPlayingIndex + 1) % bgms.length;
@@ -127,6 +134,7 @@ export function BGMProvider({ children }: { children: React.ReactNode }) {
     const howler = howlers[currentPlayingIndex];
     if (!howler) return;
     // Stop the current one
+    howler.fade(howler.volume(), 0, 1000);
     howler.stop();
     // Play the previous one
     const prevIndex = (currentPlayingIndex - 1 + bgms.length) % bgms.length;
