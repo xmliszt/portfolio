@@ -79,7 +79,7 @@ export const metadata: Metadata = {
     siteName: "Yuxuan's digital playground",
     images: [
       {
-        url: 'https://tvstbbuidvwgelgidaqy.supabase.co/storage/v1/object/public/profile/portfolio%20og%20image.png',
+        url: 'https://tvstbbuidvwgelgidaqy.supabase.co/storage/v1/object/public/profile/og.webp',
         width: 2028,
         height: 1140,
         alt: "Yuxuan's digital playground",
@@ -97,7 +97,7 @@ export const metadata: Metadata = {
     creator: '@xmliszt',
     creatorId: '1704579643',
     images: [
-      'https://tvstbbuidvwgelgidaqy.supabase.co/storage/v1/object/public/profile/portfolio%20og%20image.png',
+      'https://tvstbbuidvwgelgidaqy.supabase.co/storage/v1/object/public/profile/og.webp',
     ],
   },
 };
