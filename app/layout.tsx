@@ -158,8 +158,8 @@ export default function RootLayout({
                         <NavigationBarItem href='/posts'>
                           Posts
                         </NavigationBarItem>
-                        <NavigationBarItem href='/piano'>
-                          Piano
+                        <NavigationBarItem href='/playground'>
+                          Playground
                         </NavigationBarItem>
                         <NavigationBarItem href='/contacts'>
                           Contacts
@@ -185,7 +185,9 @@ export default function RootLayout({
                   </NavigationBarItem>
                   <NavigationBarItem href='/hobbies'>Hobbies</NavigationBarItem>
                   <NavigationBarItem href='/posts'>Posts</NavigationBarItem>
-                  <NavigationBarItem href='/piano'>Piano</NavigationBarItem>
+                  <NavigationBarItem href='/playground'>
+                    Playground
+                  </NavigationBarItem>
                   <NavigationBarItem href='/contacts'>
                     Contacts
                   </NavigationBarItem>

@@ -213,6 +213,29 @@ const config = {
             transform: 'translateY(1rem)',
           },
         },
+        'wobble-horizontal': {
+          '0%': {
+            transform: 'translateX(0%)',
+          },
+          '15%': {
+            transform: 'translateX(-15%)',
+          },
+          '30%': {
+            transform: 'translateX(10%)',
+          },
+          '45%': {
+            transform: 'translateX(-10%)',
+          },
+          '60%': {
+            transform: 'translateX(5%)',
+          },
+          '75%': {
+            transform: 'translateX(-5%)',
+          },
+          '100%': {
+            transform: 'translateX(0%)',
+          },
+        },
       },
       animation: {
         'accordion-down': 'accordion-down 0.2s ease-out',
@@ -225,6 +248,7 @@ const config = {
         'float-up-and-down': 'float-up-and-down 6s ease-in-out infinite',
         'fade-in-float-up': 'fade-in-float-up 2s ease-out',
         'fade-out-float-down': 'fade-out-float-down 2s ease-out',
+        'wobble-horizontal': 'wobble-horizontal 1s ease-out infinite',
       },
     },
   },

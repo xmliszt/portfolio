@@ -6,10 +6,14 @@ const BGMProviderContext = createContext<{
   isPlaying: boolean;
   toggleBGM: () => void;
   currentBGM: BGM | null;
+  pauseBGM: () => void;
+  playBGM: () => void;
 }>({
   isPlaying: false,
   toggleBGM: () => {},
   currentBGM: null,
+  pauseBGM: () => {},
+  playBGM: () => {},
 });
 
 type BGM = {
@@ -67,9 +71,25 @@ export function BGMProvider({ children }: { children: React.ReactNode }) {
     setIsPlaying(howler.playing(playerID));
   }
 
+  function pauseBGM() {
+    howlerRef.current?.pause(playerID);
+    setIsPlaying(false);
+  }
+
+  function playBGM() {
+    setPlayerID(howlerRef.current?.play() ?? 0);
+    setIsPlaying(true);
+  }
+
   return (
     <BGMProviderContext.Provider
-      value={{ isPlaying, toggleBGM, currentBGM: currentlyPlayingBGM }}
+      value={{
+        isPlaying,
+        toggleBGM,
+        currentBGM: currentlyPlayingBGM,
+        pauseBGM,
+        playBGM,
+      }}
     >
       {children}
     </BGMProviderContext.Provider>
