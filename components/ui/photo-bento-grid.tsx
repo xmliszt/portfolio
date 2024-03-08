@@ -18,7 +18,7 @@ export async function PhotoBentoGrid() {
   // Render the bento-grid
   return (
     <ScrollArea className='whitespace-nowrap rounded-xl py-4'>
-      <div className='flex h-[80vh] w-max flex-col flex-wrap gap-4'>
+      <div className='flex h-[80vh] w-max flex-col flex-wrap gap-4 p-4'>
         {photos.map((photo) => (
           <ImageDialog key={photo.id} src={photo.url} alt={photo.name} />
         ))}
