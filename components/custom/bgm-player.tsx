@@ -31,7 +31,7 @@ export function BGMPlayer(props: BGMPlayerProps) {
     } else {
       bgmFadeOutTimeout.current = setTimeout(() => {
         setIsBGMInfoShowing(false);
-      }, 2000);
+      }, 1000);
     }
     return () => {
       if (bgmFadeOutTimeout.current) {

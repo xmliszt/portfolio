@@ -50,45 +50,53 @@ export function BGMProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   useEffect(() => {
+    async function loadHowlers() {
+      await Promise.all(
+        bgms.map((bgm) => {
+          return new Promise<void>((resolve) => {
+            const howl = new Howl({
+              src: [bgm.url], // TODO: Hard coded to be the first one for now, next time can implement playback queue.
+              volume: 0.5,
+              loop: false,
+              html5: true,
+              onload: () => {
+                console.log('Loaded', bgm.title);
+                resolve();
+              },
+              onplay: (id) => {
+                setIsPlaying(true);
+                setPlayerID(id);
+              },
+              onpause: () => {
+                setIsPlaying(false);
+              },
+              onstop: () => {
+                setIsPlaying(false);
+              },
+              onend: () => {
+                // Play the next one
+                const nextIndex = (currentPlayingIndex + 1) % bgms.length;
+                const nextHowler = howlers[nextIndex];
+                if (!nextHowler) return;
+                currentPlayingIndex = nextIndex;
+                setCurrentlyPlayingBGM(bgms[nextIndex]);
+                setPlayerID(nextHowler.play());
+              },
+            });
+            howlers.push(howl);
+          });
+        })
+      );
+      // Randomly play one
+      const howler = howlers[currentPlayingIndex];
+      if (!howler) return;
+      setCurrentlyPlayingBGM(bgms[currentPlayingIndex]);
+      setPlayerID(howler.play());
+    }
+
     if (isPending || bgms.length === 0) return;
     // Load howls
-    for (const bgm of bgms) {
-      const howl = new Howl({
-        src: [bgm.url], // TODO: Hard coded to be the first one for now, next time can implement playback queue.
-        volume: 0.5,
-        loop: false,
-        html5: true,
-        onload: () => {
-          console.log('Loaded', bgm.title);
-        },
-        onplay: (id) => {
-          setIsPlaying(true);
-          setPlayerID(id);
-        },
-        onpause: () => {
-          setIsPlaying(false);
-        },
-        onstop: () => {
-          setIsPlaying(false);
-        },
-        onend: () => {
-          // Play the next one
-          const nextIndex = (currentPlayingIndex + 1) % bgms.length;
-          const nextHowler = howlers[nextIndex];
-          if (!nextHowler) return;
-          currentPlayingIndex = nextIndex;
-          setCurrentlyPlayingBGM(bgms[nextIndex]);
-          setPlayerID(nextHowler.play());
-        },
-      });
-      howlers.push(howl);
-    }
-    // Start playing a random one
-    const howler = howlers[currentPlayingIndex];
-    if (!howler) return;
-    setCurrentlyPlayingBGM(bgms[currentPlayingIndex]);
-    if (playerID) howler.stop(playerID);
-    setPlayerID(howler.play());
+    loadHowlers();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isPending, bgms]);
 
@@ -96,8 +104,10 @@ export function BGMProvider({ children }: { children: React.ReactNode }) {
     const howler = howlers[currentPlayingIndex];
     if (!howler) return;
     if (howler.playing(playerID)) {
+      howler.fade(howler.volume(), 0, 1000);
       howler.pause(playerID);
     } else {
+      howler.fade(howler.volume(), 0.5, 1000);
       setPlayerID(howler.play());
       console.log('Playing from toggle', bgms[currentPlayingIndex].title);
     }
@@ -106,12 +116,14 @@ export function BGMProvider({ children }: { children: React.ReactNode }) {
   function pauseBGM() {
     const howler = howlers[currentPlayingIndex];
     if (!howler) return;
+    howler.fade(howler.volume(), 0, 1000);
     howler.pause(playerID);
   }
 
   function playBGM() {
     const howler = howlers[currentPlayingIndex];
     if (!howler) return;
+    howler.fade(howler.volume(), 0.5, 1000);
     setPlayerID(howler.play());
   }
 
