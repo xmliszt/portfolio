@@ -1,13 +1,24 @@
 {
-  "theme_color": "#ffffff",
-  "background_color": "#ffffff",
+  "theme_color": "#fcfcfc",
+  "background_color": "#fcfcfc",
   "display": "standalone",
   "scope": "/",
   "start_url": "/",
-  "name": "NextJS Template",
+  "name": "Yuxuan's digital playground",
   "short_name": "NextJS Template",
-  "description": "This is an example PWA web app for NextJS template",
-  "categories": ["Example"],
+  "description": "Welcome to my digital playground, a little cozy place where ideas flow freely.",
+  "categories": [
+    "Li Yuxuan",
+    "personal website",
+    "portfolio",
+    "blogs",
+    "playground",
+    "piano",
+    "hobbies",
+    "contacts",
+    "projects",
+    "posts"
+  ],
   "icons": [
     {
       "src": "/favicon-16x16.png",

@@ -58,12 +58,14 @@ export const metadata: Metadata = {
     'Li Yuxuan',
     'personal website',
     'portfolio',
-    'blog',
-    'digital playground',
+    'blogs',
+    'playground',
     'piano',
     'hobbies',
     'contacts',
     'projects',
+    'posts',
+    'playground',
   ],
   authors: [{ name: 'Li Yuxuan', url: 'https://liyuxuan.dev' }],
   creator: 'Li Yuxuan',
@@ -105,6 +107,10 @@ export const metadata: Metadata = {
 export const viewport: Viewport = {
   width: 'device-width',
   initialScale: 1,
+  themeColor: [
+    { media: '(prefers-color-scheme: light)', color: '#fcfcfc' },
+    { media: '(prefers-color-scheme: dark)', color: '#0c0a0a' },
+  ],
 };
 
 const fontInter = Inter({
