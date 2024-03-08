@@ -2,8 +2,6 @@ import { Metadata } from 'next';
 
 import { Piano } from '@/components/custom/piano/piano';
 
-import { PauseBGMClient } from './pause-bgm-client';
-
 export function generateMetadata(): Metadata {
   return {
     title: 'Mini piano | 迷你钢琴',
@@ -18,7 +16,6 @@ export default function PianoPage() {
       <div className='my-32 w-max rotate-90 rounded-lg bg-stone-700 p-4 shadow-[inset_0_0_20px_10px_rgba(0,0,0,0.4),0_0_20px_10px_rgba(0,0,0,0.4)] piano:my-8 piano:rotate-0'>
         <Piano />
       </div>
-      <PauseBGMClient />
     </div>
   );
 }
