@@ -1,6 +1,14 @@
 'use client';
 
-import { createContext, useContext, useEffect, useRef, useState } from 'react';
+import {
+  createContext,
+  useContext,
+  useEffect,
+  useState,
+  useTransition,
+} from 'react';
+
+import { BGM, fetchBGMs } from './fetch-bgms';
 
 const BGMProviderContext = createContext<{
   isPlaying: boolean;
@@ -8,76 +16,114 @@ const BGMProviderContext = createContext<{
   currentBGM: BGM | null;
   pauseBGM: () => void;
   playBGM: () => void;
+  nextBGM: () => void;
+  prevBGM: () => void;
 }>({
   isPlaying: false,
   toggleBGM: () => {},
   currentBGM: null,
   pauseBGM: () => {},
   playBGM: () => {},
+  nextBGM: () => {},
+  prevBGM: () => {},
 });
 
-type BGM = {
-  title: string;
-  artist: string;
-  url: string;
-};
-
-const BGM_URLS: BGM[] = [
-  {
-    url: 'https://tvstbbuidvwgelgidaqy.supabase.co/storage/v1/object/public/bgm/MUJI2020%20320kbps.mp3',
-    title: 'MUJI 2020',
-    artist: 'Ryuichi Sakamoto',
-  },
-];
+let currentPlayingIndex = 0;
+const howlers: Howl[] = [];
 
 export function BGMProvider({ children }: { children: React.ReactNode }) {
+  const [bgms, setBgms] = useState<BGM[]>([]);
   const [isPlaying, setIsPlaying] = useState(false);
   const [playerID, setPlayerID] = useState(0);
   const [currentlyPlayingBGM, setCurrentlyPlayingBGM] = useState<BGM | null>(
     null
   );
-  const howlerRef = useRef<Howl | null>(null);
+  const [isPending, startTransition] = useTransition();
 
   useEffect(() => {
-    howlerRef.current = new Howl({
-      src: [BGM_URLS[0].url], // TODO: Hard coded to be the first one for now, next time can implement playback queue.
-      volume: 0.2,
-      loop: true,
-      autoplay: true,
-      onload: () => {
-        setCurrentlyPlayingBGM(BGM_URLS[0]);
-      },
-      onplay: (id) => {
-        setPlayerID(id);
-        setIsPlaying(true);
-      },
-      onpause: () => {
-        setIsPlaying(false);
-      },
+    startTransition(async () => {
+      const bgms = await fetchBGMs();
+      setBgms(bgms);
     });
-    return () => {
-      howlerRef.current?.unload();
-    };
   }, []);
 
+  useEffect(() => {
+    if (isPending || bgms.length === 0) return;
+    // Load howls
+    for (const bgm of bgms) {
+      const howl = new Howl({
+        src: [bgm.url], // TODO: Hard coded to be the first one for now, next time can implement playback queue.
+        volume: 0.2,
+        loop: false,
+        onplay: (id) => {
+          setIsPlaying(true);
+          setPlayerID(id);
+        },
+        onpause: () => {
+          setIsPlaying(false);
+        },
+        onstop: () => {
+          setIsPlaying(false);
+        },
+        onend: () => {
+          // Play the next one
+          const nextIndex = (currentPlayingIndex + 1) % bgms.length;
+          currentPlayingIndex = nextIndex;
+          howlers[nextIndex].play();
+        },
+      });
+      howlers.push(howl);
+    }
+    // Start playing the first one
+    howlers[currentPlayingIndex].play();
+    setCurrentlyPlayingBGM(bgms[currentPlayingIndex]);
+    setPlayerID(howlers[currentPlayingIndex].play() ?? 0);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isPending, bgms]);
+
   function toggleBGM() {
-    const howler = howlerRef.current;
+    const howler = howlers[currentPlayingIndex];
     if (!howler) return;
     if (howler.playing(playerID)) {
       howler.pause(playerID);
+      setIsPlaying(false);
     } else {
-      setPlayerID(howler.play());
+      setPlayerID(howler.play() ?? 0);
+      setIsPlaying(true);
     }
-    setIsPlaying(howler.playing(playerID));
   }
 
   function pauseBGM() {
-    howlerRef.current?.pause(playerID);
+    const howler = howlers[currentPlayingIndex];
+    howler.pause(playerID);
     setIsPlaying(false);
   }
 
   function playBGM() {
-    setPlayerID(howlerRef.current?.play() ?? 0);
+    const howler = howlers[currentPlayingIndex];
+    setPlayerID(howler.play() ?? 0);
+    setIsPlaying(true);
+  }
+
+  function nextBGM() {
+    // Stop the current one
+    howlers[currentPlayingIndex].stop();
+    // Play the next one
+    const nextIndex = (currentPlayingIndex + 1) % bgms.length;
+    currentPlayingIndex = nextIndex;
+    setCurrentlyPlayingBGM(bgms[nextIndex]);
+    setPlayerID(howlers[nextIndex].play() ?? 0);
+    setIsPlaying(true);
+  }
+
+  function prevBGM() {
+    // Stop the current one
+    howlers[currentPlayingIndex].stop();
+    // Play the previous one
+    const prevIndex = (currentPlayingIndex - 1 + bgms.length) % bgms.length;
+    currentPlayingIndex = prevIndex;
+    setCurrentlyPlayingBGM(bgms[prevIndex]);
+    setPlayerID(howlers[prevIndex].play() ?? 0);
     setIsPlaying(true);
   }
 
@@ -89,6 +135,8 @@ export function BGMProvider({ children }: { children: React.ReactNode }) {
         currentBGM: currentlyPlayingBGM,
         pauseBGM,
         playBGM,
+        nextBGM,
+        prevBGM,
       }}
     >
       {children}

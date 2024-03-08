@@ -9,6 +9,27 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      bgms: {
+        Row: {
+          artist: string
+          external_url: string
+          id: string
+          title: string
+        }
+        Insert: {
+          artist: string
+          external_url: string
+          id: string
+          title: string
+        }
+        Update: {
+          artist?: string
+          external_url?: string
+          id?: string
+          title?: string
+        }
+        Relationships: []
+      }
       post_views: {
         Row: {
           slug: string

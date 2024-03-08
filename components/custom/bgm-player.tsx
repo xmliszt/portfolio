@@ -1,7 +1,13 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
-import { Disc } from '@phosphor-icons/react';
+import {
+  CaretDown,
+  CaretUp,
+  Disc,
+  SkipBack,
+  SkipForward,
+} from '@phosphor-icons/react';
 
 import { cn } from '@/lib/utils';
 
@@ -40,10 +46,11 @@ export function BGMPlayer(props: BGMPlayerProps) {
         isBGMInfoShowing &&
         props.showBgmInfo &&
         props.bgmInfoPosition === 'left' && (
-          <BGMInfo
+          <BGMController
             title={currentBGM.title}
             artist={currentBGM.artist}
             isShowing={isPlaying}
+            href={currentBGM.external_url}
           />
         )}
       <Tooltip>
@@ -69,34 +76,70 @@ export function BGMPlayer(props: BGMPlayerProps) {
         isBGMInfoShowing &&
         props.showBgmInfo &&
         props.bgmInfoPosition === 'right' && (
-          <BGMInfo
+          <BGMController
             title={currentBGM.title}
             artist={currentBGM.artist}
             isShowing={isPlaying}
+            href={currentBGM.external_url}
           />
         )}
     </div>
   );
 }
 
-function BGMInfo({
+function BGMController({
   title,
   artist,
   isShowing,
+  href,
 }: {
   title: string;
   artist: string;
   isShowing: boolean;
+  href: string;
 }) {
+  const { nextBGM, prevBGM } = useBGM();
   return (
     <div
       className={cn(
-        'flex flex-col items-start justify-center gap-0 overflow-hidden text-ellipsis md:gap-1 [&>*]:whitespace-nowrap',
+        'flex flex-row items-stretch gap-2',
         isShowing ? 'animate-fade-in-float-up' : 'animate-fade-out-float-down'
       )}
     >
-      <span className='text-sm font-bold'>{title}</span>
-      <span className='text-xs'>{artist}</span>
+      <div className='hidden flex-col items-center justify-between md:flex'>
+        <button
+          className='text-muted-foreground transition-[transform_color] ease-out hover:scale-105 hover:text-primary'
+          onClick={() => prevBGM()}
+        >
+          <CaretUp />
+        </button>
+        <button
+          className='text-muted-foreground transition-[transform_color] ease-out hover:scale-105 hover:text-primary'
+          onClick={() => nextBGM()}
+        >
+          <CaretDown />
+        </button>
+      </div>
+      <a href={href} target='_blank'>
+        <div className='flex flex-col items-start justify-center gap-0 overflow-hidden text-ellipsis [&>*]:whitespace-nowrap'>
+          <span className='text-sm font-bold'>{title}</span>
+          <span className='text-xs'>{artist}</span>
+        </div>
+      </a>
+      <div className='flex flex-row items-stretch justify-center md:hidden'>
+        <button
+          className='text-muted-foreground transition-[transform_color] ease-out hover:scale-105 hover:text-primary'
+          onClick={() => prevBGM()}
+        >
+          <SkipBack size={20} />
+        </button>
+        <button
+          className='text-muted-foreground transition-[transform_color] ease-out hover:scale-105 hover:text-primary'
+          onClick={() => nextBGM()}
+        >
+          <SkipForward size={20} />
+        </button>
+      </div>
     </div>
   );
 }

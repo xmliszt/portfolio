@@ -3,9 +3,9 @@ import type { Metadata } from 'next';
 import Image from 'next/image';
 import { notFound } from 'next/navigation';
 
-import { CustomBadgeLink } from '@/components/ui/custom-badge-link';
 import { TOCLoader } from '@/components/custom/toc/toc-loader';
 import { MDXContent } from '@/components/mdx-content';
+import { CustomBadgeLink } from '@/components/ui/custom-badge-link';
 
 import { incrementPostView } from './increment-post-view';
 
