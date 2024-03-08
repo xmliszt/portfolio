@@ -1,7 +1,7 @@
 import { format } from 'date-fns';
 import Link from 'next/link';
 
-import { CustomBadgeLink } from '@/components/custom/custom-badge-link';
+import { CustomBadgeLink } from '@/components/ui/custom-badge-link';
 
 type PostCardProps = {
   post: (typeof import('#site/content').posts)[0];

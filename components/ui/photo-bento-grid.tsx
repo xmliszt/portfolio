@@ -1,7 +1,7 @@
 import { createServiceRoleClient } from '@/lib/supabase/create-service-role-client';
 
-import { ScrollArea, ScrollBar } from './ui/scroll-area';
 import { ImageDialog } from './image-dialog';
+import { ScrollArea, ScrollBar } from './scroll-area';
 
 export async function PhotoBentoGrid() {
   const supabaseClient = createServiceRoleClient();

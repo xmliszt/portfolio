@@ -1,6 +1,6 @@
 import Link from 'next/link';
 
-import { Badge } from '../ui/badge';
+import { Badge } from './badge';
 
 type CustomBadgeLinkProps = {
   href: string;
@@ -11,7 +11,7 @@ export function CustomBadgeLink(props: CustomBadgeLinkProps) {
   return (
     <Link href={props.href}>
       <Badge
-        className='hover:scale-105 transition-transform ease-out rounded-full border-border'
+        className='rounded-full border-border transition-transform ease-out hover:scale-105'
         variant='secondary'
       >
         {props.children}

@@ -29,7 +29,7 @@ export function WavingAvatar() {
       />
       <span
         ref={greetingRef}
-        className='group-hover:animate-greet absolute right-0 top-14 -z-10 opacity-0'
+        className='absolute right-0 top-14 -z-10 opacity-0 group-hover:animate-greet'
       >
         ~ Yo! Whatssup! 👋🏻
       </span>

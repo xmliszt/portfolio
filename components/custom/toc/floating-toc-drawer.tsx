@@ -11,6 +11,7 @@ import {
 } from '@/components/ui/tooltip';
 import { cn, isAtCurrentTOC, slugify } from '@/lib/utils';
 
+import { BGMPlayer } from '../bgm-player';
 import { ThemeSwitch } from '../theme-switch';
 
 import { useTOC } from './toc-provider';
@@ -91,15 +92,18 @@ export function FloatingTOCDrawer() {
       </Tooltip>
       <DrawerContent
         className={cn(
-          'rounded-none rounded-t-lg focus-visible:outline-none',
+          'flex flex-col gap-12 rounded-none rounded-t-lg focus-visible:outline-none',
           // hide the drawer handle
           '[&>*:first-child]:hidden'
         )}
       >
         {/* Custom drawer handle */}
-        <div className='mx-auto mb-8 mt-2 h-1 w-[60px] cursor-grab rounded-full bg-foreground'></div>
-        {/* Theme switch */}
-        <div className='absolute right-4 top-4 z-10'>
+        <div className='mx-auto mt-2 h-1 w-[60px] cursor-grab rounded-full bg-foreground'></div>
+        {/* Top control */}
+        <div className='absolute left-4 right-4 top-3 z-10 flex flex-row items-center justify-between'>
+          {/* BGM Control */}
+          <BGMPlayer bgmInfoPosition='right' showBgmInfo />
+          {/* Theme switch */}
           <ThemeSwitch />
         </div>
         {/* Navigation items */}

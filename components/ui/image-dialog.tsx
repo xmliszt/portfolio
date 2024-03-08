@@ -1,8 +1,8 @@
 import Image from 'next/image';
 
-import { HoverPerspectiveContainer } from './custom/hover-perspective-container';
-import { Dialog, DialogContent, DialogTrigger } from './ui/dialog';
-import { Tooltip, TooltipContent, TooltipTrigger } from './ui/tooltip';
+import { Dialog, DialogContent, DialogTrigger } from './dialog';
+import { HoverPerspectiveContainer } from './hover-perspective-container';
+import { Tooltip, TooltipContent, TooltipTrigger } from './tooltip';
 
 type ImageDialogProps = {
   src: string;

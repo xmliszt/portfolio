@@ -71,13 +71,13 @@ export function FloatingNavigationBar(props: FloatingNavigationBarProps) {
 
       <DrawerContent
         className={cn(
-          'rounded-none rounded-t-lg focus-visible:outline-none',
+          'flex flex-col gap-12 rounded-none rounded-t-lg focus-visible:outline-none',
           // hide the drawer handle
           '[&>*:first-child]:hidden'
         )}
       >
         {/* Custom drawer handle */}
-        <div className='mx-auto mb-8 mt-2 h-1 w-[60px] cursor-grab rounded-full bg-foreground' />
+        <div className='mx-auto mt-2 h-1 w-[60px] cursor-grab rounded-full bg-foreground' />
         {/* Top control */}
         <div className='absolute left-4 right-4 top-3 z-10 flex flex-row items-center justify-between'>
           {/* BGM Control */}

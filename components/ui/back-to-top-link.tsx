@@ -2,7 +2,7 @@
 
 import { ArticleMedium } from '@phosphor-icons/react';
 
-import { Tooltip, TooltipContent, TooltipTrigger } from './ui/tooltip';
+import { Tooltip, TooltipContent, TooltipTrigger } from './tooltip';
 
 export function BackToTopLink(props: { children: React.ReactNode }) {
   return (

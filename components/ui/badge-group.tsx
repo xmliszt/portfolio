@@ -1,4 +1,4 @@
-import { Badge } from './ui/badge';
+import { Badge } from './badge';
 
 type BadgeGroupProps = {
   tags: string[];
@@ -6,7 +6,7 @@ type BadgeGroupProps = {
 
 export function BadgeGroup({ tags }: BadgeGroupProps) {
   return (
-    <div className='flex flex-row flex-wrap gap-2'>
+    <div className='my-4 flex flex-row flex-wrap gap-2'>
       {tags.map((tag) => (
         <Badge
           key={tag}

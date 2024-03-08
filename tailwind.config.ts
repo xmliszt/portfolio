@@ -236,6 +236,26 @@ const config = {
             transform: 'translateX(0%)',
           },
         },
+        'car-wobble': {
+          '0%': {
+            transform: 'translate(0)',
+          },
+          '20%': {
+            transform: 'translate(1px, -1px)',
+          },
+          '40%': {
+            transform: 'translate(1px, 1px)',
+          },
+          '60%': {
+            transform: 'translate(-1px, 1px)',
+          },
+          '80%': {
+            transform: 'translate(-1px, -1px)',
+          },
+          '100%': {
+            transform: 'translate(0)',
+          },
+        },
       },
       animation: {
         'accordion-down': 'accordion-down 0.2s ease-out',
@@ -249,6 +269,7 @@ const config = {
         'fade-in-float-up': 'fade-in-float-up 2s ease-out',
         'fade-out-float-down': 'fade-out-float-down 2s ease-out',
         'wobble-horizontal': 'wobble-horizontal 1s ease-out infinite',
+        'car-wobble': 'car-wobble 0.5s linear infinite both',
       },
     },
   },

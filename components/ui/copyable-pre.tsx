@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { Check, Copy } from '@phosphor-icons/react';
 
-import { Tooltip, TooltipContent, TooltipTrigger } from './ui/tooltip';
+import { Tooltip, TooltipContent, TooltipTrigger } from './tooltip';
 
 export function CopyablePre({ children, raw, ...props }: any) {
   const [isCopied, setIsCopied] = useState(false);

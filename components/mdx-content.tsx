@@ -3,13 +3,14 @@ import Image from 'next/image';
 
 import { slugify } from '@/lib/utils';
 
-import { HoverPerspectiveContainer } from './custom/hover-perspective-container';
+import { WavingAvatar } from './custom/waving-avatar';
+import { BackToTopLink } from './ui/back-to-top-link';
+import { BadgeGroup } from './ui/badge-group';
+import { CopyablePre } from './ui/copyable-pre';
 import { CustomLink } from './ui/custom-link';
-import { BackToTopLink } from './back-to-top-link';
-import { BadgeGroup } from './badge-group';
-import { CopyablePre } from './copyable-pre';
-import { PhotoBentoGrid } from './photo-bento-grid';
-import { WavingAvatar } from './waving-avatar';
+import { ExternalActionButtonLink } from './ui/external-action-button-link';
+import { HoverPerspectiveContainer } from './ui/hover-perspective-container';
+import { PhotoBentoGrid } from './ui/photo-bento-grid';
 
 interface MdxProps {
   code: string;
@@ -57,7 +58,7 @@ export function MDXContent({ code, components }: MdxProps) {
             >
               {props.children}
             </a>
-            <BackToTopLink>{props.children}</BackToTopLink>
+            {props.children}
           </h3>
         ),
         h4: (props: any) => (
@@ -68,7 +69,7 @@ export function MDXContent({ code, components }: MdxProps) {
             >
               {props.children}
             </a>
-            <BackToTopLink>{props.children}</BackToTopLink>
+            {props.children}
           </h4>
         ),
         img: (props: any) => (
@@ -95,6 +96,7 @@ export function MDXContent({ code, components }: MdxProps) {
         WavingAvatar,
         BadgeGroup,
         PhotoBentoGrid,
+        ExternalActionButtonLink,
       }}
     />
   );
