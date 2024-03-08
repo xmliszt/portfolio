@@ -68,16 +68,20 @@ export function BGMProvider({ children }: { children: React.ReactNode }) {
         onend: () => {
           // Play the next one
           const nextIndex = (currentPlayingIndex + 1) % bgms.length;
+          const nextHowler = howlers[nextIndex];
+          if (!nextHowler) return;
           currentPlayingIndex = nextIndex;
-          howlers[nextIndex].play();
+          setCurrentlyPlayingBGM(bgms[nextIndex]);
+          setPlayerID(nextHowler.play());
         },
       });
       howlers.push(howl);
     }
     // Start playing the first one
-    howlers[currentPlayingIndex].play();
+    const howler = howlers[currentPlayingIndex];
+    if (!howler) return;
     setCurrentlyPlayingBGM(bgms[currentPlayingIndex]);
-    setPlayerID(howlers[currentPlayingIndex].play() ?? 0);
+    setPlayerID(howler.play());
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isPending, bgms]);
 
@@ -86,45 +90,49 @@ export function BGMProvider({ children }: { children: React.ReactNode }) {
     if (!howler) return;
     if (howler.playing(playerID)) {
       howler.pause(playerID);
-      setIsPlaying(false);
     } else {
-      setPlayerID(howler.play() ?? 0);
-      setIsPlaying(true);
+      setPlayerID(howler.play());
     }
   }
 
   function pauseBGM() {
     const howler = howlers[currentPlayingIndex];
+    if (!howler) return;
     howler.pause(playerID);
-    setIsPlaying(false);
   }
 
   function playBGM() {
     const howler = howlers[currentPlayingIndex];
-    setPlayerID(howler.play() ?? 0);
-    setIsPlaying(true);
+    if (!howler) return;
+    setPlayerID(howler.play());
   }
 
   function nextBGM() {
+    const howler = howlers[currentPlayingIndex];
+    if (!howler) return;
     // Stop the current one
-    howlers[currentPlayingIndex].stop();
+    howler.stop();
     // Play the next one
     const nextIndex = (currentPlayingIndex + 1) % bgms.length;
+    const nextHowler = howlers[nextIndex];
+    if (!nextHowler) return;
     currentPlayingIndex = nextIndex;
     setCurrentlyPlayingBGM(bgms[nextIndex]);
-    setPlayerID(howlers[nextIndex].play() ?? 0);
-    setIsPlaying(true);
+    setPlayerID(nextHowler.play());
   }
 
   function prevBGM() {
+    const howler = howlers[currentPlayingIndex];
+    if (!howler) return;
     // Stop the current one
-    howlers[currentPlayingIndex].stop();
+    howler.stop();
     // Play the previous one
     const prevIndex = (currentPlayingIndex - 1 + bgms.length) % bgms.length;
+    const prevHowler = howlers[prevIndex];
+    if (!prevHowler) return;
     currentPlayingIndex = prevIndex;
     setCurrentlyPlayingBGM(bgms[prevIndex]);
-    setPlayerID(howlers[prevIndex].play() ?? 0);
-    setIsPlaying(true);
+    setPlayerID(prevHowler.play());
   }
 
   return (
