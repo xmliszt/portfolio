@@ -169,10 +169,8 @@ export function BGMProvider({ children }: { children: React.ReactNode }) {
               console.log('Loaded', bgm.title);
             },
             onend: () => {
-              // Play the next one
-              const nextIndex = (currentPlayingIndex + 1) % bgms.length;
-              _stopBGM(currentPlayingIndex);
-              _playBGM(nextIndex);
+              console.log('Ended', bgm.title);
+              nextBGM();
             },
             onplayerror: (_, error) => {
               console.error('Error playing', bgm.title, error);
