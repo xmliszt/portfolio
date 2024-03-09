@@ -241,19 +241,45 @@ const config = {
             transform: 'translate(0)',
           },
           '20%': {
-            transform: 'translate(1px, -1px)',
+            transform: 'translate(0.5px, -0.5px)',
           },
           '40%': {
-            transform: 'translate(1px, 1px)',
+            transform: 'translate(0.5px, 0.5px)',
           },
           '60%': {
-            transform: 'translate(-1px, 1px)',
+            transform: 'translate(-0.5px, 0.5px)',
           },
           '80%': {
-            transform: 'translate(-1px, -1px)',
+            transform: 'translate(-0.5px, -0.5px)',
           },
           '100%': {
             transform: 'translate(0)',
+          },
+        },
+        'smoke-rise-up-and-fade-out': {
+          '0%': {
+            transform: 'translateY(0) translateX(0) scale(0.2)',
+            opacity: '0',
+          },
+          '20': {
+            transform: 'translateY(-2px) translateX(-4px) scale(0.4)',
+            opacity: '0.4',
+          },
+          '40%': {
+            transform: 'translateY(-4px) translateX(0px) scale(0.6)',
+            opacity: '0.5',
+          },
+          '60%': {
+            transform: 'translateY(-6px) translateX(-4px) scale(0.8)',
+            opacity: '0.6',
+          },
+          '80%': {
+            transform: 'translateY(-8px) translateX(0px) scale(1.4)',
+            opacity: '0.3',
+          },
+          '100%': {
+            transform: 'translateY(-10px) translateX(-4px) scale(2)',
+            opacity: '0',
           },
         },
       },
@@ -270,6 +296,7 @@ const config = {
         'fade-out-float-down': 'fade-out-float-down 1s ease-out',
         'wobble-horizontal': 'wobble-horizontal 1s ease-out infinite',
         'car-wobble': 'car-wobble 0.5s linear infinite both',
+        smoke: 'smoke-rise-up-and-fade-out 1s linear',
       },
     },
   },
