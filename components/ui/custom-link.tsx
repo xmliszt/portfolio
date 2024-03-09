@@ -16,7 +16,7 @@ export function CustomLink({
   target?: React.HTMLAttributeAnchorTarget;
 }) {
   return (
-    <div className='group relative inline-block w-fit [&>*]:cursor-alias'>
+    <object className='group relative inline-block w-fit [&>*]:cursor-alias'>
       <Link
         href={href}
         className={cn(
@@ -33,6 +33,6 @@ export function CustomLink({
           'h-0 w-0 opacity-0 transition-[opacity_width] duration-300 ease-in-out group-hover:h-[1px] group-hover:w-full group-hover:opacity-100'
         )}
       ></span>
-    </div>
+    </object>
   );
 }

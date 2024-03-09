@@ -12,6 +12,7 @@ import './piano-key.css';
 
 type PianoKeyProps = {
   note: PianoNote;
+  octave: number;
 };
 
 let noteCounter = 0;
@@ -25,6 +26,7 @@ export function PianoKey(props: PianoKeyProps) {
       `https://tvstbbuidvwgelgidaqy.supabase.co/storage/v1/object/public/piano-sounds/${props.note}.mp3`,
     ],
     volume: 0.5,
+    rate: 1,
   });
 
   function keyColor(note: PianoNote): 'white' | 'black' {
@@ -77,6 +79,7 @@ export function PianoKey(props: PianoKeyProps) {
         isLastKey(props.note) && '!rounded-tr-lg'
       )}
       onPointerDown={() => {
+        howler.rate(props.octave);
         howler.play();
         addAnimatedMusicNote();
       }}

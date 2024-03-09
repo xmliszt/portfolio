@@ -2,6 +2,8 @@
 
 import { useEffect, useRef, useState } from 'react';
 import {
+  ArrowLeft,
+  ArrowRight,
   CaretDown,
   CaretUp,
   Disc,
@@ -20,7 +22,7 @@ type BGMPlayerProps = {
 };
 
 export function BGMPlayer(props: BGMPlayerProps) {
-  const { isPlaying, toggleBGM, currentBGM } = useBGM();
+  const { isIdle, isLoading, isPlaying, toggleBGM, currentBGM } = useBGM();
   const [isBGMInfoShowing, setIsBGMInfoShowing] = useState(false);
   const bgmFadeOutTimeout = useRef<NodeJS.Timeout>();
 
@@ -42,7 +44,8 @@ export function BGMPlayer(props: BGMPlayerProps) {
 
   return (
     <div className='flex h-12 flex-row items-center gap-2 md:h-16 md:gap-6'>
-      {currentBGM &&
+      {!isIdle &&
+        currentBGM &&
         isBGMInfoShowing &&
         props.showBgmInfo &&
         props.bgmInfoPosition === 'left' && (
@@ -53,11 +56,25 @@ export function BGMPlayer(props: BGMPlayerProps) {
             href={currentBGM.external_url}
           />
         )}
+      {isIdle && props.bgmInfoPosition === 'left' && (
+        <div className='flex flex-col items-start justify-center gap-0 overflow-hidden text-ellipsis [&>*]:whitespace-nowrap'>
+          <span className='text-sm font-bold'>
+            Have some music{' '}
+            <ArrowRight className='inline-block animate-pulse' size={16} />
+          </span>
+          <span className='text-xs'>休息一下，听首歌吧</span>
+        </div>
+      )}
       <Tooltip>
         <TooltipTrigger asChild>
           <button
             onClick={toggleBGM}
-            className='transition-transform duration-300 ease-out hover:rotate-[360deg] hover:scale-125'
+            className={cn(
+              'transition-transform duration-300 ease-out hover:rotate-[360deg] hover:scale-125',
+              isLoading
+                ? 'cursor-pulse animate-pulse duration-1000'
+                : 'cursor-pointer duration-300'
+            )}
           >
             <Disc
               size={24}
@@ -83,6 +100,15 @@ export function BGMPlayer(props: BGMPlayerProps) {
             href={currentBGM.external_url}
           />
         )}
+      {isIdle && props.bgmInfoPosition === 'right' && (
+        <div className='flex flex-col items-start justify-center gap-0 overflow-hidden text-ellipsis [&>*]:whitespace-nowrap'>
+          <span className='text-sm font-bold'>
+            <ArrowLeft className='inline-block animate-pulse' size={16} />
+            Have some music{' '}
+          </span>
+          <span className='ml-4 text-xs'>休息一下，听首歌吧</span>
+        </div>
+      )}
     </div>
   );
 }

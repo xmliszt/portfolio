@@ -10,7 +10,7 @@ type ShadowSubtitleProps = {
 
 export function ShadowSubtitle(props: ShadowSubtitleProps) {
   return (
-    <h2
+    <span
       className={cn(
         'absolute -bottom-8 left-0 -z-10 m-0 origin-top text-3xl font-bold text-muted-foreground [mask:linear-gradient(transparent_2%,black_98%)]',
         isMobile || isTablet
@@ -20,6 +20,6 @@ export function ShadowSubtitle(props: ShadowSubtitleProps) {
       )}
     >
       {props.children}
-    </h2>
+    </span>
   );
 }
