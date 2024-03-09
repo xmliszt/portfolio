@@ -22,7 +22,6 @@ export function ImageDialog(props: ImageDialogProps) {
                 width={200}
                 height={300}
                 className='m-0 h-auto w-full rounded-lg object-cover'
-                unoptimized
               />
             </HoverPerspectiveContainer>
           </DialogTrigger>
@@ -33,9 +32,10 @@ export function ImageDialog(props: ImageDialogProps) {
         <Image
           src={props.src}
           alt={props.alt}
-          width={200}
-          height={300}
+          width={400}
+          height={600}
           className='m-0 h-auto w-full rounded-lg object-cover'
+          unoptimized
         />
       </DialogContent>
     </Dialog>
