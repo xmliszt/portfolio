@@ -133,18 +133,28 @@ function BGMController({
       )}
     >
       <div className='hidden flex-col items-center justify-between md:flex'>
-        <button
-          className='text-muted-foreground transition-[transform_color] ease-out hover:scale-105 hover:text-primary'
-          onClick={() => prevBGM()}
-        >
-          <CaretUp />
-        </button>
-        <button
-          className='text-muted-foreground transition-[transform_color] ease-out hover:scale-105 hover:text-primary'
-          onClick={() => nextBGM()}
-        >
-          <CaretDown />
-        </button>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <button
+              className='text-muted-foreground transition-[transform_color] ease-out hover:scale-105 hover:text-primary'
+              onClick={() => prevBGM()}
+            >
+              <CaretUp />
+            </button>
+          </TooltipTrigger>
+          <TooltipContent>Previous song</TooltipContent>
+        </Tooltip>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <button
+              className='text-muted-foreground transition-[transform_color] ease-out hover:scale-105 hover:text-primary'
+              onClick={() => nextBGM()}
+            >
+              <CaretDown />
+            </button>
+          </TooltipTrigger>
+          <TooltipContent side='bottom'>Next song</TooltipContent>
+        </Tooltip>
       </div>
       <a href={href} target='_blank'>
         <div className='flex flex-col items-start justify-center gap-0 overflow-hidden text-ellipsis [&>*]:whitespace-nowrap'>
@@ -153,18 +163,28 @@ function BGMController({
         </div>
       </a>
       <div className='flex flex-row items-stretch justify-center md:hidden'>
-        <button
-          className='text-muted-foreground transition-[transform_color] ease-out hover:scale-105 hover:text-primary'
-          onClick={() => prevBGM()}
-        >
-          <SkipBack size={20} />
-        </button>
-        <button
-          className='text-muted-foreground transition-[transform_color] ease-out hover:scale-105 hover:text-primary'
-          onClick={() => nextBGM()}
-        >
-          <SkipForward size={20} />
-        </button>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <button
+              className='text-muted-foreground transition-[transform_color] ease-out hover:scale-105 hover:text-primary'
+              onClick={() => prevBGM()}
+            >
+              <SkipBack size={20} />
+            </button>
+          </TooltipTrigger>
+          <TooltipContent side='bottom'>Previous song</TooltipContent>
+        </Tooltip>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <button
+              className='text-muted-foreground transition-[transform_color] ease-out hover:scale-105 hover:text-primary'
+              onClick={() => nextBGM()}
+            >
+              <SkipForward size={20} />
+            </button>
+          </TooltipTrigger>
+          <TooltipContent side='bottom'>Next song</TooltipContent>
+        </Tooltip>
       </div>
     </div>
   );
