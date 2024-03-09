@@ -14,7 +14,7 @@ export default function TagsPage() {
       <h1>Tags</h1>
       <div className='flex flex-col gap-2'>
         {sortedTags.map((tag) => (
-          <CustomLink key={tag} href={`/tags/${tag}`}>
+          <CustomLink key={tag} href={`/tags/${tag}`} target='_self'>
             <span>{tag}</span>
           </CustomLink>
         ))}

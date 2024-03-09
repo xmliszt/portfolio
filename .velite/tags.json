@@ -1,21 +1,12 @@
 [
   {
-    "name": "tag",
-    "slug": "tag",
-    "count": {
-      "total": 0,
-      "posts": 0
-    },
-    "permalink": "/tag"
-  },
-  {
     "name": "edtech",
     "slug": "edtech",
-    "permalink": "/edtech",
     "count": {
       "total": 7,
       "posts": 7
-    }
+    },
+    "permalink": "/edtech"
   },
   {
     "name": "taboo-ai",

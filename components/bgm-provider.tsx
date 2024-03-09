@@ -170,7 +170,17 @@ export function BGMProvider({ children }: { children: React.ReactNode }) {
             },
             onend: () => {
               console.log('Ended', bgm.title);
-              nextBGM();
+              const nextIndex = (index + 1) % bgms.length;
+              const sound = sounds[nextIndex];
+              if (!sound || sound.playing()) return;
+              console.log(
+                `Start playing ${bgms[nextIndex].title} | ${Object.keys(sounds).length} in the playlist`
+              );
+              setIsIdle(false);
+              sound.volume(VOLUME);
+              sound.play();
+              setIsPlaying(true);
+              setCurrentPlayingIndex(nextIndex);
             },
             onplayerror: (_, error) => {
               console.error('Error playing', bgm.title, error);
