@@ -70,9 +70,7 @@ const sounds: Record<number, Howl> = {};
 export function BGMProvider({ children }: { children: React.ReactNode }) {
   const [bgms, setBgms] = useState<BGM[]>([]);
   const [isPlaying, setIsPlaying] = useState(false);
-  const [currentPlayingIndex, setCurrentPlayingIndex] = useState(
-    Math.floor(Math.random() * bgms.length)
-  );
+  const [currentPlayingIndex, setCurrentPlayingIndex] = useState(0);
   const [isIdle, setIsIdle] = useState(true);
   const [isPending, startTransition] = useTransition();
 
@@ -199,6 +197,7 @@ export function BGMProvider({ children }: { children: React.ReactNode }) {
 
     startTransition(async () => {
       const bgms = await fetchBGMs();
+      setCurrentPlayingIndex(Math.floor(Math.random() * bgms.length));
       setBgms(bgms);
       loadHowlers(bgms);
     });
