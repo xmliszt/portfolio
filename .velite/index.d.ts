@@ -15,3 +15,6 @@ export declare const pages: Page[]
 
 export type Post = Collections['posts']['schema']['_output']
 export declare const posts: Post[]
+
+export type Focus = Collections['focus']['schema']['_output']
+export declare const focus: Focus[]

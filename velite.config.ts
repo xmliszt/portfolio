@@ -1,3 +1,4 @@
+import { format } from 'date-fns';
 import rehypePrettyCode from 'rehype-pretty-code';
 import { visit } from 'unist-util-visit';
 import { defineCollection, defineConfig, s } from 'velite';
@@ -97,7 +98,36 @@ const posts = defineCollection({
       }),
       content: s.mdx(),
     })
-    .transform((data) => ({ ...data, permalink: `/blog/${data.slug}` })),
+    .transform((data) => ({ ...data, permalink: `/posts/${data.slug}` })),
+});
+
+const focus = defineCollection({
+  name: 'Focus',
+  pattern: 'focus/**/*.mdx',
+  schema: s
+    .object({
+      title: s.string().max(99).optional(),
+      slug: s.slug('focus').optional(),
+      month: s.number().min(1).max(12),
+      year: s.number().min(1970).max(2100),
+      updated: s.isodate().optional(),
+      cover: s.string(),
+      description: s.string().max(999).optional(),
+      draft: s.boolean().default(false),
+      featured: s.boolean().default(false),
+      meta: meta,
+      toc: s.toc({
+        prefix: 'anchor:',
+      }),
+      metadata: s.metadata(),
+      content: s.mdx(),
+    })
+    .transform((data) => ({
+      ...data,
+      title: `${format(new Date(data.year, data.month - 1), 'LLLL yyyy')} Focus`,
+      slug: `${data.year}-${data.month}`,
+      permalink: `/focus/${data.year}-${data.month}`,
+    })),
 });
 
 export default defineConfig({
@@ -109,7 +139,7 @@ export default defineConfig({
     name: '[name]-[hash:6].[ext]',
     clean: true,
   },
-  collections: { options, tags, pages, posts },
+  collections: { options, tags, pages, posts, focus },
   mdx: {
     rehypePlugins: [
       () => (tree) => {
@@ -145,10 +175,12 @@ export default defineConfig({
     ],
   },
   prepare: ({ tags, posts }) => {
+    // filter out drafts in production
     const docs = posts.filter(
       (i) => process.env.NODE_ENV !== 'production' || !i.draft
     );
 
+    // prepare and update tags for each post
     const tagsFromDoc = Array.from(
       new Set(docs.map((item) => item.tags).flat())
     ).filter((i) => tags.find((j) => j.name === i) == null);
@@ -163,7 +195,7 @@ export default defineConfig({
     tags.forEach((i) => {
       i.count.posts = posts.filter((j) => j.tags.includes(i.name)).length;
       i.count.total = i.count.posts;
-      i.permalink = `/${i.slug}`;
+      i.permalink = `tags/${i.slug}`;
     });
 
     // return false // return false to prevent velite from writing data to disk

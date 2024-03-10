@@ -20,6 +20,7 @@ import {
   NavigationBarItem,
 } from '../components/custom/navigation-bar';
 
+import { ROUTES } from './routes';
 import { ScrollAreaWithTOCTracker } from './scroll-area-with-toc-tracker';
 
 import './globals.css';
@@ -154,25 +155,11 @@ export default function RootLayout({
                     >
                       {/* Show when in desktop view port */}
                       <NavigationBar>
-                        <NavigationBarItem href='/'>About me</NavigationBarItem>
-                        <NavigationBarItem href='/projects'>
-                          Projects
-                        </NavigationBarItem>
-                        <NavigationBarItem href='/hobbies'>
-                          Hobbies
-                        </NavigationBarItem>
-                        <NavigationBarItem href='/posts'>
-                          Posts
-                        </NavigationBarItem>
-                        <NavigationBarItem href='/playground'>
-                          Playground
-                        </NavigationBarItem>
-                        <NavigationBarItem href='/contacts'>
-                          Contacts
-                        </NavigationBarItem>
-                        <NavigationBarItem href='/the-why'>
-                          The why
-                        </NavigationBarItem>
+                        {ROUTES.map((route) => (
+                          <NavigationBarItem key={route.path} href={route.path}>
+                            {route.name}
+                          </NavigationBarItem>
+                        ))}
                       </NavigationBar>
                       {/* Main content area */}
                       {children}
@@ -188,19 +175,11 @@ export default function RootLayout({
               {/* Show when in mobile view port */}
               <FloatingNavigationProvider>
                 <FloatingNavigationBar>
-                  <NavigationBarItem href='/'>About me</NavigationBarItem>
-                  <NavigationBarItem href='/projects'>
-                    Projects
-                  </NavigationBarItem>
-                  <NavigationBarItem href='/hobbies'>Hobbies</NavigationBarItem>
-                  <NavigationBarItem href='/posts'>Posts</NavigationBarItem>
-                  <NavigationBarItem href='/playground'>
-                    Playground
-                  </NavigationBarItem>
-                  <NavigationBarItem href='/contacts'>
-                    Contacts
-                  </NavigationBarItem>
-                  <NavigationBarItem href='/the-why'>The why</NavigationBarItem>
+                  {ROUTES.map((route) => (
+                    <NavigationBarItem key={route.path} href={route.path}>
+                      {route.name}
+                    </NavigationBarItem>
+                  ))}
                 </FloatingNavigationBar>
               </FloatingNavigationProvider>
               {/* Theme switch */}

@@ -99,6 +99,7 @@ export function MDXContent({ code, components }: MdxProps) {
         PhotoBentoGrid,
         ExternalActionButtonLink,
         LoadMoreLinks,
+        CustomLink,
       }}
     />
   );

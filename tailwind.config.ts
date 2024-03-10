@@ -54,6 +54,10 @@ const config = {
               marginTop: '0.2rem',
               marginBottom: '0.2rem',
             },
+            'input[type="checkbox"]': {
+              margin: 0,
+              marginRight: '0.5rem',
+            },
           },
         },
       },

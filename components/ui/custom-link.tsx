@@ -20,7 +20,7 @@ export function CustomLink({
       <Link
         href={href}
         className={cn(
-          'font-bold',
+          'font-bold [&>p]:m-0',
           isMobile || isTablet ? 'underline underline-offset-2' : 'no-underline'
         )}
         target={target ?? '_blank'}

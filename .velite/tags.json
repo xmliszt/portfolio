@@ -6,12 +6,12 @@
       "total": 7,
       "posts": 7
     },
-    "permalink": "/edtech"
+    "permalink": "tags/edtech"
   },
   {
     "name": "taboo-ai",
     "slug": "taboo-ai",
-    "permalink": "/taboo-ai",
+    "permalink": "tags/taboo-ai",
     "count": {
       "total": 1,
       "posts": 1
@@ -20,7 +20,7 @@
   {
     "name": "english-learning",
     "slug": "english-learning",
-    "permalink": "/english-learning",
+    "permalink": "tags/english-learning",
     "count": {
       "total": 1,
       "posts": 1
@@ -29,7 +29,7 @@
   {
     "name": "ai",
     "slug": "ai",
-    "permalink": "/ai",
+    "permalink": "tags/ai",
     "count": {
       "total": 2,
       "posts": 2
