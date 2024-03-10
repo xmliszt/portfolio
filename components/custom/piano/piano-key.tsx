@@ -1,6 +1,6 @@
 'use client';
 
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { MusicNote } from '@phosphor-icons/react';
 import { Howl } from 'howler';
 
@@ -16,18 +16,28 @@ type PianoKeyProps = {
 };
 
 let noteCounter = 0;
+let sounds: Record<string, Howl> = {};
 
 export function PianoKey(props: PianoKeyProps) {
   const [musicNoteIds, setMusicNoteIds] = useState<string[]>([]);
   const timersRef = useRef<{ [key: string]: NodeJS.Timeout | undefined }>({});
 
-  const howler = new Howl({
-    src: [
-      `https://tvstbbuidvwgelgidaqy.supabase.co/storage/v1/object/public/piano-sounds/${props.note}.mp3`,
-    ],
-    volume: 0.5,
-    rate: 1,
-  });
+  useEffect(() => {
+    if (!sounds[props.note]) {
+      sounds[props.note] = new Howl({
+        src: [
+          `https://tvstbbuidvwgelgidaqy.supabase.co/storage/v1/object/public/piano-sounds/${props.note}.mp3`,
+        ],
+        volume: 0.5,
+        rate: 1,
+        onload: () => {
+          console.log(`Loaded ${props.note}`);
+        },
+      });
+    } else {
+      console.log(`Already loaded ${props.note}`);
+    }
+  }, [props.note]);
 
   function keyColor(note: PianoNote): 'white' | 'black' {
     const blackNotes: PianoNote[] = ['cs6', 'ds6', 'fs6', 'gs6', 'as6'];
@@ -79,8 +89,8 @@ export function PianoKey(props: PianoKeyProps) {
         isLastKey(props.note) && '!rounded-tr-lg'
       )}
       onPointerDown={() => {
-        howler.rate(props.octave);
-        howler.play();
+        sounds[props.note].rate(props.octave);
+        sounds[props.note].play();
         addAnimatedMusicNote();
       }}
     >
