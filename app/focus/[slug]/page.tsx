@@ -56,7 +56,8 @@ export default async function FocusPostPage({ params }: PostProps) {
             alt={post.title}
             width={200}
             height={200}
-            layout={'responsive'}
+            layout='responsive'
+            className='rounded-lg'
             unoptimized
           />
         </HoverPerspectiveContainer>
