@@ -68,11 +68,13 @@ export function BGMPlayer(props: BGMPlayerProps) {
       <Tooltip>
         <TooltipTrigger asChild>
           <button
-            onClick={toggleBGM}
+            onClick={() => {
+              if (!isLoading) toggleBGM();
+            }}
             className={cn(
               'transition-transform duration-300 ease-out hover:rotate-[360deg] hover:scale-125',
               isLoading
-                ? 'cursor-pulse animate-pulse duration-1000'
+                ? 'animate-pulse cursor-progress duration-1000'
                 : 'cursor-pointer duration-300'
             )}
           >
