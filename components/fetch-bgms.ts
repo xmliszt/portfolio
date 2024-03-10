@@ -1,5 +1,8 @@
 'use server';
 
+import { getDownloadURL, ref } from 'firebase/storage';
+
+import { firebaseStorage } from '@/lib/firebase';
 import { createServiceRoleClient } from '@/lib/supabase/create-service-role-client';
 
 export type BGM = {
@@ -16,8 +19,8 @@ export async function fetchBGMs() {
   const bgms = response.data;
   let result: BGM[] = [];
   for (const bgm of bgms) {
-    const publicUrl = supabase.storage.from('bgm').getPublicUrl(`${bgm.id}.mp3`)
-      .data.publicUrl;
+    const bgmRef = ref(firebaseStorage, `bgms/${bgm.id}.mp3`);
+    const publicUrl = await getDownloadURL(bgmRef);
     result.push({
       title: bgm.title,
       artist: bgm.artist,
