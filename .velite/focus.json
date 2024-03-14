@@ -2,7 +2,7 @@
   {
     "month": 3,
     "year": 2024,
-    "updated": "2024-03-10T00:00:00.000Z",
+    "updated": "2024-03-14T00:00:00.000Z",
     "cover": "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fwww.framer.com%2Fimages%2Fsocial%2Fmotion.png&f=1&nofb=1&ipt=659d2042a1d1ae1b641decc1851909cede0c1b067a72002f5ba36ed57400f5dc&ipo=images",
     "draft": false,
     "featured": false,
@@ -17,13 +17,18 @@
         "title": "Progress tracker",
         "url": "#anchor:progress-tracker",
         "items": []
+      },
+      {
+        "title": "Playground",
+        "url": "#anchor:playground",
+        "items": []
       }
     ],
     "metadata": {
       "readingTime": 1,
-      "wordCount": 38
+      "wordCount": 50
     },
-    "content": "const{Fragment:n,jsx:e,jsxs:t}=arguments[0];function _createMdxContent(r){const i={a:\"a\",h2:\"h2\",input:\"input\",li:\"li\",p:\"p\",strong:\"strong\",ul:\"ul\",...r.components};return t(n,{children:[e(i.h2,{children:\"What is the focus?\"}),\"\\n\",t(i.p,{children:[\"This month, I'm focusing on \",e(i.a,{href:\"https://www.framer.com/motion/\",children:e(i.strong,{children:\"Framer Motion\"})}),\". It is a convenient library for creating cool animations in React.\"]}),\"\\n\",e(i.h2,{children:\"Progress tracker\"}),\"\\n\",t(i.ul,{className:\"contains-task-list\",children:[\"\\n\",t(i.li,{className:\"task-list-item\",children:[e(i.input,{type:\"checkbox\",disabled:!0}),\" \",\"Read and learn about Frame Motion\"]}),\"\\n\",t(i.li,{className:\"task-list-item\",children:[e(i.input,{type:\"checkbox\",disabled:!0}),\" \",\"Create a toy project in the experiment page\"]}),\"\\n\"]})]})}return{default:function(n={}){const{wrapper:t}=n.components||{};return t?e(t,{...n,children:e(_createMdxContent,{...n})}):_createMdxContent(n)}};",
+    "content": "const{Fragment:e,jsx:n,jsxs:t}=arguments[0];function _createMdxContent(r){const a={a:\"a\",code:\"code\",h2:\"h2\",input:\"input\",li:\"li\",p:\"p\",strong:\"strong\",ul:\"ul\",...r.components};return t(e,{children:[n(a.h2,{children:\"What is the focus?\"}),\"\\n\",t(a.p,{children:[\"This month, I'm focusing on \",n(a.a,{href:\"https://www.framer.com/motion/\",children:n(a.strong,{children:\"Framer Motion\"})}),\". It is a convenient library for creating cool animations in React.\"]}),\"\\n\",n(a.h2,{children:\"Progress tracker\"}),\"\\n\",t(a.ul,{className:\"contains-task-list\",children:[\"\\n\",t(a.li,{className:\"task-list-item\",children:[n(a.input,{type:\"checkbox\",disabled:!0}),\" \",\"Read and learn about Frame Motion (Ongoing...)\"]}),\"\\n\",t(a.li,{className:\"task-list-item\",children:[n(a.input,{type:\"checkbox\",disabled:!0}),\" \",\"Create a toy project in the experiment page\"]}),\"\\n\"]}),\"\\n\",n(a.h2,{children:\"Playground\"}),\"\\n\",t(a.p,{children:[\"Use of \",n(a.code,{children:\"Variants\"}),\" and \",n(a.code,{children:\"staggerChildren\"}),\" to create a staggered transition.\"]}),\"\\n\",n(\"iframe\",{src:\"https://codesandbox.io/embed/c8yxdg?view=Editor+%2B+Preview&module=%2Fsrc%2FApp.tsx&hidenavigation=1\",className:\"h-[80vh] w-full overflow-hidden rounded-md border-0\",title:\"variant, staggered transition\",allow:\"accelerometer; ambient-light-sensor; camera; encrypted-media; geolocation; gyroscope; hid; microphone; midi; payment; usb; vr; xr-spatial-tracking\",sandbox:\"allow-forms allow-modals allow-popups allow-presentation allow-same-origin allow-scripts\"})]})}return{default:function(e={}){const{wrapper:t}=e.components||{};return t?n(t,{...e,children:n(_createMdxContent,{...e})}):_createMdxContent(e)}};",
     "title": "March 2024 Focus",
     "slug": "2024-3",
     "permalink": "/focus/2024-3"
