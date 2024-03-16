@@ -18,3 +18,6 @@ export declare const posts: Post[]
 
 export type Focus = Collections['focus']['schema']['_output']
 export declare const focus: Focus[]
+
+export type Hobbies = Collections['hobbies']['schema']['_output']
+export declare const hobbies: Hobbies[]

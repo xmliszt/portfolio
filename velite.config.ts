@@ -130,6 +130,29 @@ const focus = defineCollection({
     })),
 });
 
+const hobbies = defineCollection({
+  name: 'Hobbies',
+  pattern: 'hobbies/**/*.mdx',
+  schema: s
+    .object({
+      title: s.string().max(99),
+      subtitle: s.string().max(999).optional(),
+      slug: s.slug('hobbies'),
+      synopsis: s.string().max(999),
+      coverImageUrl: s.string(),
+      coverImageAlt: s.string().max(99),
+      body: s.mdx(),
+      toc: s.toc({
+        prefix: 'anchor:',
+      }),
+      showToc: s.boolean().default(true),
+    })
+    .transform((data) => ({
+      ...data,
+      permalink: `/hobbies/${data.slug}`,
+    })),
+});
+
 export default defineConfig({
   root: 'content',
   output: {
@@ -139,7 +162,7 @@ export default defineConfig({
     name: '[name]-[hash:6].[ext]',
     clean: true,
   },
-  collections: { options, tags, pages, posts, focus },
+  collections: { options, tags, pages, posts, focus, hobbies },
   mdx: {
     rehypePlugins: [
       () => (tree) => {

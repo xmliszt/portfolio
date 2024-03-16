@@ -7,26 +7,32 @@ import { cn } from '@/lib/utils';
 type HoverPerspectiveContainerProps = {
   children: React.ReactNode;
   className?: string;
+  onMouseEnter?: () => void;
+  onMouseLeave?: () => void;
 };
 
 export function HoverPerspectiveContainer({
   children,
   className,
+  onMouseEnter,
+  onMouseLeave,
 }: HoverPerspectiveContainerProps) {
   const boundingRef = useRef<DOMRect | null>(null);
   return (
     <div
       className={cn(
-        'group relative transform rounded-lg shadow-lg outline outline-[1px] outline-border transition-[transoform_border_box-shadow] duration-300 ease-out',
+        'group relative transform overflow-hidden rounded-lg shadow-lg outline outline-[1px] outline-border transition-[transoform_border_box-shadow] duration-300 ease-out',
         className
       )}
       onMouseEnter={(event) => {
         boundingRef.current = event.currentTarget.getBoundingClientRect();
+        if (onMouseEnter) onMouseEnter();
       }}
       onMouseLeave={(event) => {
         boundingRef.current = null;
         // Restore rotation
         event.currentTarget.style.transform = '';
+        if (onMouseLeave) onMouseLeave();
       }}
       onMouseMove={(event) => {
         if (!boundingRef.current) return;

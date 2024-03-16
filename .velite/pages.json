@@ -10,89 +10,6 @@
     "path": "/Users/xmliszt/Projects/Web Development/portfolio/content/pages/about/index.mdx"
   },
   {
-    "title": "Contacts",
-    "subtitle": "找我聊聊？",
-    "slug": "contacts",
-    "body": "const{jsx:n,jsxs:e}=arguments[0];function _createMdxContent(i){const t={a:\"a\",li:\"li\",ul:\"ul\",...i.components};return e(t.ul,{children:[\"\\n\",n(t.li,{children:n(t.a,{href:\"mailto:me@liyuxuan.dev\",children:\"Email: me@liyuxuan.dev\"})}),\"\\n\",n(t.li,{children:n(t.a,{href:\"https://read.cv/liyuxuan\",children:\"ReadCV\"})}),\"\\n\",n(t.li,{children:n(t.a,{href:\"https://bento.me/liyuxuan\",children:\"Bento\"})}),\"\\n\",n(t.li,{children:n(t.a,{href:\"https://www.github.com/xmliszt\",children:\"GitHub\"})}),\"\\n\",n(t.li,{children:n(t.a,{href:\"https://www.twitter.com/xmliszt\",children:\"Twitter\"})}),\"\\n\",n(t.li,{children:n(t.a,{href:\"https://www.linkedin.com/in/li-yuxuan/\",children:\"LinkedIn\"})}),\"\\n\",n(t.li,{children:n(t.a,{href:\"https://reddit.com/user/bubbling-fish\",children:\"Reddit\"})}),\"\\n\",n(t.li,{children:n(t.a,{href:\"https://liyuxuan.substack.com/\",children:\"Substack\"})}),\"\\n\",n(t.li,{children:n(t.a,{href:\"https://medium.com/@xmliszt\",children:\"Medium\"})}),\"\\n\",n(t.li,{children:n(t.a,{href:\"https://youtube.com/@bbfishstudio8837\",children:\"YouTube\"})}),\"\\n\",n(t.li,{children:n(t.a,{href:\"https://instagram.com/xmliszt\",children:\"Instagram\"})}),\"\\n\"]})}return{default:function(e={}){const{wrapper:i}=e.components||{};return i?n(i,{...e,children:n(_createMdxContent,{...e})}):_createMdxContent(e)}};",
-    "toc": [],
-    "showToc": false,
-    "permalink": "/contacts",
-    "path": "/Users/xmliszt/Projects/Web Development/portfolio/content/pages/contacts/index.mdx"
-  },
-  {
-    "title": "Hobbies",
-    "subtitle": "兴趣爱好",
-    "slug": "hobbies",
-    "body": "const{Fragment:e,jsx:n,jsxs:r}=arguments[0];function _createMdxContent(i){const o={a:\"a\",h2:\"h2\",h3:\"h3\",li:\"li\",p:\"p\",strong:\"strong\",ul:\"ul\",...i.components},{LoadMoreLinks:l,PhotoBentoGrid:t}=o;return l||_missingMdxReference(\"LoadMoreLinks\",!0),t||_missingMdxReference(\"PhotoBentoGrid\",!0),r(e,{children:[r(o.p,{children:[\"In my spare time, I immerse myself in a diverse array of hobbies that reflect my multifaceted interests and passions. I find solace in the imaginative realms crafted by \",n(o.strong,{children:\"Studio Ghibli\"}),\", where each \",n(o.strong,{children:\"film\"}),\" offers a captivating escape into worlds brimming with dreams, love, and kindness. \",n(o.strong,{children:\"Music\"}),\" is not just a pastime but a deeply ingrained part of my life — I've honed my skills across various instruments, from piano and violin to guitar and beyond, allowing me to \",n(o.strong,{children:\"compose\"}),\" my own melodies and produce music that speaks to the heart. \",n(o.strong,{children:\"Photography\"}),\" serves as my visual storytelling medium, capturing fleeting moments and encapsulating the beauty found in the world around me. These hobbies not only provide me with endless joy and inspiration but also shape my perspective and enrich my life in countless ways.\"]}),\"\\n\",r(o.p,{children:[\"在我的空闲时间里，我有多方面的兴趣爱好。我在由\",n(o.strong,{children:\"吉卜力\"}),\"工作室打造的想象领域中找到了慰藉，在每一部\",n(o.strong,{children:\"电影\"}),\"中，我都能沉浸在充满梦想、爱和善良的世界中。\",n(o.strong,{children:\"音乐\"}),\"不仅仅是一种消遣，而是我生活中深深扎根的一部分——我在钢琴、小提琴和吉他等各种乐器上磨练自己的技能，让我能够\",n(o.strong,{children:\"创作出自己的旋律\"}),\"，制作出触动心灵的音乐。\",n(o.strong,{children:\"摄影\"}),\"是我视觉叙事的媒介，捕捉着流逝的时刻，封存着我周围世界的美丽。这些爱好不仅为我带来无尽的快乐和灵感，而且在无数方面塑造了我的观点，丰富了我的生活。\"]}),\"\\n\",n(o.h2,{children:\"Music composition 我的音乐创作\"}),\"\\n\",n(\"iframe\",{width:\"560\",height:\"315\",src:\"https://www.youtube.com/embed/FkM4nT9QW-w?si=xrV9EUhUJw_Us55U\",title:\"YouTube video player\",allow:\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share\",allowFullScreen:!0}),\"\\n\",n(\"iframe\",{width:\"560\",height:\"315\",src:\"https://www.youtube.com/embed/Js0PuGFGTpc?si=5VIEPZ24IvG4xEw_\",title:\"YouTube video player\",allow:\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share\",allowFullScreen:!0}),\"\\n\",n(\"iframe\",{width:\"560\",height:\"315\",src:\"https://www.youtube.com/embed/TeEKQYqgN_s?si=aQRRH7exHcxaAhBL\",title:\"YouTube video player\",allow:\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share\",allowFullScreen:!0}),\"\\n\",n(l,{hrefs:[\"https://www.youtube.com/embed/zC6IBUN3qes?si=BZmAC6UrrKtGa7Vo\",\"https://www.youtube.com/embed/hzmVz2jj278?si=17PDNeUjQ7PUwFvT\",\"https://www.youtube.com/embed/qQ1vnyNx9bg?si=OvHF_9CNDboyZgQA\",\"https://www.youtube.com/embed/VeJJRcXHsLU?si=_IVyry-xFb06IR6M\",\"https://www.youtube.com/embed/g3di7Jk9kVo?si=NaqWTP1kSFDbFM8Z\",\"https://www.youtube.com/embed/P6BZMOyEFPI?si=FiIRT9o6rUQkT9lE\"]}),\"\\n\",r(o.p,{children:[\"Follow my \",n(o.a,{href:\"https://instagram.com/bbfish_studio\",children:\"Instagram\"}),\" and \",n(o.a,{href:\"https://www.youtube.com/@bbfishstudio8837/videos\",children:\"YouTube\"}),\" to listen to more of my music!\"]}),\"\\n\",n(o.h2,{children:\"Photography 摄影\"}),\"\\n\",n(t,{}),\"\\n\",r(o.p,{children:[\"Follow my \",n(o.a,{href:\"https://instagram.com/bbfish.photo\",children:\"Instagram\"}),\" to see more photos\"]}),\"\\n\",n(o.h2,{children:\"Reading 阅读\"}),\"\\n\",n(o.h3,{children:\"Reading now 正在阅读\"}),\"\\n\",r(o.ul,{children:[\"\\n\",n(o.li,{children:r(o.a,{href:\"https://www.goodreads.com/book/show/76865.Good_to_Great?from_search=true&from_srp=true&qid=Iq3yeKI4i9&rank=1\",children:[n(o.strong,{children:\"Good to Great: Why Some Companies Make the Leap... and Others Don't\"}),\" by Jim Collins\"]})}),\"\\n\"]}),\"\\n\",n(o.h3,{children:\"Non-fiction 非虚构类\"}),\"\\n\",r(o.ul,{children:[\"\\n\",n(o.li,{children:r(o.a,{href:\"https://book.douban.com/subject/36150914/\",children:[n(o.strong,{children:\"被讨厌的勇气\"}),\" by 岸见一郎\"]})}),\"\\n\"]}),\"\\n\",n(o.h3,{children:\"Fiction 虚构类\"}),\"\\n\",r(o.ul,{children:[\"\\n\",n(o.li,{children:r(o.a,{href:\"https://book.douban.com/subject/36014224/\",children:[n(o.strong,{children:\"镰仓旋涡咨询所\"}),\" by 青山美智子\"]})}),\"\\n\",n(o.li,{children:r(o.a,{href:\"https://book.douban.com/subject/25835239/\",children:[n(o.strong,{children:\"公园生活\"}),\" by 吉田修一\"]})}),\"\\n\",n(o.li,{children:r(o.a,{href:\"https://book.douban.com/subject/35315153/\",children:[n(o.strong,{children:\"克拉拉与太阳\"}),\" by 石黑一雄\"]})}),\"\\n\",n(o.li,{children:r(o.a,{href:\"https://book.douban.com/subject/26340138/\",children:[n(o.strong,{children:\"岛上书店\"}),\" by 加布瑞埃拉·泽文\"]})}),\"\\n\",n(o.li,{children:r(o.a,{href:\"https://book.douban.com/subject/36153728/\",children:[n(o.strong,{children:\"我不能放下的一切\"}),\" by 丁丁张\"]})}),\"\\n\",n(o.li,{children:r(o.a,{href:\"https://book.douban.com/subject/36104107/\",children:[n(o.strong,{children:\"长安的荔枝\"}),\" by 马伯庸\"]})}),\"\\n\"]}),\"\\n\",n(o.h2,{children:\"Films 电影\"}),\"\\n\",r(o.p,{children:[\"Here are some of the films I watched and loved ~ (Warning: I'm a huge fan of \",n(o.strong,{children:\"Studio Ghibli\"}),\"!)\"]}),\"\\n\",n(o.h3,{children:\"Gonna watch soon 想看\"}),\"\\n\",r(o.ul,{children:[\"\\n\",r(o.li,{children:[n(o.strong,{children:\"Dune: Part 2\"}),\" 沙丘2 (2024) -- upcoming!\"]}),\"\\n\",r(o.li,{children:[n(o.strong,{children:\"Il Postino\"}),\" 邮差 (2023)\"]}),\"\\n\",r(o.li,{children:[n(o.strong,{children:\"My Salinger Year\"}),\" 我的塞林格之年 (2020)\"]}),\"\\n\",r(o.li,{children:[n(o.strong,{children:\"The Guernsey Literary and Potato Peel Pie Society\"}),\" 根西岛文学与土豆皮馅饼俱乐部 (2018)\"]}),\"\\n\",r(o.li,{children:[n(o.strong,{children:\"Los versos del olivido\"}),\" 遗忘诗行 (2017)\"]}),\"\\n\",r(o.li,{children:[n(o.strong,{children:\"The Bookshop\"}),\" 书店 (2017)\"]}),\"\\n\",r(o.li,{children:[n(o.strong,{children:\"Dans les forêts de Sibérie\"}),\" 在西伯利亚森林中 (2016)\"]}),\"\\n\",r(o.li,{children:[n(o.strong,{children:\"The Wind Will Carry Us\"}),\" 随风而逝 (1999)\"]}),\"\\n\"]}),\"\\n\",n(o.h3,{children:\"2020 - now\"}),\"\\n\",r(o.ul,{children:[\"\\n\",r(o.li,{children:[n(o.strong,{children:\"Johnny Keep Walking!\"}),\" 年会不能停！(2023)\"]}),\"\\n\",r(o.li,{children:[n(o.strong,{children:\"The Boy and the Heron\"}),\" 君たちはどう生きるか 你想活出怎样的人生 (2023)\"]}),\"\\n\",r(o.li,{children:[n(o.strong,{children:\"After sun\"}),\" 晒后假日 (2022)\"]}),\"\\n\",r(o.li,{children:[n(o.strong,{children:\"Dune\"}),\" 沙丘 (2021)\"]}),\"\\n\",r(o.li,{children:[n(o.strong,{children:\"CODA\"}),\" (2021)\"]}),\"\\n\",r(o.li,{children:[n(o.strong,{children:\"Belfast\"}),\" 贝尔法斯特 (2021)\"]}),\"\\n\",r(o.li,{children:[n(o.strong,{children:\"Born to be Human\"}),\" 生而為人 生而为人 (2021)\"]}),\"\\n\"]}),\"\\n\",n(o.h3,{children:\"2010 - 2019\"}),\"\\n\",r(o.ul,{children:[\"\\n\",r(o.li,{children:[n(o.strong,{children:\"A rainy day in New York\"}),\" 一个纽约的雨天 (2019)\"]}),\"\\n\",r(o.li,{children:[n(o.strong,{children:\"Three Billboards Outside Ebbing, Missouri\"}),\" 三块广告牌 (2017)\"]}),\"\\n\",r(o.li,{children:[n(o.strong,{children:\"Dunkirk\"}),\" 敦刻尔克 (2017)\"]}),\"\\n\",r(o.li,{children:[n(o.strong,{children:\"When Marnie Was There\"}),\" 思い出のマーニー 回忆中的玛尼 (2014)\"]}),\"\\n\",r(o.li,{children:[n(o.strong,{children:\"Interstellar\"}),\" 星际穿越 (2014)\"]}),\"\\n\",r(o.li,{children:[n(o.strong,{children:\"The Wind Rises\"}),\" 風立ちぬ 起风了 (2013)\"]}),\"\\n\",r(o.li,{children:[n(o.strong,{children:\"A Story of Yonosuke\"}),\" 横道世之介 (2013)\"]}),\"\\n\",r(o.li,{children:[n(o.strong,{children:\"The Tale of the Princess Kaguya\"}),\" かぐや姫の物語 辉夜姬物语 (2013)\"]}),\"\\n\",r(o.li,{children:[n(o.strong,{children:\"From Up on Poppy Hill\"}),\" コクリコ坂から 虞美人盛开的山坡 (2011)\"]}),\"\\n\",r(o.li,{children:[n(o.strong,{children:\"The Secret World of Arrietty\"}),\" 借りぐらしのアリエッティ 借东西的小人阿莉埃蒂 (2010)\"]}),\"\\n\"]}),\"\\n\",n(o.h3,{children:\"2000 - 2009\"}),\"\\n\",r(o.ul,{children:[\"\\n\",r(o.li,{children:[n(o.strong,{children:\"Ponyo\"}),\" 崖の上のポニョ 崖上的波妞 (2008)\"]}),\"\\n\",r(o.li,{children:[n(o.strong,{children:\"Howl's Moving Castle\"}),\" ハウルの動く城 哈尔的移动城堡 (2004)\"]}),\"\\n\",r(o.li,{children:[n(o.strong,{children:\"The Cat Returns\"}),\" 猫の恩返し 猫的报恩 (2002)\"]}),\"\\n\",r(o.li,{children:[n(o.strong,{children:\"Spirited Away\"}),\" 千と千尋の神隠し 千与千寻 (2001)\"]}),\"\\n\"]}),\"\\n\",n(o.h3,{children:\"Before 2000\"}),\"\\n\",r(o.ul,{children:[\"\\n\",r(o.li,{children:[n(o.strong,{children:\"Princess Mononoke\"}),\" もののけ姫 幽灵公主 (1997)\"]}),\"\\n\",r(o.li,{children:[n(o.strong,{children:\"Love Letter\"}),\" 情书 (1995)\"]}),\"\\n\",r(o.li,{children:[n(o.strong,{children:\"Whisper of the Heart\"}),\" 耳をすませば 侧耳倾听 (1995) (One of my favorites! 我尤其喜欢这部！)\"]}),\"\\n\",r(o.li,{children:[n(o.strong,{children:\"Schindler's List\"}),\" 辛德勒的名单 (1993)\"]}),\"\\n\",r(o.li,{children:[n(o.strong,{children:\"Porco Rosso\"}),\" 紅の豚 红猪 (1992)\"]}),\"\\n\",r(o.li,{children:[n(o.strong,{children:\"Only Yesterday\"}),\" おもひでぽろぽろ 岁月的童话 (1991)\"]}),\"\\n\",r(o.li,{children:[n(o.strong,{children:\"Kiki's Delivery Service\"}),\" 魔女の宅急便 魔女宅急便 (1989)\"]}),\"\\n\",r(o.li,{children:[n(o.strong,{children:\"My Neighbor Totoro\"}),\" となりのトトロ 龙猫 (1988)\"]}),\"\\n\",r(o.li,{children:[n(o.strong,{children:\"Grave of the Fireflies\"}),\" 火垂るの墓 萤火虫之墓 (1988)\"]}),\"\\n\",r(o.li,{children:[n(o.strong,{children:\"Nausicaä of the Valley of the Wind\"}),\" 風の谷のナウシカ 风之谷 (1984)\"]}),\"\\n\",r(o.li,{children:[n(o.strong,{children:\"Laputa: Castle in the Sky\"}),\" 天空の城ラピュタ 天空之城 (1986)\"]}),\"\\n\"]})]})}return{default:function(e={}){const{wrapper:r}=e.components||{};return r?n(r,{...e,children:n(_createMdxContent,{...e})}):_createMdxContent(e)}};function _missingMdxReference(e,n){throw new Error(\"Expected \"+(n?\"component\":\"object\")+\" `\"+e+\"` to be defined: you likely forgot to import, pass, or provide it.\")}",
-    "toc": [
-      {
-        "title": "Music composition 我的音乐创作",
-        "url": "#anchor:music-composition-我的音乐创作",
-        "items": []
-      },
-      {
-        "title": "Photography 摄影",
-        "url": "#anchor:photography-摄影",
-        "items": []
-      },
-      {
-        "title": "Reading 阅读",
-        "url": "#anchor:reading-阅读",
-        "items": [
-          {
-            "title": "Reading now 正在阅读",
-            "url": "#anchor:reading-now-正在阅读",
-            "items": []
-          },
-          {
-            "title": "Non-fiction 非虚构类",
-            "url": "#anchor:non-fiction-非虚构类",
-            "items": []
-          },
-          {
-            "title": "Fiction 虚构类",
-            "url": "#anchor:fiction-虚构类",
-            "items": []
-          }
-        ]
-      },
-      {
-        "title": "Films 电影",
-        "url": "#anchor:films-电影",
-        "items": [
-          {
-            "title": "Gonna watch soon 想看",
-            "url": "#anchor:gonna-watch-soon-想看",
-            "items": []
-          },
-          {
-            "title": "2020 - now",
-            "url": "#anchor:2020---now",
-            "items": []
-          },
-          {
-            "title": "2010 - 2019",
-            "url": "#anchor:2010---2019",
-            "items": []
-          },
-          {
-            "title": "2000 - 2009",
-            "url": "#anchor:2000---2009",
-            "items": []
-          },
-          {
-            "title": "Before 2000",
-            "url": "#anchor:before-2000",
-            "items": []
-          }
-        ]
-      }
-    ],
-    "showToc": true,
-    "permalink": "/hobbies",
-    "path": "/Users/xmliszt/Projects/Web Development/portfolio/content/pages/hobbies/index.mdx"
-  },
-  {
     "title": "Playground",
     "subtitle": "Ideas的游乐场",
     "slug": "playground",
@@ -107,6 +24,27 @@
     "showToc": true,
     "permalink": "/playground",
     "path": "/Users/xmliszt/Projects/Web Development/portfolio/content/pages/playground/index.mdx"
+  },
+  {
+    "title": "The why",
+    "subtitle": "初衷",
+    "slug": "the-why",
+    "body": "const{Fragment:e,jsx:t,jsxs:n}=arguments[0];function _createMdxContent(o){const r={a:\"a\",h2:\"h2\",li:\"li\",p:\"p\",strong:\"strong\",ul:\"ul\",...o.components};return n(e,{children:[t(r.h2,{children:\"The why\"}),\"\\n\",t(r.p,{children:\"Why do I want to build this personal website? Previously I had iterated over several versions of my personal website actually, but I was never satisfied with how it turned out. I had a few reasons for that:\"}),\"\\n\",n(r.p,{children:[\"I don't want my personal site to just be -- \",t(r.strong,{children:\"a portfolio site\"}),\". That's why I don't want to even call it a portfolio site. \",t(r.strong,{children:\"Personal playground\"}),\" sounds better (but I might still tweak the name in the future). Basically, I think it shouldn't just be a place to showcase my work and projects, but also a place to think, to ponder, to learn, to experiment, to connect, to explore, to share, and to grow. I want it to be a place where I can express myself, and where I can be myself. I want it to be a place where I can be creative, and where I can be free. Being a playground of some sort, I can experiment with different ideas, designs, tech, music, things that I love. It is also like a cozy little corner, where I put up things that I like, and things I would want to share with you guys. And hopefully, through all these, you can also understand me better as a holistic person, with emotions, thoughts, and dreams, not just a mere coding machine.\"]}),\"\\n\",t(r.p,{children:\"Therefore, here you go; after much thoughts and design and nights burnt, I have finally put up something I am somewhat satisfied with. I added little bit of animation and details here and there, and gave it a simple and peaceful texture. Feel free to explore in my little digital playground here, enjoy the text, the music, the visuals, and the vibes. I hope you can find something that resonates with you. This site should be updated in sync with my life, so stay tuned for any updates. I hope you enjoy your stay here 😉\"}),\"\\n\",n(r.p,{children:[\"我的个人网站经历了好几次大改动了，但是我一直都不是很满意。我不觉得个人主页只是一个\",t(r.strong,{children:\"简历\"}),\"，我也不想叫它简历，显得很单调很无味。\",t(r.strong,{children:\"游乐场\"}),\"听起来好很多呢（但是我可能以后估计我还得改一改这个名字）。这不仅是一个展示我的作品和项目的地方，而且也应该是一个思考、学习、实验、探索、分享、成长、与世界互动的地方。我希望它是一个我可以表达自我的地方，在这里，我可以发挥天马行空的想象，让创造力无限地伸展。作为一个游乐场，我可以尝试不同的想法、设计、技术、音乐……任何我喜欢的东西。就像一个舒适的小窝，我陈列起我视为珍宝的东西，分享给你看，讲故事给你听。希望通过这一切，你能更全面地了解我。那么话不多说，欢迎来的这里，随便逛逛，走走看看，听听音乐弹弹琴，希望你能喜欢这里 😉\"]}),\"\\n\",t(r.h2,{children:\"Tech stack\"}),\"\\n\",t(r.p,{children:\"A little bit of tech here for anyone interested, and to give credits to the useful tools that made this website possible:\"}),\"\\n\",n(r.ul,{children:[\"\\n\",t(r.li,{children:t(r.a,{href:\"https://nextjs.org/\",children:\"NextJS app router\"})}),\"\\n\",t(r.li,{children:t(r.a,{href:\"https://supabase.io/\",children:\"Supabase for database store\"})}),\"\\n\",t(r.li,{children:t(r.a,{href:\"https://velite.js.org/\",children:\"Velite for boostraping nextJS with MDX\"})}),\"\\n\",t(r.li,{children:t(r.a,{href:\"https://mdxjs.com/\",children:\"MDX for content\"})}),\"\\n\",t(r.li,{children:t(r.a,{href:\"https://tailwindcss.com/\",children:\"TailwindCSS for styling\"})}),\"\\n\",t(r.li,{children:t(r.a,{href:\"https://howlerjs.com/\",children:\"HowlerJS for BGM and music effects\"})}),\"\\n\",t(r.li,{children:t(r.a,{href:\"https://vercel.com/\",children:\"Vercel for deployment\"})}),\"\\n\"]})]})}return{default:function(e={}){const{wrapper:n}=e.components||{};return n?t(n,{...e,children:t(_createMdxContent,{...e})}):_createMdxContent(e)}};",
+    "toc": [
+      {
+        "title": "The why",
+        "url": "#anchor:the-why",
+        "items": []
+      },
+      {
+        "title": "Tech stack",
+        "url": "#anchor:tech-stack",
+        "items": []
+      }
+    ],
+    "showToc": true,
+    "permalink": "/the-why",
+    "path": "/Users/xmliszt/Projects/Web Development/portfolio/content/pages/the-why/index.mdx"
   },
   {
     "title": "Projects",
@@ -161,24 +99,13 @@
     "path": "/Users/xmliszt/Projects/Web Development/portfolio/content/pages/projects/index.mdx"
   },
   {
-    "title": "The why",
-    "subtitle": "初衷",
-    "slug": "the-why",
-    "body": "const{Fragment:e,jsx:t,jsxs:n}=arguments[0];function _createMdxContent(o){const r={a:\"a\",h2:\"h2\",li:\"li\",p:\"p\",strong:\"strong\",ul:\"ul\",...o.components};return n(e,{children:[t(r.h2,{children:\"The why\"}),\"\\n\",t(r.p,{children:\"Why do I want to build this personal website? Previously I had iterated over several versions of my personal website actually, but I was never satisfied with how it turned out. I had a few reasons for that:\"}),\"\\n\",n(r.p,{children:[\"I don't want my personal site to just be -- \",t(r.strong,{children:\"a portfolio site\"}),\". That's why I don't want to even call it a portfolio site. \",t(r.strong,{children:\"Personal playground\"}),\" sounds better (but I might still tweak the name in the future). Basically, I think it shouldn't just be a place to showcase my work and projects, but also a place to think, to ponder, to learn, to experiment, to connect, to explore, to share, and to grow. I want it to be a place where I can express myself, and where I can be myself. I want it to be a place where I can be creative, and where I can be free. Being a playground of some sort, I can experiment with different ideas, designs, tech, music, things that I love. It is also like a cozy little corner, where I put up things that I like, and things I would want to share with you guys. And hopefully, through all these, you can also understand me better as a holistic person, with emotions, thoughts, and dreams, not just a mere coding machine.\"]}),\"\\n\",t(r.p,{children:\"Therefore, here you go; after much thoughts and design and nights burnt, I have finally put up something I am somewhat satisfied with. I added little bit of animation and details here and there, and gave it a simple and peaceful texture. Feel free to explore in my little digital playground here, enjoy the text, the music, the visuals, and the vibes. I hope you can find something that resonates with you. This site should be updated in sync with my life, so stay tuned for any updates. I hope you enjoy your stay here 😉\"}),\"\\n\",n(r.p,{children:[\"我的个人网站经历了好几次大改动了，但是我一直都不是很满意。我不觉得个人主页只是一个\",t(r.strong,{children:\"简历\"}),\"，我也不想叫它简历，显得很单调很无味。\",t(r.strong,{children:\"游乐场\"}),\"听起来好很多呢（但是我可能以后估计我还得改一改这个名字）。这不仅是一个展示我的作品和项目的地方，而且也应该是一个思考、学习、实验、探索、分享、成长、与世界互动的地方。我希望它是一个我可以表达自我的地方，在这里，我可以发挥天马行空的想象，让创造力无限地伸展。作为一个游乐场，我可以尝试不同的想法、设计、技术、音乐……任何我喜欢的东西。就像一个舒适的小窝，我陈列起我视为珍宝的东西，分享给你看，讲故事给你听。希望通过这一切，你能更全面地了解我。那么话不多说，欢迎来的这里，随便逛逛，走走看看，听听音乐弹弹琴，希望你能喜欢这里 😉\"]}),\"\\n\",t(r.h2,{children:\"Tech stack\"}),\"\\n\",t(r.p,{children:\"A little bit of tech here for anyone interested, and to give credits to the useful tools that made this website possible:\"}),\"\\n\",n(r.ul,{children:[\"\\n\",t(r.li,{children:t(r.a,{href:\"https://nextjs.org/\",children:\"NextJS app router\"})}),\"\\n\",t(r.li,{children:t(r.a,{href:\"https://supabase.io/\",children:\"Supabase for database store\"})}),\"\\n\",t(r.li,{children:t(r.a,{href:\"https://velite.js.org/\",children:\"Velite for boostraping nextJS with MDX\"})}),\"\\n\",t(r.li,{children:t(r.a,{href:\"https://mdxjs.com/\",children:\"MDX for content\"})}),\"\\n\",t(r.li,{children:t(r.a,{href:\"https://tailwindcss.com/\",children:\"TailwindCSS for styling\"})}),\"\\n\",t(r.li,{children:t(r.a,{href:\"https://howlerjs.com/\",children:\"HowlerJS for BGM and music effects\"})}),\"\\n\",t(r.li,{children:t(r.a,{href:\"https://vercel.com/\",children:\"Vercel for deployment\"})}),\"\\n\"]})]})}return{default:function(e={}){const{wrapper:n}=e.components||{};return n?t(n,{...e,children:t(_createMdxContent,{...e})}):_createMdxContent(e)}};",
-    "toc": [
-      {
-        "title": "The why",
-        "url": "#anchor:the-why",
-        "items": []
-      },
-      {
-        "title": "Tech stack",
-        "url": "#anchor:tech-stack",
-        "items": []
-      }
-    ],
-    "showToc": true,
-    "permalink": "/the-why",
-    "path": "/Users/xmliszt/Projects/Web Development/portfolio/content/pages/the-why/index.mdx"
+    "title": "Contacts",
+    "subtitle": "找我聊聊？",
+    "slug": "contacts",
+    "body": "const{jsx:n,jsxs:e}=arguments[0];function _createMdxContent(i){const t={a:\"a\",li:\"li\",ul:\"ul\",...i.components};return e(t.ul,{children:[\"\\n\",n(t.li,{children:n(t.a,{href:\"mailto:me@liyuxuan.dev\",children:\"Email: me@liyuxuan.dev\"})}),\"\\n\",n(t.li,{children:n(t.a,{href:\"https://read.cv/liyuxuan\",children:\"ReadCV\"})}),\"\\n\",n(t.li,{children:n(t.a,{href:\"https://bento.me/liyuxuan\",children:\"Bento\"})}),\"\\n\",n(t.li,{children:n(t.a,{href:\"https://www.github.com/xmliszt\",children:\"GitHub\"})}),\"\\n\",n(t.li,{children:n(t.a,{href:\"https://www.twitter.com/xmliszt\",children:\"Twitter\"})}),\"\\n\",n(t.li,{children:n(t.a,{href:\"https://www.linkedin.com/in/li-yuxuan/\",children:\"LinkedIn\"})}),\"\\n\",n(t.li,{children:n(t.a,{href:\"https://reddit.com/user/bubbling-fish\",children:\"Reddit\"})}),\"\\n\",n(t.li,{children:n(t.a,{href:\"https://liyuxuan.substack.com/\",children:\"Substack\"})}),\"\\n\",n(t.li,{children:n(t.a,{href:\"https://medium.com/@xmliszt\",children:\"Medium\"})}),\"\\n\",n(t.li,{children:n(t.a,{href:\"https://youtube.com/@bbfishstudio8837\",children:\"YouTube\"})}),\"\\n\",n(t.li,{children:n(t.a,{href:\"https://instagram.com/xmliszt\",children:\"Instagram\"})}),\"\\n\"]})}return{default:function(e={}){const{wrapper:i}=e.components||{};return i?n(i,{...e,children:n(_createMdxContent,{...e})}):_createMdxContent(e)}};",
+    "toc": [],
+    "showToc": false,
+    "permalink": "/contacts",
+    "path": "/Users/xmliszt/Projects/Web Development/portfolio/content/pages/contacts/index.mdx"
   }
 ]

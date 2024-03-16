@@ -1,0 +1,84 @@
+[
+  {
+    "title": "Hobbies",
+    "slug": "hobbies",
+    "meta": {},
+    "toc": [
+      {
+        "title": "Photography 摄影",
+        "url": "#anchor:photography-摄影",
+        "items": []
+      },
+      {
+        "title": "Reading 阅读",
+        "url": "#anchor:reading-阅读",
+        "items": [
+          {
+            "title": "Reading now 正在阅读",
+            "url": "#anchor:reading-now-正在阅读",
+            "items": []
+          },
+          {
+            "title": "Non-fiction 非虚构类",
+            "url": "#anchor:non-fiction-非虚构类",
+            "items": []
+          },
+          {
+            "title": "Fiction 虚构类",
+            "url": "#anchor:fiction-虚构类",
+            "items": []
+          }
+        ]
+      },
+      {
+        "title": "Films 电影",
+        "url": "#anchor:films-电影",
+        "items": [
+          {
+            "title": "Gonna watch soon 想看",
+            "url": "#anchor:gonna-watch-soon-想看",
+            "items": []
+          },
+          {
+            "title": "2020 - now",
+            "url": "#anchor:2020---now",
+            "items": []
+          },
+          {
+            "title": "2010 - 2019",
+            "url": "#anchor:2010---2019",
+            "items": []
+          },
+          {
+            "title": "2000 - 2009",
+            "url": "#anchor:2000---2009",
+            "items": []
+          },
+          {
+            "title": "Before 2000",
+            "url": "#anchor:before-2000",
+            "items": []
+          }
+        ]
+      }
+    ],
+    "metadata": {
+      "readingTime": 3,
+      "wordCount": 675.6800000000001
+    },
+    "content": "const{Fragment:n,jsx:e,jsxs:r}=arguments[0];function _createMdxContent(i){const l={a:\"a\",h2:\"h2\",h3:\"h3\",li:\"li\",p:\"p\",strong:\"strong\",ul:\"ul\",...i.components},{PhotoBentoGrid:o}=l;return o||function(n,e){throw new Error(\"Expected \"+(e?\"component\":\"object\")+\" `\"+n+\"` to be defined: you likely forgot to import, pass, or provide it.\")}(\"PhotoBentoGrid\",!0),r(n,{children:[r(l.p,{children:[\"In my spare time, I immerse myself in a diverse array of hobbies that reflect my multifaceted interests and passions. I find solace in the imaginative realms crafted by \",e(l.strong,{children:\"Studio Ghibli\"}),\", where each \",e(l.strong,{children:\"film\"}),\" offers a captivating escape into worlds brimming with dreams, love, and kindness. \",e(l.strong,{children:\"Music\"}),\" is not just a pastime but a deeply ingrained part of my life — I've honed my skills across various instruments, from piano and violin to guitar and beyond, allowing me to \",e(l.strong,{children:\"compose\"}),\" my own melodies and produce music that speaks to the heart. \",e(l.strong,{children:\"Photography\"}),\" serves as my visual storytelling medium, capturing fleeting moments and encapsulating the beauty found in the world around me. These hobbies not only provide me with endless joy and inspiration but also shape my perspective and enrich my life in countless ways.\"]}),\"\\n\",r(l.p,{children:[\"在我的空闲时间里，我有多方面的兴趣爱好。我在由\",e(l.strong,{children:\"吉卜力\"}),\"工作室打造的想象领域中找到了慰藉，在每一部\",e(l.strong,{children:\"电影\"}),\"中，我都能沉浸在充满梦想、爱和善良的世界中。\",e(l.strong,{children:\"音乐\"}),\"不仅仅是一种消遣，而是我生活中深深扎根的一部分——我在钢琴、小提琴和吉他等各种乐器上磨练自己的技能，让我能够\",e(l.strong,{children:\"创作出自己的旋律\"}),\"，制作出触动心灵的音乐。\",e(l.strong,{children:\"摄影\"}),\"是我视觉叙事的媒介，捕捉着流逝的时刻，封存着我周围世界的美丽。这些爱好不仅为我带来无尽的快乐和灵感，而且在无数方面塑造了我的观点，丰富了我的生活。\"]}),\"\\n\",e(l.h2,{children:\"Photography 摄影\"}),\"\\n\",e(o,{}),\"\\n\",r(l.p,{children:[\"Follow my \",e(l.a,{href:\"https://instagram.com/bbfish.photo\",children:\"Instagram\"}),\" to see more photos\"]}),\"\\n\",e(l.h2,{children:\"Reading 阅读\"}),\"\\n\",e(l.h3,{children:\"Reading now 正在阅读\"}),\"\\n\",r(l.ul,{children:[\"\\n\",e(l.li,{children:r(l.a,{href:\"https://www.goodreads.com/book/show/17166225-the-miracle-morning\",children:[e(l.strong,{children:\"早起的奇迹 The Miracle Morning\"}),\" by Hal Elrod\"]})}),\"\\n\"]}),\"\\n\",e(l.h3,{children:\"Non-fiction 非虚构类\"}),\"\\n\",r(l.ul,{children:[\"\\n\",e(l.li,{children:r(l.a,{href:\"https://book.douban.com/subject/36150914/\",children:[e(l.strong,{children:\"被讨厌的勇气\"}),\" by 岸见一郎\"]})}),\"\\n\"]}),\"\\n\",e(l.h3,{children:\"Fiction 虚构类\"}),\"\\n\",r(l.ul,{children:[\"\\n\",e(l.li,{children:r(l.a,{href:\"https://book.douban.com/subject/36014224/\",children:[e(l.strong,{children:\"镰仓旋涡咨询所\"}),\" by 青山美智子\"]})}),\"\\n\",e(l.li,{children:r(l.a,{href:\"https://book.douban.com/subject/25835239/\",children:[e(l.strong,{children:\"公园生活\"}),\" by 吉田修一\"]})}),\"\\n\",e(l.li,{children:r(l.a,{href:\"https://book.douban.com/subject/35315153/\",children:[e(l.strong,{children:\"克拉拉与太阳\"}),\" by 石黑一雄\"]})}),\"\\n\",e(l.li,{children:r(l.a,{href:\"https://book.douban.com/subject/26340138/\",children:[e(l.strong,{children:\"岛上书店\"}),\" by 加布瑞埃拉·泽文\"]})}),\"\\n\",e(l.li,{children:r(l.a,{href:\"https://book.douban.com/subject/36153728/\",children:[e(l.strong,{children:\"我不能放下的一切\"}),\" by 丁丁张\"]})}),\"\\n\",e(l.li,{children:r(l.a,{href:\"https://book.douban.com/subject/36104107/\",children:[e(l.strong,{children:\"长安的荔枝\"}),\" by 马伯庸\"]})}),\"\\n\"]}),\"\\n\",e(l.h2,{children:\"Films 电影\"}),\"\\n\",r(l.p,{children:[\"Here are some of the films I watched and loved ~ (Warning: I'm a huge fan of \",e(l.strong,{children:\"Studio Ghibli\"}),\"!)\"]}),\"\\n\",e(l.h3,{children:\"Gonna watch soon 想看\"}),\"\\n\",r(l.ul,{children:[\"\\n\",r(l.li,{children:[e(l.strong,{children:\"Dune: Part 2\"}),\" 沙丘2 (2024) -- upcoming!\"]}),\"\\n\",r(l.li,{children:[e(l.strong,{children:\"Il Postino\"}),\" 邮差 (2023)\"]}),\"\\n\",r(l.li,{children:[e(l.strong,{children:\"My Salinger Year\"}),\" 我的塞林格之年 (2020)\"]}),\"\\n\",r(l.li,{children:[e(l.strong,{children:\"The Guernsey Literary and Potato Peel Pie Society\"}),\" 根西岛文学与土豆皮馅饼俱乐部 (2018)\"]}),\"\\n\",r(l.li,{children:[e(l.strong,{children:\"Los versos del olivido\"}),\" 遗忘诗行 (2017)\"]}),\"\\n\",r(l.li,{children:[e(l.strong,{children:\"The Bookshop\"}),\" 书店 (2017)\"]}),\"\\n\",r(l.li,{children:[e(l.strong,{children:\"Dans les forêts de Sibérie\"}),\" 在西伯利亚森林中 (2016)\"]}),\"\\n\",r(l.li,{children:[e(l.strong,{children:\"The Wind Will Carry Us\"}),\" 随风而逝 (1999)\"]}),\"\\n\"]}),\"\\n\",e(l.h3,{children:\"2020 - now\"}),\"\\n\",r(l.ul,{children:[\"\\n\",r(l.li,{children:[e(l.strong,{children:\"Johnny Keep Walking!\"}),\" 年会不能停！(2023)\"]}),\"\\n\",r(l.li,{children:[e(l.strong,{children:\"The Boy and the Heron\"}),\" 君たちはどう生きるか 你想活出怎样的人生 (2023)\"]}),\"\\n\",r(l.li,{children:[e(l.strong,{children:\"After sun\"}),\" 晒后假日 (2022)\"]}),\"\\n\",r(l.li,{children:[e(l.strong,{children:\"Dune\"}),\" 沙丘 (2021)\"]}),\"\\n\",r(l.li,{children:[e(l.strong,{children:\"CODA\"}),\" (2021)\"]}),\"\\n\",r(l.li,{children:[e(l.strong,{children:\"Belfast\"}),\" 贝尔法斯特 (2021)\"]}),\"\\n\",r(l.li,{children:[e(l.strong,{children:\"Born to be Human\"}),\" 生而為人 生而为人 (2021)\"]}),\"\\n\"]}),\"\\n\",e(l.h3,{children:\"2010 - 2019\"}),\"\\n\",r(l.ul,{children:[\"\\n\",r(l.li,{children:[e(l.strong,{children:\"A rainy day in New York\"}),\" 一个纽约的雨天 (2019)\"]}),\"\\n\",r(l.li,{children:[e(l.strong,{children:\"Three Billboards Outside Ebbing, Missouri\"}),\" 三块广告牌 (2017)\"]}),\"\\n\",r(l.li,{children:[e(l.strong,{children:\"Dunkirk\"}),\" 敦刻尔克 (2017)\"]}),\"\\n\",r(l.li,{children:[e(l.strong,{children:\"When Marnie Was There\"}),\" 思い出のマーニー 回忆中的玛尼 (2014)\"]}),\"\\n\",r(l.li,{children:[e(l.strong,{children:\"Interstellar\"}),\" 星际穿越 (2014)\"]}),\"\\n\",r(l.li,{children:[e(l.strong,{children:\"The Wind Rises\"}),\" 風立ちぬ 起风了 (2013)\"]}),\"\\n\",r(l.li,{children:[e(l.strong,{children:\"A Story of Yonosuke\"}),\" 横道世之介 (2013)\"]}),\"\\n\",r(l.li,{children:[e(l.strong,{children:\"The Tale of the Princess Kaguya\"}),\" かぐや姫の物語 辉夜姬物语 (2013)\"]}),\"\\n\",r(l.li,{children:[e(l.strong,{children:\"From Up on Poppy Hill\"}),\" コクリコ坂から 虞美人盛开的山坡 (2011)\"]}),\"\\n\",r(l.li,{children:[e(l.strong,{children:\"The Secret World of Arrietty\"}),\" 借りぐらしのアリエッティ 借东西的小人阿莉埃蒂 (2010)\"]}),\"\\n\"]}),\"\\n\",e(l.h3,{children:\"2000 - 2009\"}),\"\\n\",r(l.ul,{children:[\"\\n\",r(l.li,{children:[e(l.strong,{children:\"Ponyo\"}),\" 崖の上のポニョ 崖上的波妞 (2008)\"]}),\"\\n\",r(l.li,{children:[e(l.strong,{children:\"Howl's Moving Castle\"}),\" ハウルの動く城 哈尔的移动城堡 (2004)\"]}),\"\\n\",r(l.li,{children:[e(l.strong,{children:\"The Cat Returns\"}),\" 猫の恩返し 猫的报恩 (2002)\"]}),\"\\n\",r(l.li,{children:[e(l.strong,{children:\"Spirited Away\"}),\" 千と千尋の神隠し 千与千寻 (2001)\"]}),\"\\n\"]}),\"\\n\",e(l.h3,{children:\"Before 2000\"}),\"\\n\",r(l.ul,{children:[\"\\n\",r(l.li,{children:[e(l.strong,{children:\"Princess Mononoke\"}),\" もののけ姫 幽灵公主 (1997)\"]}),\"\\n\",r(l.li,{children:[e(l.strong,{children:\"Love Letter\"}),\" 情书 (1995)\"]}),\"\\n\",r(l.li,{children:[e(l.strong,{children:\"Whisper of the Heart\"}),\" 耳をすませば 侧耳倾听 (1995) (One of my favorites! 我尤其喜欢这部！)\"]}),\"\\n\",r(l.li,{children:[e(l.strong,{children:\"Schindler's List\"}),\" 辛德勒的名单 (1993)\"]}),\"\\n\",r(l.li,{children:[e(l.strong,{children:\"Porco Rosso\"}),\" 紅の豚 红猪 (1992)\"]}),\"\\n\",r(l.li,{children:[e(l.strong,{children:\"Only Yesterday\"}),\" おもひでぽろぽろ 岁月的童话 (1991)\"]}),\"\\n\",r(l.li,{children:[e(l.strong,{children:\"Kiki's Delivery Service\"}),\" 魔女の宅急便 魔女宅急便 (1989)\"]}),\"\\n\",r(l.li,{children:[e(l.strong,{children:\"My Neighbor Totoro\"}),\" となりのトトロ 龙猫 (1988)\"]}),\"\\n\",r(l.li,{children:[e(l.strong,{children:\"Grave of the Fireflies\"}),\" 火垂るの墓 萤火虫之墓 (1988)\"]}),\"\\n\",r(l.li,{children:[e(l.strong,{children:\"Nausicaä of the Valley of the Wind\"}),\" 風の谷のナウシカ 风之谷 (1984)\"]}),\"\\n\",r(l.li,{children:[e(l.strong,{children:\"Laputa: Castle in the Sky\"}),\" 天空の城ラピュタ 天空之城 (1986)\"]}),\"\\n\"]})]})}return{default:function(n={}){const{wrapper:r}=n.components||{};return r?e(r,{...n,children:e(_createMdxContent,{...n})}):_createMdxContent(n)}};",
+    "permalink": "/hobbies/hobbies"
+  },
+  {
+    "title": "Music compositions",
+    "slug": "music-compositions",
+    "meta": {},
+    "toc": [],
+    "metadata": {
+      "readingTime": 1,
+      "wordCount": 83
+    },
+    "content": "const{Fragment:e,jsx:t,jsxs:o}=arguments[0];function _createMdxContent(r){const i={a:\"a\",p:\"p\",...r.components},{LoadMoreLinks:c}=i;return c||function(e,t){throw new Error(\"Expected \"+(t?\"component\":\"object\")+\" `\"+e+\"` to be defined: you likely forgot to import, pass, or provide it.\")}(\"LoadMoreLinks\",!0),o(e,{children:[t(\"iframe\",{width:\"560\",height:\"315\",src:\"https://www.youtube.com/embed/FkM4nT9QW-w?si=xrV9EUhUJw_Us55U\",title:\"YouTube video player\",allow:\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share\",allowFullScreen:!0}),\"\\n\",t(\"iframe\",{width:\"560\",height:\"315\",src:\"https://www.youtube.com/embed/Js0PuGFGTpc?si=5VIEPZ24IvG4xEw_\",title:\"YouTube video player\",allow:\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share\",allowFullScreen:!0}),\"\\n\",t(\"iframe\",{width:\"560\",height:\"315\",src:\"https://www.youtube.com/embed/TeEKQYqgN_s?si=aQRRH7exHcxaAhBL\",title:\"YouTube video player\",allow:\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share\",allowFullScreen:!0}),\"\\n\",t(c,{hrefs:[\"https://www.youtube.com/embed/zC6IBUN3qes?si=BZmAC6UrrKtGa7Vo\",\"https://www.youtube.com/embed/hzmVz2jj278?si=17PDNeUjQ7PUwFvT\",\"https://www.youtube.com/embed/qQ1vnyNx9bg?si=OvHF_9CNDboyZgQA\",\"https://www.youtube.com/embed/VeJJRcXHsLU?si=_IVyry-xFb06IR6M\",\"https://www.youtube.com/embed/g3di7Jk9kVo?si=NaqWTP1kSFDbFM8Z\",\"https://www.youtube.com/embed/P6BZMOyEFPI?si=FiIRT9o6rUQkT9lE\"]}),\"\\n\",o(i.p,{children:[\"Follow my \",t(i.a,{href:\"https://instagram.com/bbfish_studio\",children:\"Instagram\"}),\" and \",t(i.a,{href:\"https://www.youtube.com/@bbfishstudio8837/videos\",children:\"YouTube\"}),\" to listen to more of my music!\"]})]})}return{default:function(e={}){const{wrapper:o}=e.components||{};return o?t(o,{...e,children:t(_createMdxContent,{...e})}):_createMdxContent(e)}};",
+    "permalink": "/hobbies/music-compositions"
+  }
+]
