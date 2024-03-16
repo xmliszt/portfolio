@@ -59,10 +59,12 @@ export function BGMPlayer(props: BGMPlayerProps) {
       {isIdle && props.bgmInfoPosition === 'left' && (
         <div className='flex flex-col items-start justify-center gap-0 overflow-hidden text-ellipsis [&>*]:whitespace-nowrap'>
           <span className='text-sm font-bold'>
-            Have some music{' '}
+            {isLoading ? 'Loading the cassette...' : 'Have some music '}
             <ArrowRight className='inline-block animate-pulse' size={16} />
           </span>
-          <span className='text-xs'>休息一下，听首歌吧</span>
+          <span className='text-xs'>
+            {isLoading ? '正在载入歌曲……' : '休息一下，听首歌吧'}
+          </span>
         </div>
       )}
       <Tooltip>
@@ -106,9 +108,11 @@ export function BGMPlayer(props: BGMPlayerProps) {
         <div className='flex flex-col items-start justify-center gap-0 overflow-hidden text-ellipsis [&>*]:whitespace-nowrap'>
           <span className='text-sm font-bold'>
             <ArrowLeft className='inline-block animate-pulse' size={16} />
-            Have some music{' '}
+            {isLoading ? 'Loading the cassette...' : 'Have some music '}
           </span>
-          <span className='ml-4 text-xs'>休息一下，听首歌吧</span>
+          <span className='ml-4 text-xs'>
+            {isLoading ? '正在载入歌曲……' : '休息一下，听首歌吧'}
+          </span>
         </div>
       )}
     </div>
