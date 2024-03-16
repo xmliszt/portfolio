@@ -58,7 +58,7 @@ export default async function PostPage({ params }: PostProps) {
       </p>
       {post.description && <p>{post.description}</p>}
       {post.cover && (
-        <Image src={post.cover} alt={post.title} placeholder='blur' />
+        <Image src={post.cover} alt={post.title} className='m-0' />
       )}
       <hr className='my-6' />
 
