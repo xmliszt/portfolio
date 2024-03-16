@@ -33,7 +33,7 @@ export default function HobbyPage({ params }: HobbyProps) {
 
   return (
     <article className='prose prose-stone dark:prose-invert'>
-      <h1>
+      <h1 className='group relative'>
         <a id='top' className='relative -top-16 block [visibility:hidden]'></a>
         {hobby.title}
         {hobby.subtitle && <ShadowSubtitle>{hobby.subtitle}</ShadowSubtitle>}
