@@ -1,5 +1,6 @@
 import * as runtime from 'react/jsx-runtime';
 import Image from 'next/image';
+import Link from 'next/link';
 
 import { slugify } from '@/lib/utils';
 
@@ -100,6 +101,7 @@ export function MDXContent({ code, components }: MdxProps) {
         ExternalActionButtonLink,
         LoadMoreLinks,
         CustomLink,
+        Link,
       }}
     />
   );
