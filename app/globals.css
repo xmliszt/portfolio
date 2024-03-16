@@ -106,7 +106,7 @@
   }
 
   iframe {
-    @apply my-8 aspect-video h-auto w-full rounded-lg border !shadow-xl;
+    @apply my-8 rounded-lg border !shadow-xl;
   }
 }
 

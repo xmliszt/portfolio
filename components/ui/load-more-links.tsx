@@ -18,8 +18,10 @@ export function LoadMoreLinks(props: LoadMoreLinksProps) {
           {props.hrefs.map((href, i) => (
             <iframe
               key={i}
-              width='560'
-              height='315'
+              width='100%'
+              style={{
+                aspectRatio: '16/9',
+              }}
               src={href}
               title='YouTube video player'
               allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share'
