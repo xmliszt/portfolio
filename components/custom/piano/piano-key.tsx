@@ -25,9 +25,7 @@ export function PianoKey(props: PianoKeyProps) {
   useEffect(() => {
     if (!sounds[props.note]) {
       sounds[props.note] = new Howl({
-        src: [
-          `https://tvstbbuidvwgelgidaqy.supabase.co/storage/v1/object/public/piano-sounds/${props.note}.mp3`,
-        ],
+        src: [`/piano/${props.note}.mp3`],
         volume: 0.5,
         rate: 1,
         onload: () => {

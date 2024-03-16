@@ -76,7 +76,7 @@ export function MDXContent({ code, components }: MdxProps) {
         img: (props: any) => (
           <HoverPerspectiveContainer>
             <Image
-              className='h-auto w-full rounded-lg shadow-lg'
+              className='m-0 h-full w-full'
               src={props.src}
               alt={props.alt}
               width={100}
