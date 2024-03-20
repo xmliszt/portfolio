@@ -4,8 +4,12 @@ import { Inter, Junge } from 'next/font/google';
 
 import { BGMProvider } from '@/components/bgm-provider';
 import { BGMPlayer } from '@/components/custom/bgm-player';
-import { FloatingNavigationBar } from '@/components/custom/floating-navigation-bar';
-import { FloatingNavigationProvider } from '@/components/custom/floating-navigation-bar/floating-navigation-provider';
+import {
+  FloatingNavigationBar,
+  FloatingNavigationBarContent,
+  FloatingNavigationBarHeader,
+  FloatingNavigationProvider,
+} from '@/components/custom/floating-navigation-bar';
 import { ThemeSwitch } from '@/components/custom/theme-switch';
 import { FloatingTOCDrawer } from '@/components/custom/toc/floating-toc-drawer';
 import { TOCProvider } from '@/components/custom/toc/toc-provider';
@@ -173,11 +177,19 @@ export default function RootLayout({
               {/* Show when in mobile view port */}
               <FloatingNavigationProvider>
                 <FloatingNavigationBar>
-                  {ROUTES.map((route) => (
-                    <NavigationBarItem key={route.path} href={route.path}>
-                      {route.name}
-                    </NavigationBarItem>
-                  ))}
+                  <FloatingNavigationBarHeader>
+                    {/* BGM Control */}
+                    <BGMPlayer bgmInfoPosition='right' showBgmInfo />
+                    {/* Theme switch */}
+                    <ThemeSwitch />
+                  </FloatingNavigationBarHeader>
+                  <FloatingNavigationBarContent>
+                    {ROUTES.map((route) => (
+                      <NavigationBarItem key={route.path} href={route.path}>
+                        {route.name}
+                      </NavigationBarItem>
+                    ))}
+                  </FloatingNavigationBarContent>
                 </FloatingNavigationBar>
               </FloatingNavigationProvider>
               {/* Theme switch */}
