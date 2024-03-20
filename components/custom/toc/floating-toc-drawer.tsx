@@ -11,12 +11,13 @@ import {
 } from '@/components/ui/tooltip';
 import { cn, isAtCurrentTOC, slugify } from '@/lib/utils';
 
-import { BGMPlayer } from '../bgm-player';
-import { ThemeSwitch } from '../theme-switch';
-
 import { useTOC } from './toc-provider';
 
-export function FloatingTOCDrawer() {
+type FloatingTOCDrawerProps = {
+  children: React.ReactNode;
+};
+
+export function FloatingTOCDrawer(props: FloatingTOCDrawerProps) {
   const [isOpen, setIsOpen] = useState(false);
   const { showToc, toc, hash, setHash } = useTOC();
 
@@ -99,13 +100,7 @@ export function FloatingTOCDrawer() {
       >
         {/* Custom drawer handle */}
         <div className='mx-auto mt-2 h-1 w-[60px] cursor-grab rounded-full bg-foreground'></div>
-        {/* Top control */}
-        <div className='absolute left-4 right-4 top-3 z-10 flex flex-row items-center justify-between'>
-          {/* BGM Control */}
-          <BGMPlayer bgmInfoPosition='right' showBgmInfo />
-          {/* Theme switch */}
-          <ThemeSwitch />
-        </div>
+        {props.children}
         {/* Navigation items */}
         <nav className='prose flex flex-col gap-2 p-3'>
           {renderTOCTree(toc)}

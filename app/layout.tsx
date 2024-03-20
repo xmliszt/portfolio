@@ -12,6 +12,7 @@ import {
 } from '@/components/custom/floating-navigation-bar';
 import { ThemeSwitch } from '@/components/custom/theme-switch';
 import { FloatingTOCDrawer } from '@/components/custom/toc/floating-toc-drawer';
+import { FloatingTOCDrawerHeader } from '@/components/custom/toc/floating-toc-drawer-header';
 import { TOCProvider } from '@/components/custom/toc/toc-provider';
 import { TOCTree } from '@/components/custom/toc/toc-tree';
 import { ThemeProvider } from '@/components/theme-provider';
@@ -172,7 +173,14 @@ export default function RootLayout({
                 </main>
                 <GradientBlur placement='bottom' position='fixed' />
                 {/* Right side floating TOC drawer: show when in mobile view port */}
-                <FloatingTOCDrawer />
+                <FloatingTOCDrawer>
+                  <FloatingTOCDrawerHeader>
+                    {/* BGM Control */}
+                    <BGMPlayer bgmInfoPosition='right' showBgmInfo />
+                    {/* Theme switch */}
+                    <ThemeSwitch />
+                  </FloatingTOCDrawerHeader>
+                </FloatingTOCDrawer>
               </TOCProvider>
               {/* Show when in mobile view port */}
               <FloatingNavigationProvider>
