@@ -9,7 +9,7 @@ import {
   useTransition,
 } from 'react';
 
-import { BGM, fetchBGMs } from './fetch-bgms';
+import { BGM, fetchBGMPublicUrl, fetchBGMs } from './fetch-bgms';
 
 type BGMProviderContextType = {
   /**
@@ -75,11 +75,49 @@ export function BGMProvider({ children }: { children: React.ReactNode }) {
   const [isPending, startTransition] = useTransition();
 
   const _playBGM = useCallback(
-    (index: number) => {
-      const sound = sounds[index];
+    async (index: number) => {
+      const bgm = bgms[index];
+      if (!bgm.url) {
+        const { publicUrl } = await fetchBGMPublicUrl(bgm.id);
+        bgm.url = publicUrl;
+      }
+      let sound = sounds[index];
+      if (!sound) {
+        // If the sound is not loaded, create a new one
+        sound = new Howl({
+          src: [bgm.url],
+          volume: VOLUME,
+          loop: false,
+          html5: true,
+          onload: () => {
+            console.log('Loaded', bgm.title);
+          },
+          onend: () => {
+            console.log('Ended', bgm.title);
+            const nextIndex = (index + 1) % bgms.length;
+            const sound = sounds[nextIndex];
+            if (!sound || sound.playing()) return;
+            console.log(
+              `Start playing ${bgms[nextIndex].title} | ${Object.keys(sounds).length} in the playlist`
+            );
+            setIsIdle(false);
+            sound.volume(VOLUME);
+            sound.play();
+            setIsPlaying(true);
+            setCurrentPlayingIndex(nextIndex);
+          },
+          onplayerror: (_, error) => {
+            console.error('Error playing', bgm.title, error);
+          },
+          onloaderror: (_, error) => {
+            console.error('Error loading', bgm.title, error);
+          },
+        });
+        sounds[index] = sound; // Cache the sound
+      }
       if (!sound || sound.playing()) return;
       console.log(
-        `Start playing ${bgms[index].title} | ${Object.keys(sounds).length} in the playlist`
+        `Start playing ${bgm.title} | ${Object.keys(sounds).length} in the playlist`
       );
       setIsIdle(false);
       sound.volume(VOLUME);
@@ -157,49 +195,10 @@ export function BGMProvider({ children }: { children: React.ReactNode }) {
   }
 
   useEffect(() => {
-    function loadHowlers(bgms: BGM[]) {
-      bgms.map((bgm, index) => {
-        if (!sounds[index]) {
-          sounds[index] = new Howl({
-            src: [bgm.url],
-            volume: VOLUME,
-            loop: false,
-            html5: true,
-            onload: () => {
-              console.log('Loaded', bgm.title);
-            },
-            onend: () => {
-              console.log('Ended', bgm.title);
-              const nextIndex = (index + 1) % bgms.length;
-              const sound = sounds[nextIndex];
-              if (!sound || sound.playing()) return;
-              console.log(
-                `Start playing ${bgms[nextIndex].title} | ${Object.keys(sounds).length} in the playlist`
-              );
-              setIsIdle(false);
-              sound.volume(VOLUME);
-              sound.play();
-              setIsPlaying(true);
-              setCurrentPlayingIndex(nextIndex);
-            },
-            onplayerror: (_, error) => {
-              console.error('Error playing', bgm.title, error);
-            },
-            onloaderror: (_, error) => {
-              console.error('Error loading', bgm.title, error);
-            },
-          });
-        } else {
-          console.log('Already loaded', bgm.title);
-        }
-      });
-    }
-
     startTransition(async () => {
-      const bgms = await fetchBGMs();
+      const { bgms } = await fetchBGMs();
       setCurrentPlayingIndex(Math.floor(Math.random() * bgms.length));
       setBgms(bgms);
-      loadHowlers(bgms);
     });
 
     return () => {
