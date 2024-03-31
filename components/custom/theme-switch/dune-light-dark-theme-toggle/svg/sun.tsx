@@ -25,7 +25,7 @@ export function SunSVG() {
     glowing: {
       filter: [
         'drop-shadow(0 0 15px #ffb800)',
-        'drop-shadow(0 0 35px #ffffff)',
+        'drop-shadow(0 0 35px #ffb800)',
         'drop-shadow(0 0 15px #ffb800)',
       ],
       transition: {
