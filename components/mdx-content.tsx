@@ -10,6 +10,7 @@ import { BadgeGroup } from './ui/badge-group';
 import { CopyablePre } from './ui/copyable-pre';
 import { CustomLink } from './ui/custom-link';
 import { ExternalActionButtonLink } from './ui/external-action-button-link';
+import { FilmGrid } from './ui/film-grid';
 import { HoverPerspectiveContainer } from './ui/hover-perspective-container';
 import { LoadMoreLinks } from './ui/load-more-links';
 import { PhotoBentoGrid } from './ui/photo-bento-grid';
@@ -101,6 +102,7 @@ export function MDXContent({ code, components }: MdxProps) {
         ExternalActionButtonLink,
         LoadMoreLinks,
         CustomLink,
+        FilmGrid,
         Link,
       }}
     />
