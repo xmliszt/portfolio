@@ -20,7 +20,7 @@ export function SmallMoonSVG() {
         ease: 'easeOut',
       },
     },
-    'hover-glowing': {
+    glowing: {
       filter: [
         'drop-shadow(0 0 5px #6D6D6D)',
         'drop-shadow(0 0 15px #6D6D6D)',

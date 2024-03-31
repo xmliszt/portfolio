@@ -41,27 +41,6 @@
     "path": "/Users/xmliszt/Projects/web dev/portfolio/content/pages/playground/index.mdx"
   },
   {
-    "title": "The why",
-    "subtitle": "初衷",
-    "slug": "the-why",
-    "body": "const{Fragment:e,jsx:t,jsxs:n}=arguments[0];function _createMdxContent(o){const r={a:\"a\",h2:\"h2\",li:\"li\",p:\"p\",strong:\"strong\",ul:\"ul\",...o.components};return n(e,{children:[t(r.h2,{children:\"The why\"}),\"\\n\",t(r.p,{children:\"Why do I want to build this personal website? Previously I had iterated over several versions of my personal website actually, but I was never satisfied with how it turned out. I had a few reasons for that:\"}),\"\\n\",n(r.p,{children:[\"I don't want my personal site to just be -- \",t(r.strong,{children:\"a portfolio site\"}),\". That's why I don't want to even call it a portfolio site. \",t(r.strong,{children:\"Personal playground\"}),\" sounds better (but I might still tweak the name in the future). Basically, I think it shouldn't just be a place to showcase my work and projects, but also a place to think, to ponder, to learn, to experiment, to connect, to explore, to share, and to grow. I want it to be a place where I can express myself, and where I can be myself. I want it to be a place where I can be creative, and where I can be free. Being a playground of some sort, I can experiment with different ideas, designs, tech, music, things that I love. It is also like a cozy little corner, where I put up things that I like, and things I would want to share with you guys. And hopefully, through all these, you can also understand me better as a holistic person, with emotions, thoughts, and dreams, not just a mere coding machine.\"]}),\"\\n\",t(r.p,{children:\"Therefore, here you go; after much thoughts and design and nights burnt, I have finally put up something I am somewhat satisfied with. I added little bit of animation and details here and there, and gave it a simple and peaceful texture. Feel free to explore in my little digital playground here, enjoy the text, the music, the visuals, and the vibes. I hope you can find something that resonates with you. This site should be updated in sync with my life, so stay tuned for any updates. I hope you enjoy your stay here 😉\"}),\"\\n\",n(r.p,{children:[\"我的个人网站经历了好几次大改动了，但是我一直都不是很满意。我不觉得个人主页只是一个\",t(r.strong,{children:\"简历\"}),\"，我也不想叫它简历，显得很单调很无味。\",t(r.strong,{children:\"游乐场\"}),\"听起来好很多呢（但是我可能以后估计我还得改一改这个名字）。这不仅是一个展示我的作品和项目的地方，而且也应该是一个思考、学习、实验、探索、分享、成长、与世界互动的地方。我希望它是一个我可以表达自我的地方，在这里，我可以发挥天马行空的想象，让创造力无限地伸展。作为一个游乐场，我可以尝试不同的想法、设计、技术、音乐……任何我喜欢的东西。就像一个舒适的小窝，我陈列起我视为珍宝的东西，分享给你看，讲故事给你听。希望通过这一切，你能更全面地了解我。那么话不多说，欢迎来的这里，随便逛逛，走走看看，听听音乐弹弹琴，希望你能喜欢这里 😉\"]}),\"\\n\",t(r.h2,{children:\"Tech stack\"}),\"\\n\",t(r.p,{children:\"A little bit of tech here for anyone interested, and to give credits to the useful tools that made this website possible:\"}),\"\\n\",n(r.ul,{children:[\"\\n\",t(r.li,{children:t(r.a,{href:\"https://nextjs.org/\",children:\"NextJS app router\"})}),\"\\n\",t(r.li,{children:t(r.a,{href:\"https://supabase.io/\",children:\"Supabase for database store\"})}),\"\\n\",t(r.li,{children:t(r.a,{href:\"https://velite.js.org/\",children:\"Velite for boostraping nextJS with MDX\"})}),\"\\n\",t(r.li,{children:t(r.a,{href:\"https://mdxjs.com/\",children:\"MDX for content\"})}),\"\\n\",t(r.li,{children:t(r.a,{href:\"https://tailwindcss.com/\",children:\"TailwindCSS for styling\"})}),\"\\n\",t(r.li,{children:t(r.a,{href:\"https://howlerjs.com/\",children:\"HowlerJS for BGM and music effects\"})}),\"\\n\",t(r.li,{children:t(r.a,{href:\"https://vercel.com/\",children:\"Vercel for deployment\"})}),\"\\n\"]})]})}return{default:function(e={}){const{wrapper:n}=e.components||{};return n?t(n,{...e,children:t(_createMdxContent,{...e})}):_createMdxContent(e)}};",
-    "toc": [
-      {
-        "title": "The why",
-        "url": "#anchor:the-why",
-        "items": []
-      },
-      {
-        "title": "Tech stack",
-        "url": "#anchor:tech-stack",
-        "items": []
-      }
-    ],
-    "showToc": true,
-    "permalink": "/the-why",
-    "path": "/Users/xmliszt/Projects/web dev/portfolio/content/pages/the-why/index.mdx"
-  },
-  {
     "title": "Projects",
     "subtitle": "小成果展示",
     "slug": "projects",
@@ -112,5 +91,26 @@
     "showToc": true,
     "permalink": "/projects",
     "path": "/Users/xmliszt/Projects/web dev/portfolio/content/pages/projects/index.mdx"
+  },
+  {
+    "title": "The why",
+    "subtitle": "初衷",
+    "slug": "the-why",
+    "body": "const{Fragment:e,jsx:t,jsxs:n}=arguments[0];function _createMdxContent(o){const r={a:\"a\",h2:\"h2\",li:\"li\",p:\"p\",strong:\"strong\",ul:\"ul\",...o.components};return n(e,{children:[t(r.h2,{children:\"The why\"}),\"\\n\",t(r.p,{children:\"Why do I want to build this personal website? Previously I had iterated over several versions of my personal website actually, but I was never satisfied with how it turned out. I had a few reasons for that:\"}),\"\\n\",n(r.p,{children:[\"I don't want my personal site to just be -- \",t(r.strong,{children:\"a portfolio site\"}),\". That's why I don't want to even call it a portfolio site. \",t(r.strong,{children:\"Personal playground\"}),\" sounds better (but I might still tweak the name in the future). Basically, I think it shouldn't just be a place to showcase my work and projects, but also a place to think, to ponder, to learn, to experiment, to connect, to explore, to share, and to grow. I want it to be a place where I can express myself, and where I can be myself. I want it to be a place where I can be creative, and where I can be free. Being a playground of some sort, I can experiment with different ideas, designs, tech, music, things that I love. It is also like a cozy little corner, where I put up things that I like, and things I would want to share with you guys. And hopefully, through all these, you can also understand me better as a holistic person, with emotions, thoughts, and dreams, not just a mere coding machine.\"]}),\"\\n\",t(r.p,{children:\"Therefore, here you go; after much thoughts and design and nights burnt, I have finally put up something I am somewhat satisfied with. I added little bit of animation and details here and there, and gave it a simple and peaceful texture. Feel free to explore in my little digital playground here, enjoy the text, the music, the visuals, and the vibes. I hope you can find something that resonates with you. This site should be updated in sync with my life, so stay tuned for any updates. I hope you enjoy your stay here 😉\"}),\"\\n\",n(r.p,{children:[\"我的个人网站经历了好几次大改动了，但是我一直都不是很满意。我不觉得个人主页只是一个\",t(r.strong,{children:\"简历\"}),\"，我也不想叫它简历，显得很单调很无味。\",t(r.strong,{children:\"游乐场\"}),\"听起来好很多呢（但是我可能以后估计我还得改一改这个名字）。这不仅是一个展示我的作品和项目的地方，而且也应该是一个思考、学习、实验、探索、分享、成长、与世界互动的地方。我希望它是一个我可以表达自我的地方，在这里，我可以发挥天马行空的想象，让创造力无限地伸展。作为一个游乐场，我可以尝试不同的想法、设计、技术、音乐……任何我喜欢的东西。就像一个舒适的小窝，我陈列起我视为珍宝的东西，分享给你看，讲故事给你听。希望通过这一切，你能更全面地了解我。那么话不多说，欢迎来的这里，随便逛逛，走走看看，听听音乐弹弹琴，希望你能喜欢这里 😉\"]}),\"\\n\",t(r.h2,{children:\"Tech stack\"}),\"\\n\",t(r.p,{children:\"A little bit of tech here for anyone interested, and to give credits to the useful tools that made this website possible:\"}),\"\\n\",n(r.ul,{children:[\"\\n\",t(r.li,{children:t(r.a,{href:\"https://nextjs.org/\",children:\"NextJS app router\"})}),\"\\n\",t(r.li,{children:t(r.a,{href:\"https://supabase.io/\",children:\"Supabase for database store\"})}),\"\\n\",t(r.li,{children:t(r.a,{href:\"https://velite.js.org/\",children:\"Velite for boostraping nextJS with MDX\"})}),\"\\n\",t(r.li,{children:t(r.a,{href:\"https://mdxjs.com/\",children:\"MDX for content\"})}),\"\\n\",t(r.li,{children:t(r.a,{href:\"https://tailwindcss.com/\",children:\"TailwindCSS for styling\"})}),\"\\n\",t(r.li,{children:t(r.a,{href:\"https://howlerjs.com/\",children:\"HowlerJS for BGM and music effects\"})}),\"\\n\",t(r.li,{children:t(r.a,{href:\"https://vercel.com/\",children:\"Vercel for deployment\"})}),\"\\n\"]})]})}return{default:function(e={}){const{wrapper:n}=e.components||{};return n?t(n,{...e,children:t(_createMdxContent,{...e})}):_createMdxContent(e)}};",
+    "toc": [
+      {
+        "title": "The why",
+        "url": "#anchor:the-why",
+        "items": []
+      },
+      {
+        "title": "Tech stack",
+        "url": "#anchor:tech-stack",
+        "items": []
+      }
+    ],
+    "showToc": true,
+    "permalink": "/the-why",
+    "path": "/Users/xmliszt/Projects/web dev/portfolio/content/pages/the-why/index.mdx"
   }
 ]

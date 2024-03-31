@@ -21,7 +21,7 @@ export function BigMoonSVG() {
         ease: 'easeOut',
       },
     },
-    'hover-glowing': {
+    glowing: {
       filter: [
         'drop-shadow(0 0 5px #A9A9A9)',
         'drop-shadow(0 0 15px #A9A9A9)',

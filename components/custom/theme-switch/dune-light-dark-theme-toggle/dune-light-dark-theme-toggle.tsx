@@ -10,7 +10,6 @@ import { PaulSVG } from './svg/paul';
 import { SandSVG } from './svg/sand';
 import { SandwormSVG } from './svg/sand-worm';
 import { SmallMoonSVG } from './svg/small-moon';
-import { StormOverlaySVG } from './svg/storm-overlay';
 import { SunSVG } from './svg/sun';
 
 type DuneLightDarkThemeToggleProps = {
@@ -66,11 +65,12 @@ export function DuneLightDarkThemeToggle(props: DuneLightDarkThemeToggleProps) {
       animate={[
         'normal',
         resolvedTheme === 'light' ? 'light-theme' : 'dark-theme',
+        resolvedTheme === 'light' ? 'sand-storm' : 'worm-moving',
+        'glowing',
       ]}
       whileHover={[
         'on-hover',
         resolvedTheme === 'light' ? 'light-hover' : 'dark-hover',
-        'hover-glowing',
       ]}
       transition={{
         duration: 0.3,
@@ -94,7 +94,6 @@ export function DuneLightDarkThemeToggle(props: DuneLightDarkThemeToggleProps) {
         <SmallMoonSVG />
         <PaulSVG />
         <SandwormSVG />
-        <StormOverlaySVG />
         <SandSVG />
       </motion.div>
       <motion.div

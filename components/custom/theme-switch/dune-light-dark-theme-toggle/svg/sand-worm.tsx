@@ -24,7 +24,7 @@ export function SandwormSVG() {
         bounce: 0,
       },
     },
-    'dark-hover': {
+    'worm-moving': {
       scale: [1, 1.1, 1],
       rotate: [-10, 0, -10],
       transition: {
