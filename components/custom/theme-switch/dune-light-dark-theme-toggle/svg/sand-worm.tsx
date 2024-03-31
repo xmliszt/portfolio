@@ -47,6 +47,30 @@ export function SandwormSVG() {
       xmlns='http://www.w3.org/2000/svg'
       variants={variants}
     >
+      <defs>
+        <linearGradient
+          id='paint0_linear_16_130'
+          x1='26'
+          y1='18'
+          x2='91'
+          y2='44.5'
+          gradientUnits='userSpaceOnUse'
+        >
+          <stop stopColor='#8F8044' />
+          <stop offset='1' stopColor='#635C40' />
+        </linearGradient>
+        <linearGradient
+          id='paint1_linear_16_130'
+          x1='25.7325'
+          y1='16.8707'
+          x2='109.768'
+          y2='48.6293'
+          gradientUnits='userSpaceOnUse'
+        >
+          <stop stopColor='#9D8F52' />
+          <stop offset='0.815' stopColor='#635C40' />
+        </linearGradient>
+      </defs>
       <path
         d='M28.5 15L25.5 17C26.8333 18 29.8 20.2 31 21C32.5 22 32 23 36 31C40 39 46.5 41 51.5 43C57.75 45.5 64 46 67.5 45.5C70.3 45.1 75 45.3333 77 46L97 54L103 41.5C99.3333 39.8333 91 36.1 87 34.5C82 32.5 77.5 32.5 71.5 33C65.5 33.5 63 33 57 31.5C52.2 30.3 48 26 46.5 24L44.5 22C42.5 20 38.5 16 35 15C32.2 14.2 29.5 14.6667 28.5 15Z'
         fill='url(#paint0_linear_16_130)'
@@ -83,30 +107,6 @@ export function SandwormSVG() {
         d='M1 7.50002L2.5 5C2.85233 5.52851 6.90471 3.1582 10 3.50001C11.5 4.50002 14.5147 6.24634 15.5 6.00002C17.5 5.50002 19.8333 2.16668 20.5 1.50002C21 3.18748 20.5 10.5 20.5 11.5L18.5 20.5L17 23.5C16 25.2846 14.4311 27.2845 13 28C11 29 10.5 29 9.5 29L8.5 27.5L11 20.5V14L6 7.50002H1ZM3 6.00002L8.5 4.5L15.5 7L19.5 4V12.5L16.5 22.5L14.5 25.5L11 28L9.5 27L12 22V14L7 7H2L3 6.00002Z'
         fill='#77641E'
       />
-      <defs>
-        <linearGradient
-          id='paint0_linear_16_130'
-          x1='26'
-          y1='18'
-          x2='91'
-          y2='44.5'
-          gradientUnits='userSpaceOnUse'
-        >
-          <stop stopColor='#8F8044' />
-          <stop offset='1' stopColor='#635C40' />
-        </linearGradient>
-        <linearGradient
-          id='paint1_linear_16_130'
-          x1='25.7325'
-          y1='16.8707'
-          x2='109.768'
-          y2='48.6293'
-          gradientUnits='userSpaceOnUse'
-        >
-          <stop stopColor='#9D8F52' />
-          <stop offset='0.815' stopColor='#635C40' />
-        </linearGradient>
-      </defs>
     </motion.svg>
   );
 }

@@ -100,7 +100,7 @@ export function DuneLightDarkThemeToggle(props: DuneLightDarkThemeToggleProps) {
       <motion.div
         style={{
           background:
-            'linear-gradient(90deg, rgba(209,173,103,1) 0%, rgba(242,198,115,1) 50%, rgba(209,173,103,1) 100%)',
+            'linear-gradient(90deg, rgba(209,173,103,1) 0%, rgba(255,236,196,1) 50%, rgba(209,173,103,1) 100%)',
         }}
         className='absolute left-0 top-0 z-0 h-full w-full rounded-full'
         variants={backgroundVariants}

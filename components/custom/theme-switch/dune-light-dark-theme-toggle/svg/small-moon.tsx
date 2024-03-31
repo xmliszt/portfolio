@@ -13,6 +13,7 @@ export function SmallMoonSVG() {
     'dark-theme': {
       translateX: '16%',
       translateY: '-5%',
+      filter: 'drop-shadow(0 0 5px #6D6D6D)',
       transition: {
         type: 'spring',
         duration: 0.7,
@@ -20,7 +21,11 @@ export function SmallMoonSVG() {
       },
     },
     'hover-glowing': {
-      stdDeviation: [2, 7, 2],
+      filter: [
+        'drop-shadow(0 0 5px #6D6D6D)',
+        'drop-shadow(0 0 15px #6D6D6D)',
+        'drop-shadow(0 0 5px #6D6D6D)',
+      ],
       transition: {
         duration: 4,
         ease: 'easeInOut',
@@ -44,51 +49,12 @@ export function SmallMoonSVG() {
       xmlns='http://www.w3.org/2000/svg'
       variants={variants}
     >
-      <g filter='url(#filter0_d_10_79)'>
-        <circle cx='25.5263' cy='22.614' r='10.5263' fill='#6D6D6D' />
-      </g>
+      <circle cx='25.5263' cy='22.614' r='10.5263' fill='#6D6D6D' />
       <circle cx='29.5526' cy='27.5' r='0.5' fill='#606060' />
       <circle cx='26.0526' cy='29' r='1' fill='#606060' />
       <circle cx='28.5526' cy='30.5' r='0.5' fill='#606060' />
       <circle cx='31.5526' cy='28.5' r='0.5' fill='#606060' />
       <circle cx='32.0526' cy='26' r='1' fill='#606060' />
-      <defs>
-        <filter
-          id='filter0_d_10_79'
-          x='0.9'
-          y='-2.01228'
-          width='49.2526'
-          height='49.2526'
-          filterUnits='userSpaceOnUse'
-          colorInterpolationFilters='sRGB'
-        >
-          <feFlood floodOpacity='0' result='BackgroundImageFix' />
-          <feColorMatrix
-            in='SourceAlpha'
-            type='matrix'
-            values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0'
-            result='hardAlpha'
-          />
-          <feOffset />
-          <motion.feGaussianBlur variants={variants} />
-          <feComposite in2='hardAlpha' operator='out' />
-          <feColorMatrix
-            type='matrix'
-            values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 1 0'
-          />
-          <feBlend
-            mode='normal'
-            in2='BackgroundImageFix'
-            result='effect1_dropShadow_10_79'
-          />
-          <feBlend
-            mode='normal'
-            in='SourceGraphic'
-            in2='effect1_dropShadow_10_79'
-            result='shape'
-          />
-        </filter>
-      </defs>
     </motion.svg>
   );
 }
