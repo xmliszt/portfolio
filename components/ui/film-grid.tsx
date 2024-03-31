@@ -4,6 +4,7 @@ import { motion } from 'framer-motion';
 import Image from 'next/image';
 import Link from 'next/link';
 
+import { AspectRatio } from './aspect-ratio';
 import { HoverPerspectiveContainer } from './hover-perspective-container';
 import { Tooltip, TooltipContent, TooltipTrigger } from './tooltip';
 
@@ -28,24 +29,22 @@ export function FilmGrid(props: FilmGridProps) {
             <Link href={film.href} target='_blank' className='cursor-alias'>
               <HoverPerspectiveContainer className='border border-primary'>
                 <div className='relative flex aspect-[2/3] w-full flex-col gap-y-2 bg-card'>
-                  <Image
-                    className='m-0'
-                    src={film.posterUrl}
-                    alt={film.originalTitle}
-                    width={200}
-                    height={300}
-                    layout='responsive'
-                    unoptimized
-                  />
+                  <AspectRatio ratio={2 / 3}>
+                    <Image
+                      className='m-0'
+                      src={film.posterUrl}
+                      alt={film.originalTitle}
+                      fill
+                      unoptimized
+                    />
+                  </AspectRatio>
                   <motion.div
-                    className='absolute bottom-0 z-10 flex w-full flex-col justify-between gap-2 rounded-t-xl border-t border-t-stone-600 bg-[rgba(0,0,0,0.4)] p-2 pt-3 shadow-[0_-5px_15px_rgba(0,0,0,0.4)] [&_*]:text-white'
+                    className='absolute bottom-0 z-10 flex w-full flex-col justify-between gap-2 rounded-t-xl border-t border-t-stone-600 bg-[rgba(0,0,0,0.5)] p-2 pt-3 shadow-[0_-5px_15px_rgba(0,0,0,0.4)] backdrop-blur-[5px] [&_*]:text-white'
                     initial={{
-                      backdropFilter: 'blur(0px)',
                       translateY: '10px',
                       opacity: 0,
                     }}
                     animate={{
-                      backdropFilter: 'blur(5px)',
                       translateY: '0px',
                       opacity: 1,
                       transition: {
