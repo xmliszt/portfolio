@@ -64,7 +64,6 @@ export const metadata: Metadata = {
     'Li Yuxuan',
     'personal website',
     'portfolio',
-    'blogs',
     'playground',
     'piano',
     'hobbies',
