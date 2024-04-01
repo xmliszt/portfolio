@@ -11,6 +11,9 @@ import { posts } from '#site/content';
 export function generateMetadata(): Metadata {
   return {
     title: 'Posts | 碎碎念',
+    alternates: {
+      canonical: 'https://liyuxuan.dev/posts',
+    },
   };
 }
 

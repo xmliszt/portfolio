@@ -9,6 +9,9 @@ import { focus } from '#site/content';
 export function generateMetadata(): Metadata {
   return {
     title: 'Focus space | 专注空间',
+    alternates: {
+      canonical: 'https://liyuxuan.dev/focus',
+    },
   };
 }
 

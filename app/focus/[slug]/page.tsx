@@ -22,7 +22,11 @@ function getPostBySlug(slug: string) {
 export function generateMetadata({ params }: PostProps): Metadata {
   const post = getPostBySlug(params.slug);
   if (post == null) return {};
-  return { title: post.title, description: post.description };
+  return {
+    title: post.title,
+    description: post.description,
+    alternates: { canonical: `https://liyuxuan.dev/focus/${post.slug}` },
+  };
 }
 
 export function generateStaticParams(): PostProps['params'][] {

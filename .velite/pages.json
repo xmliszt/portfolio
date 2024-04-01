@@ -7,7 +7,7 @@
     "toc": [],
     "showToc": false,
     "permalink": "/about",
-    "path": "/Users/liyuxuan/Projects/personal/portfolio/content/pages/about/index.mdx"
+    "path": "/Users/xmliszt/Projects/web dev/portfolio/content/pages/about/index.mdx"
   },
   {
     "title": "Contacts",
@@ -17,7 +17,7 @@
     "toc": [],
     "showToc": false,
     "permalink": "/contacts",
-    "path": "/Users/liyuxuan/Projects/personal/portfolio/content/pages/contacts/index.mdx"
+    "path": "/Users/xmliszt/Projects/web dev/portfolio/content/pages/contacts/index.mdx"
   },
   {
     "title": "Playground",
@@ -38,7 +38,7 @@
     ],
     "showToc": true,
     "permalink": "/playground",
-    "path": "/Users/liyuxuan/Projects/personal/portfolio/content/pages/playground/index.mdx"
+    "path": "/Users/xmliszt/Projects/web dev/portfolio/content/pages/playground/index.mdx"
   },
   {
     "title": "The why",
@@ -59,7 +59,7 @@
     ],
     "showToc": true,
     "permalink": "/the-why",
-    "path": "/Users/liyuxuan/Projects/personal/portfolio/content/pages/the-why/index.mdx"
+    "path": "/Users/xmliszt/Projects/web dev/portfolio/content/pages/the-why/index.mdx"
   },
   {
     "title": "Projects",
@@ -111,6 +111,6 @@
     ],
     "showToc": true,
     "permalink": "/projects",
-    "path": "/Users/liyuxuan/Projects/personal/portfolio/content/pages/projects/index.mdx"
+    "path": "/Users/xmliszt/Projects/web dev/portfolio/content/pages/projects/index.mdx"
   }
 ]

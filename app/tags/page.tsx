@@ -1,6 +1,17 @@
+import { Metadata } from 'next';
+
 import { CustomLink } from '@/components/ui/custom-link';
 
 import { tags } from '#site/content';
+
+export function generateMetadata(): Metadata {
+  return {
+    title: 'Tags | 标签',
+    alternates: {
+      canonical: 'https://liyuxuan.dev/tags',
+    },
+  };
+}
 
 export default function TagsPage() {
   // Sort tags and remove duplicates

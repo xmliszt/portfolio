@@ -25,7 +25,11 @@ function getPostBySlug(slug: string) {
 export function generateMetadata({ params }: PostProps): Metadata {
   const post = getPostBySlug(params.slug);
   if (post == null) return {};
-  return { title: post.title, description: post.description };
+  return {
+    title: post.title,
+    description: post.description,
+    alternates: { canonical: `https://liyuxuan.dev/posts/${post.slug}` },
+  };
 }
 
 export function generateStaticParams(): PostProps['params'][] {
@@ -46,22 +50,34 @@ export default async function PostPage({ params }: PostProps) {
         <a id='top' className='relative -top-16 block [visibility:hidden]'></a>
         {post.title}
       </h1>
-      <div className='flex flex-row flex-wrap gap-2'>
-        {post.tags.map((tag) => (
-          <CustomBadgeLink key={tag} href={`/tags/${tag}`}>
-            {tag}
-          </CustomBadgeLink>
-        ))}
+      <div className='flex items-center justify-between'>
+        <div className='flex flex-row flex-wrap gap-2'>
+          {post.tags.map((tag) => (
+            <CustomBadgeLink key={tag} href={`/tags/${tag}`}>
+              {tag}
+            </CustomBadgeLink>
+          ))}
+        </div>
+        <time className='text-right' dateTime={post.date}>
+          {format(post.date, 'do LLLL, yyyy')}
+        </time>
       </div>
-      <p>
-        <time dateTime={post.date}>{format(post.date, 'do LLLL, yyyy')}</time>
-        <span> - {views} views</span>
-      </p>
+      <div className='flex items-center justify-between gap-4 pt-4 text-sm leading-tight'>
+        <div>{views} views</div>
+        <div className='text-right'>
+          {post.metadata.readingTime && (
+            <span>
+              {post.metadata.readingTime} min read ({post.metadata.wordCount}{' '}
+              words)
+            </span>
+          )}
+        </div>
+      </div>
       {post.description && <p>{post.description}</p>}
       {post.cover && (
         <Image src={post.cover} alt={post.title} className='m-0' />
       )}
-      <hr className='my-6' />
+      <hr className='mb-6 mt-2' />
 
       {/* Markdown content */}
       <MDXContent code={post.content} />

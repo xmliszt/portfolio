@@ -18,7 +18,11 @@ function getHobbyBySlug(slug: string) {
 export function generateMetadata({ params }: HobbyProps): Metadata {
   const hobby = getHobbyBySlug(params.slug);
   if (hobby == null) return {};
-  return { title: hobby.title, description: hobby.synopsis };
+  return {
+    title: hobby.title,
+    description: hobby.synopsis,
+    alternates: { canonical: `https://liyuxuan.dev/hobbies/${hobby.slug}` },
+  };
 }
 
 export function generateStaticParams(): HobbyProps['params'][] {

@@ -97,7 +97,7 @@ export function Ratings({ id }: RatingsProps) {
   }
 
   return (
-    <div className='flex w-full justify-center pb-3 md:justify-end'>
+    <div className='flex w-full justify-center py-4 md:justify-end'>
       <div className='grid grid-cols-2 grid-rows-[1fr_2fr]'>
         <div className='text-center text-sm font-bold text-muted-foreground'>
           {positiveRatings}

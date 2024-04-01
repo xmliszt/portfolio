@@ -1,8 +1,19 @@
+import { Metadata } from 'next';
+
 import { ShadowSubtitle } from '../[slug]/shadow-subtitle';
 
 import { HobbyCard } from './hobby-card';
 
 import { hobbies } from '#site/content';
+
+export function generateMetadata(): Metadata {
+  return {
+    title: 'My hobbies | 兴趣爱好',
+    alternates: {
+      canonical: 'https://liyuxuan.dev/hobbies',
+    },
+  };
+}
 
 export default function HobbiesPage() {
   return (

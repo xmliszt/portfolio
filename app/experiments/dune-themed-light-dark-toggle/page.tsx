@@ -7,6 +7,10 @@ import { Ratings } from '@/components/ui/ratings';
 export function generateMetadata(): Metadata {
   return {
     title: 'Dune themed light dark mode toggle | 沙丘主题的明暗切换',
+    alternates: {
+      canonical:
+        'https://liyuxuan.dev/experiments/dune-themed-light-dark-toggle',
+    },
   };
 }
 

@@ -6,6 +6,9 @@ import { Ratings } from '@/components/ui/ratings';
 export function generateMetadata(): Metadata {
   return {
     title: 'Mini piano | 迷你钢琴',
+    alternates: {
+      canonical: 'https://liyuxuan.dev/experiments/piano',
+    },
   };
 }
 

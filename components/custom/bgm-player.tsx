@@ -43,7 +43,7 @@ export function BGMPlayer(props: BGMPlayerProps) {
   }, [isPlaying]);
 
   return (
-    <div className='flex h-12 flex-row items-center gap-2 md:h-16 md:gap-6'>
+    <div className='flex h-12 flex-row items-center gap-2 md:h-16 md:gap-4'>
       {!isIdle &&
         currentBGM &&
         isBGMInfoShowing &&
@@ -57,14 +57,16 @@ export function BGMPlayer(props: BGMPlayerProps) {
           />
         )}
       {isIdle && props.bgmInfoPosition === 'left' && (
-        <div className='flex flex-col items-start justify-center gap-0 overflow-hidden text-ellipsis [&>*]:whitespace-nowrap'>
-          <span className='text-sm font-bold'>
-            {isLoading ? 'Loading the cassette...' : 'Have some music '}
-            <ArrowRight className='inline-block animate-pulse' size={16} />
-          </span>
-          <span className='text-xs'>
-            {isLoading ? '正在载入歌曲……' : '休息一下，听首歌吧'}
-          </span>
+        <div className='flex items-center gap-2'>
+          <div className='flex flex-col items-start justify-center gap-0 overflow-hidden text-ellipsis [&>*]:whitespace-nowrap'>
+            <span className='text-xs font-bold'>
+              {isLoading ? 'Loading the cassette...' : 'Have some music '}
+            </span>
+            <span className='text-xs'>
+              {isLoading ? '正在载入歌曲……' : '休息一下，听首歌吧'}
+            </span>
+          </div>
+          <ArrowRight className='inline-block animate-pulse' size={16} />
         </div>
       )}
       <Tooltip>

@@ -73,17 +73,17 @@ export const metadata: Metadata = {
     'posts',
     'playground',
   ],
-  authors: [{ name: 'Li Yuxuan', url: 'https://liyuxuan.dev' }],
+  authors: [{ name: 'Li Yuxuan', url: 'https://liyuxuan.dev/about' }],
   creator: 'Li Yuxuan',
   alternates: {
-    canonical: 'https://liyuxuan.dev',
+    canonical: 'https://liyuxuan.dev/about',
   },
   category: 'portfolio',
   openGraph: {
     title: "Yuxuan's digital playground",
     description:
       'Welcome to my digital playground, a little cozy place where ideas flow freely.',
-    url: 'https://liyuxuan.dev',
+    url: 'https://liyuxuan.dev/about',
     siteName: "Yuxuan's digital playground",
     images: [
       {
