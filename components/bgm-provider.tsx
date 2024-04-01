@@ -74,8 +74,8 @@ export function BGMProvider({ children }: { children: React.ReactNode }) {
   const [isIdle, setIsIdle] = useState(true);
   const [isPending, startTransition] = useTransition();
 
-  const _playBGM = useCallback(
-    async (index: number) => {
+  const _playBGM = (index: number) => {
+    startTransition(async () => {
       const bgm = bgms[index];
       if (!bgm.url) {
         const { publicUrl } = await fetchBGMPublicUrl(bgm.id);
@@ -124,9 +124,8 @@ export function BGMProvider({ children }: { children: React.ReactNode }) {
       sound.play();
       setIsPlaying(true);
       setCurrentPlayingIndex(index);
-    },
-    [bgms]
-  );
+    });
+  };
 
   const _stopBGM = useCallback(
     (index: number) => {
