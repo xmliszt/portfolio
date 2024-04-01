@@ -19,7 +19,7 @@ export function generateMetadata({ params }: HobbyProps): Metadata {
   const hobby = getHobbyBySlug(params.slug);
   if (hobby == null) return {};
   return {
-    title: hobby.title,
+    title: hobby.title + (hobby.subtitle ? ` | ${hobby.subtitle}` : ''),
     description: hobby.synopsis,
     alternates: { canonical: `https://liyuxuan.dev/hobbies/${hobby.slug}` },
   };
