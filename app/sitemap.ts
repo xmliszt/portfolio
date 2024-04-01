@@ -76,7 +76,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
   }));
 
   const tagsSiteMap: MetadataRoute.Sitemap = tags.map((tag) => ({
-    url: `https://liyuxuan.dev/tags/${tag}`,
+    url: `https://liyuxuan.dev/tags/${tag.slug}`,
     lastModified: new Date(),
     changeFrequency: 'daily',
     priority: 1,
