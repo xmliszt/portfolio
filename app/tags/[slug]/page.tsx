@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import pluralize from 'pluralize';
 
+import { fetchPostViews } from '@/app/posts/[slug]/fetch-post-views';
 import { PostCard } from '@/app/posts/post-card';
 
 import { posts, tags } from '#site/content';
@@ -38,7 +39,8 @@ export function generateStaticParams(): { slug: string }[] {
   }));
 }
 
-export default function PostPage({ params }: TagProps) {
+export default async function PostPage({ params }: TagProps) {
+  const postViews = await fetchPostViews();
   const posts = getPostsByTag(params.slug);
   const tag = tags.find((tag) => tag.slug === params.slug);
 
@@ -52,7 +54,11 @@ export default function PostPage({ params }: TagProps) {
       </h1>
       <div className='flex flex-col gap-16'>
         {posts.map((post) => (
-          <PostCard key={post.slug} post={post} />
+          <PostCard
+            key={post.slug}
+            post={post}
+            views={postViews.find((view) => view.slug === post.slug)?.view ?? 0}
+          />
         ))}
       </div>
     </article>
