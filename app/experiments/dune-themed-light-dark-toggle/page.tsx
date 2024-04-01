@@ -2,6 +2,7 @@ import { Metadata } from 'next';
 
 import { DuneLightDarkThemeToggle } from '@/components/custom/theme-switch/dune-light-dark-theme-toggle';
 import { ExternalActionButtonLink } from '@/components/ui/external-action-button-link';
+import { Ratings } from '@/components/ui/ratings';
 
 export function generateMetadata(): Metadata {
   return {
@@ -17,6 +18,7 @@ export default function Page() {
       <div className='grid h-[200px] w-full place-items-center'>
         <DuneLightDarkThemeToggle sizeInPixels={120} />
       </div>
+      <Ratings id='dune-light-dark-toggle' />
       <p>
         After watching the movie Dune 2, I was inspired to create this light
         dark mode toggle button to capture the iconic dessert of the Arrakis,

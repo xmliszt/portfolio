@@ -14,6 +14,7 @@ import { FilmGrid } from './ui/film-grid';
 import { HoverPerspectiveContainer } from './ui/hover-perspective-container';
 import { LoadMoreLinks } from './ui/load-more-links';
 import { PhotoBentoGrid } from './ui/photo-bento-grid';
+import { Ratings } from './ui/ratings';
 
 interface MdxProps {
   code: string;
@@ -103,6 +104,7 @@ export function MDXContent({ code, components }: MdxProps) {
         LoadMoreLinks,
         CustomLink,
         FilmGrid,
+        Ratings,
         Link,
       }}
     />

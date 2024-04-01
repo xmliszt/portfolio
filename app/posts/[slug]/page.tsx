@@ -6,6 +6,7 @@ import { notFound } from 'next/navigation';
 import { TOCLoader } from '@/components/custom/toc/toc-loader';
 import { MDXContent } from '@/components/mdx-content';
 import { CustomBadgeLink } from '@/components/ui/custom-badge-link';
+import { Ratings } from '@/components/ui/ratings';
 
 import { incrementPostView } from './increment-post-view';
 
@@ -74,6 +75,7 @@ export default async function PostPage({ params }: PostProps) {
         ))}
       </div>
       <TOCLoader toc={post.toc} showToc={true} />
+      <Ratings id={post.slug} />
     </article>
   );
 }
