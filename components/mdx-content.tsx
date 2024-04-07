@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { slugify } from '@/lib/utils';
 
 import { WavingAvatar } from './custom/waving-avatar';
+import { AspectRatio } from './ui/aspect-ratio';
 import { BackToTopLink } from './ui/back-to-top-link';
 import { BadgeGroup } from './ui/badge-group';
 import { BookGrid } from './ui/book-grid';
@@ -79,15 +80,21 @@ export function MDXContent({ code, components }: MdxProps) {
         ),
         img: (props: any) => (
           <HoverPerspectiveContainer>
-            <Image
-              className='m-0 h-full w-full'
-              src={props.src}
-              alt={props.alt}
-              width={100}
-              height={100}
-              unoptimized
-              {...props}
-            />
+            <AspectRatio ratio={3 / 2}>
+              <Image
+                className='m-0 h-full w-full'
+                src={props.src}
+                alt={props.alt}
+                width={200}
+                height={200}
+                style={{
+                  objectFit: 'cover',
+                  objectPosition: 'center',
+                }}
+                unoptimized
+                {...props}
+              />
+            </AspectRatio>
           </HoverPerspectiveContainer>
         ),
         a: (props: any) => (
