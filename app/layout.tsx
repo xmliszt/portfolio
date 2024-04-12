@@ -132,6 +132,9 @@ export default function RootLayout({
 }) {
   return (
     <html lang='en' suppressHydrationWarning>
+      <a rel='me' href='https://mastodon.social/@liyuxuan'>
+        Mastodon
+      </a>
       <ThemeProvider>
         <body
           className={cn(
