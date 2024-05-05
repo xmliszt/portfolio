@@ -24,7 +24,7 @@ export function generateMetadata({ params }: Props): Metadata {
   return {
     title: page.title + (page.subtitle ? ` | ${page.subtitle}` : ''),
     alternates: {
-      canonical: `https://liyuxuan.dev/${page.slug}`,
+      canonical: `/${page.slug}`,
     },
   };
 }

@@ -28,7 +28,7 @@ export function generateMetadata({ params }: PostProps): Metadata {
   return {
     title: post.title,
     description: post.description,
-    alternates: { canonical: `https://liyuxuan.dev/posts/${post.slug}` },
+    alternates: { canonical: `/posts/${post.slug}` },
   };
 }
 

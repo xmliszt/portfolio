@@ -31,7 +31,7 @@ export function generateMetadata({ params }: TagProps): Metadata {
     title: `Posts | ${params.slug}`,
     description: `${params.postCount} posts tagged with ${params.slug}`,
     alternates: {
-      canonical: `https://liyuxuan.dev/tags/${params.slug}`,
+      canonical: `/tags/${params.slug}`,
     },
   };
 }

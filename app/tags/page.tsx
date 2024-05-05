@@ -8,7 +8,7 @@ export function generateMetadata(): Metadata {
   return {
     title: 'Tags | 标签',
     alternates: {
-      canonical: 'https://liyuxuan.dev/tags',
+      canonical: '/tags',
     },
   };
 }

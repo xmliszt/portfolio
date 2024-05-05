@@ -21,7 +21,7 @@ export function generateMetadata({ params }: HobbyProps): Metadata {
   return {
     title: hobby.title + (hobby.subtitle ? ` | ${hobby.subtitle}` : ''),
     description: hobby.synopsis,
-    alternates: { canonical: `https://liyuxuan.dev/hobbies/${hobby.slug}` },
+    alternates: { canonical: `/hobbies/${hobby.slug}` },
   };
 }
 

@@ -8,7 +8,7 @@ export function generateMetadata(): Metadata {
   return {
     title: 'ASCII Animated Effect | ASCII动画效果',
     alternates: {
-      canonical: 'https://liyuxuan.dev/experiments/ascii-animated-effect',
+      canonical: '/experiments/ascii-animated-effect',
     },
   };
 }

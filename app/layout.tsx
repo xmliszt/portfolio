@@ -32,6 +32,7 @@ import './globals.css';
 
 // Metadata for SEO
 export const metadata: Metadata = {
+  metadataBase: new URL('https://liyuxuan.dev'),
   title: "Yuxuan's digital playground",
   description:
     'Welcome to my digital playground, a little cozy place where ideas flow freely.',
@@ -75,7 +76,7 @@ export const metadata: Metadata = {
   authors: [{ name: 'Li Yuxuan', url: 'https://liyuxuan.dev/about' }],
   creator: 'Li Yuxuan',
   alternates: {
-    canonical: 'https://liyuxuan.dev/about',
+    canonical: '/about',
   },
   category: 'portfolio',
   openGraph: {

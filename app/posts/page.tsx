@@ -12,7 +12,7 @@ export function generateMetadata(): Metadata {
   return {
     title: 'Posts | 碎碎念',
     alternates: {
-      canonical: 'https://liyuxuan.dev/posts',
+      canonical: '/posts',
     },
   };
 }

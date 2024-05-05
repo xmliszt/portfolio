@@ -35,6 +35,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 1,
     },
     {
+      url: 'https://liyuxuan.dev/projects',
+      lastModified: new Date(),
+      changeFrequency: 'always',
+      priority: 1,
+    },
+    {
       url: 'https://liyuxuan.dev/focus',
       lastModified: new Date(),
       changeFrequency: 'always',

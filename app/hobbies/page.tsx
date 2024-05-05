@@ -10,7 +10,7 @@ export function generateMetadata(): Metadata {
   return {
     title: 'My hobbies | 兴趣爱好',
     alternates: {
-      canonical: 'https://liyuxuan.dev/hobbies',
+      canonical: '/hobbies',
     },
   };
 }
