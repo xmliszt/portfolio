@@ -25,10 +25,6 @@ export const ROUTES: Route[] = [
     name: "Playground",
   },
   {
-    path: "/focus",
-    name: "Focus",
-  },
-  {
     path: "/contacts",
     name: "Contacts",
   },
