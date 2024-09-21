@@ -13,16 +13,16 @@ export const ROUTES: Route[] = [
     name: 'projects',
   },
   {
+    path: '/playground',
+    name: 'playground',
+  },
+  {
     path: '/hobbies',
     name: 'hobbies',
   },
   {
     path: '/posts',
     name: 'posts',
-  },
-  {
-    path: '/playground',
-    name: 'playground',
   },
   {
     path: '/contacts',
