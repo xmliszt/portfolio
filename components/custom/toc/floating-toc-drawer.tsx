@@ -21,7 +21,7 @@ export function FloatingTOCDrawer(props: FloatingTOCDrawerProps) {
   const [isOpen, setIsOpen] = useState(false);
   const { showToc, toc, hash, setHash } = useTOC();
 
-  function renderTOCTree(toc: Page['toc']) {
+  function renderTOCTree(toc: Page['toc'], indents = 0) {
     return (
       <div className='m-0 flex w-full flex-col gap-y-1'>
         {toc.map((heading) => {
@@ -31,12 +31,16 @@ export function FloatingTOCDrawer(props: FloatingTOCDrawerProps) {
                 key={heading.url}
                 href={`#${slugify(heading.title)}`}
                 className={cn(
-                  'w-full rounded-lg p-2 text-left text-xs text-secondary-foreground transition-colors ease-out',
+                  'rounded-lg p-2 text-left text-xs text-secondary-foreground transition-colors ease-out',
                   'hover:bg-secondary',
                   isAtCurrentTOC(hash, heading.title)
                     ? 'bg-secondary font-semibold'
                     : 'font-normal'
                 )}
+                style={{
+                  marginLeft: `${indents * 8}px`,
+                  width: `calc(100% - ${indents * 8}px)`,
+                }}
                 onClick={() => {
                   isOpen && setIsOpen(false);
                   setHash(slugify(heading.title));
@@ -44,7 +48,7 @@ export function FloatingTOCDrawer(props: FloatingTOCDrawerProps) {
               >
                 {heading.title}
               </a>
-              {heading.items && renderTOCTree(heading.items)}
+              {heading.items && renderTOCTree(heading.items, indents + 1)}
             </>
           );
         })}

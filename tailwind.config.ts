@@ -25,7 +25,7 @@ const config = {
               width: '100%',
             },
             h1: {
-              marginBottom: '2.5em',
+              marginBottom: '1.5em',
               marginTop: '1em',
               fontSize: '20px',
             },
@@ -34,6 +34,20 @@ const config = {
               marginTop: '1.5em',
               fontSize: '16px',
               fontWeight: '600',
+            },
+            h3: {
+              marginBottom: '1em',
+              marginTop: '1.5em',
+              fontSize: '16px',
+              fontWeight: '600',
+              color: 'hsl(var(--muted-foreground))',
+            },
+            h4: {
+              marginBottom: '1em',
+              marginTop: '1.5em',
+              fontSize: '14px',
+              fontWeight: '600',
+              color: 'hsl(var(--muted-foreground))',
             },
             p: {
               marginBottom: '1rem',
