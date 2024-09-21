@@ -8,7 +8,7 @@ import { hobbies } from '#site/content';
 
 export function generateMetadata(): Metadata {
   return {
-    title: 'My hobbies | 兴趣爱好',
+    title: 'hobbies | 兴趣爱好',
     alternates: {
       canonical: '/hobbies',
     },

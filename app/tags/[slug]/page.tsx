@@ -28,7 +28,7 @@ function getPostsByTag(tag: string) {
 
 export function generateMetadata({ params }: TagProps): Metadata {
   return {
-    title: `Posts | ${params.slug}`,
+    title: `posts | ${params.slug}`,
     description: `${params.postCount} posts tagged with ${params.slug}`,
     alternates: {
       canonical: `/tags/${params.slug}`,

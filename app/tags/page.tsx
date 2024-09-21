@@ -6,7 +6,7 @@ import { tags } from '#site/content';
 
 export function generateMetadata(): Metadata {
   return {
-    title: 'Tags | 标签',
+    title: 'tags | 标签',
     alternates: {
       canonical: '/tags',
     },
