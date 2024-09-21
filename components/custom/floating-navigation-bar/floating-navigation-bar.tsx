@@ -63,7 +63,7 @@ export function FloatingNavigationBar(props: FloatingNavigationBarProps) {
             </div>
           </DrawerTrigger>
         </TooltipTrigger>
-        <TooltipContent>Menu</TooltipContent>
+        <TooltipContent>menu</TooltipContent>
       </Tooltip>
 
       <DrawerContent

@@ -40,10 +40,13 @@ export function ExternalActionButtonLink(props: {
       target={props.target}
       className='group flex justify-start'
     >
-      <Button variant={'outline'} className='my-4 flex items-center gap-2'>
-        {props.title ?? `Take me there | 带我去瞧瞧`}
+      <Button
+        variant={'outline'}
+        className='my-2 flex h-8 cursor-default items-center gap-x-3 overflow-visible px-2 text-xs text-muted-foreground'
+      >
+        {props.title ?? `bring me there`}
         <div className='relative'>
-          <Van size={20} className='animate-car-wobble' />
+          <Van className='size-4 animate-car-wobble' />
           <div
             ref={exhaustContainer}
             className={cn(

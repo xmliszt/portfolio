@@ -25,19 +25,25 @@ const config = {
               width: '100%',
             },
             h1: {
-              marginBottom: '1em',
+              marginBottom: '2.5em',
               marginTop: '1em',
+              fontSize: '20px',
             },
             h2: {
               marginBottom: '1em',
-              marginTop: '1em',
+              marginTop: '1.5em',
+              fontSize: '16px',
+              fontWeight: '600',
             },
             p: {
               marginBottom: '1rem',
               marginTop: '1rem',
+              fontSize: '14px',
+              lineHeight: '20px',
             },
             hr: {
               marginTop: '1rem',
+              marginBottom: '1rem',
             },
             pre: {
               backgroundColor: 'hsl(var(--foreground))',
@@ -49,6 +55,7 @@ const config = {
             li: {
               marginTop: '0',
               marginBottom: '0',
+              fontSize: '14px',
             },
             'li>div': {
               marginTop: '0.2rem',

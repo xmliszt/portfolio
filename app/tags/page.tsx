@@ -21,8 +21,8 @@ export default function TagsPage() {
     .sort();
 
   return (
-    <article className='flex flex-col gap-4'>
-      <h1>Tags</h1>
+    <article className='prose prose-stone flex flex-col gap-4 dark:prose-invert'>
+      <h1>tags</h1>
       <div className='flex flex-col gap-2'>
         {sortedTags.map((tag) => (
           <CustomLink key={tag} href={`/tags/${tag}`} target='_self'>

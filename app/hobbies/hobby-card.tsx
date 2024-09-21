@@ -49,10 +49,10 @@ export function HobbyCard(props: HobbyCardProps) {
             whileInView='visible'
             variants={hoverVariants}
           >
-            <h3 className='m-0 text-sm font-bold text-white md:text-base'>
+            <h3 className='m-0 mb-2 text-sm font-semibold text-white'>
               {props.title}
             </h3>
-            <p className='text-xs md:text-sm'>{props.synopsis}</p>
+            <p className='text-xs'>{props.synopsis}</p>
           </motion.div>
         </div>
       </HoverPerspectiveContainer>

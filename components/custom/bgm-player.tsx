@@ -2,8 +2,6 @@
 
 import { useEffect, useRef, useState } from 'react';
 import {
-  ArrowLeft,
-  ArrowRight,
   CaretDown,
   CaretUp,
   Disc,
@@ -58,15 +56,14 @@ export function BGMPlayer(props: BGMPlayerProps) {
         )}
       {isIdle && props.bgmInfoPosition === 'left' && (
         <div className='flex items-center gap-2'>
-          <div className='flex flex-col items-start justify-center gap-0 overflow-hidden text-ellipsis [&>*]:whitespace-nowrap'>
-            <span className='text-xs font-bold'>
-              {isLoading ? 'Loading the cassette...' : 'Have some music '}
+          <div className='flex flex-col items-end justify-center gap-0 overflow-hidden text-ellipsis text-right [&>*]:whitespace-nowrap'>
+            <span className='text-xs'>
+              {isLoading ? 'Loading the cassette...' : 'have some music'}
             </span>
             <span className='text-xs'>
               {isLoading ? '正在载入歌曲……' : '休息一下，听首歌吧'}
             </span>
           </div>
-          <ArrowRight className='inline-block animate-pulse' size={16} />
         </div>
       )}
       <Tooltip>
@@ -92,7 +89,7 @@ export function BGMPlayer(props: BGMPlayerProps) {
           </button>
         </TooltipTrigger>
         <TooltipContent>
-          {isPlaying ? 'Pause' : 'Play'} background music
+          {isPlaying ? 'pause' : 'play'} background music
         </TooltipContent>
       </Tooltip>
       {currentBGM &&
@@ -108,11 +105,10 @@ export function BGMPlayer(props: BGMPlayerProps) {
         )}
       {isIdle && props.bgmInfoPosition === 'right' && (
         <div className='flex flex-col items-start justify-center gap-0 overflow-hidden text-ellipsis [&>*]:whitespace-nowrap'>
-          <span className='text-sm font-bold'>
-            <ArrowLeft className='inline-block animate-pulse' size={16} />
-            {isLoading ? 'Loading the cassette...' : 'Have some music '}
+          <span className='text-xs'>
+            {isLoading ? 'loading the cassette...' : 'have some music '}
           </span>
-          <span className='ml-4 text-xs'>
+          <span className='text-xs'>
             {isLoading ? '正在载入歌曲……' : '休息一下，听首歌吧'}
           </span>
         </div>
@@ -150,7 +146,7 @@ function BGMController({
               <CaretUp />
             </button>
           </TooltipTrigger>
-          <TooltipContent>Previous song</TooltipContent>
+          <TooltipContent>previous song</TooltipContent>
         </Tooltip>
         <Tooltip>
           <TooltipTrigger asChild>
@@ -161,12 +157,12 @@ function BGMController({
               <CaretDown />
             </button>
           </TooltipTrigger>
-          <TooltipContent side='bottom'>Next song</TooltipContent>
+          <TooltipContent side='bottom'>next song</TooltipContent>
         </Tooltip>
       </div>
       <a href={href} target='_blank'>
         <div className='flex flex-col items-start justify-center gap-0 overflow-hidden text-ellipsis [&>*]:whitespace-nowrap'>
-          <span className='text-sm font-bold'>{title}</span>
+          <span className='text-xs font-semibold'>{title}</span>
           <span className='text-xs'>{artist}</span>
         </div>
       </a>
@@ -180,7 +176,7 @@ function BGMController({
               <SkipBack size={20} />
             </button>
           </TooltipTrigger>
-          <TooltipContent side='bottom'>Previous song</TooltipContent>
+          <TooltipContent side='bottom'>previous song</TooltipContent>
         </Tooltip>
         <Tooltip>
           <TooltipTrigger asChild>
@@ -191,7 +187,7 @@ function BGMController({
               <SkipForward size={20} />
             </button>
           </TooltipTrigger>
-          <TooltipContent side='bottom'>Next song</TooltipContent>
+          <TooltipContent side='bottom'>next song</TooltipContent>
         </Tooltip>
       </div>
     </div>

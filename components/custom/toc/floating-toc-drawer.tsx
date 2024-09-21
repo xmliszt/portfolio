@@ -23,16 +23,18 @@ export function FloatingTOCDrawer(props: FloatingTOCDrawerProps) {
 
   function renderTOCTree(toc: Page['toc']) {
     return (
-      <ul className='m-0 flex flex-col gap-2'>
+      <div className='m-0 flex w-full flex-col gap-y-1'>
         {toc.map((heading) => {
           return (
-            <li key={heading.url} className='m-0 p-0'>
+            <>
               <a
+                key={heading.url}
                 href={`#${slugify(heading.title)}`}
                 className={cn(
-                  'rounded-lg p-2 text-secondary-foreground transition-colors ease-out hover:bg-secondary',
+                  'w-full rounded-lg p-2 text-left text-xs text-secondary-foreground transition-colors ease-out',
+                  'hover:bg-secondary',
                   isAtCurrentTOC(hash, heading.title)
-                    ? 'bg-secondary font-bold'
+                    ? 'bg-secondary font-semibold'
                     : 'font-normal'
                 )}
                 onClick={() => {
@@ -43,10 +45,10 @@ export function FloatingTOCDrawer(props: FloatingTOCDrawerProps) {
                 {heading.title}
               </a>
               {heading.items && renderTOCTree(heading.items)}
-            </li>
+            </>
           );
         })}
-      </ul>
+      </div>
     );
   }
 
@@ -89,11 +91,11 @@ export function FloatingTOCDrawer(props: FloatingTOCDrawerProps) {
             </div>
           </DrawerTrigger>
         </TooltipTrigger>
-        <TooltipContent>Table of Contents</TooltipContent>
+        <TooltipContent>table of contents</TooltipContent>
       </Tooltip>
       <DrawerContent
         className={cn(
-          'flex flex-col gap-12 rounded-none rounded-t-lg focus-visible:outline-none',
+          'flex flex-col gap-12 rounded-none rounded-t-lg text-sm focus-visible:outline-none',
           // hide the drawer handle
           '[&>*:first-child]:hidden'
         )}
@@ -102,7 +104,7 @@ export function FloatingTOCDrawer(props: FloatingTOCDrawerProps) {
         <div className='mx-auto mt-2 h-1 w-[60px] cursor-grab rounded-full bg-foreground'></div>
         {props.children}
         {/* Navigation items */}
-        <nav className='prose flex flex-col gap-2 p-3'>
+        <nav className='prose flex w-full flex-col gap-2 p-3'>
           {renderTOCTree(toc)}
         </nav>
       </DrawerContent>

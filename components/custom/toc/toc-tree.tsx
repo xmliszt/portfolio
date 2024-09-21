@@ -10,7 +10,7 @@ export function TOCTree() {
 
   function renderTOCTree(toc: Page['toc']) {
     return (
-      <ul className='m-0'>
+      <ul className='m-0 space-y-0'>
         {toc.map((heading) => (
           <li key={heading.url} className='m-0 pl-1'>
             <div className='flex flex-row items-start'>

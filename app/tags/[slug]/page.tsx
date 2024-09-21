@@ -51,9 +51,9 @@ export default async function PostPage({ params }: TagProps) {
   if (tag == null) return notFound();
 
   return (
-    <article className='flex flex-col gap-12'>
+    <article className='prose prose-stone flex flex-col gap-12 dark:prose-invert'>
       <h1>
-        Tag: {params.slug} ({pluralize('post', tag.count.posts, true)})
+        tag: {params.slug} ({pluralize('post', tag.count.posts, true)})
       </h1>
       <div className='flex flex-col gap-16'>
         {posts.map((post) => (

@@ -38,7 +38,7 @@ export function BookGrid(props: BookGridProps) {
                     />
                   </AspectRatio>
                   <motion.div
-                    className='absolute bottom-0 z-10 flex w-full flex-col justify-between gap-2 rounded-t-xl border-t border-t-stone-600 bg-[rgba(0,0,0,0.5)] p-2 pt-3 shadow-[0_-5px_15px_rgba(0,0,0,0.4)] backdrop-blur-[5px] [&_*]:text-white'
+                    className='absolute bottom-0 z-10 flex w-full flex-col justify-between gap-2 rounded-t-xl border-t border-t-stone-600 bg-[rgba(0,0,0,0.5)] p-2 pt-3 shadow-[0_-5px_15px_rgba(0,0,0,0.4)] backdrop-blur-[5px]'
                     initial={{
                       translateY: '10px',
                       opacity: 0,
@@ -54,11 +54,11 @@ export function BookGrid(props: BookGridProps) {
                     }}
                   >
                     <div className='leading-tight'>
-                      <div className='text-sm font-bold md:text-base'>
+                      <div className='text-xs font-semibold text-white'>
                         {book.title}
                       </div>
                     </div>
-                    <div className='m-0 h-max w-full text-right text-xs md:text-sm'>
+                    <div className='m-0 h-max w-full text-right text-xs text-white/80'>
                       {book.author}
                     </div>
                   </motion.div>

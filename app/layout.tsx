@@ -1,6 +1,6 @@
 import { Analytics } from '@vercel/analytics/react';
 import { Metadata, Viewport } from 'next';
-import { Inter, Junge } from 'next/font/google';
+import { Inter } from 'next/font/google';
 
 import { BGMProvider } from '@/components/bgm-provider';
 import { BGMPlayer } from '@/components/custom/bgm-player';
@@ -117,14 +117,7 @@ export const viewport: Viewport = {
   ],
 };
 
-const fontInter = Inter({
-  subsets: ['latin'],
-});
-
-const fontJunge = Junge({
-  subsets: ['latin'],
-  weight: '400',
-});
+const fontInter = Inter({ subsets: ['latin'] });
 
 export default function RootLayout({
   children,
@@ -140,7 +133,7 @@ export default function RootLayout({
         <body
           className={cn(
             'flex max-h-screen min-h-screen w-screen flex-col items-center overflow-hidden bg-background antialiased',
-            fontJunge.className,
+            'selection:bg-foreground selection:text-background',
             fontInter.className
           )}
         >

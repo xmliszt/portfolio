@@ -11,16 +11,17 @@ type PostCardProps = {
 export function PostCard({ post, views }: PostCardProps) {
   return (
     <Link href={`/posts/${post.slug}`} className='group relative'>
-      <span className='absolute left-0 top-0 h-full w-full rounded-xl border border-transparent bg-transparent transition-[border_box-shadow_widht_height] duration-300 ease-in-out group-hover:-left-[1.5rem] group-hover:-top-[1.5rem] group-hover:h-[calc(100%+3rem)] group-hover:w-[calc(100%+3rem)] group-hover:border-border group-hover:shadow-lg'></span>
-      <article className='flex flex-col gap-4 transition-transform duration-300 ease-in-out group-hover:scale-[1.02]'>
+      <article className='flex flex-col gap-y-2 transition-transform hover:scale-105'>
         <div className='flex items-start justify-between gap-4'>
-          <h3>{post.title}</h3>
-          <time className='flex flex-col items-end [&>*]:whitespace-nowrap'>
+          <h3 className='mt-0 text-base font-semibold'>{post.title}</h3>
+          <time className='flex flex-col items-end text-xs text-muted-foreground [&>*]:whitespace-nowrap'>
             <span>{format(post.date, 'do LLLL')}</span>
             <span>{format(post.date, 'yyyy')}</span>
           </time>
         </div>
-        <p className='after:[content:_"..."]'>{post.excerpt}</p>
+        <p className='text-sm font-normal after:[content:_"..."]'>
+          {post.excerpt}
+        </p>
         <div className='flex flex-row items-center justify-between gap-4'>
           <div className='flex flex-row flex-wrap gap-2'>
             {post.tags.map((tag) => (
@@ -29,7 +30,7 @@ export function PostCard({ post, views }: PostCardProps) {
               </CustomBadgeLink>
             ))}
           </div>
-          <p>{views} views</p>
+          <p className='text-xs text-muted-foreground'>{views} views</p>
         </div>
       </article>
     </Link>

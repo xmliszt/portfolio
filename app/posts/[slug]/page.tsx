@@ -26,7 +26,7 @@ export function generateMetadata({ params }: PostProps): Metadata {
   const post = getPostBySlug(params.slug);
   if (post == null) return {};
   return {
-    title: post.title,
+    title: `Li Yuxuan | ${post.title}`,
     description: post.description,
     alternates: { canonical: `/posts/${post.slug}` },
   };
@@ -50,7 +50,7 @@ export default async function PostPage({ params }: PostProps) {
         <a id='top' className='relative -top-16 block [visibility:hidden]'></a>
         {post.title}
       </h1>
-      <div className='flex items-center justify-between'>
+      <div className='mt-6 flex items-end justify-between'>
         <div className='flex flex-row flex-wrap gap-2'>
           {post.tags.map((tag) => (
             <CustomBadgeLink key={tag} href={`/tags/${tag}`}>
@@ -58,21 +58,21 @@ export default async function PostPage({ params }: PostProps) {
             </CustomBadgeLink>
           ))}
         </div>
-        <time className='text-right' dateTime={post.date}>
-          {format(post.date, 'do LLLL, yyyy')}
-        </time>
-      </div>
-      <div className='flex items-center justify-between gap-4 pt-4 text-sm leading-tight'>
-        <div>{views} views</div>
-        <div className='text-right'>
-          {post.metadata.readingTime && (
-            <span>
-              {post.metadata.readingTime} min read ({post.metadata.wordCount}{' '}
-              words)
-            </span>
-          )}
+
+        <div className='flex flex-col items-end gap-y-1 pt-2 text-right text-xs leading-tight text-muted-foreground'>
+          <div>{views} views</div>
+          <div>
+            {post.metadata.readingTime && (
+              <span>
+                {post.metadata.readingTime} min read ({post.metadata.wordCount}{' '}
+                words)
+              </span>
+            )}
+          </div>
+          <time dateTime={post.date}>{format(post.date, 'do LLLL, yyyy')}</time>
         </div>
       </div>
+
       {post.description && <p>{post.description}</p>}
       {post.cover && (
         <Image src={post.cover} alt={post.title} className='m-0' />
@@ -82,16 +82,31 @@ export default async function PostPage({ params }: PostProps) {
       {/* Markdown content */}
       <MDXContent code={post.content} />
 
-      {/* Tags */}
-      <div className='mt-10 flex flex-row flex-wrap gap-2'>
-        {post.tags.map((tag) => (
-          <CustomBadgeLink key={tag} href={`/tags/${tag}`}>
-            {tag}
-          </CustomBadgeLink>
-        ))}
-      </div>
       <TOCLoader toc={post.toc} showToc={true} />
       <Ratings id={post.slug} />
+
+      <div className='mt-6 flex items-end justify-between'>
+        <div className='flex flex-row flex-wrap gap-2'>
+          {post.tags.map((tag) => (
+            <CustomBadgeLink key={tag} href={`/tags/${tag}`}>
+              {tag}
+            </CustomBadgeLink>
+          ))}
+        </div>
+
+        <div className='flex flex-col items-end gap-y-1 pt-2 text-right text-xs leading-tight text-muted-foreground'>
+          <div>{views} views</div>
+          <div>
+            {post.metadata.readingTime && (
+              <span>
+                {post.metadata.readingTime} min read ({post.metadata.wordCount}{' '}
+                words)
+              </span>
+            )}
+          </div>
+          <time dateTime={post.date}>{format(post.date, 'do LLLL, yyyy')}</time>
+        </div>
+      </div>
     </article>
   );
 }

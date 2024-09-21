@@ -14,7 +14,10 @@ export function TOCLink(props: TOCLinkProps) {
     <a
       href={`#${slugify(props.entry.title)}`}
       className={cn(
-        isAtCurrentTOC(hash, props.entry.title) ? 'font-bold' : 'font-normal'
+        'text-xs',
+        isAtCurrentTOC(hash, props.entry.title)
+          ? 'font-semibold'
+          : 'font-normal'
       )}
       onClick={() => {
         setHash(slugify(props.entry.title));

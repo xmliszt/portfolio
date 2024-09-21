@@ -23,8 +23,8 @@ export function NavigationBarItem(props: NavigationBarItemProps) {
     <Link
       href={props.href}
       className={cn(
-        'rounded-lg p-2 transition-colors ease-out hover:bg-secondary',
-        isCurrentPath ? 'font-bold' : 'font-normal'
+        'rounded-lg px-3 py-1.5 text-sm transition-colors ease-out hover:bg-secondary',
+        isCurrentPath ? 'bg-secondary font-semibold' : 'font-normal'
       )}
       onClick={() => {
         isOpen && setIsOpen(false);

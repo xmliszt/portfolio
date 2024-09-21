@@ -19,8 +19,8 @@ export function ThemeSwitch() {
       </TooltipTrigger>
       <TooltipContent>
         {resolvedTheme === 'dark'
-          ? 'Switch to light mode'
-          : 'Switch to dark mode'}
+          ? 'switch to light mode'
+          : 'switch to dark mode'}
       </TooltipContent>
     </Tooltip>
   );

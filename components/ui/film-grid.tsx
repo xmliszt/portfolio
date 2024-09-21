@@ -39,7 +39,7 @@ export function FilmGrid(props: FilmGridProps) {
                     />
                   </AspectRatio>
                   <motion.div
-                    className='absolute bottom-0 z-10 flex w-full flex-col justify-between gap-2 rounded-t-xl border-t border-t-stone-600 bg-[rgba(0,0,0,0.5)] p-2 pt-3 shadow-[0_-5px_15px_rgba(0,0,0,0.4)] backdrop-blur-[5px] [&_*]:text-white'
+                    className='absolute bottom-0 z-10 flex w-full flex-col justify-between gap-2 rounded-t-xl border-t border-t-stone-600 bg-[rgba(0,0,0,0.5)] p-2 pt-3 shadow-[0_-5px_15px_rgba(0,0,0,0.4)] backdrop-blur-[5px]'
                     initial={{
                       translateY: '10px',
                       opacity: 0,
@@ -55,14 +55,14 @@ export function FilmGrid(props: FilmGridProps) {
                     }}
                   >
                     <div className='leading-tight'>
-                      <div className='text-sm font-bold md:text-base'>
+                      <div className='text-xs font-semibold text-white'>
                         {film.originalTitle}
                       </div>
-                      <div className='truncate text-xs italic text-muted-foreground md:text-sm'>
+                      <div className='truncate text-[10px] italic text-white/80'>
                         {film.alternativeTitle}
                       </div>
                     </div>
-                    <div className='m-0 h-max w-full text-right text-xs md:text-sm'>
+                    <div className='m-0 h-max w-full text-right text-xs text-white/80'>
                       {film.year}
                     </div>
                   </motion.div>

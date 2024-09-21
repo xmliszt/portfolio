@@ -75,7 +75,15 @@ export function DuneLightDarkThemeToggle(props: DuneLightDarkThemeToggleProps) {
       transition={{
         duration: 0.3,
       }}
-      onClick={() => setTheme(resolvedTheme === 'dark' ? 'light' : 'dark')}
+      onClick={() => {
+        if (document.startViewTransition) {
+          document.startViewTransition(() => {
+            setTheme(resolvedTheme === 'dark' ? 'light' : 'dark');
+          });
+        } else {
+          setTheme(resolvedTheme === 'dark' ? 'light' : 'dark');
+        }
+      }}
       variants={buttonVariants}
     >
       <motion.div

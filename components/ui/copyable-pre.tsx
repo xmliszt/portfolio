@@ -30,7 +30,7 @@ export function CopyablePre({ children, raw, ...props }: any) {
             {isCopied ? <Check size={16} /> : <Copy size={16} />}
           </button>
         </TooltipTrigger>
-        <TooltipContent>Copy to clipboard</TooltipContent>
+        <TooltipContent>copy to clipboard</TooltipContent>
       </Tooltip>
       {children}
     </pre>

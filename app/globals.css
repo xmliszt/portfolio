@@ -60,7 +60,7 @@
 
 @layer base {
   * {
-    @apply border-border;
+    @apply cursor-default border-border;
   }
   body {
     @apply bg-background text-foreground transition-colors duration-500;
@@ -69,23 +69,23 @@
   }
 
   h1 {
-    @apply my-4 text-4xl font-bold;
+    @apply mb-[1em] mt-[1.5em] text-[20px];
   }
 
   h2 {
-    @apply text-2xl font-bold;
+    @apply mb-[1em] mt-[1.5em] text-[16px] font-[600];
   }
 
   h3 {
-    @apply text-xl font-bold;
+    @apply mb-[1em] mt-[1.5em] text-[16px] font-[600];
   }
 
   h4 {
-    @apply text-lg font-bold;
+    @apply mb-[1em] mt-[1.2em] text-[14px] font-normal;
   }
 
   hr {
-    @apply my-4;
+    @apply my-[1rem];
   }
 
   code > span[data-highlighted-line] {
@@ -107,6 +107,10 @@
 
   iframe {
     @apply my-8 rounded-lg border !shadow-xl;
+  }
+
+  p {
+    @apply text-sm;
   }
 }
 
@@ -132,4 +136,42 @@ code[data-line-numbers-max-digits='2'] > [data-line]::before {
 
 code[data-line-numbers-max-digits='3'] > [data-line]::before {
   width: 3rem;
+}
+
+::view-transition-group(root) {
+  animation-duration: 1.25s;
+}
+::view-transition-new(root),
+::view-transition-old(root) {
+  mix-blend-mode: normal;
+}
+
+::view-transition-new(root) {
+  animation-name: reveal-light;
+}
+
+::view-transition-old(root),
+.dark::view-transition-old(root) {
+  animation: none;
+}
+.dark::view-transition-new(root) {
+  animation-name: reveal-dark;
+}
+
+@keyframes reveal-dark {
+  from {
+    clip-path: circle(0% at 100% 100%);
+  }
+  to {
+    clip-path: circle(200% at 0% 0%);
+  }
+}
+
+@keyframes reveal-light {
+  from {
+    clip-path: circle(0% at 100% 100%);
+  }
+  to {
+    clip-path: circle(200% at 0% 0%);
+  }
 }

@@ -20,7 +20,7 @@ export function CustomLink({
       <Link
         href={href}
         className={cn(
-          'font-bold [&>p]:m-0',
+          'font-normal text-foreground/90 transition-colors hover:text-foreground [&>p]:m-0',
           isMobile || isTablet ? 'underline underline-offset-2' : 'no-underline'
         )}
         target={target ?? '_blank'}

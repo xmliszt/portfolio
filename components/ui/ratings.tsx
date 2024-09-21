@@ -99,10 +99,10 @@ export function Ratings({ id }: RatingsProps) {
   return (
     <div className='flex w-full justify-center py-4 md:justify-end'>
       <div className='grid grid-cols-2 grid-rows-[1fr_2fr]'>
-        <div className='text-center text-sm font-bold text-muted-foreground'>
+        <div className='text-center text-xs font-semibold text-muted-foreground'>
           {positiveRatings}
         </div>
-        <div className='text-center text-sm font-bold text-muted-foreground'>
+        <div className='text-center text-xs font-semibold text-muted-foreground'>
           {negativeRatings}
         </div>
         <div className='relative col-span-2 flex w-[80px] flex-row items-center justify-center gap-x-2 rounded-lg border bg-card p-2 shadow-lg'>

@@ -17,7 +17,7 @@ export default function Page() {
   return (
     <div className='flex w-full flex-col items-center gap-2'>
       <h1 className='text-center font-bold'>{`ASCII Animated 3D Rotating Text Effect`}</h1>
-      <h2>ASCII文字三维旋转动画效果</h2>
+
       <div className='flex h-full w-full flex-col items-center gap-y-12'>
         <iframe
           src='https://codesandbox.io/embed/8pz3zg?view=Preview&module=%2Fsrc%2FApp.tsx&hidenavigation=1'

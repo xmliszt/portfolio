@@ -5,5 +5,5 @@ type FloatingNavigationBarContentProps = {
 export function FloatingNavigationBarContent(
   props: FloatingNavigationBarContentProps
 ) {
-  return <nav className='flex flex-col gap-2 p-3'>{props.children}</nav>;
+  return <nav className='flex flex-col gap-1 p-3'>{props.children}</nav>;
 }

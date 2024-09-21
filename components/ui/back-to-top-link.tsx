@@ -14,7 +14,7 @@ export function BackToTopLink(props: { children: React.ReactNode }) {
             <ArticleMedium />
           </a>
         </TooltipTrigger>
-        <TooltipContent>Back to top</TooltipContent>
+        <TooltipContent>back to top</TooltipContent>
       </Tooltip>
     </div>
   );

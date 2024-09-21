@@ -5,27 +5,27 @@ type Route = {
 
 export const ROUTES: Route[] = [
   {
-    path: "/about",
-    name: "About me",
+    path: '/about',
+    name: 'about me',
   },
   {
-    path: "/projects",
-    name: "Projects",
+    path: '/projects',
+    name: 'projects',
   },
   {
-    path: "/hobbies",
-    name: "Hobbies",
+    path: '/hobbies',
+    name: 'hobbies',
   },
   {
-    path: "/posts",
-    name: "Posts",
+    path: '/posts',
+    name: 'posts',
   },
   {
-    path: "/playground",
-    name: "Playground",
+    path: '/playground',
+    name: 'playground',
   },
   {
-    path: "/contacts",
-    name: "Contacts",
+    path: '/contacts',
+    name: 'contacts',
   },
 ];

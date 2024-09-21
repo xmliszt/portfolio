@@ -29,18 +29,23 @@ export default async function PostsPage() {
   });
 
   return (
-    <article className='flex flex-col gap-12'>
+    <article className='prose prose-stone flex flex-col gap-12 dark:prose-invert'>
       <h1 className='group relative'>
-        Posts ({pluralize('post', posts.length, true)})
+        posts ({pluralize('post', posts.length, true)})
         <ShadowSubtitle>碎碎念</ShadowSubtitle>
       </h1>
-      <div className='flex flex-col gap-16'>
-        {sortedPosts.map((post) => (
-          <PostCard
-            key={post.slug}
-            post={post}
-            views={postViews.find((view) => view.slug === post.slug)?.view ?? 0}
-          />
+      <div className='flex flex-col gap-y-3'>
+        {sortedPosts.map((post, index) => (
+          <>
+            {index > 0 && <hr className='my-1' />}
+            <PostCard
+              key={post.slug}
+              post={post}
+              views={
+                postViews.find((view) => view.slug === post.slug)?.view ?? 0
+              }
+            />
+          </>
         ))}
       </div>
     </article>

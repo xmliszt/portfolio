@@ -26,7 +26,7 @@ export function ImageDialog(props: ImageDialogProps) {
             </HoverPerspectiveContainer>
           </DialogTrigger>
         </TooltipTrigger>
-        <TooltipContent>Zoom in to the photo</TooltipContent>
+        <TooltipContent>zoom in to the photo</TooltipContent>
       </Tooltip>
       <DialogContent className='z-[999] p-12'>
         <Image
