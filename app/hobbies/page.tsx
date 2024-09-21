@@ -1,6 +1,7 @@
 import { Metadata } from 'next';
 
 import { ShadowSubtitle } from '../[slug]/shadow-subtitle';
+import { openGraph } from '../metadata';
 
 import { HobbyCard } from './hobby-card';
 
@@ -9,8 +10,10 @@ import { hobbies } from '#site/content';
 export function generateMetadata(): Metadata {
   return {
     title: 'hobbies | 兴趣爱好',
-    alternates: {
-      canonical: '/hobbies',
+    alternates: { canonical: '/hobbies' },
+    openGraph: {
+      ...openGraph,
+      title: 'Li Yuxuan | hobbies',
     },
   };
 }

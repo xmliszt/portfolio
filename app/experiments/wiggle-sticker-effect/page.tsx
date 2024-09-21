@@ -1,5 +1,6 @@
 import { Metadata } from 'next';
 
+import { openGraph } from '@/app/metadata';
 import { CustomLink } from '@/components/ui/custom-link';
 import { ExternalActionButtonLink } from '@/components/ui/external-action-button-link';
 import { Ratings } from '@/components/ui/ratings';
@@ -9,6 +10,10 @@ export function generateMetadata(): Metadata {
     title: 'ThreeJS Wiggle Sticker Effect | ThreeJS 动态贴纸效果',
     alternates: {
       canonical: '/experiments/wiggle-sticker-effect',
+    },
+    openGraph: {
+      ...openGraph,
+      title: 'Li Yuxuan | ThreeJS Wiggle Sticker Effect',
     },
   };
 }

@@ -1,5 +1,6 @@
 import { Metadata } from 'next';
 
+import { openGraph } from '@/app/metadata';
 import { DuneLightDarkThemeToggle } from '@/components/custom/theme-switch/dune-light-dark-theme-toggle';
 import { Ratings } from '@/components/ui/ratings';
 
@@ -8,6 +9,10 @@ export function generateMetadata(): Metadata {
     title: 'Dune themed light dark mode toggle | 沙丘主题的明暗切换',
     alternates: {
       canonical: '/experiments/dune-themed-light-dark-toggle',
+    },
+    openGraph: {
+      ...openGraph,
+      title: 'Li Yuxuan | Dune themed light dark mode toggle',
     },
   };
 }

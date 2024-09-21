@@ -3,6 +3,7 @@ import type { Metadata } from 'next';
 import Image from 'next/image';
 import { notFound } from 'next/navigation';
 
+import { openGraph } from '@/app/metadata';
 import { TOCLoader } from '@/components/custom/toc/toc-loader';
 import { MDXContent } from '@/components/mdx-content';
 import { CustomBadgeLink } from '@/components/ui/custom-badge-link';
@@ -13,9 +14,7 @@ import { incrementPostView } from './increment-post-view';
 import { posts } from '#site/content';
 
 interface PostProps {
-  params: {
-    slug: string;
-  };
+  params: { slug: string };
 }
 
 function getPostBySlug(slug: string) {
@@ -29,6 +28,10 @@ export function generateMetadata({ params }: PostProps): Metadata {
     title: `Li Yuxuan | ${post.title}`,
     description: post.description,
     alternates: { canonical: `/posts/${post.slug}` },
+    openGraph: {
+      ...openGraph,
+      title: `Li Yuxuan | posts | ${post.title}`,
+    },
   };
 }
 

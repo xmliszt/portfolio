@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import pluralize from 'pluralize';
 
+import { openGraph } from '@/app/metadata';
 import { fetchPostViews } from '@/app/posts/[slug]/fetch-post-views';
 import { PostCard } from '@/app/posts/post-card';
 
@@ -32,6 +33,10 @@ export function generateMetadata({ params }: TagProps): Metadata {
     description: `${params.postCount} posts tagged with ${params.slug}`,
     alternates: {
       canonical: `/tags/${params.slug}`,
+    },
+    openGraph: {
+      ...openGraph,
+      title: `Li Yuxuan | tags | ${params.slug}`,
     },
   };
 }

@@ -4,6 +4,8 @@ import { notFound } from 'next/navigation';
 import { TOCLoader } from '@/components/custom/toc/toc-loader';
 import { MDXContent } from '@/components/mdx-content';
 
+import { openGraph } from '../metadata';
+
 import { ShadowSubtitle } from './shadow-subtitle';
 
 import { pages } from '#site/content';
@@ -23,6 +25,10 @@ export function generateMetadata({ params }: Props): Metadata {
   if (page == null) return {};
   return {
     title: page.title + (page.subtitle ? ` | ${page.subtitle}` : ''),
+    openGraph: {
+      ...openGraph,
+      title: `Li Yuxuan | ${page.title}`,
+    },
     alternates: {
       canonical: `/${page.slug}`,
     },

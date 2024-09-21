@@ -2,6 +2,7 @@ import { Metadata } from 'next';
 import pluralize from 'pluralize';
 
 import { ShadowSubtitle } from '../[slug]/shadow-subtitle';
+import { openGraph } from '../metadata';
 
 import { fetchPostViews } from './[slug]/fetch-post-views';
 import { PostCard } from './post-card';
@@ -13,6 +14,10 @@ export function generateMetadata(): Metadata {
     title: 'posts | 碎碎念',
     alternates: {
       canonical: '/posts',
+    },
+    openGraph: {
+      ...openGraph,
+      title: 'Li Yuxuan | posts',
     },
   };
 }

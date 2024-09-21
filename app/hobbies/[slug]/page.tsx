@@ -2,6 +2,7 @@ import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 
 import { ShadowSubtitle } from '@/app/[slug]/shadow-subtitle';
+import { openGraph } from '@/app/metadata';
 import { TOCLoader } from '@/components/custom/toc/toc-loader';
 import { MDXContent } from '@/components/mdx-content';
 
@@ -22,6 +23,10 @@ export function generateMetadata({ params }: HobbyProps): Metadata {
     title: hobby.title + (hobby.subtitle ? ` | ${hobby.subtitle}` : ''),
     description: hobby.synopsis,
     alternates: { canonical: `/hobbies/${hobby.slug}` },
+    openGraph: {
+      ...openGraph,
+      title: `Li Yuxuan | hobbies | ${hobby.title}`,
+    },
   };
 }
 

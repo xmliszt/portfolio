@@ -2,13 +2,17 @@ import { Metadata } from 'next';
 
 import { CustomLink } from '@/components/ui/custom-link';
 
+import { openGraph } from '../metadata';
+
 import { tags } from '#site/content';
 
 export function generateMetadata(): Metadata {
   return {
     title: 'tags | 标签',
-    alternates: {
-      canonical: '/tags',
+    alternates: { canonical: '/tags' },
+    openGraph: {
+      ...openGraph,
+      title: 'Li Yuxuan | tags',
     },
   };
 }

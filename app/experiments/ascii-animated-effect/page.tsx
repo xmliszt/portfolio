@@ -1,5 +1,6 @@
 import { Metadata } from 'next';
 
+import { openGraph } from '@/app/metadata';
 import { CustomLink } from '@/components/ui/custom-link';
 import { Ratings } from '@/components/ui/ratings';
 import { TweetEmbedWrapper } from '@/components/ui/twitter-tweet-embed-wrapper';
@@ -9,6 +10,10 @@ export function generateMetadata(): Metadata {
     title: 'ASCII Animated Effect | ASCII动画效果',
     alternates: {
       canonical: '/experiments/ascii-animated-effect',
+    },
+    openGraph: {
+      ...openGraph,
+      title: 'Li Yuxuan | ASCII Animated Effect',
     },
   };
 }

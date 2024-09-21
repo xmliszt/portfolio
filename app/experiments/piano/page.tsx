@@ -1,5 +1,6 @@
 import { Metadata } from 'next';
 
+import { openGraph } from '@/app/metadata';
 import { Piano } from '@/components/custom/piano/piano';
 import { Ratings } from '@/components/ui/ratings';
 
@@ -8,6 +9,10 @@ export function generateMetadata(): Metadata {
     title: 'Mini piano | 迷你钢琴',
     alternates: {
       canonical: '/experiments/piano',
+    },
+    openGraph: {
+      ...openGraph,
+      title: 'Li Yuxuan | Mini piano',
     },
   };
 }

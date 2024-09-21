@@ -25,6 +25,7 @@ import {
   NavigationBarItem,
 } from '../components/custom/navigation-bar';
 
+import { openGraph } from './metadata';
 import { ROUTES } from './routes';
 import { ScrollAreaWithTOCTracker } from './scroll-area-with-toc-tracker';
 
@@ -79,23 +80,7 @@ export const metadata: Metadata = {
     canonical: '/about',
   },
   category: 'portfolio',
-  openGraph: {
-    title: "Yuxuan's digital playground",
-    description:
-      'Welcome to my digital playground, a little cozy place where ideas flow freely.',
-    url: 'https://liyuxuan.dev/about',
-    siteName: "Yuxuan's digital playground",
-    images: [
-      {
-        url: '/profile/og.webp',
-        width: 2028,
-        height: 1140,
-        alt: "Yuxuan's digital playground",
-      },
-    ],
-    locale: 'en_US',
-    type: 'website',
-  },
+  openGraph: openGraph,
   twitter: {
     card: 'summary_large_image',
     title: "Yuxuan's digital playground",
