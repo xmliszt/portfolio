@@ -14,6 +14,8 @@ export function generateMetadata(): Metadata {
     openGraph: {
       ...openGraph,
       title: 'Li Yuxuan | ASCII Animated Effect',
+      description:
+        'Using Adobe After Effect, I created an ASCII animated 3D rotating text effect. The result was then converted to a GIF.',
     },
   };
 }

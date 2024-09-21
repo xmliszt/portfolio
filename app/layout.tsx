@@ -34,7 +34,7 @@ import './globals.css';
 // Metadata for SEO
 export const metadata: Metadata = {
   metadataBase: new URL('https://liyuxuan.dev'),
-  title: "Yuxuan's digital playground",
+  title: "Hi👋🏻, I'm Li Yuxuan.",
   description:
     'Welcome to my digital playground, a little cozy place where ideas flow freely.',
   manifest: '/manifest.json',
@@ -83,7 +83,7 @@ export const metadata: Metadata = {
   openGraph: openGraph,
   twitter: {
     card: 'summary_large_image',
-    title: "Yuxuan's digital playground",
+    title: "Hi👋🏻, I'm Li Yuxuan.",
     description:
       'Welcome to my digital playground, a little cozy place where ideas flow freely.',
     siteId: '1704579643',
@@ -111,9 +111,6 @@ export default function RootLayout({
 }) {
   return (
     <html lang='en' suppressHydrationWarning>
-      <a rel='me' href='https://mastodon.social/@liyuxuan'>
-        Mastodon
-      </a>
       <ThemeProvider>
         <body
           className={cn(

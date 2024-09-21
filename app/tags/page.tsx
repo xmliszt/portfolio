@@ -13,6 +13,8 @@ export function generateMetadata(): Metadata {
     openGraph: {
       ...openGraph,
       title: 'Li Yuxuan | tags',
+      description:
+        'A collection of my thoughts and experiences. These are some of the things I have written.',
     },
   };
 }

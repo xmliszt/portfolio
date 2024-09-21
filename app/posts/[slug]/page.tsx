@@ -31,6 +31,7 @@ export function generateMetadata({ params }: PostProps): Metadata {
     openGraph: {
       ...openGraph,
       title: `Li Yuxuan | posts | ${post.title}`,
+      description: post.description,
     },
   };
 }

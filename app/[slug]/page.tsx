@@ -28,6 +28,7 @@ export function generateMetadata({ params }: Props): Metadata {
     openGraph: {
       ...openGraph,
       title: `Li Yuxuan | ${page.title}`,
+      description: page.ogDescription ?? openGraph?.description ?? '',
     },
     alternates: {
       canonical: `/${page.slug}`,

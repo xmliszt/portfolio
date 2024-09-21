@@ -13,6 +13,8 @@ export function generateMetadata(): Metadata {
     openGraph: {
       ...openGraph,
       title: 'Li Yuxuan | Dune themed light dark mode toggle',
+      description:
+        'After watching the movie Dune 2, I was inspired to create this light dark mode toggle button to capture the iconic dessert of the Arrakis, the Shai-Hulud (the largest sandworm), and Paul Atreides (the main character).',
     },
   };
 }

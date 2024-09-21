@@ -14,6 +14,8 @@ export function generateMetadata(): Metadata {
     openGraph: {
       ...openGraph,
       title: 'Li Yuxuan | ThreeJS Wiggle Sticker Effect',
+      description:
+        'This effect was inspired from X post from kmkota0. First, we use Blender to create a 3D model of the sticker. Then, we use ThreeJS with Wiggle library to create a dynamic effect for the sticker in code.',
     },
   };
 }

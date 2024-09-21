@@ -26,6 +26,7 @@ export function generateMetadata({ params }: HobbyProps): Metadata {
     openGraph: {
       ...openGraph,
       title: `Li Yuxuan | hobbies | ${hobby.title}`,
+      description: hobby.synopsis,
     },
   };
 }

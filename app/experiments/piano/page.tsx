@@ -13,6 +13,8 @@ export function generateMetadata(): Metadata {
     openGraph: {
       ...openGraph,
       title: 'Li Yuxuan | Mini piano',
+      description:
+        'A mini piano that I made with React and Framer Motion. It is a simple piano that can play C major scale.',
     },
   };
 }

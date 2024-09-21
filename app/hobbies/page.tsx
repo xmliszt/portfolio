@@ -14,6 +14,8 @@ export function generateMetadata(): Metadata {
     openGraph: {
       ...openGraph,
       title: 'Li Yuxuan | hobbies',
+      description:
+        'My hobbies reflect my diverse interests. From films, to music, to photography, these are some of the things I enjoy doing.',
     },
   };
 }

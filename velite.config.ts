@@ -65,6 +65,7 @@ const pages = defineCollection({
         prefix: 'anchor:',
       }),
       showToc: s.boolean().default(true),
+      ogDescription: s.string().max(999).optional(),
     })
     .transform((data, { meta }) => ({
       ...data,
