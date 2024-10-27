@@ -11,7 +11,7 @@ export function CustomBadgeLink(props: CustomBadgeLinkProps) {
   return (
     <Link href={props.href}>
       <Badge
-        className='rounded-full border-border text-xs font-normal transition-transform ease-out hover:scale-105'
+        className='rounded-full border-border text-xs font-normal transition-transform hover:scale-105'
         variant='secondary'
       >
         {props.children}

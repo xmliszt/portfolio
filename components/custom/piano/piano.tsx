@@ -48,14 +48,14 @@ export function Piano() {
           <button
             onClick={decreaseOctave}
             disabled={isFirstOctave}
-            className='transition-transform ease-out hover:scale-105 disabled:cursor-not-allowed disabled:opacity-50'
+            className='transition-transform hover:scale-105 disabled:cursor-not-allowed disabled:opacity-50'
           >
             <Minus size={20} />
           </button>
           <button
             onClick={increaseOctave}
             disabled={isLastOctave}
-            className='transition-transform ease-out hover:scale-105 disabled:cursor-not-allowed disabled:opacity-50'
+            className='transition-transform hover:scale-105 disabled:cursor-not-allowed disabled:opacity-50'
           >
             <Plus size={20} />
           </button>

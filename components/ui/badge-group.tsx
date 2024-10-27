@@ -10,7 +10,7 @@ export function BadgeGroup({ tags }: BadgeGroupProps) {
       {tags.map((tag) => (
         <Badge
           key={tag}
-          className='rounded-full border-border px-1.5 py-0.5 text-[10px] font-normal transition-transform ease-out hover:scale-105'
+          className='rounded-full border-border px-1.5 py-0.5 text-[10px] font-normal transition-transform  hover:scale-105'
           variant='secondary'
         >
           {tag}

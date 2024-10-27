@@ -16,7 +16,7 @@ export function ShadowSubtitle(props: ShadowSubtitleProps) {
         isMobile || isTablet
           ? 'skew-x-[30deg] scale-y-100 opacity-75'
           : 'skew-x-0 scale-y-0 opacity-0',
-        'transition-[opacity_transform] duration-300 ease-out group-hover:skew-x-[30deg] group-hover:scale-y-100 group-hover:opacity-75'
+        'transition-[opacity_transform] ease-in-out group-hover:skew-x-[30deg] group-hover:scale-y-100 group-hover:opacity-75'
       )}
     >
       {props.children}

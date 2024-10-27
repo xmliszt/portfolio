@@ -23,7 +23,7 @@ export function NavigationBarItem(props: NavigationBarItemProps) {
     <Link
       href={props.href}
       className={cn(
-        'rounded-lg px-3 py-1.5 text-sm transition-colors ease-out hover:bg-secondary',
+        'rounded-lg px-3 py-1.5 text-sm transition-colors hover:bg-secondary',
         isCurrentPath ? 'bg-secondary font-semibold' : 'font-normal'
       )}
       onClick={() => {

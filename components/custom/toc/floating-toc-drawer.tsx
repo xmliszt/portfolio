@@ -31,7 +31,7 @@ export function FloatingTOCDrawer(props: FloatingTOCDrawerProps) {
                 key={heading.url}
                 href={`#${slugify(heading.title)}`}
                 className={cn(
-                  'rounded-lg p-2 text-left text-xs text-secondary-foreground transition-colors ease-out',
+                  'rounded-lg p-2 text-left text-xs text-secondary-foreground transition-colors',
                   'hover:bg-secondary',
                   isAtCurrentTOC(hash, heading.title)
                     ? 'bg-secondary font-semibold'
@@ -78,12 +78,7 @@ export function FloatingTOCDrawer(props: FloatingTOCDrawerProps) {
             )}
           >
             <div className='group size-10'>
-              <div
-                className={cn(
-                  'absolute z-20 flex h-full w-full items-center justify-center',
-                  'transition-transform duration-300 ease-in-out group-hover:rotate-[360deg] group-hover:scale-90'
-                )}
-              >
+              <div className='absolute z-20 flex h-full w-full items-center justify-center'>
                 <ArticleNyTimes size={24} />
               </div>
               <div

@@ -4,7 +4,6 @@ import Link from 'next/link';
 
 import { slugify } from '@/lib/utils';
 
-import { WavingAvatar } from './custom/waving-avatar';
 import { AspectRatio } from './ui/aspect-ratio';
 import { BackToTopLink } from './ui/back-to-top-link';
 import { BadgeGroup } from './ui/badge-group';
@@ -105,7 +104,6 @@ export function MDXContent({ code, components }: MdxProps) {
         pre: (props: any) => (
           <CopyablePre {...props}>{props.children}</CopyablePre>
         ),
-        WavingAvatar,
         BadgeGroup,
         PhotoBentoGrid,
         ExternalActionButtonLink,

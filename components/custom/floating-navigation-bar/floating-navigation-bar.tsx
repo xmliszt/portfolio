@@ -39,12 +39,7 @@ export function FloatingNavigationBar(props: FloatingNavigationBarProps) {
             )}
           >
             <div className='group size-10'>
-              <div
-                className={cn(
-                  'absolute z-20 flex h-full w-full items-center justify-center',
-                  'transition-transform duration-300 ease-in-out group-hover:rotate-[360deg] group-hover:scale-90'
-                )}
-              >
+              <div className='absolute z-20 flex h-full w-full items-center justify-center'>
                 {isPlaying ? (
                   <Disc
                     size={24}
@@ -57,7 +52,7 @@ export function FloatingNavigationBar(props: FloatingNavigationBarProps) {
               <div
                 className={cn(
                   'z-10 h-full w-full rounded-full border p-2 text-secondary-foreground shadow-sm backdrop-blur-lg',
-                  'transition-[transform_background_box-shadow] duration-300 ease-in-out group-hover:scale-105 group-hover:bg-background group-hover:shadow-lg'
+                  'transition-[transform_background_box-shadow] duration-300 group-hover:scale-105 group-hover:bg-background group-hover:shadow-lg'
                 )}
               ></div>
             </div>

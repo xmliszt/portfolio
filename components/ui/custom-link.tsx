@@ -30,7 +30,7 @@ export function CustomLink({
       <span
         className={cn(
           'absolute bottom-0 left-0 rounded-full bg-foreground',
-          'h-0 w-0 opacity-0 transition-[opacity_width] duration-300 ease-in-out group-hover:h-[1px] group-hover:w-full group-hover:opacity-100'
+          'h-0 w-0 opacity-0 transition-[opacity_width] duration-300 group-hover:h-[1px] group-hover:w-full group-hover:opacity-100'
         )}
       ></span>
     </object>

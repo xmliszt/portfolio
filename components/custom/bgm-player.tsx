@@ -73,10 +73,10 @@ export function BGMPlayer(props: BGMPlayerProps) {
               if (!isLoading) toggleBGM();
             }}
             className={cn(
-              'transition-transform duration-300 ease-out hover:rotate-[360deg] hover:scale-125',
+              'transition-transform ease-in-out',
               isLoading
                 ? 'animate-pulse cursor-progress duration-1000'
-                : 'cursor-pointer duration-300'
+                : 'cursor-pointer duration-300 hover:rotate-[360deg] hover:scale-125'
             )}
           >
             <Disc
@@ -140,7 +140,7 @@ function BGMController({
         <Tooltip>
           <TooltipTrigger asChild>
             <button
-              className='text-muted-foreground transition-[transform_color] ease-out hover:scale-105 hover:text-primary'
+              className='text-muted-foreground transition-[transform_color] hover:scale-105 hover:text-primary'
               onClick={() => prevBGM()}
             >
               <CaretUp />
@@ -151,7 +151,7 @@ function BGMController({
         <Tooltip>
           <TooltipTrigger asChild>
             <button
-              className='text-muted-foreground transition-[transform_color] ease-out hover:scale-105 hover:text-primary'
+              className='text-muted-foreground transition-[transform_color] hover:scale-105 hover:text-primary'
               onClick={() => nextBGM()}
             >
               <CaretDown />
@@ -170,7 +170,7 @@ function BGMController({
         <Tooltip>
           <TooltipTrigger asChild>
             <button
-              className='text-muted-foreground transition-[transform_color] ease-out hover:scale-105 hover:text-primary'
+              className='text-muted-foreground transition-[transform_color] hover:scale-105 hover:text-primary'
               onClick={() => prevBGM()}
             >
               <SkipBack size={20} />
@@ -181,7 +181,7 @@ function BGMController({
         <Tooltip>
           <TooltipTrigger asChild>
             <button
-              className='text-muted-foreground transition-[transform_color] ease-out hover:scale-105 hover:text-primary'
+              className='text-muted-foreground transition-[transform_color] hover:scale-105 hover:text-primary'
               onClick={() => nextBGM()}
             >
               <SkipForward size={20} />
