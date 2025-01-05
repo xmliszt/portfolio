@@ -61,7 +61,9 @@ export function BGMPlayer(props: BGMPlayerProps) {
               size={24}
               className={cn(
                 'transition-transform',
-                bgmStore.isPlaying ? 'animate-spin' : 'animate-none'
+                bgmStore.isPlaying && !bgmStore.isLoading
+                  ? 'animate-spin'
+                  : 'animate-none'
               )}
             />
           </button>

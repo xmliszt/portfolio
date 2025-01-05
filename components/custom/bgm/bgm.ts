@@ -16,7 +16,6 @@ type BGM = {
 type BgmStoreState = {
   currentHowl: Howl | undefined;
   currentBgm: BGM | undefined;
-  isInitialized: boolean;
   isPlaying: boolean;
   isLoading: boolean;
   error?: Error;
@@ -38,7 +37,6 @@ export class Bgm {
   store = create<BgmStoreState>()(() => ({
     currentHowl: undefined,
     currentBgm: undefined,
-    isInitialized: false,
     isPlaying: false,
     isLoading: false,
     error: undefined,
@@ -67,7 +65,6 @@ export class Bgm {
     this._currentIndex = options.startFromIndex;
     this._howlOptions = options.howlOptions;
     this._autoPlay = options.autoPlay ?? false;
-    this.store.setState({ isInitialized: true });
 
     const defaultBgm = this._bgms.at(this._currentIndex);
     if (defaultBgm === undefined)
