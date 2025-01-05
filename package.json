@@ -8,9 +8,6 @@
     "start": "next start",
     "lint": "next lint",
     "prepare": "husky install",
-    "vercel:link": "vercel link",
-    "vercel:pull": "vercel pull",
-    "vercel:dev": "vercel dev",
     "velite:build": "velite --clean",
     "velite:dev": "velite --watch",
     "gen-types": "supabase gen types typescript --project-id tvstbbuidvwgelgidaqy --schema public > lib/supabase/__generated__/types.ts"

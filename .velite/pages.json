@@ -1,5 +1,16 @@
 [
   {
+    "title": "contacts",
+    "subtitle": "找我聊聊？",
+    "slug": "contacts",
+    "body": "const{jsx:n,jsxs:e}=arguments[0];function _createMdxContent(t){const i={a:\"a\",li:\"li\",ul:\"ul\",...t.components};return e(i.ul,{children:[\"\\n\",n(i.li,{children:n(i.a,{href:\"mailto:me@liyuxuan.dev\",children:\"Email: me@liyuxuan.dev\"})}),\"\\n\",n(i.li,{children:n(i.a,{href:\"https://read.cv/liyuxuan\",children:\"ReadCV\"})}),\"\\n\",n(i.li,{children:n(i.a,{href:\"https://bento.me/liyuxuan\",children:\"Bento\"})}),\"\\n\",n(i.li,{children:n(i.a,{href:\"https://www.github.com/xmliszt\",children:\"GitHub\"})}),\"\\n\",n(i.li,{children:n(i.a,{href:\"https://www.twitter.com/xmliszt\",children:\"Twitter\"})}),\"\\n\",n(i.li,{children:n(i.a,{href:\"https://www.linkedin.com/in/li-yuxuan/\",children:\"LinkedIn\"})}),\"\\n\",n(i.li,{children:n(i.a,{href:\"https://youtube.com/@bbfishstudio8837\",children:\"YouTube\"})}),\"\\n\",n(i.li,{children:n(i.a,{href:\"https://instagram.com/xmliszt\",children:\"Instagram\"})}),\"\\n\"]})}return{default:function(e={}){const{wrapper:t}=e.components||{};return t?n(t,{...e,children:n(_createMdxContent,{...e})}):_createMdxContent(e)}};",
+    "toc": [],
+    "showToc": false,
+    "ogDescription": "Here are some ways to contact me. Looking forward to hearing from you!",
+    "permalink": "/contacts",
+    "path": "/Users/yx/Projects/personal/portfolio/content/pages/contacts/index.mdx"
+  },
+  {
     "title": "Li Yuxuan",
     "subtitle": "李雨轩",
     "slug": "about",
@@ -30,17 +41,6 @@
     "ogDescription": "Welcome to my digital playground, a little cozy place where ideas flow freely.",
     "permalink": "/about",
     "path": "/Users/yx/Projects/personal/portfolio/content/pages/about/index.mdx"
-  },
-  {
-    "title": "contacts",
-    "subtitle": "找我聊聊？",
-    "slug": "contacts",
-    "body": "const{jsx:n,jsxs:e}=arguments[0];function _createMdxContent(t){const i={a:\"a\",li:\"li\",ul:\"ul\",...t.components};return e(i.ul,{children:[\"\\n\",n(i.li,{children:n(i.a,{href:\"mailto:me@liyuxuan.dev\",children:\"Email: me@liyuxuan.dev\"})}),\"\\n\",n(i.li,{children:n(i.a,{href:\"https://read.cv/liyuxuan\",children:\"ReadCV\"})}),\"\\n\",n(i.li,{children:n(i.a,{href:\"https://bento.me/liyuxuan\",children:\"Bento\"})}),\"\\n\",n(i.li,{children:n(i.a,{href:\"https://www.github.com/xmliszt\",children:\"GitHub\"})}),\"\\n\",n(i.li,{children:n(i.a,{href:\"https://www.twitter.com/xmliszt\",children:\"Twitter\"})}),\"\\n\",n(i.li,{children:n(i.a,{href:\"https://www.linkedin.com/in/li-yuxuan/\",children:\"LinkedIn\"})}),\"\\n\",n(i.li,{children:n(i.a,{href:\"https://youtube.com/@bbfishstudio8837\",children:\"YouTube\"})}),\"\\n\",n(i.li,{children:n(i.a,{href:\"https://instagram.com/xmliszt\",children:\"Instagram\"})}),\"\\n\"]})}return{default:function(e={}){const{wrapper:t}=e.components||{};return t?n(t,{...e,children:n(_createMdxContent,{...e})}):_createMdxContent(e)}};",
-    "toc": [],
-    "showToc": false,
-    "ogDescription": "Here are some ways to contact me. Looking forward to hearing from you!",
-    "permalink": "/contacts",
-    "path": "/Users/yx/Projects/personal/portfolio/content/pages/contacts/index.mdx"
   },
   {
     "title": "playground",
