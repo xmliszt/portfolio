@@ -2,8 +2,7 @@ import { Analytics } from '@vercel/analytics/react';
 import { Metadata, Viewport } from 'next';
 import { Inter } from 'next/font/google';
 
-import { BGMProvider } from '@/components/bgm-provider';
-import { BGMPlayer } from '@/components/custom/bgm-player';
+import { BGMPlayer } from '@/components/custom/bgm/bgm-player';
 import {
   FloatingNavigationBar,
   FloatingNavigationBarContent,
@@ -119,76 +118,74 @@ export default function RootLayout({
             fontInter.className
           )}
         >
-          <BGMProvider>
-            <TooltipProvider delayDuration={0}>
-              <TOCProvider>
-                <GradientBlur placement='top' position='fixed' />
-                <main className='h-screen max-h-screen w-screen overflow-hidden'>
-                  <ScrollAreaWithTOCTracker>
-                    <div
-                      className={cn(
-                        'relative mx-auto h-full w-screen [&>article]:mx-auto',
-                        'px-8 pb-40 pt-24', // phone
-                        'md:max-w-md md:pb-24', // tablet
-                        'lg:max-w-xl lg:pb-24', // laptop
-                        'xl:max-w-2xl xl:pb-24' // large desktop
-                      )}
-                    >
-                      {/* Show when in desktop view port */}
-                      <NavigationBar>
-                        {ROUTES.map((route) => (
-                          <NavigationBarItem key={route.path} href={route.path}>
-                            {route.name}
-                          </NavigationBarItem>
-                        ))}
-                      </NavigationBar>
-                      {/* Main content area */}
-                      {children}
-                      {/* Right side floating TOC tree */}
-                      <TOCTree />
-                    </div>
-                  </ScrollAreaWithTOCTracker>
-                </main>
-                <GradientBlur placement='bottom' position='fixed' />
-                {/* Right side floating TOC drawer: show when in mobile view port */}
-                <FloatingTOCDrawer>
-                  <FloatingTOCDrawerHeader>
-                    {/* BGM Control */}
-                    <BGMPlayer bgmInfoPosition='right' showBgmInfo />
-                    {/* Theme switch */}
-                    <ThemeSwitch />
-                  </FloatingTOCDrawerHeader>
-                </FloatingTOCDrawer>
-              </TOCProvider>
-              {/* Show when in mobile view port */}
-              <FloatingNavigationProvider>
-                <FloatingNavigationBar>
-                  <FloatingNavigationBarHeader>
-                    {/* BGM Control */}
-                    <BGMPlayer bgmInfoPosition='right' showBgmInfo />
-                    {/* Theme switch */}
-                    <ThemeSwitch />
-                  </FloatingNavigationBarHeader>
-                  <FloatingNavigationBarContent>
-                    {ROUTES.map((route) => (
-                      <NavigationBarItem key={route.path} href={route.path}>
-                        {route.name}
-                      </NavigationBarItem>
-                    ))}
-                  </FloatingNavigationBarContent>
-                </FloatingNavigationBar>
-              </FloatingNavigationProvider>
-              {/* Theme switch */}
-              <div className='fixed bottom-10 right-4 z-50 hidden md:right-10 md:block'>
-                <ThemeSwitch />
-              </div>
-              {/* BGM player */}
-              <div className='fixed right-4 top-8 z-50 hidden md:right-10 md:block'>
-                <BGMPlayer showBgmInfo bgmInfoPosition='left' />
-              </div>
-            </TooltipProvider>
-            <Analytics />
-          </BGMProvider>
+          <TooltipProvider delayDuration={0}>
+            <TOCProvider>
+              <GradientBlur placement='top' position='fixed' />
+              <main className='h-screen max-h-screen w-screen overflow-hidden'>
+                <ScrollAreaWithTOCTracker>
+                  <div
+                    className={cn(
+                      'relative mx-auto h-full w-screen [&>article]:mx-auto',
+                      'px-8 pb-40 pt-24', // phone
+                      'md:max-w-md md:pb-24', // tablet
+                      'lg:max-w-xl lg:pb-24', // laptop
+                      'xl:max-w-2xl xl:pb-24' // large desktop
+                    )}
+                  >
+                    {/* Show when in desktop view port */}
+                    <NavigationBar>
+                      {ROUTES.map((route) => (
+                        <NavigationBarItem key={route.path} href={route.path}>
+                          {route.name}
+                        </NavigationBarItem>
+                      ))}
+                    </NavigationBar>
+                    {/* Main content area */}
+                    {children}
+                    {/* Right side floating TOC tree */}
+                    <TOCTree />
+                  </div>
+                </ScrollAreaWithTOCTracker>
+              </main>
+              <GradientBlur placement='bottom' position='fixed' />
+              {/* Right side floating TOC drawer: show when in mobile view port */}
+              <FloatingTOCDrawer>
+                <FloatingTOCDrawerHeader>
+                  {/* BGM Control */}
+                  <BGMPlayer bgmInfoPosition='right' showBgmInfo />
+                  {/* Theme switch */}
+                  <ThemeSwitch />
+                </FloatingTOCDrawerHeader>
+              </FloatingTOCDrawer>
+            </TOCProvider>
+            {/* Show when in mobile view port */}
+            <FloatingNavigationProvider>
+              <FloatingNavigationBar>
+                <FloatingNavigationBarHeader>
+                  {/* BGM Control */}
+                  <BGMPlayer bgmInfoPosition='right' showBgmInfo />
+                  {/* Theme switch */}
+                  <ThemeSwitch />
+                </FloatingNavigationBarHeader>
+                <FloatingNavigationBarContent>
+                  {ROUTES.map((route) => (
+                    <NavigationBarItem key={route.path} href={route.path}>
+                      {route.name}
+                    </NavigationBarItem>
+                  ))}
+                </FloatingNavigationBarContent>
+              </FloatingNavigationBar>
+            </FloatingNavigationProvider>
+            {/* Theme switch */}
+            <div className='fixed bottom-10 right-4 z-50 hidden md:right-10 md:block'>
+              <ThemeSwitch />
+            </div>
+            {/* BGM player */}
+            <div className='fixed right-4 top-8 z-50 hidden md:right-10 md:block'>
+              <BGMPlayer showBgmInfo bgmInfoPosition='left' />
+            </div>
+          </TooltipProvider>
+          <Analytics />
         </body>
       </ThemeProvider>
     </html>

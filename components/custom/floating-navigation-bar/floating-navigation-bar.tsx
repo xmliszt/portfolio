@@ -3,7 +3,6 @@
 import { Disc } from '@phosphor-icons/react';
 import { MusicNote } from '@phosphor-icons/react/dist/ssr';
 
-import { useBGM } from '@/components/bgm-provider';
 import { Drawer, DrawerContent, DrawerTrigger } from '@/components/ui/drawer';
 import {
   Tooltip,
@@ -11,6 +10,8 @@ import {
   TooltipTrigger,
 } from '@/components/ui/tooltip';
 import { cn } from '@/lib/utils';
+
+import { Bgm } from '../bgm/bgm';
 
 import { useFloatingNavigation } from './floating-navigation-provider';
 
@@ -20,7 +21,8 @@ type FloatingNavigationBarProps = {
 
 export function FloatingNavigationBar(props: FloatingNavigationBarProps) {
   const { isOpen, setIsOpen } = useFloatingNavigation();
-  const { isPlaying } = useBGM();
+  const bgmState = Bgm.getInstance().store();
+
   return (
     <Drawer
       open={isOpen}
@@ -40,7 +42,7 @@ export function FloatingNavigationBar(props: FloatingNavigationBarProps) {
           >
             <div className='group size-10'>
               <div className='absolute z-20 flex h-full w-full items-center justify-center'>
-                {isPlaying ? (
+                {bgmState.isPlaying ? (
                   <Disc
                     size={24}
                     className='animate-spin transition-transform'

@@ -33,6 +33,7 @@
     "framer-motion": "^11.0.14",
     "howler": "^2.2.4",
     "lodash": "^4.17.21",
+    "lucide-react": "^0.469.0",
     "next": "14.2.13",
     "next-pwa": "^5.6.0",
     "next-themes": "^0.2.1",
@@ -45,7 +46,8 @@
     "tailwind-merge": "^2.2.1",
     "tailwindcss-animate": "^1.0.7",
     "unist-util-visit": "^5.0.0",
-    "vaul": "^0.9.0"
+    "vaul": "^0.9.0",
+    "zustand": "^5.0.2"
   },
   "devDependencies": {
     "@tailwindcss/typography": "^0.5.10",
