@@ -4,6 +4,7 @@ import { Disc } from '@phosphor-icons/react';
 import { MusicNote } from '@phosphor-icons/react/dist/ssr';
 
 import { Bgm } from '@/components/custom/bgm/bgm';
+import { Copyright } from '@/components/custom/copyright';
 import { Drawer, DrawerContent, DrawerTrigger } from '@/components/ui/drawer';
 import {
   Tooltip,
@@ -72,6 +73,8 @@ export function FloatingNavigationBar(props: FloatingNavigationBarProps) {
         {/* Custom drawer handle */}
         <div className='mx-auto mt-2 h-1 w-[60px] cursor-grab rounded-full bg-foreground' />
         {props.children}
+        {/* Copyright */}
+        <Copyright />
       </DrawerContent>
     </Drawer>
   );

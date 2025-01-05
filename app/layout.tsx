@@ -1,9 +1,9 @@
 import { Analytics } from '@vercel/analytics/react';
 import { Metadata, Viewport } from 'next';
 import { Inter } from 'next/font/google';
-import Link from 'next/link';
 
 import { BGMPlayer } from '@/components/custom/bgm/bgm-player';
+import { Copyright } from '@/components/custom/copyright';
 import {
   FloatingNavigationBar,
   FloatingNavigationBarContent,
@@ -188,14 +188,7 @@ export default function RootLayout({
           <Analytics />
 
           {/* Copyright */}
-          <div className='fixed bottom-2 right-4 z-50 text-[10px] text-muted-foreground/50 md:left-4'>
-            <Link
-              href='http://creativecommons.org/licenses/by-nc-sa/4.0/?ref=chooser-v1'
-              target='_blank'
-            >
-              © CC BY-NC-SA 4.0 2024-{new Date().getFullYear()} Li Yuxuan
-            </Link>
-          </div>
+          <Copyright />
         </body>
       </ThemeProvider>
     </html>

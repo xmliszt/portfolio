@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { ArticleNyTimes } from '@phosphor-icons/react';
 
+import { Copyright } from '@/components/custom/copyright';
 import { Drawer, DrawerContent, DrawerTrigger } from '@/components/ui/drawer';
 import {
   Tooltip,
@@ -106,6 +107,8 @@ export function FloatingTOCDrawer(props: FloatingTOCDrawerProps) {
         <nav className='prose flex w-full flex-col gap-2 p-3'>
           {renderTOCTree(toc)}
         </nav>
+        {/* Copyright */}
+        <Copyright />
       </DrawerContent>
     </Drawer>
   );
