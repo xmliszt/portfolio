@@ -8,7 +8,11 @@ import {
   ChevronUp,
 } from 'lucide-react';
 
-import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from '@/components/ui/tooltip';
 import { cn } from '@/lib/utils';
 
 import { Bgm } from './bgm';
@@ -21,17 +25,25 @@ type BGMPlayerProps = {
 export function BGMPlayer(props: BGMPlayerProps) {
   const bgmStore = Bgm.getInstance().store();
 
-  if (bgmStore.currentBgm === undefined) return null;
-
   return (
-    <div className='flex h-12 flex-row items-center gap-2 md:h-16 md:gap-4'>
-      {props.showBgmInfo && props.bgmInfoPosition === 'left' && (
-        <BGMController
-          title={bgmStore.currentBgm.title}
-          artist={bgmStore.currentBgm.artist}
-          href={bgmStore.currentBgm.external_url}
-        />
+    <div
+      className={cn(
+        'flex h-12 flex-row items-center gap-2 md:h-16 md:gap-4',
+        bgmStore.currentBgm
+          ? 'visible translate-y-0 opacity-100'
+          : 'invisible translate-y-1 opacity-0',
+        'transition-[transform_opacity] duration-300 ease-out'
       )}
+    >
+      {bgmStore.currentBgm &&
+        props.showBgmInfo &&
+        props.bgmInfoPosition === 'left' && (
+          <BGMController
+            title={bgmStore.currentBgm.title}
+            artist={bgmStore.currentBgm.artist}
+            href={bgmStore.currentBgm.external_url}
+          />
+        )}
       <Tooltip>
         <TooltipTrigger asChild>
           <button
@@ -55,16 +67,22 @@ export function BGMPlayer(props: BGMPlayerProps) {
           </button>
         </TooltipTrigger>
         <TooltipContent>
-          {bgmStore.isPlaying ? 'pause' : 'play'} background music
+          {(() => {
+            if (bgmStore.isLoading) return 'loading the cassette...';
+            if (bgmStore.isPlaying) return 'pause background music';
+            return 'play background music';
+          })()}
         </TooltipContent>
       </Tooltip>
-      {props.showBgmInfo && props.bgmInfoPosition === 'right' && (
-        <BGMController
-          title={bgmStore.currentBgm.title}
-          artist={bgmStore.currentBgm.artist}
-          href={bgmStore.currentBgm.external_url}
-        />
-      )}
+      {bgmStore.currentBgm &&
+        props.showBgmInfo &&
+        props.bgmInfoPosition === 'right' && (
+          <BGMController
+            title={bgmStore.currentBgm.title}
+            artist={bgmStore.currentBgm.artist}
+            href={bgmStore.currentBgm.external_url}
+          />
+        )}
     </div>
   );
 }
