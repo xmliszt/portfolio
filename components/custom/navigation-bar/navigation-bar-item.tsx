@@ -3,9 +3,8 @@
 import Link from 'next/link';
 import { useSelectedLayoutSegment } from 'next/navigation';
 
+import { useFloatingNavigation } from '@/components/custom/floating-navigation-bar/floating-navigation-provider';
 import { cn } from '@/lib/utils';
-
-import { useFloatingNavigation } from '../floating-navigation-bar/floating-navigation-provider';
 
 type NavigationBarItemProps = {
   children: React.ReactNode;

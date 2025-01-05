@@ -1,10 +1,9 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 
+import { openGraph } from '@/app/metadata';
 import { TOCLoader } from '@/components/custom/toc/toc-loader';
 import { MDXContent } from '@/components/mdx-content';
-
-import { openGraph } from '../metadata';
 
 import { ShadowSubtitle } from './shadow-subtitle';
 

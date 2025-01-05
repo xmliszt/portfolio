@@ -8,9 +8,8 @@ import {
   ChevronUp,
 } from 'lucide-react';
 
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import { cn } from '@/lib/utils';
-
-import { Tooltip, TooltipContent, TooltipTrigger } from '../../ui/tooltip';
 
 import { Bgm } from './bgm';
 

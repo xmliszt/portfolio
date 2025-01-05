@@ -3,6 +3,7 @@
 import { Disc } from '@phosphor-icons/react';
 import { MusicNote } from '@phosphor-icons/react/dist/ssr';
 
+import { Bgm } from '@/components/custom/bgm/bgm';
 import { Drawer, DrawerContent, DrawerTrigger } from '@/components/ui/drawer';
 import {
   Tooltip,
@@ -10,8 +11,6 @@ import {
   TooltipTrigger,
 } from '@/components/ui/tooltip';
 import { cn } from '@/lib/utils';
-
-import { Bgm } from '../bgm/bgm';
 
 import { useFloatingNavigation } from './floating-navigation-provider';
 

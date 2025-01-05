@@ -1,6 +1,6 @@
 {
   "extends": ["next/core-web-vitals", "prettier"],
-  "plugins": ["unused-imports", "simple-import-sort"],
+  "plugins": ["unused-imports", "simple-import-sort", "no-relative-import-paths"],
   "ignorePatterns": [
     "node_modules/*",
     ".next/*",
@@ -23,7 +23,11 @@
       }
     ],
     "simple-import-sort/imports": "error",
-    "simple-import-sort/exports": "error"
+    "simple-import-sort/exports": "error",
+    "no-relative-import-paths/no-relative-import-paths": [
+      "warn",
+      { "allowSameFolder": true, "prefix": "@" }
+    ]
   },
   "overrides": [
     // override "simple-import-sort" config

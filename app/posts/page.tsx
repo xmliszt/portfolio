@@ -1,8 +1,8 @@
 import { Metadata } from 'next';
 import pluralize from 'pluralize';
 
-import { ShadowSubtitle } from '../[slug]/shadow-subtitle';
-import { openGraph } from '../metadata';
+import { ShadowSubtitle } from '@/app/[slug]/shadow-subtitle';
+import { openGraph } from '@/app/metadata';
 
 import { fetchPostViews } from './[slug]/fetch-post-views';
 import { PostCard } from './post-card';

@@ -1,7 +1,7 @@
 import { Metadata } from 'next';
 
-import { ShadowSubtitle } from '../[slug]/shadow-subtitle';
-import { openGraph } from '../metadata';
+import { ShadowSubtitle } from '@/app/[slug]/shadow-subtitle';
+import { openGraph } from '@/app/metadata';
 
 import { HobbyCard } from './hobby-card';
 

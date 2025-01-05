@@ -9,6 +9,10 @@ import {
   FloatingNavigationBarHeader,
   FloatingNavigationProvider,
 } from '@/components/custom/floating-navigation-bar';
+import {
+  NavigationBar,
+  NavigationBarItem,
+} from '@/components/custom/navigation-bar';
 import { ThemeSwitch } from '@/components/custom/theme-switch';
 import { FloatingTOCDrawer } from '@/components/custom/toc/floating-toc-drawer';
 import { FloatingTOCDrawerHeader } from '@/components/custom/toc/floating-toc-drawer-header';
@@ -18,11 +22,6 @@ import { ThemeProvider } from '@/components/theme-provider';
 import { GradientBlur } from '@/components/ui/gradient-blur';
 import { TooltipProvider } from '@/components/ui/tooltip';
 import { cn } from '@/lib/utils';
-
-import {
-  NavigationBar,
-  NavigationBarItem,
-} from '../components/custom/navigation-bar';
 
 import { openGraph } from './metadata';
 import { ROUTES } from './routes';

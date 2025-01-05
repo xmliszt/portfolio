@@ -1,8 +1,7 @@
 import { Metadata } from 'next';
 
+import { openGraph } from '@/app/metadata';
 import { CustomLink } from '@/components/ui/custom-link';
-
-import { openGraph } from '../metadata';
 
 import { tags } from '#site/content';
 
