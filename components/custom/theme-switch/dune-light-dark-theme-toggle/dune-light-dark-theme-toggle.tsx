@@ -14,7 +14,7 @@ import { SunSVG } from './svg/sun';
 
 type DuneLightDarkThemeToggleProps = {
   sizeInPixels?: number;
-  ringPaddingInPixels?: number;
+  showRing?: boolean;
 };
 
 export function DuneLightDarkThemeToggle(props: DuneLightDarkThemeToggleProps) {
@@ -25,7 +25,7 @@ export function DuneLightDarkThemeToggle(props: DuneLightDarkThemeToggleProps) {
       padding: '0px',
     },
     'on-hover': {
-      padding: props.ringPaddingInPixels ?? '5px',
+      padding: props.showRing ? '5%' : '0px',
       transition: {
         duration: 0.2,
         ease: 'easeOut',
@@ -57,61 +57,63 @@ export function DuneLightDarkThemeToggle(props: DuneLightDarkThemeToggleProps) {
   };
 
   return (
-    <motion.button
-      className={cn(
-        'relative grid place-items-center rounded-full shadow-lg transition-[box-shadow]'
-      )}
-      initial={resolvedTheme === 'light' ? 'light-theme' : 'dark-theme'}
-      animate={[
-        'normal',
-        resolvedTheme === 'light' ? 'light-theme' : 'dark-theme',
-        resolvedTheme === 'light' ? 'sand-storm' : 'worm-moving',
-        'glowing',
-      ]}
-      whileHover={[
-        'on-hover',
-        resolvedTheme === 'light' ? 'light-hover' : 'dark-hover',
-      ]}
-      transition={{
-        duration: 0.3,
-      }}
-      onClick={() => {
-        if (document.startViewTransition) {
-          document.startViewTransition(() => {
-            setTheme(resolvedTheme === 'dark' ? 'light' : 'dark');
-          });
-        } else {
-          setTheme(resolvedTheme === 'dark' ? 'light' : 'dark');
-        }
-      }}
-      variants={buttonVariants}
-    >
-      <motion.div
-        style={{
-          width: props.sizeInPixels,
-          height: props.sizeInPixels,
-        }}
+    <div className='grid place-items-end'>
+      <motion.button
         className={cn(
-          'relative z-10 overflow-hidden rounded-full bg-[#FFFBD3] shadow-inner',
-          props.sizeInPixels ? 'size-auto' : 'size-8 sm:size-16'
+          'relative grid place-items-center rounded-full p-2 shadow-lg transition-[box-shadow]'
         )}
-        variants={contentVariants}
-      >
-        <SunSVG />
-        <BigMoonSVG />
-        <SmallMoonSVG />
-        <PaulSVG />
-        <SandwormSVG />
-        <SandSVG />
-      </motion.div>
-      <motion.div
-        style={{
-          background:
-            'linear-gradient(90deg, rgba(209,173,103,1) 0%, rgba(255,236,196,1) 50%, rgba(209,173,103,1) 100%)',
+        initial={resolvedTheme === 'light' ? 'light-theme' : 'dark-theme'}
+        animate={[
+          'normal',
+          resolvedTheme === 'light' ? 'light-theme' : 'dark-theme',
+          resolvedTheme === 'light' ? 'sand-storm' : 'worm-moving',
+          'glowing',
+        ]}
+        whileHover={[
+          'on-hover',
+          resolvedTheme === 'light' ? 'light-hover' : 'dark-hover',
+        ]}
+        transition={{
+          duration: 0.3,
         }}
-        className='absolute left-0 top-0 z-0 h-full w-full rounded-full'
-        variants={backgroundVariants}
-      />
-    </motion.button>
+        onClick={() => {
+          if (document.startViewTransition) {
+            document.startViewTransition(() => {
+              setTheme(resolvedTheme === 'dark' ? 'light' : 'dark');
+            });
+          } else {
+            setTheme(resolvedTheme === 'dark' ? 'light' : 'dark');
+          }
+        }}
+        variants={buttonVariants}
+      >
+        <motion.div
+          style={{
+            width: props.sizeInPixels,
+            height: props.sizeInPixels,
+          }}
+          className={cn(
+            'relative z-10 overflow-hidden rounded-full bg-[#FFFBD3] shadow-inner',
+            props.sizeInPixels ? 'size-auto' : 'size-8 sm:size-16'
+          )}
+          variants={contentVariants}
+        >
+          <SunSVG />
+          <BigMoonSVG />
+          <SmallMoonSVG />
+          <PaulSVG />
+          <SandwormSVG />
+          <SandSVG />
+        </motion.div>
+        <motion.div
+          style={{
+            background:
+              'linear-gradient(90deg, rgba(209,173,103,1) 0%, rgba(255,236,196,1) 50%, rgba(209,173,103,1) 100%)',
+          }}
+          className='absolute left-0 top-0 z-0 h-full w-full rounded-full'
+          variants={backgroundVariants}
+        />
+      </motion.button>
+    </div>
   );
 }

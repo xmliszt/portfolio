@@ -10,12 +10,16 @@ import {
 
 import { DuneLightDarkThemeToggle } from './dune-light-dark-theme-toggle';
 
-export function ThemeSwitch() {
+type ThemeSwitchProps = {
+  showRing?: boolean;
+};
+
+export function ThemeSwitch(props: ThemeSwitchProps) {
   const { resolvedTheme } = useTheme();
   return (
     <Tooltip>
       <TooltipTrigger>
-        <DuneLightDarkThemeToggle />
+        <DuneLightDarkThemeToggle showRing={props.showRing} />
       </TooltipTrigger>
       <TooltipContent>
         {resolvedTheme === 'dark'

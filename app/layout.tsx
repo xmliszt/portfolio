@@ -2,7 +2,7 @@ import { Analytics } from '@vercel/analytics/react';
 import { Metadata, Viewport } from 'next';
 import { Inter } from 'next/font/google';
 
-import { BGMPlayer } from '@/components/custom/bgm/bgm-player';
+import { BGMInfo, BGMPlayer } from '@/components/custom/bgm/bgm-player';
 import { Copyright } from '@/components/custom/copyright';
 import {
   FloatingNavigationBar,
@@ -152,9 +152,11 @@ export default function RootLayout({
               <FloatingTOCDrawer>
                 <FloatingTOCDrawerHeader>
                   {/* BGM Control */}
-                  <BGMPlayer bgmInfoPosition='right' showBgmInfo />
+                  <BGMPlayer />
+                  {/* BGM Info */}
+                  <BGMInfo />
                   {/* Theme switch */}
-                  <ThemeSwitch />
+                  <ThemeSwitch showRing={false} />
                 </FloatingTOCDrawerHeader>
               </FloatingTOCDrawer>
             </TOCProvider>
@@ -163,9 +165,11 @@ export default function RootLayout({
               <FloatingNavigationBar>
                 <FloatingNavigationBarHeader>
                   {/* BGM Control */}
-                  <BGMPlayer bgmInfoPosition='right' showBgmInfo />
+                  <BGMPlayer />
+                  {/* BGM Info */}
+                  <BGMInfo />
                   {/* Theme switch */}
-                  <ThemeSwitch />
+                  <ThemeSwitch showRing={false} />
                 </FloatingNavigationBarHeader>
                 <FloatingNavigationBarContent>
                   {ROUTES.map((route) => (
@@ -178,11 +182,17 @@ export default function RootLayout({
             </FloatingNavigationProvider>
             {/* Theme switch */}
             <div className='fixed bottom-10 right-4 z-50 hidden md:right-10 md:block'>
-              <ThemeSwitch />
+              <ThemeSwitch showRing />
             </div>
             {/* BGM player */}
-            <div className='fixed right-4 top-8 z-50 hidden md:right-10 md:block'>
-              <BGMPlayer showBgmInfo bgmInfoPosition='left' />
+            <div
+              className={cn(
+                'fixed right-4 top-8 z-50 hidden items-center gap-x-4',
+                'md:right-10 md:flex'
+              )}
+            >
+              <BGMInfo />
+              <BGMPlayer />
             </div>
           </TooltipProvider>
           <Analytics />

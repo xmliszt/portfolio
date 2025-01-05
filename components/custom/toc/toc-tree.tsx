@@ -44,9 +44,7 @@ export function TOCTree() {
         'hidden md:block'
       )}
     >
-      <nav className={cn('sticky top-24 border-t py-4')}>
-        {renderTOCTree(toc)}
-      </nav>
+      <nav className={cn('sticky top-24 py-4')}>{renderTOCTree(toc)}</nav>
     </div>
   );
 }

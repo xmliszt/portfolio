@@ -25,7 +25,7 @@ export default function Page() {
       <h1 className='text-center font-bold'>{`I'm a Dune light dark mode toggle`}</h1>
       <p>Click the button to toggle light and dark mode.</p>
       <div className='grid h-[200px] w-full place-items-center'>
-        <DuneLightDarkThemeToggle sizeInPixels={120} />
+        <DuneLightDarkThemeToggle sizeInPixels={120} showRing />
       </div>
       <Ratings id='dune-light-dark-toggle' />
       <p>
