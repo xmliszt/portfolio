@@ -2,6 +2,8 @@
 
 @config '../tailwind.config.ts';
 
+@custom-variant dark (&:where(.dark, .dark *));
+
 /*
   The default border color has changed to `currentColor` in Tailwind CSS v4,
   so we've added these compatibility styles to make sure everything still
@@ -131,6 +133,10 @@
 
   iframe {
     @apply my-8 rounded-lg border shadow-xl!;
+  }
+
+  .sp-layout iframe {
+    @apply shadow-none border-none rounded-none my-0
   }
 
   p {
