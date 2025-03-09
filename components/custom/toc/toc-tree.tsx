@@ -14,7 +14,7 @@ export function TOCTree() {
         {toc.map((heading) => (
           <li key={heading.url} className='m-0 pl-1'>
             <div className='flex flex-row items-start'>
-              <div className='group relative inline-block w-fit [&>*]:cursor-alias'>
+              <div className='group relative inline-block w-fit *:cursor-alias'>
                 <TOCLink entry={heading} />
                 <span
                   className={cn(

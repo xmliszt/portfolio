@@ -27,7 +27,7 @@ export function BookGrid(props: BookGridProps) {
           <TooltipTrigger asChild>
             <Link href={book.href} target='_blank' className='cursor-alias'>
               <HoverPerspectiveContainer className='border border-primary'>
-                <div className='relative flex aspect-[2/3] w-full flex-col gap-y-2 bg-card'>
+                <div className='relative flex aspect-2/3 w-full flex-col gap-y-2 bg-card'>
                   <AspectRatio ratio={2 / 3}>
                     <Image
                       className='m-0'

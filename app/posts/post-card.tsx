@@ -14,7 +14,7 @@ export function PostCard({ post, views }: PostCardProps) {
       <article className='flex flex-col gap-y-2 transition-transform hover:scale-105'>
         <div className='flex items-start justify-between gap-4'>
           <h3 className='mb-1 mt-0 text-base font-semibold'>{post.title}</h3>
-          <time className='flex flex-col items-end text-xs text-muted-foreground [&>*]:whitespace-nowrap'>
+          <time className='flex flex-col items-end text-xs text-muted-foreground *:whitespace-nowrap'>
             <span>{format(post.date, 'do LLLL')}</span>
             <span>{format(post.date, 'yyyy')}</span>
           </time>

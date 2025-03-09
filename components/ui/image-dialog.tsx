@@ -28,7 +28,7 @@ export function ImageDialog(props: ImageDialogProps) {
         </TooltipTrigger>
         <TooltipContent>zoom in to the photo</TooltipContent>
       </Tooltip>
-      <DialogContent className='z-[999] p-12'>
+      <DialogContent className='z-999 p-12'>
         <Image
           src={props.src}
           alt={props.alt}

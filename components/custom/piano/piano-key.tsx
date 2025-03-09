@@ -83,8 +83,8 @@ export function PianoKey(props: PianoKeyProps) {
           }
         })(),
         isDEGABKey(props.note) && 'degab-key',
-        isFirstKey(props.note) && '!rounded-tl-lg',
-        isLastKey(props.note) && '!rounded-tr-lg'
+        isFirstKey(props.note) && 'rounded-tl-lg!',
+        isLastKey(props.note) && 'rounded-tr-lg!'
       )}
       onPointerDown={() => {
         sounds[props.note].rate(props.octave);

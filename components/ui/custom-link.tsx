@@ -16,7 +16,7 @@ export function CustomLink({
   target?: React.HTMLAttributeAnchorTarget;
 }) {
   return (
-    <object className='group relative m-0 inline-block w-fit [&>*]:cursor-default'>
+    <object className='group relative m-0 inline-block w-fit *:cursor-default'>
       <Link
         href={href}
         className={cn(

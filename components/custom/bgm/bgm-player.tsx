@@ -103,7 +103,7 @@ export function BGMInfo() {
         'transition-[transform_opacity] duration-300 ease-out'
       )}
     >
-      <div className='flex flex-col items-center justify-center gap-0 overflow-hidden text-ellipsis [&>*]:whitespace-nowrap'>
+      <div className='flex flex-col items-center justify-center gap-0 overflow-hidden text-ellipsis *:whitespace-nowrap'>
         <span className='text-xs font-semibold'>
           {bgmStore.currentBgm?.title}
         </span>

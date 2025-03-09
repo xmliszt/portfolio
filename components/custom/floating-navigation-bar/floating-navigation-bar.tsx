@@ -53,7 +53,7 @@ export function FloatingNavigationBar(props: FloatingNavigationBarProps) {
               </div>
               <div
                 className={cn(
-                  'z-10 h-full w-full rounded-full border p-2 text-secondary-foreground shadow-sm backdrop-blur-lg',
+                  'z-10 h-full w-full rounded-full border p-2 text-secondary-foreground shadow-xs backdrop-blur-lg',
                   'transition-[transform_background_box-shadow] duration-300 group-hover:scale-105 group-hover:bg-background group-hover:shadow-lg'
                 )}
               ></div>
@@ -65,7 +65,7 @@ export function FloatingNavigationBar(props: FloatingNavigationBarProps) {
 
       <DrawerContent
         className={cn(
-          'flex flex-col gap-12 rounded-none rounded-t-lg focus-visible:outline-none',
+          'flex flex-col gap-12 rounded-none rounded-t-lg focus-visible:outline-hidden',
           // hide the drawer handle
           '[&>*:first-child]:hidden'
         )}

@@ -51,7 +51,7 @@ export function ExternalActionButtonLink(props: {
             ref={exhaustContainer}
             className={cn(
               'absolute bottom-0 left-1 h-full rotate-[-45deg]',
-              '[&>*]:absolute [&>*]:bottom-0 [&>*]:right-0 [&>*]:z-10 [&>*]:h-2 [&>*]:w-2 [&>*]:animate-smoke [&>*]:rounded-full [&>*]:bg-stone-500 [&>*]:blur-[2px]'
+              '*:absolute *:bottom-0 *:right-0 *:z-10 *:h-2 *:w-2 *:animate-smoke *:rounded-full *:bg-stone-500 *:blur-[2px]'
             )}
           ></div>
           <div className='absolute bottom-[1.5px] h-[1px] w-full border-b border-stone-700' />
