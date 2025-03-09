@@ -32,7 +32,7 @@ export async function generateMetadata(props: HobbyProps): Promise<Metadata> {
   };
 }
 
-export function generateStaticParams(): HobbyProps['params'][] {
+export async function generateStaticParams() {
   return hobbies.map((hobby) => ({
     slug: hobby.slug,
   }));

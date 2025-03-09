@@ -37,7 +37,7 @@ export async function generateMetadata(props: PostProps): Promise<Metadata> {
   };
 }
 
-export function generateStaticParams(): PostProps['params'][] {
+export async function generateStaticParams() {
   return posts.map((post) => ({
     slug: post.slug,
   }));

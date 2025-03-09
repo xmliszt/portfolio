@@ -36,7 +36,7 @@ export async function generateMetadata(props: Props): Promise<Metadata> {
   };
 }
 
-export function generateStaticParams(): Props['params'][] {
+export async function generateStaticParams() {
   return pages.map((page) => ({ slug: page.slug }));
 }
 
