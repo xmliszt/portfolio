@@ -20,9 +20,9 @@ export async function updateRatings(options: IncrementRatingsOptions) {
     negative_rating: 0,
   };
   const positive =
-    options.direction === 'up' ? positive_rating + 1 : positive_rating;
+    options.direction === 'up' ? (positive_rating ?? 0) + 1 : positive_rating;
   const negative =
-    options.direction === 'down' ? negative_rating + 1 : negative_rating;
+    options.direction === 'down' ? (negative_rating ?? 0) + 1 : negative_rating;
 
   const updateResponse = await supabase
     .from('ratings')

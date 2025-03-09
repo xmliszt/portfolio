@@ -21,8 +21,8 @@ export function Ratings({ id }: RatingsProps) {
   useEffect(() => {
     startTransition(async () => {
       const { positive_rating, negative_rating } = await fetchRatings({ id });
-      setPositiveRatings(positive_rating);
-      setNegativeRatings(negative_rating);
+      setPositiveRatings(positive_rating ?? 0);
+      setNegativeRatings(negative_rating ?? 0);
     });
   }, [id]);
 
@@ -78,7 +78,7 @@ export function Ratings({ id }: RatingsProps) {
   function upVote() {
     startTransition(async () => {
       const { positive_rating } = await updateRatings({ id, direction: 'up' });
-      setPositiveRatings(positive_rating);
+      setPositiveRatings(positive_rating ?? 0);
       setVoted(true);
       setVotedSentiment('up');
     });
@@ -90,7 +90,7 @@ export function Ratings({ id }: RatingsProps) {
         id,
         direction: 'down',
       });
-      setNegativeRatings(negative_rating);
+      setNegativeRatings(negative_rating ?? 0);
       setVoted(true);
       setVotedSentiment('down');
     });
