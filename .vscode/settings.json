@@ -2,4 +2,8 @@
   "editor.codeActionsOnSave": {
     "source.fixAll.eslint": "always"
   },
+  "files.associations": {
+    "*.css": "tailwindcss",
+    "*.mdx": "markdown"
+  }
 }

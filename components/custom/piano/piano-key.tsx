@@ -23,18 +23,13 @@ export function PianoKey(props: PianoKeyProps) {
   const timersRef = useRef<{ [key: string]: NodeJS.Timeout | undefined }>({});
 
   useEffect(() => {
-    if (!sounds[props.note]) {
-      sounds[props.note] = new Howl({
-        src: [`/piano/${props.note}.mp3`],
-        volume: 0.5,
-        rate: 1,
-        onload: () => {
-          console.log(`Loaded ${props.note}`);
-        },
-      });
-    } else {
-      console.log(`Already loaded ${props.note}`);
-    }
+    if (sounds[props.note]) return;
+
+    sounds[props.note] = new Howl({
+      src: [`/piano/${props.note}.mp3`],
+      volume: 0.5,
+      rate: 1,
+    });
   }, [props.note]);
 
   function keyColor(note: PianoNote): 'white' | 'black' {

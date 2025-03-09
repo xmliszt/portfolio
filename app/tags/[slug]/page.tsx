@@ -9,10 +9,10 @@ import { PostCard } from '@/app/posts/post-card';
 import { posts, tags } from '#site/content';
 
 interface TagProps {
-  params: {
+  params: Promise<{
     slug: string;
     postCount: number;
-  };
+  }>;
 }
 
 function getPostsByTag(tag: string) {
@@ -27,7 +27,8 @@ function getPostsByTag(tag: string) {
     });
 }
 
-export function generateMetadata({ params }: TagProps): Metadata {
+export async function generateMetadata(props: TagProps): Promise<Metadata> {
+  const params = await props.params;
   return {
     title: `posts | ${params.slug}`,
     description: `${params.postCount} posts tagged with ${params.slug}`,
@@ -48,7 +49,8 @@ export function generateStaticParams(): { slug: string }[] {
   }));
 }
 
-export default async function PostPage({ params }: TagProps) {
+export default async function PostPage(props: TagProps) {
+  const params = await props.params;
   const postViews = await fetchPostViews();
   const posts = getPostsByTag(params.slug);
   const tag = tags.find((tag) => tag.slug === params.slug);

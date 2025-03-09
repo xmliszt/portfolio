@@ -61,7 +61,6 @@ export class Bgm {
   }) {
     const { bgms } = await fetchBGMs();
     this._bgms = bgms;
-    console.log(this._bgms);
     this._currentIndex = options.startFromIndex;
     this._howlOptions = options.howlOptions;
     this._autoPlay = options.autoPlay ?? false;

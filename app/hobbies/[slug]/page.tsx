@@ -9,14 +9,15 @@ import { MDXContent } from '@/components/mdx-content';
 import { hobbies } from '#site/content';
 
 type HobbyProps = {
-  params: { slug: string };
+  params: Promise<{ slug: string }>;
 };
 
 function getHobbyBySlug(slug: string) {
   return hobbies.find((hobby) => hobby.slug === slug);
 }
 
-export function generateMetadata({ params }: HobbyProps): Metadata {
+export async function generateMetadata(props: HobbyProps): Promise<Metadata> {
+  const params = await props.params;
   const hobby = getHobbyBySlug(params.slug);
   if (hobby == null) return {};
   return {
@@ -37,7 +38,8 @@ export function generateStaticParams(): HobbyProps['params'][] {
   }));
 }
 
-export default function HobbyPage({ params }: HobbyProps) {
+export default async function HobbyPage(props: HobbyProps) {
+  const params = await props.params;
   const hobby = getHobbyBySlug(params.slug);
   if (hobby == null) return notFound();
 

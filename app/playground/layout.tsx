@@ -1,11 +1,11 @@
 import { ArrowLeft, Park } from '@phosphor-icons/react/dist/ssr';
 import Link from 'next/link';
 
-type ExperimentsLayoutProps = {
+type PlaygroundLayoutProps = {
   children: React.ReactNode;
 };
 
-export default function ExperimentsLayout(props: ExperimentsLayoutProps) {
+export default function PlaygroundLayout(props: PlaygroundLayoutProps) {
   return (
     <div className='flex flex-col items-start gap-6'>
       <Link href='/playground' className='group'>

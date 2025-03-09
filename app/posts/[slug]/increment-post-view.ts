@@ -8,7 +8,7 @@ type IncrementPostViewOptions = {
 
 export async function incrementPostView(options: IncrementPostViewOptions) {
   // Force revalidate the cache
-  cookies();
+  await cookies();
 
   const supabase = createServiceRoleClient();
   const fetchCurrentViewResponse = await supabase

@@ -10,16 +10,17 @@ import { ShadowSubtitle } from './shadow-subtitle';
 import { pages } from '#site/content';
 
 type Props = {
-  params: {
+  params: Promise<{
     slug: string;
-  };
+  }>;
 };
 
 function getPageBySlug(slug: string) {
   return pages.find((page) => page.slug === slug);
 }
 
-export function generateMetadata({ params }: Props): Metadata {
+export async function generateMetadata(props: Props): Promise<Metadata> {
+  const params = await props.params;
   const page = getPageBySlug(params.slug);
   if (page == null) return {};
   return {
@@ -39,7 +40,8 @@ export function generateStaticParams(): Props['params'][] {
   return pages.map((page) => ({ slug: page.slug }));
 }
 
-export default function PagePage({ params }: Props) {
+export default async function PagePage(props: Props) {
+  const params = await props.params;
   const page = getPageBySlug(params.slug);
 
   if (page == null) notFound();

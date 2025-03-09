@@ -4,7 +4,7 @@ import { createServiceRoleClient } from '@/lib/supabase/create-service-role-clie
 
 export async function fetchPostViews() {
   // Force revalidate the cache
-  cookies();
+  await cookies();
 
   const supabase = createServiceRoleClient();
   const response = await supabase.from('post_views').select();

@@ -14,14 +14,15 @@ import { incrementPostView } from './increment-post-view';
 import { posts } from '#site/content';
 
 interface PostProps {
-  params: { slug: string };
+  params: Promise<{ slug: string }>;
 }
 
 function getPostBySlug(slug: string) {
   return posts.find((post) => post.slug === slug);
 }
 
-export function generateMetadata({ params }: PostProps): Metadata {
+export async function generateMetadata(props: PostProps): Promise<Metadata> {
+  const params = await props.params;
   const post = getPostBySlug(params.slug);
   if (post == null) return {};
   return {
@@ -42,7 +43,8 @@ export function generateStaticParams(): PostProps['params'][] {
   }));
 }
 
-export default async function PostPage({ params }: PostProps) {
+export default async function PostPage(props: PostProps) {
+  const params = await props.params;
   const post = getPostBySlug(params.slug);
   if (post == null) return notFound();
 
