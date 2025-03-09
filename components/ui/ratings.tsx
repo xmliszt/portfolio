@@ -31,11 +31,11 @@ export function Ratings({ id }: RatingsProps) {
       scale: 1,
       opacity: 1,
       rotate: 0,
-      filter: 'blur(0)',
     },
     hover: {
       scale: [1, 1.2, 1.3, 1.2, 1],
       rotate: [0, -10, 10, -10, 0],
+      opacity: 1,
       transition: {
         times: [0, 0.2, 0.5, 0.8, 1],
         duration: 0.5,
@@ -44,13 +44,8 @@ export function Ratings({ id }: RatingsProps) {
     },
     exit: {
       scale: 0,
-      rotate: 180,
+      rotate: 0,
       opacity: 0,
-      filter: 'blur(10px)',
-      transition: {
-        duration: 0.4,
-        ease: 'easeOut',
-      },
     },
   };
 
@@ -77,36 +72,36 @@ export function Ratings({ id }: RatingsProps) {
 
   function upVote() {
     startTransition(async () => {
+      setVoted(true);
       const { positive_rating } = await updateRatings({ id, direction: 'up' });
       setPositiveRatings(positive_rating ?? 0);
-      setVoted(true);
       setVotedSentiment('up');
     });
   }
 
   function downVote() {
     startTransition(async () => {
+      setVoted(true);
       const { negative_rating } = await updateRatings({
         id,
         direction: 'down',
       });
       setNegativeRatings(negative_rating ?? 0);
-      setVoted(true);
       setVotedSentiment('down');
     });
   }
 
   return (
     <div className='flex w-full justify-center py-4 md:justify-end'>
-      <div className='grid grid-cols-2 grid-rows-[1fr_2fr]'>
+      <div className='grid grid-cols-2 grid-rows-[1fr_2fr] gap-1'>
         <div className='text-muted-foreground text-center text-xs font-semibold'>
           {positiveRatings}
         </div>
         <div className='text-muted-foreground text-center text-xs font-semibold'>
           {negativeRatings}
         </div>
-        <div className='bg-card relative col-span-2 flex w-[80px] flex-row items-center justify-center gap-x-2 rounded-lg border p-2 shadow-lg'>
-          <AnimatePresence>
+        <div className='bg-card relative col-span-2 flex w-[64px] flex-row items-center justify-center gap-x-4 rounded-lg border px-2 py-1 shadow-lg'>
+          <AnimatePresence mode='wait'>
             {voted ? (
               votedSentiment === 'up' ? (
                 <motion.div
@@ -141,7 +136,6 @@ export function Ratings({ id }: RatingsProps) {
                   initial='initial'
                   whileHover='hover'
                   exit='exit'
-                  className='mr-1'
                 >
                   <ThumbsUp />
                 </motion.button>
@@ -153,7 +147,6 @@ export function Ratings({ id }: RatingsProps) {
                   initial='initial'
                   whileHover='hover'
                   exit='exit'
-                  className='ml-1'
                 >
                   <ThumbsDown />
                 </motion.button>

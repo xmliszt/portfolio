@@ -42,7 +42,7 @@ export function ExternalActionButtonLink(props: {
     >
       <Button
         variant={'outline'}
-        className='text-muted-foreground my-2 flex h-8 items-center gap-x-3 overflow-visible px-2 text-xs'
+        className='text-muted-foreground my-2 flex h-8 items-center gap-x-3 overflow-visible !px-2 text-xs'
       >
         {props.title ?? `bring me there`}
         <div className='relative'>
