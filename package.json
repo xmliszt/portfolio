@@ -11,7 +11,9 @@
     "prepare": "husky install",
     "velite:build": "velite --clean",
     "velite:dev": "velite --watch",
-    "gen-types": "supabase gen types typescript --project-id tvstbbuidvwgelgidaqy --schema public > lib/supabase/__generated__/types.ts"
+    "gen-types": "supabase gen types typescript --project-id tvstbbuidvwgelgidaqy --schema public > lib/supabase/__generated__/types.ts",
+    "three": "^0.165.0",
+    "wiggle": "^0.0.14"
   },
   "dependencies": {
     "@code-hike/mdx": "^0.9.0",
@@ -26,7 +28,7 @@
     "@radix-ui/react-scroll-area": "^1.2.3",
     "@radix-ui/react-slot": "^1.1.2",
     "@radix-ui/react-tooltip": "^1.1.8",
-    "@supabase/ssr": "^0.1.0",
+    "@supabase/ssr": "^0.5.2",
     "@supabase/supabase-js": "^2.39.7",
     "@types/mdx": "^2.0.13",
     "@vercel/analytics": "^1.2.2",
@@ -50,8 +52,10 @@
     "server-only": "^0.0.1",
     "tailwind-merge": "^2.2.1",
     "tailwindcss-animate": "^1.0.7",
+    "three": "^0.174.0",
     "unist-util-visit": "^5.0.0",
     "vaul": "^0.9.9",
+    "wiggle": "^0.0.17",
     "zustand": "^5.0.2"
   },
   "devDependencies": {
@@ -63,6 +67,7 @@
     "@types/pluralize": "^0.0.33",
     "@types/react": "19.0.10",
     "@types/react-dom": "19.0.4",
+    "@types/three": "^0.174.0",
     "@typescript-eslint/parser": "^7.1.0",
     "esbuild": "^0.25.0",
     "eslint": "^8",
@@ -79,8 +84,8 @@
     "stylelint-config-standard": "^36.0.0",
     "tailwindcss": "^4.0.12",
     "typescript": "^5",
-    "velite": "^0.1.0-beta.11",
-    "vercel": "^34.3.1",
+    "velite": "^0.2.2",
+    "vercel": "^41.3.2",
     "webpack": "^5.98.0"
   },
   "optionalDependencies": {

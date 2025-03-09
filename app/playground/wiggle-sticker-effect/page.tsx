@@ -2,8 +2,9 @@ import { Metadata } from 'next';
 
 import { openGraph } from '@/app/metadata';
 import { CustomLink } from '@/components/ui/custom-link';
-import { ExternalActionButtonLink } from '@/components/ui/external-action-button-link';
 import { Ratings } from '@/components/ui/ratings';
+
+import { WiggleContainer } from './wiggle-container';
 
 export function generateMetadata(): Metadata {
   return {
@@ -45,23 +46,8 @@ export default function Page() {
         .
       </p>
 
-      <iframe
-        src='https://fvwsdn-5173.csb.app'
-        width='100%'
-        height='600px'
-        frameBorder='0'
-      />
-
-      <div className='flex w-full justify-start gap-x-2'>
-        <ExternalActionButtonLink
-          href='https://fvwsdn-5173.csb.app'
-          title='go to full screen'
-        />
-        <ExternalActionButtonLink
-          href='https://codesandbox.io/p/devbox/wiggle-mobbin-logo-fvwsdn?embed=1&file=%2Fsrc%2Fmain.js'
-          title='view the source code'
-        />
-      </div>
+      {/* container */}
+      <WiggleContainer />
 
       <Ratings id='wiggle-sticker-effect' />
     </div>
