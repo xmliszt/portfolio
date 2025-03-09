@@ -18,7 +18,7 @@ export function generateMetadata(): Metadata {
 export default function CraftPage() {
   return (
     <article className='prose prose-stone dark:prose-invert'>
-      <h1 className='group relative'>craft</h1>
+      <h1 className='text-center font-bold'>craft</h1>
     </article>
   );
 }

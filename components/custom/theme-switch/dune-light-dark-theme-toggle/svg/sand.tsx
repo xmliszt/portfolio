@@ -1,4 +1,4 @@
-import { motion } from 'framer-motion';
+import { motion } from 'motion/react';
 import { useTheme } from 'next-themes';
 
 export function SandSVG() {

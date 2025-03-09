@@ -23,7 +23,9 @@ export function generateMetadata(): Metadata {
 export default function Page() {
   return (
     <div className='flex w-full flex-col items-center gap-2'>
-      <h1 className='text-center font-bold'>{`ASCII Animated 3D Rotating Text Effect`}</h1>
+      <h1 className='text-center font-bold'>
+        ASCII Animated 3D Rotating Text Effect
+      </h1>
 
       <div className='flex h-full w-full flex-col items-center gap-y-12'>
         <iframe

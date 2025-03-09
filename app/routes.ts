@@ -17,6 +17,10 @@ export const ROUTES: Route[] = [
     name: 'playground',
   },
   {
+    path: '/craft',
+    name: 'craft',
+  },
+  {
     path: '/hobbies',
     name: 'hobbies',
   },

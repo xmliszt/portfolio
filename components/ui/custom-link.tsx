@@ -16,11 +16,11 @@ export function CustomLink({
   target?: React.HTMLAttributeAnchorTarget;
 }) {
   return (
-    <object className='group relative m-0 inline-block w-fit *:cursor-default'>
+    <object className='group relative m-0 inline-block w-fit'>
       <Link
         href={href}
         className={cn(
-          'font-normal text-muted-foreground transition-colors hover:text-foreground [&>p]:m-0',
+          'text-muted-foreground hover:text-foreground font-normal transition-colors [&>p]:m-0',
           isMobile || isTablet ? 'underline underline-offset-2' : 'no-underline'
         )}
         target={target ?? '_blank'}
@@ -29,7 +29,7 @@ export function CustomLink({
       </Link>
       <span
         className={cn(
-          'absolute bottom-0 left-0 rounded-full bg-foreground',
+          'bg-foreground absolute bottom-0 left-0 rounded-full',
           'h-0 w-0 opacity-0 transition-[opacity_width] duration-300 group-hover:h-[1px] group-hover:w-full group-hover:opacity-100'
         )}
       ></span>

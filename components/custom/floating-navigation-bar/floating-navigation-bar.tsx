@@ -5,7 +5,12 @@ import { MusicNote } from '@phosphor-icons/react/dist/ssr';
 
 import { Bgm } from '@/components/custom/bgm/bgm';
 import { Copyright } from '@/components/custom/copyright';
-import { Drawer, DrawerContent, DrawerTrigger } from '@/components/ui/drawer';
+import {
+  Drawer,
+  DrawerContent,
+  DrawerTitle,
+  DrawerTrigger,
+} from '@/components/ui/drawer';
 import {
   Tooltip,
   TooltipContent,
@@ -24,20 +29,14 @@ export function FloatingNavigationBar(props: FloatingNavigationBarProps) {
   const bgmState = Bgm.getInstance().store();
 
   return (
-    <Drawer
-      open={isOpen}
-      onOpenChange={(open) => {
-        setIsOpen(open);
-      }}
-    >
+    <Drawer open={isOpen} onOpenChange={(open) => setIsOpen(open)}>
       <Tooltip>
         <TooltipTrigger asChild>
           <DrawerTrigger
             asChild
             className={cn(
               'fixed bottom-10 left-4 z-50 md:left-10',
-              'block md:hidden',
-              'cursor-pointer'
+              'block md:hidden'
             )}
           >
             <div className='group size-10'>
@@ -53,8 +52,8 @@ export function FloatingNavigationBar(props: FloatingNavigationBarProps) {
               </div>
               <div
                 className={cn(
-                  'z-10 h-full w-full rounded-full border p-2 text-secondary-foreground shadow-xs backdrop-blur-lg',
-                  'transition-[transform_background_box-shadow] duration-300 group-hover:scale-105 group-hover:bg-background group-hover:shadow-lg'
+                  'text-secondary-foreground z-10 h-full w-full rounded-full border p-2 shadow-xs backdrop-blur-lg',
+                  'group-hover:bg-background transition-[transform_background_box-shadow] duration-300 group-hover:scale-105 group-hover:shadow-lg'
                 )}
               ></div>
             </div>
@@ -70,8 +69,9 @@ export function FloatingNavigationBar(props: FloatingNavigationBarProps) {
           '[&>*:first-child]:hidden'
         )}
       >
+        <DrawerTitle className='sr-only'>Menu</DrawerTitle>
         {/* Custom drawer handle */}
-        <div className='mx-auto mt-2 h-1 w-[60px] cursor-grab rounded-full bg-foreground' />
+        <div className='bg-foreground mx-auto mt-2 h-1 w-[60px] cursor-grab rounded-full' />
         {props.children}
         {/* Copyright */}
         <Copyright />

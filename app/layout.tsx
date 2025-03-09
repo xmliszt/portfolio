@@ -110,15 +110,15 @@ export default function RootLayout({
 }) {
   return (
     <html lang='en' suppressHydrationWarning>
-      <ThemeProvider>
-        <body
-          className={cn(
-            'flex max-h-screen min-h-screen w-screen flex-col items-center overflow-hidden bg-background antialiased',
-            'selection:bg-foreground selection:text-background',
-            fontInter.className
-          )}
-        >
-          <TooltipProvider delayDuration={0}>
+      <body
+        className={cn(
+          'bg-background flex max-h-screen min-h-screen w-screen flex-col items-center overflow-hidden antialiased',
+          'selection:bg-foreground selection:text-background',
+          fontInter.className
+        )}
+      >
+        <ThemeProvider>
+          <TooltipProvider delayDuration={800}>
             <TOCProvider>
               <GradientBlur placement='top' position='fixed' />
               <main className='h-screen max-h-screen w-screen overflow-hidden'>
@@ -126,7 +126,7 @@ export default function RootLayout({
                   <div
                     className={cn(
                       'relative mx-auto h-full w-screen [&>article]:mx-auto',
-                      'px-8 pb-40 pt-24', // phone
+                      'px-8 pt-24 pb-40', // phone
                       'md:max-w-md md:pb-24', // tablet
                       'lg:max-w-xl lg:pb-24', // laptop
                       'xl:max-w-2xl xl:pb-24' // large desktop
@@ -181,13 +181,13 @@ export default function RootLayout({
               </FloatingNavigationBar>
             </FloatingNavigationProvider>
             {/* Theme switch */}
-            <div className='fixed bottom-10 right-4 z-50 hidden md:right-10 md:block'>
+            <div className='fixed right-4 bottom-10 z-50 hidden md:right-10 md:block'>
               <ThemeSwitch showRing />
             </div>
             {/* BGM player */}
             <div
               className={cn(
-                'fixed right-4 top-8 z-50 hidden items-center gap-x-4',
+                'fixed top-8 right-4 z-50 hidden items-center gap-x-4',
                 'md:right-10 md:flex'
               )}
             >
@@ -199,8 +199,8 @@ export default function RootLayout({
 
           {/* Copyright */}
           <Copyright />
-        </body>
-      </ThemeProvider>
+        </ThemeProvider>
+      </body>
     </html>
   );
 }

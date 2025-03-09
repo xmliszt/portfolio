@@ -1,5 +1,6 @@
 'use client';
 
+import { startTransition } from 'react';
 import { HowlOptions } from 'howler';
 import { create } from 'zustand';
 
@@ -27,12 +28,9 @@ export class Bgm {
   private static _instance: Bgm | null = null;
   private _bgms: BGM[] = [];
   private _currentIndex = 0;
-  private _howlOptions: CustomHowlOptions = {
-    volume: 0.5,
-    loop: false,
-    html5: true,
-  };
-  private _autoPlay = false;
+  private readonly _startFromIndex: number;
+  private readonly _howlOptions: CustomHowlOptions;
+  private readonly _autoPlay: boolean;
 
   store = create<BgmStoreState>()(() => ({
     currentHowl: undefined,
@@ -43,27 +41,19 @@ export class Bgm {
   }));
 
   private constructor() {
-    this._init({
-      howlOptions: {
-        volume: 0.5,
-        loop: false,
-        html5: true,
-      },
-      startFromIndex: 0,
-      autoPlay: false,
-    });
+    this._startFromIndex = 0;
+    this._howlOptions = {
+      volume: 0.5,
+      loop: false,
+      html5: true,
+    };
+    this._autoPlay = false;
+    this._initializeBgms();
   }
 
-  private async _init(options: {
-    howlOptions: CustomHowlOptions;
-    startFromIndex: number;
-    autoPlay?: boolean;
-  }) {
+  private async _initializeBgms() {
     const { bgms } = await fetchBGMs();
     this._bgms = bgms;
-    this._currentIndex = options.startFromIndex;
-    this._howlOptions = options.howlOptions;
-    this._autoPlay = options.autoPlay ?? false;
 
     const defaultBgm = this._bgms.at(this._currentIndex);
     if (defaultBgm === undefined)

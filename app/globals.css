@@ -80,10 +80,16 @@
   * {
     @apply border-border;
   }
+
   body {
     @apply bg-background text-foreground transition-colors duration-500;
 
     background-image: var(--background-pattern);
+  }
+
+  button,
+  a {
+    @apply cursor-default;
   }
 
   h1 {

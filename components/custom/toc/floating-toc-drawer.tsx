@@ -73,9 +73,8 @@ export function FloatingTOCDrawer(props: FloatingTOCDrawerProps) {
           <DrawerTrigger
             asChild
             className={cn(
-              'fixed bottom-10 right-4 z-50 md:left-10',
-              'block md:hidden',
-              'cursor-pointer'
+              'fixed right-4 bottom-10 z-50 md:left-10',
+              'block md:hidden'
             )}
           >
             <div className='group size-10'>
@@ -84,8 +83,8 @@ export function FloatingTOCDrawer(props: FloatingTOCDrawerProps) {
               </div>
               <div
                 className={cn(
-                  'z-10 h-full w-full rounded-full border p-2 text-secondary-foreground shadow-xs backdrop-blur-lg',
-                  'transition-[transform_background_box-shadow] duration-300 ease-in-out group-hover:scale-105 group-hover:bg-background group-hover:shadow-lg'
+                  'text-secondary-foreground z-10 h-full w-full rounded-full border p-2 shadow-xs backdrop-blur-lg',
+                  'group-hover:bg-background transition-[transform_background_box-shadow] duration-300 ease-in-out group-hover:scale-105 group-hover:shadow-lg'
                 )}
               ></div>
             </div>
@@ -101,7 +100,7 @@ export function FloatingTOCDrawer(props: FloatingTOCDrawerProps) {
         )}
       >
         {/* Custom drawer handle */}
-        <div className='mx-auto mt-2 h-1 w-[60px] cursor-grab rounded-full bg-foreground'></div>
+        <div className='bg-foreground mx-auto mt-2 h-1 w-[60px] cursor-grab rounded-full'></div>
         {props.children}
         {/* Navigation items */}
         <nav className='prose flex w-full flex-col gap-2 p-3'>

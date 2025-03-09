@@ -32,7 +32,7 @@ export function LoadMoreLinks(props: LoadMoreLinksProps) {
       )}
       <Button
         onClick={() => setShowMore(!showMore)}
-        className='w-40 cursor-default text-sm'
+        className='w-40 text-sm'
         variant='outline'
       >
         {showMore ? 'Show less' : 'Show more'}

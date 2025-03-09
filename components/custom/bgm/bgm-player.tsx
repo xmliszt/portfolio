@@ -46,9 +46,7 @@ export function BGMPlayer() {
             }}
             className={cn(
               'group transition-transform duration-1000 ease-in-out',
-              bgmStore.isLoading
-                ? 'animate-pulse cursor-progress'
-                : 'cursor-pointer'
+              bgmStore.isLoading && 'animate-pulse cursor-progress'
             )}
           >
             <Disc3

@@ -14,11 +14,11 @@ export function TOCTree() {
         {toc.map((heading) => (
           <li key={heading.url} className='m-0 pl-1'>
             <div className='flex flex-row items-start'>
-              <div className='group relative inline-block w-fit *:cursor-alias'>
+              <div className='group relative inline-block w-fit'>
                 <TOCLink entry={heading} />
                 <span
                   className={cn(
-                    'absolute bottom-0 left-0 rounded-full bg-foreground',
+                    'bg-foreground absolute bottom-0 left-0 rounded-full',
                     'h-0 w-0 opacity-0 transition-[opacity_width] duration-300 group-hover:h-[1px] group-hover:w-full group-hover:opacity-100'
                   )}
                 ></span>

@@ -2,7 +2,7 @@
 
 import { useEffect, useState, useTransition } from 'react';
 import { Heart, HeartBreak, ThumbsDown, ThumbsUp } from '@phosphor-icons/react';
-import { AnimatePresence, motion, Variants } from 'framer-motion';
+import { AnimatePresence, motion, Variants } from 'motion/react';
 
 import { fetchRatings } from './fetch-ratings';
 import { updateRatings } from './increment-ratings';
@@ -99,19 +99,19 @@ export function Ratings({ id }: RatingsProps) {
   return (
     <div className='flex w-full justify-center py-4 md:justify-end'>
       <div className='grid grid-cols-2 grid-rows-[1fr_2fr]'>
-        <div className='text-center text-xs font-semibold text-muted-foreground'>
+        <div className='text-muted-foreground text-center text-xs font-semibold'>
           {positiveRatings}
         </div>
-        <div className='text-center text-xs font-semibold text-muted-foreground'>
+        <div className='text-muted-foreground text-center text-xs font-semibold'>
           {negativeRatings}
         </div>
-        <div className='relative col-span-2 flex w-[80px] flex-row items-center justify-center gap-x-2 rounded-lg border bg-card p-2 shadow-lg'>
+        <div className='bg-card relative col-span-2 flex w-[80px] flex-row items-center justify-center gap-x-2 rounded-lg border p-2 shadow-lg'>
           <AnimatePresence>
             {voted ? (
               votedSentiment === 'up' ? (
                 <motion.div
                   key='heart'
-                  className='gird absolute z-10 size-6 place-items-center p-1'
+                  className='absolute z-10 grid size-6 place-items-center p-1'
                   initial='initial'
                   animate='animate'
                   exit='exit'
@@ -122,7 +122,7 @@ export function Ratings({ id }: RatingsProps) {
               ) : (
                 <motion.div
                   key='heart-break'
-                  className='gird absolute z-10 size-6 place-items-center p-1'
+                  className='absolute z-10 grid size-6 place-items-center p-1'
                   initial='initial'
                   animate='animate'
                   exit='exit'

@@ -38,23 +38,23 @@ export function ExternalActionButtonLink(props: {
     <Link
       href={props.href}
       target={props.target}
-      className='group flex justify-start'
+      className='group flex justify-start *:cursor-pointer'
     >
       <Button
         variant={'outline'}
-        className='my-2 flex h-8 cursor-default items-center gap-x-3 overflow-visible px-2 text-xs text-muted-foreground'
+        className='text-muted-foreground my-2 flex h-8 items-center gap-x-3 overflow-visible px-2 text-xs'
       >
         {props.title ?? `bring me there`}
         <div className='relative'>
-          <Van className='size-4 animate-car-wobble' />
+          <Van className='animate-car-wobble size-4' />
           <div
             ref={exhaustContainer}
             className={cn(
               'absolute bottom-0 left-1 h-full rotate-[-45deg]',
-              '*:absolute *:bottom-0 *:right-0 *:z-10 *:h-2 *:w-2 *:animate-smoke *:rounded-full *:bg-stone-500 *:blur-[2px]'
+              '*:animate-smoke *:absolute *:right-0 *:bottom-0 *:z-10 *:h-2 *:w-2 *:rounded-full *:bg-stone-500 *:blur-[2px]'
             )}
           ></div>
-          <div className='absolute bottom-[1.5px] h-[1px] w-full border-b border-stone-700' />
+          <div className='pointer-events-none absolute bottom-[1.5px] h-[1px] w-full border-b border-stone-700' />
         </div>
       </Button>
     </Link>
