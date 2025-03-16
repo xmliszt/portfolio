@@ -7,14 +7,11 @@ import { useTOC } from '@/components/custom/toc/toc-provider';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { slugify } from '@/lib/utils';
 
-type ScrollAreaWithTOCTrackerProps = {
-  children: React.ReactNode;
-};
+type ScrollAreaWithTOCTrackerProps = { children: React.ReactNode };
 
 export function ScrollAreaWithTOCTracker(props: ScrollAreaWithTOCTrackerProps) {
   const scrollerRef = useRef<HTMLDivElement | null>(null);
   const { setHash } = useTOC();
-  const anchors = useRef<NodeListOf<HTMLAnchorElement> | null>(null);
   const router = useRouter();
   const pathname = usePathname();
 
@@ -28,16 +25,15 @@ export function ScrollAreaWithTOCTracker(props: ScrollAreaWithTOCTrackerProps) {
     <ScrollArea
       ref={scrollerRef}
       className='h-screen w-screen'
-      onLoad={() => {
-        anchors.current = document.querySelectorAll('a[id^="anchor:"]');
-      }}
       onScroll={() => {
-        anchors.current?.forEach((anchor) => {
+        const anchors = document.querySelectorAll('a[id^="anchor:"]');
+        anchors.forEach((anchor) => {
           // Get the top position of the anchor
           const rect = anchor.getBoundingClientRect();
           if (rect.top > 0 && rect.top < 50) {
             const location = window.location.toString().split('#')[0];
             const newHash = slugify(anchor.innerHTML);
+            console.log('newHash', newHash);
             setHash(newHash);
             router.replace(`${location}#${newHash}`, { scroll: false });
           }

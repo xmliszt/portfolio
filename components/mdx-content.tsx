@@ -37,7 +37,7 @@ export function MDXContent({ code, components }: MdxProps) {
           <h1 {...props}>
             <a
               id={slugify(props.children)}
-              className='relative -top-16 block max-h-1 w-32 [visibility:hidden]'
+              className='relative -top-[calc(100vh/3)] block max-h-1 w-32 [visibility:hidden]'
             >
               {props.children}
             </a>
@@ -48,7 +48,7 @@ export function MDXContent({ code, components }: MdxProps) {
           <h2 {...props}>
             <a
               id={slugify(props.children)}
-              className='relative -top-16 block max-h-1 w-32 [visibility:hidden]'
+              className='relative -top-[calc(100vh/3)] block max-h-1 w-32 [visibility:hidden]'
             >
               {props.children}
             </a>
@@ -59,7 +59,7 @@ export function MDXContent({ code, components }: MdxProps) {
           <h3 {...props}>
             <a
               id={slugify(props.children)}
-              className='relative -top-16 block max-h-1 w-32 [visibility:hidden]'
+              className='relative -top-[calc(100vh/3)] block max-h-1 w-32 [visibility:hidden]'
             >
               {props.children}
             </a>
@@ -70,7 +70,7 @@ export function MDXContent({ code, components }: MdxProps) {
           <h4 {...props}>
             <a
               id={slugify(props.children)}
-              className='relative -top-16 block max-h-1 w-32 [visibility:hidden]'
+              className='relative -top-[calc(100vh/3)] block max-h-1 w-32 [visibility:hidden]'
             >
               {props.children}
             </a>
@@ -86,10 +86,7 @@ export function MDXContent({ code, components }: MdxProps) {
                 alt={props.alt}
                 width={200}
                 height={200}
-                style={{
-                  objectFit: 'cover',
-                  objectPosition: 'center',
-                }}
+                style={{ objectFit: 'cover', objectPosition: 'center' }}
                 unoptimized
                 {...props}
               />
