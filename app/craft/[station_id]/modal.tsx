@@ -61,7 +61,7 @@ export function Modal({ station_id, children }: ModalProps) {
               'text-foreground absolute top-4 right-4',
               'hover:text-foreground/80 transition-colors'
             )}
-            onClick={() => router.back()}
+            onClick={() => router.push(`/craft`)}
           >
             <X className='size-4' />
           </button>
