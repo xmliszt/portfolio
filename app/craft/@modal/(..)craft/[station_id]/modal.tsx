@@ -5,7 +5,6 @@ import { X } from 'lucide-react';
 import { motion } from 'motion/react';
 import { useRouter } from 'next/navigation';
 
-import { ScrollArea } from '@/components/ui/scroll-area';
 import { cn } from '@/lib/utils';
 
 type ModalProps = {
@@ -53,9 +52,9 @@ export function Modal({ station_id, children }: ModalProps) {
       <div ref={modalRef} className='absolute inset-4 sm:inset-8'>
         <motion.div
           layoutId={`craft_station.container.${station_id}`}
-          className='bg-background h-full w-full rounded-lg border p-4 shadow-lg'
+          className='bg-background h-full w-full overflow-auto rounded-lg border p-4 shadow-lg'
         >
-          <ScrollArea className='h-full'>{children}</ScrollArea>
+          {children}
           {/* Close button */}
           <button
             className={cn(

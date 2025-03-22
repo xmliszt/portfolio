@@ -1,6 +1,11 @@
 'use client';
 
-import { Sandpack } from '@codesandbox/sandpack-react';
+import {
+  SandpackCodeEditor,
+  SandpackLayout,
+  SandpackPreview,
+  SandpackProvider,
+} from '@codesandbox/sandpack-react';
 import { useTheme } from 'next-themes';
 
 function generateSandboxCode(code: string) {
@@ -22,7 +27,7 @@ export function Sandbox(props: SandboxProps) {
   const { theme } = useTheme();
 
   return (
-    <Sandpack
+    <SandpackProvider
       theme={(() => {
         switch (theme) {
           case 'light':
@@ -40,17 +45,23 @@ export function Sandbox(props: SandboxProps) {
         },
       }}
       options={{
-        editorHeight: '600px',
         externalResources: ['https://cdn.tailwindcss.com'],
-        showConsole: false,
-        showLineNumbers: true,
-        resizablePanels: true,
-        wrapContent: true,
-        layout: 'preview',
       }}
       files={{
         '/App.tsx': { code: generateSandboxCode(props.code) },
       }}
-    />
+    >
+      <SandpackLayout>
+        <SandpackCodeEditor
+          showLineNumbers
+          wrapContent
+          style={{ height: '500px' }}
+        />
+        <SandpackPreview
+          showOpenInCodeSandbox={false}
+          style={{ height: '500px' }}
+        />
+      </SandpackLayout>
+    </SandpackProvider>
   );
 }

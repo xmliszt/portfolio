@@ -135,7 +135,7 @@
     @apply my-8 rounded-lg border shadow-xl!;
   }
 
-  .sp-layout iframe {
+  .sp-preview-container iframe {
     @apply my-0 rounded-none border-none shadow-none;
   }
 
