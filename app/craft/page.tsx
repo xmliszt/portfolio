@@ -2,7 +2,6 @@ import { Metadata } from 'next';
 
 import { ShadowSubtitle } from '@/app/[slug]/shadow-subtitle';
 import { CraftStationLink } from '@/app/craft/components/craft-station-link';
-import { Sandbox } from '@/app/craft/components/sandbox';
 import { stations } from '@/app/craft/stations';
 import { openGraph } from '@/app/metadata';
 

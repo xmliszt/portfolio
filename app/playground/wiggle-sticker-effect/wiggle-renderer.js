@@ -1,11 +1,10 @@
-"use client";
+'use client';
 
-import * as THREE from "three";
-
-import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
-import { DragControls } from "three/examples/jsm/controls/DragControls.js";
-import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
-import { WiggleBone } from "wiggle/spring";
+import * as THREE from 'three';
+import { DragControls } from 'three/examples/jsm/controls/DragControls.js';
+import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
+import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
+import { WiggleBone } from 'wiggle/spring';
 
 export class WiggleRenderer {
   container;
@@ -29,7 +28,7 @@ export class WiggleRenderer {
     this.renderer = new THREE.WebGLRenderer({ antialias: true });
     this.renderer.setPixelRatio(window.devicePixelRatio);
     this.renderer.setSize(container.clientWidth, container.clientHeight);
-    this.renderer.setClearColor("#ddd");
+    this.renderer.setClearColor('#ddd');
 
     // Enable shadow
     this.renderer.shadowMap.enabled = true;
@@ -39,7 +38,12 @@ export class WiggleRenderer {
 
     const aspect = this.container.clientWidth / this.container.clientHeight;
 
-    this.cameraPerspective = new THREE.PerspectiveCamera(25, aspect, 0.01, 30000);
+    this.cameraPerspective = new THREE.PerspectiveCamera(
+      25,
+      aspect,
+      0.01,
+      30000
+    );
     this.currentCamera = this.cameraPerspective;
 
     this.currentCamera.position.set(4, 8, 5);
@@ -70,19 +74,22 @@ export class WiggleRenderer {
     plane.position.y = 0; // Position it below the object
     plane.receiveShadow = true; // Enable shadow receiving
     this.scene.add(plane);
-    
+
     this.resizeHandler = this.onWindowResize.bind(this);
-    window.addEventListener("resize", this.resizeHandler);
+    window.addEventListener('resize', this.resizeHandler);
 
     // Create and add grid to the plane
     const gridHelper = new THREE.GridHelper(40, 40, 0x000000, 0xcccccc); // size, divisions, color1, color2
     gridHelper.position.y = 0; // Position the grid at the same level as the plane
     this.scene.add(gridHelper);
 
-    this.orbit = new OrbitControls(this.currentCamera, this.renderer.domElement);
+    this.orbit = new OrbitControls(
+      this.currentCamera,
+      this.renderer.domElement
+    );
     this.orbit.update();
 
-    this.loader.load("/playground/mobbin.glb", (gltf) => {
+    this.loader.load('/playground/mobbin.glb', (gltf) => {
       this.loadedModel = gltf.scene;
       this.scene.add(this.loadedModel);
 
@@ -104,34 +111,42 @@ export class WiggleRenderer {
       );
 
       // Bone names corresponds to glb file in blender.
-      const rootBone = this.scene.getObjectByName("Root");
-      const b1 = this.scene.getObjectByName("Wiggle1");
-      const b2 = this.scene.getObjectByName("Wiggle2");
-      const b3 = this.scene.getObjectByName("Wiggle3");
-      const b4 = this.scene.getObjectByName("Wiggle4");
+      const rootBone = this.scene.getObjectByName('Root');
+      const b1 = this.scene.getObjectByName('Wiggle1');
+      const b2 = this.scene.getObjectByName('Wiggle2');
+      const b3 = this.scene.getObjectByName('Wiggle3');
+      const b4 = this.scene.getObjectByName('Wiggle4');
 
       // Comment out wiggle by velocity, using wiggle by spring.
       // this.wiggleBones.push(new WiggleBone(b1, { velocity: 0.01 }));
       // this.wiggleBones.push(new WiggleBone(b2, { velocity: 0.01 }));
       // this.wiggleBones.push(new WiggleBone(b3, { velocity: 0.01 }));
       // this.wiggleBones.push(new WiggleBone(b4, { velocity: 0.01 }));
-      this.wiggleBones.push(new WiggleBone(b1, { stiffness: 8000, damping: 200 }));
-      this.wiggleBones.push(new WiggleBone(b2, { stiffness: 8000, damping: 200 }));
-      this.wiggleBones.push(new WiggleBone(b3, { stiffness: 8000, damping: 200 }));
-      this.wiggleBones.push(new WiggleBone(b4, { stiffness: 8000, damping: 200 }));
+      this.wiggleBones.push(
+        new WiggleBone(b1, { stiffness: 8000, damping: 200 })
+      );
+      this.wiggleBones.push(
+        new WiggleBone(b2, { stiffness: 8000, damping: 200 })
+      );
+      this.wiggleBones.push(
+        new WiggleBone(b3, { stiffness: 8000, damping: 200 })
+      );
+      this.wiggleBones.push(
+        new WiggleBone(b4, { stiffness: 8000, damping: 200 })
+      );
 
       // Optionally handle events
-      this.dragControl.addEventListener("dragstart", (event) => {
+      this.dragControl.addEventListener('dragstart', () => {
         this.orbit.enabled = false; // Disable orbit controls while dragging
         gltf.scene.position.y = 0.2;
       });
 
-      this.dragControl.addEventListener("dragend", (event) => {
+      this.dragControl.addEventListener('dragend', () => {
         this.orbit.enabled = true; // Re-enable orbit controls after dragging
         gltf.scene.position.y = 0.05;
       });
 
-      this.dragControl.addEventListener("drag", (event) => {
+      this.dragControl.addEventListener('drag', (event) => {
         this.orbit.enabled = false;
         // Maintain the object's original Y position
         event.object.position.z = 0.2;
@@ -146,7 +161,10 @@ export class WiggleRenderer {
     this.cameraPerspective.aspect = aspect;
     this.cameraPerspective.updateProjectionMatrix();
 
-    this.renderer.setSize(this.container.clientWidth, this.container.clientHeight);
+    this.renderer.setSize(
+      this.container.clientWidth,
+      this.container.clientHeight
+    );
 
     this.render();
   }
@@ -170,7 +188,7 @@ export class WiggleRenderer {
 
     // Remove event listeners
     if (this.resizeHandler) {
-      window.removeEventListener("resize", this.resizeHandler);
+      window.removeEventListener('resize', this.resizeHandler);
       this.resizeHandler = null;
     }
 
@@ -195,22 +213,22 @@ export class WiggleRenderer {
         this.scene.remove(this.loadedModel);
         this.loadedModel = null;
       }
-      
+
       // Then dispose all objects in the scene
       this.scene.traverse((object) => {
         if (object.isMesh) {
           object.geometry.dispose();
-          
+
           if (object.material) {
             if (Array.isArray(object.material)) {
-              object.material.forEach(material => material.dispose());
+              object.material.forEach((material) => material.dispose());
             } else {
               object.material.dispose();
             }
           }
         }
       });
-      
+
       // Clear scene before nullifying the reference
       this.scene.clear();
       this.scene = null;

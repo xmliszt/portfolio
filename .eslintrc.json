@@ -1,6 +1,10 @@
 {
   "extends": ["next/core-web-vitals", "prettier"],
-  "plugins": ["unused-imports", "simple-import-sort", "no-relative-import-paths"],
+  "plugins": [
+    "unused-imports",
+    "simple-import-sort",
+    "no-relative-import-paths"
+  ],
   "ignorePatterns": [
     "node_modules/*",
     ".next/*",

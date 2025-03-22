@@ -1,9 +1,8 @@
 'use client';
 
-import { ArticleMedium } from '@phosphor-icons/react';
+import { CornerRightUp } from 'lucide-react';
 
 import { Tooltip, TooltipContent, TooltipTrigger } from './tooltip';
-import { CornerRightUp } from 'lucide-react';
 
 export function BackToTopLink(props: { children: React.ReactNode }) {
   return (
