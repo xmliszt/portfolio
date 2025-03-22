@@ -207,7 +207,7 @@ export default function AppleVisionResizeHandle() {
               }
             })()}
             {draggingHandle === 'bl' || draggingHandle === 'br' ? null : (
-              <div className='absolute bottom-0 left-1/2 h-max -translate-x-1/2 translate-y-[32px]'>
+              <div className='absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-[32px]'>
                 <div
                   key={draggingHandle}
                   className='h-full w-20 overflow-visible'
