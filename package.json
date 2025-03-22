@@ -32,6 +32,7 @@
     "@supabase/ssr": "^0.5.2",
     "@supabase/supabase-js": "^2.39.7",
     "@types/mdx": "^2.0.13",
+    "@uidotdev/usehooks": "^2.4.1",
     "@vercel/analytics": "^1.2.2",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.0",

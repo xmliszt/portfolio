@@ -3,11 +3,11 @@ import type { CraftStation } from './types';
 
 export const stations: CraftStation[] = [
   {
-    id: 'template-station',
-    title: 'Template Station',
-    tags: ['Test'],
-    description: 'This is a template station.',
-    code: stationCode.TemplateStation,
+    id: 'counter',
+    title: 'Animate counter',
+    tags: ['AnimatePresence', 'MotionConfig'],
+    description: 'Use react-motion to animate a counter.',
+    code: stationCode.Counter,
   },
   {
     id: 'apple-vision-resize-handle',

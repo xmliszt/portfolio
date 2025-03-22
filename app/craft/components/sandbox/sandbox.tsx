@@ -31,6 +31,7 @@ export function Sandbox(props: SandboxProps) {
       customSetup={{
         dependencies: {
           motion: '^12.4.10',
+          '@uidotdev/usehooks': '^2.4.1',
         },
       }}
       options={{

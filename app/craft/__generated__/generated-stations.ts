@@ -3,7 +3,12 @@
 
 export const stationCode = {
   'AppleVisionResizeHandle': `import { useCallback, useRef, useState } from 'react';
-import { AnimatePresence, motion, MotionConfig } from 'motion/react';
+import {
+  AnimatePresence,
+  motion,
+  MotionConfig,
+  useDragControls,
+} from 'motion/react';
 
 const variants = {
   initial: {
@@ -20,15 +25,20 @@ const variants = {
   },
 };
 
-export default function App() {
-  const [resizingCorner, setResizingCorner] = useState<'br' | 'bl' | undefined>(
-    undefined
-  );
+export default function AppleVisionResizeHandle() {
+  const [draggingHandle, setDraggingHandle] = useState<
+    'br' | 'bl' | 'b' | undefined
+  >(undefined);
   const [size, setSize] = useState({ width: 256, height: 256 });
   const [isDragging, setIsDragging] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
   const startPosRef = useRef({ x: 0, y: 0, width: 0, height: 0 });
-  const activeCornerRef = useRef<'br' | 'bl' | undefined>(undefined);
+  const activeHandleRef = useRef<'br' | 'bl' | 'b' | undefined>(undefined);
+  const dragControls = useDragControls();
+
+  function startDragging(event: React.PointerEvent) {
+    dragControls.start(event, { snapToCursor: false });
+  }
 
   const handlePointerMove = useCallback((e: PointerEvent) => {
     const deltaX = e.clientX - startPosRef.current.x;
@@ -39,14 +49,14 @@ export default function App() {
     let newWidth = startPosRef.current.width;
     let newHeight = startPosRef.current.height;
 
-    if (activeCornerRef.current === 'br') {
+    if (activeHandleRef.current === 'br') {
       // Apply scaling factor for bottom-right corner
-      newWidth = Math.max(100, startPosRef.current.width + deltaX * 2);
-      newHeight = Math.max(100, startPosRef.current.height + deltaY * 2);
-    } else if (activeCornerRef.current === 'bl') {
+      newWidth = Math.max(200, startPosRef.current.width + deltaX * 2);
+      newHeight = Math.max(200, startPosRef.current.height + deltaY * 2);
+    } else if (activeHandleRef.current === 'bl') {
       // Apply scaling factor for bottom-left corner
-      newWidth = Math.max(100, startPosRef.current.width - deltaX * 2);
-      newHeight = Math.max(100, startPosRef.current.height + deltaY * 2);
+      newWidth = Math.max(200, startPosRef.current.width - deltaX * 2);
+      newHeight = Math.max(200, startPosRef.current.height + deltaY * 2);
     }
 
     // Check bounds
@@ -64,17 +74,17 @@ export default function App() {
 
   const handlePointerUp = useCallback(() => {
     setIsDragging(false);
-    setResizingCorner(undefined);
-    activeCornerRef.current = undefined;
+    setDraggingHandle(undefined);
+    activeHandleRef.current = undefined;
     window.removeEventListener('pointermove', handlePointerMove);
     window.removeEventListener('pointerup', handlePointerUp);
   }, [handlePointerMove]);
 
   const handlePointerDown = useCallback(
-    (e: React.PointerEvent, corner: 'br' | 'bl') => {
+    (e: React.PointerEvent, handle: 'br' | 'bl' | 'b') => {
       setIsDragging(true);
-      setResizingCorner(corner);
-      activeCornerRef.current = corner;
+      setDraggingHandle(handle);
+      activeHandleRef.current = handle;
 
       // Store initial position and size
       startPosRef.current = {
@@ -92,57 +102,55 @@ export default function App() {
   );
 
   return (
-    <div
-      className='flex h-screen w-screen items-center justify-center'
-      style={{
-        background:
-          'url(https://images.unsplash.com/photo-1564078516393-cf04bd966897?q=80&w=3387&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D) no-repeat center bottom',
-        backgroundSize: 'cover',
-      }}
-      ref={containerRef}
-    >
+    <MotionConfig transition={{ duration: 0.275, type: 'spring', bounce: 0 }}>
       <div
-        className='relative rounded-[20px] bg-neutral-500/30 shadow-[inset_0_0_5px_rgba(255,255,255,0.2)] backdrop-blur-md select-none'
+        className='flex h-screen w-screen items-center justify-center'
         style={{
-          width: \`\${size.width}px\`,
-          height: \`\${size.height}px\`,
-          transition: isDragging ? 'none' : 'width 0.2s, height 0.2s',
+          background:
+            'url(https://images.unsplash.com/photo-1564078516393-cf04bd966897?q=80&w=3387&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D) no-repeat center bottom',
+          backgroundSize: 'cover',
         }}
+        ref={containerRef}
       >
-        <div className='flex size-full flex-col items-center justify-center gap-y-2'>
-          <div className='text-neutral-400'>
-            <svg
-              xmlns='http://www.w3.org/2000/svg'
-              width='20'
-              height='20'
-              viewBox='0 0 24 24'
-              fill='none'
-              stroke='currentColor'
-              stroke-width='2'
-              stroke-linecap='round'
-              stroke-linejoin='round'
-              className='lucide lucide-paw-print'
-            >
-              <circle cx='11' cy='4' r='2' />
-              <circle cx='18' cy='8' r='2' />
-              <circle cx='20' cy='16' r='2' />
-              <path d='M9 10a5 5 0 0 1 5 5v3.5a3.5 3.5 0 0 1-6.84 1.045Q6.52 17.48 4.46 16.84A3.5 3.5 0 0 1 5.5 10Z' />
-            </svg>
-          </div>
-          <div className='text-xs text-neutral-400'>
-            {Math.round(size.width)} × {Math.round(size.height)}
-          </div>
-        </div>
-        <MotionConfig
-          transition={{ duration: 0.275, type: 'spring', bounce: 0 }}
+        <motion.div
+          drag
+          dragConstraints={containerRef}
+          dragControls={dragControls}
+          dragListener={false}
+          className='relative rounded-[20px] bg-neutral-500/30 shadow-[inset_0_0_5px_rgba(255,255,255,0.5)] backdrop-blur-md select-none'
+          style={{
+            width: \`\${size.width}px\`,
+            height: \`\${size.height}px\`,
+            transition: isDragging ? 'none' : 'width 0.2s, height 0.2s',
+          }}
         >
+          <div className='absolute inset-4 flex flex-col items-center justify-center gap-y-2 overflow-hidden rounded-[12px] backdrop-blur-md'>
+            {/* Background with gradient fade effect */}
+            <div
+              className='absolute inset-0 shadow-[inset_0_0_50px_rgba(0,0,0,0.6)]'
+              style={{
+                background:
+                  'url(https://images.unsplash.com/photo-1742603096268-0efc93dcc95a?q=80&w=3359&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D) no-repeat center center',
+                backgroundSize: 'cover',
+              }}
+            />
+
+            {/* Content */}
+            <div className='relative z-10 flex flex-col items-center justify-center gap-y-2'>
+              <div className='text-xs text-neutral-200'>
+                {Math.round(size.width)} × {Math.round(size.height)}
+              </div>
+            </div>
+          </div>
+
           <AnimatePresence>
             {(() => {
-              switch (resizingCorner) {
+              switch (draggingHandle) {
                 // bottom right corner resize handle
                 case 'br':
                   return (
                     <motion.div
+                      key={draggingHandle}
                       className='absolute right-0 bottom-0 size-10 overflow-visible'
                       initial={{ scale: 1, x: 16, y: 16 }}
                       animate={{ scale: isDragging ? 0.9 : 1, x: 16, y: 16 }}
@@ -155,7 +163,7 @@ export default function App() {
                         <motion.path
                           d='M10,24 Q22,22 24,10'
                           stroke='white'
-                          strokeWidth='3'
+                          strokeWidth='4'
                           strokeLinecap='round'
                           strokeLinejoin='round'
                           fill='none'
@@ -172,6 +180,7 @@ export default function App() {
                 case 'bl':
                   return (
                     <motion.div
+                      key={draggingHandle}
                       className='absolute bottom-0 left-0 size-10 overflow-visible'
                       initial={{ scale: 1, x: -16, y: 16 }}
                       animate={{ scale: isDragging ? 0.9 : 1, x: -16, y: 16 }}
@@ -184,7 +193,7 @@ export default function App() {
                         <motion.path
                           d='M20,24 Q8,22 6,10'
                           stroke='white'
-                          strokeWidth='3'
+                          strokeWidth='4'
                           strokeLinecap='round'
                           strokeLinejoin='round'
                           fill='none'
@@ -201,88 +210,133 @@ export default function App() {
                   return null;
               }
             })()}
+            {draggingHandle === 'bl' || draggingHandle === 'br' ? null : (
+              <div className='absolute bottom-0 left-1/2 h-max -translate-x-1/2 translate-y-[32px]'>
+                <div
+                  key={draggingHandle}
+                  className='h-full w-20 overflow-visible'
+                >
+                  <svg viewBox='0 0 80 30' className='size-full' fill='none'>
+                    <motion.path
+                      d='M4,9 L76,9'
+                      stroke='white'
+                      strokeWidth='5.5'
+                      strokeLinecap='round'
+                      strokeLinejoin='round'
+                      fill='none'
+                      onPointerDown={(event) => startDragging(event)}
+                      style={{ touchAction: 'none' }}
+                      initial={{ scale: 1, opacity: 0.7 }}
+                      exit={{ scale: 1, opacity: 0 }}
+                      whileHover={{ scale: 1, opacity: 1 }}
+                      whileTap={{ scale: 0.9, opacity: 1 }}
+                    />
+                  </svg>
+                </div>
+              </div>
+            )}
           </AnimatePresence>
-        </MotionConfig>
 
-        {/* pointer capture areas */}
-        <div
-          className='absolute right-0 bottom-0 size-16 translate-x-4 translate-y-4 cursor-nwse-resize'
-          onPointerEnter={useCallback(
-            () => !isDragging && setResizingCorner('br'),
-            [isDragging]
-          )}
-          onPointerLeave={useCallback(
-            () => !isDragging && setResizingCorner(undefined),
-            [isDragging]
-          )}
-          onPointerDown={(event) => handlePointerDown(event, 'br')}
-        />
-        <div
-          className='absolute bottom-0 left-0 size-16 -translate-x-4 translate-y-4 cursor-nesw-resize'
-          onPointerEnter={useCallback(
-            () => !isDragging && setResizingCorner('bl'),
-            [isDragging]
-          )}
-          onPointerLeave={useCallback(
-            () => !isDragging && setResizingCorner(undefined),
-            [isDragging]
-          )}
-          onPointerDown={(event) => handlePointerDown(event, 'bl')}
-        />
+          {/* pointer capture areas */}
+          <div
+            className='absolute right-0 bottom-0 size-10 translate-x-4 translate-y-4 cursor-default'
+            onPointerEnter={useCallback(
+              () => !isDragging && setDraggingHandle('br'),
+              [isDragging]
+            )}
+            onPointerLeave={useCallback(
+              () => !isDragging && setDraggingHandle(undefined),
+              [isDragging]
+            )}
+            onPointerDown={(event) => handlePointerDown(event, 'br')}
+            style={{ touchAction: 'none' }}
+          />
+          <div
+            className='absolute bottom-0 left-0 size-10 -translate-x-4 translate-y-4 cursor-default'
+            onPointerEnter={useCallback(
+              () => !isDragging && setDraggingHandle('bl'),
+              [isDragging]
+            )}
+            onPointerLeave={useCallback(
+              () => !isDragging && setDraggingHandle(undefined),
+              [isDragging]
+            )}
+            onPointerDown={(event) => handlePointerDown(event, 'bl')}
+            style={{ touchAction: 'none' }}
+          />
+        </motion.div>
+
+        <p className='fixed bottom-6 px-4 text-center text-xs text-neutral-400'>
+          Drag the bottom corners to resize the card. Drag the bottom middle to
+          move the card.
+        </p>
       </div>
-
-      <p className='fixed bottom-6 px-4 text-center text-xs text-neutral-400'>
-        Drag the bottom corners to resize the card
-      </p>
-    </div>
+    </MotionConfig>
   );
 }
 `,
-  'TemplateStation': `import { useState } from 'react';
+  'Counter': `import { useEffect, useRef, useState } from 'react';
+import { AnimatePresence, motion } from 'motion/react';
 
-/**
- * This is a template for creating new craft stations.
- *
- * Key points:
- * 1. The default exported function should be named 'App'
- * 2. The component will be loaded in the Sandpack editor environment
- * 3. You can use any React hooks, but keep dependencies minimal
- * 4. To add a new station, create a new file in this directory and update stations.ts
- */
-export default function App() {
+export default function Counter() {
+  const [direction, setDirection] = useState(1);
   const [count, setCount] = useState(0);
+  const previousCountRef = useRef(count);
+
+  useEffect(() => {
+    previousCountRef.current = count;
+  }, [count]);
 
   return (
-    <div className='flex h-screen flex-col items-center justify-center bg-gray-100 dark:bg-gray-900'>
-      <div className='rounded-lg bg-white p-6 shadow-md dark:bg-gray-800'>
-        <h1 className='mb-4 text-2xl font-bold text-gray-800 dark:text-white'>
-          Template Station
-        </h1>
-        <p className='mb-4 text-gray-600 dark:text-gray-300'>
-          This is a template for new craft stations.
-        </p>
-        <div className='flex items-center justify-center space-x-4'>
-          <button
-            className='rounded bg-blue-500 px-4 py-2 text-white transition hover:bg-blue-600'
-            onClick={() => setCount(count - 1)}
-          >
-            Decrement
-          </button>
-          <span className='text-xl font-semibold text-gray-800 dark:text-white'>
-            {count}
-          </span>
-          <button
-            className='rounded bg-blue-500 px-4 py-2 text-white transition hover:bg-blue-600'
-            onClick={() => setCount(count + 1)}
-          >
-            Increment
-          </button>
+    <div className='flex h-screen flex-col items-center justify-center bg-gradient-to-b from-white to-gray-300'>
+      <motion.div className='rounded-lg bg-white shadow-md'>
+        <div className='flex flex-col gap-y-4 p-6'>
+          <div className='font-bold text-gray-800'>Animate counter</div>
+          <p className='text-gray-600'>
+            Click the buttons to increment and decrement the counter.
+          </p>
+          <div className='flex items-center justify-center space-x-4'>
+            <button
+              className='cursor-default rounded-lg bg-gray-800 px-4 py-2 text-white transition hover:bg-gray-600'
+              onClick={() => {
+                setCount(count - 1);
+                setDirection(-1);
+              }}
+            >
+              Decrement
+            </button>
+            <div className='relative size-10 overflow-hidden text-center font-mono font-bold text-gray-800'>
+              <AnimatePresence mode='popLayout'>
+                <motion.div
+                  key={count}
+                  className='absolute inset-0 grid place-self-center'
+                  initial={{ opacity: 0, y: \`\${-1 * 110 * direction}%\` }}
+                  animate={{ opacity: 1, y: '0%' }}
+                >
+                  {count}
+                </motion.div>
+                <motion.div
+                  key={count - direction}
+                  className='absolute inset-0 grid place-self-center'
+                  initial={{ opacity: 1, y: '0%' }}
+                  animate={{ opacity: 0, y: \`\${1 * 110 * direction}%\` }}
+                >
+                  {previousCountRef.current}
+                </motion.div>
+              </AnimatePresence>
+            </div>
+            <button
+              className='cursor-default rounded-lg bg-gray-800 px-4 py-2 text-white transition hover:bg-gray-600'
+              onClick={() => {
+                setCount(count + 1);
+                setDirection(1);
+              }}
+            >
+              Increment
+            </button>
+          </div>
         </div>
-      </div>
-
-      <p className='mt-8 text-sm text-gray-500 dark:text-gray-400'>
-        Edit this component in app/craft/stations/TemplateStation.tsx
-      </p>
+      </motion.div>
     </div>
   );
 }

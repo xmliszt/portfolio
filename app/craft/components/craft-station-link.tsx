@@ -4,6 +4,7 @@ import { motion } from 'motion/react';
 import Link from 'next/link';
 
 import type { CraftStation } from '@/app/craft/types';
+import { cn } from '@/lib/utils';
 
 type CraftStationLinkProps = {
   station: CraftStation;
@@ -11,10 +12,13 @@ type CraftStationLinkProps = {
 
 export function CraftStationLink(props: CraftStationLinkProps) {
   return (
-    <Link href={`/craft/${props.station.id}`} passHref>
+    <Link href={`/craft/${props.station.id}`} prefetch>
       <motion.div
         layoutId={`craft_station.container.${props.station.id}`}
-        className='group bg-background flex h-20 w-full flex-col justify-center overflow-hidden rounded-lg border p-4 text-left shadow-sm'
+        className={cn(
+          'group bg-background flex h-20 w-full flex-col justify-center overflow-hidden rounded-lg border p-4 text-left',
+          'transition-shadow duration-300 hover:shadow-md'
+        )}
       >
         <motion.div
           layoutId={`craft_station.title.${props.station.id}`}
