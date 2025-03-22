@@ -13,7 +13,8 @@
     "velite:dev": "velite --watch",
     "gen-types": "supabase gen types typescript --project-id tvstbbuidvwgelgidaqy --schema public > lib/supabase/__generated__/types.ts",
     "three": "^0.165.0",
-    "wiggle": "^0.0.14"
+    "wiggle": "^0.0.14",
+    "codegen:craft": "node scripts/generate-station-code.js"
   },
   "dependencies": {
     "@code-hike/mdx": "^0.9.0",
