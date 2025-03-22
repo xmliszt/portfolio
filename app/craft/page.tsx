@@ -27,12 +27,16 @@ export default function CraftPage() {
           <ShadowSubtitle>作坊</ShadowSubtitle>
         </h1>
         <p>
-          I&apos;m building up a crafting space here. The idea is to be able to
-          create a craft project, upload a design video clip, and then use the
-          embedded code editor to try to re-create the design. The video clip
-          can be previewed with adjustable speed.
+          I&apos;m building up a crafting space here. The idea is to have an
+          interactive coding space, where I can share some of the mini
+          experiments I&apos;ve been playing around with. And you can also
+          interact with the code to see the live changes.
         </p>
-        <p>Still building up this space, so stay tuned :)</p>
+        <p>
+          Still building up this space though, as eventually I want to be able
+          to upload video recordings of beautiful animations and able to
+          playback with adjustable speed alongside the code, so stay tuned :D
+        </p>
       </article>
 
       {/* Project item grids */}
