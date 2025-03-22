@@ -113,7 +113,8 @@ export default function RootLayout({
       <body
         className={cn(
           'bg-background flex max-h-screen min-h-screen w-screen flex-col items-center overflow-hidden antialiased',
-          'selection:bg-foreground selection:text-background',
+          'selection:bg-neutral-600 selection:text-neutral-100',
+          'dark:selection:bg-neutral-100 dark:selection:text-neutral-600',
           fontInter.className
         )}
       >
@@ -195,6 +196,7 @@ export default function RootLayout({
               <BGMPlayer />
             </div>
           </TooltipProvider>
+
           <Analytics />
 
           {/* Copyright */}

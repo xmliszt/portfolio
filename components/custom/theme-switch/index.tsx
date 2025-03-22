@@ -1,5 +1,3 @@
-'use client';
-
 import { DuneLightDarkThemeToggle } from './dune-light-dark-theme-toggle';
 
 type ThemeSwitchProps = {
