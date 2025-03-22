@@ -9,10 +9,11 @@ import {
 } from '@/components/ui/tooltip';
 import { cn } from '@/lib/utils';
 
-import { Bgm } from './bgm';
+import { useBgm } from './bgm-provider';
 
 export function BGMPlayer() {
-  const bgmStore = Bgm.getInstance().store();
+  const bgm = useBgm();
+  const bgmStore = bgm.store();
 
   return (
     <div
@@ -29,7 +30,7 @@ export function BGMPlayer() {
         <TooltipTrigger asChild>
           <button
             className='text-primary transition-transform hover:scale-110'
-            onClick={() => Bgm.getInstance().playPrevious()}
+            onClick={() => bgm.playPrevious()}
           >
             <ChevronsLeft className='size-4' strokeWidth={2} />
           </button>
@@ -42,7 +43,7 @@ export function BGMPlayer() {
         <TooltipTrigger asChild>
           <button
             onClick={() => {
-              if (!bgmStore.isLoading) Bgm.getInstance().toggle();
+              if (!bgmStore.isLoading) bgm.toggle();
             }}
             className={cn(
               'group transition-transform duration-1000 ease-in-out',
@@ -75,7 +76,7 @@ export function BGMPlayer() {
         <TooltipTrigger asChild>
           <button
             className='text-primary transition-transform hover:scale-110'
-            onClick={() => Bgm.getInstance().playNext()}
+            onClick={() => bgm.playNext()}
           >
             <ChevronsRight className='size-4' strokeWidth={2} />
           </button>
@@ -87,7 +88,7 @@ export function BGMPlayer() {
 }
 
 export function BGMInfo() {
-  const bgmStore = Bgm.getInstance().store();
+  const bgmStore = useBgm().store();
 
   return (
     <a
@@ -105,7 +106,7 @@ export function BGMInfo() {
         <span className='text-xs font-semibold'>
           {bgmStore.currentBgm?.title}
         </span>
-        <span className='text-xs text-muted-foreground'>
+        <span className='text-muted-foreground text-xs'>
           {bgmStore.currentBgm?.artist}
         </span>
       </div>

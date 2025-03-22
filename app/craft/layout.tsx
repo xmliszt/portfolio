@@ -1,6 +1,6 @@
 'use client';
 
-import { AnimatePresence, MotionConfig } from 'motion/react';
+import { MotionConfig } from 'motion/react';
 
 export default function CraftLayout({
   modal,
@@ -11,10 +11,8 @@ export default function CraftLayout({
 }) {
   return (
     <MotionConfig transition={{ duration: 0.4, type: 'spring', bounce: 0.1 }}>
-      <AnimatePresence>
-        {children}
-        {modal}
-      </AnimatePresence>
+      {children}
+      {modal}
     </MotionConfig>
   );
 }

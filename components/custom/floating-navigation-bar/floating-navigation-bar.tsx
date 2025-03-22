@@ -3,7 +3,7 @@
 import { Disc } from '@phosphor-icons/react';
 import { MusicNote } from '@phosphor-icons/react/dist/ssr';
 
-import { Bgm } from '@/components/custom/bgm/bgm';
+import { useBgm } from '@/components/custom/bgm/bgm-provider';
 import { Copyright } from '@/components/custom/copyright';
 import {
   Drawer,
@@ -26,7 +26,7 @@ type FloatingNavigationBarProps = {
 
 export function FloatingNavigationBar(props: FloatingNavigationBarProps) {
   const { isOpen, setIsOpen } = useFloatingNavigation();
-  const bgmState = Bgm.getInstance().store();
+  const bgmState = useBgm().store();
 
   return (
     <Drawer open={isOpen} onOpenChange={(open) => setIsOpen(open)}>

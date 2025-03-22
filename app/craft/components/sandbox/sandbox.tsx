@@ -8,17 +8,6 @@ import {
 } from '@codesandbox/sandpack-react';
 import { useTheme } from 'next-themes';
 
-function generateSandboxCode(code: string) {
-  return `import { motion } from 'motion/react';
-
-export default function App() {
-  return (
-    ${code}
-  );
-}
-`;
-}
-
 type SandboxProps = {
   code: string;
 };
@@ -48,18 +37,18 @@ export function Sandbox(props: SandboxProps) {
         externalResources: ['https://cdn.tailwindcss.com'],
       }}
       files={{
-        '/App.tsx': { code: generateSandboxCode(props.code) },
+        '/App.tsx': { code: props.code },
       }}
     >
       <SandpackLayout>
         <SandpackCodeEditor
           showLineNumbers
           wrapContent
-          style={{ height: '500px' }}
+          style={{ height: '666px', fontSize: '12px' }}
         />
         <SandpackPreview
           showOpenInCodeSandbox={false}
-          style={{ height: '500px' }}
+          style={{ height: '666px' }}
         />
       </SandpackLayout>
     </SandpackProvider>

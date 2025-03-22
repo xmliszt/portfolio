@@ -24,10 +24,8 @@ type BgmStoreState = {
 type CustomHowlOptions = Pick<HowlOptions, 'volume' | 'loop' | 'html5'>;
 
 export class Bgm {
-  private static _instance: Bgm | null = null;
   private _bgms: BGM[] = [];
   private _currentIndex = 0;
-  private readonly _startFromIndex: number;
   private readonly _howlOptions: CustomHowlOptions;
   private readonly _autoPlay: boolean;
 
@@ -39,18 +37,16 @@ export class Bgm {
     error: undefined,
   }));
 
-  private constructor() {
-    this._startFromIndex = 0;
+  constructor() {
     this._howlOptions = {
       volume: 0.5,
       loop: false,
       html5: true,
     };
     this._autoPlay = false;
-    this._initializeBgms();
   }
 
-  private async _initializeBgms() {
+  async initializeBgms() {
     const { bgms } = await fetchBGMs();
     this._bgms = bgms;
 
@@ -61,9 +57,16 @@ export class Bgm {
     this._createHowl({ bgm: defaultBgm });
   }
 
-  public static getInstance(): Bgm {
-    if (!Bgm._instance) Bgm._instance = new Bgm();
-    return Bgm._instance;
+  cleanup() {
+    this.store.getState().currentHowl?.stop();
+    this.store.getState().currentHowl?.unload();
+    this.store.setState({
+      currentHowl: undefined,
+      currentBgm: undefined,
+      isPlaying: false,
+      isLoading: false,
+    });
+    this._currentIndex = 0;
   }
 
   private _createHowl(options: { bgm: BGM }) {
