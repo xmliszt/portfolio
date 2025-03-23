@@ -13,13 +13,13 @@ import {
 import { debounce } from 'lodash';
 import { Check, X } from 'lucide-react';
 import { useTheme } from 'next-themes';
-import prettier from 'prettier';
-import parserBabel from 'prettier/parser-babel';
-import parserHTML from 'prettier/parser-html';
-import parserTS from 'prettier/parser-typescript';
-import prettierPluginEstree from 'prettier/plugins/estree.js';
+import * as prettier from 'prettier';
+import * as parserBabel from 'prettier/parser-babel';
+import * as parserHTML from 'prettier/parser-html';
+import * as parserTS from 'prettier/parser-typescript';
+import * as prettierPluginEstree from 'prettier/plugins/estree.js';
 
-import parserSCSS from 'prettier/parser-postcss';
+import * as parserSCSS from 'prettier/parser-postcss';
 
 type SandboxProps = {
   code: string;
@@ -165,7 +165,12 @@ const usePrettier = () => {
             fileExtension === 'ts' || fileExtension === 'tsx'
               ? 'typescript'
               : 'babel',
-          plugins: [parserBabel, parserTS, parserHTML, prettierPluginEstree],
+          plugins: [
+            parserBabel,
+            parserTS,
+            parserHTML,
+            prettierPluginEstree.default,
+          ],
         });
       }
 
