@@ -3,6 +3,7 @@
 import { motion } from 'motion/react';
 
 import type { CraftStation } from '@/app/craft/types';
+import { Ratings } from '@/components/ui/ratings';
 
 import { Sandbox } from './sandbox';
 
@@ -19,27 +20,38 @@ export function CraftStationModalContent(props: CraftStationModalContentProps) {
       >
         {props.station.title}
       </motion.div>
-      <motion.p
-        className='text-muted-foreground'
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        exit={{ opacity: 0 }}
-      >
-        {props.station.description}
-      </motion.p>
-      <div className='flex gap-2'>
-        {props.station.tags.map((tag) => (
-          <motion.span
-            layoutId={`craft_station.tag.${props.station.id}.${tag}`}
-            key={tag}
-            className='bg-muted text-muted-foreground rounded-md px-2.5 py-1 text-sm'
+      <div className='flex flex-col items-stretch gap-x-4 sm:flex-row sm:items-center'>
+        <div className='flex grow flex-col gap-y-2'>
+          <motion.p
+            className='text-muted-foreground flex-1'
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
           >
-            {tag}
-          </motion.span>
-        ))}
+            {props.station.description}
+          </motion.p>
+          <div className='flex gap-2'>
+            {props.station.tags.map((tag) => (
+              <motion.span
+                layoutId={`craft_station.tag.${props.station.id}.${tag}`}
+                key={tag}
+                className='bg-muted text-muted-foreground rounded-md px-2.5 py-1 text-sm'
+              >
+                {tag}
+              </motion.span>
+            ))}
+          </div>
+        </div>
+        <div className='hidden shrink-0 grow md:block'>
+          <Ratings id={`craft_station.${props.station.id}`} />
+        </div>
       </div>
       {/* Code */}
       <Sandbox code={props.station.code} />
+      {/* Display ratings on smaller screens */}
+      <div className='block md:hidden'>
+        <Ratings id={`craft_station.${props.station.id}`} />
+      </div>
     </motion.div>
   );
 }
