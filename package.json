@@ -59,7 +59,7 @@
     "tailwindcss-animate": "^1.0.7",
     "three": "^0.174.0",
     "unist-util-visit": "^5.0.0",
-    "vaul": "^0.9.9",
+    "vaul": "^1.1.2",
     "wiggle": "^0.0.17",
     "zustand": "^5.0.2"
   },
