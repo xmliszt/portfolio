@@ -2,7 +2,6 @@
 
 import { motion } from 'motion/react';
 
-import AppleVisionResizeHandle from '@/app/craft/stations/AppleVisionResizeHandle';
 import type { CraftStation } from '@/app/craft/types';
 
 import { Sandbox } from './sandbox';
@@ -41,10 +40,6 @@ export function CraftStationModalContent(props: CraftStationModalContentProps) {
       </div>
       {/* Code */}
       <Sandbox code={props.station.code} />
-
-      <div className='h-[500px] w-[500px]'>
-        <AppleVisionResizeHandle />
-      </div>
     </motion.div>
   );
 }
