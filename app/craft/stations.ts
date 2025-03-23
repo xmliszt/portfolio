@@ -5,7 +5,7 @@ export const stations: CraftStation[] = [
   {
     id: 'counter',
     title: 'Animate counter',
-    tags: ['AnimatePresence', 'MotionConfig'],
+    tags: ['AnimatePresence'],
     description: 'Use react-motion to animate a counter.',
     code: stationCode.Counter,
   },
