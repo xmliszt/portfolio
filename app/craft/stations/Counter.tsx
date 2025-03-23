@@ -32,7 +32,7 @@ export default function Counter() {
               <AnimatePresence mode='popLayout'>
                 <motion.div
                   key={count}
-                  className='absolute inset-0 grid place-self-center'
+                  className='absolute inset-0 grid place-content-center place-self-center'
                   initial={{ opacity: 0, y: `${-1 * 110 * direction}%` }}
                   animate={{ opacity: 1, y: '0%' }}
                 >
