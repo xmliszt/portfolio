@@ -165,12 +165,7 @@ const usePrettier = () => {
             fileExtension === 'ts' || fileExtension === 'tsx'
               ? 'typescript'
               : 'babel',
-          plugins: [
-            parserBabel,
-            parserTS,
-            parserHTML,
-            prettierPluginEstree.default,
-          ],
+          plugins: [parserBabel, parserTS, parserHTML, prettierPluginEstree],
         });
       }
 
