@@ -29,10 +29,10 @@ export function FloatingTOCDrawer(props: FloatingTOCDrawerProps) {
           return (
             <>
               <a
-                key={heading.url}
+                key={`${heading.url}_${indents}`}
                 href={`#${slugify(heading.title)}`}
                 className={cn(
-                  'rounded-lg p-2 text-left text-xs text-secondary-foreground transition-colors',
+                  'text-secondary-foreground rounded-lg p-2 text-left text-xs transition-colors',
                   'hover:bg-secondary',
                   isAtCurrentTOC(hash, heading.title)
                     ? 'bg-secondary font-semibold'

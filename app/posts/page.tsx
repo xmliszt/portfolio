@@ -1,3 +1,4 @@
+import { Fragment } from 'react';
 import { Metadata } from 'next';
 import pluralize from 'pluralize';
 
@@ -36,14 +37,14 @@ export default async function PostsPage() {
   });
 
   return (
-    <article className='prose prose-stone flex flex-col gap-12 dark:prose-invert'>
+    <article className='prose prose-stone dark:prose-invert flex flex-col gap-12'>
       <h1 className='group relative'>
         posts ({pluralize('post', posts.length, true)})
         <ShadowSubtitle>碎碎念</ShadowSubtitle>
       </h1>
       <div className='flex flex-col gap-y-3'>
         {sortedPosts.map((post, index) => (
-          <>
+          <Fragment key={post.slug}>
             {index > 0 && <hr className='my-1' />}
             <PostCard
               key={post.slug}
@@ -52,7 +53,7 @@ export default async function PostsPage() {
                 postViews.find((view) => view.slug === post.slug)?.view ?? 0
               }
             />
-          </>
+          </Fragment>
         ))}
       </div>
     </article>

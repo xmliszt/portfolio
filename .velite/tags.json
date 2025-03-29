@@ -1,1 +1,38 @@
-[{"name":"edtech","slug":"edtech","count":{"total":7,"posts":7},"permalink":"tags/edtech"},{"name":"taboo-ai","slug":"taboo-ai","permalink":"tags/taboo-ai","count":{"total":1,"posts":1}},{"name":"english-learning","slug":"english-learning","permalink":"tags/english-learning","count":{"total":1,"posts":1}},{"name":"ai","slug":"ai","permalink":"tags/ai","count":{"total":2,"posts":2}}]
+[
+  {
+    "name": "edtech",
+    "slug": "edtech",
+    "count": {
+      "total": 7,
+      "posts": 7
+    },
+    "permalink": "tags/edtech"
+  },
+  {
+    "name": "taboo-ai",
+    "slug": "taboo-ai",
+    "permalink": "tags/taboo-ai",
+    "count": {
+      "total": 1,
+      "posts": 1
+    }
+  },
+  {
+    "name": "english-learning",
+    "slug": "english-learning",
+    "permalink": "tags/english-learning",
+    "count": {
+      "total": 1,
+      "posts": 1
+    }
+  },
+  {
+    "name": "ai",
+    "slug": "ai",
+    "permalink": "tags/ai",
+    "count": {
+      "total": 2,
+      "posts": 2
+    }
+  }
+]
