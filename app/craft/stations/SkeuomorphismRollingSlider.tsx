@@ -30,11 +30,13 @@ function Slider({ value, onChange }: SliderProps) {
 
   const handlePointerDown = (event: PointerEvent) => {
     event.preventDefault();
+    event.stopPropagation();
     setIsDragging(true);
     updateProgress(event.clientX);
 
     const handlePointerMove = (event: PointerEvent) => {
       event.preventDefault();
+      event.stopPropagation();
       updateProgress(event.clientX);
       setIsDragging(true);
     };
@@ -71,7 +73,7 @@ function Slider({ value, onChange }: SliderProps) {
         />
         {/* Slider thumb */}
         <motion.div
-          className='absolute top-1/2 size-14 cursor-grab overflow-hidden rounded-full shadow-[0_0_10px_rgba(0,0,0,0.5)]'
+          className='absolute top-1/2 size-14 cursor-grab touch-none overflow-hidden rounded-full shadow-[0_0_10px_rgba(0,0,0,0.5)]'
           style={{
             x: thumbXValue,
             translateX: '-50%',
