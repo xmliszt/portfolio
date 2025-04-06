@@ -13,7 +13,7 @@ type SliderProps = {
 };
 
 function Slider({ value, onChange }: SliderProps) {
-  const [trackX, setTrackX] = useState(0);
+  const [trackDivX, setTrackDivX] = useState(0);
   const [trackDivWidth, setTrackDivWidth] = useState(0);
   const [isDragging, setIsDragging] = useState(false);
 
@@ -22,10 +22,10 @@ function Slider({ value, onChange }: SliderProps) {
 
   const updateProgress = useCallback(
     (clientX: number) => {
-      const percentage = ((clientX - trackX) / trackDivWidth) * 100;
+      const percentage = ((clientX - trackDivX) / trackDivWidth) * 100;
       onChange(clamp(0, 100, percentage));
     },
-    [onChange, trackDivWidth, trackX]
+    [onChange, trackDivWidth, trackDivX]
   );
 
   const handlePointerDown = (event: PointerEvent) => {
@@ -56,7 +56,7 @@ function Slider({ value, onChange }: SliderProps) {
       ref={(el) => {
         if (!el) return;
         setTrackDivWidth(el.clientWidth);
-        setTrackX(el.getBoundingClientRect().x);
+        setTrackDivX(el.getBoundingClientRect().x);
       }}
       className='relative h-5 w-[300px]'
     >
@@ -139,7 +139,7 @@ function Slider({ value, onChange }: SliderProps) {
 export default function SkeuomorphismRollingSlider() {
   const LOWEST_RANGE = new Date('1900-01-01');
   const HIGHEST_RANGE = new Date('2025-12-31');
-  const [birthday, setBirthday] = useState(new Date('1990-01-01'));
+  const [birthday, setBirthday] = useState(new Date('1900-01-01'));
   const birthdayPercentage =
     ((birthday.getTime() - LOWEST_RANGE.getTime()) /
       (HIGHEST_RANGE.getTime() - LOWEST_RANGE.getTime())) *
