@@ -39,10 +39,6 @@ export default function AppleVisionResizeHandle() {
 
   const dragControls = useDragControls();
 
-  function startDragging(event: React.PointerEvent) {
-    dragControls.start(event, { snapToCursor: false });
-  }
-
   const handlePointerMove = useCallback((e: PointerEvent) => {
     const deltaX = e.clientX - startPosRef.current.x;
     const deltaY = e.clientY - startPosRef.current.y;
@@ -121,6 +117,7 @@ export default function AppleVisionResizeHandle() {
             drag
             dragConstraints={containerRef}
             dragControls={dragControls}
+            dragMomentum={false}
             dragListener={false}
             className='relative rounded-[20px] bg-neutral-500/30 shadow-[inset_0_0_5px_rgba(255,255,255,0.5)] backdrop-blur-md select-none'
             style={{
@@ -218,31 +215,31 @@ export default function AppleVisionResizeHandle() {
               {draggingResizingCorner !== 'bl' &&
                 draggingResizingCorner !== 'br' && (
                   <div className='absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-[32px]'>
-                    <div
+                    <motion.div
                       key={draggingResizingCorner}
-                      className='h-full w-20 overflow-visible'
+                      className='h-full w-20 touch-none overflow-visible opacity-70'
+                      onPointerDown={(event) =>
+                        dragControls.start(event, { snapToCursor: false })
+                      }
+                      exit={{ scale: 1, opacity: 0 }}
+                      whileHover={{ scale: 1, opacity: 1 }}
+                      whileTap={{ scale: 0.9, opacity: 1 }}
                     >
                       <svg
                         viewBox='0 0 80 30'
                         className='size-full'
                         fill='none'
                       >
-                        <motion.path
+                        <path
                           d='M4,9 L76,9'
                           stroke='white'
                           strokeWidth='5.5'
                           strokeLinecap='round'
                           strokeLinejoin='round'
                           fill='none'
-                          onPointerDown={(event) => startDragging(event)}
-                          style={{ touchAction: 'none' }}
-                          initial={{ scale: 1, opacity: 0.7 }}
-                          exit={{ scale: 1, opacity: 0 }}
-                          whileHover={{ scale: 1, opacity: 1 }}
-                          whileTap={{ scale: 0.9, opacity: 1 }}
                         />
                       </svg>
-                    </div>
+                    </motion.div>
                   </div>
                 )}
             </AnimatePresence>
