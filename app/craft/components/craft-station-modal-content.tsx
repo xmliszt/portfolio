@@ -53,8 +53,6 @@ export function CraftStationModalContent(props: CraftStationModalContentProps) {
       <div className='block md:hidden'>
         <Ratings id={`craft_station.${props.station.id}`} />
       </div>
-
-      <SkeuomorphismRollingSlider />
     </motion.div>
   );
 }
