@@ -464,16 +464,11 @@ function Slider({
       }}
     >
       {/* Slider track */}
-      <motion.div
+      <div
         className={cn(
           'absolute inset-0 rounded-full',
           'overflow-hidden bg-neutral-900'
         )}
-        animate={{
-          filter: isDragging
-            ? \`drop-shadow(0 0 2px hsl(\${accent} / 60%))\`
-            : \`drop-shadow(0 0 0px black)\`,
-        }}
       >
         {/* Slider range */}
         <motion.div
@@ -509,7 +504,7 @@ function Slider({
             'absolute inset-0 size-full rounded-[12px] shadow-[inset_0_0_10px_rgba(0,0,0,0.9)]'
           )}
         />
-      </motion.div>
+      </div>
       {/* Slider thumb */}
       <motion.div
         className={cn(
