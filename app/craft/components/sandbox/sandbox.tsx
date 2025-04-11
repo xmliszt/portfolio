@@ -45,6 +45,8 @@ export function Sandbox(props: SandboxProps) {
         dependencies: {
           motion: '^12.4.10',
           '@uidotdev/usehooks': '^2.4.1',
+          clsx: '^2.1.0',
+          'tailwind-merge': '^2.2.1',
         },
       }}
       options={{
@@ -52,6 +54,14 @@ export function Sandbox(props: SandboxProps) {
       }}
       files={{
         '/App.tsx': { code: props.code },
+        '/utils.ts': {
+          code: `import { type ClassValue, clsx } from 'clsx';
+import { twMerge } from 'tailwind-merge';
+
+export function cn(...inputs: ClassValue[]) {
+  return twMerge(clsx(inputs));
+}`,
+        },
       }}
     >
       <SandpackLayout>

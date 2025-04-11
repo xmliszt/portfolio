@@ -1,5 +1,7 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useRef, useState } from 'react';
 import { clamp, motion } from 'motion/react';
+
+import { cn } from './utils';
 
 type SliderProps = {
   /**
@@ -13,19 +15,22 @@ type SliderProps = {
 };
 
 function Slider({ value, onChange }: SliderProps) {
-  const [trackDivX, setTrackDivX] = useState(0);
-  const [trackDivWidth, setTrackDivWidth] = useState(0);
   const [isDragging, setIsDragging] = useState(false);
+  const containerRef = useRef<HTMLDivElement | null>(null);
 
   const thumbXValue = value * 3;
   const thumbRotationValue = value * 3.6;
 
   const updateProgress = useCallback(
     (clientX: number) => {
-      const percentage = ((clientX - trackDivX) / trackDivWidth) * 100;
+      const containerElement = containerRef.current;
+      if (!containerElement) return;
+      const rect = containerElement.getBoundingClientRect();
+
+      const percentage = ((clientX - rect.x) / rect.width) * 100;
       onChange(clamp(0, 100, percentage));
     },
-    [onChange, trackDivWidth, trackDivX]
+    [onChange]
   );
 
   const handlePointerDown = (event: PointerEvent) => {
@@ -52,16 +57,14 @@ function Slider({ value, onChange }: SliderProps) {
   };
 
   return (
-    <div
-      ref={(el) => {
-        if (!el) return;
-        setTrackDivWidth(el.clientWidth);
-        setTrackDivX(el.getBoundingClientRect().x);
-      }}
-      className='relative h-5 w-[300px]'
-    >
+    <div ref={containerRef} className='relative h-5 w-[300px]'>
       {/* Slider track */}
-      <motion.div className='absolute inset-0 rounded-full bg-neutral-900 shadow-[inset_0_0_10px_rgba(0,0,0,0.9)]'>
+      <motion.div
+        className={cn(
+          'absolute inset-0 rounded-full',
+          'bg-neutral-900 shadow-[inset_0_0_10px_rgba(0,0,0,0.9)]'
+        )}
+      >
         {/* Slider range */}
         <motion.div
           className='absolute top-1/2 left-0 h-full origin-center rounded-full'
@@ -73,7 +76,10 @@ function Slider({ value, onChange }: SliderProps) {
         />
         {/* Slider thumb */}
         <motion.div
-          className='absolute top-1/2 size-14 cursor-grab touch-none overflow-hidden rounded-full shadow-[0_0_10px_rgba(0,0,0,0.5)]'
+          className={cn(
+            'absolute top-1/2 size-14 cursor-grab touch-none overflow-hidden rounded-full',
+            'shadow-[0_0_10px_rgba(0,0,0,0.5)]'
+          )}
           style={{
             x: thumbXValue,
             translateX: '-50%',
@@ -82,7 +88,10 @@ function Slider({ value, onChange }: SliderProps) {
           onPointerDown={(event) => handlePointerDown(event.nativeEvent)}
         >
           <div
-            className='relative size-full bg-[radial-gradient(circle_at_center,#FFFFFF_0%,#444444_10%,#222222_34%,#000000_100%)]'
+            className={cn(
+              'relative size-full',
+              'bg-[radial-gradient(circle_at_center,#FFFFFF_0%,#444444_10%,#222222_34%,#000000_100%)]'
+            )}
             style={{
               transformStyle: 'preserve-3d',
               perspective: '100px',
