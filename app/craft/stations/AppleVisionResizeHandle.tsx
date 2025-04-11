@@ -21,13 +21,16 @@ const variants = {
   },
 };
 
+const PADDING = 8;
+const MIN_SIZE = 100;
+
 export default function AppleVisionResizeHandle() {
   const [draggingResizingCorner, setDraggingResizingCorner] = useState<
     'br' | 'bl' | undefined
   >(undefined);
   const activeResizingHandle = useRef<'br' | 'bl' | undefined>(undefined);
 
-  const [size, setSize] = useState({ width: 256, height: 256 });
+  const [size, setSize] = useState({ width: 250, height: 250 });
   const [isDragging, setIsDragging] = useState(false);
 
   const containerRef = useRef<HTMLDivElement>(null);
@@ -45,18 +48,18 @@ export default function AppleVisionResizeHandle() {
     let newHeight = startPosRef.current.height;
 
     if (activeResizingHandle.current === 'br') {
-      newWidth = Math.max(200, startPosRef.current.width + deltaX * 2);
-      newHeight = Math.max(200, startPosRef.current.height + deltaY * 2);
+      newWidth = Math.max(MIN_SIZE, startPosRef.current.width + deltaX * 2);
+      newHeight = Math.max(MIN_SIZE, startPosRef.current.height + deltaY * 2);
     } else if (activeResizingHandle.current === 'bl') {
-      newWidth = Math.max(200, startPosRef.current.width - deltaX * 2);
-      newHeight = Math.max(200, startPosRef.current.height + deltaY * 2);
+      newWidth = Math.max(MIN_SIZE, startPosRef.current.width - deltaX * 2);
+      newHeight = Math.max(MIN_SIZE, startPosRef.current.height + deltaY * 2);
     }
 
     // Limit the size to the container
     if (containerRef.current) {
       const containerRect = containerRef.current.getBoundingClientRect();
-      const maxWidth = containerRect.width - 32;
-      const maxHeight = containerRect.height - 32;
+      const maxWidth = containerRect.width - PADDING;
+      const maxHeight = containerRect.height - PADDING;
 
       newWidth = Math.min(newWidth, maxWidth);
       newHeight = Math.min(newHeight, maxHeight);

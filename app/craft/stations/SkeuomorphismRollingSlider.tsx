@@ -110,21 +110,31 @@ function Slider({
     >
       {/* Slider track */}
       <motion.div
-        className={cn('absolute inset-0 rounded-full', 'bg-neutral-900')}
+        className={cn(
+          'absolute inset-0 rounded-full',
+          'overflow-hidden bg-neutral-900'
+        )}
+        animate={{
+          filter: isDragging
+            ? `drop-shadow(0 0 1px hsl(${accent} / 60%))`
+            : `drop-shadow(0 0 0px black)`,
+        }}
       >
         {/* Slider range */}
         <motion.div
           className={cn(
-            'absolute origin-center rounded-[12px]',
-            direction === 'horizontal' ? 'top-1/2 left-0' : 'bottom-0 left-1/2'
+            'absolute',
+            direction === 'horizontal'
+              ? 'top-1/2 left-0 origin-left rounded-l-full'
+              : 'bottom-0 left-1/2 origin-bottom rounded-b-full'
           )}
           animate={{
             backgroundColor:
               isDragging || showRange === true ? `hsl(${accent})` : '#171717',
             filter:
               isDragging || showRange === true
-                ? `drop-shadow(0 0 5px hsla(${accent}, 0.6))`
-                : `drop-shadow(0 0 0px hsla(${accent}, 0.6))`,
+                ? `drop-shadow(0 0 5px hsl(${accent} / 60%))`
+                : `drop-shadow(0 0 0px black))`,
           }}
           style={{
             height:
@@ -144,71 +154,70 @@ function Slider({
             'absolute inset-0 size-full rounded-[12px] shadow-[inset_0_0_10px_rgba(0,0,0,0.9)]'
           )}
         />
-
-        {/* Slider thumb */}
-        <motion.div
+      </motion.div>
+      {/* Slider thumb */}
+      <motion.div
+        className={cn(
+          'absolute size-14 cursor-grab touch-none overflow-hidden rounded-full',
+          'shadow-[0_0_10px_rgba(0,0,0,0.5)]',
+          direction === 'horizontal' ? 'top-1/2' : 'left-1/2'
+        )}
+        style={{
+          y:
+            direction === 'vertical'
+              ? (sliderLength - 56) *
+                  ((sliderLength - thumbValue) / sliderLength) +
+                28
+              : 0,
+          x:
+            direction === 'horizontal'
+              ? (sliderLength - 56) * (thumbValue / sliderLength) + 28
+              : 0,
+          translateX: '-50%',
+          translateY: '-50%',
+        }}
+        onPointerDown={(event) => handlePointerDown(event.nativeEvent)}
+      >
+        <div
           className={cn(
-            'absolute size-14 cursor-grab touch-none overflow-hidden rounded-full',
-            'shadow-[0_0_10px_rgba(0,0,0,0.5)]',
-            direction === 'horizontal' ? 'top-1/2' : 'left-1/2'
+            'relative size-full',
+            'bg-[radial-gradient(circle_at_center,#FFFFFF_0%,#444444_10%,#222222_34%,#000000_100%)]'
           )}
           style={{
-            y:
-              direction === 'vertical'
-                ? (sliderLength - 56) *
-                    ((sliderLength - thumbValue) / sliderLength) +
-                  28
-                : 0,
-            x:
-              direction === 'horizontal'
-                ? (sliderLength - 56) * (thumbValue / sliderLength) + 28
-                : 0,
-            translateX: '-50%',
-            translateY: '-50%',
+            transformStyle: 'preserve-3d',
+            perspective: '100px',
           }}
-          onPointerDown={(event) => handlePointerDown(event.nativeEvent)}
         >
-          <div
-            className={cn(
-              'relative size-full',
-              'bg-[radial-gradient(circle_at_center,#FFFFFF_0%,#444444_10%,#222222_34%,#000000_100%)]'
-            )}
-            style={{
-              transformStyle: 'preserve-3d',
-              perspective: '100px',
-            }}
-          >
-            {Array.from({ length: 3 }).map((_, index, array) => {
-              const rotationDeg =
-                thumbRotationValue + index * (360 / array.length);
+          {Array.from({ length: 3 }).map((_, index, array) => {
+            const rotationDeg =
+              thumbRotationValue + index * (360 / array.length);
 
-              return (
-                <div
-                  key={index}
-                  className={cn('absolute top-1/2 left-1/2 origin-center')}
+            return (
+              <div
+                key={index}
+                className={cn('absolute top-1/2 left-1/2 origin-center')}
+                style={{
+                  transform:
+                    direction === 'horizontal'
+                      ? `translate(-50%,-50%) rotateY(${rotationDeg}deg) translateZ(28px)`
+                      : `translate(-50%,-50%) rotateX(${rotationDeg}deg) translateZ(28px)`,
+                }}
+              >
+                <span
+                  className={cn('font-mono text-xs transition-colors')}
                   style={{
-                    transform:
-                      direction === 'horizontal'
-                        ? `translate(-50%,-50%) rotateY(${rotationDeg}deg) translateZ(28px)`
-                        : `translate(-50%,-50%) rotateX(${rotationDeg}deg) translateZ(28px)`,
+                    color: isDragging ? `hsl(${accent})` : '#a1a1a1',
+                    filter: isDragging
+                      ? `drop-shadow(0 0 4px hsl(${accent}))`
+                      : 'drop-shadow(0 0 0px black)',
                   }}
                 >
-                  <span
-                    className={cn('font-mono text-xs transition-colors')}
-                    style={{
-                      color: isDragging ? `hsl(${accent})` : '#a1a1a1',
-                      filter: isDragging
-                        ? `drop-shadow(0 0 4px hsl(${accent}))`
-                        : 'drop-shadow(0 0 0px black)',
-                    }}
-                  >
-                    {icon ?? `${Math.round(value)}%`}
-                  </span>
-                </div>
-              );
-            })}
-          </div>
-        </motion.div>
+                  {icon ?? `${Math.round(value)}%`}
+                </span>
+              </div>
+            );
+          })}
+        </div>
       </motion.div>
     </div>
   );

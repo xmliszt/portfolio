@@ -25,13 +25,16 @@ const variants = {
   },
 };
 
+const PADDING = 8;
+const MIN_SIZE = 100;
+
 export default function AppleVisionResizeHandle() {
   const [draggingResizingCorner, setDraggingResizingCorner] = useState<
     'br' | 'bl' | undefined
   >(undefined);
   const activeResizingHandle = useRef<'br' | 'bl' | undefined>(undefined);
 
-  const [size, setSize] = useState({ width: 256, height: 256 });
+  const [size, setSize] = useState({ width: 250, height: 250 });
   const [isDragging, setIsDragging] = useState(false);
 
   const containerRef = useRef<HTMLDivElement>(null);
@@ -49,18 +52,18 @@ export default function AppleVisionResizeHandle() {
     let newHeight = startPosRef.current.height;
 
     if (activeResizingHandle.current === 'br') {
-      newWidth = Math.max(200, startPosRef.current.width + deltaX * 2);
-      newHeight = Math.max(200, startPosRef.current.height + deltaY * 2);
+      newWidth = Math.max(MIN_SIZE, startPosRef.current.width + deltaX * 2);
+      newHeight = Math.max(MIN_SIZE, startPosRef.current.height + deltaY * 2);
     } else if (activeResizingHandle.current === 'bl') {
-      newWidth = Math.max(200, startPosRef.current.width - deltaX * 2);
-      newHeight = Math.max(200, startPosRef.current.height + deltaY * 2);
+      newWidth = Math.max(MIN_SIZE, startPosRef.current.width - deltaX * 2);
+      newHeight = Math.max(MIN_SIZE, startPosRef.current.height + deltaY * 2);
     }
 
     // Limit the size to the container
     if (containerRef.current) {
       const containerRect = containerRef.current.getBoundingClientRect();
-      const maxWidth = containerRect.width - 32;
-      const maxHeight = containerRect.height - 32;
+      const maxWidth = containerRect.width - PADDING;
+      const maxHeight = containerRect.height - PADDING;
 
       newWidth = Math.min(newWidth, maxWidth);
       newHeight = Math.min(newHeight, maxHeight);
@@ -462,21 +465,31 @@ function Slider({
     >
       {/* Slider track */}
       <motion.div
-        className={cn('absolute inset-0 rounded-full', 'bg-neutral-900')}
+        className={cn(
+          'absolute inset-0 rounded-full',
+          'overflow-hidden bg-neutral-900'
+        )}
+        animate={{
+          filter: isDragging
+            ? \`drop-shadow(0 0 1px hsl(\${accent} / 60%))\`
+            : \`drop-shadow(0 0 0px black)\`,
+        }}
       >
         {/* Slider range */}
         <motion.div
           className={cn(
-            'absolute origin-center rounded-[12px]',
-            direction === 'horizontal' ? 'top-1/2 left-0' : 'bottom-0 left-1/2'
+            'absolute',
+            direction === 'horizontal'
+              ? 'top-1/2 left-0 origin-left rounded-l-full'
+              : 'bottom-0 left-1/2 origin-bottom rounded-b-full'
           )}
           animate={{
             backgroundColor:
               isDragging || showRange === true ? \`hsl(\${accent})\` : '#171717',
             filter:
               isDragging || showRange === true
-                ? \`drop-shadow(0 0 5px hsla(\${accent}, 0.6))\`
-                : \`drop-shadow(0 0 0px hsla(\${accent}, 0.6))\`,
+                ? \`drop-shadow(0 0 5px hsl(\${accent} / 60%))\`
+                : \`drop-shadow(0 0 0px black))\`,
           }}
           style={{
             height:
@@ -496,71 +509,70 @@ function Slider({
             'absolute inset-0 size-full rounded-[12px] shadow-[inset_0_0_10px_rgba(0,0,0,0.9)]'
           )}
         />
-
-        {/* Slider thumb */}
-        <motion.div
+      </motion.div>
+      {/* Slider thumb */}
+      <motion.div
+        className={cn(
+          'absolute size-14 cursor-grab touch-none overflow-hidden rounded-full',
+          'shadow-[0_0_10px_rgba(0,0,0,0.5)]',
+          direction === 'horizontal' ? 'top-1/2' : 'left-1/2'
+        )}
+        style={{
+          y:
+            direction === 'vertical'
+              ? (sliderLength - 56) *
+                  ((sliderLength - thumbValue) / sliderLength) +
+                28
+              : 0,
+          x:
+            direction === 'horizontal'
+              ? (sliderLength - 56) * (thumbValue / sliderLength) + 28
+              : 0,
+          translateX: '-50%',
+          translateY: '-50%',
+        }}
+        onPointerDown={(event) => handlePointerDown(event.nativeEvent)}
+      >
+        <div
           className={cn(
-            'absolute size-14 cursor-grab touch-none overflow-hidden rounded-full',
-            'shadow-[0_0_10px_rgba(0,0,0,0.5)]',
-            direction === 'horizontal' ? 'top-1/2' : 'left-1/2'
+            'relative size-full',
+            'bg-[radial-gradient(circle_at_center,#FFFFFF_0%,#444444_10%,#222222_34%,#000000_100%)]'
           )}
           style={{
-            y:
-              direction === 'vertical'
-                ? (sliderLength - 56) *
-                    ((sliderLength - thumbValue) / sliderLength) +
-                  28
-                : 0,
-            x:
-              direction === 'horizontal'
-                ? (sliderLength - 56) * (thumbValue / sliderLength) + 28
-                : 0,
-            translateX: '-50%',
-            translateY: '-50%',
+            transformStyle: 'preserve-3d',
+            perspective: '100px',
           }}
-          onPointerDown={(event) => handlePointerDown(event.nativeEvent)}
         >
-          <div
-            className={cn(
-              'relative size-full',
-              'bg-[radial-gradient(circle_at_center,#FFFFFF_0%,#444444_10%,#222222_34%,#000000_100%)]'
-            )}
-            style={{
-              transformStyle: 'preserve-3d',
-              perspective: '100px',
-            }}
-          >
-            {Array.from({ length: 3 }).map((_, index, array) => {
-              const rotationDeg =
-                thumbRotationValue + index * (360 / array.length);
+          {Array.from({ length: 3 }).map((_, index, array) => {
+            const rotationDeg =
+              thumbRotationValue + index * (360 / array.length);
 
-              return (
-                <div
-                  key={index}
-                  className={cn('absolute top-1/2 left-1/2 origin-center')}
+            return (
+              <div
+                key={index}
+                className={cn('absolute top-1/2 left-1/2 origin-center')}
+                style={{
+                  transform:
+                    direction === 'horizontal'
+                      ? \`translate(-50%,-50%) rotateY(\${rotationDeg}deg) translateZ(28px)\`
+                      : \`translate(-50%,-50%) rotateX(\${rotationDeg}deg) translateZ(28px)\`,
+                }}
+              >
+                <span
+                  className={cn('font-mono text-xs transition-colors')}
                   style={{
-                    transform:
-                      direction === 'horizontal'
-                        ? \`translate(-50%,-50%) rotateY(\${rotationDeg}deg) translateZ(28px)\`
-                        : \`translate(-50%,-50%) rotateX(\${rotationDeg}deg) translateZ(28px)\`,
+                    color: isDragging ? \`hsl(\${accent})\` : '#a1a1a1',
+                    filter: isDragging
+                      ? \`drop-shadow(0 0 4px hsl(\${accent}))\`
+                      : 'drop-shadow(0 0 0px black)',
                   }}
                 >
-                  <span
-                    className={cn('font-mono text-xs transition-colors')}
-                    style={{
-                      color: isDragging ? \`hsl(\${accent})\` : '#a1a1a1',
-                      filter: isDragging
-                        ? \`drop-shadow(0 0 4px hsl(\${accent}))\`
-                        : 'drop-shadow(0 0 0px black)',
-                    }}
-                  >
-                    {icon ?? \`\${Math.round(value)}%\`}
-                  </span>
-                </div>
-              );
-            })}
-          </div>
-        </motion.div>
+                  {icon ?? \`\${Math.round(value)}%\`}
+                </span>
+              </div>
+            );
+          })}
+        </div>
       </motion.div>
     </div>
   );
