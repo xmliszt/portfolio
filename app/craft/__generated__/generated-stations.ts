@@ -471,7 +471,7 @@ function Slider({
         )}
         animate={{
           filter: isDragging
-            ? \`drop-shadow(0 0 1px hsl(\${accent} / 60%))\`
+            ? \`drop-shadow(0 0 2px hsl(\${accent} / 60%))\`
             : \`drop-shadow(0 0 0px black)\`,
         }}
       >
@@ -733,7 +733,7 @@ export default function SkeuomorphismRollingSlider() {
         </div>
       </div>
       <div className='text-center text-xs text-neutral-400'>Equalizer</div>
-      <div className='flex w-full justify-center gap-x-7 overflow-auto'>
+      <div className='flex w-full justify-center gap-x-7 overflow-auto px-4'>
         {eqValues.map((val, idx) => (
           <div key={idx} className='flex flex-col items-center gap-y-4'>
             <div className='text-xs text-neutral-300'>dB</div>
