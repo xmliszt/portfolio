@@ -2,7 +2,6 @@
 
 import { motion } from 'motion/react';
 
-import SkeuomorphismRollingSlider from '@/app/craft/stations/SkeuomorphismRollingSlider';
 import type { CraftStation } from '@/app/craft/types';
 import { Ratings } from '@/components/ui/ratings';
 
@@ -53,8 +52,6 @@ export function CraftStationModalContent(props: CraftStationModalContentProps) {
       <div className='block md:hidden'>
         <Ratings id={`craft_station.${props.station.id}`} />
       </div>
-
-      <SkeuomorphismRollingSlider />
     </motion.div>
   );
 }
