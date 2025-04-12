@@ -573,7 +573,7 @@ function Slider({
   );
 }
 
-export default function SkeuomorphismRollingSlider() {
+export default function ThreeDRollingSlider() {
   const MAX_YEAR = 2025;
   const MIN_YEAR = 1900;
   const [year, setYear] = useState(1900);
