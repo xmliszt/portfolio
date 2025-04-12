@@ -353,7 +353,7 @@ export default function Counter() {
   );
 }
 `,
-  'SkeuomorphismRollingSlider': `import { useCallback, useRef, useState } from 'react';
+  'ThreeDRollingSlider': `import { useCallback, useRef, useState } from 'react';
 import { clamp, motion } from 'motion/react';
 
 import { cn } from './utils';
