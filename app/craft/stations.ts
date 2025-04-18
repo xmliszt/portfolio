@@ -3,13 +3,6 @@ import type { CraftStation } from './types';
 
 export const stations: CraftStation[] = [
   {
-    id: 'counter',
-    title: 'Animate counter',
-    tags: ['AnimatePresence'],
-    description: 'Use react-motion to animate a counter.',
-    codes: generatedStations['counter'],
-  },
-  {
     id: 'apple-vision-resize-handle',
     title: 'Apple Vision OS resize handle animation',
     tags: ['AnimatePresence', 'MotionConfig', 'useDragControls'],

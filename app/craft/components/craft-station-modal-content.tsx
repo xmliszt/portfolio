@@ -14,7 +14,7 @@ type CraftStationModalContentProps = {
 
 export function CraftStationModalContent(props: CraftStationModalContentProps) {
   return (
-    <motion.div className='flex flex-col gap-y-4'>
+    <motion.div className='flex flex-col gap-y-4 pt-8 pb-24'>
       <motion.div
         layoutId={`craft_station.title.${props.station.id}`}
         className='text-lg font-semibold'
