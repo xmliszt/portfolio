@@ -2,7 +2,6 @@
 
 import { motion } from 'motion/react';
 
-import SimpleStaggerParagraphsEnterAnimation from '@/app/craft/stations/simple-stagger-paragraphs-enter-animation/App';
 import type { CraftStation } from '@/app/craft/types';
 import { Ratings } from '@/components/ui/ratings';
 
@@ -53,7 +52,6 @@ export function CraftStationModalContent(props: CraftStationModalContentProps) {
       <div className='block md:hidden'>
         <Ratings id={`craft_station.${props.station.id}`} />
       </div>
-      <SimpleStaggerParagraphsEnterAnimation />
     </motion.div>
   );
 }

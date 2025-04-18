@@ -32,7 +32,7 @@ export function CraftStationLink(props: CraftStationLinkProps) {
             {props.station.tags.map((tag) => (
               <motion.span
                 layoutId={`craft_station.tag.${props.station.id}.${tag}`}
-                className='bg-muted rounded-md border px-2.5 py-1'
+                className='bg-muted rounded-md border px-2.5 py-1 whitespace-nowrap'
                 key={tag}
               >
                 {tag}

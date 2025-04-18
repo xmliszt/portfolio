@@ -369,9 +369,9 @@ const PARAGRAPHS: string[] = [
 
 export default function App() {
   return (
-    <main className='flex h-screen w-screen items-center justify-center overflow-y-auto p-24'>
+    <main className='flex h-screen w-screen justify-center overflow-y-auto p-8'>
       <div
-        className='flex max-w-xl flex-col gap-y-6'
+        className='flex max-w-md flex-col gap-y-6'
         style={{
           '--delay': '120ms',
         }}
