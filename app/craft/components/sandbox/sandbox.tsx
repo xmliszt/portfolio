@@ -1,6 +1,7 @@
 'use client';
 
 import { useCallback, useEffect, useState } from 'react';
+import { isMobile } from 'react-device-detect';
 import { autocompletion } from '@codemirror/autocomplete';
 import { javascript } from '@codemirror/lang-javascript';
 import {
@@ -52,6 +53,7 @@ export function Sandbox(props: SandboxProps) {
           '@uidotdev/usehooks': '^2.4.1',
           clsx: '^2.1.0',
           'tailwind-merge': '^2.2.1',
+          'lucide-react': '^0.469.0',
         },
         devDependencies: {
           '@types/react': '19.0.10',
@@ -65,7 +67,7 @@ export function Sandbox(props: SandboxProps) {
         <EditorWithPrettier />
         <SandpackPreview
           showOpenInCodeSandbox={false}
-          style={{ height: '666px' }}
+          style={{ height: isMobile ? '500px' : '700px' }}
         />
       </SandpackLayout>
     </SandpackProvider>
@@ -85,7 +87,10 @@ function EditorWithPrettier() {
           javascript({ typescript: true, jsx: true }),
           autocompletion(),
         ]}
-        style={{ height: '666px', fontSize: '12px' }}
+        style={{
+          height: isMobile ? '500px' : '700px',
+          fontSize: isMobile ? '10px' : '12px',
+        }}
       />
       {prettier && <PrettierPlugin />}
     </>

@@ -4,6 +4,7 @@ import { motion } from 'motion/react';
 
 import type { CraftStation } from '@/app/craft/types';
 import { Ratings } from '@/components/ui/ratings';
+import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
 
 import { Sandbox } from './sandbox';
 
@@ -30,17 +31,20 @@ export function CraftStationModalContent(props: CraftStationModalContentProps) {
           >
             {props.station.description}
           </motion.p>
-          <div className='flex gap-2'>
-            {props.station.tags.map((tag) => (
-              <motion.span
-                layoutId={`craft_station.tag.${props.station.id}.${tag}`}
-                key={tag}
-                className='bg-muted text-muted-foreground rounded-md px-2.5 py-1 text-sm whitespace-nowrap'
-              >
-                {tag}
-              </motion.span>
-            ))}
-          </div>
+          <ScrollArea className='w-full'>
+            <div className='flex gap-x-2'>
+              {props.station.tags.map((tag) => (
+                <motion.span
+                  layoutId={`craft_station.tag.${props.station.id}.${tag}`}
+                  key={tag}
+                  className='bg-muted text-muted-foreground rounded-md px-2.5 py-1 text-sm whitespace-nowrap'
+                >
+                  {tag}
+                </motion.span>
+              ))}
+            </div>
+            <ScrollBar orientation='horizontal' />
+          </ScrollArea>
         </div>
         <div className='hidden shrink-0 grow md:block'>
           <Ratings id={`craft_station.${props.station.id}`} />

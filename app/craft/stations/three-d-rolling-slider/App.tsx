@@ -1,4 +1,5 @@
 import { useCallback, useRef, useState } from 'react';
+import { Volume, Volume1, Volume2 } from 'lucide-react';
 import { clamp, motion } from 'motion/react';
 
 import { cn } from './utils';
@@ -11,7 +12,7 @@ type SliderProps = {
   /**
    * The function to call when the slider value changes.
    */
-  onChange: (value: number) => void;
+  onChange?: (value: number) => void;
   /**
    * The content to display on the ball.
    */
@@ -69,7 +70,7 @@ function Slider({
         100;
       const effectivePercentage =
         direction === 'horizontal' ? percentage : 100 - percentage;
-      onChange(clamp(0, 100, effectivePercentage));
+      onChange?.(clamp(0, 100, effectivePercentage));
     },
     [direction, sliderLength, onChange]
   );
@@ -219,198 +220,76 @@ function Slider({
 }
 
 export default function ThreeDRollingSlider() {
-  const MAX_YEAR = 2025;
-  const MIN_YEAR = 1900;
-  const [year, setYear] = useState(1900);
-  const [month, setMonth] = useState(1);
-  const [day, setDay] = useState(1);
+  // For volume example
+  const [volume, setVolume] = useState(0);
 
   // For equalizer example
-  const [eqValues, setEqValues] = useState<number[]>(Array(6).fill(0));
-
-  const maxDay = (() => {
-    switch (month) {
-      case 1:
-      case 3:
-      case 5:
-      case 7:
-      case 8:
-      case 10:
-      case 12:
-        return 31;
-      case 2:
-        return year % 4 === 0 ? 29 : 28;
-      case 4:
-      case 6:
-      case 9:
-      case 11:
-        return 30;
-      default:
-        throw new Error('Non existed month');
-    }
-  })();
-
-  // Clamp the day maximum at maxDay.
-  const adjustedDay = Math.min(maxDay, day);
+  const [eqValues, setEqValues] = useState<number[]>(Array(4).fill(0));
 
   return (
-    <div className='relative flex h-screen w-screen flex-col items-center justify-center gap-y-4 bg-neutral-900 p-4 font-mono'>
-      <div className='flex w-full flex-col items-center gap-y-4'>
+    <div className='relative h-screen w-screen bg-neutral-900 p-4 font-mono'>
+      <div className='flex h-full w-full flex-col items-center justify-center gap-y-8'>
         <div className='flex flex-col gap-y-4'>
-          <div className='text-sm text-neutral-600'>Year</div>
+          <div className='text-sm text-neutral-600'>Volume</div>
           <Slider
             length={250}
-            value={((year - MIN_YEAR) / (MAX_YEAR - MIN_YEAR)) * 100}
-            onChange={(value) =>
-              setYear(
-                Math.round((value / 100) * (MAX_YEAR - MIN_YEAR) + MIN_YEAR)
-              )
-            }
-            icon={
-              <svg
-                xmlns='http://www.w3.org/2000/svg'
-                viewBox='0 0 24 24'
-                fill='none'
-                stroke='currentColor'
-                strokeWidth='2'
-                strokeLinecap='round'
-                strokeLinejoin='round'
-                className='size-4 animate-spin'
-              >
-                <path d='M14 11a2 2 0 1 1-4 0 4 4 0 0 1 8 0 6 6 0 0 1-12 0 8 8 0 0 1 16 0 10 10 0 1 1-20 0 11.93 11.93 0 0 1 2.42-7.22 2 2 0 1 1 3.16 2.44' />
-              </svg>
-            }
-          />
-        </div>
-        <div className='flex flex-col gap-y-4'>
-          <div className='text-sm text-neutral-600'>Month</div>
-          <Slider
-            length={250}
-            value={((month - 1) * 100) / 11}
-            onChange={(value) => setMonth(Math.round((value / 100) * 11) + 1)}
-            icon={
-              <svg
-                xmlns='http://www.w3.org/2000/svg'
-                viewBox='0 0 24 24'
-                fill='none'
-                stroke='currentColor'
-                strokeWidth='2'
-                strokeLinecap='round'
-                strokeLinejoin='round'
-                className='size-4'
-              >
-                <path d='M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z' />
-              </svg>
-            }
-          />
-        </div>
-        <div className='flex flex-col gap-y-4'>
-          <div className='text-sm text-neutral-600'>Day</div>
-          <Slider
-            length={250}
-            value={((adjustedDay - 1) * 100) / (maxDay - 1)}
-            onChange={(value) =>
-              setDay(Math.round((value / 100) * (maxDay - 1)) + 1)
-            }
-            icon={
-              <svg
-                xmlns='http://www.w3.org/2000/svg'
-                viewBox='0 0 24 24'
-                fill='none'
-                stroke='currentColor'
-                strokeWidth='2'
-                strokeLinecap='round'
-                strokeLinejoin='round'
-                className='size-4'
-              >
-                <circle cx='12' cy='12' r='4' />
-                <path d='M12 2v2' />
-                <path d='M12 20v2' />
-                <path d='m4.93 4.93 1.41 1.41' />
-                <path d='m17.66 17.66 1.41 1.41' />
-                <path d='M2 12h2' />
-                <path d='M20 12h2' />
-                <path d='m6.34 17.66-1.41 1.41' />
-                <path d='m19.07 4.93-1.41 1.41' />
-              </svg>
-            }
-          />
-        </div>
-        <div className='text-sm text-neutral-600'>
-          {(() => {
-            const monthText = (() => {
-              switch (month) {
-                case 1:
-                  return 'Jan';
-                case 2:
-                  return 'Feb';
-                case 3:
-                  return 'Mar';
-                case 4:
-                  return 'Apr';
-                case 5:
-                  return 'May';
-                case 6:
-                  return 'Jun';
-                case 7:
-                  return 'Jul';
-                case 8:
-                  return 'Aug';
-                case 9:
-                  return 'Sep';
-                case 10:
-                  return 'Oct';
-                case 11:
-                  return 'Nov';
-                case 12:
-                  return 'Dec';
+            value={volume}
+            onChange={setVolume}
+            accentColor='0 0% 100%'
+            showRange
+            icon={(() => {
+              switch (true) {
+                case volume <= 33:
+                  return <Volume className='size-4' />;
+                case volume <= 66:
+                  return <Volume1 className='size-4' />;
                 default:
-                  return '';
+                  return <Volume2 className='size-4' />;
               }
-            })();
-            return `${adjustedDay} ${monthText}, ${year}`;
-          })()}
+            })()}
+          />
         </div>
-      </div>
-      <div className='text-center text-xs text-neutral-400'>Equalizer</div>
-      <div className='flex w-full justify-center gap-x-7 overflow-auto px-4'>
-        {eqValues.map((val, idx) => (
-          <div key={idx} className='flex flex-col items-center gap-y-4'>
-            <div className='text-xs text-neutral-300'>dB</div>
-            <Slider
-              length={250}
-              orientation='vertical'
-              value={eqValues[idx]}
-              onChange={(value) =>
-                setEqValues((eqValues) => [
-                  ...eqValues.slice(0, idx),
-                  value,
-                  ...eqValues.slice(idx + 1),
-                ])
-              }
-              showRange
-              accentColor={`${360 * (idx / eqValues.length)} 75% 60%`}
-            />
-            <div className='text-xs text-neutral-300'>
-              {(() => {
-                switch (idx) {
-                  case 0:
-                    return '32Hz';
-                  case 1:
-                    return '64Hz';
-                  case 2:
-                    return '125Hz';
-                  case 3:
-                    return '250Hz';
-                  case 4:
-                    return '500Hz';
-                  case 5:
-                    return '1KHz';
-                }
-              })()}
-            </div>
+        <div className='flex flex-col gap-y-4'>
+          <div className='text-sm text-neutral-600'>Equalizer</div>
+          <div className='flex h-[300px] w-full gap-x-7 px-4'>
+            {eqValues.map((val, idx) => (
+              <div
+                key={idx}
+                className='flex h-full flex-col items-center gap-y-4'
+              >
+                <div className='text-xs text-neutral-300'>dB</div>
+                <Slider
+                  length={250}
+                  orientation='vertical'
+                  value={eqValues[idx]}
+                  onChange={(value) =>
+                    setEqValues((eqValues) => [
+                      ...eqValues.slice(0, idx),
+                      value,
+                      ...eqValues.slice(idx + 1),
+                    ])
+                  }
+                  showRange
+                  accentColor={`${360 * (idx / eqValues.length)} 75% 60%`}
+                />
+                <div className='text-xs text-neutral-300'>
+                  {(() => {
+                    switch (idx) {
+                      case 0:
+                        return '32Hz';
+                      case 1:
+                        return '64Hz';
+                      case 2:
+                        return '125Hz';
+                      case 3:
+                        return '250Hz';
+                    }
+                  })()}
+                </div>
+              </div>
+            ))}
           </div>
-        ))}
+        </div>
       </div>
     </div>
   );
