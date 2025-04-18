@@ -1,7 +1,5 @@
 /** @type {import('next').NextConfig} */
 
-const MiniCssExtractPlugin = require('mini-css-extract-plugin');
-
 const appSecurityHeaders = [
   { key: 'X-XSS-Protection', value: '1; mode=block' },
 ];
@@ -51,24 +49,7 @@ const nextConfig = {
   },
   webpack: (config) => {
     config.plugins.push(new VeliteWebpackPlugin());
-    config.plugins.push(
-      new MiniCssExtractPlugin({
-        filename: '[name].[contenthash].css',
-      })
-    );
-    return {
-      ...config,
-      module: {
-        ...config.module,
-        rules: [
-          ...config.module.rules,
-          {
-            test: /\.css$/,
-            use: ['style-loader', 'css-loader'],
-          },
-        ],
-      },
-    };
+    return config;
   },
 };
 class VeliteWebpackPlugin {
