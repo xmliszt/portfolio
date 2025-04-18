@@ -35,7 +35,7 @@ export function CraftStationModalContent(props: CraftStationModalContentProps) {
               <motion.span
                 layoutId={`craft_station.tag.${props.station.id}.${tag}`}
                 key={tag}
-                className='bg-muted text-muted-foreground rounded-md px-2.5 py-1 text-sm'
+                className='bg-muted text-muted-foreground rounded-md px-2.5 py-1 text-sm whitespace-nowrap'
               >
                 {tag}
               </motion.span>
