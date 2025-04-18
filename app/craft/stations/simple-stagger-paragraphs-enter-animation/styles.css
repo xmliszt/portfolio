@@ -9,7 +9,7 @@ h3 {
 p {
   font-weight: 300;
   font-size: 14px;
-  animation: enter 0.3s ease-out;
+  animation: enter 0.6s ease-out;
   animation-delay: calc(var(--delay) * var(--index));
   animation-fill-mode: both;
 }
