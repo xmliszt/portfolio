@@ -7,6 +7,6 @@ export type CraftStation = {
   tags: string[];
   /** description of the station */
   description: string;
-  /** code of the station */
-  code: string;
+  /** codes */
+  codes: { [filename: string]: string };
 };

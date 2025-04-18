@@ -19,10 +19,12 @@ import * as parserHTML from 'prettier/parser-html';
 import * as parserTS from 'prettier/parser-typescript';
 import * as prettierPluginEstree from 'prettier/plugins/estree.js';
 
+import type { stations } from '@/app/craft/stations';
+
 import * as parserSCSS from 'prettier/parser-postcss';
 
 type SandboxProps = {
-  code: string;
+  codes: (typeof stations)[number]['codes'];
 };
 
 export function Sandbox(props: SandboxProps) {
@@ -42,27 +44,22 @@ export function Sandbox(props: SandboxProps) {
       })()}
       template='react-ts'
       customSetup={{
+        environment: 'create-react-app-typescript',
         dependencies: {
+          react: '^18.3.1',
+          'react-dom': '^18.3.1',
           motion: '^12.4.10',
           '@uidotdev/usehooks': '^2.4.1',
           clsx: '^2.1.0',
           'tailwind-merge': '^2.2.1',
         },
-      }}
-      options={{
-        externalResources: ['https://cdn.tailwindcss.com'],
-      }}
-      files={{
-        '/App.tsx': { code: props.code },
-        '/utils.ts': {
-          code: `import { type ClassValue, clsx } from 'clsx';
-import { twMerge } from 'tailwind-merge';
-
-export function cn(...inputs: ClassValue[]) {
-  return twMerge(clsx(inputs));
-}`,
+        devDependencies: {
+          '@types/react': '19.0.10',
+          '@types/react-dom': '19.0.4',
         },
       }}
+      options={{ externalResources: ['https://cdn.tailwindcss.com'] }}
+      files={props.codes}
     >
       <SandpackLayout>
         <EditorWithPrettier />

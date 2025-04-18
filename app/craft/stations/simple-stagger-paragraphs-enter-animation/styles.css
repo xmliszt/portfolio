@@ -1,0 +1,28 @@
+@import url('https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,200..800;1,6..72,200..800&display=swap');
+
+h3 {
+  font-family: 'Newsreader', serif;
+  font-style: italic;
+  font-weight: 400;
+}
+
+p {
+  font-weight: 300;
+  font-size: 14px;
+  animation: enter 0.3s ease-out;
+  animation-delay: calc(var(--delay) * var(--index));
+  animation-fill-mode: both;
+}
+
+@keyframes enter {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+    filter: blur(2px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+    filter: blur(0);
+  }
+}
