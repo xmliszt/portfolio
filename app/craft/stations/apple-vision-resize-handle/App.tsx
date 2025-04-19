@@ -30,7 +30,7 @@ export default function AppleVisionResizeHandle() {
   >(undefined);
   const activeResizingHandle = useRef<'br' | 'bl' | undefined>(undefined);
 
-  const [size, setSize] = useState({ width: 250, height: 250 });
+  const [size, setSize] = useState({ width: 100, height: 100 });
   const [isDragging, setIsDragging] = useState(false);
 
   const containerRef = useRef<HTMLDivElement>(null);
@@ -125,18 +125,7 @@ export default function AppleVisionResizeHandle() {
               transition: isDragging ? 'none' : 'width 0.2s, height 0.2s',
             }}
           >
-            <div className='absolute inset-4 flex flex-col items-center justify-center gap-y-2 overflow-hidden rounded-[12px] backdrop-blur-md'>
-              {/* Background with gradient fade effect */}
-              <div
-                className='absolute inset-0 shadow-[inset_0_0_50px_rgba(0,0,0,0.6)]'
-                style={{
-                  background:
-                    'url(https://images.unsplash.com/photo-1742603096268-0efc93dcc95a?q=80&w=3359&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D) no-repeat center center',
-                  backgroundSize: 'cover',
-                }}
-              />
-
-              {/* Content */}
+            <div className='absolute inset-4 flex flex-col items-center justify-center gap-y-2 overflow-hidden rounded-[12px]'>
               <div className='relative z-10 flex flex-col items-center justify-center gap-y-2'>
                 <div className='text-xs text-neutral-200'>
                   {Math.round(size.width)} × {Math.round(size.height)}

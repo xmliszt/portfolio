@@ -8,7 +8,8 @@ export function generateMetadata(): Metadata {
   return {
     title: 'Dune themed light dark mode toggle | 沙丘主题的明暗切换',
     alternates: {
-      canonical: '/playground/dune-themed-light-dark-toggle',
+      canonical:
+        'https://www.liyuxuan.dev/playground/dune-themed-light-dark-toggle',
     },
     openGraph: {
       ...openGraph,

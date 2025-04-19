@@ -31,7 +31,7 @@ export async function generateMetadata(props: Props): Promise<Metadata> {
       description: page.ogDescription ?? openGraph?.description ?? '',
     },
     alternates: {
-      canonical: `/${page.slug}`,
+      canonical: `https://www.liyuxuan.dev/${page.slug}`,
     },
   };
 }
@@ -47,9 +47,9 @@ export default async function PagePage(props: Props) {
   if (page == null) notFound();
 
   return (
-    <article className='prose prose-stone relative dark:prose-invert'>
+    <article className='prose prose-stone dark:prose-invert relative'>
       <h1 className='group relative'>
-        <a id='top' className='relative -top-16 block [visibility:hidden]'></a>
+        <a id='top' className='[visibility:hidden] relative -top-16 block'></a>
         {page.title}
         {page.subtitle && <ShadowSubtitle>{page.subtitle}</ShadowSubtitle>}
       </h1>

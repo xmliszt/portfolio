@@ -23,7 +23,7 @@ export async function generateMetadata(props: HobbyProps): Promise<Metadata> {
   return {
     title: hobby.title + (hobby.subtitle ? ` | ${hobby.subtitle}` : ''),
     description: hobby.synopsis,
-    alternates: { canonical: `/hobbies/${hobby.slug}` },
+    alternates: { canonical: `https://www.liyuxuan.dev/hobbies/${hobby.slug}` },
     openGraph: {
       ...openGraph,
       title: `Li Yuxuan | hobbies | ${hobby.title}`,
@@ -46,7 +46,7 @@ export default async function HobbyPage(props: HobbyProps) {
   return (
     <article className='prose prose-stone dark:prose-invert'>
       <h1 className='group relative'>
-        <a id='top' className='relative -top-16 block [visibility:hidden]'></a>
+        <a id='top' className='[visibility:hidden] relative -top-16 block'></a>
         {hobby.title}
         {hobby.subtitle && <ShadowSubtitle>{hobby.subtitle}</ShadowSubtitle>}
       </h1>

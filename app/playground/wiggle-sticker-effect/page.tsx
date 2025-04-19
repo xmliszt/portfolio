@@ -10,7 +10,7 @@ export function generateMetadata(): Metadata {
   return {
     title: 'ThreeJS Wiggle Sticker Effect | ThreeJS 动态贴纸效果',
     alternates: {
-      canonical: '/playground/wiggle-sticker-effect',
+      canonical: 'https://www.liyuxuan.dev/playground/wiggle-sticker-effect',
     },
     openGraph: {
       ...openGraph,

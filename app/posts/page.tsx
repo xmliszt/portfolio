@@ -14,7 +14,7 @@ export function generateMetadata(): Metadata {
   return {
     title: 'posts | 碎碎念',
     alternates: {
-      canonical: '/posts',
+      canonical: 'https://www.liyuxuan.dev/posts',
     },
     openGraph: {
       ...openGraph,

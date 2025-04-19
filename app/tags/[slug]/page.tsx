@@ -33,7 +33,7 @@ export async function generateMetadata(props: TagProps): Promise<Metadata> {
     title: `posts | ${params.slug}`,
     description: `${params.postCount} posts tagged with ${params.slug}`,
     alternates: {
-      canonical: `/tags/${params.slug}`,
+      canonical: `https://www.liyuxuan.dev/tags/${params.slug}`,
     },
     openGraph: {
       ...openGraph,
@@ -59,7 +59,7 @@ export default async function PostPage(props: TagProps) {
   if (tag == null) return notFound();
 
   return (
-    <article className='prose prose-stone flex flex-col gap-12 dark:prose-invert'>
+    <article className='prose prose-stone dark:prose-invert flex flex-col gap-12'>
       <h1>
         tag: {params.slug} ({pluralize('post', tag.count.posts, true)})
       </h1>

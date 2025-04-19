@@ -8,7 +8,7 @@ import { tags } from '#site/content';
 export function generateMetadata(): Metadata {
   return {
     title: 'tags | 标签',
-    alternates: { canonical: '/tags' },
+    alternates: { canonical: 'https://www.liyuxuan.dev/tags' },
     openGraph: {
       ...openGraph,
       title: 'Li Yuxuan | tags',
@@ -26,7 +26,7 @@ export default function TagsPage() {
     .sort();
 
   return (
-    <article className='prose prose-stone flex flex-col gap-4 dark:prose-invert'>
+    <article className='prose prose-stone dark:prose-invert flex flex-col gap-4'>
       <h1>tags</h1>
       <div className='flex flex-col gap-2'>
         {sortedTags.map((tag) => (

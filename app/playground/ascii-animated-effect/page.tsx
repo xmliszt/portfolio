@@ -9,7 +9,7 @@ export function generateMetadata(): Metadata {
   return {
     title: 'ASCII Animated Effect | ASCII动画效果',
     alternates: {
-      canonical: '/playground/ascii-animated-effect',
+      canonical: 'https://www.liyuxuan.dev/playground/ascii-animated-effect',
     },
     openGraph: {
       ...openGraph,

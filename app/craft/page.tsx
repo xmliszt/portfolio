@@ -8,7 +8,7 @@ import { openGraph } from '@/app/metadata';
 export function generateMetadata(): Metadata {
   return {
     title: 'craft | 作坊',
-    alternates: { canonical: '/craft' },
+    alternates: { canonical: 'https://www.liyuxuan.dev/craft' },
     openGraph: {
       ...openGraph,
       title: 'Li Yuxuan | craft',

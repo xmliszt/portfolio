@@ -10,7 +10,7 @@ import { hobbies } from '#site/content';
 export function generateMetadata(): Metadata {
   return {
     title: 'hobbies | 兴趣爱好',
-    alternates: { canonical: '/hobbies' },
+    alternates: { canonical: 'https://www.liyuxuan.dev/hobbies' },
     openGraph: {
       ...openGraph,
       title: 'Li Yuxuan | hobbies',

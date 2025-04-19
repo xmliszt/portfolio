@@ -28,7 +28,7 @@ export async function generateMetadata(props: PostProps): Promise<Metadata> {
   return {
     title: `Li Yuxuan | ${post.title}`,
     description: post.description,
-    alternates: { canonical: `/posts/${post.slug}` },
+    alternates: { canonical: `https://www.liyuxuan.dev/posts/${post.slug}` },
     openGraph: {
       ...openGraph,
       title: `Li Yuxuan | posts | ${post.title}`,
@@ -53,7 +53,7 @@ export default async function PostPage(props: PostProps) {
   return (
     <article className='prose prose-stone dark:prose-invert'>
       <h1>
-        <a id='top' className='relative -top-16 block [visibility:hidden]'></a>
+        <a id='top' className='[visibility:hidden] relative -top-16 block'></a>
         {post.title}
       </h1>
       <div className='mt-6 flex items-end justify-between'>
@@ -65,7 +65,7 @@ export default async function PostPage(props: PostProps) {
           ))}
         </div>
 
-        <div className='flex flex-col items-end gap-y-1 pt-2 text-right text-xs leading-tight text-muted-foreground'>
+        <div className='text-muted-foreground flex flex-col items-end gap-y-1 pt-2 text-right text-xs leading-tight'>
           <div>{views} views</div>
           <div>
             {post.metadata.readingTime && (
@@ -83,7 +83,7 @@ export default async function PostPage(props: PostProps) {
       {post.cover && (
         <Image src={post.cover} alt={post.title} className='m-0' />
       )}
-      <hr className='mb-6 mt-2' />
+      <hr className='mt-2 mb-6' />
 
       {/* Markdown content */}
       <MDXContent code={post.content} />
@@ -100,7 +100,7 @@ export default async function PostPage(props: PostProps) {
           ))}
         </div>
 
-        <div className='flex flex-col items-end gap-y-1 pt-2 text-right text-xs leading-tight text-muted-foreground'>
+        <div className='text-muted-foreground flex flex-col items-end gap-y-1 pt-2 text-right text-xs leading-tight'>
           <div>{views} views</div>
           <div>
             {post.metadata.readingTime && (
