@@ -7,7 +7,7 @@ export const stations: CraftStation[] = [
     title: "vision OS resize handle animation",
     tags: ["AnimatePresence", "MotionConfig", "useDragControls"],
     description:
-      "Use react-motion to re-create the Apple Vision OS window resize handle animation with real resizing functionality.",
+      "Re-create the Apple Vision OS window resize handle animation with real resizing functionality.",
     codes: generatedStations["apple-vision-resize-handle"],
   },
   {
