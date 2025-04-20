@@ -1,8 +1,8 @@
-'use client';
+"use client";
 
-import { createContext, useContext, useEffect, useState } from 'react';
+import { createContext, useContext, useEffect, useState } from "react";
 
-import { Bgm } from './bgm';
+import { Bgm } from "./bgm";
 
 type BgmContextType = {
   bgm: Bgm;
@@ -10,7 +10,7 @@ type BgmContextType = {
 
 const BgmContext = createContext<BgmContextType>({
   get bgm(): Bgm {
-    throw new Error('bgm not implemented');
+    throw new Error("bgm not implemented");
   },
 });
 

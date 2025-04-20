@@ -1,19 +1,19 @@
-import * as runtime from 'react/jsx-runtime';
-import Link from 'next/link';
+import * as runtime from "react/jsx-runtime";
+import Link from "next/link";
 
-import { slugify } from '@/lib/utils';
+import { slugify } from "@/lib/utils";
 
-import { BackToTopLink } from './ui/back-to-top-link';
-import { BadgeGroup } from './ui/badge-group';
-import { BookGrid } from './ui/book-grid';
-import { CopyablePre } from './ui/copyable-pre';
-import { CustomLink } from './ui/custom-link';
-import { ExternalActionButtonLink } from './ui/external-action-button-link';
-import { FilmGrid } from './ui/film-grid';
-import { ImagePerspectiveLink } from './ui/image-perspective-link';
-import { LoadMoreLinks } from './ui/load-more-links';
-import { PhotoBentoGrid } from './ui/photo-bento-grid';
-import { Ratings } from './ui/ratings';
+import { BackToTopLink } from "./ui/back-to-top-link";
+import { BadgeGroup } from "./ui/badge-group";
+import { BookGrid } from "./ui/book-grid";
+import { CopyablePre } from "./ui/copyable-pre";
+import { CustomLink } from "./ui/custom-link";
+import { ExternalActionButtonLink } from "./ui/external-action-button-link";
+import { FilmGrid } from "./ui/film-grid";
+import { ImagePerspectiveLink } from "./ui/image-perspective-link";
+import { LoadMoreLinks } from "./ui/load-more-links";
+import { PhotoBentoGrid } from "./ui/photo-bento-grid";
+import { Ratings } from "./ui/ratings";
 
 interface MdxProps {
   code: string;
@@ -35,7 +35,7 @@ export function MDXContent({ code, components }: MdxProps) {
           <h1 {...props}>
             <a
               id={slugify(props.children)}
-              className='[visibility:hidden] relative -top-[calc(100vh/3)] block max-h-1 w-32'
+              className="[visibility:hidden] relative -top-[calc(100vh/3)] block max-h-1 w-32"
             >
               {props.children}
             </a>
@@ -46,7 +46,7 @@ export function MDXContent({ code, components }: MdxProps) {
           <h2 {...props}>
             <a
               id={slugify(props.children)}
-              className='[visibility:hidden] relative -top-[calc(100vh/3)] block max-h-1 w-32'
+              className="[visibility:hidden] relative -top-[calc(100vh/3)] block max-h-1 w-32"
             >
               {props.children}
             </a>
@@ -57,7 +57,7 @@ export function MDXContent({ code, components }: MdxProps) {
           <h3 {...props}>
             <a
               id={slugify(props.children)}
-              className='[visibility:hidden] relative -top-[calc(100vh/3)] block max-h-1 w-32'
+              className="[visibility:hidden] relative -top-[calc(100vh/3)] block max-h-1 w-32"
             >
               {props.children}
             </a>
@@ -68,7 +68,7 @@ export function MDXContent({ code, components }: MdxProps) {
           <h4 {...props}>
             <a
               id={slugify(props.children)}
-              className='[visibility:hidden] relative -top-[calc(100vh/3)] block max-h-1 w-32'
+              className="[visibility:hidden] relative -top-[calc(100vh/3)] block max-h-1 w-32"
             >
               {props.children}
             </a>

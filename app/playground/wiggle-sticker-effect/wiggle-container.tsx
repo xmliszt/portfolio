@@ -1,8 +1,8 @@
-'use client';
+"use client";
 
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef } from "react";
 
-import { WiggleRenderer } from './wiggle-renderer';
+import { WiggleRenderer } from "./wiggle-renderer";
 
 export function WiggleContainer() {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -30,7 +30,7 @@ export function WiggleContainer() {
   return (
     <div
       ref={containerRef}
-      className='mt-4 h-[500px] w-full overflow-hidden rounded-lg'
+      className="mt-4 h-[500px] w-full overflow-hidden rounded-lg"
     />
   );
 }

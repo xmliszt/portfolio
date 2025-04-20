@@ -1,10 +1,10 @@
-'use client';
+"use client";
 
-import * as THREE from 'three';
-import { DragControls } from 'three/examples/jsm/controls/DragControls.js';
-import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
-import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
-import { WiggleBone } from 'wiggle/spring';
+import * as THREE from "three";
+import { DragControls } from "three/examples/jsm/controls/DragControls.js";
+import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
+import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
+import { WiggleBone } from "wiggle/spring";
 
 export class WiggleRenderer {
   container;
@@ -28,7 +28,7 @@ export class WiggleRenderer {
     this.renderer = new THREE.WebGLRenderer({ antialias: true });
     this.renderer.setPixelRatio(window.devicePixelRatio);
     this.renderer.setSize(container.clientWidth, container.clientHeight);
-    this.renderer.setClearColor('#ddd');
+    this.renderer.setClearColor("#ddd");
 
     // Enable shadow
     this.renderer.shadowMap.enabled = true;
@@ -76,7 +76,7 @@ export class WiggleRenderer {
     this.scene.add(plane);
 
     this.resizeHandler = this.onWindowResize.bind(this);
-    window.addEventListener('resize', this.resizeHandler);
+    window.addEventListener("resize", this.resizeHandler);
 
     // Create and add grid to the plane
     const gridHelper = new THREE.GridHelper(40, 40, 0x000000, 0xcccccc); // size, divisions, color1, color2
@@ -89,7 +89,7 @@ export class WiggleRenderer {
     );
     this.orbit.update();
 
-    this.loader.load('/playground/mobbin.glb', (gltf) => {
+    this.loader.load("/playground/mobbin.glb", (gltf) => {
       this.loadedModel = gltf.scene;
       this.scene.add(this.loadedModel);
 
@@ -111,11 +111,11 @@ export class WiggleRenderer {
       );
 
       // Bone names corresponds to glb file in blender.
-      const rootBone = this.scene.getObjectByName('Root');
-      const b1 = this.scene.getObjectByName('Wiggle1');
-      const b2 = this.scene.getObjectByName('Wiggle2');
-      const b3 = this.scene.getObjectByName('Wiggle3');
-      const b4 = this.scene.getObjectByName('Wiggle4');
+      const rootBone = this.scene.getObjectByName("Root");
+      const b1 = this.scene.getObjectByName("Wiggle1");
+      const b2 = this.scene.getObjectByName("Wiggle2");
+      const b3 = this.scene.getObjectByName("Wiggle3");
+      const b4 = this.scene.getObjectByName("Wiggle4");
 
       // Comment out wiggle by velocity, using wiggle by spring.
       // this.wiggleBones.push(new WiggleBone(b1, { velocity: 0.01 }));
@@ -136,17 +136,17 @@ export class WiggleRenderer {
       );
 
       // Optionally handle events
-      this.dragControl.addEventListener('dragstart', () => {
+      this.dragControl.addEventListener("dragstart", () => {
         this.orbit.enabled = false; // Disable orbit controls while dragging
         gltf.scene.position.y = 0.2;
       });
 
-      this.dragControl.addEventListener('dragend', () => {
+      this.dragControl.addEventListener("dragend", () => {
         this.orbit.enabled = true; // Re-enable orbit controls after dragging
         gltf.scene.position.y = 0.05;
       });
 
-      this.dragControl.addEventListener('drag', (event) => {
+      this.dragControl.addEventListener("drag", (event) => {
         this.orbit.enabled = false;
         // Maintain the object's original Y position
         event.object.position.z = 0.2;
@@ -188,7 +188,7 @@ export class WiggleRenderer {
 
     // Remove event listeners
     if (this.resizeHandler) {
-      window.removeEventListener('resize', this.resizeHandler);
+      window.removeEventListener("resize", this.resizeHandler);
       this.resizeHandler = null;
     }
 

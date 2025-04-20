@@ -1,11 +1,11 @@
-const fs = require('fs');
-const path = require('path');
+const fs = require("fs");
+const path = require("path");
 
 // Read all station files
-const stationsDir = path.join(__dirname, '../app/craft/stations');
+const stationsDir = path.join(__dirname, "../app/craft/stations");
 const outputFile = path.join(
   __dirname,
-  '../app/craft/__generated__/generated-stations.ts'
+  "../app/craft/__generated__/generated-stations.ts"
 );
 
 // Get all sub-folders, each folder is a station
@@ -21,7 +21,7 @@ const stations = stationFolders.reduce((acc, folder) => {
     ...acc,
     [folder]: filesInFolder.map((file) => {
       const filePath = path.join(folderPath, file);
-      const content = fs.readFileSync(filePath, 'utf8');
+      const content = fs.readFileSync(filePath, "utf8");
       return {
         name: file,
         content,
@@ -57,8 +57,8 @@ Object.entries(stations).forEach(([stationId, files]) => {
   files.forEach((file) => {
     // Escape backticks and interpolation markers for template strings
     const escapedContent = file.content
-      .replace(/`/g, '\\`')
-      .replace(/\${/g, '\\${');
+      .replace(/`/g, "\\`")
+      .replace(/\${/g, "\\${");
     output += `    '${file.name}': \`${escapedContent}\`,\n`;
   });
   output += `  },\n`;

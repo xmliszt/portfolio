@@ -1,9 +1,9 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import { Check, Copy } from '@phosphor-icons/react';
+import { useState } from "react";
+import { Check, Copy } from "@phosphor-icons/react";
 
-import { Tooltip, TooltipContent, TooltipTrigger } from './tooltip';
+import { Tooltip, TooltipContent, TooltipTrigger } from "./tooltip";
 
 export function CopyablePre({ children, raw, ...props }: any) {
   const [isCopied, setIsCopied] = useState(false);
@@ -15,15 +15,15 @@ export function CopyablePre({ children, raw, ...props }: any) {
   }
 
   return (
-    <pre {...props} className='relative p-4'>
+    <pre {...props} className="relative p-4">
       <Tooltip>
         <TooltipTrigger asChild>
           <button
-            className='absolute right-0 top-0 p-2 text-muted-foreground'
+            className="text-muted-foreground absolute top-0 right-0 p-2"
             onClick={copy}
           >
             {isCopied && (
-              <span className='absolute right-8 top-2 z-20 animate-fade-in-from-right-and-fade-out text-xs opacity-0'>
+              <span className="animate-fade-in-from-right-and-fade-out absolute top-2 right-8 z-20 text-xs opacity-0">
                 Copied!
               </span>
             )}

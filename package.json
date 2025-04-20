@@ -8,6 +8,7 @@
     "start": "next start",
     "lint": "next lint",
     "lint:fix": "next lint --fix",
+    "format:fix": "prettier . --write",
     "prepare": "husky install",
     "velite:build": "velite --clean",
     "velite:dev": "velite --watch",

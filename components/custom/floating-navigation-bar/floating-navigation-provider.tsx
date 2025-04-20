@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import {
   createContext,
@@ -6,7 +6,7 @@ import {
   type SetStateAction,
   useContext,
   useState,
-} from 'react';
+} from "react";
 
 type FloatingNavigationContextType = {
   isOpen: boolean;

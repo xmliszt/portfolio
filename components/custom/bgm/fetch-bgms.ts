@@ -1,13 +1,13 @@
-'use server';
+"use server";
 
-import { getDownloadURL, ref } from 'firebase/storage';
+import { getDownloadURL, ref } from "firebase/storage";
 
-import { firebaseStorage } from '@/lib/firebase';
-import { createServiceRoleClient } from '@/lib/supabase/create-service-role-client';
+import { firebaseStorage } from "@/lib/firebase";
+import { createServiceRoleClient } from "@/lib/supabase/create-service-role-client";
 
 export async function fetchBGMs() {
   const supabase = createServiceRoleClient();
-  const response = await supabase.from('bgms').select();
+  const response = await supabase.from("bgms").select();
   if (response.error) throw response.error;
   return {
     bgms: await Promise.all(

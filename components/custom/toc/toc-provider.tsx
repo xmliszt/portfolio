@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import {
   createContext,
@@ -6,11 +6,11 @@ import {
   SetStateAction,
   useContext,
   useState,
-} from 'react';
+} from "react";
 
 type TOCProviderContextType = {
-  toc: Page['toc'];
-  setToc: Dispatch<SetStateAction<Page['toc']>>;
+  toc: Page["toc"];
+  setToc: Dispatch<SetStateAction<Page["toc"]>>;
   showToc: boolean;
   setShowToc: Dispatch<SetStateAction<boolean>>;
   hash: string;
@@ -22,14 +22,14 @@ const TOCProviderContext = createContext<TOCProviderContextType>({
   setToc: () => {},
   showToc: true,
   setShowToc: () => {},
-  hash: '',
+  hash: "",
   setHash: () => {},
 });
 
 export function TOCProvider({ children }: { children: React.ReactNode }) {
-  const [toc, setToc] = useState<Page['toc']>([]);
+  const [toc, setToc] = useState<Page["toc"]>([]);
   const [showToc, setShowToc] = useState(true);
-  const [hash, setHash] = useState('');
+  const [hash, setHash] = useState("");
 
   return (
     <TOCProviderContext.Provider

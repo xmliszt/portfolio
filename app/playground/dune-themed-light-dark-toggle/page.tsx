@@ -1,34 +1,34 @@
-import { Metadata } from 'next';
+import { Metadata } from "next";
 
-import { openGraph } from '@/app/metadata';
-import { DuneLightDarkThemeToggle } from '@/components/custom/theme-switch/dune-light-dark-theme-toggle';
-import { Ratings } from '@/components/ui/ratings';
+import { openGraph } from "@/app/metadata";
+import { DuneLightDarkThemeToggle } from "@/components/custom/theme-switch/dune-light-dark-theme-toggle";
+import { Ratings } from "@/components/ui/ratings";
 
 export function generateMetadata(): Metadata {
   return {
-    title: 'Dune themed light dark mode toggle | 沙丘主题的明暗切换',
+    title: "Dune themed light dark mode toggle | 沙丘主题的明暗切换",
     alternates: {
       canonical:
-        'https://www.liyuxuan.dev/playground/dune-themed-light-dark-toggle',
+        "https://www.liyuxuan.dev/playground/dune-themed-light-dark-toggle",
     },
     openGraph: {
       ...openGraph,
-      title: 'Li Yuxuan | Dune themed light dark mode toggle',
+      title: "Li Yuxuan | Dune themed light dark mode toggle",
       description:
-        'After watching the movie Dune 2, I was inspired to create this light dark mode toggle button to capture the iconic dessert of the Arrakis, the Shai-Hulud (the largest sandworm), and Paul Atreides (the main character).',
+        "After watching the movie Dune 2, I was inspired to create this light dark mode toggle button to capture the iconic dessert of the Arrakis, the Shai-Hulud (the largest sandworm), and Paul Atreides (the main character).",
     },
   };
 }
 
 export default function Page() {
   return (
-    <div className='flex w-full flex-col items-center gap-2'>
-      <h1 className='text-center font-bold'>{`I'm a Dune light dark mode toggle`}</h1>
+    <div className="flex w-full flex-col items-center gap-2">
+      <h1 className="text-center font-bold">{`I'm a Dune light dark mode toggle`}</h1>
       <p>Click the button to toggle light and dark mode.</p>
-      <div className='grid h-[200px] w-full place-items-center'>
+      <div className="grid h-[200px] w-full place-items-center">
         <DuneLightDarkThemeToggle sizeInPixels={120} showRing />
       </div>
-      <Ratings id='dune-light-dark-toggle' />
+      <Ratings id="dune-light-dark-toggle" />
       <p>
         After watching the movie Dune 2, I was inspired to create this light
         dark mode toggle button to capture the iconic dessert of the Arrakis,

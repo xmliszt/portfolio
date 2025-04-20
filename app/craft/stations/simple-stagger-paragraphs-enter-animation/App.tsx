@@ -1,4 +1,4 @@
-import './styles.css';
+import "./styles.css";
 
 const PARAGRAPHS: string[] = [
   `Welcome to Craft, a live playground where ideas transform into interactive experiences. This is where creativity meets code in real-time experimentation.`,
@@ -9,11 +9,11 @@ const PARAGRAPHS: string[] = [
 
 export default function App() {
   return (
-    <main className='flex h-screen w-screen justify-center overflow-y-auto p-8'>
+    <main className="flex h-screen w-screen justify-center overflow-y-auto p-8">
       <div
-        className='flex max-w-md flex-col gap-y-6'
+        className="flex max-w-md flex-col gap-y-6"
         style={{
-          '--delay': '120ms',
+          "--delay": "120ms",
         }}
       >
         <h3>Craft</h3>
@@ -21,7 +21,7 @@ export default function App() {
           <p
             key={text}
             style={{
-              '--index': idx,
+              "--index": idx,
             }}
           >
             {text}

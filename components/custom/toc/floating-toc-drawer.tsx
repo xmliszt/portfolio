@@ -1,18 +1,18 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import { ArticleNyTimes } from '@phosphor-icons/react';
+import { useState } from "react";
+import { ArticleNyTimes } from "@phosphor-icons/react";
 
-import { Copyright } from '@/components/custom/copyright';
-import { Drawer, DrawerContent, DrawerTrigger } from '@/components/ui/drawer';
+import { Copyright } from "@/components/custom/copyright";
+import { Drawer, DrawerContent, DrawerTrigger } from "@/components/ui/drawer";
 import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
-} from '@/components/ui/tooltip';
-import { cn, isAtCurrentTOC, slugify } from '@/lib/utils';
+} from "@/components/ui/tooltip";
+import { cn, isAtCurrentTOC, slugify } from "@/lib/utils";
 
-import { useTOC } from './toc-provider';
+import { useTOC } from "./toc-provider";
 
 type FloatingTOCDrawerProps = {
   children: React.ReactNode;
@@ -22,9 +22,9 @@ export function FloatingTOCDrawer(props: FloatingTOCDrawerProps) {
   const [isOpen, setIsOpen] = useState(false);
   const { showToc, toc, hash, setHash } = useTOC();
 
-  function renderTOCTree(toc: Page['toc'], indents = 0) {
+  function renderTOCTree(toc: Page["toc"], indents = 0) {
     return (
-      <div className='m-0 flex w-full flex-col gap-y-1'>
+      <div className="m-0 flex w-full flex-col gap-y-1">
         {toc.map((heading) => {
           return (
             <>
@@ -32,11 +32,11 @@ export function FloatingTOCDrawer(props: FloatingTOCDrawerProps) {
                 key={`${heading.url}_${indents}`}
                 href={`#${slugify(heading.title)}`}
                 className={cn(
-                  'text-secondary-foreground rounded-lg p-2 text-left text-xs transition-colors',
-                  'hover:bg-secondary',
+                  "text-secondary-foreground rounded-lg p-2 text-left text-xs transition-colors",
+                  "hover:bg-secondary",
                   isAtCurrentTOC(hash, heading.title)
-                    ? 'bg-secondary font-semibold'
-                    : 'font-normal'
+                    ? "bg-secondary font-semibold"
+                    : "font-normal"
                 )}
                 style={{
                   marginLeft: `${indents * 8}px`,
@@ -73,18 +73,18 @@ export function FloatingTOCDrawer(props: FloatingTOCDrawerProps) {
           <DrawerTrigger
             asChild
             className={cn(
-              'fixed right-4 bottom-10 z-50 md:left-10',
-              'block md:hidden'
+              "fixed right-4 bottom-10 z-50 md:left-10",
+              "block md:hidden"
             )}
           >
-            <div className='group size-10'>
-              <div className='absolute z-20 flex h-full w-full items-center justify-center'>
+            <div className="group size-10">
+              <div className="absolute z-20 flex h-full w-full items-center justify-center">
                 <ArticleNyTimes size={24} />
               </div>
               <div
                 className={cn(
-                  'text-secondary-foreground z-10 h-full w-full rounded-full border p-2 shadow-xs backdrop-blur-lg',
-                  'group-hover:bg-background transition-[transform_background_box-shadow] duration-300 ease-in-out group-hover:scale-105 group-hover:shadow-lg'
+                  "text-secondary-foreground z-10 h-full w-full rounded-full border p-2 shadow-xs backdrop-blur-lg",
+                  "group-hover:bg-background transition-[transform_background_box-shadow] duration-300 ease-in-out group-hover:scale-105 group-hover:shadow-lg"
                 )}
               ></div>
             </div>
@@ -94,16 +94,16 @@ export function FloatingTOCDrawer(props: FloatingTOCDrawerProps) {
       </Tooltip>
       <DrawerContent
         className={cn(
-          'flex flex-col gap-12 rounded-none rounded-t-lg text-sm focus-visible:outline-hidden',
+          "flex flex-col gap-12 rounded-none rounded-t-lg text-sm focus-visible:outline-hidden",
           // hide the drawer handle
-          '[&>*:first-child]:hidden'
+          "[&>*:first-child]:hidden"
         )}
       >
         {/* Custom drawer handle */}
-        <div className='bg-foreground mx-auto mt-2 h-1 w-[60px] cursor-grab rounded-full'></div>
+        <div className="bg-foreground mx-auto mt-2 h-1 w-[60px] cursor-grab rounded-full"></div>
         {props.children}
         {/* Navigation items */}
-        <nav className='prose flex w-full flex-col gap-2 p-3'>
+        <nav className="prose flex w-full flex-col gap-2 p-3">
           {renderTOCTree(toc)}
         </nav>
         {/* Copyright */}

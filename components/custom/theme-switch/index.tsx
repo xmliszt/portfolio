@@ -1,4 +1,4 @@
-import { DuneLightDarkThemeToggle } from './dune-light-dark-theme-toggle';
+import { DuneLightDarkThemeToggle } from "./dune-light-dark-theme-toggle";
 
 type ThemeSwitchProps = {
   showRing?: boolean;

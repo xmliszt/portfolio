@@ -1,13 +1,13 @@
-import type { Metadata } from 'next';
-import { notFound } from 'next/navigation';
+import type { Metadata } from "next";
+import { notFound } from "next/navigation";
 
-import { openGraph } from '@/app/metadata';
-import { TOCLoader } from '@/components/custom/toc/toc-loader';
-import { MDXContent } from '@/components/mdx-content';
+import { openGraph } from "@/app/metadata";
+import { TOCLoader } from "@/components/custom/toc/toc-loader";
+import { MDXContent } from "@/components/mdx-content";
 
-import { ShadowSubtitle } from './shadow-subtitle';
+import { ShadowSubtitle } from "./shadow-subtitle";
 
-import { pages } from '#site/content';
+import { pages } from "#site/content";
 
 type Props = {
   params: Promise<{
@@ -24,11 +24,11 @@ export async function generateMetadata(props: Props): Promise<Metadata> {
   const page = getPageBySlug(params.slug);
   if (page == null) return {};
   return {
-    title: page.title + (page.subtitle ? ` | ${page.subtitle}` : ''),
+    title: page.title + (page.subtitle ? ` | ${page.subtitle}` : ""),
     openGraph: {
       ...openGraph,
       title: `Li Yuxuan | ${page.title}`,
-      description: page.ogDescription ?? openGraph?.description ?? '',
+      description: page.ogDescription ?? openGraph?.description ?? "",
     },
     alternates: {
       canonical: `https://www.liyuxuan.dev/${page.slug}`,
@@ -47,9 +47,9 @@ export default async function PagePage(props: Props) {
   if (page == null) notFound();
 
   return (
-    <article className='prose prose-stone dark:prose-invert relative'>
-      <h1 className='group relative'>
-        <a id='top' className='[visibility:hidden] relative -top-16 block'></a>
+    <article className="prose prose-stone dark:prose-invert relative">
+      <h1 className="group relative">
+        <a id="top" className="[visibility:hidden] relative -top-16 block"></a>
         {page.title}
         {page.subtitle && <ShadowSubtitle>{page.subtitle}</ShadowSubtitle>}
       </h1>

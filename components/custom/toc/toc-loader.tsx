@@ -1,12 +1,12 @@
-'use client';
+"use client";
 
-import { useEffect } from 'react';
+import { useEffect } from "react";
 
-import { useTOC } from './toc-provider';
+import { useTOC } from "./toc-provider";
 
 type TOCLoaderProps = {
-  toc: Page['toc'];
-  showToc: Page['showToc'];
+  toc: Page["toc"];
+  showToc: Page["showToc"];
 };
 
 export function TOCLoader(props: TOCLoaderProps) {

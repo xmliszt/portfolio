@@ -1,9 +1,9 @@
-import { notFound } from 'next/navigation';
+import { notFound } from "next/navigation";
 
-import { CraftStationModalContent } from '@/app/craft/components/craft-station-modal-content';
-import { stations } from '@/app/craft/stations';
+import { CraftStationModalContent } from "@/app/craft/components/craft-station-modal-content";
+import { stations } from "@/app/craft/stations";
 
-import { Modal } from './modal';
+import { Modal } from "./modal";
 
 type PageParams = Promise<{
   station_id: string;

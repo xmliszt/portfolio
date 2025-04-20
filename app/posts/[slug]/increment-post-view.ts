@@ -1,6 +1,6 @@
-import { cookies } from 'next/headers';
+import { cookies } from "next/headers";
 
-import { createServiceRoleClient } from '@/lib/supabase/create-service-role-client';
+import { createServiceRoleClient } from "@/lib/supabase/create-service-role-client";
 
 type IncrementPostViewOptions = {
   slug: string;
@@ -12,15 +12,15 @@ export async function incrementPostView(options: IncrementPostViewOptions) {
 
   const supabase = createServiceRoleClient();
   const fetchCurrentViewResponse = await supabase
-    .from('post_views')
+    .from("post_views")
     .select()
-    .eq('slug', options.slug)
+    .eq("slug", options.slug)
     .maybeSingle();
   if (fetchCurrentViewResponse.error) throw fetchCurrentViewResponse.error;
   if (fetchCurrentViewResponse.data == null) {
     // insert the row first
     const insertResponse = await supabase
-      .from('post_views')
+      .from("post_views")
       .insert([{ slug: options.slug, view: 1 }])
       .single();
     if (insertResponse.error) throw insertResponse.error;
@@ -31,11 +31,11 @@ export async function incrementPostView(options: IncrementPostViewOptions) {
   // Existing row, increment the view
   const incrementedView = fetchCurrentViewResponse.data.view + 1;
   const response = await supabase
-    .from('post_views')
+    .from("post_views")
     .update({
       view: incrementedView,
     })
-    .eq('slug', options.slug)
+    .eq("slug", options.slug)
     .select()
     .single();
   if (response.error) throw response.error;

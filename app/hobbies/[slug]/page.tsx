@@ -1,12 +1,12 @@
-import { Metadata } from 'next';
-import { notFound } from 'next/navigation';
+import { Metadata } from "next";
+import { notFound } from "next/navigation";
 
-import { ShadowSubtitle } from '@/app/[slug]/shadow-subtitle';
-import { openGraph } from '@/app/metadata';
-import { TOCLoader } from '@/components/custom/toc/toc-loader';
-import { MDXContent } from '@/components/mdx-content';
+import { ShadowSubtitle } from "@/app/[slug]/shadow-subtitle";
+import { openGraph } from "@/app/metadata";
+import { TOCLoader } from "@/components/custom/toc/toc-loader";
+import { MDXContent } from "@/components/mdx-content";
 
-import { hobbies } from '#site/content';
+import { hobbies } from "#site/content";
 
 type HobbyProps = {
   params: Promise<{ slug: string }>;
@@ -21,7 +21,7 @@ export async function generateMetadata(props: HobbyProps): Promise<Metadata> {
   const hobby = getHobbyBySlug(params.slug);
   if (hobby == null) return {};
   return {
-    title: hobby.title + (hobby.subtitle ? ` | ${hobby.subtitle}` : ''),
+    title: hobby.title + (hobby.subtitle ? ` | ${hobby.subtitle}` : ""),
     description: hobby.synopsis,
     alternates: { canonical: `https://www.liyuxuan.dev/hobbies/${hobby.slug}` },
     openGraph: {
@@ -44,14 +44,14 @@ export default async function HobbyPage(props: HobbyProps) {
   if (hobby == null) return notFound();
 
   return (
-    <article className='prose prose-stone dark:prose-invert'>
-      <h1 className='group relative'>
-        <a id='top' className='[visibility:hidden] relative -top-16 block'></a>
+    <article className="prose prose-stone dark:prose-invert">
+      <h1 className="group relative">
+        <a id="top" className="[visibility:hidden] relative -top-16 block"></a>
         {hobby.title}
         {hobby.subtitle && <ShadowSubtitle>{hobby.subtitle}</ShadowSubtitle>}
       </h1>
       <p>{hobby.synopsis}</p>
-      <hr className='my-6' />
+      <hr className="my-6" />
 
       {/* Markdown content */}
       <MDXContent code={hobby.body} />

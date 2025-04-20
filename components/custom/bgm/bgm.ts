@@ -1,9 +1,9 @@
-'use client';
+"use client";
 
-import { HowlOptions } from 'howler';
-import { create } from 'zustand';
+import { HowlOptions } from "howler";
+import { create } from "zustand";
 
-import { fetchBGMs } from './fetch-bgms';
+import { fetchBGMs } from "./fetch-bgms";
 
 type BGM = {
   id: string;
@@ -21,7 +21,7 @@ type BgmStoreState = {
   error?: Error;
 };
 
-type CustomHowlOptions = Pick<HowlOptions, 'volume' | 'loop' | 'html5'>;
+type CustomHowlOptions = Pick<HowlOptions, "volume" | "loop" | "html5">;
 
 export class Bgm {
   private _bgms: BGM[] = [];

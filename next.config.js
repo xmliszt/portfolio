@@ -1,14 +1,14 @@
 /** @type {import('next').NextConfig} */
 
 const appSecurityHeaders = [
-  { key: 'X-XSS-Protection', value: '1; mode=block' },
+  { key: "X-XSS-Protection", value: "1; mode=block" },
 ];
 
-const withPWA = require('next-pwa')({
-  dest: 'public',
+const withPWA = require("next-pwa")({
+  dest: "public",
   register: true,
   skipWaiting: true,
-  disable: process.env.NODE_ENV === 'development',
+  disable: process.env.NODE_ENV === "development",
 });
 
 const nextConfig = {
@@ -16,16 +16,16 @@ const nextConfig = {
   images: {
     remotePatterns: [
       {
-        protocol: 'https',
-        hostname: 'github.com',
+        protocol: "https",
+        hostname: "github.com",
       },
       {
-        protocol: 'https',
-        hostname: 'tvstbbuidvwgelgidaqy.supabase.co',
+        protocol: "https",
+        hostname: "tvstbbuidvwgelgidaqy.supabase.co",
       },
       {
-        protocol: 'https',
-        hostname: 'liyuxuan.dev',
+        protocol: "https",
+        hostname: "liyuxuan.dev",
       },
     ],
   },
@@ -33,7 +33,7 @@ const nextConfig = {
     return [
       {
         // Apply these headers to all routes in your application.
-        source: '/:path*',
+        source: "/:path*",
         headers: appSecurityHeaders,
       },
     ];
@@ -41,8 +41,8 @@ const nextConfig = {
   async redirects() {
     return [
       {
-        source: '/',
-        destination: '/about#top',
+        source: "/",
+        destination: "/about#top",
         permanent: true,
       },
     ];
@@ -57,11 +57,11 @@ class VeliteWebpackPlugin {
   apply(/** @type {import('webpack').Compiler} */ compiler) {
     // executed three times in nextjs
     // twice for the server (nodejs / edge runtime) and once for the client
-    compiler.hooks.beforeCompile.tapPromise('VeliteWebpackPlugin', async () => {
+    compiler.hooks.beforeCompile.tapPromise("VeliteWebpackPlugin", async () => {
       if (VeliteWebpackPlugin.started) return;
       VeliteWebpackPlugin.started = true;
-      const dev = compiler.options.mode === 'development';
-      const { build } = await import('velite');
+      const dev = compiler.options.mode === "development";
+      const { build } = await import("velite");
       await build({ watch: dev, clean: !dev });
     });
   }

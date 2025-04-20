@@ -1,17 +1,17 @@
-import { format } from 'date-fns';
-import type { Metadata } from 'next';
-import Image from 'next/image';
-import { notFound } from 'next/navigation';
+import { format } from "date-fns";
+import type { Metadata } from "next";
+import Image from "next/image";
+import { notFound } from "next/navigation";
 
-import { openGraph } from '@/app/metadata';
-import { TOCLoader } from '@/components/custom/toc/toc-loader';
-import { MDXContent } from '@/components/mdx-content';
-import { CustomBadgeLink } from '@/components/ui/custom-badge-link';
-import { Ratings } from '@/components/ui/ratings';
+import { openGraph } from "@/app/metadata";
+import { TOCLoader } from "@/components/custom/toc/toc-loader";
+import { MDXContent } from "@/components/mdx-content";
+import { CustomBadgeLink } from "@/components/ui/custom-badge-link";
+import { Ratings } from "@/components/ui/ratings";
 
-import { incrementPostView } from './increment-post-view';
+import { incrementPostView } from "./increment-post-view";
 
-import { posts } from '#site/content';
+import { posts } from "#site/content";
 
 interface PostProps {
   params: Promise<{ slug: string }>;
@@ -51,13 +51,13 @@ export default async function PostPage(props: PostProps) {
   const { views } = await incrementPostView({ slug: params.slug });
 
   return (
-    <article className='prose prose-stone dark:prose-invert'>
+    <article className="prose prose-stone dark:prose-invert">
       <h1>
-        <a id='top' className='[visibility:hidden] relative -top-16 block'></a>
+        <a id="top" className="[visibility:hidden] relative -top-16 block"></a>
         {post.title}
       </h1>
-      <div className='mt-6 flex items-end justify-between'>
-        <div className='flex flex-row flex-wrap gap-2'>
+      <div className="mt-6 flex items-end justify-between">
+        <div className="flex flex-row flex-wrap gap-2">
           {post.tags.map((tag) => (
             <CustomBadgeLink key={tag} href={`/tags/${tag}`}>
               {tag}
@@ -65,25 +65,25 @@ export default async function PostPage(props: PostProps) {
           ))}
         </div>
 
-        <div className='text-muted-foreground flex flex-col items-end gap-y-1 pt-2 text-right text-xs leading-tight'>
+        <div className="text-muted-foreground flex flex-col items-end gap-y-1 pt-2 text-right text-xs leading-tight">
           <div>{views} views</div>
           <div>
             {post.metadata.readingTime && (
               <span>
-                {post.metadata.readingTime} min read ({post.metadata.wordCount}{' '}
+                {post.metadata.readingTime} min read ({post.metadata.wordCount}{" "}
                 words)
               </span>
             )}
           </div>
-          <time dateTime={post.date}>{format(post.date, 'do LLLL, yyyy')}</time>
+          <time dateTime={post.date}>{format(post.date, "do LLLL, yyyy")}</time>
         </div>
       </div>
 
       {post.description && <p>{post.description}</p>}
       {post.cover && (
-        <Image src={post.cover} alt={post.title} className='m-0' />
+        <Image src={post.cover} alt={post.title} className="m-0" />
       )}
-      <hr className='mt-2 mb-6' />
+      <hr className="mt-2 mb-6" />
 
       {/* Markdown content */}
       <MDXContent code={post.content} />
@@ -91,8 +91,8 @@ export default async function PostPage(props: PostProps) {
       <TOCLoader toc={post.toc} showToc={true} />
       <Ratings id={post.slug} />
 
-      <div className='mt-6 flex items-end justify-between'>
-        <div className='flex flex-row flex-wrap gap-2'>
+      <div className="mt-6 flex items-end justify-between">
+        <div className="flex flex-row flex-wrap gap-2">
           {post.tags.map((tag) => (
             <CustomBadgeLink key={tag} href={`/tags/${tag}`}>
               {tag}
@@ -100,17 +100,17 @@ export default async function PostPage(props: PostProps) {
           ))}
         </div>
 
-        <div className='text-muted-foreground flex flex-col items-end gap-y-1 pt-2 text-right text-xs leading-tight'>
+        <div className="text-muted-foreground flex flex-col items-end gap-y-1 pt-2 text-right text-xs leading-tight">
           <div>{views} views</div>
           <div>
             {post.metadata.readingTime && (
               <span>
-                {post.metadata.readingTime} min read ({post.metadata.wordCount}{' '}
+                {post.metadata.readingTime} min read ({post.metadata.wordCount}{" "}
                 words)
               </span>
             )}
           </div>
-          <time dateTime={post.date}>{format(post.date, 'do LLLL, yyyy')}</time>
+          <time dateTime={post.date}>{format(post.date, "do LLLL, yyyy")}</time>
         </div>
       </div>
     </article>

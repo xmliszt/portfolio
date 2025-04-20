@@ -1,8 +1,8 @@
-import 'server-only';
+import "server-only";
 
-import { createClient } from '@supabase/supabase-js';
+import { createClient } from "@supabase/supabase-js";
 
-import { Database } from './__generated__/types';
+import { Database } from "./__generated__/types";
 
 /**
  * Create a supabase client with service role.

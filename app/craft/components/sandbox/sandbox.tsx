@@ -1,31 +1,31 @@
-'use client';
+"use client";
 
-import { useCallback, useEffect, useState } from 'react';
-import { isMobile } from 'react-device-detect';
-import { autocompletion } from '@codemirror/autocomplete';
-import { javascript } from '@codemirror/lang-javascript';
+import { useCallback, useEffect, useState } from "react";
+import { isMobile } from "react-device-detect";
+import { autocompletion } from "@codemirror/autocomplete";
+import { javascript } from "@codemirror/lang-javascript";
 import {
   SandpackCodeEditor,
   SandpackLayout,
   SandpackPreview,
   SandpackProvider,
   useSandpack,
-} from '@codesandbox/sandpack-react';
-import { debounce } from 'lodash';
-import { Check, X } from 'lucide-react';
-import { useTheme } from 'next-themes';
-import * as prettier from 'prettier';
-import * as parserBabel from 'prettier/parser-babel';
-import * as parserHTML from 'prettier/parser-html';
-import * as parserTS from 'prettier/parser-typescript';
-import * as prettierPluginEstree from 'prettier/plugins/estree.js';
+} from "@codesandbox/sandpack-react";
+import { debounce } from "lodash";
+import { Check, X } from "lucide-react";
+import { useTheme } from "next-themes";
+import * as prettier from "prettier";
+import * as parserBabel from "prettier/parser-babel";
+import * as parserHTML from "prettier/parser-html";
+import * as parserTS from "prettier/parser-typescript";
+import * as prettierPluginEstree from "prettier/plugins/estree.js";
 
-import type { stations } from '@/app/craft/stations';
+import type { stations } from "@/app/craft/stations";
 
-import * as parserSCSS from 'prettier/parser-postcss';
+import * as parserSCSS from "prettier/parser-postcss";
 
 type SandboxProps = {
-  codes: (typeof stations)[number]['codes'];
+  codes: (typeof stations)[number]["codes"];
 };
 
 export function Sandbox(props: SandboxProps) {
@@ -35,41 +35,41 @@ export function Sandbox(props: SandboxProps) {
     <SandpackProvider
       theme={(() => {
         switch (theme) {
-          case 'light':
-            return 'light';
-          case 'dark':
-            return 'dark';
+          case "light":
+            return "light";
+          case "dark":
+            return "dark";
           default:
-            return 'auto';
+            return "auto";
         }
       })()}
-      template='react-ts'
+      template="react-ts"
       customSetup={{
-        environment: 'create-react-app-typescript',
+        environment: "create-react-app-typescript",
         dependencies: {
-          react: '^18.3.1',
-          'react-dom': '^18.3.1',
-          motion: '^12.4.10',
-          '@uidotdev/usehooks': '^2.4.1',
-          clsx: '^2.1.0',
-          'tailwind-merge': '^2.2.1',
-          'lucide-react': '^0.469.0',
-          lodash: '^4.17.21',
+          react: "^18.3.1",
+          "react-dom": "^18.3.1",
+          motion: "^12.4.10",
+          "@uidotdev/usehooks": "^2.4.1",
+          clsx: "^2.1.0",
+          "tailwind-merge": "^2.2.1",
+          "lucide-react": "^0.469.0",
+          lodash: "^4.17.21",
         },
         devDependencies: {
-          '@types/react': '19.0.10',
-          '@types/react-dom': '19.0.4',
-          '@types/lodash': '^4.17.16',
+          "@types/react": "19.0.10",
+          "@types/react-dom": "19.0.4",
+          "@types/lodash": "^4.17.16",
         },
       }}
-      options={{ externalResources: ['https://cdn.tailwindcss.com'] }}
+      options={{ externalResources: ["https://cdn.tailwindcss.com"] }}
       files={props.codes}
     >
       <SandpackLayout>
         <EditorWithPrettier />
         <SandpackPreview
           showOpenInCodeSandbox={false}
-          style={{ height: isMobile ? '500px' : '700px' }}
+          style={{ height: isMobile ? "500px" : "700px" }}
         />
       </SandpackLayout>
     </SandpackProvider>
@@ -90,8 +90,8 @@ function EditorWithPrettier() {
           autocompletion(),
         ]}
         style={{
-          height: isMobile ? '500px' : '700px',
-          fontSize: isMobile ? '10px' : '12px',
+          height: isMobile ? "500px" : "700px",
+          fontSize: isMobile ? "10px" : "12px",
         }}
       />
       {prettier && <PrettierPlugin />}
@@ -105,8 +105,8 @@ function PrettierPlugin() {
 
   return (
     <button
-      style={{ color: error ? '#ef4444' : success ? '#22c55e' : '#808080' }}
-      className='bg-background absolute top-0 left-0 z-10 flex items-center gap-x-1 rounded-tl-md px-1.5 py-0.5 text-xs transition-all duration-300'
+      style={{ color: error ? "#ef4444" : success ? "#22c55e" : "#808080" }}
+      className="bg-background absolute top-0 left-0 z-10 flex items-center gap-x-1 rounded-tl-md px-1.5 py-0.5 text-xs transition-all duration-300"
       onClick={prettifyCode}
     >
       {error ? <X size={12} /> : <Check size={12} />}
@@ -124,17 +124,17 @@ const useIsPrettier = () => {
     const activeFile = sandpack.files[sandpack.activeFile];
     if (!activeFile) return;
 
-    const fileExtension = sandpack.activeFile.split('.').pop()?.toLowerCase();
+    const fileExtension = sandpack.activeFile.split(".").pop()?.toLowerCase();
     if (!fileExtension) return;
 
     const prettierExtensions = [
-      'js',
-      'ts',
-      'jsx',
-      'tsx',
-      'scss',
-      'css',
-      'html',
+      "js",
+      "ts",
+      "jsx",
+      "tsx",
+      "scss",
+      "css",
+      "html",
     ];
     const isPrettierSupported = !(
       activeFile.readOnly || !prettierExtensions.includes(fileExtension)
@@ -165,20 +165,20 @@ const usePrettier = () => {
     const currentCode: string = activeFile.code;
 
     try {
-      const fileExtension = sandpack.activeFile.split('.').pop()?.toLowerCase();
+      const fileExtension = sandpack.activeFile.split(".").pop()?.toLowerCase();
       let formattedCode: string = currentCode;
 
-      if (fileExtension === 'scss' || fileExtension === 'css') {
+      if (fileExtension === "scss" || fileExtension === "css") {
         formattedCode = await prettier.format(currentCode, {
-          parser: 'scss',
+          parser: "scss",
           plugins: [parserSCSS],
         });
       } else {
         formattedCode = await prettier.format(currentCode, {
           parser:
-            fileExtension === 'ts' || fileExtension === 'tsx'
-              ? 'typescript'
-              : 'babel',
+            fileExtension === "ts" || fileExtension === "tsx"
+              ? "typescript"
+              : "babel",
           plugins: [parserBabel, parserTS, parserHTML, prettierPluginEstree],
         });
       }
@@ -198,15 +198,15 @@ const usePrettier = () => {
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
-      if ((event.ctrlKey || event.metaKey) && event.key === 's') {
+      if ((event.ctrlKey || event.metaKey) && event.key === "s") {
         event.preventDefault();
         prettifyCode();
       }
     };
 
-    document.addEventListener('keydown', handleKeyDown);
+    document.addEventListener("keydown", handleKeyDown);
     return () => {
-      document.removeEventListener('keydown', handleKeyDown);
+      document.removeEventListener("keydown", handleKeyDown);
     };
   }, [sandpack.files, sandpack.activeFile, prettifyCode]);
 

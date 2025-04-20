@@ -1,18 +1,18 @@
-'use server';
+"use server";
 
-import { createServiceRoleClient } from '@/lib/supabase/create-service-role-client';
+import { createServiceRoleClient } from "@/lib/supabase/create-service-role-client";
 
 type IncrementRatingsOptions = {
   id: string;
-  direction: 'up' | 'down';
+  direction: "up" | "down";
 };
 
 export async function updateRatings(options: IncrementRatingsOptions) {
   const supabase = createServiceRoleClient();
   const fetchResponse = await supabase
-    .from('ratings')
+    .from("ratings")
     .select()
-    .eq('id', options.id)
+    .eq("id", options.id)
     .maybeSingle();
   if (fetchResponse.error) throw fetchResponse.error;
   const { positive_rating, negative_rating } = fetchResponse.data ?? {
@@ -20,12 +20,12 @@ export async function updateRatings(options: IncrementRatingsOptions) {
     negative_rating: 0,
   };
   const positive =
-    options.direction === 'up' ? (positive_rating ?? 0) + 1 : positive_rating;
+    options.direction === "up" ? (positive_rating ?? 0) + 1 : positive_rating;
   const negative =
-    options.direction === 'down' ? (negative_rating ?? 0) + 1 : negative_rating;
+    options.direction === "down" ? (negative_rating ?? 0) + 1 : negative_rating;
 
   const updateResponse = await supabase
-    .from('ratings')
+    .from("ratings")
     .upsert(
       {
         id: options.id,
@@ -33,7 +33,7 @@ export async function updateRatings(options: IncrementRatingsOptions) {
         negative_rating: negative,
       },
       {
-        onConflict: 'id',
+        onConflict: "id",
         ignoreDuplicates: false,
       }
     )

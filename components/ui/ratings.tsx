@@ -1,11 +1,11 @@
-'use client';
+"use client";
 
-import { useEffect, useState, useTransition } from 'react';
-import { Heart, HeartBreak, ThumbsDown, ThumbsUp } from '@phosphor-icons/react';
-import { AnimatePresence, motion, Variants } from 'motion/react';
+import { useEffect, useState, useTransition } from "react";
+import { Heart, HeartBreak, ThumbsDown, ThumbsUp } from "@phosphor-icons/react";
+import { AnimatePresence, motion, Variants } from "motion/react";
 
-import { fetchRatings } from './fetch-ratings';
-import { updateRatings } from './increment-ratings';
+import { fetchRatings } from "./fetch-ratings";
+import { updateRatings } from "./increment-ratings";
 
 type RatingsProps = {
   id: string;
@@ -16,7 +16,7 @@ export function Ratings({ id }: RatingsProps) {
   const [positiveRatings, setPositiveRatings] = useState(0);
   const [negativeRatings, setNegativeRatings] = useState(0);
   const [voted, setVoted] = useState(false);
-  const [votedSentiment, setVotedSentiment] = useState<'up' | 'down'>('up');
+  const [votedSentiment, setVotedSentiment] = useState<"up" | "down">("up");
 
   useEffect(() => {
     startTransition(async () => {
@@ -39,7 +39,7 @@ export function Ratings({ id }: RatingsProps) {
       transition: {
         times: [0, 0.2, 0.5, 0.8, 1],
         duration: 0.5,
-        ease: 'easeInOut',
+        ease: "easeInOut",
       },
     },
     exit: {
@@ -58,7 +58,7 @@ export function Ratings({ id }: RatingsProps) {
       scale: 1,
       opacity: 1,
       transition: {
-        type: 'spring',
+        type: "spring",
         bounce: 0.9,
         duration: 1,
         delay: 0.5,
@@ -73,9 +73,9 @@ export function Ratings({ id }: RatingsProps) {
   function upVote() {
     startTransition(async () => {
       setVoted(true);
-      const { positive_rating } = await updateRatings({ id, direction: 'up' });
+      const { positive_rating } = await updateRatings({ id, direction: "up" });
       setPositiveRatings(positive_rating ?? 0);
-      setVotedSentiment('up');
+      setVotedSentiment("up");
     });
   }
 
@@ -84,69 +84,69 @@ export function Ratings({ id }: RatingsProps) {
       setVoted(true);
       const { negative_rating } = await updateRatings({
         id,
-        direction: 'down',
+        direction: "down",
       });
       setNegativeRatings(negative_rating ?? 0);
-      setVotedSentiment('down');
+      setVotedSentiment("down");
     });
   }
 
   return (
-    <div className='flex w-full justify-center py-4 md:justify-end'>
-      <div className='grid grid-cols-2 grid-rows-[1fr_2fr] gap-1'>
-        <div className='text-muted-foreground text-center text-xs font-semibold'>
+    <div className="flex w-full justify-center py-4 md:justify-end">
+      <div className="grid grid-cols-2 grid-rows-[1fr_2fr] gap-1">
+        <div className="text-muted-foreground text-center text-xs font-semibold">
           {positiveRatings}
         </div>
-        <div className='text-muted-foreground text-center text-xs font-semibold'>
+        <div className="text-muted-foreground text-center text-xs font-semibold">
           {negativeRatings}
         </div>
-        <div className='bg-card relative col-span-2 flex w-[64px] flex-row items-center justify-center gap-x-4 rounded-lg border px-2 py-1 shadow-lg'>
-          <AnimatePresence mode='wait'>
+        <div className="bg-card relative col-span-2 flex w-[64px] flex-row items-center justify-center gap-x-4 rounded-lg border px-2 py-1 shadow-lg">
+          <AnimatePresence mode="wait">
             {voted ? (
-              votedSentiment === 'up' ? (
+              votedSentiment === "up" ? (
                 <motion.div
-                  key='heart'
-                  className='absolute z-10 grid size-6 place-items-center p-1'
-                  initial='initial'
-                  animate='animate'
-                  exit='exit'
+                  key="heart"
+                  className="absolute z-10 grid size-6 place-items-center p-1"
+                  initial="initial"
+                  animate="animate"
+                  exit="exit"
                   variants={heartVariants}
                 >
-                  <Heart color='#ed5a75' />
+                  <Heart color="#ed5a75" />
                 </motion.div>
               ) : (
                 <motion.div
-                  key='heart-break'
-                  className='absolute z-10 grid size-6 place-items-center p-1'
-                  initial='initial'
-                  animate='animate'
-                  exit='exit'
+                  key="heart-break"
+                  className="absolute z-10 grid size-6 place-items-center p-1"
+                  initial="initial"
+                  animate="animate"
+                  exit="exit"
                   variants={heartVariants}
                 >
-                  <HeartBreak color='#ed5a75' />
+                  <HeartBreak color="#ed5a75" />
                 </motion.div>
               )
             ) : (
               <>
                 <motion.button
-                  key='thumbs-up'
+                  key="thumbs-up"
                   onClick={upVote}
                   disabled={isPending}
                   variants={variants}
-                  initial='initial'
-                  whileHover='hover'
-                  exit='exit'
+                  initial="initial"
+                  whileHover="hover"
+                  exit="exit"
                 >
                   <ThumbsUp />
                 </motion.button>
                 <motion.button
-                  key='thumbs-down'
+                  key="thumbs-down"
                   onClick={downVote}
                   disabled={isPending}
                   variants={variants}
-                  initial='initial'
-                  whileHover='hover'
-                  exit='exit'
+                  initial="initial"
+                  whileHover="hover"
+                  exit="exit"
                 >
                   <ThumbsDown />
                 </motion.button>

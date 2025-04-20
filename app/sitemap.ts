@@ -1,55 +1,55 @@
-import { MetadataRoute } from 'next';
+import { MetadataRoute } from "next";
 
-import { hobbies, posts, tags } from '#site/content';
+import { hobbies, posts, tags } from "#site/content";
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const siteMapContent: MetadataRoute.Sitemap = [
     {
-      url: 'https://liyuxuan.dev/about',
+      url: "https://liyuxuan.dev/about",
       lastModified: new Date(),
-      changeFrequency: 'always',
+      changeFrequency: "always",
       priority: 1,
     },
     {
-      url: 'https://liyuxuan.dev/posts',
+      url: "https://liyuxuan.dev/posts",
       lastModified: new Date(),
-      changeFrequency: 'always',
+      changeFrequency: "always",
       priority: 1,
     },
     {
-      url: 'https://liyuxuan.dev/tags',
+      url: "https://liyuxuan.dev/tags",
       lastModified: new Date(),
-      changeFrequency: 'always',
+      changeFrequency: "always",
       priority: 1,
     },
     {
-      url: 'https://liyuxuan.dev/playground',
+      url: "https://liyuxuan.dev/playground",
       lastModified: new Date(),
-      changeFrequency: 'always',
+      changeFrequency: "always",
       priority: 1,
     },
     {
-      url: 'https://liyuxuan.dev/hobbies',
+      url: "https://liyuxuan.dev/hobbies",
       lastModified: new Date(),
-      changeFrequency: 'always',
+      changeFrequency: "always",
       priority: 1,
     },
     {
-      url: 'https://liyuxuan.dev/projects',
+      url: "https://liyuxuan.dev/projects",
       lastModified: new Date(),
-      changeFrequency: 'always',
+      changeFrequency: "always",
       priority: 1,
     },
     {
-      url: 'https://liyuxuan.dev/the-why',
+      url: "https://liyuxuan.dev/the-why",
       lastModified: new Date(),
-      changeFrequency: 'always',
+      changeFrequency: "always",
       priority: 1,
     },
     {
-      url: 'https://liyuxuan.dev/contacts',
+      url: "https://liyuxuan.dev/contacts",
       lastModified: new Date(),
-      changeFrequency: 'always',
+      changeFrequency: "always",
       priority: 1,
     },
   ];
@@ -57,47 +57,47 @@ export default function sitemap(): MetadataRoute.Sitemap {
   const postsSiteMap: MetadataRoute.Sitemap = posts.map((post) => ({
     url: `https://liyuxuan.dev/posts/${post.slug}`,
     lastModified: new Date(post.date),
-    changeFrequency: 'weekly',
+    changeFrequency: "weekly",
     priority: 1,
   }));
 
   const hobbiesSiteMap: MetadataRoute.Sitemap = hobbies.map((hobby) => ({
     url: `https://liyuxuan.dev/hobbies/${hobby.slug}`,
     lastModified: new Date(),
-    changeFrequency: 'monthly',
+    changeFrequency: "monthly",
     priority: 1,
   }));
 
   const tagsSiteMap: MetadataRoute.Sitemap = tags.map((tag) => ({
     url: `https://liyuxuan.dev/tags/${tag.slug}`,
     lastModified: new Date(),
-    changeFrequency: 'daily',
+    changeFrequency: "daily",
     priority: 1,
   }));
 
   const experimentsSiteMap: MetadataRoute.Sitemap = [
     {
-      url: 'https://liyuxuan.dev/experiments/piano',
+      url: "https://liyuxuan.dev/experiments/piano",
       lastModified: new Date(),
-      changeFrequency: 'always',
+      changeFrequency: "always",
       priority: 1,
     },
     {
-      url: 'https://liyuxuan.dev/experiments/dune-themed-light-dark-toggle',
+      url: "https://liyuxuan.dev/experiments/dune-themed-light-dark-toggle",
       lastModified: new Date(),
-      changeFrequency: 'always',
+      changeFrequency: "always",
       priority: 1,
     },
     {
-      url: 'https://liyuxuan.dev/experiments/ascii-animated-effect',
+      url: "https://liyuxuan.dev/experiments/ascii-animated-effect",
       lastModified: new Date(),
-      changeFrequency: 'always',
+      changeFrequency: "always",
       priority: 1,
     },
     {
-      url: 'https://liyuxuan.dev/experiments/wiggle-sticker-effect',
+      url: "https://liyuxuan.dev/experiments/wiggle-sticker-effect",
       lastModified: new Date(),
-      changeFrequency: 'always',
+      changeFrequency: "always",
       priority: 1,
     },
   ];

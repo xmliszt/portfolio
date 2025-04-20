@@ -1,4 +1,4 @@
-@import 'tailwindcss/index.css';
+@import "tailwindcss/index.css";
 
 @config '../tailwind.config.ts';
 
@@ -160,11 +160,11 @@ code > [data-line]::before {
   color: gray;
 }
 
-code[data-line-numbers-max-digits='2'] > [data-line]::before {
+code[data-line-numbers-max-digits="2"] > [data-line]::before {
   width: 2rem;
 }
 
-code[data-line-numbers-max-digits='3'] > [data-line]::before {
+code[data-line-numbers-max-digits="3"] > [data-line]::before {
   width: 3rem;
 }
 

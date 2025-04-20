@@ -1,11 +1,11 @@
-'use client';
+"use client";
 
-import { cn, isAtCurrentTOC, slugify } from '@/lib/utils';
+import { cn, isAtCurrentTOC, slugify } from "@/lib/utils";
 
-import { useTOC } from './toc-provider';
+import { useTOC } from "./toc-provider";
 
 type TOCLinkProps = {
-  entry: Page['toc'][0];
+  entry: Page["toc"][0];
 };
 
 export function TOCLink(props: TOCLinkProps) {
@@ -14,10 +14,10 @@ export function TOCLink(props: TOCLinkProps) {
     <a
       href={`#${slugify(props.entry.title)}`}
       className={cn(
-        'text-xs',
+        "text-xs",
         isAtCurrentTOC(hash, props.entry.title)
-          ? 'font-semibold'
-          : 'font-normal'
+          ? "font-semibold"
+          : "font-normal"
       )}
       onClick={() => {
         setHash(slugify(props.entry.title));

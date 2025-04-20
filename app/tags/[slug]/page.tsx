@@ -1,12 +1,12 @@
-import type { Metadata } from 'next';
-import { notFound } from 'next/navigation';
-import pluralize from 'pluralize';
+import type { Metadata } from "next";
+import { notFound } from "next/navigation";
+import pluralize from "pluralize";
 
-import { openGraph } from '@/app/metadata';
-import { fetchPostViews } from '@/app/posts/[slug]/fetch-post-views';
-import { PostCard } from '@/app/posts/post-card';
+import { openGraph } from "@/app/metadata";
+import { fetchPostViews } from "@/app/posts/[slug]/fetch-post-views";
+import { PostCard } from "@/app/posts/post-card";
 
-import { posts, tags } from '#site/content';
+import { posts, tags } from "#site/content";
 
 interface TagProps {
   params: Promise<{
@@ -59,11 +59,11 @@ export default async function PostPage(props: TagProps) {
   if (tag == null) return notFound();
 
   return (
-    <article className='prose prose-stone dark:prose-invert flex flex-col gap-12'>
+    <article className="prose prose-stone dark:prose-invert flex flex-col gap-12">
       <h1>
-        tag: {params.slug} ({pluralize('post', tag.count.posts, true)})
+        tag: {params.slug} ({pluralize("post", tag.count.posts, true)})
       </h1>
-      <div className='flex flex-col gap-16'>
+      <div className="flex flex-col gap-16">
         {posts.map((post) => (
           <PostCard
             key={post.slug}
