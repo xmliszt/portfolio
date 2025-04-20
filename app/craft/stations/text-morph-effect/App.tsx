@@ -36,7 +36,7 @@ function MorphText(props: MorphTextProps) {
   }
 
   return (
-    <AnimatePresence mode='popLayout' initial={false}>
+    <AnimatePresence mode='popLayout'>
       <div className='relative'>{createCharacters()}</div>
     </AnimatePresence>
   );
