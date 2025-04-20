@@ -54,10 +54,12 @@ export function Sandbox(props: SandboxProps) {
           clsx: '^2.1.0',
           'tailwind-merge': '^2.2.1',
           'lucide-react': '^0.469.0',
+          lodash: '^4.17.21',
         },
         devDependencies: {
           '@types/react': '19.0.10',
           '@types/react-dom': '19.0.4',
+          '@types/lodash': '^4.17.16',
         },
       }}
       options={{ externalResources: ['https://cdn.tailwindcss.com'] }}

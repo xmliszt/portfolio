@@ -2,6 +2,7 @@
 
 import { motion } from 'motion/react';
 
+import App from '@/app/craft/stations/text-morph-effect/App';
 import type { CraftStation } from '@/app/craft/types';
 import { Ratings } from '@/components/ui/ratings';
 import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
@@ -56,6 +57,7 @@ export function CraftStationModalContent(props: CraftStationModalContentProps) {
       <div className='block md:hidden'>
         <Ratings id={`craft_station.${props.station.id}`} />
       </div>
+      <App />
     </motion.div>
   );
 }
