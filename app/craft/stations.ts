@@ -14,7 +14,7 @@ export const stations: CraftStation[] = [
     id: "3d-rolling-slider",
     title: "3D rolling slider",
     tags: ["transform-3d"],
-    description: `Really love how skeuomorphic design adds depth to a UI and it is so much fun to make them on the web. This crafting exercise is heavily inspired by @jh3yy post on X: https://x.com/jh3yy/status/1907979817032597689. Though not real skeumorphic design as real-world slider doesn't really look like that, still kind of fun making this 3D illusion! And yeah, don't design your birthday picker like this... 🤪`,
+    description: `Really love how skeuomorphic design adds depth to a UI and it is so much fun to make them on the web. This crafting exercise is heavily inspired by @jh3yy post on X: https://x.com/jh3yy/status/1907979817032597689.`,
     codes: generatedStations["three-d-rolling-slider"],
   },
   {
