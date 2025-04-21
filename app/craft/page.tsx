@@ -27,15 +27,11 @@ export default function CraftPage() {
           <ShadowSubtitle>作坊</ShadowSubtitle>
         </h1>
         <p>
-          I&apos;m building up a crafting space here. The idea is to have an
-          interactive coding space, where I can share some of the mini
-          experiments I&apos;ve been playing around with. And you can also
-          interact with the code to see the live changes.
-        </p>
-        <p>
-          Still building up this space though, as eventually I want to be able
-          to upload video recordings of beautiful animations and able to
-          playback with adjustable speed alongside the code, so stay tuned :D
+          Craft is an interactive space, where I collect and re-build little
+          ideas into live. Craft focuses more on the animation and interaction
+          kinds of things. The interactive code editor makes it possible to not
+          just showcase, but also allow visitors to participate, to build on top
+          of what I have. So, have fun exploring and building!
         </p>
       </article>
 
