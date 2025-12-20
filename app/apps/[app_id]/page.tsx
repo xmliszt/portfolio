@@ -25,7 +25,7 @@ export async function generateMetadata(props: Props): Promise<Metadata> {
     appleWebApp: {
       title: app.name,
       statusBarStyle: "default",
-      startupImage: app.ogImage,
+      startupImage: app.ogImages,
     },
     alternates: {
       canonical: `https://www.liyuxuan.dev/apps/${params.app_id}`,
@@ -34,14 +34,7 @@ export async function generateMetadata(props: Props): Promise<Metadata> {
       ...openGraph,
       title: app.name,
       description: app.description,
-      images: app.ogImage
-        ? {
-            url: app.ogImage,
-            width: 1200,
-            height: 630,
-            alt: `${app.name} - ${app.subtitle}`,
-          }
-        : undefined,
+      images: app.ogImages,
     },
     keywords: app.keywords,
     applicationName: app.name,
@@ -53,7 +46,7 @@ export async function generateMetadata(props: Props): Promise<Metadata> {
       creatorId: "1704579643",
       title: app.name,
       description: app.description,
-      images: app.ogImageTwitter ? [app.ogImageTwitter] : undefined,
+      images: app.ogImagesTwitter,
     },
   };
 }
