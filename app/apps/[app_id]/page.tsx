@@ -35,18 +35,21 @@ export async function generateMetadata(props: Props): Promise<Metadata> {
       title: app.name,
       description: app.description,
       images: app.ogImages,
+      url: `https://www.liyuxuan.dev/apps/${params.app_id}`,
+      type: "website",
     },
     keywords: app.keywords,
     applicationName: app.name,
     icons: [app.icon.light, app.icon.dark],
     twitter: {
       card: "summary_large_image",
-      siteId: "1704579643",
       creator: "@xmliszt",
       creatorId: "1704579643",
       title: app.name,
       description: app.description,
       images: app.ogImagesTwitter,
+      siteId: `1704579643-apps-${params.app_id}`,
+      site: `https://www.liyuxuan.dev/apps/${params.app_id}`,
     },
   };
 }
