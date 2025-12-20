@@ -3,6 +3,7 @@ import {
   ChatCircleDots,
   DiscordLogo,
   Envelope,
+  Fan,
   Storefront,
   TwitterLogo,
 } from "@phosphor-icons/react/dist/ssr";
@@ -19,4 +20,5 @@ export const ICON_MAP: Record<
   DiscordLogo,
   TwitterLogo,
   Envelope,
+  TestFlight: Fan,
 };

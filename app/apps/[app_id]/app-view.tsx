@@ -55,31 +55,41 @@ export function AppView({ app }: { app: AppData }) {
           </div>
 
           <div className="flex flex-wrap gap-3">
-            {app.links.appStore?.map((link, i) => (
-              <motion.div
-                key={link.label}
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.3 + i * 0.1 }}
-              >
-                <Link
-                  href={link.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className={cn(
-                    "inline-flex min-w-[100px] items-center justify-center rounded-3xl px-8 py-1.5 text-base font-bold transition-all active:scale-95",
-                    link.badge === "reviewing"
-                      ? "bg-secondary text-secondary-foreground cursor-not-allowed border text-sm font-normal opacity-70"
-                      : "bg-blue-600 text-white shadow-md hover:bg-blue-500 dark:bg-blue-500 dark:hover:bg-blue-400"
-                  )}
-                  onClick={(e) =>
-                    link.badge === "reviewing" && e.preventDefault()
-                  }
+            {(() => {
+              const appStoreLink = app.links.appStore;
+              const testFlightLink = app.links.testFlight;
+
+              const link = (() => {
+                if (appStoreLink && appStoreLink.badge === "available")
+                  return appStoreLink;
+                return testFlightLink;
+              })();
+
+              if (!link) return null;
+
+              return (
+                <motion.div
+                  key={link.label}
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.3 }}
                 >
-                  {link.badge === "reviewing" ? "COMING SOON" : "GET"}
-                </Link>
-              </motion.div>
-            ))}
+                  <Link
+                    href={link.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className={cn(
+                      "inline-flex min-w-[100px] items-center justify-center rounded-3xl px-8 py-1.5 text-base font-bold transition-all active:scale-95",
+                      link.badge === "reviewing"
+                        ? "bg-secondary text-secondary-foreground cursor-not-allowed border text-sm font-normal opacity-70"
+                        : "bg-blue-600 text-white shadow-md hover:bg-blue-500 dark:bg-blue-500 dark:hover:bg-blue-400"
+                    )}
+                  >
+                    {link.badgeLabel}
+                  </Link>
+                </motion.div>
+              );
+            })()}
           </div>
         </div>
       </header>
@@ -187,10 +197,19 @@ export function AppView({ app }: { app: AppData }) {
       <section className="space-y-6">
         <h2 className="text-2xl font-bold tracking-tight">Links</h2>
 
-        <div className="grid grid-cols-1 gap-3">
-          {app.links.appStore?.map((link) => (
-            <LinkItem key={link.label} link={link} />
-          ))}
+        <div className="grid grid-cols-1 gap-5">
+          {app.links.testFlight && (
+            <LinkItem
+              key={app.links.testFlight.label}
+              link={app.links.testFlight}
+            />
+          )}
+          {app.links.appStore && (
+            <LinkItem
+              key={app.links.appStore.label}
+              link={app.links.appStore}
+            />
+          )}
           {app.links.feedback?.map((link) => (
             <LinkItem key={link.label} link={link} />
           ))}

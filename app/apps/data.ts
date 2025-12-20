@@ -6,6 +6,7 @@ export type AppIcon = {
 
 export type IconName =
   | "Storefront"
+  | "TestFlight"
   | "ArrowSquareOut"
   | "ChatCircleDots"
   | "DiscordLogo"
@@ -18,6 +19,7 @@ export type AppLink = {
   icon: IconName;
   description?: string;
   badge?: "reviewing" | "available";
+  badgeLabel?: string;
 };
 
 export type AppData = {
@@ -28,7 +30,8 @@ export type AppData = {
   icon: AppIcon;
   features: string[];
   links: {
-    appStore?: AppLink[];
+    testFlight?: AppLink;
+    appStore?: AppLink;
     feedback?: AppLink[];
     community?: AppLink[];
   };
@@ -162,15 +165,22 @@ const apps: Record<string, AppData> = {
       "https://aikluwlsjdrayohixism.supabase.co/storage/v1/object/public/joodle/For%20Official%20Reviews/SS10.png",
     ],
     links: {
-      appStore: [
-        {
-          label: "Download on App Store",
-          url: "#", // Placeholder for App Store link (pending review)
-          icon: "Storefront",
-          badge: "reviewing",
-          description: "Available soon on the App Store",
-        },
-      ],
+      testFlight: {
+        label: "Experience Beta on TestFlight",
+        url: "https://testflight.apple.com/join/gHHMG72B",
+        icon: "TestFlight",
+        badge: "available",
+        badgeLabel: "Test Beta on TestFlight",
+        description: "Join the TestFlight program",
+      },
+      appStore: {
+        label: "Download on App Store",
+        url: "#", // Placeholder for App Store link (pending review)
+        icon: "Storefront",
+        badge: "reviewing",
+        badgeLabel: "GET",
+        description: "Available soon on the App Store",
+      },
       feedback: [
         {
           label: "Customer Feedback Form",
