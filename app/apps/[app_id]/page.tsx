@@ -21,7 +21,14 @@ export async function generateMetadata(props: Props): Promise<Metadata> {
   }
 
   return {
-    title: `${app.name}`,
+    title: app.name,
+    description: app.description,
+    category: "Apps",
+    appleWebApp: {
+      title: app.name,
+      statusBarStyle: "default",
+      startupImage: app.screenshots ? app.screenshots[0] : app.icon.light,
+    },
     alternates: {
       canonical: `https://www.liyuxuan.dev/apps/${params.app_id}`,
     },
@@ -29,10 +36,19 @@ export async function generateMetadata(props: Props): Promise<Metadata> {
       ...openGraph,
       title: app.name,
       description: app.description,
+      images: app.screenshots
+        ? app.screenshots
+        : [app.icon.light, app.icon.dark],
     },
     keywords: app.keywords,
     applicationName: app.name,
     icons: [app.icon.light, app.icon.dark],
+    twitter: {
+      title: app.name,
+      description: app.description,
+      card: "app",
+      images: app.screenshots,
+    },
   };
 }
 
