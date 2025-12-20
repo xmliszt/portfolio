@@ -77,9 +77,9 @@ const apps: Record<string, AppData> = {
       appStore: [
         {
           label: "Download on App Store",
-          url: "https://tinyurl.com/joodle-feedback", // Placeholder for App Store link (pending review)
+          url: "#", // Placeholder for App Store link (pending review)
           icon: "Storefront",
-          badge: "new",
+          badge: "pending",
           description: "Available soon on the App Store",
         },
       ],

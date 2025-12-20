@@ -24,11 +24,7 @@ export function AppView({ app }: { app: AppData }) {
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.5 }}
-          className="relative size-40 shrink-0 overflow-hidden rounded-[35px] border-[0.5px] border-black/10 shadow-lg sm:size-[180px] dark:border-white/10"
-          style={{
-            // @ts-ignore
-            "corner-shape": "squircle",
-          }}
+          className="relative size-40 shrink-0 overflow-hidden rounded-[35px] border-[0.5px] border-black/10 shadow-lg [corner-shape:squircle] sm:size-[180px] dark:border-white/10"
         >
           <Image
             src={app.icon.light}
@@ -111,11 +107,7 @@ export function AppView({ app }: { app: AppData }) {
                   initial={{ opacity: 0, x: 20 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: 0.4 + i * 0.1 }}
-                  className="relative aspect-9/19 h-[450px] shrink-0 snap-center overflow-hidden rounded-4xl border-[0.5px] border-black/10 shadow-sm md:h-[500px]"
-                  style={{
-                    // @ts-ignore
-                    "corner-shape": "squircle",
-                  }}
+                  className="relative aspect-9/19 h-[450px] shrink-0 snap-center overflow-hidden rounded-4xl border-[0.5px] border-black/10 shadow-sm [corner-shape:squircle] md:h-[500px]"
                 >
                   <Image
                     src={src}
