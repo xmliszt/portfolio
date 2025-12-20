@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { ArrowSquareOut } from "@phosphor-icons/react/dist/ssr";
+import { ArrowSquareOut } from "@phosphor-icons/react";
 import { upperCase } from "lodash";
 import { motion } from "motion/react";
 import Image from "next/image";

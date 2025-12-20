@@ -35,6 +35,8 @@ export type AppData = {
   screenshots?: string[];
   appClipUrl?: string;
   keywords?: string[];
+  ogImage?: string;
+  ogImageTwitter?: string;
 };
 
 const apps: Record<string, AppData> = {
@@ -198,6 +200,10 @@ const apps: Record<string, AppData> = {
         },
       ],
     },
+    ogImage:
+      "https://aikluwlsjdrayohixism.supabase.co/storage/v1/object/public/joodle/Joodle%20OG.png",
+    ogImageTwitter:
+      "https://aikluwlsjdrayohixism.supabase.co/storage/v1/object/public/joodle/Joodle%20OG%20-%20Twitter.png",
   },
 };
 

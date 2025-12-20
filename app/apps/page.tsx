@@ -6,7 +6,7 @@ import { openGraph } from "@/app/metadata";
 
 import { AppsList } from "./apps-list";
 
-export function generateMetadata(): Metadata {
+export async function generateMetadata(): Promise<Metadata> {
   return {
     title: "apps | Li Yuxuan",
     alternates: {
