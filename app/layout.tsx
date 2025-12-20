@@ -128,8 +128,8 @@ export default function RootLayout({
                   <ScrollAreaWithTOCTracker>
                     <div
                       className={cn(
-                        "relative mx-auto h-screen w-screen [&>article]:mx-auto",
-                        "px-8 pt-24 pb-40", // phone
+                        "relative mx-auto h-auto w-screen pb-64 [&>article]:mx-auto",
+                        "px-8 pt-24 pb-44", // phone
                         "md:max-w-md md:pb-24", // tablet
                         "lg:max-w-xl lg:pb-24", // laptop
                         "xl:max-w-2xl xl:pb-24" // large desktop
