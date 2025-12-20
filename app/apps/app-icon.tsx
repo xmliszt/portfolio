@@ -1,5 +1,6 @@
 "use client";
 
+import { motion } from "motion/react";
 import Image from "next/image";
 import { useTheme } from "next-themes";
 
@@ -14,14 +15,19 @@ export function AppIcon(props: {
   const { resolvedTheme } = useTheme();
 
   return (
-    <div
+    <motion.div
+      initial={{ opacity: 0, scale: 0.9 }}
+      animate={{ opacity: 1, scale: 1 }}
+      transition={{ duration: 0.2 }}
       className={cn(
+        "relative shrink-0 overflow-hidden",
         // 256px
-        "size-64",
-        // ios corner radius is 1:6.4 -> 256 / 6.4 = 40px
-        "overflow-clip rounded-[40px] [corner-shape:squircle]",
+        // ios corner radius -> 256 / 1.618 = 158.22px
+        "size-64 rounded-[158.22px]",
+        "corner-squircle overflow-clip",
         "border-background border-2",
-        "shadow-md",
+        "shadow-sm",
+        "border-[0.5px] border-black/10 dark:border-white/10",
         props.className
       )}
     >
@@ -33,6 +39,6 @@ export function AppIcon(props: {
         unoptimized
         className="m-0 size-full object-cover p-0"
       />
-    </div>
+    </motion.div>
   );
 }

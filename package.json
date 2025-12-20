@@ -34,6 +34,7 @@
     "@radix-ui/react-tooltip": "^1.1.8",
     "@supabase/ssr": "^0.5.2",
     "@supabase/supabase-js": "^2.39.7",
+    "@toolwind/corner-shape": "^0.0.8-3",
     "@types/mdx": "^2.0.13",
     "@uidotdev/usehooks": "^2.4.1",
     "@vercel/analytics": "^1.2.2",

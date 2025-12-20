@@ -6,6 +6,7 @@ import { motion } from "motion/react";
 import Image from "next/image";
 import Link from "next/link";
 
+import { AppIcon } from "@/app/apps/app-icon";
 import { ICON_MAP } from "@/app/apps/app-links";
 import { AppData, AppLink } from "@/app/apps/data";
 
@@ -20,27 +21,12 @@ export function AppView({ app }: { app: AppData }) {
     <div className="mx-auto max-w-4xl space-y-10 pb-20">
       {/* Header Section */}
       <header className="flex flex-col items-center gap-8 md:flex-row md:items-stretch md:gap-10">
-        <motion.div
-          initial={{ opacity: 0, scale: 0.9 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.5 }}
-          className="relative size-40 shrink-0 overflow-hidden rounded-[35px] border-[0.5px] border-black/10 shadow-lg [corner-shape:squircle] sm:size-[180px] dark:border-white/10"
-        >
-          <Image
-            src={app.icon.light}
-            alt={app.icon.alt}
-            fill
-            className="object-cover dark:hidden"
-            unoptimized
-          />
-          <Image
-            src={app.icon.dark}
-            alt={app.icon.alt}
-            fill
-            className="hidden object-cover dark:block"
-            unoptimized
-          />
-        </motion.div>
+        <AppIcon
+          alt={app.icon.alt}
+          lightUrl={app.icon.light}
+          darkUrl={app.icon.dark}
+          className="size-36 shrink-0 rounded-[89px]! md:size-40 md:rounded-[98.89px]!"
+        />
 
         <div className="flex flex-col items-center gap-4 pt-2 md:items-start">
           <div className="flex flex-1 flex-col gap-y-4">
@@ -107,7 +93,7 @@ export function AppView({ app }: { app: AppData }) {
                   initial={{ opacity: 0, x: 20 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: 0.4 + i * 0.1 }}
-                  className="relative aspect-9/19 h-[450px] shrink-0 snap-center overflow-hidden rounded-4xl border-[0.5px] border-black/10 shadow-sm [corner-shape:squircle] md:h-[500px]"
+                  className="corner-squircle relative aspect-9/19 h-[450px] shrink-0 snap-center overflow-hidden rounded-4xl border-[0.5px] border-black/10 shadow-sm md:h-[500px]"
                 >
                   <Image
                     src={src}
