@@ -100,11 +100,11 @@
   }
 
   h2 {
-    @apply mt-[1.5em] mb-[1em] text-[16px] font-[600];
+    @apply mt-[1.5em] mb-[1em] text-[16px] font-semibold;
   }
 
   h3 {
-    @apply mt-[1.5em] mb-[1em] text-[16px] font-[600];
+    @apply mt-[1.5em] mb-[1em] text-[16px] font-semibold;
   }
 
   h4 {
@@ -112,7 +112,7 @@
   }
 
   hr {
-    @apply my-[1rem];
+    @apply my-4;
   }
 
   code > span[data-highlighted-line] {
@@ -125,7 +125,7 @@
 
   code[data-theme],
   code[data-theme] span {
-    @apply bg-card text-[var(--shiki-light)] dark:text-[var(--shiki-dark)];
+    @apply bg-card text-(--shiki-light) dark:text-(--shiki-dark);
   }
 
   pre {
