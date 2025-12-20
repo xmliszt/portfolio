@@ -23,9 +23,9 @@ const apps = getAllApps();
 
 export default function AppsPage() {
   return (
-    <article className="prose prose-stone dark:prose-invert">
+    <article className="prose prose-stone dark:prose-invert flex flex-col">
       <header className="space-y-2">
-        <h1 className="group relative">
+        <h1 className="group relative mt-0">
           apps
           <ShadowSubtitle>应用商店</ShadowSubtitle>
         </h1>

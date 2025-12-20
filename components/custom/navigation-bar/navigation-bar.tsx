@@ -8,7 +8,7 @@ export function NavigationBar(props: NavigationBarProps) {
   return (
     <div
       className={cn(
-        "absolute top-0 -left-28 h-full w-36 md:-left-36 lg:-left-44 xl:-left-48",
+        "absolute top-0 -left-28 h-screen w-36 md:-left-36 lg:-left-44 xl:-left-48",
         "hidden md:block"
       )}
     >
