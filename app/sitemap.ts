@@ -1,6 +1,6 @@
 import { MetadataRoute } from "next";
 
-import { hobbies, posts, tags } from "#site/content";
+import { hobbies, posts, privacyPolicies, tags } from "#site/content";
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const siteMapContent: MetadataRoute.Sitemap = [
@@ -38,6 +38,18 @@ export default function sitemap(): MetadataRoute.Sitemap {
       url: "https://liyuxuan.dev/projects",
       lastModified: new Date(),
       changeFrequency: "always",
+      priority: 1,
+    },
+    {
+      url: "https://liyuxuan.dev/apps",
+      lastModified: new Date(),
+      changeFrequency: "always",
+      priority: 1,
+    },
+    {
+      url: "https://liyuxuan.dev/apps/joodle",
+      lastModified: new Date(),
+      changeFrequency: "weekly",
       priority: 1,
     },
     {
@@ -102,10 +114,20 @@ export default function sitemap(): MetadataRoute.Sitemap {
     },
   ];
 
+  const privacyPoliciesSiteMap: MetadataRoute.Sitemap = privacyPolicies.map(
+    (policy) => ({
+      url: `https://liyuxuan.dev/apps/${policy.appId}/privacy-policy`,
+      lastModified: new Date(),
+      changeFrequency: "monthly",
+      priority: 0.8,
+    })
+  );
+
   return siteMapContent.concat(
     postsSiteMap,
     hobbiesSiteMap,
     experimentsSiteMap,
-    tagsSiteMap
+    tagsSiteMap,
+    privacyPoliciesSiteMap
   );
 }

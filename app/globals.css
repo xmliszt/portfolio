@@ -95,7 +95,7 @@
   }
 
   h1 {
-    @apply mt-[1.5em] mb-[1em] text-[20px];
+    @apply mt-[1.5em] mb-[1em] text-[20px] select-none;
   }
 
   h2 {

@@ -14,7 +14,7 @@ export function NavigationBar(props: NavigationBarProps) {
     >
       <nav
         className={cn(
-          "bg-card sticky top-24 flex flex-col gap-2 rounded-lg border p-2 shadow-md",
+          "bg-card sticky top-24! flex flex-col gap-2 rounded-lg border p-2 shadow-md",
           "transition-[transform_box-shadow] ease-out hover:shadow-xl"
         )}
       >

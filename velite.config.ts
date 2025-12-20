@@ -154,6 +154,27 @@ const hobbies = defineCollection({
     })),
 });
 
+const apps = defineCollection({
+  name: "Apps",
+  pattern: "apps/**/*.mdx",
+  schema: s
+    .object({
+      title: s.string().max(99).default("Privacy Policy"),
+      appId: s.string().max(99),
+      slug: s.slug(),
+      body: s.mdx(),
+      toc: s.toc({
+        prefix: "anchor:",
+      }),
+    })
+    .transform((data) => {
+      return {
+        ...data,
+        permalink: `/apps/${data.appId}/${data.slug}`,
+      };
+    }),
+});
+
 export default defineConfig({
   root: "content",
   output: {
@@ -163,7 +184,15 @@ export default defineConfig({
     name: "[name]-[hash:6].[ext]",
     clean: true,
   },
-  collections: { options, tags, pages, posts, focus, hobbies },
+  collections: {
+    options,
+    tags,
+    pages,
+    posts,
+    focus,
+    hobbies,
+    apps,
+  },
   mdx: {
     rehypePlugins: [
       () => (tree) => {
