@@ -21,15 +21,18 @@ export async function generateMetadata(props: Props): Promise<Metadata> {
   }
 
   return {
-    title: `${app.name} | Apps`,
+    title: `${app.name}`,
     alternates: {
       canonical: `https://www.liyuxuan.dev/apps/${params.app_id}`,
     },
     openGraph: {
       ...openGraph,
-      title: `Li Yuxuan | ${app.name}`,
+      title: app.name,
       description: app.description,
     },
+    keywords: app.keywords,
+    applicationName: app.name,
+    icons: [app.icon.light, app.icon.dark],
   };
 }
 

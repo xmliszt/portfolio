@@ -2,13 +2,14 @@
 
 import { useState } from "react";
 import { ArrowSquareOut } from "@phosphor-icons/react/dist/ssr";
+import { upperCase } from "lodash";
 import { motion } from "motion/react";
 import Image from "next/image";
 import Link from "next/link";
 
 import { AppIcon } from "@/app/apps/app-icon";
-import { ICON_MAP } from "@/app/apps/app-links";
 import { AppData, AppLink } from "@/app/apps/data";
+import { ICON_MAP } from "@/app/apps/icon-map";
 
 function cn(...classes: (string | undefined | null | false)[]) {
   return classes.filter(Boolean).join(" ");
@@ -22,6 +23,7 @@ export function AppView({ app }: { app: AppData }) {
       {/* Header Section */}
       <header className="flex flex-col items-center gap-8 md:flex-row md:items-stretch md:gap-10">
         <AppIcon
+          layoutId={`icon-${app.id}`}
           alt={app.icon.alt}
           lightUrl={app.icon.light}
           darkUrl={app.icon.dark}
@@ -32,6 +34,7 @@ export function AppView({ app }: { app: AppData }) {
           <div className="flex flex-1 flex-col gap-y-4">
             <div className="space-y-1 text-center md:text-start">
               <motion.h1
+                layoutId={`title-${app.id}`}
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.1 }}
@@ -40,6 +43,7 @@ export function AppView({ app }: { app: AppData }) {
                 {app.name}
               </motion.h1>
               <motion.p
+                layoutId={`subtitle-${app.id}`}
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.2 }}
@@ -64,15 +68,15 @@ export function AppView({ app }: { app: AppData }) {
                   rel="noopener noreferrer"
                   className={cn(
                     "inline-flex min-w-[100px] items-center justify-center rounded-3xl px-8 py-1.5 text-base font-bold transition-all active:scale-95",
-                    link.badge === "pending"
-                      ? "bg-secondary text-secondary-foreground cursor-not-allowed opacity-70"
+                    link.badge === "reviewing"
+                      ? "bg-secondary text-secondary-foreground cursor-not-allowed border text-sm font-normal opacity-70"
                       : "bg-blue-600 text-white shadow-md hover:bg-blue-500 dark:bg-blue-500 dark:hover:bg-blue-400"
                   )}
                   onClick={(e) =>
-                    link.badge === "pending" && e.preventDefault()
+                    link.badge === "reviewing" && e.preventDefault()
                   }
                 >
-                  {link.badge === "pending" ? "COMING SOON" : "GET"}
+                  {link.badge === "reviewing" ? "COMING SOON" : "GET"}
                 </Link>
               </motion.div>
             ))}
@@ -184,6 +188,9 @@ export function AppView({ app }: { app: AppData }) {
         <h2 className="text-2xl font-bold tracking-tight">Links</h2>
 
         <div className="grid grid-cols-1 gap-3">
+          {app.links.appStore?.map((link) => (
+            <LinkItem key={link.label} link={link} />
+          ))}
           {app.links.feedback?.map((link) => (
             <LinkItem key={link.label} link={link} />
           ))}
@@ -225,7 +232,13 @@ function LinkItem({ link }: { link: AppLink }) {
       href={link.url}
       target="_blank"
       rel="noopener noreferrer"
-      className="group bg-card hover:bg-accent hover:text-accent-foreground flex items-center justify-between rounded-xl border p-4 transition-colors active:scale-[0.99]"
+      className={cn(
+        "group bg-card hover:bg-accent hover:text-accent-foreground relative flex items-center justify-between rounded-xl border p-4 transition-colors active:scale-[0.99]",
+        link.badge === "reviewing"
+          ? "pointer-events-none cursor-not-allowed opacity-50 select-none"
+          : ""
+      )}
+      aria-disabled={link.badge === "reviewing"}
     >
       <div className="flex items-center gap-4">
         <div className="bg-muted text-foreground group-hover:bg-background flex size-10 shrink-0 items-center justify-center rounded-lg transition-colors">
@@ -244,6 +257,13 @@ function LinkItem({ link }: { link: AppLink }) {
         className="text-muted-foreground/50 group-hover:text-foreground transition-all group-hover:opacity-100"
         size={20}
       />
+
+      {/* Badge */}
+      {link.badge && (
+        <div className="bg-accent text-accent-foreground absolute top-0 right-0 translate-x-1/4 -translate-y-1/2 rounded-full border px-2 py-1 text-xs font-medium">
+          {upperCase(link.badge)}
+        </div>
+      )}
     </Link>
   );
 }

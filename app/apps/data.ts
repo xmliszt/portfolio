@@ -17,7 +17,7 @@ export type AppLink = {
   url: string;
   icon: IconName;
   description?: string;
-  badge?: "pending" | "new" | "featured";
+  badge?: "reviewing" | "available";
 };
 
 export type AppData = {
@@ -34,15 +34,101 @@ export type AppData = {
   };
   screenshots?: string[];
   appClipUrl?: string;
+  keywords?: string[];
 };
 
 const apps: Record<string, AppData> = {
   joodle: {
     id: "joodle",
     name: "Joodle",
-    subtitle: "Tiny Doodles, Big Memories",
+    subtitle: "Journaling In Doodles",
     description:
       "Draw a doodle each day to capture your memories. Watch a year of your life unfold in a quiet, personal visual timeline.",
+    keywords: [
+      "doodle",
+      "paint",
+      "draw",
+      "adhd",
+      "journal",
+      "journaling",
+      "diary",
+      "tracker",
+      "anniversary",
+      "visual diary",
+      "daily sketch",
+      "memory tracker",
+      "widgets",
+      "timeline",
+      "personal",
+      "mood",
+      "joodle",
+      "joodle app",
+      "joodle journal",
+      "joodle diary",
+      "joodle doodle app",
+      "tiny doodles big memories",
+      "visual memory journal",
+      "doodle journaling app",
+      "doodle journal",
+      "visual diary",
+      "daily doodle",
+      "daily sketch",
+      "drawing journal",
+      "art journal app",
+      "visual journaling",
+      "mood journal",
+      "daily journal app",
+      "journaling app",
+      "personal journal",
+      "digital diary",
+      "memory journal",
+      "life journal",
+      "gratitude journal",
+      "self reflection journal",
+      "drawing app",
+      "sketch app",
+      "paint app",
+      "simple drawing app",
+      "minimal drawing app",
+      "creative journaling",
+      "creative diary",
+      "adhd journal",
+      "adhd friendly journal",
+      "focus journal",
+      "mindfulness journal",
+      "mental health journal",
+      "calm journaling app",
+      "stress relief drawing",
+      "year in pixels",
+      "year grid journal",
+      "visual timeline",
+      "memory timeline",
+      "life timeline app",
+      "anniversary countdown",
+      "important dates tracker",
+      "daily habit tracker",
+      "mood tracker",
+      "emotion tracker",
+      "feeling tracker",
+      "personal tracker",
+      "ios journal app",
+      "iphone journal app",
+      "ipad journal app",
+      "apple journal app",
+      "icloud journal",
+      "apple widgets journal",
+      "lock screen widgets",
+      "private journal",
+      "secure journal",
+      "offline journal",
+      "no account journal",
+      "personal diary app",
+      "siri shortcuts app",
+      "home screen widgets",
+      "standby mode widgets",
+      "minimalist journal",
+      "aesthetic journal app",
+    ],
     icon: {
       light:
         "https://aikluwlsjdrayohixism.supabase.co/storage/v1/object/public/joodle/Joodle%20Icon%20Light.jpg",
@@ -79,7 +165,7 @@ const apps: Record<string, AppData> = {
           label: "Download on App Store",
           url: "#", // Placeholder for App Store link (pending review)
           icon: "Storefront",
-          badge: "pending",
+          badge: "reviewing",
           description: "Available soon on the App Store",
         },
       ],

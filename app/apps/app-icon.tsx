@@ -11,11 +11,13 @@ export function AppIcon(props: {
   lightUrl: string;
   darkUrl: string;
   className?: string;
+  layoutId?: string;
 }) {
   const { resolvedTheme } = useTheme();
 
   return (
     <motion.div
+      layoutId={props.layoutId}
       initial={{ opacity: 0, scale: 0.9 }}
       animate={{ opacity: 1, scale: 1 }}
       transition={{ duration: 0.2 }}
