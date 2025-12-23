@@ -170,7 +170,7 @@ const apps: Record<string, AppData> = {
         url: "https://testflight.apple.com/join/gHHMG72B",
         icon: "TestFlight",
         badge: "available",
-        badgeLabel: "Test Beta on TestFlight",
+        badgeLabel: "Try Beta on TestFlight",
         description: "Join the TestFlight program",
       },
       appStore: {
