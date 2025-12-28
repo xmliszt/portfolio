@@ -192,7 +192,7 @@ const apps: Record<string, AppData> = {
       community: [
         {
           label: "Discord Community",
-          url: "https://discord.gg/9QUWBJ3p",
+          url: "https://discord.gg/WnQSdZqBjk",
           icon: "DiscordLogo",
           description: "Meet like-minded people",
         },
