@@ -46,7 +46,7 @@ const apps: Record<string, AppData> = {
   joodle: {
     id: "joodle",
     name: "Joodle",
-    subtitle: "Journaling In Doodles",
+    subtitle: "Journaling With Doodles",
     description:
       "Draw a doodle each day to capture your memories. Watch a year of your life unfold in a quiet, personal visual timeline.",
     keywords: [
