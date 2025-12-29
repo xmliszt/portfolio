@@ -64,14 +64,12 @@ export default async function AppDocumentPage(props: Props) {
 
   if (document == null) notFound();
 
-  const documentTitle = documentTitles[params.slug] || params.slug;
-
   return (
     <article className="prose prose-stone dark:prose-invert relative">
       <h1 className="group relative">
         <a id="top" className="invisible relative -top-16 block"></a>
         {document.title}
-        <ShadowSubtitle>{documentTitle}</ShadowSubtitle>
+        <ShadowSubtitle>{document.subtitle}</ShadowSubtitle>
       </h1>
       <MDXContent code={document.body} />
       <TOCLoader toc={document.toc} showToc={true} />

@@ -238,6 +238,13 @@ export function AppView({ app }: { app: AppData }) {
           >
             Terms of Service
           </Link>
+
+          {/* dot */}
+          <span className="text-foreground">•</span>
+
+          <Link href={`/apps/${app.id}/support`} className="hover:underline">
+            Support
+          </Link>
         </div>
       </section>
     </div>

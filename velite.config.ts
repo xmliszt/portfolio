@@ -160,6 +160,7 @@ const apps = defineCollection({
   schema: s
     .object({
       title: s.string().max(99).default("Privacy Policy"),
+      subtitle: s.string().max(999).optional(),
       appId: s.string().max(99),
       slug: s.slug(),
       body: s.mdx(),
