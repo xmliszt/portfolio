@@ -10,6 +10,8 @@ export const CHANGELOGS_DIR = path.join(
 
 // Optional: Map versions to header image URLs
 export const HEADER_IMAGES: Record<string, string> = {
+  "1.0.62":
+    "https://aikluwlsjdrayohixism.supabase.co/storage/v1/object/public/joodle/Changelogs/1.0.62.gif",
   "1.0.61":
     "https://aikluwlsjdrayohixism.supabase.co/storage/v1/object/public/joodle/Changelogs/1.0.61.gif",
   "1.0.58":
