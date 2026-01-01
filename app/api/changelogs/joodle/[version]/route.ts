@@ -2,13 +2,10 @@ import fs from "fs";
 import { NextRequest, NextResponse } from "next/server";
 import path from "path";
 
-import { HEADER_IMAGES } from "@/app/api/changelogs/joodle/constants";
-
-// Directory where changelog markdown files are stored
-const CHANGELOGS_DIR = path.join(
-  process.cwd(),
-  "content/apps/joodle/changelogs"
-);
+import {
+  CHANGELOGS_DIR,
+  HEADER_IMAGES,
+} from "@/app/api/changelogs/joodle/constants";
 
 type ChangelogDetailResponse = {
   version: string;

@@ -245,6 +245,13 @@ export function AppView({ app }: { app: AppData }) {
           <Link href={`/apps/${app.id}/support`} className="hover:underline">
             Support
           </Link>
+
+          {/* dot */}
+          <span className="text-foreground">•</span>
+
+          <Link href={`/apps/${app.id}/changelogs`} className="hover:underline">
+            Changelogs
+          </Link>
         </div>
       </section>
     </div>

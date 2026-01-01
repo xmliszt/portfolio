@@ -3,11 +3,11 @@ import { NextResponse } from "next/server";
 
 import { CHANGELOGS_DIR, HEADER_IMAGES } from "./constants";
 
-interface ChangelogIndexEntry {
+type ChangelogIndexEntry = {
   version: string;
   date: string;
   headerImageURL: string | null;
-}
+};
 
 // GET /api/changelogs - Returns the changelog index
 export async function GET() {

@@ -176,6 +176,35 @@ const apps = defineCollection({
     }),
 });
 
+const changelogs = defineCollection({
+  name: "Changelogs",
+  pattern: "apps/**/changelogs/*.md",
+  schema: s
+    .object({
+      body: s.mdx(),
+    })
+    .transform((data, { meta }) => {
+      const path = meta.path as string;
+
+      // Extract appId from path using regex: apps/<appId>/changelogs/<filename>.md
+      const match = path.match(/apps\/([^/]+)\/changelogs\/([^/]+)\.md$/);
+      const appId = match?.at(1) ?? "";
+      const filename = match?.at(2) ?? "";
+
+      // Extract version and date from filename: <version>_<date>
+      const [version, date] = filename.split("_");
+
+      return {
+        ...data,
+        appId,
+        version: version ?? "",
+        date: date ?? "",
+        slug: version ?? "",
+        permalink: `/apps/${appId}/changelogs/${version}`,
+      };
+    }),
+});
+
 export default defineConfig({
   root: "content",
   output: {
@@ -193,6 +222,7 @@ export default defineConfig({
     focus,
     hobbies,
     apps,
+    changelogs,
   },
   mdx: {
     rehypePlugins: [
