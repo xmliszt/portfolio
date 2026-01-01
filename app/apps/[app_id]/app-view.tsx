@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { isMobile } from "react-device-detect";
 import { ArrowSquareOut } from "@phosphor-icons/react";
 import { upperCase } from "lodash";
 import { motion } from "motion/react";
@@ -10,6 +11,11 @@ import Link from "next/link";
 import { AppIcon } from "@/app/apps/app-icon";
 import { AppData, AppLink } from "@/app/apps/data";
 import { ICON_MAP } from "@/app/apps/icon-map";
+
+import {
+  AppViewBottomViewMobile,
+  AppViewBottomViewWeb,
+} from "./app-view-bottom-view";
 
 function cn(...classes: (string | undefined | null | false)[]) {
   return classes.filter(Boolean).join(" ");
@@ -220,40 +226,11 @@ export function AppView({ app }: { app: AppData }) {
       </section>
 
       {/* Legal */}
-      <section className="pt-4">
-        <div className="text-foreground flex flex-wrap gap-x-2 gap-y-2 text-sm">
-          <Link
-            href={`/apps/${app.id}/privacy-policy`}
-            className="hover:underline"
-          >
-            Privacy Policy
-          </Link>
-
-          {/* dot */}
-          <span className="text-foreground">•</span>
-
-          <Link
-            href={`/apps/${app.id}/terms-of-service`}
-            className="hover:underline"
-          >
-            Terms of Service
-          </Link>
-
-          {/* dot */}
-          <span className="text-foreground">•</span>
-
-          <Link href={`/apps/${app.id}/support`} className="hover:underline">
-            Support
-          </Link>
-
-          {/* dot */}
-          <span className="text-foreground">•</span>
-
-          <Link href={`/apps/${app.id}/changelogs`} className="hover:underline">
-            Changelogs
-          </Link>
-        </div>
-      </section>
+      {isMobile ? (
+        <AppViewBottomViewMobile app={app} />
+      ) : (
+        <AppViewBottomViewWeb app={app} />
+      )}
     </div>
   );
 }
