@@ -134,13 +134,13 @@ export default async function ChangelogDetailPage(props: Props) {
       </div>
 
       {headerImage && (
-        <div className="flex w-full items-center justify-center overflow-hidden rounded-3xl">
+        <div className="flex w-full items-center justify-center overflow-hidden">
           <Image
             src={headerImage}
             alt={`Version ${changelog.version} header`}
             width={800}
             height={450}
-            className="w-full max-w-[200px] object-cover"
+            className="w-full max-w-[200px] rounded-3xl object-cover"
             unoptimized={headerImage.endsWith(".gif")}
           />
         </div>
