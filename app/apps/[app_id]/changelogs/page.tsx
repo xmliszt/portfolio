@@ -41,16 +41,44 @@ export async function generateMetadata(props: Props): Promise<Metadata> {
 
   if (!app) return {};
 
+  const title = `Changelogs | ${app.name}`;
+  const description = `View all version changelogs and release notes for ${app.name}. Stay updated with the latest features, improvements, and bug fixes.`;
+  const url = `https://www.liyuxuan.dev/apps/${params.app_id}/changelogs`;
+
   return {
-    title: `Changelogs | ${app.name}`,
-    description: `View all version changelogs for ${app.name}`,
+    title,
+    description,
+    category: "Apps",
+    applicationName: app.name,
+    keywords: [
+      ...(app.keywords ?? []),
+      "changelog",
+      "release notes",
+      "version history",
+      "updates",
+      "what's new",
+    ],
+    icons: [app.icon.light, app.icon.dark],
+    alternates: {
+      canonical: url,
+    },
     openGraph: {
       ...openGraph,
-      title: `Changelogs | ${app.name}`,
-      description: `View all version changelogs for ${app.name}`,
+      title,
+      description,
+      images: app.ogImages,
+      url,
+      type: "website",
     },
-    alternates: {
-      canonical: `https://www.liyuxuan.dev/apps/${params.app_id}/changelogs`,
+    twitter: {
+      card: "summary_large_image",
+      creator: "@xmliszt",
+      creatorId: "1704579643",
+      title,
+      description,
+      images: app.ogImagesTwitter,
+      siteId: `1704579643-apps-${params.app_id}-changelogs`,
+      site: url,
     },
   };
 }

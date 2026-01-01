@@ -12,6 +12,16 @@ import { MDXContent } from "@/components/mdx-content";
 
 import { changelogs } from "#site/content";
 
+function formatDate(dateString: string): string {
+  try {
+    // Try parsing date in format YYYY-M-D or YYYY-MM-DD
+    const parsed = parse(dateString, "yyyy-M-d", new Date());
+    return format(parsed, "MMMM d, yyyy");
+  } catch {
+    return dateString;
+  }
+}
+
 type Props = {
   params: Promise<{
     app_id: string;
@@ -25,16 +35,6 @@ function getChangelogByAppIdAndVersion(appId: string, version: string) {
   );
 }
 
-function formatDate(dateString: string): string {
-  try {
-    // Try parsing date in format YYYY-M-D or YYYY-MM-DD
-    const parsed = parse(dateString, "yyyy-M-d", new Date());
-    return format(parsed, "MMMM d, yyyy");
-  } catch {
-    return dateString;
-  }
-}
-
 export async function generateMetadata(props: Props): Promise<Metadata> {
   const params = await props.params;
   const app = getAppById(params.app_id);
@@ -45,16 +45,51 @@ export async function generateMetadata(props: Props): Promise<Metadata> {
 
   if (!app || !changelog) return {};
 
+  const headerImage = getChangelogHeaderImage(params.app_id, changelog.version);
+  const title = `Version ${changelog.version} | ${app.name} Changelog`;
+  const description = `What's new in ${app.name} version ${changelog.version}. Released on ${formatDate(changelog.date)}. View the latest features, improvements, and bug fixes.`;
+  const url = `https://www.liyuxuan.dev/apps/${params.app_id}/changelogs/${params.version}`;
+
+  // Use header image for OG if available, otherwise fall back to app's OG images
+  const ogImages = headerImage ? [headerImage] : app.ogImages;
+  const twitterImages = headerImage ? [headerImage] : app.ogImagesTwitter;
+
   return {
-    title: `Version ${changelog.version} | ${app.name} Changelog`,
-    description: `What's new in ${app.name} version ${changelog.version}`,
+    title,
+    description,
+    category: "Apps",
+    applicationName: app.name,
+    keywords: [
+      ...(app.keywords ?? []),
+      "changelog",
+      "release notes",
+      "version history",
+      "updates",
+      "what's new",
+      `version ${changelog.version}`,
+    ],
+    icons: [app.icon.light, app.icon.dark],
+    alternates: {
+      canonical: url,
+    },
     openGraph: {
       ...openGraph,
-      title: `Version ${changelog.version} | ${app.name} Changelog`,
-      description: `What's new in ${app.name} version ${changelog.version}`,
+      title,
+      description,
+      images: ogImages,
+      url,
+      type: "article",
+      publishedTime: changelog.date,
     },
-    alternates: {
-      canonical: `https://www.liyuxuan.dev/apps/${params.app_id}/changelogs/${params.version}`,
+    twitter: {
+      card: "summary_large_image",
+      creator: "@xmliszt",
+      creatorId: "1704579643",
+      title,
+      description,
+      images: twitterImages,
+      siteId: `1704579643-apps-${params.app_id}-changelog-${params.version}`,
+      site: url,
     },
   };
 }
