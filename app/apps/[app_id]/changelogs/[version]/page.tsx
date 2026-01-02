@@ -45,14 +45,13 @@ export async function generateMetadata(props: Props): Promise<Metadata> {
 
   if (!app || !changelog) return {};
 
-  const headerImage = getChangelogHeaderImage(params.app_id, changelog.version);
   const title = `Version ${changelog.version} | ${app.name} Changelog`;
   const description = `What's new in ${app.name} version ${changelog.version}. Released on ${formatDate(changelog.date)}. View the latest features, improvements, and bug fixes.`;
   const url = `https://www.liyuxuan.dev/apps/${params.app_id}/changelogs/${params.version}`;
 
   // Use header image for OG if available, otherwise fall back to app's OG images
-  const ogImages = headerImage ? [headerImage] : app.ogImages;
-  const twitterImages = headerImage ? [headerImage] : app.ogImagesTwitter;
+  const ogImages = app.ogImages;
+  const twitterImages = app.ogImagesTwitter;
 
   return {
     title,
