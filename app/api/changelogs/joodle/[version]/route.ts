@@ -9,6 +9,7 @@ import {
 
 type ChangelogDetailResponse = {
   version: string;
+  displayVersion: string;
   date: string;
   headerImageURL: string | null;
   markdown: string;
@@ -51,8 +52,13 @@ export async function GET(
     const filePath = path.join(CHANGELOGS_DIR, matchingFile);
     const markdown = fs.readFileSync(filePath, "utf-8");
 
+    // Generate display version
+    const [major, minor, build] = version.split(".").map(Number);
+    const displayVersion = `${major}.${minor} (${build})`;
+
     const response: ChangelogDetailResponse = {
       version,
+      displayVersion,
       date: date || "",
       headerImageURL: HEADER_IMAGES[version] || null,
       markdown,

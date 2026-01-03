@@ -139,7 +139,7 @@ export default async function ChangelogsPage(props: Props) {
             <div className="flex flex-col gap-1">
               <div className="flex items-center gap-3">
                 <span className="text-base font-semibold group-hover:text-blue-600 dark:group-hover:text-blue-400">
-                  Version {changelog.version}
+                  Version {changelog.displayVersion}
                 </span>
                 {index === 0 && (
                   <span className="rounded-full bg-blue-100 px-2.5 py-0.5 text-xs font-medium text-blue-700 dark:bg-blue-900/30 dark:text-blue-400">

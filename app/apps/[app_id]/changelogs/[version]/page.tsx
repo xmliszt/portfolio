@@ -128,7 +128,7 @@ export default async function ChangelogDetailPage(props: Props) {
 
       <div className="space-y-2">
         <h1 className="text-muted-foreground text-sm font-medium tracking-tight">
-          {formatDate(changelog.date)} ⋅ VERSION {changelog.version}
+          {formatDate(changelog.date)} ⋅ VERSION {changelog.displayVersion}
         </h1>
       </div>
 
@@ -136,7 +136,7 @@ export default async function ChangelogDetailPage(props: Props) {
         <div className="flex w-full items-center justify-center overflow-hidden">
           <Image
             src={headerImage}
-            alt={`Version ${changelog.version} header`}
+            alt={`Version ${changelog.displayVersion} header`}
             width={800}
             height={450}
             className="w-full max-w-[200px] rounded-3xl object-cover"

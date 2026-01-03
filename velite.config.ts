@@ -193,13 +193,15 @@ const changelogs = defineCollection({
 
       // Extract version and date from filename: <version>_<date>
       const [version, date] = filename.split("_");
+      const [major, minor, build] = version.split(".").map(Number);
 
       return {
         ...data,
         appId,
-        version: version ?? "",
-        date: date ?? "",
-        slug: version ?? "",
+        version,
+        displayVersion: `${major}.${minor} (${build})`,
+        date: date,
+        slug: version,
         permalink: `/apps/${appId}/changelogs/${version}`,
       };
     }),

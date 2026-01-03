@@ -5,6 +5,7 @@ import { CHANGELOGS_DIR, HEADER_IMAGES } from "./constants";
 
 type ChangelogIndexEntry = {
   version: string;
+  displayVersion: string;
   date: string;
   headerImageURL: string | null;
 };
@@ -32,8 +33,12 @@ export async function GET() {
           return null;
         }
 
+        const [major, minor, build] = version.split(".").map(Number);
+        const displayVersion = `${major}.${minor} (${build})`;
+
         return {
           version,
+          displayVersion,
           date,
           headerImageURL: HEADER_IMAGES[version] || null,
         };
