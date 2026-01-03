@@ -2,7 +2,7 @@ import "server-only";
 
 import path from "path";
 
-import { CHANGELOG_HEADER_IMAGES } from "@/app/apps/changelog-data";
+import { CHANGELOG_HEADER_IMAGES } from "@/app/apps/changelog-header-images";
 
 // Directory where changelog markdown files are stored
 export const CHANGELOGS_DIR = path.join(

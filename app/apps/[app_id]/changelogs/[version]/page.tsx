@@ -5,7 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
-import { getChangelogHeaderImage } from "@/app/apps/changelog-data";
+import { getChangelogHeaderImage } from "@/app/apps/changelog-header-images";
 import { getAppById } from "@/app/apps/data";
 import { openGraph } from "@/app/metadata";
 import { MDXContent } from "@/components/mdx-content";
