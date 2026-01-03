@@ -165,21 +165,21 @@ const apps: Record<string, AppData> = {
       "https://aikluwlsjdrayohixism.supabase.co/storage/v1/object/public/joodle/For%20Official%20Reviews/SS10.jpeg",
     ],
     links: {
-      testFlight: {
-        label: "Experience Beta on TestFlight",
-        url: "https://testflight.apple.com/join/gHHMG72B",
-        icon: "TestFlight",
-        badge: "available",
-        badgeLabel: "Try Beta on TestFlight",
-        description: "Join the TestFlight program",
-      },
+      // testFlight: {
+      //   label: "Experience Beta on TestFlight",
+      //   url: "https://testflight.apple.com/join/gHHMG72B",
+      //   icon: "TestFlight",
+      //   badge: "available",
+      //   badgeLabel: "Try Beta on TestFlight",
+      //   description: "Join the TestFlight program",
+      // },
       appStore: {
         label: "Download on App Store",
-        url: "#", // Placeholder for App Store link (pending review)
+        url: "https://apps.apple.com/sg/app/joodle-journaling-with-doodle/id6756204776", // Placeholder for App Store link (pending review)
         icon: "Storefront",
-        badge: "reviewing",
+        badge: "available",
         badgeLabel: "GET",
-        description: "Available soon on the App Store",
+        description: "Now available on the App Store!",
       },
       feedback: [
         {
