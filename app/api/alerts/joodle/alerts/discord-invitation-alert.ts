@@ -1,4 +1,6 @@
-export const DISCORD_INVITATION_ALERT = {
+import { Alert } from "./types";
+
+export const DISCORD_INVITATION_ALERT: Alert = {
   id: "discord-invite-2026-01",
   title: "We Are Building A Community!",
   message:
@@ -10,4 +12,5 @@ export const DISCORD_INVITATION_ALERT = {
   secondaryButton: {
     text: "Dismiss",
   },
+  type: "community",
 };

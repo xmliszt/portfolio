@@ -1,21 +1,9 @@
 import { NextResponse } from "next/server";
 
+import { Alert } from "./alerts/types";
+
 // Set to null to disable alerts
 const ACTIVE_ALERT: Alert | null = null;
-
-type AlertButton = {
-  text: string;
-  url?: string | null;
-};
-
-type Alert = {
-  id: string;
-  title: string;
-  message: string;
-  primaryButton: AlertButton;
-  secondaryButton?: AlertButton | null;
-  imageURL?: string | null;
-};
 
 export async function GET() {
   return NextResponse.json(
