@@ -40,6 +40,7 @@ export type AppData = {
   keywords?: string[];
   ogImages?: string[];
   ogImagesTwitter?: string[];
+  productHuntEmbed?: string;
 };
 
 const apps: Record<string, AppData> = {
@@ -217,6 +218,7 @@ const apps: Record<string, AppData> = {
     ogImagesTwitter: [
       "https://aikluwlsjdrayohixism.supabase.co/storage/v1/object/public/joodle/Joodle%20OG%20-%20Twitter.jpg",
     ],
+    productHuntEmbed: `<a href="https://www.producthunt.com/products/joodle-journaling-with-doodle?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-joodle-journaling-with-doodle" target="_blank" rel="noopener noreferrer"><img alt="Joodle: Journaling With Doodle - Turn years of memories into personal doodles | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1058014&amp;theme=light&amp;t=1767511085007"></a>`,
   },
 };
 

@@ -100,6 +100,16 @@ export function AppView({ app }: { app: AppData }) {
         </div>
       </header>
 
+      {/* Product hunt embed */}
+      {app.productHuntEmbed && (
+        <div
+          className="flex w-full items-center justify-center"
+          dangerouslySetInnerHTML={{
+            __html: app.productHuntEmbed,
+          }}
+        />
+      )}
+
       {/* Screenshots Section */}
       {app.screenshots && app.screenshots.length > 0 && (
         <section className="space-y-6">
