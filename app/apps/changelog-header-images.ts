@@ -5,7 +5,7 @@ export const CHANGELOG_HEADER_IMAGES: Record<string, Record<string, string>> = {
   joodle: {
     // App store version 1.1 release
     "1.1.73":
-      "https://aikluwlsjdrayohixism.supabase.co/storage/v1/object/public/joodle/Changelogs/1.0.61.gif",
+      "https://aikluwlsjdrayohixism.supabase.co/storage/v1/object/public/joodle/Changelogs/1.0.73.gif",
     // TestFlight last release
     "1.1.68":
       "https://aikluwlsjdrayohixism.supabase.co/storage/v1/object/public/joodle/Changelogs/1.1.68.gif",
