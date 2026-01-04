@@ -100,15 +100,27 @@ export function AppView({ app }: { app: AppData }) {
         </div>
       </header>
 
-      {/* Product hunt embed */}
-      {app.productHuntEmbed && (
-        <div
-          className="flex w-full items-center justify-center"
-          dangerouslySetInnerHTML={{
-            __html: app.productHuntEmbed,
-          }}
-        />
-      )}
+      <div className="flex items-center justify-center gap-x-4">
+        {/* Product hunt embed */}
+        {app.productHuntEmbed && (
+          <div
+            className="flex items-center justify-center [&_a]:cursor-pointer!"
+            dangerouslySetInnerHTML={{
+              __html: app.productHuntEmbed,
+            }}
+          />
+        )}
+
+        {/* Discord embed */}
+        {app.discordEmbed && (
+          <div
+            className="flex items-center justify-center [&_a]:cursor-pointer!"
+            dangerouslySetInnerHTML={{
+              __html: app.discordEmbed,
+            }}
+          />
+        )}
+      </div>
 
       {/* Screenshots Section */}
       {app.screenshots && app.screenshots.length > 0 && (
