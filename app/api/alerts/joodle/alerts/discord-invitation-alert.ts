@@ -2,9 +2,9 @@ import { Alert } from "./types";
 
 export const DISCORD_INVITATION_ALERT: Alert = {
   id: "discord-invite-2026-01",
-  title: "We Are Building A Community!",
+  title: "You are invited!",
   message:
-    "This is the place where you can connect with other Joodle users, share your doodles and tips, get support, and more ✨",
+    "Join Joodle Discord Community, where your ideas resonate with others. Share your doodles and stories. Celebrate, make friends, and have fun together ✨",
   primaryButton: {
     text: "Join Discord Community",
     url: "https://discord.gg/WnQSdZqBjk",
