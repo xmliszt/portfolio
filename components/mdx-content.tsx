@@ -35,7 +35,7 @@ export function MDXContent({ code, components }: MdxProps) {
           <h1 {...props}>
             <a
               id={slugify(props.children)}
-              className="[visibility:hidden] relative -top-[calc(100vh/3)] block max-h-1 w-32"
+              className="invisible relative -top-[calc(100vh/3)] block max-h-1 w-32"
             >
               {props.children}
             </a>
@@ -46,7 +46,7 @@ export function MDXContent({ code, components }: MdxProps) {
           <h2 {...props}>
             <a
               id={slugify(props.children)}
-              className="[visibility:hidden] relative -top-[calc(100vh/3)] block max-h-1 w-32"
+              className="invisible relative -top-[calc(100vh/3)] block max-h-1 w-32"
             >
               {props.children}
             </a>
@@ -57,7 +57,7 @@ export function MDXContent({ code, components }: MdxProps) {
           <h3 {...props}>
             <a
               id={slugify(props.children)}
-              className="[visibility:hidden] relative -top-[calc(100vh/3)] block max-h-1 w-32"
+              className="invisible relative -top-[calc(100vh/3)] block max-h-1 w-32"
             >
               {props.children}
             </a>
@@ -68,7 +68,7 @@ export function MDXContent({ code, components }: MdxProps) {
           <h4 {...props}>
             <a
               id={slugify(props.children)}
-              className="[visibility:hidden] relative -top-[calc(100vh/3)] block max-h-1 w-32"
+              className="invisible relative -top-[calc(100vh/3)] block max-h-1 w-32"
             >
               {props.children}
             </a>

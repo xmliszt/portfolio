@@ -207,6 +207,33 @@ const changelogs = defineCollection({
     }),
 });
 
+const faqs = defineCollection({
+  name: "Faqs",
+  pattern: "apps/**/faqs/**/*.md",
+  schema: s
+    .object({
+      id: s.string(),
+      title: s.string(),
+      order: s.number(),
+      body: s.mdx(),
+    })
+    .transform((data, { meta }) => {
+      const path = meta.path as string;
+
+      // Extract appId and sectionId from path: apps/<appId>/faqs/<sectionId>/<filename>.md
+      const match = path.match(/apps\/([^/]+)\/faqs\/([^/]+)\/([^/]+)\.md$/);
+      const appId = match?.at(1) ?? "";
+      const sectionId = match?.at(2) ?? "";
+
+      return {
+        ...data,
+        appId,
+        sectionId,
+        permalink: `/apps/${appId}/faqs#${data.id}`,
+      };
+    }),
+});
+
 export default defineConfig({
   root: "content",
   output: {
@@ -225,6 +252,7 @@ export default defineConfig({
     hobbies,
     apps,
     changelogs,
+    faqs,
   },
   mdx: {
     rehypePlugins: [

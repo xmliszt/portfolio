@@ -1,7 +1,9 @@
+import { startCase } from "lodash";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
 import { ShadowSubtitle } from "@/app/[slug]/shadow-subtitle";
+import { getAppById } from "@/app/apps/data";
 import { openGraph } from "@/app/metadata";
 import { TOCLoader } from "@/components/custom/toc/toc-loader";
 import { MDXContent } from "@/components/mdx-content";
@@ -27,20 +29,48 @@ const documentTitles: Record<string, string> = {
 export async function generateMetadata(props: Props): Promise<Metadata> {
   const params = await props.params;
   const document = getAppDocumentBySlugAndAppId(params.app_id, params.slug);
+  const app = getAppById(params.app_id);
 
-  if (document == null) return {};
+  if (document == null || app == null) return {};
 
-  const documentTitle = documentTitles[params.slug] || params.slug;
+  const documentTitle = documentTitles[params.slug] ?? params.slug;
+  const title = `${startCase(documentTitle)} | ${app.name}`;
+  const description = `${documentTitle} for ${app.name}. Learn about how we handle your data and the terms governing your use of ${app.name}.`;
+  const url = `https://www.liyuxuan.dev/apps/${params.app_id}/${params.slug}`;
 
   return {
-    title: `${document.title} | ${params.app_id}`,
+    title,
+    description,
+    category: "Apps",
+    applicationName: app.name,
+    keywords: [
+      ...(app.keywords ?? []),
+      documentTitle.toLowerCase(),
+      "legal",
+      "terms",
+      "privacy",
+    ],
+    icons: [app.icon.light, app.icon.dark],
+    alternates: {
+      canonical: url,
+    },
     openGraph: {
       ...openGraph,
-      title: `Li Yuxuan | ${document.title}`,
-      description: `${documentTitle} for ${params.app_id}`,
+      title,
+      description,
+      images: app.ogImages,
+      url,
+      type: "website",
     },
-    alternates: {
-      canonical: `https://www.liyuxuan.dev/apps/${params.app_id}/${params.slug}`,
+    twitter: {
+      card: "summary_large_image",
+      creator: "@xmliszt",
+      creatorId: "1704579643",
+      title,
+      description,
+      images: app.ogImagesTwitter,
+      siteId: `1704579643-apps-${params.app_id}-${params.slug}`,
+      site: url,
     },
   };
 }

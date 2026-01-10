@@ -39,6 +39,13 @@ export function AppViewBottomViewMobile(props: AppViewBottomViewProps) {
           {/* dot */}
           <span className="text-foreground">•</span>
 
+          <Link href={`/apps/${app.id}/faqs`} className="hover:underline">
+            FAQs
+          </Link>
+
+          {/* dot */}
+          <span className="text-foreground">•</span>
+
           <Link href={`/apps/${app.id}/support`} className="hover:underline">
             Support
           </Link>
@@ -76,6 +83,13 @@ export function AppViewBottomViewWeb(props: AppViewBottomViewProps) {
 
         <Link href={`/apps/${app.id}/changelogs`} className="hover:underline">
           Changelogs
+        </Link>
+
+        {/* dot */}
+        <span className="text-foreground">•</span>
+
+        <Link href={`/apps/${app.id}/faqs`} className="hover:underline">
+          FAQs
         </Link>
 
         {/* dot */}
