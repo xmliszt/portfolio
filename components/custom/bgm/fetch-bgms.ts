@@ -1,8 +1,5 @@
 "use server";
 
-import { getDownloadURL, ref } from "firebase/storage";
-
-import { firebaseStorage } from "@/lib/firebase";
 import { createServiceRoleClient } from "@/lib/supabase/create-service-role-client";
 
 export async function fetchBGMs() {
@@ -15,14 +12,14 @@ export async function fetchBGMs() {
         id: bgm.id,
         title: bgm.title,
         artist: bgm.artist,
-        public_url: await fetchBGMPublicUrl(bgm.id),
+        public_url: getBgmPublicUrl(bgm.id),
         external_url: bgm.external_url,
       }))
     ),
   };
 }
 
-async function fetchBGMPublicUrl(bgmId: string) {
-  const bgmRef = ref(firebaseStorage, `bgms/${bgmId}.mp3`);
-  return await getDownloadURL(bgmRef);
+function getBgmPublicUrl(bgmId: string) {
+  const SUPABASE_URL = process.env.SUPABASE_DB_URL!;
+  return `${SUPABASE_URL}/storage/v1/object/public/bgm/${bgmId}.mp3`;
 }
