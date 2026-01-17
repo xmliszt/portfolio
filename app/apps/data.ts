@@ -9,7 +9,7 @@ export type IconName =
   | "TestFlight"
   | "ArrowSquareOut"
   | "ChatCircleDots"
-  | "DiscordLogo"
+  | "WhatsappLogo"
   | "TwitterLogo"
   | "Envelope";
 
@@ -41,101 +41,69 @@ export type AppData = {
   ogImages?: string[];
   ogImagesTwitter?: string[];
   productHuntEmbed?: string;
-  discordEmbed?: string;
   whatsappEmbed?: string;
 };
 
 const apps: Record<string, AppData> = {
   joodle: {
     id: "joodle",
-    name: "Joodle",
-    subtitle: "Journaling With Doodles",
+    name: "Joodle: Journaling With Doodle",
+    subtitle: "Visual Daily Journal",
     description:
-      "Draw a doodle each day to capture your memories. Watch a year of your life unfold in a quiet, personal visual timeline.",
+      "Draw one simple doodle each day and remember your life as a visual timeline—not pages of text. Joodle is a private visual daily journal for capturing moments, moods, and memories in seconds.",
     keywords: [
-      "doodle",
-      "paint",
-      "draw",
-      "adhd",
-      "journal",
-      "journaling",
-      "diary",
-      "tracker",
-      "anniversary",
-      "visual diary",
-      "daily sketch",
-      "memory tracker",
-      "widgets",
-      "timeline",
-      "personal",
-      "mood",
-      "joodle",
-      "joodle app",
-      "joodle journal",
-      "joodle diary",
-      "joodle doodle app",
-      "tiny doodles big memories",
-      "visual memory journal",
-      "doodle journaling app",
-      "doodle journal",
-      "visual diary",
-      "daily doodle",
-      "daily sketch",
-      "drawing journal",
-      "art journal app",
-      "visual journaling",
-      "mood journal",
-      "daily journal app",
+      // Core identity
+      "visual journal",
+      "visual daily journal",
+      "daily journal",
+      "journal app",
       "journaling app",
-      "personal journal",
-      "digital diary",
+      "diary app",
+      "personal diary",
+      "private journal",
+
+      // Memory & reflection
       "memory journal",
+      "visual memory journal",
       "life journal",
-      "gratitude journal",
+      "reflection journal",
       "self reflection journal",
-      "drawing app",
-      "sketch app",
-      "paint app",
-      "simple drawing app",
-      "minimal drawing app",
-      "creative journaling",
-      "creative diary",
-      "adhd journal",
-      "adhd friendly journal",
-      "focus journal",
       "mindfulness journal",
-      "mental health journal",
-      "calm journaling app",
-      "stress relief drawing",
+      "quiet journal",
+
+      // Visual + format
+      "doodle journal",
+      "doodle journaling app",
+      "daily doodle",
+      "drawing journal",
+      "visual diary",
+      "visual journaling",
       "year in pixels",
       "year grid journal",
       "visual timeline",
       "memory timeline",
-      "life timeline app",
-      "anniversary countdown",
-      "important dates tracker",
-      "daily habit tracker",
+
+      // Mood & emotion (kept but focused)
+      "mood journal",
       "mood tracker",
-      "emotion tracker",
-      "feeling tracker",
-      "personal tracker",
+      "emotion journal",
+      "feeling journal",
+
+      // iOS intent
       "ios journal app",
       "iphone journal app",
       "ipad journal app",
-      "apple journal app",
       "icloud journal",
       "apple widgets journal",
-      "lock screen widgets",
-      "private journal",
-      "secure journal",
-      "offline journal",
-      "no account journal",
-      "personal diary app",
-      "siri shortcuts app",
-      "home screen widgets",
+      "lock screen journal",
       "standby mode widgets",
-      "minimalist journal",
-      "aesthetic journal app",
+
+      // Brand
+      "joodle",
+      "joodle app",
+      "joodle journal",
+      "joodle diary",
+      "visual journal app joodle",
     ],
     icon: {
       light:
@@ -143,17 +111,18 @@ const apps: Record<string, AppData> = {
       dark: "https://aikluwlsjdrayohixism.supabase.co/storage/v1/object/public/joodle/Joodle%20Icon%20Dark.jpg",
       alt: "Joodle App Icon",
     },
+
     features: [
-      "Daily Joodle Journal: Capture moods, moments, or thoughts with a simple doodle in just seconds.",
-      "Year Grid View: See your entire year at a glance through a grid of Joodle thumbnails—each one a day remembered.",
-      "Anniversary Countdown: Add future dates and count down to moments that matter. Set reminders so you never miss an important day.",
-      "Widgets: Bring your Joodles to your Home Screen, Lock Screen, or even StandBy mode.",
-      "iCloud Sync: Keep your memories safe and seamlessly synced across all your Apple devices.",
-      "Visual Timeline: Watch your Joodles come together into a meaningful story over time.",
-      "Share Your Memories: Export Joodles individually or your entire year. Share thoughtfully, or keep your memories close.",
-      "Vibrant Color Themes: Customize Joodle to match your personal style and mood.",
-      "Siri Shortcuts: Access Joodle quickly from your search bar or via Siri.",
-      "For Everyone, No Skills Required: Joodle isn’t about perfect art—it’s about capturing feelings. Even simple stick figures become a visual diary that’s deeply personal and uniquely yours.",
+      "Daily Visual Journal: Draw one simple doodle each day to capture moods, moments, or feelings in seconds—no writing required.",
+      "Year-at-a-Glance Memory Grid: See your entire year as a visual timeline of daily doodles, with each day remembered at a glance.",
+      "Visual Memory Timeline: Watch your daily doodles come together into a quiet, personal story over time.",
+      "Private by Design with iCloud Sync: Your journal stays on your devices and syncs securely across iPhone, iPad, and Apple devices.",
+      "Widgets Everywhere: Bring your visual journal to your Home Screen, Lock Screen, or StandBy mode for quick daily access.",
+      "Anniversary & Important Dates Countdown: Track birthdays, anniversaries, and meaningful moments with gentle reminders.",
+      "Share Thoughtfully: Export individual days or your entire year—share selectively or keep everything private.",
+      "Personal Themes & Colors: Customize your visual journal to match your mood and personal style.",
+      "Quick Access with Siri Shortcuts: Open your daily journal instantly using search or voice.",
+      "No Art Skills Required: Joodle isn’t about perfect drawings—simple stick figures become a deeply personal visual diary.",
     ],
     screenshots: [
       "https://aikluwlsjdrayohixism.supabase.co/storage/v1/object/public/joodle/For%20Official%20Reviews/SS1.jpeg",
@@ -194,10 +163,10 @@ const apps: Record<string, AppData> = {
       ],
       community: [
         {
-          label: "Discord Community",
-          url: "https://discord.gg/WnQSdZqBjk",
-          icon: "DiscordLogo",
-          description: "Meet like-minded people",
+          label: "WhatsApp Community",
+          url: "https://chat.whatsapp.com/FF2rMEiSOwe9hsRapSyvdY",
+          icon: "WhatsappLogo",
+          description: "Make friends and share your doodles",
         },
         {
           label: "X (Twitter)",
@@ -221,7 +190,6 @@ const apps: Record<string, AppData> = {
       "https://aikluwlsjdrayohixism.supabase.co/storage/v1/object/public/joodle/Joodle%20OG%20-%20Twitter.jpg",
     ],
     productHuntEmbed: `<a href="https://www.producthunt.com/products/joodle-journaling-with-doodle?embed=true&amp;utm_source=badge-top-post-badge&amp;utm_medium=badge&amp;utm_campaign=badge-joodle" target="_blank" rel="noopener noreferrer"><img alt="Joodle - Turn years of memories into personal doodles | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/top-post-badge.svg?post_id=1058014&amp;theme=light&amp;period=daily&amp;t=1767600498155"></a>`,
-    discordEmbed: `<a href="https://discord.gg/WnQSdZqBjk" target="_blank" rel="noopener noreferrer"><img alt="Joodle: Journaling With Doodle - Discord Community Server Invitation Link" width="268.457" height="54" src="https://aikluwlsjdrayohixism.supabase.co/storage/v1/object/public/joodle/Discord%20Community%20Banner.png"></a>`,
     whatsappEmbed: `<a href="https://chat.whatsapp.com/FF2rMEiSOwe9hsRapSyvdY" target="_blank" rel="noopener noreferrer"><img alt="Joodle: Journaling With Doodle - WhatsApp Community Invitation Link" width="268.457" height="54" src="https://aikluwlsjdrayohixism.supabase.co/storage/v1/object/public/joodle/Whatsapp%20Community%20Banner.png"></a>`,
   },
 };
