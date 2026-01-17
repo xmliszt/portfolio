@@ -111,12 +111,12 @@ export function AppView({ app }: { app: AppData }) {
           />
         )}
 
-        {/* Discord embed */}
-        {app.discordEmbed && (
+        {/* WhatsApp embed */}
+        {app.whatsappEmbed && (
           <div
             className="flex items-center justify-center [&_a]:cursor-pointer!"
             dangerouslySetInnerHTML={{
-              __html: app.discordEmbed,
+              __html: app.whatsappEmbed,
             }}
           />
         )}
