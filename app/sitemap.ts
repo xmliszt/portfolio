@@ -1,5 +1,7 @@
 import { MetadataRoute } from "next";
 
+import { getAllAppIds } from "@/app/apps/data";
+
 import { apps, hobbies, posts, tags } from "#site/content";
 
 export default function sitemap(): MetadataRoute.Sitemap {
@@ -44,12 +46,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
       url: "https://liyuxuan.dev/apps",
       lastModified: new Date(),
       changeFrequency: "always",
-      priority: 1,
-    },
-    {
-      url: "https://liyuxuan.dev/apps/joodle",
-      lastModified: new Date(),
-      changeFrequency: "weekly",
       priority: 1,
     },
     {
@@ -114,7 +110,16 @@ export default function sitemap(): MetadataRoute.Sitemap {
     },
   ];
 
-  const appsSiteMap: MetadataRoute.Sitemap = apps.map((app) => ({
+  const appHomePagesSiteMap: MetadataRoute.Sitemap = getAllAppIds().map(
+    (appId) => ({
+      url: `https://liyuxuan.dev/apps/${appId}`,
+      lastModified: new Date(),
+      changeFrequency: "weekly",
+      priority: 1,
+    })
+  );
+
+  const appDocsSiteMap: MetadataRoute.Sitemap = apps.map((app) => ({
     url: `https://liyuxuan.dev/apps/${app.appId}/${app.slug}`,
     lastModified: new Date(),
     changeFrequency: "monthly",
@@ -126,6 +131,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     hobbiesSiteMap,
     experimentsSiteMap,
     tagsSiteMap,
-    appsSiteMap
+    appHomePagesSiteMap,
+    appDocsSiteMap
   );
 }
