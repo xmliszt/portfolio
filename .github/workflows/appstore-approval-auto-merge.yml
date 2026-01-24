@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
     inputs:
       dry_run:
-        description: "Run without merging/email"
+        description: "Run without merging PR"
         type: boolean
         default: false
 
@@ -121,7 +121,7 @@ jobs:
       # 4. Send email notification (with PR link)
       # ------------------------------------------------------------
       - name: Send email notification
-        if: steps.pr.outputs.number != '' && steps.appstore.outputs.approved == 'true' && inputs.dry_run != true
+        if: steps.pr.outputs.number != '' && (inputs.dry_run == true || steps.appstore.outputs.approved == 'true')
         run: |
           npm install nodemailer >/dev/null
 
