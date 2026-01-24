@@ -140,14 +140,14 @@ jobs:
             to: process.env.EMAIL_TO,
             subject: "✅ Joodle changelog published",
             text: `
-Apple approved your app 🎉
+              Apple approved your app 🎉
 
-The website changelog PR has been merged into main.
+              The website changelog PR has been merged into main.
 
-PR #${prNumber}
-${prUrl}
+              PR #${prNumber}
+              ${prUrl}
 
-Users opening Joodle will now see the latest changelog.
+              Users opening Joodle will now see the latest changelog.
             `,
           });
           EOF
