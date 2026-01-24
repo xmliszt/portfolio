@@ -1,0 +1,157 @@
+name: App Store Approval → Publish Website Changelog
+
+on:
+  schedule:
+    - cron: "*/15 * * * *" # every 15 minutes
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+
+    steps:
+      # ------------------------------------------------------------
+      # 1. Check App Store approval status
+      # ------------------------------------------------------------
+      - name: Check App Store approval status
+        id: appstore
+        run: |
+          npm init -y >/dev/null
+          npm install jsonwebtoken node-fetch@2 >/dev/null
+
+          node <<'EOF'
+          const jwt = require("jsonwebtoken");
+          const fetch = require("node-fetch");
+
+          const {
+            ASC_ISSUER_ID,
+            ASC_KEY_ID,
+            ASC_PRIVATE_KEY,
+            APP_ID
+          } = process.env;
+
+          const token = jwt.sign({}, ASC_PRIVATE_KEY.replace(/\\n/g, "\n"), {
+            algorithm: "ES256",
+            issuer: ASC_ISSUER_ID,
+            header: { kid: ASC_KEY_ID },
+            expiresIn: "10m",
+            audience: "appstoreconnect-v1",
+          });
+
+          async function run() {
+            const res = await fetch(
+              `https://api.appstoreconnect.apple.com/v1/apps/${APP_ID}/appStoreVersions`,
+              { headers: { Authorization: `Bearer ${token}` } }
+            );
+
+            const json = await res.json();
+            const version = json.data?.[0];
+            const state = version?.attributes?.appStoreState;
+
+            console.log("App Store state:", state);
+
+            if (state === "READY_FOR_DISTRIBUTION") {
+              console.log("::set-output name=approved::true");
+            } else {
+              console.log("::set-output name=approved::false");
+            }
+          }
+
+          run();
+          EOF
+        env:
+          ASC_ISSUER_ID: ${{ secrets.ASC_ISSUER_ID }}
+          ASC_KEY_ID: ${{ secrets.ASC_KEY_ID }}
+          ASC_PRIVATE_KEY: ${{ secrets.ASC_PRIVATE_KEY }}
+          APP_ID: ${{ secrets.APP_ID }}
+
+      # ------------------------------------------------------------
+      # 2. Find the PR waiting for App Store approval (by label)
+      # ------------------------------------------------------------
+      - name: Find changelog PR by label
+        if: steps.appstore.outputs.approved == 'true'
+        id: pr
+        run: |
+          PRS=$(gh pr list \
+            --label "publish-after-appstore-approval" \
+            --state open \
+            --json number,title)
+
+          COUNT=$(echo "$PRS" | jq length)
+
+          if [ "$COUNT" -eq 0 ]; then
+            echo "No PR waiting for approval. Exiting."
+            exit 0
+          fi
+
+          if [ "$COUNT" -gt 1 ]; then
+            echo "❌ Multiple PRs waiting for approval. Abort."
+            echo "$PRS"
+            exit 1
+          fi
+
+          PR_NUMBER=$(echo "$PRS" | jq -r '.[0].number')
+          echo "Found PR #$PR_NUMBER"
+
+          echo "::set-output name=number::$PR_NUMBER"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      # ------------------------------------------------------------
+      # 3. Merge the PR
+      # ------------------------------------------------------------
+      - name: Merge changelog PR
+        if: steps.pr.outputs.number != ''
+        run: |
+          gh pr merge ${{ steps.pr.outputs.number }} --merge
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      # ------------------------------------------------------------
+      # 4. Send email notification (with PR link)
+      # ------------------------------------------------------------
+      - name: Send email notification
+        if: steps.pr.outputs.number != ''
+        run: |
+          npm install nodemailer >/dev/null
+
+          node <<'EOF'
+          const nodemailer = require("nodemailer");
+
+          const prNumber = process.env.PR_NUMBER;
+          const repo = process.env.GITHUB_REPOSITORY;
+          const prUrl = `${process.env.GITHUB_SERVER_URL}/${repo}/pull/${prNumber}`;
+
+          const transporter = nodemailer.createTransport({
+            service: "gmail",
+            auth: {
+              user: process.env.EMAIL_SMTP_USER,
+              pass: process.env.EMAIL_SMTP_PASS,
+            },
+          });
+
+          transporter.sendMail({
+            from: `"Joodle Release Bot" <${process.env.EMAIL_SMTP_USER}>`,
+            to: process.env.EMAIL_TO,
+            subject: "✅ Joodle changelog published",
+            text: `
+Apple approved your app 🎉
+
+The website changelog PR has been merged into main.
+
+PR #${prNumber}
+${prUrl}
+
+Users opening Joodle will now see the latest changelog.
+            `,
+          });
+          EOF
+        env:
+          EMAIL_SMTP_USER: ${{ secrets.EMAIL_SMTP_USER }}
+          EMAIL_SMTP_PASS: ${{ secrets.EMAIL_SMTP_PASS }}
+          EMAIL_TO: ${{ secrets.EMAIL_TO }}
+          PR_NUMBER: ${{ steps.pr.outputs.number }}
