@@ -4,6 +4,11 @@ on:
   schedule:
     - cron: "*/15 * * * *" # every 15 minutes
   workflow_dispatch:
+    inputs:
+      dry_run:
+        description: "Run without merging/email"
+        type: boolean
+        default: false
 
 permissions:
   contents: write
@@ -74,7 +79,7 @@ jobs:
       # 2. Find the PR waiting for App Store approval (by label)
       # ------------------------------------------------------------
       - name: Find changelog PR by label
-        if: steps.appstore.outputs.approved == 'true'
+        if: inputs.dry_run == true || steps.appstore.outputs.approved == 'true'
         id: pr
         run: |
           PRS=$(gh pr list \
@@ -106,9 +111,8 @@ jobs:
       # 3. Merge the PR
       # ------------------------------------------------------------
       - name: Merge changelog PR
-        if: steps.pr.outputs.number != ''
-        run: |
-          gh pr merge ${{ steps.pr.outputs.number }} --merge
+        if: steps.pr.outputs.number != '' && steps.appstore.outputs.approved == 'true' && inputs.dry_run != true
+        run: gh pr merge ${{ steps.pr.outputs.number }} --merge
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
@@ -116,7 +120,7 @@ jobs:
       # 4. Send email notification (with PR link)
       # ------------------------------------------------------------
       - name: Send email notification
-        if: steps.pr.outputs.number != ''
+        if: steps.pr.outputs.number != '' && steps.appstore.outputs.approved == 'true' && inputs.dry_run != true
         run: |
           npm install nodemailer >/dev/null
 
