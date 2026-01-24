@@ -24,6 +24,7 @@ jobs:
           npm install jsonwebtoken node-fetch@2 >/dev/null
 
           node <<'EOF'
+          const fs = require("fs");
           const jwt = require("jsonwebtoken");
           const fetch = require("node-fetch");
 
@@ -55,9 +56,9 @@ jobs:
             console.log("App Store state:", state);
 
             if (state === "READY_FOR_DISTRIBUTION") {
-              console.log("::set-output name=approved::true");
+              fs.appendFileSync(process.env.GITHUB_OUTPUT, "approved=true\n");
             } else {
-              console.log("::set-output name=approved::false");
+              fs.appendFileSync(process.env.GITHUB_OUTPUT, "approved=false\n");
             }
           }
 
@@ -97,7 +98,7 @@ jobs:
           PR_NUMBER=$(echo "$PRS" | jq -r '.[0].number')
           echo "Found PR #$PR_NUMBER"
 
-          echo "::set-output name=number::$PR_NUMBER"
+          printf "number=%s\n" "$PR_NUMBER" >> "$GITHUB_OUTPUT"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
