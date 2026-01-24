@@ -85,7 +85,8 @@ jobs:
           PRS=$(gh pr list \
             --label "publish-after-appstore-approval" \
             --state open \
-            --json number,title)
+            --json number,title \
+            --repo "$GITHUB_REPOSITORY")
 
           COUNT=$(echo "$PRS" | jq length)
 
