@@ -4,8 +4,8 @@ import "server-only";
 export const CHANGELOG_HEADER_IMAGES: Record<string, Record<string, string>> = {
   joodle: {
     // App store version 1.7 release
-    "1.7.87":
-      "https://aikluwlsjdrayohixism.supabase.co/storage/v1/object/public/joodle/Changelogs/1.7.87.gif",
+    "1.7.88":
+      "https://aikluwlsjdrayohixism.supabase.co/storage/v1/object/public/joodle/Changelogs/1.7.88.gif",
     // App store version 1.5 release
     "1.5.83":
       "https://aikluwlsjdrayohixism.supabase.co/storage/v1/object/public/joodle/Changelogs/1.5.83.gif",
