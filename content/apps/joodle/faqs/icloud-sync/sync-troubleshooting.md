@@ -6,8 +6,8 @@ order: 1
 
 **If your Joodles aren't appearing on other devices, try these steps**:
 
-1. **Check your subscription** - iCloud Sync requires Joodle Pro.
-2. **Verify iCloud is enabled** - Go to device Settings → [Your Name] → iCloud → Saved to iCloud → Joodle must be ON.
+1. **Verify iCloud is enabled** - Go to device Settings → [Your Name] → iCloud → Saved to iCloud → Joodle must be ON.
+2. **Check in-app sync toggle** - Ensure sync is enabled in Joodle app under Settings → General → iCloud Sync.
 3. **Check network connection** - Sync requires an active internet connection.
 4. **Same Apple ID** - Ensure all devices are signed into the same iCloud account.
 5. **Allow time** - iCloud sync may take a few minutes to propagate changes.
