@@ -147,7 +147,7 @@ const apps: Record<string, AppData> = {
       // },
       appStore: {
         label: "Download on App Store",
-        url: "https://apps.apple.com/sg/app/joodle-journaling-with-doodle/id6756204776", // Placeholder for App Store link (pending review)
+        url: "https://apps.apple.com/app/joodle-journaling-with-doodle/id6756204776", // Placeholder for App Store link (pending review)
         icon: "Storefront",
         badge: "available",
         badgeLabel: "GET",
@@ -170,7 +170,7 @@ const apps: Record<string, AppData> = {
         },
         {
           label: "X (Twitter)",
-          url: "https://x.com/xmliszt",
+          url: "https://x.com/Joodlejournal",
           icon: "TwitterLogo",
           description: "Follow me for more updates",
         },
