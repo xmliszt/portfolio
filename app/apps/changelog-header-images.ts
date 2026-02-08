@@ -3,6 +3,9 @@ import "server-only";
 // Header images for changelog versions, organized by app ID
 export const CHANGELOG_HEADER_IMAGES: Record<string, Record<string, string>> = {
   joodle: {
+    // App store version 1.8 release
+    "1.8.91":
+      "https://aikluwlsjdrayohixism.supabase.co/storage/v1/object/public/joodle/Changelogs/1.8.91.png",
     // App store version 1.7 release
     "1.7.89":
       "https://aikluwlsjdrayohixism.supabase.co/storage/v1/object/public/joodle/Changelogs/1.7.89.gif",
