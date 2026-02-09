@@ -6,15 +6,26 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 export function slugify(input: string) {
-  // hash the input if it is not a string
   if (typeof input !== "string") return "";
-  const parts = input.split(" ");
-  const encodedParts = parts.map((part) =>
-    encodeURIComponent(part.toLowerCase())
-  );
-  return "anchor:" + encodedParts.join("-");
+  const normalized = input
+    .trim()
+    .toLowerCase()
+    .replace(/\s+/g, "-")
+    .replace(/[^a-z0-9-]/g, "");
+
+  return `anchor:${normalized}`;
 }
 
-export function isAtCurrentTOC(hash: string, tocTitle: string) {
-  return hash === slugify(tocTitle);
+export function normalizeTOCHash(value: string) {
+  if (!value) return "";
+  const trimmed = value.startsWith("#") ? value.slice(1) : value;
+  try {
+    return decodeURIComponent(trimmed);
+  } catch {
+    return trimmed;
+  }
+}
+
+export function isAtCurrentTOC(hash: string, tocUrl: string) {
+  return normalizeTOCHash(hash) === normalizeTOCHash(tocUrl);
 }

@@ -10,7 +10,7 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { cn, isAtCurrentTOC, slugify } from "@/lib/utils";
+import { cn, isAtCurrentTOC, normalizeTOCHash } from "@/lib/utils";
 
 import { useTOC } from "./toc-provider";
 
@@ -26,15 +26,21 @@ export function FloatingTOCDrawer(props: FloatingTOCDrawerProps) {
     return (
       <div className="m-0 flex w-full flex-col gap-y-1">
         {toc.map((heading) => {
+          const url =
+            heading.url && heading.url.startsWith("#")
+              ? heading.url
+              : `#${heading.url}`;
+          const targetHash = normalizeTOCHash(url);
+
           return (
             <>
               <a
                 key={`${heading.url}_${indents}`}
-                href={`#${slugify(heading.title)}`}
+                href={url}
                 className={cn(
                   "text-secondary-foreground rounded-lg p-2 text-left text-xs transition-colors",
                   "hover:bg-secondary",
-                  isAtCurrentTOC(hash, heading.title)
+                  isAtCurrentTOC(hash, url)
                     ? "bg-secondary font-semibold"
                     : "font-normal"
                 )}
@@ -42,9 +48,32 @@ export function FloatingTOCDrawer(props: FloatingTOCDrawerProps) {
                   marginLeft: `${indents * 8}px`,
                   width: `calc(100% - ${indents * 8}px)`,
                 }}
-                onClick={() => {
+                onClick={(event) => {
+                  event.preventDefault();
                   isOpen && setIsOpen(false);
-                  setHash(slugify(heading.title));
+                  if (typeof window !== "undefined") {
+                    window.dispatchEvent(
+                      new CustomEvent("toc:navigate", {
+                        detail: { hash: targetHash },
+                      })
+                    );
+                  }
+                  setHash(targetHash);
+                  const target = document.getElementById(targetHash);
+                  if (target) {
+                    try {
+                      target.scrollIntoView({
+                        behavior: "smooth",
+                        block: "start",
+                      });
+                    } catch {
+                      target.scrollIntoView();
+                    }
+                  }
+                  if (typeof window !== "undefined") {
+                    const nextUrl = `${window.location.pathname}${window.location.search}#${targetHash}`;
+                    window.history.replaceState(null, "", nextUrl);
+                  }
                 }}
               >
                 {heading.title}

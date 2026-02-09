@@ -19,7 +19,7 @@ export function TOCTree() {
                 <span
                   className={cn(
                     "bg-foreground absolute bottom-0 left-0 rounded-full",
-                    "h-0 w-0 opacity-0 transition-[opacity_width] duration-300 group-hover:h-[1px] group-hover:w-full group-hover:opacity-100"
+                    "h-0 w-0 opacity-0 transition-[opacity_width] duration-300 group-hover:h-px group-hover:w-full group-hover:opacity-100"
                   )}
                 ></span>
               </div>
