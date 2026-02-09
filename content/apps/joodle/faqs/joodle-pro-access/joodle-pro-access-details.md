@@ -1,13 +1,13 @@
 ---
-id: subscription-details
+id: joodle-pro-access-details
 title: I need more details about Joodle Pro access
 order: 0
 ---
 
 **Joodle Pro Access Options & Pricing**:
 
-- **Monthly Plan**: Billed monthly at the displayed price (e.g., $3.99/month)
-- **Yearly Plan**: Billed annually (pricing varies by region)
+- **Monthly Plan**: Billed monthly at the displayed price
+- **Yearly Plan**: Billed annually at the displayed price
 - **Lifetime**: One-time purchase that unlocks Joodle Pro forever
 
 **Billing & Auto-Renewal**:
