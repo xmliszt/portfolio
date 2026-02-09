@@ -60,7 +60,7 @@ jobs:
 
             console.log("App Store state:", state);
 
-            if (state === "READY_FOR_DISTRIBUTION") {
+            if (state === "READY_FOR_SALE") {
               fs.appendFileSync(process.env.GITHUB_OUTPUT, "approved=true\n");
             } else {
               fs.appendFileSync(process.env.GITHUB_OUTPUT, "approved=false\n");
