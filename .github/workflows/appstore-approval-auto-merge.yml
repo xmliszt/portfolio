@@ -19,6 +19,9 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
       # ------------------------------------------------------------
       # 1. Check App Store approval status
       # ------------------------------------------------------------
@@ -113,7 +116,7 @@ jobs:
       # ------------------------------------------------------------
       - name: Merge changelog PR
         if: steps.pr.outputs.number != '' && steps.appstore.outputs.approved == 'true' && inputs.dry_run != true
-        run: gh pr merge ${{ steps.pr.outputs.number }} --merge
+        run: gh pr merge ${{ steps.pr.outputs.number }} --merge --repo "$GITHUB_REPOSITORY"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
