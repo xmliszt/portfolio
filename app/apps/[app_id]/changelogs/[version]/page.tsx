@@ -113,7 +113,7 @@ export default async function ChangelogDetailPage(props: Props) {
   const headerImage = getChangelogHeaderImage(params.app_id, changelog.version);
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 w-full">
       <div className="pb-4">
         <Link href={`/apps/${params.app_id}/changelogs`} className="group">
           <div className="flex items-center gap-2 text-sm">
@@ -139,8 +139,8 @@ export default async function ChangelogDetailPage(props: Props) {
             alt={`Version ${changelog.displayVersion} header`}
             width={800}
             height={450}
-            className="w-full max-w-[200px] rounded-3xl object-cover"
-            unoptimized={headerImage.endsWith(".gif")}
+            className="w-full max-w-[324px] rounded-3xl object-cover"
+            unoptimized
           />
         </div>
       )}
