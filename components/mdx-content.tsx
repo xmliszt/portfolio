@@ -12,6 +12,7 @@ import { CustomLink } from "./ui/custom-link";
 import { ExternalActionButtonLink } from "./ui/external-action-button-link";
 import { FilmGrid } from "./ui/film-grid";
 import { ImagePerspectiveLink } from "./ui/image-perspective-link";
+import { IOSAppLink } from "./ui/ios-app-link";
 import { LoadMoreLinks } from "./ui/load-more-links";
 import { PhotoBentoGrid } from "./ui/photo-bento-grid";
 import { Ratings } from "./ui/ratings";
@@ -145,6 +146,7 @@ export function MDXContent({ code, components }: MdxProps) {
         Ratings,
         Link,
         ImagePerspectiveLink,
+        IOSAppLink,
       }}
     />
   );
