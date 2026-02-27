@@ -74,7 +74,7 @@ export function IOSAppLink({
           className={cn(
             "relative shrink-0 overflow-hidden",
             "size-16 rounded-[158.22px]",
-            "corner-squircle overflow-clip",
+            "overflow-clip rounded-[25%]",
             "shadow-md"
           )}
         >

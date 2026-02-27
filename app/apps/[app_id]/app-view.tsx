@@ -135,7 +135,10 @@ export function AppView({ app }: { app: AppData }) {
                   initial={{ opacity: 0, x: 20 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: 0.4 + i * 0.1 }}
-                  className="corner-squircle relative aspect-9/19 h-[450px] shrink-0 snap-center overflow-hidden rounded-4xl border-[0.5px] border-black/10 shadow-sm md:h-[500px]"
+                  className={cn(
+                    "relative aspect-9/19 h-[450px] shrink-0 snap-center overflow-hidden border-[0.5px] border-black/10 shadow-sm md:h-[500px]",
+                    "rounded-[12.8%/5.7%]"
+                  )}
                 >
                   <Image
                     src={src}

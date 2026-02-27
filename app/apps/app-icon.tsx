@@ -26,7 +26,7 @@ export function AppIcon(props: {
         // 256px
         // ios corner radius -> 256 / 1.618 = 158.22px
         "size-64 rounded-[158.22px]",
-        "corner-squircle overflow-clip",
+        "overflow-clip rounded-[25%]",
         "border-background border-2",
         "shadow-sm",
         "border-[0.5px] border-black/10 dark:border-white/10",
