@@ -21,7 +21,7 @@ export function AppsList({ apps }: { apps: AppData[] }) {
             alt={app.icon.alt}
             lightUrl={app.icon.light}
             darkUrl={app.icon.dark}
-            className="size-16 shrink-0 rounded-[39.55px]! md:size-20 md:rounded-[49.44px]!"
+            className="size-16 shrink-0"
           />
 
           <div className="flex flex-col gap-y-0.5">
