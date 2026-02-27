@@ -23,9 +23,7 @@ export function AppIcon(props: {
       transition={{ duration: 0.2 }}
       className={cn(
         "relative shrink-0 overflow-hidden",
-        // 256px
-        // ios corner radius -> 256 / 1.618 = 158.22px
-        "size-64 rounded-[158.22px]",
+        "size-64",
         "overflow-clip rounded-[25%]",
         "border-background border-2",
         "shadow-sm",

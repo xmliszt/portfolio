@@ -33,7 +33,7 @@ export function AppView({ app }: { app: AppData }) {
           alt={app.icon.alt}
           lightUrl={app.icon.light}
           darkUrl={app.icon.dark}
-          className="size-36 shrink-0 rounded-[89px]! md:size-40 md:rounded-[98.89px]!"
+          className="size-36 shrink-0 md:size-40"
         />
 
         <div className="flex flex-col items-center gap-4 pt-2 md:items-start">
