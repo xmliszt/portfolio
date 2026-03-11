@@ -9,4 +9,4 @@ order: 1
 To remove the watermark:
 
 1. Subscribe to **Joodle Pro**.
-2. When sharing, you can toggle off the watermark above the share button.
+2. Go to "Settings > Customization > Watermark when sharing" to toggle it off.

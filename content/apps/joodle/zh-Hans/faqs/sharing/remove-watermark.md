@@ -1,12 +1,12 @@
 ---
 id: remove-watermark
-title: How do I remove the watermark from shared cards?
+title: 如何移除分享卡片上的水印？
 order: 1
 ---
 
-**Free users see a small Joodle watermark on shared cards.**
+**免费用户在分享的卡片上会看到一个小型的Joodle水印。**
 
-To remove the watermark:
+若要移除水印：
 
-1. Subscribe to **Joodle Pro**.
-2. When sharing, you can toggle off the watermark above the share button.
+1. 订阅 **Joodle Pro**。
+2. 在 ”设置 > 自定义 > 分享时添加水印“ 关闭水印。

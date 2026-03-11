@@ -1,17 +1,17 @@
 ---
 id: scrubbing-gesture
-title: What is the scrubbing gesture?
+title: 什么是滑动浏览手势？
 order: 4
 ---
 
-**Scrubbing is a quick way to browse your Joodles with haptic feedback**:
+**滑动浏览手势是一种通过触觉反馈快速浏览Joodles的便捷方式**：
 
-1. Press and hold down on any day entry on the grid.
-2. Keep your finger pressed and drag across the dots.
-3. As you move, you'll see a preview of each day's Joodle in the top header.
-4. You will feel a haptic feedback as you scrub, if you have haptic enabled.
-5. Release your finger to select that day.
+1. 长按网格上的任意日期条目。
+2. 保持手指按住并在圆点上滑动。
+3. 滑动时，你会在顶部标题栏看到每一天Joodle的预览。
+4. 如果你开启了触觉反馈，滑动时会感受到触觉反馈。
+5. 松开手指即可选择该日期。
 
-This gesture lets you quickly scan through an entire year of entries without tapping each day individually.
+这个手势让你无需逐个点击日期，就能快速浏览一整年的条目。
 
-**Tip**: Haptic feedback helps you feel when you move to a new day. You can toggle haptics on/off in Settings → General → Interactions.
+**提示**：触觉反馈可以帮助你在切换到新日期时有所感知。你可以在「设置 → 通用 → 交互」中开启或关闭触觉反馈。
