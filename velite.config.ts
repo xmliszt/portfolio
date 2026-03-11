@@ -9,6 +9,9 @@ const slugify = (input: string) =>
     .replace(/\s+/g, "-")
     .replace(/[^a-z0-9-]/g, "");
 
+const APP_CONTENT_LOCALES = ["en", "zh-Hans"] as const;
+const DEFAULT_APP_CONTENT_LOCALE = "en";
+
 const count = s
   .object({ total: s.number(), posts: s.number() })
   .default({ total: 0, posts: 0 });
@@ -184,12 +187,32 @@ const changelogs = defineCollection({
       body: s.mdx(),
     })
     .transform((data, { meta }) => {
-      const path = meta.path as string;
+      const path = (meta.path as string).replace(/\\/g, "/");
 
-      // Extract appId from path using regex: apps/<appId>/changelogs/<filename>.md
-      const match = path.match(/apps\/([^/]+)\/changelogs\/([^/]+)\.md$/);
-      const appId = match?.at(1) ?? "";
-      const filename = match?.at(2) ?? "";
+      const segments = path.split("/").filter(Boolean);
+      const appsIndex = segments.lastIndexOf("apps");
+      const changelogsIndex = segments.lastIndexOf("changelogs");
+
+      let appId = "";
+      let locale = DEFAULT_APP_CONTENT_LOCALE;
+      let filename = "";
+
+      if (appsIndex !== -1 && changelogsIndex > appsIndex) {
+        appId = segments.at(appsIndex + 1) ?? "";
+        filename = (segments.at(changelogsIndex + 1) ?? "").replace(
+          /\.(md|mdx)$/i,
+          ""
+        );
+
+        if (changelogsIndex - appsIndex >= 3) {
+          const localeSegment = segments.at(appsIndex + 2) ?? "";
+          if (
+            (APP_CONTENT_LOCALES as readonly string[]).includes(localeSegment)
+          ) {
+            locale = localeSegment;
+          }
+        }
+      }
 
       // Extract version and date from filename: <version>_<date>
       const [version, date] = filename.split("_");
@@ -198,6 +221,7 @@ const changelogs = defineCollection({
       return {
         ...data,
         appId,
+        locale,
         version,
         displayVersion: `${major}.${minor} (${build})`,
         date: date,
@@ -218,16 +242,34 @@ const faqs = defineCollection({
       body: s.mdx(),
     })
     .transform((data, { meta }) => {
-      const path = meta.path as string;
+      const path = (meta.path as string).replace(/\\/g, "/");
 
-      // Extract appId and sectionId from path: apps/<appId>/faqs/<sectionId>/<filename>.md
-      const match = path.match(/apps\/([^/]+)\/faqs\/([^/]+)\/([^/]+)\.md$/);
-      const appId = match?.at(1) ?? "";
-      const sectionId = match?.at(2) ?? "";
+      const segments = path.split("/").filter(Boolean);
+      const appsIndex = segments.lastIndexOf("apps");
+      const faqsIndex = segments.lastIndexOf("faqs");
+
+      let appId = "";
+      let locale = DEFAULT_APP_CONTENT_LOCALE;
+      let sectionId = "";
+
+      if (appsIndex !== -1 && faqsIndex > appsIndex) {
+        appId = segments.at(appsIndex + 1) ?? "";
+        sectionId = segments.at(faqsIndex + 1) ?? "";
+
+        if (faqsIndex - appsIndex >= 3) {
+          const localeSegment = segments.at(appsIndex + 2) ?? "";
+          if (
+            (APP_CONTENT_LOCALES as readonly string[]).includes(localeSegment)
+          ) {
+            locale = localeSegment;
+          }
+        }
+      }
 
       return {
         ...data,
         appId,
+        locale,
         sectionId,
         permalink: `/apps/${appId}/faqs#${data.id}`,
       };
