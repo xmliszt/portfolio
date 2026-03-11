@@ -2,10 +2,8 @@ import fs from "fs";
 import { NextRequest, NextResponse } from "next/server";
 import path from "path";
 
-import {
-  CHANGELOGS_DIR,
-  HEADER_IMAGES,
-} from "@/app/api/changelogs/joodle/constants";
+import { HEADER_IMAGES } from "@/app/api/changelogs/joodle/constants";
+import { getLocalizedContentPath, resolveLocale } from "@/lib/i18n";
 
 type ChangelogDetailResponse = {
   version: string;
@@ -22,9 +20,15 @@ export async function GET(
 ) {
   try {
     const { version } = await params;
+    const { searchParams } = new URL(request.url);
+    const requestedLocale = searchParams.get("locale");
+    const effectiveLocale = resolveLocale(requestedLocale);
+
+    const contentPath = getLocalizedContentPath("joodle", effectiveLocale);
+    const changelogsDir = path.join(contentPath, "changelogs");
 
     // Check if directory exists
-    if (!fs.existsSync(CHANGELOGS_DIR)) {
+    if (!fs.existsSync(changelogsDir)) {
       return NextResponse.json(
         { error: "Changelog not found" },
         { status: 404 }
@@ -32,7 +36,7 @@ export async function GET(
     }
 
     // Find the file matching this version
-    const files = fs.readdirSync(CHANGELOGS_DIR);
+    const files = fs.readdirSync(changelogsDir);
     const matchingFile = files.find(
       (f) => f.startsWith(`${version}_`) && f.endsWith(".md")
     );
@@ -49,7 +53,7 @@ export async function GET(
     const [, date] = baseName.split("_");
 
     // Read markdown content
-    const filePath = path.join(CHANGELOGS_DIR, matchingFile);
+    const filePath = path.join(changelogsDir, matchingFile);
     const markdown = fs.readFileSync(filePath, "utf-8");
 
     // Generate display version
@@ -64,7 +68,13 @@ export async function GET(
       markdown,
     };
 
-    return NextResponse.json(response);
+    return NextResponse.json(response, {
+      headers: {
+        "Content-Language": effectiveLocale,
+        "Cache-Control": "s-maxage=31536000, stale-while-revalidate=86400",
+        Vary: "Accept-Encoding, locale",
+      },
+    });
   } catch (error) {
     console.error("Error reading changelog:", error);
     return NextResponse.json(
