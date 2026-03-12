@@ -9,13 +9,13 @@ import path from "path";
 import { getAppById } from "@/app/apps/data";
 import { openGraph } from "@/app/metadata";
 import { MDXContent } from "@/components/mdx-content";
-import { DEFAULT_LOCALE, getLocalizedContentPath } from "@/lib/i18n";
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
+import { DEFAULT_LOCALE, getLocalizedContentPath } from "@/lib/i18n";
 
 import { faqs } from "#site/content";
 
