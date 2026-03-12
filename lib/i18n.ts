@@ -1,7 +1,7 @@
 import fs from "fs";
 import path from "path";
 
-export const SUPPORTED_LOCALES = ["en", "zh-Hans"] as const;
+export const SUPPORTED_LOCALES = ["en", "zh-Hans", "ko"] as const;
 export const DEFAULT_LOCALE = "en";
 
 export type Locale = (typeof SUPPORTED_LOCALES)[number];
