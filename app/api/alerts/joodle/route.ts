@@ -1,17 +1,59 @@
+import fs from "fs";
 import { NextResponse } from "next/server";
+import path from "path";
 
-import { Alert } from "./alerts/types";
-import { WHATSAPP_INVITATION_ALERT } from "./alerts/whatsapp-invitation-alert";
+import { getLocalizedContentPath, resolveLocale } from "@/lib/i18n";
 
-// Set to null to disable alerts
-const ACTIVE_ALERT: Alert | null = WHATSAPP_INVITATION_ALERT;
+export type Alert = {
+  id: string;
+  title: string;
+  message: string;
+  type: string;
+  primaryButton?: {
+    text: string;
+    url: string;
+  };
+  secondaryButton?: {
+    text: string;
+  };
+  dismissible?: boolean;
+  startDate?: string;
+  endDate?: string;
+};
 
-export async function GET() {
+export async function GET(request: Request) {
+  const { searchParams } = new URL(request.url);
+  const requestedLocale = searchParams.get("locale");
+  const effectiveLocale = resolveLocale(requestedLocale);
+
+  let activeAlert: Alert | null = null;
+
+  try {
+    const contentPath = getLocalizedContentPath("joodle", effectiveLocale);
+    const alertsDir = path.join(contentPath, "alerts");
+
+    if (fs.existsSync(alertsDir)) {
+      // For now, we'll support a single active alert (whatsapp invitation)
+      // In future we can add logic to select active alert based on date ranges
+      const activeAlertPath = path.join(
+        alertsDir,
+        "whatsapp-invite-2026-01.json"
+      );
+      if (fs.existsSync(activeAlertPath)) {
+        activeAlert = JSON.parse(fs.readFileSync(activeAlertPath, "utf-8"));
+      }
+    }
+  } catch (error) {
+    console.error("Error loading alert:", error);
+  }
+
   return NextResponse.json(
-    { alert: ACTIVE_ALERT },
+    { alert: activeAlert },
     {
       headers: {
+        "Content-Language": effectiveLocale,
         "Cache-Control": "public, s-maxage=300, stale-while-revalidate=600",
+        Vary: "Accept-Encoding, locale",
       },
     }
   );

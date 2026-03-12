@@ -1,7 +1,10 @@
 import fs from "fs";
 import { NextResponse } from "next/server";
+import path from "path";
 
-import { CHANGELOGS_DIR, HEADER_IMAGES } from "./constants";
+import { getLocalizedContentPath, resolveLocale } from "@/lib/i18n";
+
+import { HEADER_IMAGES } from "./constants";
 
 type ChangelogIndexEntry = {
   version: string;
@@ -11,15 +14,21 @@ type ChangelogIndexEntry = {
 };
 
 // GET /api/changelogs - Returns the changelog index
-export async function GET() {
+export async function GET(request: Request) {
+  const { searchParams } = new URL(request.url);
+  const requestedLocale = searchParams.get("locale");
+  const effectiveLocale = resolveLocale(requestedLocale);
   try {
+    const contentPath = getLocalizedContentPath("joodle", effectiveLocale);
+    const changelogsDir = path.join(contentPath, "changelogs");
+
     // Check if directory exists
-    if (!fs.existsSync(CHANGELOGS_DIR)) {
+    if (!fs.existsSync(changelogsDir)) {
       return NextResponse.json({ changelogs: [] });
     }
 
     const files = fs
-      .readdirSync(CHANGELOGS_DIR)
+      .readdirSync(changelogsDir)
       .filter((f) => f.endsWith(".md"));
 
     const changelogs: ChangelogIndexEntry[] = files
@@ -47,7 +56,16 @@ export async function GET() {
       // Sort by version (newest first)
       .sort((a, b) => compareVersions(b.version, a.version));
 
-    return NextResponse.json({ changelogs });
+    return NextResponse.json(
+      { changelogs },
+      {
+        headers: {
+          "Content-Language": effectiveLocale,
+          "Cache-Control": "s-maxage=86400, stale-while-revalidate=86400",
+          Vary: "Accept-Encoding, locale",
+        },
+      }
+    );
   } catch (error) {
     console.error("Error reading changelogs:", error);
     return NextResponse.json(

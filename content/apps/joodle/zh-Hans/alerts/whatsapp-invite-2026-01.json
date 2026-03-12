@@ -1,0 +1,13 @@
+{
+  "id": "whatsapp-invite-2026-01",
+  "title": "你收到了邀请！",
+  "message": "加入 Joodle 核心用户群 — 分享你的涂鸦作品，认识志同道合的朋友，获取最新更新和独家福利，一起参与塑造 Joodle 的未来！",
+  "primaryButton": {
+    "text": "加入 WhatsApp 社区",
+    "url": "https://chat.whatsapp.com/FF2rMEiSOwe9hsRapSyvdY"
+  },
+  "secondaryButton": {
+    "text": "我不感兴趣"
+  },
+  "type": "community"
+}

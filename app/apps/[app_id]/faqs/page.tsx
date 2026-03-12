@@ -15,6 +15,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
+import { DEFAULT_LOCALE, getLocalizedContentPath } from "@/lib/i18n";
 
 import { faqs } from "#site/content";
 
@@ -40,15 +41,8 @@ function getFaqSectionMeta(
   appId: string,
   sectionId: string
 ): { id: string; title: string; order: number } | undefined {
-  const metaPath = path.join(
-    process.cwd(),
-    "content",
-    "apps",
-    appId,
-    "faqs",
-    sectionId,
-    "_meta.json"
-  );
+  const contentPath = getLocalizedContentPath(appId, DEFAULT_LOCALE);
+  const metaPath = path.join(contentPath, "faqs", sectionId, "_meta.json");
   try {
     const meta = JSON.parse(fs.readFileSync(metaPath, "utf-8"));
     return meta;
@@ -58,7 +52,9 @@ function getFaqSectionMeta(
 }
 
 function getFaqsByAppId(appId: string): FaqSection[] {
-  const appFaqs = faqs.filter((faq) => faq.appId === appId);
+  const appFaqs = faqs.filter(
+    (faq) => faq.appId === appId && faq.locale === DEFAULT_LOCALE
+  );
 
   // Group FAQs by section
   const sectionsMap = new Map<string, FaqSection>();
@@ -149,7 +145,9 @@ export async function generateMetadata(props: Props): Promise<Metadata> {
 }
 
 export async function generateStaticParams() {
-  const appIds = new Set(faqs.map((faq) => faq.appId));
+  const appIds = new Set(
+    faqs.filter((faq) => faq.locale === DEFAULT_LOCALE).map((faq) => faq.appId)
+  );
   return Array.from(appIds).map((app_id) => ({ app_id }));
 }
 

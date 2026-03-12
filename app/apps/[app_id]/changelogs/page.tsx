@@ -7,6 +7,7 @@ import { notFound } from "next/navigation";
 
 import { getAppById } from "@/app/apps/data";
 import { openGraph } from "@/app/metadata";
+import { DEFAULT_LOCALE } from "@/lib/i18n";
 
 import { changelogs } from "#site/content";
 
@@ -18,7 +19,10 @@ type Props = {
 
 function getChangelogsByAppId(appId: string) {
   return changelogs
-    .filter((changelog) => changelog.appId === appId)
+    .filter(
+      (changelog) =>
+        changelog.appId === appId && changelog.locale === DEFAULT_LOCALE
+    )
     .toSorted((a, b) => {
       // Sort by version descending using semantic version comparison
       const versionA = a.version.split(".").map(Number);
@@ -84,7 +88,11 @@ export async function generateMetadata(props: Props): Promise<Metadata> {
 }
 
 export async function generateStaticParams() {
-  const appIds = new Set(changelogs.map((changelog) => changelog.appId));
+  const appIds = new Set(
+    changelogs
+      .filter((changelog) => changelog.locale === DEFAULT_LOCALE)
+      .map((changelog) => changelog.appId)
+  );
   return Array.from(appIds).map((app_id) => ({ app_id }));
 }
 

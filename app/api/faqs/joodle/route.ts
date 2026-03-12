@@ -2,6 +2,8 @@ import fs from "fs";
 import { NextResponse } from "next/server";
 import path from "path";
 
+import { getLocalizedContentPath, resolveLocale } from "@/lib/i18n";
+
 type FaqItem = {
   id: string;
   title: string;
@@ -56,8 +58,13 @@ function parseFrontmatter(fileContent: string): {
   return { data, content };
 }
 
-export async function GET() {
-  const faqsDir = path.join(process.cwd(), "content", "apps", "joodle", "faqs");
+export async function GET(request: Request) {
+  const { searchParams } = new URL(request.url);
+  const requestedLocale = searchParams.get("locale");
+  const effectiveLocale = resolveLocale(requestedLocale);
+
+  const contentPath = getLocalizedContentPath("joodle", effectiveLocale);
+  const faqsDir = path.join(contentPath, "faqs");
   const sections: FaqSection[] = [];
 
   try {
@@ -108,7 +115,13 @@ export async function GET() {
       sections: sections.toSorted((a, b) => a.order - b.order),
     };
 
-    return NextResponse.json(response);
+    return NextResponse.json(response, {
+      headers: {
+        "Content-Language": effectiveLocale,
+        "Cache-Control": "s-maxage=86400, stale-while-revalidate=86400",
+        Vary: "Accept-Encoding, locale",
+      },
+    });
   } catch (error) {
     console.error("Error fetching FAQs:", error);
     return NextResponse.json(

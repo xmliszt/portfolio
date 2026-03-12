@@ -9,6 +9,7 @@ import { getChangelogHeaderImage } from "@/app/apps/changelog-header-images";
 import { getAppById } from "@/app/apps/data";
 import { openGraph } from "@/app/metadata";
 import { MDXContent } from "@/components/mdx-content";
+import { DEFAULT_LOCALE } from "@/lib/i18n";
 
 import { changelogs } from "#site/content";
 
@@ -31,7 +32,10 @@ type Props = {
 
 function getChangelogByAppIdAndVersion(appId: string, version: string) {
   return changelogs.find(
-    (changelog) => changelog.appId === appId && changelog.version === version
+    (changelog) =>
+      changelog.appId === appId &&
+      changelog.version === version &&
+      changelog.locale === DEFAULT_LOCALE
   );
 }
 
@@ -94,10 +98,12 @@ export async function generateMetadata(props: Props): Promise<Metadata> {
 }
 
 export async function generateStaticParams() {
-  return changelogs.map((changelog) => ({
-    app_id: changelog.appId,
-    version: changelog.version,
-  }));
+  return changelogs
+    .filter((changelog) => changelog.locale === DEFAULT_LOCALE)
+    .map((changelog) => ({
+      app_id: changelog.appId,
+      version: changelog.version,
+    }));
 }
 
 export default async function ChangelogDetailPage(props: Props) {
@@ -113,7 +119,7 @@ export default async function ChangelogDetailPage(props: Props) {
   const headerImage = getChangelogHeaderImage(params.app_id, changelog.version);
 
   return (
-    <div className="space-y-6 w-full">
+    <div className="w-full space-y-6">
       <div className="pb-4">
         <Link href={`/apps/${params.app_id}/changelogs`} className="group">
           <div className="flex items-center gap-2 text-sm">

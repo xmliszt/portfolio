@@ -1,6 +1,7 @@
 import { MetadataRoute } from "next";
 
 import { getAllAppIds, getAppById } from "@/app/apps/data";
+import { DEFAULT_LOCALE } from "@/lib/i18n";
 
 import { apps, changelogs, faqs } from "#site/content";
 
@@ -45,7 +46,8 @@ export default async function sitemap(
 
   // Changelogs index page
   const appChangelogs = changelogs.filter(
-    (changelog) => changelog.appId === appId
+    (changelog) =>
+      changelog.appId === appId && changelog.locale === DEFAULT_LOCALE
   );
   if (appChangelogs.length > 0) {
     sitemapEntries.push({
@@ -70,7 +72,9 @@ export default async function sitemap(
   }
 
   // FAQs page
-  const appFaqs = faqs.filter((faq) => faq.appId === appId);
+  const appFaqs = faqs.filter(
+    (faq) => faq.appId === appId && faq.locale === DEFAULT_LOCALE
+  );
   if (appFaqs.length > 0) {
     sitemapEntries.push({
       url: `${BASE_URL}/apps/${appId}/faqs`,

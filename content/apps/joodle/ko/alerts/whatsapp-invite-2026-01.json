@@ -1,0 +1,13 @@
+{
+  "id": "whatsapp-invite-2026-01",
+  "title": "초대합니다!",
+  "message": "Joodle의 내부 커뮤니티에 참여하세요 — 낙서를 공유하고, 친구를 사귀고, 업데이트와 독점 혜택을 받으며, Joodle의 다음 방향을 함께 만들어가세요!",
+  "primaryButton": {
+    "text": "WhatsApp 커뮤니티 참여",
+    "url": "https://chat.whatsapp.com/FF2rMEiSOwe9hsRapSyvdY"
+  },
+  "secondaryButton": {
+    "text": "관심 없어요"
+  },
+  "type": "community"
+}
