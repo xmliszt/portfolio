@@ -3,14 +3,16 @@ import rehypePrettyCode from "rehype-pretty-code";
 import { visit } from "unist-util-visit";
 import { defineCollection, defineConfig, s } from "velite";
 
+import { DEFAULT_LOCALE, SUPPORTED_LOCALES } from "./lib/i18n";
+
 const slugify = (input: string) =>
   input
     .toLowerCase()
     .replace(/\s+/g, "-")
     .replace(/[^a-z0-9-]/g, "");
 
-const APP_CONTENT_LOCALES = ["en", "zh-Hans"] as const;
-const DEFAULT_APP_CONTENT_LOCALE = "en";
+const APP_CONTENT_LOCALES = SUPPORTED_LOCALES;
+const DEFAULT_APP_CONTENT_LOCALE = DEFAULT_LOCALE;
 
 const count = s
   .object({ total: s.number(), posts: s.number() })
