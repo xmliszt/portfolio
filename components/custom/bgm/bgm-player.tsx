@@ -57,7 +57,7 @@ export function BGMPlayer() {
                 "transition-transform",
                 bgmStore.isPlaying && !bgmStore.isLoading
                   ? "animate-spin duration-1000"
-                  : "animate-none duration-300 group-hover:rotate-[360deg]"
+                  : "animate-none duration-300 group-hover:rotate-360"
               )}
             />
           </button>

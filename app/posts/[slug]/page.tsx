@@ -53,7 +53,7 @@ export default async function PostPage(props: PostProps) {
   return (
     <article className="prose prose-stone dark:prose-invert">
       <h1>
-        <a id="top" className="[visibility:hidden] relative -top-16 block"></a>
+        <a id="top" className="invisible relative -top-16 block"></a>
         {post.title}
       </h1>
       <div className="mt-6 flex items-end justify-between">
