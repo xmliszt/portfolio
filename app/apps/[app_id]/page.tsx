@@ -22,6 +22,12 @@ export async function generateMetadata(props: Props): Promise<Metadata> {
     title: app.name,
     description: app.description,
     category: "Apps",
+    itunes:
+      params.app_id === "joodle"
+        ? {
+            appId: "6756204776",
+          }
+        : undefined,
     appleWebApp: {
       title: app.name,
       statusBarStyle: "default",
