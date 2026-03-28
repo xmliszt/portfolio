@@ -60,6 +60,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: "always",
       priority: 1,
     },
+    {
+      url: "https://liyuxuan.dev/poke/recipes/brain-dump",
+      lastModified: new Date(),
+      changeFrequency: "always",
+      priority: 0.8,
+    },
   ];
 
   const postsSiteMap: MetadataRoute.Sitemap = posts.map((post) => ({
