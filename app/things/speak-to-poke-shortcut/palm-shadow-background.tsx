@@ -179,6 +179,14 @@ export function PalmShadowBackground() {
       const isLight = themeRef.current === "light";
       const targetOpacity = isLight ? tgt.opacity : 0;
 
+      // Hide canvas entirely when not needed — fixes Mobile Safari mix-blend-mode
+      // bug where position:fixed + multiply blend renders as solid white overlay.
+      if (s.opacity < 0.004 && targetOpacity < 0.004) {
+        canvas!.style.display = "none";
+      } else {
+        canvas!.style.display = "";
+      }
+
       // --- Lerp animated values ---
       // Opacity: half-life 1s → snappy theme switch + smooth time-of-day changes
       const ol = 1 - Math.pow(0.5, dt / 1.0);
