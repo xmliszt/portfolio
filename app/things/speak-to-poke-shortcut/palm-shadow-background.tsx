@@ -10,18 +10,18 @@ const TRIGGER_BEFORE_END_S = 3.5; // start cross-fade this many seconds before e
 // ─── Time-of-day keyframes ─────────────────────────────────────────────────
 // h: hour 0–24  |  o: shadow opacity  |  s: sepia  |  sat: saturate  |  br: brightness
 const KF = [
-  { h: 0, o: 0.01, s: 0, sat: 0.7, br: 0.8 },
-  { h: 4, o: 0.049, s: 0, sat: 0.65, br: 0.75 },
-  { h: 6, o: 0.255, s: 0, sat: 0.95, br: 0.97 },
-  { h: 8, o: 0.436, s: 0, sat: 1.0, br: 1.0 },
-  { h: 10, o: 0.487, s: 0, sat: 1.0, br: 1.0 },
+  { h: 0, o: 0.5, s: 0, sat: 0.7, br: 0.8 },
+  { h: 4, o: 0.5, s: 0, sat: 0.65, br: 0.75 },
+  { h: 6, o: 0.5, s: 0, sat: 0.95, br: 0.97 },
+  { h: 8, o: 0.5, s: 0, sat: 1.0, br: 1.0 },
+  { h: 10, o: 0.5, s: 0, sat: 1.0, br: 1.0 },
   { h: 12, o: 0.5, s: 0, sat: 1.0, br: 1.0 },
-  { h: 15, o: 0.423, s: 0, sat: 1.0, br: 1.0 },
-  { h: 17, o: 0.345, s: 0, sat: 1.0, br: 1.05 },
-  { h: 19, o: 0.294, s: 0, sat: 1.0, br: 0.95 },
-  { h: 21, o: 0.126, s: 0, sat: 0.75, br: 0.88 },
-  { h: 23, o: 0.081, s: 0, sat: 0.7, br: 0.82 },
-  { h: 24, o: 0.01, s: 0, sat: 0.7, br: 0.8 },
+  { h: 15, o: 0.5, s: 0, sat: 1.0, br: 1.0 },
+  { h: 17, o: 0.5, s: 0, sat: 1.0, br: 1.05 },
+  { h: 19, o: 0.5, s: 0, sat: 1.0, br: 0.95 },
+  { h: 21, o: 0.5, s: 0, sat: 0.75, br: 0.88 },
+  { h: 23, o: 0.5, s: 0, sat: 0.7, br: 0.82 },
+  { h: 24, o: 0.5, s: 0, sat: 0.7, br: 0.8 },
 ];
 
 function drawCover(
@@ -121,7 +121,13 @@ export function PalmShadowBackground() {
       videoReady: false,
     };
 
-    vidA.addEventListener("canplay", () => { s.videoReady = true; }, { once: true });
+    vidA.addEventListener(
+      "canplay",
+      () => {
+        s.videoReady = true;
+      },
+      { once: true }
+    );
 
     function resize() {
       s.W = window.innerWidth;
