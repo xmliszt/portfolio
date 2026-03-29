@@ -7,22 +7,7 @@ const VIDEO_SRC = "/palm-shadow.mp4";
 const CROSSFADE_S = 2.2; // cross-fade duration in seconds
 const TRIGGER_BEFORE_END_S = 3.5; // start cross-fade this many seconds before end
 
-// ─── Time-of-day keyframes ─────────────────────────────────────────────────
-// h: hour 0–24  |  o: shadow opacity  |  s: sepia  |  sat: saturate  |  br: brightness
-const KF = [
-  { h: 0, o: 0.5, s: 0, sat: 0.7, br: 0.8 },
-  { h: 4, o: 0.5, s: 0, sat: 0.65, br: 0.75 },
-  { h: 6, o: 0.5, s: 0, sat: 0.95, br: 0.97 },
-  { h: 8, o: 0.5, s: 0, sat: 1.0, br: 1.0 },
-  { h: 10, o: 0.5, s: 0, sat: 1.0, br: 1.0 },
-  { h: 12, o: 0.5, s: 0, sat: 1.0, br: 1.0 },
-  { h: 15, o: 0.5, s: 0, sat: 1.0, br: 1.0 },
-  { h: 17, o: 0.5, s: 0, sat: 1.0, br: 1.05 },
-  { h: 19, o: 0.5, s: 0, sat: 1.0, br: 0.95 },
-  { h: 21, o: 0.5, s: 0, sat: 0.75, br: 0.88 },
-  { h: 23, o: 0.5, s: 0, sat: 0.7, br: 0.82 },
-  { h: 24, o: 0.5, s: 0, sat: 0.7, br: 0.8 },
-];
+const SHADOW_OPACITY = 0.5;
 
 function drawCover(
   ctx: CanvasRenderingContext2D,
@@ -40,32 +25,8 @@ function drawCover(
   ctx.drawImage(vid, dx, dy, dw, dh);
 }
 
-function lerp(a: number, b: number, t: number) {
-  return a + (b - a) * t;
-}
 function easeInOut(t: number) {
   return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
-}
-
-function getTargetValues(h: number) {
-  let prev = KF[0],
-    next = KF[KF.length - 1];
-  for (let i = 0; i < KF.length - 1; i++) {
-    if (h >= KF[i].h && h < KF[i + 1].h) {
-      prev = KF[i];
-      next = KF[i + 1];
-      break;
-    }
-  }
-  const t = easeInOut(
-    Math.max(0, Math.min(1, (h - prev.h) / (next.h - prev.h)))
-  );
-  return {
-    opacity: lerp(prev.o, next.o, t),
-    sepia: lerp(prev.s, next.s, t),
-    saturation: lerp(prev.sat, next.sat, t),
-    brightness: lerp(prev.br, next.br, t),
-  };
 }
 
 // ─── Component ────────────────────────────────────────────────────────────────
@@ -111,11 +72,8 @@ export function PalmShadowBackground() {
       isCrossFading: false,
       crossFadeStartTime: 0,
       crossFadingToB: true, // true → A→B, false → B→A
-      // animated values (lerped each frame)
+      // animated opacity (lerped each frame)
       opacity: 0,
-      sepia: 0,
-      saturation: 1,
-      brightness: 1,
       // video readiness — keep opacity at 0 until first frame is available so
       // the shadow fades in gracefully rather than popping in at full opacity
       videoReady: false,
@@ -208,10 +166,6 @@ export function PalmShadowBackground() {
       const dt = Math.min((now - s.prevTime) / 1000, 0.1);
       s.prevTime = now;
 
-      // --- Target values from current time + theme ---
-      const d = new Date();
-      const hour = d.getHours() + d.getMinutes() / 60 + d.getSeconds() / 3600;
-      const tgt = getTargetValues(hour);
       const isLight = themeRef.current === "light";
 
       // Safari watchdog: RAF only runs when the tab is visible, so if the video
@@ -225,7 +179,7 @@ export function PalmShadowBackground() {
         if (secondary.paused) secondary.play().catch(() => {});
       }
 
-      const targetOpacity = isLight ? tgt.opacity : 0;
+      const targetOpacity = isLight ? SHADOW_OPACITY : 0;
       // Gate on videoReady so the shadow fades in from 0 once loaded, not pops in.
       const effectiveTargetOpacity = s.videoReady ? targetOpacity : 0;
 
@@ -243,25 +197,9 @@ export function PalmShadowBackground() {
         canvas!.style.display = "";
       }
 
-      // --- Lerp animated values ---
-      // Opacity: half-life 1s → snappy theme switch + smooth time-of-day changes
+      // Opacity: half-life 1s → snappy theme switch
       const ol = 1 - Math.pow(0.5, dt / 1.0);
       s.opacity += (effectiveTargetOpacity - s.opacity) * ol;
-
-      // Color: half-life 45s → imperceptibly gradual warmth shift
-      const cl = 1 - Math.pow(0.5, dt / 45);
-      s.sepia += (tgt.sepia - s.sepia) * cl;
-      s.saturation += (tgt.saturation - s.saturation) * cl;
-      s.brightness += (tgt.brightness - s.brightness) * cl;
-
-      // Update canvas CSS filter (same element as mix-blend-mode = valid per spec)
-      const fp: string[] = [];
-      if (s.sepia > 0.004) fp.push(`sepia(${s.sepia.toFixed(3)})`);
-      if (Math.abs(s.saturation - 1) > 0.004)
-        fp.push(`saturate(${s.saturation.toFixed(3)})`);
-      if (Math.abs(s.brightness - 1) > 0.004)
-        fp.push(`brightness(${s.brightness.toFixed(3)})`);
-      canvas!.style.filter = fp.length ? fp.join(" ") : "";
 
       // --- Cross-fade alpha split ---
       let alphaA = s.opacity;
