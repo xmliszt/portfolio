@@ -207,6 +207,18 @@ export function PalmShadowBackground() {
       const hour = d.getHours() + d.getMinutes() / 60 + d.getSeconds() / 3600;
       const tgt = getTargetValues(hour);
       const isLight = themeRef.current === "light";
+
+      // Safari watchdog: RAF only runs when the tab is visible, so if the video
+      // is paused but should be playing (e.g. Safari silently rejected play() on
+      // tab resume), keep retrying until it actually starts.
+      if (s.videoReady && isLight && primaryVid.paused) {
+        primaryVid.play().catch(() => {});
+      }
+      if (s.isCrossFading) {
+        const secondary = primaryVid === vidA ? vidB : vidA;
+        if (secondary.paused) secondary.play().catch(() => {});
+      }
+
       const targetOpacity = isLight ? tgt.opacity : 0;
       // Gate on videoReady so the shadow fades in from 0 once loaded, not pops in.
       const effectiveTargetOpacity = s.videoReady ? targetOpacity : 0;
