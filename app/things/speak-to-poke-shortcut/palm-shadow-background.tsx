@@ -133,7 +133,15 @@ export function PalmShadowBackground() {
     window.addEventListener("resize", resize);
 
     function onVisibilityChange() {
-      if (document.visibilityState === "visible") {
+      if (document.visibilityState === "hidden") {
+        primaryVid.pause();
+        if (s.isCrossFading) {
+          (primaryVid === vidA ? vidB : vidA).pause();
+        }
+      } else if (document.visibilityState === "visible") {
+        // Reset prevTime so the first RAF frame back has a normal dt instead of
+        // a huge spike from the time spent hidden (which otherwise snaps lerps).
+        s.prevTime = performance.now();
         primaryVid.play().catch(() => {});
         if (s.isCrossFading) {
           (primaryVid === vidA ? vidB : vidA).play().catch(() => {});
