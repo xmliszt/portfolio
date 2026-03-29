@@ -61,7 +61,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 1,
     },
     {
-      url: "https://liyuxuan.dev/poke/recipes/brain-dump",
+      url: "https://liyuxuan.dev/things/speak-to-poke-shortcut",
       lastModified: new Date(),
       changeFrequency: "always",
       priority: 0.8,

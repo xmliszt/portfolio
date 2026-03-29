@@ -17,7 +17,7 @@ export const metadata: Metadata = {
   description:
     "Download the Speak To Poke Siri Shortcut and speak to Poke directly",
   alternates: {
-    canonical: "https://liyuxuan.dev/poke/recipes/brain-dump",
+    canonical: "https://liyuxuan.dev/things/speak-to-poke-shortcut",
   },
 };
 
