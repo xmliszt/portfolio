@@ -6,15 +6,16 @@ import Link from "next/link";
 import { cn } from "@/lib/utils";
 
 import messageLogo from "./ios-message-logo.png";
+import { PalmShadowBackground } from "./palm-shadow-background";
 import pokeLogo from "./poke-logo.jpg";
 
 const shortcutUrl =
   "https://www.icloud.com/shortcuts/84049531ddc04e2da05a164d399e9cd2";
 
 export const metadata: Metadata = {
-  title: "Poke Brain Dump | Li Yuxuan",
+  title: "Speak To Poke Siri Shortcut",
   description:
-    "Download the Speak To Poke Siri Shortcut and connect it to Notion.",
+    "Download the Speak To Poke Siri Shortcut and speak to Poke directly",
   alternates: {
     canonical: "https://liyuxuan.dev/poke/recipes/brain-dump",
   },
@@ -23,6 +24,7 @@ export const metadata: Metadata = {
 export default function BrainDumpPage() {
   return (
     <article className="mx-auto flex min-h-[calc(100vh-11rem)] w-full max-w-md flex-col items-center justify-center text-center">
+      <PalmShadowBackground />
       <div className="flex flex-col items-center gap-8">
         <Image
           src={pokeLogo}
