@@ -15,6 +15,7 @@
     "./.velite/*"
   ],
   "rules": {
+    "@next/next/no-img-element": "off",
     "no-unused-vars": "off",
     "unused-imports/no-unused-imports": "error",
     "unused-imports/no-unused-vars": [
