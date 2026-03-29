@@ -84,6 +84,12 @@ export function PalmShadowBackground() {
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
+    // Safari doesn't reliably support mix-blend-mode on position:fixed canvases,
+    // so we hide it immediately on dark mode rather than fading out.
+    const isSafari =
+      /safari/i.test(navigator.userAgent) &&
+      !/chrome|chromium|crios/i.test(navigator.userAgent);
+
     // Two hidden video elements — never added to the DOM
     function makeVid() {
       const v = document.createElement("video");
@@ -110,7 +116,12 @@ export function PalmShadowBackground() {
       sepia: 0,
       saturation: 1,
       brightness: 1,
+      // video readiness — keep opacity at 0 until first frame is available so
+      // the shadow fades in gracefully rather than popping in at full opacity
+      videoReady: false,
     };
+
+    vidA.addEventListener("canplay", () => { s.videoReady = true; }, { once: true });
 
     function resize() {
       s.W = window.innerWidth;
@@ -121,8 +132,19 @@ export function PalmShadowBackground() {
     resize();
     window.addEventListener("resize", resize);
 
+    function onVisibilityChange() {
+      if (document.visibilityState === "visible") {
+        primaryVid.play().catch(() => {});
+        if (s.isCrossFading) {
+          (primaryVid === vidA ? vidB : vidA).play().catch(() => {});
+        }
+      }
+    }
+    document.addEventListener("visibilitychange", onVisibilityChange);
+
     // ── Cross-fade helpers ────────────────────────────────────────────────────
     let cleanupWatch = () => {};
+    let primaryVid = vidA; // whichever video is the current active player
 
     function watchForEnd(
       primary: HTMLVideoElement,
@@ -178,10 +200,18 @@ export function PalmShadowBackground() {
       const tgt = getTargetValues(hour);
       const isLight = themeRef.current === "light";
       const targetOpacity = isLight ? tgt.opacity : 0;
+      // Gate on videoReady so the shadow fades in from 0 once loaded, not pops in.
+      const effectiveTargetOpacity = s.videoReady ? targetOpacity : 0;
+
+      // Safari: snap opacity to 0 immediately in dark mode — no fade-out,
+      // since the white canvas fill looks bad before it finishes fading.
+      if (isSafari && !isLight) {
+        s.opacity = 0;
+      }
 
       // Hide canvas entirely when not needed — fixes Mobile Safari mix-blend-mode
       // bug where position:fixed + multiply blend renders as solid white overlay.
-      if (s.opacity < 0.004 && targetOpacity < 0.004) {
+      if (s.opacity < 0.004 && effectiveTargetOpacity < 0.004) {
         canvas!.style.display = "none";
       } else {
         canvas!.style.display = "";
@@ -190,7 +220,7 @@ export function PalmShadowBackground() {
       // --- Lerp animated values ---
       // Opacity: half-life 1s → snappy theme switch + smooth time-of-day changes
       const ol = 1 - Math.pow(0.5, dt / 1.0);
-      s.opacity += (targetOpacity - s.opacity) * ol;
+      s.opacity += (effectiveTargetOpacity - s.opacity) * ol;
 
       // Color: half-life 45s → imperceptibly gradual warmth shift
       const cl = 1 - Math.pow(0.5, dt / 45);
@@ -229,9 +259,11 @@ export function PalmShadowBackground() {
           cleanupWatch();
           if (s.crossFadingToB) {
             vidA.pause();
+            primaryVid = vidB;
             cleanupWatch = watchForEnd(vidB, vidA, false);
           } else {
             vidB.pause();
+            primaryVid = vidA;
             cleanupWatch = watchForEnd(vidA, vidB, true);
           }
         }
@@ -269,6 +301,7 @@ export function PalmShadowBackground() {
       cancelAnimationFrame(rafId);
       cleanupWatch();
       window.removeEventListener("resize", resize);
+      document.removeEventListener("visibilitychange", onVisibilityChange);
       vidA.pause();
       vidA.src = "";
       vidB.pause();
