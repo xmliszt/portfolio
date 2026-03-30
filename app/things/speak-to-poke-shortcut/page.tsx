@@ -77,15 +77,19 @@ export default function BrainDumpPage() {
             For Apple users only. Requires Poke as your contact in Messages.
           </p>
 
+          <p className="text-muted-foreground text-xs">
+            This shortcut is independently created and is not affiliated with,
+            endorsed by, or sponsored by Poke.
+          </p>
+
           <div className="text-muted-foreground flex items-center gap-3 text-xs">
-            by Poke
             <Link
               className="underline underline-offset-4 hover:text-neutral-900 dark:hover:text-neutral-100"
               href="https://poke.com/privacy"
               target="_blank"
               rel="noreferrer"
             >
-              Privacy
+              Poke Privacy
             </Link>
             <span aria-hidden="true">•</span>
             <Link
@@ -94,7 +98,7 @@ export default function BrainDumpPage() {
               target="_blank"
               rel="noreferrer"
             >
-              Terms
+              Poke Terms
             </Link>
           </div>
         </div>
