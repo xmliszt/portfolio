@@ -7,7 +7,7 @@ const VIDEO_SRC = "/palm-shadow.mp4";
 const CROSSFADE_S = 2.2; // cross-fade duration in seconds
 const TRIGGER_BEFORE_END_S = 3.5; // start cross-fade this many seconds before end
 
-const SHADOW_OPACITY = 0.5;
+const SHADOW_OPACITY = 0.35;
 
 function drawCover(
   ctx: CanvasRenderingContext2D,
@@ -275,6 +275,7 @@ export function PalmShadowBackground() {
       style={{
         zIndex: 1,
         mixBlendMode: "multiply",
+        transform: "translate3d(0, 0, 0)",
       }}
     />
   );
