@@ -4,7 +4,7 @@ import path from "path";
 
 import { getLocalizedContentPath, resolveLocale } from "@/lib/i18n";
 
-const ACTIVE_ALERT_JSON: string | null = "2026-mar-giveaway-2026-03.json";
+const ACTIVE_ALERT_JSON: string | null = null;
 
 export type Alert = {
   id: string;
