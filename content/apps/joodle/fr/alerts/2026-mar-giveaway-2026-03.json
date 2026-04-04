@@ -1,0 +1,13 @@
+{
+  "id": "2026-mar-giveaway-2026-03",
+  "title": "Cadeau de 2 mois gratuits",
+  "message": "Participez à notre tout premier événement giveaway sur Instagram pour obtenir 2 mois de Joodle Pro gratuitement !",
+  "primaryButton": {
+    "text": "Réclamer le giveaway",
+    "url": "https://www.instagram.com/p/DV5NRC7jtMS/?igsh=MWpsZGY1OGQ3bzRoOQ%3D%3D"
+  },
+  "secondaryButton": {
+    "text": "Je ne suis pas intéressé"
+  },
+  "type": "promo"
+}
