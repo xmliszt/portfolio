@@ -1,0 +1,13 @@
+{
+  "id": "whatsapp-invite-2026-01",
+  "title": "Vous êtes invité !",
+  "message": "Rejoignez le cercle rapproché de Joodle : partagez vos doodles, faites de nouvelles rencontres, recevez des actus et des avantages exclusifs, et aidez à façonner l’avenir de Joodle !",
+  "primaryButton": {
+    "text": "Rejoindre la communauté WhatsApp",
+    "url": "https://chat.whatsapp.com/FF2rMEiSOwe9hsRapSyvdY"
+  },
+  "secondaryButton": {
+    "text": "Je ne suis pas intéressé"
+  },
+  "type": "community"
+}
