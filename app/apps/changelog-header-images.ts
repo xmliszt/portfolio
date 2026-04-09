@@ -4,47 +4,47 @@ import "server-only";
 export const CHANGELOG_HEADER_IMAGES: Record<string, Record<string, string>> = {
   joodle: {
     "1.17.141":
-      "https://aikluwlsjdrayohixism.supabase.co/storage/v1/object/public/joodle/Changelogs/1.17.png",
+      "https://raw.githubusercontent.com/xmliszt/resources/refs/heads/main/joodle/1.17.png",
     "1.16.116":
-      "https://aikluwlsjdrayohixism.supabase.co/storage/v1/object/public/joodle/Changelogs/1.16.gif",
+      "https://raw.githubusercontent.com/xmliszt/resources/refs/heads/main/joodle/1.16.gif",
     "1.15.114":
-      "https://aikluwlsjdrayohixism.supabase.co/storage/v1/object/public/joodle/Changelogs/1.15.gif",
+      "https://raw.githubusercontent.com/xmliszt/resources/refs/heads/main/joodle/1.15.gif",
     "1.14.111":
-      "https://aikluwlsjdrayohixism.supabase.co/storage/v1/object/public/joodle/Changelogs/1.14.png",
+      "https://raw.githubusercontent.com/xmliszt/resources/refs/heads/main/joodle/1.14.png",
     // App store version 1.12 release
     "1.12.102":
-      "https://aikluwlsjdrayohixism.supabase.co/storage/v1/object/public/joodle/Changelogs/1.12.gif",
+      "https://raw.githubusercontent.com/xmliszt/resources/refs/heads/main/joodle/1.12.gif",
     // App store version 1.11 release
     "1.11.99":
-      "https://aikluwlsjdrayohixism.supabase.co/storage/v1/object/public/joodle/Changelogs/1.11.png",
+      "https://raw.githubusercontent.com/xmliszt/resources/refs/heads/main/joodle/1.11.png",
     // App store version 1.10 release
     "1.10.98":
-      "https://aikluwlsjdrayohixism.supabase.co/storage/v1/object/public/joodle/Changelogs/1.10.png",
+      "https://raw.githubusercontent.com/xmliszt/resources/refs/heads/main/joodle/1.10.png",
     // App store version 1.8 release
     "1.8.91":
-      "https://aikluwlsjdrayohixism.supabase.co/storage/v1/object/public/joodle/Changelogs/1.8.91.png",
+      "https://raw.githubusercontent.com/xmliszt/resources/refs/heads/main/joodle/1.8.91.png",
     // App store version 1.7 release
     "1.7.89":
-      "https://aikluwlsjdrayohixism.supabase.co/storage/v1/object/public/joodle/Changelogs/1.7.89.gif",
+      "https://raw.githubusercontent.com/xmliszt/resources/refs/heads/main/joodle/1.7.89.gif",
     // App store version 1.5 release
     "1.5.83":
-      "https://aikluwlsjdrayohixism.supabase.co/storage/v1/object/public/joodle/Changelogs/1.5.83.gif",
+      "https://raw.githubusercontent.com/xmliszt/resources/refs/heads/main/joodle/1.5.83.gif",
     // App store version 1.4 release
     "1.4.79":
-      "https://aikluwlsjdrayohixism.supabase.co/storage/v1/object/public/joodle/Changelogs/1.4.79.gif",
+      "https://raw.githubusercontent.com/xmliszt/resources/refs/heads/main/joodle/1.4.79.gif",
     // App store version 1.3 release
     "1.3.78":
-      "https://aikluwlsjdrayohixism.supabase.co/storage/v1/object/public/joodle/Changelogs/1.3.78.gif",
+      "https://raw.githubusercontent.com/xmliszt/resources/refs/heads/main/joodle/1.3.78.gif",
     // App store version 1.1 release
     "1.1.73":
-      "https://aikluwlsjdrayohixism.supabase.co/storage/v1/object/public/joodle/Changelogs/1.1.73.gif",
+      "https://raw.githubusercontent.com/xmliszt/resources/refs/heads/main/joodle/1.1.73.gif",
     // TestFlight last release
     "1.1.68":
-      "https://aikluwlsjdrayohixism.supabase.co/storage/v1/object/public/joodle/Changelogs/1.1.68.gif",
+      "https://raw.githubusercontent.com/xmliszt/resources/refs/heads/main/joodle/1.1.68.gif",
     "1.0.58":
-      "https://aikluwlsjdrayohixism.supabase.co/storage/v1/object/public/joodle/Changelogs/1.0.58.png",
+      "https://raw.githubusercontent.com/xmliszt/resources/refs/heads/main/joodle/1.0.58.png",
     "1.0.54":
-      "https://aikluwlsjdrayohixism.supabase.co/storage/v1/object/public/joodle/Changelogs/1.0.54.png",
+      "https://raw.githubusercontent.com/xmliszt/resources/refs/heads/main/joodle/1.0.54.png",
   },
 };
 
