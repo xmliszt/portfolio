@@ -1,4 +1,4 @@
-/* eslint-disable unused-imports/no-unused-vars */
+/* eslint-disable no-unused-vars */
 import config from "@/velite.config";
 
 declare global {
