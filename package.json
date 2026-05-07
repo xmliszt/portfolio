@@ -13,6 +13,7 @@
     "velite:build": "velite --clean",
     "velite:dev": "velite --watch",
     "db:gen-types": "bash scripts/supabase-gen-types.sh",
+    "supabase:upload-photos": "node scripts/supabase-upload-photos.js",
     "db:push": "supabase db push",
     "three": "^0.165.0",
     "wiggle": "^0.0.14",
