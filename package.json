@@ -3,8 +3,8 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "bash -c \"export NEXT_TURBOPACK=1; npm run velite:dev & next dev --turbo\"",
-    "build": "node scripts/generate-station-code.js && next build",
+    "dev": "bash -c \"export NEXT_TURBOPACK=1; npm run velite:dev & next dev --webpack\"",
+    "build": "node scripts/generate-station-code.js && next build --webpack",
     "start": "next start",
     "lint": "eslint . --ignore-pattern public --ignore-pattern .next",
     "lint:fix": "eslint . --fix --ignore-pattern public --ignore-pattern .next",
@@ -13,7 +13,6 @@
     "velite:build": "velite --clean",
     "velite:dev": "velite --watch",
     "db:gen-types": "bash scripts/supabase-gen-types.sh",
-    "supabase:upload-photos": "node scripts/supabase-upload-photos.js",
     "db:push": "supabase db push",
     "three": "^0.165.0",
     "wiggle": "^0.0.14",
