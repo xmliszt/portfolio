@@ -88,3 +88,13 @@ insert into public.hobby_items (group_id, title, subtitle, creator, year, image_
 ((select id from public.hobby_item_groups where hobby_slug = 'reading' and slug = 'fiction'), '我不能放下的一切', NULL, '丁丁张', NULL, 'https://images.weserv.nl/?url=https://img1.doubanio.com/view/subject/s/public/s34375378.jpg', 'https://book.douban.com/subject/36153728/', 5),
 ((select id from public.hobby_item_groups where hobby_slug = 'reading' and slug = 'fiction'), '长安的荔枝', NULL, '马伯庸', NULL, 'https://images.weserv.nl/?url=https://img3.doubanio.com/view/subject/s/public/s34327482.jpg', 'https://book.douban.com/subject/36104107/', 6)
 on conflict (group_id, external_url) do update set title = excluded.title, subtitle = excluded.subtitle, creator = excluded.creator, year = excluded.year, image_url = excluded.image_url, sort_order = excluded.sort_order;
+
+
+-- ratings 
+insert into public.ratings (id, positive_rating, negative_rating, comment) values ('dune_2021', 120, 5, 'Seeded rating for Dune'), ('spirited_away', 300, 10, 'Classic — seeded') on conflict (id) do update set positive_rating = excluded.positive_rating, negative_rating = excluded.negative_rating, comment = excluded.comment;
+
+-- bgms 
+insert into public.bgms (id, title, artist, external_url) values ('bgm-ponyo', 'Ponyo Theme', 'Joe Hisaishi', 'https://example.com/ponyo'), ('bgm-one-summer-day', 'One Summer''s Day', 'Joe Hisaishi', 'https://example.com/one-summers-day') on conflict (id) do update set title = excluded.title, artist = excluded.artist, external_url = excluded.external_url;
+
+-- post views 
+insert into public.post_views (slug, view) values ('welcome', 42), ('about', 7) on conflict (slug) do update set view = excluded.view;
