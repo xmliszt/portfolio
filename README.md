@@ -46,3 +46,13 @@ This project uses Velite for crafting demo stations which historically ran via a
 Notes
 - Ensure your shell supports `bash -c` when running `npm run dev` locally (macOS/Linux). For Windows PowerShell/CMD, run the steps manually or install `concurrently` and update scripts accordingly.
 - When running in CI or environments that don't support background processes, run Velite build separately (e.g., `npm run velite:build`) during the build step.
+
+Storage buckets (local dev)
+
+To mirror production storage buckets locally, configure them in `supabase/config.toml` under `[storage.buckets.<name>]` (this repo already defines a `photos` bucket). Then link the CLI and create them in the linked project:
+
+1. Link supabase CLI to your project: `supabase link --project-ref tvstbbuidvwgelgidaqy`
+2. Create buckets with the helper script: `bash scripts/supabase-create-buckets.sh`
+3. (Optional) Place image files under `supabase/storage/photos/` and upload them using the dashboard or a small Node script using `@supabase/supabase-js`.
+
+Note: The local `supabase start` process may also create buckets declared in `config.toml` depending on CLI version. If you need seeded files in storage for CI/dev, run an upload step after linking the project.
