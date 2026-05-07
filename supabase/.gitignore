@@ -9,7 +9,6 @@
 
 # Ignore uploaded storage files by default but keep small SVG placeholders and docs
 # This prevents large binary photos from being committed accidentally.
-supabase/storage/photos/*
-!supabase/storage/photos/*.svg
-!supabase/storage/photos/.gitkeep
-!supabase/storage/photos/README.md
+storage/photos/*
+!storage/photos/.gitkeep
+!storage/photos/README.md
