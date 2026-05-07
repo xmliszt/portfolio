@@ -3,6 +3,10 @@ import { createServiceRoleClient } from "@/lib/supabase/create-service-role-clie
 import { ImageDialog } from "./image-dialog";
 
 export async function PhotoBentoGrid() {
+  if (!process.env.SUPABASE_DB_URL || !process.env.SUPABASE_SERVICE_ROLE_KEY) {
+    return <div>Photos are unavailable in this environment.</div>;
+  }
+
   const supabaseClient = createServiceRoleClient();
   const { data, error } = await supabaseClient.storage.from("photos").list();
   if (!data || error) return <div>Error loading photos...</div>;
