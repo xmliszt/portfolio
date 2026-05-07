@@ -52,7 +52,6 @@ Storage buckets (local dev)
 To mirror production storage buckets locally, configure them in `supabase/config.toml` under `[storage.buckets.<name>]` (this repo already defines a `photos` bucket). Then link the CLI and create them in the linked project:
 
 1. Link supabase CLI to your project: `supabase link --project-ref tvstbbuidvwgelgidaqy`
-2. Create buckets with the helper script: `bash scripts/supabase-create-buckets.sh`
-3. (Optional) Place image files under `supabase/storage/photos/` and upload them using the dashboard or a small Node script using `@supabase/supabase-js`.
+2. (Optional) Place files under folders in `supabase/storage/`
 
 Note: The local `supabase start` process may also create buckets declared in `config.toml` depending on CLI version. If you need seeded files in storage for CI/dev, run an upload step after linking the project.
