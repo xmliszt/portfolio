@@ -1,6 +1,6 @@
 "use client";
 
-import Image from "next/image";
+
 import Link from "next/link";
 
 import { AspectRatio } from "./aspect-ratio";
@@ -19,14 +19,13 @@ export function ImagePerspectiveLink(props: ImagePerspectiveLinkProps) {
     <Link href={props.href}>
       <HoverPerspectiveContainer>
         <AspectRatio ratio={3 / 2}>
-          <Image
+          <img
             className="m-0 h-full w-full"
             src={props.src}
             alt={props.alt}
             width={props.width ?? 200}
             height={props.height ?? 200}
             style={{ objectFit: "cover", objectPosition: "center" }}
-            unoptimized
           />
         </AspectRatio>
       </HoverPerspectiveContainer>

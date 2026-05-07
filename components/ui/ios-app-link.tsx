@@ -3,7 +3,7 @@
 import React from "react";
 import { isMobile, isTablet } from "react-device-detect";
 import { motion } from "motion/react";
-import Image from "next/image";
+
 import Link from "next/link";
 import { useTheme } from "next-themes";
 
@@ -78,12 +78,11 @@ export function IOSAppLink({
             "shadow-md"
           )}
         >
-          <Image
+          <img
             src={iconImage}
             alt={appIconImageAlt ?? "App Icon"}
             width={96}
             height={96}
-            unoptimized
             className="m-0 size-full object-cover p-0"
           />
         </motion.div>

@@ -1,6 +1,6 @@
 import { format } from "date-fns";
 import type { Metadata } from "next";
-import Image from "next/image";
+
 import { notFound } from "next/navigation";
 
 import { openGraph } from "@/app/metadata";
@@ -81,7 +81,7 @@ export default async function PostPage(props: PostProps) {
 
       {post.description && <p>{post.description}</p>}
       {post.cover && (
-        <Image src={post.cover} alt={post.title} className="m-0" />
+        <img src={typeof post.cover === 'string' ? post.cover : post.cover.src} alt={post.title} className="m-0" />
       )}
       <hr className="mt-2 mb-6" />
 

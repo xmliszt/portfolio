@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "motion/react";
-import Image from "next/image";
+
 import { useTheme } from "next-themes";
 
 import { cn } from "@/app/craft/stations/three-d-rolling-slider/utils";
@@ -31,12 +31,11 @@ export function AppIcon(props: {
         props.className
       )}
     >
-      <Image
+      <img
         src={resolvedTheme === "dark" ? props.darkUrl : props.lightUrl}
         alt={props.alt}
         width={300}
         height={300}
-        unoptimized
         className="m-0 size-full object-cover p-0"
       />
     </motion.div>

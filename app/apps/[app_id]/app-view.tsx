@@ -5,7 +5,7 @@ import { isMobile } from "react-device-detect";
 import { ArrowSquareOut } from "@phosphor-icons/react";
 import { upperCase } from "lodash";
 import { motion } from "motion/react";
-import Image from "next/image";
+
 import Link from "next/link";
 
 import { AppIcon } from "@/app/apps/app-icon";
@@ -140,10 +140,9 @@ export function AppView({ app }: { app: AppData }) {
                     "rounded-[12.8%/5.7%]"
                   )}
                 >
-                  <Image
+                  <img
                     src={src}
                     alt={`Screenshot ${i + 1}`}
-                    fill
                     className="object-cover"
                     sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                   />

@@ -1,7 +1,7 @@
 import { format, parse } from "date-fns";
 import { ArrowLeft } from "lucide-react";
 import type { Metadata } from "next";
-import Image from "next/image";
+
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
@@ -140,13 +140,12 @@ export default async function ChangelogDetailPage(props: Props) {
 
       {headerImage && (
         <div className="flex w-full items-center justify-center overflow-hidden">
-          <Image
+          <img
             src={headerImage}
             alt={`Version ${changelog.displayVersion} header`}
             width={800}
             height={450}
             className="w-full max-w-[324px] rounded-3xl object-cover"
-            unoptimized
           />
         </div>
       )}
