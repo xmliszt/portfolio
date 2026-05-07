@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "motion/react";
-import Image from "next/image";
+
 import Link from "next/link";
 
 import { AspectRatio } from "./aspect-ratio";
@@ -29,12 +29,10 @@ export function BookGrid(props: BookGridProps) {
               <HoverPerspectiveContainer className="border-primary border">
                 <div className="bg-card relative flex aspect-2/3 w-full flex-col gap-y-2">
                   <AspectRatio ratio={2 / 3}>
-                    <Image
-                      className="m-0"
+                    <img
+                      className="m-0 w-full h-full object-cover"
                       src={book.posterUrl}
                       alt={book.title}
-                      fill
-                      unoptimized
                     />
                   </AspectRatio>
                   <motion.div

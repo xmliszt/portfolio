@@ -10,5 +10,4 @@
 # Ignore uploaded storage files by default but keep small SVG placeholders and docs
 # This prevents large binary photos from being committed accidentally.
 storage/photos/*
-!storage/photos/.gitkeep
-!storage/photos/README.md
+storage/bgm/*

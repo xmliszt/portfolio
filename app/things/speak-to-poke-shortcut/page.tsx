@@ -1,6 +1,6 @@
 import { Ellipsis } from "lucide-react";
 import type { Metadata } from "next";
-import Image from "next/image";
+
 import Link from "next/link";
 
 import { cn } from "@/lib/utils";
@@ -26,8 +26,8 @@ export default function BrainDumpPage() {
     <article className="mx-auto flex min-h-[calc(100vh-11rem)] w-full max-w-md flex-col items-center justify-center text-center">
       <PalmShadowBackground />
       <div className="flex flex-col items-center gap-8">
-        <Image
-          src={pokeLogo}
+        <img
+          src={pokeLogo.src}
           alt="Poke Logo"
           className="size-18 rounded-full border shadow-lg"
         />
@@ -56,8 +56,8 @@ export default function BrainDumpPage() {
         >
           <div className="flex flex-col gap-y-8">
             <div className="flex items-center justify-between">
-              <Image
-                src={messageLogo}
+              <img
+                src={messageLogo.src}
                 alt="iOS Message Logo"
                 className="size-8 rounded-lg"
               />

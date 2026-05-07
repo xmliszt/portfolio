@@ -125,6 +125,13 @@ allowed_mime_types = ["image/png", "image/jpeg", "image/webp"]
 # objects_path is relative to the supabase directory and maps to a local folder
 objects_path = "./storage/photos"
 
+[storage.buckets.bgm]
+public = true
+file_size_limit = "50MiB"
+allowed_mime_types = ["audio/mpeg"]
+# objects_path is relative to the supabase directory and maps to a local folder
+objects_path = "./storage/bgm"
+
 # Allow connections via S3 compatible clients
 [storage.s3_protocol]
 enabled = true

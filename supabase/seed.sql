@@ -88,3 +88,7 @@ insert into public.hobby_items (group_id, title, subtitle, creator, year, image_
 ((select id from public.hobby_item_groups where hobby_slug = 'reading' and slug = 'fiction'), '我不能放下的一切', NULL, '丁丁张', NULL, 'https://images.weserv.nl/?url=https://img1.doubanio.com/view/subject/s/public/s34375378.jpg', 'https://book.douban.com/subject/36153728/', 5),
 ((select id from public.hobby_item_groups where hobby_slug = 'reading' and slug = 'fiction'), '长安的荔枝', NULL, '马伯庸', NULL, 'https://images.weserv.nl/?url=https://img3.doubanio.com/view/subject/s/public/s34327482.jpg', 'https://book.douban.com/subject/36104107/', 6)
 on conflict (group_id, external_url) do update set title = excluded.title, subtitle = excluded.subtitle, creator = excluded.creator, year = excluded.year, image_url = excluded.image_url, sort_order = excluded.sort_order;
+
+
+-- bgms 
+INSERT INTO "public"."bgms" ("id", "title", "artist", "external_url") VALUES ('alala-das-marinas', 'Alala das Marinas', 'MUJI BGM', 'https://open.spotify.com/track/3CSlN6I09hzyWHoreCLt0A?si=7cb16cf6b6d04ebc'), ('clothiers-march', 'Clothiers March', 'MUJI BGM', 'https://open.spotify.com/track/5e2FrCqDzmeR9yqT3y792i?si=bc703550aa8f4e39'), ('het-weesmeisje', 'Het Weesmeisje', 'MUJI BGM', 'https://open.spotify.com/track/2E9HnjkaJUpVgtDyGDp8RA?si=5aaac11f603349bf'), ('muji-2020', 'MUJI 2020', 'Ryuichi Sakamoto', 'https://open.spotify.com/track/6q4yJfdPmQh5OkzJHrj538?si=918bcb08e0f0472f'), ('the-parting-glass', 'The Parting Glass', 'MUJI BGM', 'https://open.spotify.com/track/16zaC3IWuPYe0BeJ7w6BgW');
