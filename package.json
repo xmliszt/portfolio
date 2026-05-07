@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev --webpack",
+    "dev": "bash -c \"export NEXT_TURBOPACK=1; npm run velite:dev & next dev --webpack\"",
     "build": "node scripts/generate-station-code.js && next build --webpack",
     "start": "next start",
     "lint": "eslint . --ignore-pattern public --ignore-pattern .next",
@@ -12,7 +12,8 @@
     "prepare": "husky install",
     "velite:build": "velite --clean",
     "velite:dev": "velite --watch",
-    "gen-types": "supabase gen types typescript --project-id tvstbbuidvwgelgidaqy --schema public > lib/supabase/__generated__/types.ts",
+    "db:gen-types": "bash scripts/supabase-gen-types.sh",
+    "db:push": "supabase db push",
     "three": "^0.165.0",
     "wiggle": "^0.0.14",
     "codegen:craft": "node scripts/generate-station-code.js"

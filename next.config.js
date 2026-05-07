@@ -51,6 +51,7 @@ const nextConfig = {
       },
     ];
   },
+  turbopack: {},
   webpack: (config) => {
     config.plugins.push(new VeliteWebpackPlugin());
     return config;

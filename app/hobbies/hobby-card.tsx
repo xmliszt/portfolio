@@ -1,6 +1,6 @@
 "use client";
 
-import Image from "next/image";
+
 import Link from "next/link";
 
 import { AspectRatio } from "@/components/ui/aspect-ratio";
@@ -19,11 +19,10 @@ export function HobbyCard(props: HobbyCardProps) {
     <Link href={props.href} className="rounded-lg shadow-md">
       <div className="group relative justify-center overflow-hidden rounded-lg">
         <AspectRatio ratio={3 / 2}>
-          <Image
+          <img
             className="m-0 h-full"
             src={props.coverImageUrl}
             alt={props.coverImageAlt}
-            fill
           />
         </AspectRatio>
         <div

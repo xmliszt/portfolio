@@ -6,11 +6,16 @@ import { openGraph } from "@/app/metadata";
 import { TOCLoader } from "@/components/custom/toc/toc-loader";
 import { MDXContent } from "@/components/mdx-content";
 
+import { fetchHobbyItemSections } from "./fetch-hobby-item-sections";
+import { HobbyItemSections } from "./hobby-item-sections";
+
 import { hobbies } from "#site/content";
 
 type HobbyProps = {
   params: Promise<{ slug: string }>;
 };
+
+const STRUCTURED_HOBBY_SLUGS = new Set(["films", "reading"]);
 
 function getHobbyBySlug(slug: string) {
   return hobbies.find((hobby) => hobby.slug === slug);
@@ -43,20 +48,28 @@ export default async function HobbyPage(props: HobbyProps) {
   const hobby = getHobbyBySlug(params.slug);
   if (hobby == null) return notFound();
 
+  const shouldRenderStructuredItems = STRUCTURED_HOBBY_SLUGS.has(hobby.slug);
+  const sections = shouldRenderStructuredItems
+    ? await fetchHobbyItemSections(hobby.slug)
+    : [];
+
   return (
     <article className="prose prose-stone dark:prose-invert">
       <h1 className="group relative">
-        <a id="top" className="[visibility:hidden] relative -top-16 block"></a>
+        <a id="top" className="invisible relative -top-16 block"></a>
         {hobby.title}
         {hobby.subtitle && <ShadowSubtitle>{hobby.subtitle}</ShadowSubtitle>}
       </h1>
       <p>{hobby.synopsis}</p>
       <hr className="my-6" />
 
-      {/* Markdown content */}
-      <MDXContent code={hobby.body} />
+      {shouldRenderStructuredItems ? (
+        <HobbyItemSections sections={sections} />
+      ) : (
+        <MDXContent code={hobby.body} />
+      )}
 
-      <TOCLoader toc={hobby.toc} showToc={true} />
+      {!shouldRenderStructuredItems && <TOCLoader toc={hobby.toc} showToc={true} />}
     </article>
   );
 }
