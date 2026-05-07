@@ -14,9 +14,9 @@ export function ShadowSubtitle(props: ShadowSubtitleProps) {
       className={cn(
         "text-muted-foreground absolute -bottom-6 -left-2 -z-10 m-0 origin-top text-xl font-bold [mask:linear-gradient(transparent_2%,black_98%)]",
         isMobile || isTablet
-          ? "scale-y-100 skew-x-[30deg] opacity-75"
+          ? "scale-y-100 skew-x-30 opacity-75"
           : "scale-y-0 skew-x-0 opacity-0",
-        "transition-[opacity_transform] ease-in-out group-hover:scale-y-100 group-hover:skew-x-[30deg] group-hover:opacity-75"
+        "transition-[opacity_transform] ease-in-out group-hover:scale-y-100 group-hover:skew-x-30 group-hover:opacity-75"
       )}
     >
       {props.children}

@@ -7,14 +7,42 @@ This work is licensed under a
 
 [![CC BY-NC-SA 4.0][cc-by-nc-sa-image]][cc-by-nc-sa]
 
-[cc-by-nc-sa]: http://creativecommons.org/licenses/by-nc-sa/4.0/
-[cc-by-nc-sa-image]: https://licensebuttons.net/l/by-nc-sa/4.0/88x31.png
-[cc-by-nc-sa-shield]: https://img.shields.io/badge/License-CC%20BY--NC--SA%204.0-lightgrey.svg
+ [cc-by-nc-sa]: http://creativecommons.org/licenses/by-nc-sa/4.0/
+ [cc-by-nc-sa-image]: https://licensebuttons.net/l/by-nc-sa/4.0/88x31.png
+ [cc-by-nc-sa-shield]: https://img.shields.io/badge/License-CC%20BY--NC--SA%204.0-lightgrey.svg
 
-Why do I want to build this personal website? Previously I had iterated over several versions of my personal website actually, but I was never satisfied with how it turned out. I had a few reasons for that:
+## Supabase schema workflow
 
-I don't want my personal site to just be -- **a portfolio site**. That's why I don't want to even call it a portfolio site. **Personal playground** sounds better (but I might still tweak the name in the future). Basically, I think it shouldn't just be a place to showcase my work and projects, but also a place to think, to ponder, to learn, to experiment, to connect, to explore, to share, and to grow. I want it to be a place where I can express myself, and where I can be myself. I want it to be a place where I can be creative, and where I can be free. Being a playground of some sort, I can experiment with different ideas, designs, tech, music, things that I love. It is also like a cozy little corner, where I put up things that I like, and things I would want to share with you guys. And hopefully, through all these, you can also understand me better as a holistic person, with emotions, thoughts, and dreams, not just a mere coding machine.
+This project uses declarative Supabase schemas with one table per file under `supabase/schemas/public/`.
 
-Therefore, here you go; after much thoughts and design and nights burnt, I have finally put up something I am somewhat satisfied with. I added little bit of animation and details here and there, and gave it a simple and peaceful texture. Feel free to explore in my little digital playground here, enjoy the text, the music, the visuals, and the vibes. I hope you can find something that resonates with you. This site should be updated in sync with my life, so stay tuned for any updates. I hope you enjoy your stay here 😉
+To bootstrap or re-sync from production baseline:
 
-我的个人网站经历了好几次大改动了，但是我一直都不是很满意。我不觉得个人主页只是一个**简历**，我也不想叫它简历，显得很单调很无味。**游乐场**听起来好很多呢（但是我可能以后估计我还得改一改这个名字）。这不仅是一个展示我的作品和项目的地方，而且也应该是一个思考、学习、实验、探索、分享、成长、与世界互动的地方。我希望它是一个我可以表达自我的地方，在这里，我可以发挥天马行空的想象，让创造力无限地伸展。作为一个游乐场，我可以尝试不同的想法、设计、技术、音乐……任何我喜欢的东西。就像一个舒适的小窝，我陈列起我视为珍宝的东西，分享给你看，讲故事给你听。希望通过这一切，你能更全面地了解我。那么话不多说，欢迎来的这里，随便逛逛，走走看看，听听音乐弹弹琴，希望你能喜欢这里 😉
+1. Link the project: `supabase link --project-ref tvstbbuidvwgelgidaqy`
+2. (Optional) Dump production public schema: `supabase db dump --linked --schema public --file supabase/schemas/prod.sql`
+3. Break `prod.sql` into per-table files under `supabase/schemas/public/` or reconcile incrementally.
+
+When schema changes are made:
+
+1. Edit the SQL files under `supabase/schemas/public/` (one table per file).
+2. Generate a migration from the declared state: `supabase db diff -f <migration_name>`.
+3. Apply migrations to the linked project: `npm run db:push`.
+4. Regenerate TypeScript types: `npm run db:gen-types`.
+
+Development with Turbopack and Velite
+
+This project uses Velite for crafting demo stations which historically ran via a webpack plugin. Turbopack (Next's Rust bundler) doesn't run webpack plugins. To run the dev server with Turbopack while keeping Velite's watch process:
+
+1. Start dev (runs velite watcher and Next with Turbopack):
+
+   npm run dev
+
+   (The `dev` script exports NEXT_TURBOPACK=1 and runs `velite --watch` in the background before `next dev --turbo`.)
+
+2. If you prefer not to use Turbopack, run the old flow:
+
+   npm run velite:dev
+   npm run dev:webpack  # not present by default; use `next dev` to run Webpack-based dev server
+
+Notes
+- Ensure your shell supports `bash -c` when running `npm run dev` locally (macOS/Linux). For Windows PowerShell/CMD, run the steps manually or install `concurrently` and update scripts accordingly.
+- When running in CI or environments that don't support background processes, run Velite build separately (e.g., `npm run velite:build`) during the build step.

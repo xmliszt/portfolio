@@ -51,8 +51,14 @@ const nextConfig = {
       },
     ];
   },
+  turbopack: {},
   webpack: (config) => {
-    config.plugins.push(new VeliteWebpackPlugin());
+    // Velite uses a webpack plugin to run its build step. Turbopack does not use webpack,
+    // so skip Velite's webpack hook when running with Turbopack. Set NEXT_TURBOPACK=1 to
+    // indicate the dev server is using Turbopack and run `npm run velite:dev` separately.
+    if (!process.env.NEXT_TURBOPACK) {
+      config.plugins.push(new VeliteWebpackPlugin());
+    }
     return config;
   },
 };
