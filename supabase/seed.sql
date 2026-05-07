@@ -90,11 +90,5 @@ insert into public.hobby_items (group_id, title, subtitle, creator, year, image_
 on conflict (group_id, external_url) do update set title = excluded.title, subtitle = excluded.subtitle, creator = excluded.creator, year = excluded.year, image_url = excluded.image_url, sort_order = excluded.sort_order;
 
 
--- ratings 
-insert into public.ratings (id, positive_rating, negative_rating, comment) values ('dune_2021', 120, 5, 'Seeded rating for Dune'), ('spirited_away', 300, 10, 'Classic — seeded') on conflict (id) do update set positive_rating = excluded.positive_rating, negative_rating = excluded.negative_rating, comment = excluded.comment;
-
 -- bgms 
-insert into public.bgms (id, title, artist, external_url) values ('bgm-ponyo', 'Ponyo Theme', 'Joe Hisaishi', 'https://example.com/ponyo'), ('bgm-one-summer-day', 'One Summer''s Day', 'Joe Hisaishi', 'https://example.com/one-summers-day') on conflict (id) do update set title = excluded.title, artist = excluded.artist, external_url = excluded.external_url;
-
--- post views 
-insert into public.post_views (slug, view) values ('welcome', 42), ('about', 7) on conflict (slug) do update set view = excluded.view;
+INSERT INTO "public"."bgms" ("id", "title", "artist", "external_url") VALUES ('alala-das-marinas', 'Alala das Marinas', 'MUJI BGM', 'https://open.spotify.com/track/3CSlN6I09hzyWHoreCLt0A?si=7cb16cf6b6d04ebc'), ('clothiers-march', 'Clothiers March', 'MUJI BGM', 'https://open.spotify.com/track/5e2FrCqDzmeR9yqT3y792i?si=bc703550aa8f4e39'), ('het-weesmeisje', 'Het Weesmeisje', 'MUJI BGM', 'https://open.spotify.com/track/2E9HnjkaJUpVgtDyGDp8RA?si=5aaac11f603349bf'), ('muji-2020', 'MUJI 2020', 'Ryuichi Sakamoto', 'https://open.spotify.com/track/6q4yJfdPmQh5OkzJHrj538?si=918bcb08e0f0472f'), ('the-parting-glass', 'The Parting Glass', 'MUJI BGM', 'https://open.spotify.com/track/16zaC3IWuPYe0BeJ7w6BgW');
