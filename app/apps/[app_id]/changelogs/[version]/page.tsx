@@ -4,8 +4,8 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
-import { getChangelogHeaderImage } from "@/app/apps/changelog-header-images";
 import { ChangelogHeaderCarousel } from "@/app/apps/[app_id]/changelogs/[version]/changelog-header-carousel";
+import { getChangelogHeaderImage } from "@/app/apps/changelog-header-images";
 import { getAppById } from "@/app/apps/data";
 import { openGraph } from "@/app/metadata";
 import { MDXContent } from "@/components/mdx-content";
