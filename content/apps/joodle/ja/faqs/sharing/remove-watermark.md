@@ -9,4 +9,4 @@ order: 1
 ウォーターマークを消すには:
 
 1. **Joodle Pro** に加入します。
-2. 「Settings > Customization > Watermark when sharing」からオフに切り替えます。
+2. 「設定 > カスタマイズ > 共有時にウォーターマークを表示」からオフに切り替えます。

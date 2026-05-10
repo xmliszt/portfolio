@@ -11,7 +11,7 @@ order: 5
 
 **Joodle内で言語を設定するには:**
 
-1. Joodleを開き、「Settings > General > Language」へ移動します。
+1. Joodleを開き、「設定 > 一般 > 言語」へ移動します。
 2. 対応言語の中からひとつ選びます。
 
 **iOSの設定から言語を変更するには:**
