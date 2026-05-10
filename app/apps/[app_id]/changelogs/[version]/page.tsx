@@ -1,11 +1,11 @@
 import { format, parse } from "date-fns";
 import { ArrowLeft } from "lucide-react";
 import type { Metadata } from "next";
-
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
 import { getChangelogHeaderImage } from "@/app/apps/changelog-header-images";
+import { ChangelogHeaderCarousel } from "@/app/apps/[app_id]/changelogs/[version]/changelog-header-carousel";
 import { getAppById } from "@/app/apps/data";
 import { openGraph } from "@/app/metadata";
 import { MDXContent } from "@/components/mdx-content";
@@ -116,7 +116,10 @@ export default async function ChangelogDetailPage(props: Props) {
 
   if (!app || !changelog) notFound();
 
-  const headerImage = getChangelogHeaderImage(params.app_id, changelog.version);
+  const headerImages = getChangelogHeaderImage(
+    params.app_id,
+    changelog.version
+  );
 
   return (
     <div className="w-full space-y-6">
@@ -138,16 +141,11 @@ export default async function ChangelogDetailPage(props: Props) {
         </h1>
       </div>
 
-      {headerImage && (
-        <div className="flex w-full items-center justify-center overflow-hidden">
-          <img
-            src={headerImage}
-            alt={`Version ${changelog.displayVersion} header`}
-            width={800}
-            height={450}
-            className="w-full max-w-[324px] rounded-3xl object-cover"
-          />
-        </div>
+      {headerImages && headerImages.length > 0 && (
+        <ChangelogHeaderCarousel
+          images={headerImages}
+          alt={`Version ${changelog.displayVersion} header`}
+        />
       )}
 
       <article className="prose prose-stone dark:prose-invert max-w-none">

@@ -9,7 +9,7 @@ type ChangelogDetailResponse = {
   version: string;
   displayVersion: string;
   date: string;
-  headerImageURL: string | null;
+  headerImageURL: string[] | null;
   markdown: string;
 };
 
