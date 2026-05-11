@@ -1,0 +1,13 @@
+{
+  "id": "whatsapp-invite-2026-01",
+  "title": "あなたを招待します！",
+  "message": "Joodleのインナーサークルに参加しませんか？ doodleをシェアしたり、仲間と出会ったり、最新情報や限定特典を受け取ったり、Joodleの未来づくりに参加できます！",
+  "primaryButton": {
+    "text": "WhatsAppコミュニティに参加",
+    "url": "https://chat.whatsapp.com/FF2rMEiSOwe9hsRapSyvdY"
+  },
+  "secondaryButton": {
+    "text": "興味がありません"
+  },
+  "type": "community"
+}

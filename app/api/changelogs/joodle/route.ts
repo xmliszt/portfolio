@@ -10,7 +10,7 @@ type ChangelogIndexEntry = {
   version: string;
   displayVersion: string;
   date: string;
-  headerImageURL: string | null;
+  headerImageURL: string[] | null;
 };
 
 // GET /api/changelogs - Returns the changelog index
@@ -31,28 +31,29 @@ export async function GET(request: Request) {
       .readdirSync(changelogsDir)
       .filter((f) => f.endsWith(".md"));
 
-    const changelogs: ChangelogIndexEntry[] = files
-      .map((filename) => {
+    const changelogs = files
+      .flatMap((filename): ChangelogIndexEntry[] => {
         // Parse filename: 1.0.61_2025-12-30.md
         const baseName = filename.replace(".md", "");
         const [version, date] = baseName.split("_");
 
         if (!version || !date) {
           console.warn(`Invalid changelog filename format: ${filename}`);
-          return null;
+          return [];
         }
 
         const [major, minor, build] = version.split(".").map(Number);
         const displayVersion = `${major}.${minor} (${build})`;
 
-        return {
-          version,
-          displayVersion,
-          date,
-          headerImageURL: HEADER_IMAGES[version] || null,
-        };
+        return [
+          {
+            version,
+            displayVersion,
+            date,
+            headerImageURL: HEADER_IMAGES[version] || null,
+          },
+        ];
       })
-      .filter((entry): entry is ChangelogIndexEntry => entry !== null)
       // Sort by version (newest first)
       .sort((a, b) => compareVersions(b.version, a.version));
 

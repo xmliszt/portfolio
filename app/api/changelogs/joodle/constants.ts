@@ -11,5 +11,5 @@ export const CHANGELOGS_DIR = path.join(
 );
 
 // Optional: Map versions to header image URLs
-export const HEADER_IMAGES: Record<string, string> =
+export const HEADER_IMAGES: Record<string, string[]> =
   CHANGELOG_HEADER_IMAGES["joodle"] ?? {};
