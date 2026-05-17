@@ -49,7 +49,7 @@ export async function GET(request: Request) {
     const alertsDir = path.join(contentPath, "alerts");
 
     if (fs.existsSync(alertsDir)) {
-      // For now, we'll support a single active alert (whatsapp invitation)
+      // For now, we'll support a single active alert.
       // In future we can add logic to select active alert based on date ranges
       const activeAlertPath = path.join(alertsDir, ACTIVE_ALERT_JSON);
       if (fs.existsSync(activeAlertPath)) {

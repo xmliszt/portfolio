@@ -110,16 +110,6 @@ export function AppView({ app }: { app: AppData }) {
             }}
           />
         )}
-
-        {/* WhatsApp embed */}
-        {app.whatsappEmbed && (
-          <div
-            className="flex items-center justify-center [&_a]:cursor-pointer!"
-            dangerouslySetInnerHTML={{
-              __html: app.whatsappEmbed,
-            }}
-          />
-        )}
       </div>
 
       {/* Screenshots Section */}

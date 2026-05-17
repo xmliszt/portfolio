@@ -5,7 +5,6 @@ import {
   Fan,
   Storefront,
   TwitterLogo,
-  WhatsappLogo,
 } from "@phosphor-icons/react/dist/ssr";
 
 import type { IconName } from "./data";
@@ -17,7 +16,6 @@ export const ICON_MAP: Record<
   Storefront,
   ArrowSquareOut,
   ChatCircleDots,
-  WhatsappLogo,
   TwitterLogo,
   Envelope,
   TestFlight: Fan,

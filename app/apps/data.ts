@@ -9,7 +9,6 @@ export type IconName =
   | "TestFlight"
   | "ArrowSquareOut"
   | "ChatCircleDots"
-  | "WhatsappLogo"
   | "TwitterLogo"
   | "Envelope";
 
@@ -41,7 +40,6 @@ export type AppData = {
   ogImages?: string[];
   ogImagesTwitter?: string[];
   productHuntEmbed?: string;
-  whatsappEmbed?: string;
 };
 
 const apps: Record<string, AppData> = {
@@ -163,12 +161,6 @@ const apps: Record<string, AppData> = {
       ],
       community: [
         {
-          label: "WhatsApp Community",
-          url: "https://chat.whatsapp.com/FF2rMEiSOwe9hsRapSyvdY",
-          icon: "WhatsappLogo",
-          description: "Make friends and share your doodles",
-        },
-        {
           label: "X (Twitter)",
           url: "https://x.com/Joodlejournal",
           icon: "TwitterLogo",
@@ -190,7 +182,6 @@ const apps: Record<string, AppData> = {
       "https://aikluwlsjdrayohixism.supabase.co/storage/v1/object/public/joodle/Joodle%20OG%20-%20Twitter.jpg",
     ],
     productHuntEmbed: `<a href="https://www.producthunt.com/products/joodle-journaling-with-doodle?embed=true&amp;utm_source=badge-top-post-badge&amp;utm_medium=badge&amp;utm_campaign=badge-joodle" target="_blank" rel="noopener noreferrer"><img alt="Joodle - Turn years of memories into personal doodles | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/top-post-badge.svg?post_id=1058014&amp;theme=light&amp;period=daily&amp;t=1767600498155"></a>`,
-    whatsappEmbed: `<a href="https://chat.whatsapp.com/FF2rMEiSOwe9hsRapSyvdY" target="_blank" rel="noopener noreferrer"><img alt="Joodle: Journaling With Doodle - WhatsApp Community Invitation Link" width="268.457" height="54" src="https://aikluwlsjdrayohixism.supabase.co/storage/v1/object/public/joodle/Whatsapp%20Community%20Banner.png"></a>`,
   },
 };
 
