@@ -6,6 +6,10 @@ export const CHANGELOG_HEADER_IMAGES: Record<
   Record<string, string[]>
 > = {
   joodle: {
+    "2.0.163": [
+      "https://raw.githubusercontent.com/xmliszt/resources/refs/heads/main/joodle/2.0_1.gif",
+      "https://raw.githubusercontent.com/xmliszt/resources/refs/heads/main/joodle/2.0_2.gif",
+    ],
     "1.18.145": [
       "https://raw.githubusercontent.com/xmliszt/resources/refs/heads/main/joodle/1.18_1.png",
       "https://raw.githubusercontent.com/xmliszt/resources/refs/heads/main/joodle/1.18_2.png",
