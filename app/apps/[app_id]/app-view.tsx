@@ -77,7 +77,7 @@ export function AppView(props: AppViewProps) {
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.1 }}
-                className="text-4xl font-bold tracking-tight md:text-5xl"
+                className="text-3xl font-bold tracking-tight md:text-4xl"
               >
                 {app.name}
               </motion.h1>
