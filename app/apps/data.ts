@@ -92,6 +92,9 @@ const apps: Record<string, AppData> = {
       "year grid journal",
       "visual timeline",
       "memory timeline",
+      "trace from reference",
+      "photo tracing journal",
+      "drawing reference app",
 
       // Mood & emotion (kept but focused)
       "mood journal",
@@ -113,6 +116,7 @@ const apps: Record<string, AppData> = {
       "joodle app",
       "joodle journal",
       "joodle diary",
+      "joodle pro",
       "visual journal app joodle",
     ],
     icon: {
@@ -124,6 +128,7 @@ const apps: Record<string, AppData> = {
 
     features: [
       "Daily Visual Journal: Draw one simple doodle each day to capture moods, moments, or feelings in seconds—no writing required.",
+      "Trace from a Reference: Capture anything with your camera or import a photo from your library, then trace right on top of it on the canvas to bring real life into your doodles.",
       "Year-at-a-Glance Memory Grid: See your entire year as a visual timeline of daily doodles, with each day remembered at a glance.",
       "Visual Memory Timeline: Watch your daily doodles come together into a quiet, personal story over time.",
       "Private by Design with iCloud Sync: Your journal stays on your devices and syncs securely across iPhone, iPad, and Apple devices.",
@@ -131,8 +136,9 @@ const apps: Record<string, AppData> = {
       "Anniversary & Important Dates Countdown: Track birthdays, anniversaries, and meaningful moments with gentle reminders.",
       "Share Thoughtfully: Export individual days or your entire year—share selectively or keep everything private.",
       "Personal Themes & Colors: Customize your visual journal to match your mood and personal style.",
-      "Quick Access with Siri Shortcuts: Open your daily journal instantly using search or voice.",
+      "Quick Access with Siri & Quick Actions: Long-press the app icon for the Today quick action, or use Siri Shortcuts and search to jump straight into the canvas.",
       "No Art Skills Required: Joodle isn’t about perfect drawings—simple stick figures become a deeply personal visual diary.",
+      "Joodle Pro: Unlock unlimited Joodles and reminders, all widget types, premium color themes, and watermark-free sharing.",
     ],
     screenshots: [
       "https://aikluwlsjdrayohixism.supabase.co/storage/v1/object/public/joodle/For%20Official%20Reviews/SS1.jpeg",
