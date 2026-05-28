@@ -34,6 +34,17 @@ export type AppData = {
     feedback?: AppLink[];
     community?: AppLink[];
   };
+  /**
+   * The numeric "Apple ID" of the app (same number that appears in
+   * `apps.apple.com/.../id{n}`). When set, the page fetches the live
+   * App Preview + screenshots from App Store Connect at build/ISR time
+   * and falls back to `screenshots` below only if the fetch fails.
+   */
+  appStoreConnectAppId?: string;
+  /**
+   * Fallback screenshots used when the App Store Connect fetch is
+   * unavailable (no API key configured, network error, etc.).
+   */
   screenshots?: string[];
   appClipUrl?: string;
   keywords?: string[];
@@ -45,6 +56,7 @@ export type AppData = {
 const apps: Record<string, AppData> = {
   joodle: {
     id: "joodle",
+    appStoreConnectAppId: "6756204776",
     name: "Joodle: Journaling With Doodle",
     subtitle: "Visual Daily Journal",
     description:

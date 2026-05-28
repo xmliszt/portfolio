@@ -5,13 +5,14 @@ import { isMobile } from "react-device-detect";
 import { ArrowSquareOut } from "@phosphor-icons/react";
 import { upperCase } from "lodash";
 import { motion } from "motion/react";
-
 import Link from "next/link";
 
 import { AppIcon } from "@/app/apps/app-icon";
 import { AppData, AppLink } from "@/app/apps/data";
 import { ICON_MAP } from "@/app/apps/icon-map";
+import type { LiveAppStoreMedia } from "@/lib/app-store-connect/fetch-media";
 
+import { AppPreviewVideo } from "./app-preview-video";
 import {
   AppViewBottomViewMobile,
   AppViewBottomViewWeb,
@@ -21,8 +22,40 @@ function cn(...classes: (string | undefined | null | false)[]) {
   return classes.filter(Boolean).join(" ");
 }
 
-export function AppView({ app }: { app: AppData }) {
+type PreviewItem =
+  | { kind: "video"; url: string; posterUrl: string }
+  | { kind: "image"; url: string };
+
+type AppViewProps = {
+  app: AppData;
+  /** Live media from App Store Connect; when absent, falls back to `app.screenshots`. */
+  liveMedia?: LiveAppStoreMedia;
+};
+
+export function AppView(props: AppViewProps) {
+  const { app, liveMedia } = props;
   const [isDescriptionExpanded, setIsDescriptionExpanded] = useState(false);
+
+  const previewItems: PreviewItem[] = (() => {
+    if (liveMedia && (liveMedia.video || liveMedia.screenshots.length > 0)) {
+      const items: PreviewItem[] = [];
+      if (liveMedia.video) {
+        items.push({
+          kind: "video",
+          url: liveMedia.video.url,
+          posterUrl: liveMedia.video.posterUrl,
+        });
+      }
+      for (const url of liveMedia.screenshots) {
+        items.push({ kind: "image", url });
+      }
+      return items;
+    }
+    return (app.screenshots ?? []).map<PreviewItem>((url) => ({
+      kind: "image",
+      url,
+    }));
+  })();
 
   return (
     <div className="mx-auto max-w-4xl space-y-10 pb-20">
@@ -112,16 +145,16 @@ export function AppView({ app }: { app: AppData }) {
         )}
       </div>
 
-      {/* Screenshots Section */}
-      {app.screenshots && app.screenshots.length > 0 && (
+      {/* Preview Section */}
+      {previewItems.length > 0 && (
         <section className="space-y-6">
           <h2 className="text-2xl font-bold tracking-tight">Preview</h2>
           {/* Container with fade effect */}
           <div className="relative -mx-4 md:-mx-8">
             <div className="scrollbar-hide flex snap-x snap-mandatory gap-5 overflow-x-auto px-4 pb-4 md:px-8">
-              {app.screenshots.map((src, i) => (
+              {previewItems.map((item, i) => (
                 <motion.div
-                  key={src}
+                  key={item.url}
                   initial={{ opacity: 0, x: 20 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: 0.4 + i * 0.1 }}
@@ -130,18 +163,23 @@ export function AppView({ app }: { app: AppData }) {
                     "rounded-[12.8%/5.7%]"
                   )}
                 >
-                  <img
-                    src={src}
-                    alt={`Screenshot ${i + 1}`}
-                    className="object-cover"
-                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                  />
+                  {item.kind === "video" ? (
+                    <AppPreviewVideo
+                      src={item.url}
+                      posterUrl={item.posterUrl}
+                      className="h-full w-full object-cover"
+                    />
+                  ) : (
+                    <img
+                      src={item.url}
+                      alt={`Screenshot ${i + 1}`}
+                      className="object-cover"
+                      sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                    />
+                  )}
                 </motion.div>
               ))}
             </div>
-            {/* Fade gradients */}
-            <div className="from-background pointer-events-none absolute top-0 left-0 h-full w-8 bg-linear-to-r to-transparent md:w-16" />
-            <div className="from-background pointer-events-none absolute top-0 right-0 h-full w-8 bg-linear-to-l to-transparent md:w-16" />
           </div>
         </section>
       )}

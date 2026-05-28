@@ -3,8 +3,12 @@ import { notFound } from "next/navigation";
 
 import { getAllAppIds, getAppById } from "@/app/apps/data";
 import { openGraph } from "@/app/metadata";
+import { fetchAppStoreMedia } from "@/lib/app-store-connect/fetch-media";
 
 import { AppView } from "./app-view";
+
+// Refetch live App Store media at most hourly on ISR.
+export const revalidate = 3600;
 
 type Props = {
   params: Promise<{
@@ -70,5 +74,9 @@ export default async function AppPage(props: Props) {
 
   if (!app) notFound();
 
-  return <AppView app={app} />;
+  const liveMedia = app.appStoreConnectAppId
+    ? await fetchAppStoreMedia({ appId: app.appStoreConnectAppId })
+    : undefined;
+
+  return <AppView app={app} liveMedia={liveMedia} />;
 }
