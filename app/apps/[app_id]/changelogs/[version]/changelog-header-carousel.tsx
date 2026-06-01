@@ -12,7 +12,7 @@ import {
 } from "@/components/ui/carousel";
 import { cn } from "@/lib/utils";
 
-const IMAGE_DURATION_MS = 3000;
+const IMAGE_DURATION_MS = 5000;
 const VIDEO_EXTENSIONS = [".mp4", ".webm", ".mov", ".m4v"];
 
 type ChangelogHeaderCarouselProps = {

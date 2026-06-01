@@ -7,8 +7,8 @@ export const CHANGELOG_HEADER_IMAGES: Record<
 > = {
   joodle: {
     "2.0.163": [
-      "https://joodle.liyuxuan.dev/changelogs/2.0_1.gif",
-      "https://joodle.liyuxuan.dev/changelogs/2.0_2.gif",
+      "https://joodle.liyuxuan.dev/changelogs/2.0_1.mp4",
+      "https://joodle.liyuxuan.dev/changelogs/2.0_2.mp4",
     ],
     "1.18.145": [
       "https://joodle.liyuxuan.dev/changelogs/1.18_1.png",
