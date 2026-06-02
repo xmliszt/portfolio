@@ -117,14 +117,24 @@ export function ChangelogHeaderCarousel(props: ChangelogHeaderCarouselProps) {
     }
   }, [isPaused, selectedIndex, currentIsVideo]);
 
-  function handleVideoTimeUpdate(index: number) {
-    return function onTimeUpdate() {
-      if (index !== selectedIndex) return;
-      const video = videoRefs.current[index];
-      if (!video || !video.duration || !Number.isFinite(video.duration)) return;
-      setProgress(Math.min(video.currentTime / video.duration, 1));
-    };
-  }
+  // Video progress driven by requestAnimationFrame for a smooth bar.
+  // The native `timeupdate` event fires on a throttled, irregular cadence
+  // (~4/s), which makes the progress bar visibly stutter. Sampling
+  // currentTime once per frame keeps the animation smooth.
+  useEffect(() => {
+    if (!currentIsVideo || !currentSrc) return;
+    let frameId = 0;
+    function tick() {
+      const video = videoRefs.current[selectedIndex];
+      const duration = video?.duration;
+      if (video && duration && Number.isFinite(duration)) {
+        setProgress(Math.min(video.currentTime / duration, 1));
+      }
+      frameId = requestAnimationFrame(tick);
+    }
+    frameId = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(frameId);
+  }, [selectedIndex, currentIsVideo, currentSrc]);
 
   function handleVideoEnded(index: number) {
     return function onEnded() {
@@ -180,7 +190,6 @@ export function ChangelogHeaderCarousel(props: ChangelogHeaderCarouselProps) {
                   muted
                   playsInline
                   preload="auto"
-                  onTimeUpdate={handleVideoTimeUpdate(index)}
                   onEnded={handleVideoEnded(index)}
                 />
               ) : (
