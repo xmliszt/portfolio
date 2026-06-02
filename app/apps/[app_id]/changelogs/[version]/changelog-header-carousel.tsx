@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
-import { motion } from "motion/react";
+import { motion, useMotionValue } from "motion/react";
 import Image from "next/image";
 
 import {
@@ -28,7 +28,11 @@ function isVideo(src: string): boolean {
 export function ChangelogHeaderCarousel(props: ChangelogHeaderCarouselProps) {
   const [api, setApi] = useState<CarouselApi>();
   const [selectedIndex, setSelectedIndex] = useState(0);
-  const [progress, setProgress] = useState(0);
+  // Progress (0..1) is a motion value, not React state: the rAF loops below
+  // update it ~60fps, and pushing that through setState would re-render the
+  // whole carousel tree every frame. A motion value lets Framer Motion write
+  // the bar's transform directly, bypassing React render entirely.
+  const progress = useMotionValue(0);
   const [isPaused, setIsPaused] = useState(false);
   const videoRefs = useRef<(HTMLVideoElement | null)[]>([]);
 
@@ -44,7 +48,7 @@ export function ChangelogHeaderCarousel(props: ChangelogHeaderCarouselProps) {
     function onSelect() {
       if (!api) return;
       setSelectedIndex(api.selectedScrollSnap());
-      setProgress(0);
+      progress.set(0);
     }
     function onPointerDown() {
       setIsPaused(true);
@@ -60,7 +64,7 @@ export function ChangelogHeaderCarousel(props: ChangelogHeaderCarouselProps) {
       api.off("pointerDown", onPointerDown);
       api.off("pointerUp", onPointerUp);
     };
-  }, [api]);
+  }, [api, progress]);
 
   // Image countdown driven by requestAnimationFrame
   useEffect(() => {
@@ -68,14 +72,14 @@ export function ChangelogHeaderCarousel(props: ChangelogHeaderCarouselProps) {
     let frameId = 0;
     let lastMs = performance.now();
     let elapsedMs = 0;
-    setProgress(0);
+    progress.set(0);
     function tick(nowMs: number) {
       const deltaMs = nowMs - lastMs;
       lastMs = nowMs;
       if (!isPaused) {
         elapsedMs += deltaMs;
         const next = Math.min(elapsedMs / IMAGE_DURATION_MS, 1);
-        setProgress(next);
+        progress.set(next);
         if (next >= 1) {
           goNext();
           return;
@@ -85,7 +89,7 @@ export function ChangelogHeaderCarousel(props: ChangelogHeaderCarouselProps) {
     }
     frameId = requestAnimationFrame(tick);
     return () => cancelAnimationFrame(frameId);
-  }, [selectedIndex, isPaused, currentIsVideo, currentSrc, goNext]);
+  }, [selectedIndex, isPaused, currentIsVideo, currentSrc, goNext, progress]);
 
   // Reset videos when selected slide changes; play the current one
   useEffect(() => {
@@ -117,40 +121,26 @@ export function ChangelogHeaderCarousel(props: ChangelogHeaderCarouselProps) {
     }
   }, [isPaused, selectedIndex, currentIsVideo]);
 
-  // Video progress driven by requestAnimationFrame for a smooth bar.
-  // requestAnimationFrame fires at the display rate (~60fps), but the browser
-  // only advances HTMLVideoElement.currentTime once per *video* frame (often
-  // 24-30fps), so reading it directly returns the same value for several frames
-  // then jumps — which reads as a stutter. We anchor to the real currentTime
-  // but interpolate forward with wall-clock time between samples, so the bar
-  // moves a little every frame while staying locked to the true position.
+  // Video progress: sample currentTime each animation frame and push it
+  // straight into the motion value. Reading currentTime per rAF frame is
+  // smooth; the earlier stutter came from round-tripping through React state +
+  // a Framer `animate`/`transition` tween, which re-rendered the tree and ran
+  // an easing animation that fought the per-frame updates. Writing the motion
+  // value directly avoids both.
   useEffect(() => {
     if (!currentIsVideo || !currentSrc) return;
     let frameId = 0;
-    let anchorTimeS = -1;
-    let anchorMs = 0;
-    function tick(nowMs: number) {
+    function tick() {
       const video = videoRefs.current[selectedIndex];
       const duration = video?.duration;
       if (video && duration && Number.isFinite(duration)) {
-        const realTimeS = video.currentTime;
-        // Re-anchor whenever the browser actually advances currentTime.
-        if (realTimeS !== anchorTimeS) {
-          anchorTimeS = realTimeS;
-          anchorMs = nowMs;
-        }
-        // While playing, project past the last sample using wall-clock time;
-        // when paused/buffering, hold at the real position.
-        const projectedS = video.paused
-          ? realTimeS
-          : realTimeS + (nowMs - anchorMs) / 1000;
-        setProgress(Math.min(projectedS / duration, 1));
+        progress.set(Math.min(video.currentTime / duration, 1));
       }
       frameId = requestAnimationFrame(tick);
     }
     frameId = requestAnimationFrame(tick);
     return () => cancelAnimationFrame(frameId);
-  }, [selectedIndex, currentIsVideo, currentSrc]);
+  }, [selectedIndex, currentIsVideo, currentSrc, progress]);
 
   function handleVideoEnded(index: number) {
     return function onEnded() {
@@ -240,9 +230,8 @@ export function ChangelogHeaderCarousel(props: ChangelogHeaderCarouselProps) {
             >
               {isActive && (
                 <motion.div
-                  className="bg-foreground absolute inset-y-0 left-0 rounded-full"
-                  animate={{ width: `${progress * 100}%` }}
-                  transition={{ duration: 0.08, ease: "linear" }}
+                  className="bg-foreground absolute inset-y-0 left-0 w-full origin-left rounded-full"
+                  style={{ scaleX: progress }}
                 />
               )}
             </motion.button>
