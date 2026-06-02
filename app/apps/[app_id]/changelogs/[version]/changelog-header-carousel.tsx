@@ -118,17 +118,33 @@ export function ChangelogHeaderCarousel(props: ChangelogHeaderCarouselProps) {
   }, [isPaused, selectedIndex, currentIsVideo]);
 
   // Video progress driven by requestAnimationFrame for a smooth bar.
-  // The native `timeupdate` event fires on a throttled, irregular cadence
-  // (~4/s), which makes the progress bar visibly stutter. Sampling
-  // currentTime once per frame keeps the animation smooth.
+  // requestAnimationFrame fires at the display rate (~60fps), but the browser
+  // only advances HTMLVideoElement.currentTime once per *video* frame (often
+  // 24-30fps), so reading it directly returns the same value for several frames
+  // then jumps — which reads as a stutter. We anchor to the real currentTime
+  // but interpolate forward with wall-clock time between samples, so the bar
+  // moves a little every frame while staying locked to the true position.
   useEffect(() => {
     if (!currentIsVideo || !currentSrc) return;
     let frameId = 0;
-    function tick() {
+    let anchorTimeS = -1;
+    let anchorMs = 0;
+    function tick(nowMs: number) {
       const video = videoRefs.current[selectedIndex];
       const duration = video?.duration;
       if (video && duration && Number.isFinite(duration)) {
-        setProgress(Math.min(video.currentTime / duration, 1));
+        const realTimeS = video.currentTime;
+        // Re-anchor whenever the browser actually advances currentTime.
+        if (realTimeS !== anchorTimeS) {
+          anchorTimeS = realTimeS;
+          anchorMs = nowMs;
+        }
+        // While playing, project past the last sample using wall-clock time;
+        // when paused/buffering, hold at the real position.
+        const projectedS = video.paused
+          ? realTimeS
+          : realTimeS + (nowMs - anchorMs) / 1000;
+        setProgress(Math.min(projectedS / duration, 1));
       }
       frameId = requestAnimationFrame(tick);
     }
