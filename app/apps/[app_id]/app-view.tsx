@@ -237,10 +237,6 @@ export function AppView(props: AppViewProps) {
               </div>
             )}
           </motion.div>
-
-          {!isDescriptionExpanded && (
-            <div className="from-background absolute bottom-0 left-0 h-32 w-full bg-linear-to-t to-transparent" />
-          )}
         </div>
 
         <button
