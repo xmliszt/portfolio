@@ -10,5 +10,6 @@ export type Alert = {
   primaryButton: AlertButton;
   secondaryButton?: AlertButton | null;
   imageURL?: string | null;
+  locales?: string[];
   type: "promo" | "tips" | "community";
 };

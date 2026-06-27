@@ -9,5 +9,6 @@
   "secondaryButton": {
     "text": "관심 없어요"
   },
-  "type": "promo"
+  "type": "promo",
+  "locales": []
 }

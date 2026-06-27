@@ -9,5 +9,6 @@
   "secondaryButton": {
     "text": "興味がありません"
   },
-  "type": "promo"
+  "type": "promo",
+  "locales": []
 }
