@@ -9,5 +9,6 @@
   "secondaryButton": {
     "text": "Je ne suis pas intéressé"
   },
-  "type": "promo"
+  "type": "promo",
+  "locales": []
 }

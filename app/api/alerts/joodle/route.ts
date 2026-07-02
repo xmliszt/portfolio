@@ -1,6 +1,9 @@
 import fs from "fs";
+import { step } from "next/dist/experimental/testmode/playwright/step";
+import { resolveInstantConfigSamplesForPage } from "next/dist/server/app-render/instant-validation/instant-config";
 import { NextResponse } from "next/server";
 import path from "path";
+import { remainder } from "three/tsl";
 
 import { getLocalizedContentPath, resolveLocale } from "@/lib/i18n";
 
@@ -11,6 +14,7 @@ export type Alert = {
   title: string;
   message: string;
   type: string;
+  locales?: string[];
   primaryButton?: {
     text: string;
     url: string;
@@ -58,6 +62,16 @@ export async function GET(request: Request) {
     }
   } catch (error) {
     console.error("Error loading alert:", error);
+  }
+
+  // Locale targeting: an empty or missing locales array means show to all locales.
+  // When non-empty, only serve the alert to a requested locale that is listed.
+  if (
+    activeAlert?.locales &&
+    activeAlert.locales.length > 0 &&
+    !activeAlert.locales.includes(requestedLocale ?? "")
+  ) {
+    activeAlert = null;
   }
 
   return NextResponse.json(
