@@ -6,7 +6,7 @@ export const CHANGELOG_HEADER_IMAGES: Record<
   Record<string, string[]>
 > = {
   joodle: {
-    "2.7.189": [
+    "2.7.190": [
       "https://joodle.liyuxuan.dev/changelogs/2.7.mp4",
       "https://joodle.liyuxuan.dev/changelogs/2.7_2.png",
     ],
