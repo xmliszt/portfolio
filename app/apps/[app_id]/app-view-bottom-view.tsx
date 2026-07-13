@@ -32,6 +32,13 @@ export function AppViewBottomViewMobile(props: AppViewBottomViewProps) {
         </div>
 
         <div className="flex gap-x-2">
+          <Link href={`/apps/${app.id}/about`} className="hover:underline">
+            About
+          </Link>
+
+          {/* dot */}
+          <span className="text-foreground">•</span>
+
           <Link href={`/apps/${app.id}/changelogs`} className="hover:underline">
             Changelogs
           </Link>
@@ -61,6 +68,13 @@ export function AppViewBottomViewWeb(props: AppViewBottomViewProps) {
   return (
     <section className="pt-4">
       <div className="text-foreground flex flex-wrap gap-x-2 gap-y-2 text-sm">
+        <Link href={`/apps/${app.id}/about`} className="hover:underline">
+          About
+        </Link>
+
+        {/* dot */}
+        <span className="text-foreground">•</span>
+
         <Link
           href={`/apps/${app.id}/privacy-policy`}
           className="hover:underline"

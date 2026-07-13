@@ -181,6 +181,42 @@ const apps = defineCollection({
     }),
 });
 
+const abouts = defineCollection({
+  name: "Abouts",
+  pattern: "apps/**/about.md",
+  schema: s
+    .object({
+      title: s.string().max(99),
+      description: s.string().max(999).optional(),
+      coverAlt: s.string().max(199).optional(),
+      body: s.mdx(),
+    })
+    .transform((data, { meta }) => {
+      const path = (meta.path as string).replace(/\\/g, "/");
+
+      const segments = path.split("/").filter(Boolean);
+      const appsIndex = segments.lastIndexOf("apps");
+
+      const appId = segments.at(appsIndex + 1) ?? "";
+      const localeSegment = segments.at(appsIndex + 2) ?? "";
+      const locale = (APP_CONTENT_LOCALES as readonly string[]).includes(
+        localeSegment
+      )
+        ? localeSegment
+        : DEFAULT_APP_CONTENT_LOCALE;
+
+      return {
+        ...data,
+        appId,
+        locale,
+        permalink:
+          locale === DEFAULT_APP_CONTENT_LOCALE
+            ? `/apps/${appId}/about`
+            : `/apps/${appId}/about/${locale}`,
+      };
+    }),
+});
+
 const changelogs = defineCollection({
   name: "Changelogs",
   pattern: "apps/**/changelogs/*.md",
@@ -295,6 +331,7 @@ export default defineConfig({
     focus,
     hobbies,
     apps,
+    abouts,
     changelogs,
     faqs,
   },

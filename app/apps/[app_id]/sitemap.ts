@@ -3,7 +3,7 @@ import { MetadataRoute } from "next";
 import { getAllAppIds, getAppById } from "@/app/apps/data";
 import { DEFAULT_LOCALE } from "@/lib/i18n";
 
-import { apps, changelogs, faqs } from "#site/content";
+import { abouts, apps, changelogs, faqs } from "#site/content";
 
 const BASE_URL = "https://liyuxuan.dev";
 
@@ -38,6 +38,17 @@ export default async function sitemap(
   appDocuments.forEach((doc) => {
     sitemapEntries.push({
       url: `${BASE_URL}/apps/${appId}/${doc.slug}`,
+      lastModified: new Date(),
+      changeFrequency: "monthly",
+      priority: 0.8,
+    });
+  });
+
+  // About pages (all locales)
+  const appAbouts = abouts.filter((about) => about.appId === appId);
+  appAbouts.forEach((about) => {
+    sitemapEntries.push({
+      url: `${BASE_URL}${about.permalink}`,
       lastModified: new Date(),
       changeFrequency: "monthly",
       priority: 0.8,
