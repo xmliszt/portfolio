@@ -1,10 +1,8 @@
 "use client";
 
 import { useLayoutEffect, useRef, useState } from "react";
-
 import { useSmoothCorners } from "@lisse/react";
 import { motion } from "motion/react";
-
 import { useTheme } from "next-themes";
 
 import { cn } from "@/app/craft/stations/three-d-rolling-slider/utils";

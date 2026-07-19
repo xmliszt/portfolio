@@ -1,6 +1,5 @@
 import { Ellipsis } from "lucide-react";
 import type { Metadata } from "next";
-
 import Link from "next/link";
 
 import { cn } from "@/lib/utils";
