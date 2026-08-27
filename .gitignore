@@ -6,6 +6,8 @@
 .github/memories/**
 .github/joodle-app-store-localizations/**
 .vscode
+.playwright-mcp
+.orchestrator
 
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 # Auto Generated PWA files
@@ -52,3 +54,6 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# Playwright MCP artifacts (console logs / page snapshots)
+.playwright-mcp
