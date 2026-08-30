@@ -3,6 +3,7 @@ import rehypePrettyCode from "rehype-pretty-code";
 import { visit } from "unist-util-visit";
 import { defineCollection, defineConfig, s } from "velite";
 
+import { formatDisplayVersion } from "./lib/format-display-version";
 import { DEFAULT_LOCALE, SUPPORTED_LOCALES } from "./lib/i18n";
 
 const slugify = (input: string) =>
@@ -254,14 +255,13 @@ const changelogs = defineCollection({
 
       // Extract version and date from filename: <version>_<date>
       const [version, date] = filename.split("_");
-      const [major, minor, build] = version.split(".").map(Number);
 
       return {
         ...data,
         appId,
         locale,
         version,
-        displayVersion: `${major}.${minor} (${build})`,
+        displayVersion: formatDisplayVersion(version),
         date: date,
         slug: version,
         permalink: `/apps/${appId}/changelogs/${version}`,

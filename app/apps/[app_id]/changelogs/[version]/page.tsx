@@ -49,8 +49,8 @@ export async function generateMetadata(props: Props): Promise<Metadata> {
 
   if (!app || !changelog) return {};
 
-  const title = `Version ${changelog.version} | ${app.name} Changelog`;
-  const description = `What's new in ${app.name} version ${changelog.version}. Released on ${formatDate(changelog.date)}. View the latest features, improvements, and bug fixes.`;
+  const title = `Version ${changelog.displayVersion} | ${app.name} Changelog`;
+  const description = `What's new in ${app.name} version ${changelog.displayVersion}. Released on ${formatDate(changelog.date)}. View the latest features, improvements, and bug fixes.`;
   const url = `https://www.liyuxuan.dev/apps/${params.app_id}/changelogs/${params.version}`;
 
   // Use header image for OG if available, otherwise fall back to app's OG images
@@ -69,7 +69,7 @@ export async function generateMetadata(props: Props): Promise<Metadata> {
       "version history",
       "updates",
       "what's new",
-      `version ${changelog.version}`,
+      `version ${changelog.displayVersion}`,
     ],
     icons: [app.icon.light, app.icon.dark],
     alternates: {

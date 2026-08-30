@@ -1,11 +1,14 @@
 import "server-only";
 
-// Header images for changelog versions, organized by app ID
+// Header images for changelog versions, organized by app ID. Keys must match the
+// changelog filename's version verbatim — `major.minor` for Joodle 2.12 onward, and
+// the original `major.minor.build` for releases that predate it.
 export const CHANGELOG_HEADER_IMAGES: Record<
   string,
   Record<string, string[]>
 > = {
   joodle: {
+    "2.11": ["https://joodle.liyuxuan.dev/changelogs/2.11.mp4"],
     "2.9.226": ["https://joodle.liyuxuan.dev/changelogs/2.9.mp4"],
     "2.8.214": ["https://joodle.liyuxuan.dev/changelogs/2.8.mp4"],
     "2.7.191": [
