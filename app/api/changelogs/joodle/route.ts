@@ -2,6 +2,7 @@ import fs from "fs";
 import { NextResponse } from "next/server";
 import path from "path";
 
+import { formatDisplayVersion } from "@/lib/format-display-version";
 import { getLocalizedContentPath, resolveLocale } from "@/lib/i18n";
 
 import { HEADER_IMAGES } from "./constants";
@@ -42,13 +43,10 @@ export async function GET(request: Request) {
           return [];
         }
 
-        const [major, minor, build] = version.split(".").map(Number);
-        const displayVersion = `${major}.${minor} (${build})`;
-
         return [
           {
             version,
-            displayVersion,
+            displayVersion: formatDisplayVersion(version),
             date,
             headerImageURL: HEADER_IMAGES[version] || null,
           },

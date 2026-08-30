@@ -3,6 +3,7 @@ import { NextRequest, NextResponse } from "next/server";
 import path from "path";
 
 import { HEADER_IMAGES } from "@/app/api/changelogs/joodle/constants";
+import { formatDisplayVersion } from "@/lib/format-display-version";
 import { getLocalizedContentPath, resolveLocale } from "@/lib/i18n";
 
 type ChangelogDetailResponse = {
@@ -56,13 +57,9 @@ export async function GET(
     const filePath = path.join(changelogsDir, matchingFile);
     const markdown = fs.readFileSync(filePath, "utf-8");
 
-    // Generate display version
-    const [major, minor, build] = version.split(".").map(Number);
-    const displayVersion = `${major}.${minor} (${build})`;
-
     const response: ChangelogDetailResponse = {
       version,
-      displayVersion,
+      displayVersion: formatDisplayVersion(version),
       date: date || "",
       headerImageURL: HEADER_IMAGES[version] || null,
       markdown,
