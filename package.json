@@ -83,6 +83,7 @@
     "@types/react-dom": "19.0.4",
     "@types/three": "^0.174.0",
     "@typescript-eslint/parser": "^8.59.2",
+    "dialkit": "^2.0.0",
     "esbuild": "^0.25.0",
     "eslint": "^9.39.4",
     "eslint-config-next": "^16.2.5",

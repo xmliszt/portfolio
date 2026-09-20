@@ -29,6 +29,10 @@ export const ROUTES: Route[] = [
     name: "hobbies",
   },
   {
+    path: "/moire",
+    name: "moiré",
+  },
+  {
     path: "/posts",
     name: "posts",
   },

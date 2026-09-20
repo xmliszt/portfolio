@@ -1,4 +1,5 @@
 import { Metadata } from "next";
+import Link from "next/link";
 
 import { ShadowSubtitle } from "@/app/[slug]/shadow-subtitle";
 import { openGraph } from "@/app/metadata";
@@ -49,6 +50,14 @@ export default function HobbiesPage() {
           />
         ))}
       </div>
+      <p className="text-muted-foreground mt-8 text-sm">
+        These are the ones that stuck around long enough to get a page.
+        Everything else I notice goes into{" "}
+        <Link href="/moire" className="text-foreground">
+          moiré
+        </Link>
+        .
+      </p>
     </article>
   );
 }

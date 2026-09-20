@@ -43,6 +43,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 1,
     },
     {
+      url: "https://liyuxuan.dev/moire",
+      lastModified: new Date(),
+      changeFrequency: "always",
+      priority: 1,
+    },
+    {
       url: "https://liyuxuan.dev/apps",
       lastModified: new Date(),
       changeFrequency: "always",
