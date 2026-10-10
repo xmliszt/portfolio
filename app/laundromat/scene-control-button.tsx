@@ -2,8 +2,9 @@ import type { LaidOutObject } from "@/lib/laundromat/build-scene-layout";
 import { toClipPath } from "@/lib/laundromat/to-clip-path";
 import { cn } from "@/lib/utils";
 
-type MachineControlButtonProps = {
+type SceneControlButtonProps = {
   control: LaidOutObject["controls"][number];
+  knob: boolean;
   label: string;
   enabled: boolean;
   onPress: () => void;
@@ -13,12 +14,11 @@ type MachineControlButtonProps = {
   onHideTooltip: () => void;
 };
 
-const DIAL_FORWARD_KEYS = ["ArrowUp", "ArrowRight"];
-const DIAL_BACK_KEYS = ["ArrowDown", "ArrowLeft"];
+const KNOB_FORWARD_KEYS = ["ArrowUp", "ArrowRight"];
+const KNOB_BACK_KEYS = ["ArrowDown", "ArrowLeft"];
 
-export function MachineControlButton(props: MachineControlButtonProps) {
+export function SceneControlButton(props: SceneControlButtonProps) {
   const { bounds, outline } = props.control;
-  const isDial = props.control.control === "dial";
 
   function press(isBack: boolean) {
     if (!props.enabled) return;
@@ -27,24 +27,24 @@ export function MachineControlButton(props: MachineControlButtonProps) {
   }
 
   function handleClick(event: React.MouseEvent<HTMLButtonElement>) {
-    press(isDial && event.shiftKey);
+    press(props.knob && event.shiftKey);
   }
 
   function handleContextMenu(event: React.MouseEvent<HTMLButtonElement>) {
-    if (!isDial) return;
+    if (!props.knob) return;
     event.preventDefault();
     press(true);
   }
 
   function handleWheel(event: React.WheelEvent<HTMLButtonElement>) {
-    if (!isDial || event.deltaY === 0) return;
+    if (!props.knob || event.deltaY === 0) return;
     press(event.deltaY > 0);
   }
 
   function handleKeyDown(event: React.KeyboardEvent<HTMLButtonElement>) {
-    if (!isDial) return;
-    const isForward = DIAL_FORWARD_KEYS.includes(event.key);
-    if (!isForward && !DIAL_BACK_KEYS.includes(event.key)) return;
+    if (!props.knob) return;
+    const isForward = KNOB_FORWARD_KEYS.includes(event.key);
+    if (!isForward && !KNOB_BACK_KEYS.includes(event.key)) return;
     event.preventDefault();
     press(!isForward);
   }

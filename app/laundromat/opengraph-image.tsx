@@ -73,9 +73,7 @@ export default function OpengraphImage() {
           ))}
         </div>
         <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
-          <div
-            style={{ fontSize: 88, color: tokens.inkHi, letterSpacing: -2 }}
-          >
+          <div style={{ fontSize: 88, color: tokens.inkHi, letterSpacing: -2 }}>
             Laundromat
           </div>
           <div style={{ fontSize: 30 }}>
