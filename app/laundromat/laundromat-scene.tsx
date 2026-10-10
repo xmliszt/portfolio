@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import {
   animate,
   motion,
@@ -16,8 +16,7 @@ import { describeSceneObject } from "@/lib/laundromat/describe-scene-object";
 import { getCameraMoveDurationMs } from "@/lib/laundromat/get-camera-move-duration-ms";
 import type { CameraFocus } from "@/lib/laundromat/parse-camera-focus";
 import { parseCameraFocus } from "@/lib/laundromat/parse-camera-focus";
-import type { FocusTarget } from "@/lib/laundromat/scene-config";
-import { sceneConfig } from "@/lib/laundromat/scene-config";
+import type { FocusTarget, SceneConfig } from "@/lib/laundromat/scene-config";
 import { cn } from "@/lib/utils";
 
 import { HitTargetButton } from "./hit-target-button";
@@ -28,25 +27,36 @@ const SCENE_UNIT_PX = 40;
 const TOOLTIP_DELAY_MS = 300;
 const FOCUS_TARGETS = ["shelf", "notebook"] satisfies FocusTarget[];
 
-const layout = buildSceneLayout({ config: sceneConfig, unit: SCENE_UNIT_PX });
-
-function getFocusedObjectId(focus: CameraFocus) {
-  return focus === "room"
+function getFocusedObjectId(options: {
+  focus: CameraFocus;
+  config: SceneConfig;
+}) {
+  return options.focus === "room"
     ? undefined
-    : sceneConfig.camera.focusTargets[focus].objectId;
+    : options.config.camera.focusTargets[options.focus].objectId;
 }
 
-function findFocusTarget(objectId: string) {
+function findFocusTarget(options: { objectId: string; config: SceneConfig }) {
   return FOCUS_TARGETS.find(
-    (target) => sceneConfig.camera.focusTargets[target].objectId === objectId
+    (target) =>
+      options.config.camera.focusTargets[target].objectId === options.objectId
   );
 }
 
-export function LaundromatScene() {
+type LaundromatSceneProps = {
+  config: SceneConfig;
+};
+
+export function LaundromatScene(props: LaundromatSceneProps) {
+  const { config } = props;
+  const layout = useMemo(
+    () => buildSceneLayout({ config, unit: SCENE_UNIT_PX }),
+    [config]
+  );
   const router = useRouter();
   const searchParams = useSearchParams();
   const focus = parseCameraFocus(searchParams.get("focus"));
-  const focusedObjectId = getFocusedObjectId(focus);
+  const focusedObjectId = getFocusedObjectId({ focus, config });
   const prefersReducedMotion = useReducedMotion() ?? false;
 
   const rootRef = useRef<HTMLDivElement>(null);
@@ -82,12 +92,7 @@ export function LaundromatScene() {
 
   useEffect(() => {
     if (viewport === undefined) return;
-    const camera = computeCamera({
-      focus,
-      viewport,
-      layout,
-      config: sceneConfig,
-    });
+    const camera = computeCamera({ focus, viewport, layout, config });
     const previous = previousCameraRef.current;
     previousCameraRef.current = { camera, focus };
 
@@ -99,7 +104,7 @@ export function LaundromatScene() {
 
     const from =
       previous?.camera ??
-      computeCamera({ focus: "room", viewport, layout, config: sceneConfig });
+      computeCamera({ focus: "room", viewport, layout, config });
     if (previous === undefined) {
       jumpTo(from);
       setIsReady(true);
@@ -120,9 +125,9 @@ export function LaundromatScene() {
           from,
           to: camera,
           viewport,
-          config: sceneConfig,
+          config,
         }) / 1000,
-      ease: sceneConfig.camera.ease,
+      ease: config.camera.ease,
     };
     const moves = [
       animate(cameraX, camera.x, transition),
@@ -133,6 +138,8 @@ export function LaundromatScene() {
   }, [
     viewport,
     focus,
+    layout,
+    config,
     prefersReducedMotion,
     cameraX,
     cameraY,
@@ -147,13 +154,14 @@ export function LaundromatScene() {
     window.clearTimeout(tooltipTimerRef.current);
     setTooltipId(undefined);
     setHighlightedId(undefined);
-    const objectId = focusedObjectId ?? getFocusedObjectId(previousFocus);
+    const objectId =
+      focusedObjectId ?? getFocusedObjectId({ focus: previousFocus, config });
     if (objectId !== undefined) {
       rootRef.current
         ?.querySelector<HTMLButtonElement>(`[data-hit-target="${objectId}"]`)
         ?.focus({ preventScroll: true });
     }
-  }, [focus, focusedObjectId]);
+  }, [focus, focusedObjectId, config]);
 
   useEffect(
     () => () => {
@@ -216,7 +224,7 @@ export function LaundromatScene() {
   }
 
   function handleActivate(objectId: string) {
-    const target = findFocusTarget(objectId);
+    const target = findFocusTarget({ objectId, config });
     if (target !== undefined) {
       if (target !== focus) setFocus(target);
       return;
@@ -238,12 +246,7 @@ export function LaundromatScene() {
       ({ object }) => object.id === tooltipId
     );
     if (laidOut === undefined) return undefined;
-    const camera = computeCamera({
-      focus,
-      viewport,
-      layout,
-      config: sceneConfig,
-    });
+    const camera = computeCamera({ focus, viewport, layout, config });
     return {
       text: describeSceneObject(laidOut.object)?.tooltip,
       position: {
@@ -279,13 +282,13 @@ export function LaundromatScene() {
           layout={layout}
           highlightedId={highlightedId}
           focusedObjectId={focusedObjectId}
-          dimAmount={sceneConfig.camera.unfocusedDim}
+          dimAmount={config.camera.unfocusedDim}
         />
         {layout.objects.map((laidOut) => {
           const description = describeSceneObject(laidOut.object);
           if (description === undefined) return null;
           const { id } = laidOut.object;
-          const focusTarget = findFocusTarget(id);
+          const focusTarget = findFocusTarget({ objectId: id, config });
           return (
             <HitTargetButton
               key={id}
