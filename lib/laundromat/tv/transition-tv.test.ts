@@ -4,7 +4,15 @@ import { test } from "node:test";
 import { transitionTv } from "./transition-tv";
 import type { TvEvent, TvState } from "./tv-state";
 
-const settings = { stations: ["a", "b", "c"], volumeStepPercent: 10 };
+const settings = {
+  stations: ["a", "b", "c"].map((label) => ({
+    label,
+    videoId: label,
+    channel: "Lofi Girl",
+    placeholder: false,
+  })),
+  volumeStepPercent: 10,
+};
 
 function transition(options: { state: TvState; event: TvEvent }) {
   return transitionTv({ ...options, settings });

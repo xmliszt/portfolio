@@ -59,7 +59,7 @@ export function SceneObjectDrawing(props: SceneObjectDrawingProps) {
           laidOut={laidOut}
           projection={projection}
           highlightedId={props.highlightedId}
-          tv={views.tv}
+          view={views.tv}
           details={details.tv}
         />
       );
