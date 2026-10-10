@@ -1,7 +1,7 @@
 import { Metadata } from "next";
 
 import { ShadowSubtitle } from "@/app/[slug]/shadow-subtitle";
-import { getAllApps } from "@/app/apps/data";
+import { getAppsListEntries } from "@/app/apps/data";
 import { openGraph } from "@/app/metadata";
 
 import { AppsList } from "./apps-list";
@@ -20,7 +20,7 @@ export async function generateMetadata(): Promise<Metadata> {
   };
 }
 
-const apps = getAllApps();
+const apps = getAppsListEntries();
 
 export default function AppsPage() {
   return (

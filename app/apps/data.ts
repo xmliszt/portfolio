@@ -1,3 +1,5 @@
+import { LAUNDROMAT_ORIGIN } from "@/lib/laundromat/hosts";
+
 export type AppIcon = {
   light: string;
   dark: string;
@@ -203,14 +205,43 @@ const apps: Record<string, AppData> = {
   },
 };
 
+export type AppsListEntry = {
+  id: string;
+  name: string;
+  subtitle?: string;
+  icon: AppIcon;
+  href: string;
+};
+
+const webApps: AppsListEntry[] = [
+  {
+    id: "laundromat",
+    name: "Laundromat",
+    subtitle: "A quiet laundromat in your browser",
+    icon: {
+      light: "/apps/laundromat-icon.svg",
+      dark: "/apps/laundromat-icon.svg",
+      alt: "Laundromat Icon",
+    },
+    href: LAUNDROMAT_ORIGIN,
+  },
+];
+
+export function getAppsListEntries(): AppsListEntry[] {
+  const iosApps = Object.values(apps).map((app) => ({
+    id: app.id,
+    name: app.name,
+    subtitle: app.subtitle,
+    icon: app.icon,
+    href: `/apps/${app.id}`,
+  }));
+  return [...iosApps, ...webApps];
+}
+
 export function getAppById(id: string): AppData | undefined {
   return apps[id];
 }
 
 export function getAllAppIds(): string[] {
   return Object.keys(apps);
-}
-
-export function getAllApps(): AppData[] {
-  return Object.values(apps);
 }
