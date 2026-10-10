@@ -5,9 +5,11 @@ import type {
   SceneLayout,
 } from "@/lib/laundromat/build-scene-layout";
 import { getTimeOfDay } from "@/lib/laundromat/get-time-of-day";
+import type { MachineStatus } from "@/lib/laundromat/laundry/get-machine-status";
 import type { SceneConfig } from "@/lib/laundromat/scene-config";
 import { toSvgPoints } from "@/lib/laundromat/to-svg-points";
 
+import { PlaceholderMachine } from "./placeholder-machine";
 import { PlaceholderObject } from "./placeholder-object";
 import { RoomLight } from "./room-light";
 import { WallClock } from "./wall-clock";
@@ -20,6 +22,13 @@ type RoomDrawingProps = {
   highlightedId: string | undefined;
   focusedObjectId: string | undefined;
   dimAmount: number;
+  machineViews: {
+    [objectId: string]: {
+      status: MachineStatus;
+      readout: string;
+      dialAngleDeg: number;
+    };
+  };
   hour: number | undefined;
   config: SceneConfig;
 };
@@ -111,15 +120,28 @@ export function RoomDrawing(props: RoomDrawingProps) {
           config={config}
         />
       )}
-      {layout.objects.map((laidOut) => (
-        <Fragment key={laidOut.object.id}>
-          <PlaceholderObject
-            laidOut={laidOut}
-            highlighted={laidOut.object.id === props.highlightedId}
-          />
-          {renderTimeOfDay(laidOut)}
-        </Fragment>
-      ))}
+      {layout.objects.map((laidOut) => {
+        const view = props.machineViews[laidOut.object.id];
+        return (
+          <Fragment key={laidOut.object.id}>
+            {view === undefined ? (
+              <PlaceholderObject
+                laidOut={laidOut}
+                highlighted={laidOut.object.id === props.highlightedId}
+              />
+            ) : (
+              <PlaceholderMachine
+                laidOut={laidOut}
+                highlightedId={props.highlightedId}
+                status={view.status}
+                readout={view.readout}
+                dialAngleDeg={view.dialAngleDeg}
+              />
+            )}
+            {renderTimeOfDay(laidOut)}
+          </Fragment>
+        );
+      })}
       <rect
         width={layout.size.width}
         height={layout.size.height}
