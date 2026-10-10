@@ -25,6 +25,7 @@ const WORKBENCH_UNIT_PX = 40;
 const DIAL_DEGREES_PER_DETENT = 60;
 const MS_PER_MINUTE = 60_000;
 const KNOB_CONTROLS: LaidOutControl["control"][] = ["dial", "tuner", "volume"];
+const WORKBENCH_SHELF_BOOKS = [1, 2, 3, 4, 5, 6, 7, 8, 9];
 
 export type WorkbenchMachineState = "loadable" | "loaded" | "running" | "done";
 
@@ -111,6 +112,8 @@ export function ObjectWorkbench(props: ObjectWorkbenchProps) {
     tv: appliances.tv,
     coffee: appliances.coffee,
     basket: props.basket,
+    shelfBookNumbers: WORKBENCH_SHELF_BOOKS,
+    notebookNumber: config.details.notebook.coverNumber,
   };
 
   function describeObject() {
@@ -226,6 +229,7 @@ export function ObjectWorkbench(props: ObjectWorkbenchProps) {
               hoveredId ?? (props.highlighted ? object.id : undefined)
             }
             focusedObjectId={undefined}
+            hiddenObjectId={undefined}
             dimAmount={0}
             views={views}
             hour={props.hour}

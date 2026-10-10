@@ -12,6 +12,7 @@ type RoomDrawingProps = {
   layout: SceneLayout;
   highlightedId: string | undefined;
   focusedObjectId: string | undefined;
+  hiddenObjectId: string | undefined;
   dimAmount: number;
   views: SceneViews;
   hour: number | undefined;
@@ -83,20 +84,22 @@ export function RoomDrawing(props: RoomDrawingProps) {
           config={config}
         />
       )}
-      {layout.objects.map((laidOut) => (
-        <SceneObjectDrawing
-          key={laidOut.object.id}
-          laidOut={laidOut}
-          {...objectProps}
-        />
-      ))}
+      {layout.objects
+        .filter(({ object }) => object.id !== props.hiddenObjectId)
+        .map((laidOut) => (
+          <SceneObjectDrawing
+            key={laidOut.object.id}
+            laidOut={laidOut}
+            {...objectProps}
+          />
+        ))}
       <rect
         width={layout.size.width}
         height={layout.size.height}
         className="fill-[var(--lm-bg)] transition-opacity duration-500"
         opacity={focused === undefined ? 0 : props.dimAmount}
       />
-      {focused !== undefined && (
+      {focused !== undefined && focused.object.id !== props.hiddenObjectId && (
         <SceneObjectDrawing laidOut={focused} {...objectProps} />
       )}
     </svg>

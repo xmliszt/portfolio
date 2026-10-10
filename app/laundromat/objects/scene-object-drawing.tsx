@@ -1,5 +1,6 @@
 import type { LaidOutObject } from "@/lib/laundromat/build-scene-layout";
 import type { TimeOfDay } from "@/lib/laundromat/get-time-of-day";
+import { getShelfBookPlacements } from "@/lib/laundromat/notebook/get-shelf-book-placements";
 import type { IsoProjection } from "@/lib/laundromat/project-iso-point";
 import type { SceneConfig } from "@/lib/laundromat/scene-config";
 
@@ -106,13 +107,21 @@ export function SceneObjectDrawing(props: SceneObjectDrawingProps) {
       return <StoolDrawing {...shared} />;
     case "notebook":
       return (
-        <NotebookDrawing
-          {...shared}
-          coverNumber={details.notebook.coverNumber}
-        />
+        <NotebookDrawing {...shared} coverNumber={views.notebookNumber} />
       );
     case "shelf":
-      return <ShelfDrawing {...shared} details={details.shelf} />;
+      return (
+        <ShelfDrawing
+          {...shared}
+          highlightedId={props.highlightedId}
+          books={getShelfBookPlacements({
+            shelf: object,
+            bookNumbers: views.shelfBookNumbers,
+            lean: details.shelf.bookLean,
+          })}
+          details={details.shelf}
+        />
+      );
     case "basket":
       return <BasketDrawing {...shared} contents={views.basket} />;
     case "counter":
