@@ -2,14 +2,14 @@ import { Suspense } from "react";
 
 import { sceneConfig } from "@/lib/laundromat/scene-config";
 
-import { LaundromatScene } from "./laundromat-scene";
+import { LaundromatEntry } from "./laundromat-entry";
 
 export default function LaundromatPage() {
   return (
     <main className="size-full">
       <h1 className="sr-only">Laundromat</h1>
       <Suspense>
-        <LaundromatScene config={sceneConfig} />
+        <LaundromatEntry config={sceneConfig} />
       </Suspense>
     </main>
   );
