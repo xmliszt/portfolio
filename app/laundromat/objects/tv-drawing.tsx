@@ -1,14 +1,15 @@
+import { useStationThumbnail } from "@/app/laundromat/use-station-thumbnail";
 import type { LaidOutObject } from "@/lib/laundromat/build-scene-layout";
 import type { IsoProjection } from "@/lib/laundromat/project-iso-point";
 import { projectIsoPoint } from "@/lib/laundromat/project-iso-point";
 import type { SceneConfig } from "@/lib/laundromat/scene-config";
 import { toSvgPoints } from "@/lib/laundromat/to-svg-points";
 import { formatStation } from "@/lib/laundromat/tv/format-station";
-import type { TvState } from "@/lib/laundromat/tv/tv-state";
 import { cn } from "@/lib/utils";
 
 import { IsoBox } from "./iso-box";
 import { partStroke } from "./part-stroke";
+import type { TvView } from "./scene-views";
 
 const TUNER_DETENTS = 12;
 const SCANLINE_GAP = 2.5;
@@ -18,14 +19,18 @@ type TvDrawingProps = {
   laidOut: LaidOutObject;
   projection: IsoProjection;
   highlightedId: string | undefined;
-  tv: TvState;
+  view: TvView;
   details: SceneConfig["details"]["tv"];
 };
 
 export function TvDrawing(props: TvDrawingProps) {
   const { object, faces, face } = props.laidOut;
+  const { state: tv, noSignal } = props.view;
+  const thumbnailUrl = useStationThumbnail(
+    props.details.stations[tv.station]?.videoId
+  );
   if (face?.target !== "tv") return null;
-  const { projection, tv, details } = props;
+  const { projection, details } = props;
   const { position, size } = object;
   const { screen, grille, tuner, volume, power, body } = face.rects;
   const midY = position.y + size.d / 2;
@@ -64,6 +69,20 @@ export function TvDrawing(props: TvDrawingProps) {
     index: tv.station,
     stations: details.stations,
   });
+  const credit = details.stations[tv.station]?.channel;
+  const screenBox = {
+    x: -glass.width / 2,
+    y: -glass.height / 2,
+    width: glass.width,
+    height: glass.height,
+  };
+  const scanlineStyle: React.CSSProperties & { "--lm-scan-step": string } = {
+    "--lm-scan-step": `${SCANLINE_GAP}px`,
+    animation: `lm-scan-drift ${details.scanlineDriftSeconds}s linear infinite`,
+  };
+  const glassClipId = `${object.id}-glass`;
+  const vignetteId = `${object.id}-vignette`;
+  const staticId = `${object.id}-static`;
 
   return (
     <g data-tv={tv.on ? "on" : "off"} strokeLinejoin="round">
@@ -149,46 +168,156 @@ export function TvDrawing(props: TvDrawingProps) {
               transition: `transform ${details.powerMs}ms cubic-bezier(0.2, 0.8, 0.2, 1), opacity ${details.powerMs}ms ease-out`,
             }}
           >
-            <rect
-              x={-glass.width / 2}
-              y={-glass.height / 2}
-              width={glass.width}
-              height={glass.height}
-              rx={9}
-              className="fill-[var(--lm-accent)] stroke-none"
-              opacity={details.screenGlow}
-            />
-            <g
-              className="stroke-[var(--lm-bg)]"
-              strokeWidth={0.75}
-              opacity={0.5}
-            >
-              {Array.from(
-                { length: Math.floor(glass.height / SCANLINE_GAP) - 1 },
-                (_, index) => {
-                  const y = -glass.height / 2 + (index + 1) * SCANLINE_GAP;
-                  return (
-                    <line
-                      key={y}
-                      x1={-glass.width / 2 + 2}
-                      y1={y}
-                      x2={glass.width / 2 - 2}
-                      y2={y}
-                    />
-                  );
-                }
+            <defs>
+              <clipPath id={glassClipId}>
+                <rect {...screenBox} rx={9} />
+              </clipPath>
+              <radialGradient id={vignetteId} r="0.75">
+                <stop
+                  offset="0.55"
+                  className="[stop-color:var(--lm-bg)]"
+                  stopOpacity={0}
+                />
+                <stop
+                  offset="1"
+                  className="[stop-color:var(--lm-bg)]"
+                  stopOpacity={1}
+                />
+              </radialGradient>
+              <filter id={staticId} x="0" y="0" width="1" height="1">
+                <feTurbulence
+                  type="fractalNoise"
+                  baseFrequency="0.9"
+                  numOctaves={1}
+                  seed={tv.station}
+                />
+                <feColorMatrix type="saturate" values="0" />
+              </filter>
+            </defs>
+            <g clipPath={`url(#${glassClipId})`} className="stroke-none">
+              {thumbnailUrl === undefined || noSignal ? (
+                <rect
+                  {...screenBox}
+                  className="fill-[var(--lm-accent)]"
+                  opacity={details.screenGlow}
+                />
+              ) : (
+                <>
+                  <image
+                    href={thumbnailUrl}
+                    {...screenBox}
+                    preserveAspectRatio="xMidYMid slice"
+                    data-tv-thumbnail={thumbnailUrl}
+                  />
+                  <rect
+                    {...screenBox}
+                    className="fill-[var(--lm-bg)]"
+                    opacity={details.thumbnailDim}
+                  />
+                </>
+              )}
+              {noSignal && (
+                <rect
+                  {...screenBox}
+                  filter={`url(#${staticId})`}
+                  opacity={0.35}
+                />
+              )}
+              <g opacity={details.scanlineOpacity}>
+                <g
+                  data-lm-motion
+                  className="stroke-[var(--lm-bg)]"
+                  strokeWidth={0.75}
+                  style={scanlineStyle}
+                >
+                  {Array.from(
+                    { length: Math.ceil(glass.height / SCANLINE_GAP) + 1 },
+                    (_, index) => {
+                      const y = screenBox.y + (index - 1) * SCANLINE_GAP;
+                      return (
+                        <line
+                          key={y}
+                          x1={screenBox.x}
+                          y1={y}
+                          x2={screenBox.x + screenBox.width}
+                          y2={y}
+                        />
+                      );
+                    }
+                  )}
+                </g>
+              </g>
+              <rect
+                {...screenBox}
+                fill={`url(#${vignetteId})`}
+                opacity={details.vignette}
+              />
+              <g opacity={details.flicker}>
+                <rect
+                  data-lm-motion
+                  {...screenBox}
+                  className="fill-[var(--lm-ink-hi)]"
+                  style={{ animation: "lm-flicker 4.8s steps(12) infinite" }}
+                />
+              </g>
+              <rect
+                key={`static-${tv.station}`}
+                data-lm-motion
+                {...screenBox}
+                filter={`url(#${staticId})`}
+                opacity={0}
+                style={{
+                  animation: `lm-static ${details.staticMs}ms steps(4) forwards`,
+                }}
+              />
+              {tv.on && (
+                <rect
+                  data-lm-motion
+                  {...screenBox}
+                  className="fill-[var(--lm-ink-hi)]"
+                  opacity={0}
+                  style={{ animation: "lm-power-flash 1.2s ease-out forwards" }}
+                />
               )}
             </g>
-            <text
-              key={tv.station}
-              x={-glass.width / 2 + 5}
-              y={glass.height / 2 - 5}
-              fontSize={5}
-              className="fill-[var(--lm-accent-hi)] stroke-none font-[family-name:var(--lm-font-mono)] lowercase"
-              style={{ animation: "lm-fade-out 2.4s ease-out forwards" }}
-            >
-              {station}
-            </text>
+            <g className="stroke-none font-[family-name:var(--lm-font-mono)] lowercase">
+              <text
+                key={tv.station}
+                x={screenBox.x + 6}
+                y={screenBox.y + 9}
+                fontSize={5}
+                className="fill-[var(--lm-accent-hi)]"
+                style={{
+                  animation: `lm-fade-out ${details.osdSeconds}s ease-out forwards`,
+                }}
+              >
+                {station}
+              </text>
+              {noSignal ? (
+                <text
+                  x={0}
+                  y={1.5}
+                  fontSize={5}
+                  textAnchor="middle"
+                  className="fill-[var(--lm-ink-hi)]"
+                >
+                  no signal
+                </text>
+              ) : (
+                credit !== undefined && (
+                  <text
+                    x={screenBox.x + 6}
+                    y={screenBox.y + screenBox.height - 5}
+                    fontSize={3.5}
+                    className="fill-[var(--lm-ink-hi)]"
+                    opacity={0.8}
+                    data-tv-credit
+                  >
+                    {`${credit} · youtube`}
+                  </text>
+                )
+              )}
+            </g>
           </g>
         </g>
         <path

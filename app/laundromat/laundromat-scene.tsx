@@ -30,6 +30,7 @@ import type { FocusTarget, SceneConfig } from "@/lib/laundromat/scene-config";
 import { describeTv } from "@/lib/laundromat/tv/describe-tv";
 import type { TvControl } from "@/lib/laundromat/tv/describe-tv-control";
 import { describeTvControl } from "@/lib/laundromat/tv/describe-tv-control";
+import { getYouTubeWatchUrl } from "@/lib/laundromat/tv/get-youtube-watch-url";
 import { cn } from "@/lib/utils";
 
 import type { SceneViews } from "./objects/scene-views";
@@ -40,6 +41,7 @@ import { SceneTooltip } from "./scene-tooltip";
 import { useLaundry } from "./use-laundry";
 import { useRoomAppliances } from "./use-room-appliances";
 import { useSceneHour } from "./use-scene-hour";
+import { useTvAudio } from "./use-tv-audio";
 
 const SCENE_UNIT_PX = 40;
 const TOOLTIP_DELAY_MS = 300;
@@ -101,6 +103,16 @@ export function LaundromatScene(props: LaundromatSceneProps) {
   const previousFocusRef = useRef(focus);
   const laundry = useLaundry();
   const appliances = useRoomAppliances(config);
+  const tvSettings = config.details.tv;
+  const {
+    setContainer: setTvAudioContainer,
+    audioState: tvAudioState,
+    isNoSignal: isTvNoSignal,
+  } = useTvAudio({
+    tv: appliances.tv,
+    details: tvSettings,
+    onSkipStation: () => appliances.dispatchTv({ type: "tune", step: 1 }),
+  });
 
   const machineViews = Object.fromEntries(
     layout.objects.flatMap(({ object }) => {
@@ -148,11 +160,10 @@ export function LaundromatScene(props: LaundromatSceneProps) {
   type MachineView = (typeof machineViews)[string];
   const views: SceneViews = {
     machines: machineViews,
-    tv: appliances.tv,
+    tv: { state: appliances.tv, noSignal: isTvNoSignal },
     coffee: appliances.coffee,
     basket: getBasketContents(laundry.state.load),
   };
-  const tvSettings = config.details.tv;
 
   function describeControl(options: {
     objectId: string;
@@ -396,7 +407,19 @@ export function LaundromatScene(props: LaundromatSceneProps) {
       case "volume":
         appliances.dispatchTv({ type: "volume", step: options.step });
         return;
-      case "screen":
+      case "screen": {
+        const station = tvSettings.stations[appliances.tv.station];
+        if (appliances.tv.on && station !== undefined) {
+          window.open(
+            getYouTubeWatchUrl(station.videoId),
+            "_blank",
+            "noopener,noreferrer"
+          );
+          return;
+        }
+        appliances.dispatchTv({ type: "power" });
+        return;
+      }
       case "power":
         appliances.dispatchTv({ type: "power" });
         return;
@@ -559,6 +582,12 @@ export function LaundromatScene(props: LaundromatSceneProps) {
         })}
       </motion.div>
       <SceneTooltip text={tooltip?.text} position={tooltip?.position} />
+      <div
+        ref={setTvAudioContainer}
+        data-audio-state={tvAudioState}
+        aria-hidden
+        className="pointer-events-none fixed top-full left-full size-[200px] overflow-hidden"
+      />
     </div>
   );
 }

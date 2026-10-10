@@ -15,7 +15,11 @@ export function describeTvControl(options: {
   switch (options.control) {
     case "screen":
       return state.on
-        ? { label: `TV screen, ${station}`, tooltip: station, enabled: false }
+        ? {
+            label: `TV screen, ${station}, watch on YouTube`,
+            tooltip: "watch on YouTube ↗",
+            enabled: true,
+          }
         : {
             label: "TV screen, off, turn on",
             tooltip: "turn on",
@@ -25,7 +29,7 @@ export function describeTvControl(options: {
       const next = (state.station + 1) % stations.length;
       return {
         label: `TV channel, ${station}`,
-        tooltip: `next station · ${stations[next]}`,
+        tooltip: `next station · ${stations[next]?.label}`,
         enabled: true,
       };
     }
