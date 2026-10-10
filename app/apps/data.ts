@@ -219,8 +219,8 @@ const webApps: AppsListEntry[] = [
     name: "Laundromat",
     subtitle: "A quiet laundromat in your browser",
     icon: {
-      light: "/laundromat/icon.svg",
-      dark: "/laundromat/icon.svg",
+      light: "/apps/laundromat-icon.svg",
+      dark: "/apps/laundromat-icon.svg",
       alt: "Laundromat Icon",
     },
     href: LAUNDROMAT_ORIGIN,
