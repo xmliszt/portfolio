@@ -1,5 +1,7 @@
 import { Suspense } from "react";
 
+import { sceneConfig } from "@/lib/laundromat/scene-config";
+
 import { LaundromatScene } from "./laundromat-scene";
 
 export default function LaundromatPage() {
@@ -7,7 +9,7 @@ export default function LaundromatPage() {
     <main className="size-full">
       <h1 className="sr-only">Laundromat</h1>
       <Suspense>
-        <LaundromatScene />
+        <LaundromatScene config={sceneConfig} />
       </Suspense>
     </main>
   );
