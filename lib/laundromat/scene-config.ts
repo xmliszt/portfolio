@@ -61,6 +61,9 @@ export type SceneConfig = {
     nearDurationMs: number;
     farDurationMs: number;
     focusPaddingRatio: number;
+    roomPaddingRatio: number;
+    maxFocusZoom: number;
+    ease: [number, number, number, number];
     unfocusedDim: number;
   };
   light: {
@@ -236,6 +239,9 @@ export const sceneConfig: SceneConfig = {
     nearDurationMs: 500,
     farDurationMs: 800,
     focusPaddingRatio: 0.2,
+    roomPaddingRatio: 0.06,
+    maxFocusZoom: 3.2,
+    ease: [0.22, 0.8, 0.2, 1],
     unfocusedDim: 0.35,
   },
   light: { poolIntensity: 1, lampNoonRatio: 0.5, daylightPatchStrength: 0.12 },
