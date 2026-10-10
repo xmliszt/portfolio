@@ -5,7 +5,14 @@ export type TvEvent =
   | { type: "tune"; step: 1 | -1 }
   | { type: "volume"; step: 1 | -1 };
 
+export type TvStation = {
+  label: string;
+  videoId: string;
+  channel: string;
+  placeholder: boolean;
+};
+
 export type TvSettings = {
-  stations: string[];
+  stations: TvStation[];
   volumeStepPercent: number;
 };

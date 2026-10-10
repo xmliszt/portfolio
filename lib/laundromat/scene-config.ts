@@ -1,3 +1,5 @@
+import type { TvStation } from "./tv/tv-state";
+
 export type IsoPoint = { x: number; y: number; z: number };
 
 export type IsoSize = { w: number; d: number; h: number };
@@ -91,7 +93,16 @@ export type SceneConfig = {
       dialSettleMs: number;
     };
     tv: {
-      stations: string[];
+      stations: TvStation[];
+      stallSeconds: number;
+      noSignalMs: number;
+      osdSeconds: number;
+      staticMs: number;
+      thumbnailDim: number;
+      scanlineOpacity: number;
+      scanlineDriftSeconds: number;
+      vignette: number;
+      flicker: number;
       defaultVolumePercent: number;
       volumeStepPercent: number;
       powerMs: number;
@@ -328,12 +339,46 @@ export const sceneConfig: SceneConfig = {
     },
     tv: {
       stations: [
-        "rainy café",
-        "piano night",
-        "late wash",
-        "tape hiss",
-        "city at 3 a.m.",
+        {
+          label: "rainy café",
+          videoId: "7NOSDKb0HlU",
+          channel: "Chillhop Music",
+          placeholder: true,
+        },
+        {
+          label: "piano night",
+          videoId: "rUxyKA_-grg",
+          channel: "Lofi Girl",
+          placeholder: true,
+        },
+        {
+          label: "late wash",
+          videoId: "5yx6BWlEVcY",
+          channel: "Chillhop Music",
+          placeholder: true,
+        },
+        {
+          label: "tape hiss",
+          videoId: "lTRiuFIWV54",
+          channel: "Lofi Girl",
+          placeholder: true,
+        },
+        {
+          label: "city at 3 a.m.",
+          videoId: "4xDzrJKXOOY",
+          channel: "Lofi Girl",
+          placeholder: true,
+        },
       ],
+      stallSeconds: 12,
+      noSignalMs: 1200,
+      osdSeconds: 2.4,
+      staticMs: 240,
+      thumbnailDim: 0.2,
+      scanlineOpacity: 0.35,
+      scanlineDriftSeconds: 3,
+      vignette: 0.6,
+      flicker: 0.05,
       defaultVolumePercent: 60,
       volumeStepPercent: 10,
       powerMs: 360,
