@@ -15,6 +15,7 @@ type ObjectWorkbenchProps = {
   scale: number;
   highlighted: boolean;
   tooltipPinned: boolean;
+  hour: number;
 };
 
 export function ObjectWorkbench(props: ObjectWorkbenchProps) {
@@ -64,6 +65,8 @@ export function ObjectWorkbench(props: ObjectWorkbenchProps) {
             }
             focusedObjectId={undefined}
             dimAmount={0}
+            hour={props.hour}
+            config={props.config}
           />
           {laidOut !== undefined && description !== undefined && (
             <HitTargetButton

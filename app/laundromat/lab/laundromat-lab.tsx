@@ -6,7 +6,7 @@ import { DialRoot, useDialKit, useDialKitController } from "dialkit";
 import { useRouter } from "next/navigation";
 
 import { LaundromatScene } from "@/app/laundromat/laundromat-scene";
-import { getSkyColors } from "@/lib/laundromat/get-sky-colors";
+import { getTimeOfDay } from "@/lib/laundromat/get-time-of-day";
 import type { SceneConfig } from "@/lib/laundromat/scene-config";
 import { sceneConfig } from "@/lib/laundromat/scene-config";
 import { toCssVariables } from "@/lib/laundromat/to-css-variables";
@@ -86,6 +86,8 @@ const lightDials = {
   poolIntensity: [light.poolIntensity, 0, 2, 0.01],
   lampNoonRatio: [light.lampNoonRatio, 0, 1, 0.01],
   daylightPatchStrength: [light.daylightPatchStrength, 0, 1, 0.01],
+  lampColor: light.lampColor,
+  daylightColor: light.daylightColor,
 } satisfies DialConfig;
 
 const timeDials = {
@@ -98,6 +100,11 @@ const timeDials = {
 const skyDials = {
   sunriseHour: [sky.sunriseHour, 3, 9, 0.05],
   sunsetHour: [sky.sunsetHour, 16, 22, 0.05],
+  twilightHours: [sky.twilightHours, 0.25, 4, 0.05],
+  sunColor: sky.sunColor,
+  sunWarmColor: sky.sunWarmColor,
+  moonColor: sky.moonColor,
+  starColor: sky.starColor,
   timeJumpGlideMs: [sky.timeJumpGlideMs, 0, 5000, 50],
   keys: Object.fromEntries(
     sky.keys.map((key) => [
@@ -204,6 +211,11 @@ export default function LaundromatLab() {
         })),
         sunriseHour: skyValues.sunriseHour,
         sunsetHour: skyValues.sunsetHour,
+        twilightHours: skyValues.twilightHours,
+        sunColor: skyValues.sunColor,
+        sunWarmColor: skyValues.sunWarmColor,
+        moonColor: skyValues.moonColor,
+        starColor: skyValues.starColor,
         timeJumpGlideMs: skyValues.timeJumpGlideMs,
       },
     } satisfies SceneConfig;
@@ -261,7 +273,7 @@ export default function LaundromatLab() {
   }
 
   const hour = timeValues.override ? timeValues.hour : deviceHour;
-  const skyColors = getSkyColors({ keys: config.sky.keys, hour });
+  const timeOfDay = getTimeOfDay({ hour, config });
   const workbenchObject =
     config.objects.find((object) => object.id === workbench.object) ??
     config.objects[0];
@@ -283,14 +295,15 @@ export default function LaundromatLab() {
               }
               highlighted={workbench.highlight}
               tooltipPinned={workbench.pinTooltip}
+              hour={hour}
             />
           </div>
         </section>
         <section className="flex h-48 flex-col gap-y-2">
           <h2 className="text-[11px] lowercase">time of day</h2>
           <SkyPreview
-            top={skyColors.top}
-            horizon={skyColors.horizon}
+            top={timeOfDay.skyTop}
+            horizon={timeOfDay.skyHorizon}
             sunProgress={
               (hour - config.sky.sunriseHour) /
               (config.sky.sunsetHour - config.sky.sunriseHour)
@@ -306,7 +319,10 @@ export default function LaundromatLab() {
         </p>
       </div>
       <div className="min-h-0 min-w-0">
-        <LaundromatScene config={config} />
+        <LaundromatScene
+          config={config}
+          hourOverride={timeValues.override ? timeValues.hour : undefined}
+        />
       </div>
       <DialRoot position="top-right" theme="dark" />
     </div>

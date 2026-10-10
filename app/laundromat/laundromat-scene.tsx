@@ -22,6 +22,7 @@ import { cn } from "@/lib/utils";
 import { HitTargetButton } from "./hit-target-button";
 import { RoomDrawing } from "./room-drawing";
 import { SceneTooltip } from "./scene-tooltip";
+import { useSceneHour } from "./use-scene-hour";
 
 const SCENE_UNIT_PX = 40;
 const TOOLTIP_DELAY_MS = 300;
@@ -45,6 +46,7 @@ function findFocusTarget(options: { objectId: string; config: SceneConfig }) {
 
 type LaundromatSceneProps = {
   config: SceneConfig;
+  hourOverride?: number;
 };
 
 export function LaundromatScene(props: LaundromatSceneProps) {
@@ -58,6 +60,8 @@ export function LaundromatScene(props: LaundromatSceneProps) {
   const focus = parseCameraFocus(searchParams.get("focus"));
   const focusedObjectId = getFocusedObjectId({ focus, config });
   const prefersReducedMotion = useReducedMotion() ?? false;
+  const sceneHour = useSceneHour();
+  const hour = props.hourOverride ?? sceneHour;
 
   const rootRef = useRef<HTMLDivElement>(null);
   const [viewport, setViewport] = useState<Viewport>();
@@ -283,6 +287,8 @@ export function LaundromatScene(props: LaundromatSceneProps) {
           highlightedId={highlightedId}
           focusedObjectId={focusedObjectId}
           dimAmount={config.camera.unfocusedDim}
+          hour={hour}
+          config={config}
         />
         {layout.objects.map((laidOut) => {
           const description = describeSceneObject(laidOut.object);
