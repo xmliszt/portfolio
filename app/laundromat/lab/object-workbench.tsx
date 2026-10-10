@@ -1,17 +1,32 @@
 import { useMemo, useState } from "react";
 
 import { HitTargetButton } from "@/app/laundromat/hit-target-button";
+import type { SceneViews } from "@/app/laundromat/objects/scene-views";
 import { RoomDrawing } from "@/app/laundromat/room-drawing";
+import { SceneControlButton } from "@/app/laundromat/scene-control-button";
 import { SceneTooltip } from "@/app/laundromat/scene-tooltip";
+import { useRoomAppliances } from "@/app/laundromat/use-room-appliances";
+import type { LaidOutControl } from "@/lib/laundromat/build-scene-layout";
 import { buildSceneLayout } from "@/lib/laundromat/build-scene-layout";
+import { describeCoffeeMachine } from "@/lib/laundromat/coffee/describe-coffee-machine";
+import { describeCoffeeSwitch } from "@/lib/laundromat/coffee/describe-coffee-switch";
 import { describeSceneObject } from "@/lib/laundromat/describe-scene-object";
+import { describeMachine } from "@/lib/laundromat/laundry/describe-machine";
+import { describeMachineControl } from "@/lib/laundromat/laundry/describe-machine-control";
+import { formatRemainingTime } from "@/lib/laundromat/laundry/format-remaining-time";
+import type { BasketContents } from "@/lib/laundromat/laundry/get-basket-contents";
 import { getCycleMinutes } from "@/lib/laundromat/laundry/get-cycle-minutes";
 import type { MachineStatus } from "@/lib/laundromat/laundry/get-machine-status";
-import { INITIAL_LAUNDRY_STATE } from "@/lib/laundromat/laundry/laundry-state";
 import type { SceneConfig, SceneObject } from "@/lib/laundromat/scene-config";
+import { describeTv } from "@/lib/laundromat/tv/describe-tv";
+import { describeTvControl } from "@/lib/laundromat/tv/describe-tv-control";
 
 const WORKBENCH_UNIT_PX = 40;
 const DIAL_DEGREES_PER_DETENT = 60;
+const MS_PER_MINUTE = 60_000;
+const KNOB_CONTROLS: LaidOutControl["control"][] = ["dial", "tuner", "volume"];
+
+export type WorkbenchMachineState = "loadable" | "loaded" | "running" | "done";
 
 type ObjectWorkbenchProps = {
   config: SceneConfig;
@@ -20,47 +35,173 @@ type ObjectWorkbenchProps = {
   highlighted: boolean;
   tooltipPinned: boolean;
   hour: number;
+  machineState: WorkbenchMachineState;
+  doorOpen: boolean;
+  basket: BasketContents;
 };
 
 export function ObjectWorkbench(props: ObjectWorkbenchProps) {
-  const [isHovered, setIsHovered] = useState(false);
+  const { config, object } = props;
+  const [hoveredId, setHoveredId] = useState<string>();
+  const [cycleMinutes, setCycleMinutes] = useState<{
+    [machineId: string]: number;
+  }>({});
+  const [openedAt] = useState(() => Date.now());
+  const appliances = useRoomAppliances(config);
   const layout = useMemo(() => {
-    const { size } = props.object;
+    const { size } = object;
     return buildSceneLayout({
       config: {
-        ...props.config,
+        ...config,
         room: {
           width: Math.ceil(size.w) + 2,
           depth: Math.ceil(size.d) + 2,
           wallHeight: Math.ceil(size.h) + 1,
         },
-        objects: [{ ...props.object, position: { x: 1, y: 1, z: 0 } }],
+        objects: [{ ...object, position: { x: 1, y: 1, z: 0 } }],
       },
       unit: WORKBENCH_UNIT_PX,
     });
-  }, [props.config, props.object]);
-  const machineViews = (() => {
-    const { object } = props;
-    if (object.kind !== "washer" && object.kind !== "dryer") return {};
+  }, [config, object]);
+
+  const machine = (() => {
+    if (object.kind !== "washer" && object.kind !== "dryer") return undefined;
+    const ref = { id: object.id, kind: object.kind, number: object.number };
     const cycle = getCycleMinutes({
-      state: INITIAL_LAUNDRY_STATE,
-      machine: { id: object.id, kind: object.kind, number: object.number },
-      machines: props.config.machines,
+      state: { load: { kind: "folded" }, cycleMinutes },
+      machine: ref,
+      machines: config.machines,
     });
-    const status: MachineStatus = { kind: "loadable" };
-    return {
-      [object.id]: {
-        status,
-        readout: `${String(cycle.minutes).padStart(2, "0")}:00`,
-        dialAngleDeg: -90 + cycle.detent * DIAL_DEGREES_PER_DETENT,
-      },
-    };
+    const remainingMs = cycle.minutes * MS_PER_MINUTE;
+    const status: MachineStatus =
+      props.machineState === "running"
+        ? {
+            kind: "running",
+            endsAt: openedAt + remainingMs,
+            remainingMs,
+            remind: false,
+          }
+        : { kind: props.machineState };
+    const readout = (() => {
+      switch (status.kind) {
+        case "running":
+          return formatRemainingTime(status.remainingMs);
+        case "done":
+          return "done";
+        default:
+          return `${String(cycle.minutes).padStart(2, "0")}:00`;
+      }
+    })();
+    return { ref, cycle, status, readout };
   })();
+
+  const views: SceneViews = {
+    machines:
+      machine === undefined
+        ? {}
+        : {
+            [object.id]: {
+              status: machine.status,
+              readout: machine.readout,
+              dialAngleDeg:
+                -90 + machine.cycle.detent * DIAL_DEGREES_PER_DETENT,
+              doorOpen: props.doorOpen,
+            },
+          },
+    tv: appliances.tv,
+    coffee: appliances.coffee,
+    basket: props.basket,
+  };
+
+  function describeObject() {
+    if (machine !== undefined) {
+      return describeMachine({ machine: machine.ref, status: machine.status });
+    }
+    switch (object.kind) {
+      case "tv":
+        return describeTv({
+          state: appliances.tv,
+          settings: config.details.tv,
+        });
+      case "coffee-machine":
+        return describeCoffeeMachine(appliances.coffee);
+      default:
+        return describeSceneObject(object);
+    }
+  }
+
+  function describeControl(control: LaidOutControl) {
+    switch (control.target) {
+      case "machine":
+        return machine === undefined
+          ? undefined
+          : describeMachineControl({
+              control: control.control,
+              machine: machine.ref,
+              status: machine.status,
+              minutes: machine.cycle.minutes,
+              nextMinutes: machine.cycle.next,
+              notifications: "unsupported",
+            });
+      case "tv":
+        return describeTvControl({
+          control: control.control,
+          state: appliances.tv,
+          settings: config.details.tv,
+        });
+      case "coffee":
+        return describeCoffeeSwitch(appliances.coffee);
+      default: {
+        const unhandled: never = control;
+        return unhandled;
+      }
+    }
+  }
+
+  function pressControl(options: { control: LaidOutControl; step: 1 | -1 }) {
+    const { control, step } = options;
+    switch (control.target) {
+      case "machine":
+        if (machine !== undefined && control.control === "dial") {
+          const minutes =
+            step === 1 ? machine.cycle.next : machine.cycle.previous;
+          setCycleMinutes((current) => ({ ...current, [object.id]: minutes }));
+        }
+        return;
+      case "tv":
+        switch (control.control) {
+          case "tuner":
+            appliances.dispatchTv({ type: "tune", step });
+            return;
+          case "volume":
+            appliances.dispatchTv({ type: "volume", step });
+            return;
+          default:
+            appliances.dispatchTv({ type: "power" });
+            return;
+        }
+      case "coffee":
+        appliances.brew();
+        return;
+      default: {
+        const unhandled: never = control;
+        return unhandled;
+      }
+    }
+  }
+
   const laidOut = layout.objects.at(0);
-  const description =
-    laidOut === undefined ? undefined : describeSceneObject(laidOut.object);
-  const isTooltipShown =
-    description !== undefined && (props.tooltipPinned || isHovered);
+  const description = describeObject();
+  const shownId = hoveredId ?? (props.tooltipPinned ? object.id : undefined);
+  const tooltip = (() => {
+    if (laidOut === undefined || shownId === undefined) return undefined;
+    if (shownId === object.id) {
+      return { text: description?.tooltip, bounds: laidOut.bounds };
+    }
+    const control = laidOut.controls.find(({ id }) => id === shownId);
+    if (control === undefined) return undefined;
+    return { text: describeControl(control)?.tooltip, bounds: control.bounds };
+  })();
 
   return (
     <div className="flex size-full items-center justify-center overflow-hidden">
@@ -82,35 +223,53 @@ export function ObjectWorkbench(props: ObjectWorkbenchProps) {
           <RoomDrawing
             layout={layout}
             highlightedId={
-              props.highlighted || isHovered ? props.object.id : undefined
+              hoveredId ?? (props.highlighted ? object.id : undefined)
             }
             focusedObjectId={undefined}
             dimAmount={0}
-            machineViews={machineViews}
+            views={views}
             hour={props.hour}
-            config={props.config}
+            config={config}
           />
           {laidOut !== undefined && description !== undefined && (
             <HitTargetButton
               laidOut={laidOut}
               label={description.label}
               pressed={undefined}
-              onActivate={() => setIsHovered(true)}
-              onPointerShowTooltip={() => setIsHovered(true)}
-              onKeyboardShowTooltip={() => setIsHovered(true)}
-              onHideTooltip={() => setIsHovered(false)}
+              onActivate={() => setHoveredId(object.id)}
+              onPointerShowTooltip={() => setHoveredId(object.id)}
+              onKeyboardShowTooltip={() => setHoveredId(object.id)}
+              onHideTooltip={() => setHoveredId(undefined)}
             />
           )}
+          {laidOut?.controls.map((control) => {
+            const controlDescription = describeControl(control);
+            if (controlDescription === undefined) return null;
+            return (
+              <SceneControlButton
+                key={control.id}
+                control={control}
+                knob={KNOB_CONTROLS.includes(control.control)}
+                label={controlDescription.label}
+                enabled={controlDescription.enabled}
+                onPress={() => pressControl({ control, step: 1 })}
+                onStepBack={() => pressControl({ control, step: -1 })}
+                onPointerShowTooltip={() => setHoveredId(control.id)}
+                onKeyboardShowTooltip={() => setHoveredId(control.id)}
+                onHideTooltip={() => setHoveredId(undefined)}
+              />
+            );
+          })}
         </div>
         <SceneTooltip
-          text={isTooltipShown ? description.tooltip : undefined}
+          text={tooltip?.text}
           position={
-            laidOut === undefined
+            tooltip === undefined
               ? undefined
               : {
                   x:
-                    (laidOut.bounds.x + laidOut.bounds.width / 2) * props.scale,
-                  y: laidOut.bounds.y * props.scale,
+                    (tooltip.bounds.x + tooltip.bounds.width / 2) * props.scale,
+                  y: tooltip.bounds.y * props.scale,
                 }
           }
         />

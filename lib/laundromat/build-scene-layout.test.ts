@@ -36,3 +36,18 @@ test("draws one grout line per inner floor unit", () => {
   const { width, depth } = sceneConfig.room;
   assert.equal(layout.gridLines.length, width - 1 + depth - 1);
 });
+
+test("gives the TV and the coffee machine their in-place controls", () => {
+  const controlIds = layout.objects
+    .filter(
+      ({ object }) => object.kind === "tv" || object.kind === "coffee-machine"
+    )
+    .flatMap(({ controls }) => controls.map((control) => control.id));
+  assert.deepEqual(controlIds.toSorted(), [
+    "coffee-machine-switch",
+    "tv-power",
+    "tv-screen",
+    "tv-tuner",
+    "tv-volume",
+  ]);
+});

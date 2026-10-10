@@ -9,7 +9,10 @@ import {
 } from "motion/react";
 import { useRouter, useSearchParams } from "next/navigation";
 
+import type { LaidOutControl } from "@/lib/laundromat/build-scene-layout";
 import { buildSceneLayout } from "@/lib/laundromat/build-scene-layout";
+import { describeCoffeeMachine } from "@/lib/laundromat/coffee/describe-coffee-machine";
+import { describeCoffeeSwitch } from "@/lib/laundromat/coffee/describe-coffee-switch";
 import type { Camera, Viewport } from "@/lib/laundromat/compute-camera";
 import { computeCamera } from "@/lib/laundromat/compute-camera";
 import { describeSceneObject } from "@/lib/laundromat/describe-scene-object";
@@ -18,24 +21,31 @@ import { describeMachine } from "@/lib/laundromat/laundry/describe-machine";
 import type { MachineControl } from "@/lib/laundromat/laundry/describe-machine-control";
 import { describeMachineControl } from "@/lib/laundromat/laundry/describe-machine-control";
 import { formatRemainingTime } from "@/lib/laundromat/laundry/format-remaining-time";
+import { getBasketContents } from "@/lib/laundromat/laundry/get-basket-contents";
 import { getCycleMinutes } from "@/lib/laundromat/laundry/get-cycle-minutes";
 import { getMachineStatus } from "@/lib/laundromat/laundry/get-machine-status";
 import type { CameraFocus } from "@/lib/laundromat/parse-camera-focus";
 import { parseCameraFocus } from "@/lib/laundromat/parse-camera-focus";
 import type { FocusTarget, SceneConfig } from "@/lib/laundromat/scene-config";
+import { describeTv } from "@/lib/laundromat/tv/describe-tv";
+import type { TvControl } from "@/lib/laundromat/tv/describe-tv-control";
+import { describeTvControl } from "@/lib/laundromat/tv/describe-tv-control";
 import { cn } from "@/lib/utils";
 
+import type { SceneViews } from "./objects/scene-views";
 import { HitTargetButton } from "./hit-target-button";
-import { MachineControlButton } from "./machine-control-button";
 import { RoomDrawing } from "./room-drawing";
+import { SceneControlButton } from "./scene-control-button";
 import { SceneTooltip } from "./scene-tooltip";
 import { useLaundry } from "./use-laundry";
+import { useRoomAppliances } from "./use-room-appliances";
 import { useSceneHour } from "./use-scene-hour";
 
 const SCENE_UNIT_PX = 40;
 const TOOLTIP_DELAY_MS = 300;
 const FOCUS_TARGETS = ["shelf", "notebook"] satisfies FocusTarget[];
 const DIAL_DEGREES_PER_DETENT = 60;
+const KNOB_CONTROLS: LaidOutControl["control"][] = ["dial", "tuner", "volume"];
 
 function getFocusedObjectId(options: {
   focus: CameraFocus;
@@ -90,6 +100,7 @@ export function LaundromatScene(props: LaundromatSceneProps) {
   );
   const previousFocusRef = useRef(focus);
   const laundry = useLaundry();
+  const appliances = useRoomAppliances(config);
 
   const machineViews = Object.fromEntries(
     layout.objects.flatMap(({ object }) => {
@@ -128,35 +139,67 @@ export function LaundromatScene(props: LaundromatSceneProps) {
             cycle,
             readout,
             dialAngleDeg: -90 + cycle.detent * DIAL_DEGREES_PER_DETENT,
+            doorOpen: false,
           },
         ],
       ];
     })
   );
   type MachineView = (typeof machineViews)[string];
+  const views: SceneViews = {
+    machines: machineViews,
+    tv: appliances.tv,
+    coffee: appliances.coffee,
+    basket: getBasketContents(laundry.state.load),
+  };
+  const tvSettings = config.details.tv;
 
   function describeControl(options: {
-    view: MachineView;
-    control: MachineControl;
+    objectId: string;
+    control: LaidOutControl;
   }) {
-    const { view } = options;
-    return describeMachineControl({
-      control: options.control,
-      machine: view.machine,
-      status: view.status,
-      minutes: view.cycle.minutes,
-      nextMinutes: view.cycle.next,
-      notifications: laundry.notifications,
-    });
+    const { control } = options;
+    switch (control.target) {
+      case "machine": {
+        const view = machineViews[options.objectId];
+        if (view === undefined) return undefined;
+        return describeMachineControl({
+          control: control.control,
+          machine: view.machine,
+          status: view.status,
+          minutes: view.cycle.minutes,
+          nextMinutes: view.cycle.next,
+          notifications: laundry.notifications,
+        });
+      }
+      case "tv":
+        return describeTvControl({
+          control: control.control,
+          state: appliances.tv,
+          settings: tvSettings,
+        });
+      case "coffee":
+        return describeCoffeeSwitch(appliances.coffee);
+      default: {
+        const unhandled: never = control;
+        return unhandled;
+      }
+    }
   }
 
   function describeObject(objectId: string) {
     const view = machineViews[objectId];
     if (view !== undefined) return describeMachine(view);
     const laidOut = layout.objects.find(({ object }) => object.id === objectId);
-    return laidOut === undefined
-      ? undefined
-      : describeSceneObject(laidOut.object);
+    if (laidOut === undefined) return undefined;
+    switch (laidOut.object.kind) {
+      case "tv":
+        return describeTv({ state: appliances.tv, settings: tvSettings });
+      case "coffee-machine":
+        return describeCoffeeMachine(appliances.coffee);
+      default:
+        return describeSceneObject(laidOut.object);
+    }
   }
 
   useEffect(() => {
@@ -315,15 +358,61 @@ export function LaundromatScene(props: LaundromatSceneProps) {
   }
 
   function handleControlPress(options: {
+    objectId: string;
+    control: LaidOutControl;
+    step: 1 | -1;
+  }) {
+    const { control, step } = options;
+    if (focus !== "room") {
+      setFocus("room");
+      return;
+    }
+    switch (control.target) {
+      case "machine": {
+        const view = machineViews[options.objectId];
+        if (view !== undefined) {
+          pressMachineControl({ view, control: control.control, step });
+        }
+        return;
+      }
+      case "tv":
+        pressTvControl({ control: control.control, step });
+        return;
+      case "coffee":
+        appliances.brew();
+        return;
+      default: {
+        const unhandled: never = control;
+        return unhandled;
+      }
+    }
+  }
+
+  function pressTvControl(options: { control: TvControl; step: 1 | -1 }) {
+    switch (options.control) {
+      case "tuner":
+        appliances.dispatchTv({ type: "tune", step: options.step });
+        return;
+      case "volume":
+        appliances.dispatchTv({ type: "volume", step: options.step });
+        return;
+      case "screen":
+      case "power":
+        appliances.dispatchTv({ type: "power" });
+        return;
+      default: {
+        const unhandled: never = options.control;
+        return unhandled;
+      }
+    }
+  }
+
+  function pressMachineControl(options: {
     view: MachineView;
     control: MachineControl;
     step: 1 | -1;
   }) {
     const { view, control, step } = options;
-    if (focus !== "room") {
-      setFocus("room");
-      return;
-    }
     switch (control) {
       case "dial":
         laundry.dispatch({ type: "turn-dial", machine: view.machine, step });
@@ -365,12 +454,8 @@ export function LaundromatScene(props: LaundromatSceneProps) {
         ...laidOut.controls.map((control) => ({
           id: control.id,
           bounds: control.bounds,
-          text: () => {
-            const view = machineViews[laidOut.object.id];
-            return view === undefined
-              ? undefined
-              : describeControl({ view, control: control.control }).tooltip;
-          },
+          text: () =>
+            describeControl({ objectId: laidOut.object.id, control })?.tooltip,
         })),
       ])
       .find(({ id }) => id === tooltipId);
@@ -411,7 +496,7 @@ export function LaundromatScene(props: LaundromatSceneProps) {
           highlightedId={highlightedId}
           focusedObjectId={focusedObjectId}
           dimAmount={config.camera.unfocusedDim}
-          machineViews={machineViews}
+          views={views}
           hour={hour}
           config={config}
         />
@@ -420,7 +505,6 @@ export function LaundromatScene(props: LaundromatSceneProps) {
           const description = describeObject(id);
           if (description === undefined) return null;
           const focusTarget = findFocusTarget({ objectId: id, config });
-          const view = machineViews[id];
           return (
             <Fragment key={id}>
               <HitTargetButton
@@ -438,45 +522,38 @@ export function LaundromatScene(props: LaundromatSceneProps) {
                 }
                 onHideTooltip={() => hideTooltip(id)}
               />
-              {view !== undefined &&
-                laidOut.controls.map((control) => {
-                  const controlDescription = describeControl({
-                    view,
-                    control: control.control,
-                  });
-                  return (
-                    <MachineControlButton
-                      key={control.id}
-                      control={control}
-                      label={controlDescription.label}
-                      enabled={controlDescription.enabled}
-                      onPress={() =>
-                        handleControlPress({
-                          view,
-                          control: control.control,
-                          step: 1,
-                        })
-                      }
-                      onStepBack={() =>
-                        handleControlPress({
-                          view,
-                          control: control.control,
-                          step: -1,
-                        })
-                      }
-                      onPointerShowTooltip={() =>
-                        showTooltip({ objectId: control.id, source: "pointer" })
-                      }
-                      onKeyboardShowTooltip={() =>
-                        showTooltip({
-                          objectId: control.id,
-                          source: "keyboard",
-                        })
-                      }
-                      onHideTooltip={() => hideTooltip(control.id)}
-                    />
-                  );
-                })}
+              {laidOut.controls.map((control) => {
+                const controlDescription = describeControl({
+                  objectId: id,
+                  control,
+                });
+                if (controlDescription === undefined) return null;
+                return (
+                  <SceneControlButton
+                    key={control.id}
+                    control={control}
+                    knob={KNOB_CONTROLS.includes(control.control)}
+                    label={controlDescription.label}
+                    enabled={controlDescription.enabled}
+                    onPress={() =>
+                      handleControlPress({ objectId: id, control, step: 1 })
+                    }
+                    onStepBack={() =>
+                      handleControlPress({ objectId: id, control, step: -1 })
+                    }
+                    onPointerShowTooltip={() =>
+                      showTooltip({ objectId: control.id, source: "pointer" })
+                    }
+                    onKeyboardShowTooltip={() =>
+                      showTooltip({
+                        objectId: control.id,
+                        source: "keyboard",
+                      })
+                    }
+                    onHideTooltip={() => hideTooltip(control.id)}
+                  />
+                );
+              })}
             </Fragment>
           );
         })}

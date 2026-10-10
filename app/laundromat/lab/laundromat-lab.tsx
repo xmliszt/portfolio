@@ -7,10 +7,12 @@ import { useRouter } from "next/navigation";
 
 import { LaundromatScene } from "@/app/laundromat/laundromat-scene";
 import { getTimeOfDay } from "@/lib/laundromat/get-time-of-day";
+import type { BasketContents } from "@/lib/laundromat/laundry/get-basket-contents";
 import type { SceneConfig } from "@/lib/laundromat/scene-config";
 import { sceneConfig } from "@/lib/laundromat/scene-config";
 import { toCssVariables } from "@/lib/laundromat/to-css-variables";
 
+import type { WorkbenchMachineState } from "./object-workbench";
 import { ObjectWorkbench } from "./object-workbench";
 import { SkyPreview } from "./sky-preview";
 
@@ -47,7 +49,17 @@ function isoSlider(options: { value: number; max: number }) {
   ];
 }
 
-const { room, camera, light, sky } = sceneConfig;
+function toWorkbenchMachineState(value: string) {
+  return (
+    WORKBENCH_MACHINE_STATES.find((state) => state === value) ?? "loadable"
+  );
+}
+
+function toWorkbenchBasket(value: string) {
+  return WORKBENCH_BASKETS.find((basket) => basket === value) ?? "empty";
+}
+
+const { room, camera, light, sky, details } = sceneConfig;
 
 const placementDials = {
   snap: { type: "select", options: SNAP_OPTIONS, default: "0.1" },
@@ -114,6 +126,74 @@ const skyDials = {
   ),
 } satisfies DialConfig;
 
+const objectDials = {
+  machine: {
+    doorOpenDeg: [details.machine.doorOpenDeg, 0, 160, 1],
+    doorSwingMs: [details.machine.doorSwingMs, 0, 1200, 10],
+    drumSecondsPerTurn: [details.machine.drumSecondsPerTurn, 0.5, 8, 0.1],
+    tumbleOpacity: [details.machine.tumbleOpacity, 0, 1, 0.01],
+    displayGlow: [details.machine.displayGlow, 0, 1, 0.01],
+    dryerGlow: [details.machine.dryerGlow, 0, 1, 0.01],
+    dialSettleMs: [details.machine.dialSettleMs, 0, 600, 10],
+    _collapsed: true,
+  },
+  tv: {
+    defaultVolumePercent: [details.tv.defaultVolumePercent, 0, 100, 1],
+    volumeStepPercent: [details.tv.volumeStepPercent, 1, 50, 1],
+    powerMs: [details.tv.powerMs, 0, 1200, 10],
+    screenGlow: [details.tv.screenGlow, 0, 1, 0.01],
+    reflection: [details.tv.reflection, 0, 0.5, 0.01],
+    knobDegreesPerDetent: [details.tv.knobDegreesPerDetent, 5, 90, 1],
+    _collapsed: true,
+  },
+  coffee: {
+    brewSeconds: [details.coffee.brewSeconds, 2, 180, 1],
+    hotMinutes: [details.coffee.hotMinutes, 0.1, 30, 0.1],
+    dripMs: [details.coffee.dripMs, 200, 3000, 10],
+    steamOpacity: [details.coffee.steamOpacity, 0, 1, 0.01],
+    steamRiseSeconds: [details.coffee.steamRiseSeconds, 0.5, 8, 0.1],
+    _collapsed: true,
+  },
+  clock: {
+    hourHandWidth: [details.clock.hourHandWidth, 0.5, 4, 0.05],
+    minuteHandWidth: [details.clock.minuteHandWidth, 0.5, 4, 0.05],
+    glassHighlight: [details.clock.glassHighlight, 0, 0.5, 0.01],
+    _collapsed: true,
+  },
+  plant: {
+    swayDeg: [details.plant.swayDeg, 0, 6, 0.05],
+    swayMinSeconds: [details.plant.swayMinSeconds, 1, 20, 0.5],
+    swayMaxSeconds: [details.plant.swayMaxSeconds, 1, 30, 0.5],
+    _collapsed: true,
+  },
+  shelf: {
+    bookLean: [details.shelf.bookLean, 0, 0.4, 0.01],
+    spineGlow: [details.shelf.spineGlow, 0, 1, 0.01],
+    _collapsed: true,
+  },
+  window: {
+    litWindowOpacity: [details.window.litWindowOpacity, 0, 1, 0.01],
+    _collapsed: true,
+  },
+  notebook: {
+    coverNumber: [details.notebook.coverNumber, 1, 99, 1],
+    _collapsed: true,
+  },
+} satisfies DialConfig;
+
+const WORKBENCH_MACHINE_STATES = [
+  "loadable",
+  "loaded",
+  "running",
+  "done",
+] satisfies WorkbenchMachineState[];
+const WORKBENCH_BASKETS = [
+  "empty",
+  "dirty",
+  "wet",
+  "folded",
+] satisfies BasketContents[];
+
 const workbenchDials = {
   object: {
     type: "select",
@@ -123,6 +203,13 @@ const workbenchDials = {
   framing: { type: "select", options: ["room", "focus"], default: "room" },
   highlight: false,
   pinTooltip: false,
+  machine: {
+    type: "select",
+    options: WORKBENCH_MACHINE_STATES,
+    default: "loadable",
+  },
+  doorOpen: false,
+  basket: { type: "select", options: WORKBENCH_BASKETS, default: "dirty" },
 } satisfies DialConfig;
 
 const exportDials = {
@@ -159,6 +246,10 @@ export default function LaundromatLab() {
   });
   const skyValues = useDialKit("Sky", skyDials, {
     id: "laundromat-lab-sky",
+    ...PANEL_OPTIONS,
+  });
+  const objectValues = useDialKit("Objects", objectDials, {
+    id: "laundromat-lab-objects",
     ...PANEL_OPTIONS,
   });
   const workbench = useDialKit("Workbench", workbenchDials, {
@@ -218,8 +309,18 @@ export default function LaundromatLab() {
         starColor: skyValues.starColor,
         timeJumpGlideMs: skyValues.timeJumpGlideMs,
       },
+      details: {
+        machine: objectValues.machine,
+        tv: { ...objectValues.tv, stations: details.tv.stations },
+        coffee: objectValues.coffee,
+        clock: objectValues.clock,
+        plant: objectValues.plant,
+        shelf: objectValues.shelf,
+        window: objectValues.window,
+        notebook: objectValues.notebook,
+      },
     } satisfies SceneConfig;
-  }, [tokens, lightValues, cameraValues, placement, skyValues]);
+  }, [tokens, lightValues, cameraValues, placement, skyValues, objectValues]);
 
   useEffect(() => {
     const interval = window.setInterval(
@@ -296,6 +397,9 @@ export default function LaundromatLab() {
               highlighted={workbench.highlight}
               tooltipPinned={workbench.pinTooltip}
               hour={hour}
+              machineState={toWorkbenchMachineState(workbench.machine)}
+              doorOpen={workbench.doorOpen}
+              basket={toWorkbenchBasket(workbench.basket)}
             />
           </div>
         </section>

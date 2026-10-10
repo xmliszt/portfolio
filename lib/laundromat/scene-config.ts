@@ -17,7 +17,8 @@ export type FurnitureKind =
   | "notebook"
   | "stool"
   | "plant"
-  | "basket";
+  | "basket"
+  | "mug";
 
 export type SceneObject =
   | (Placement & { kind: MachineKind; number: number })
@@ -79,6 +80,46 @@ export type SceneConfig = {
     defaultWasherCycleMinutes: number;
     defaultDryerCycleMinutes: number;
   };
+  details: {
+    machine: {
+      doorOpenDeg: number;
+      doorSwingMs: number;
+      drumSecondsPerTurn: number;
+      tumbleOpacity: number;
+      displayGlow: number;
+      dryerGlow: number;
+      dialSettleMs: number;
+    };
+    tv: {
+      stations: string[];
+      defaultVolumePercent: number;
+      volumeStepPercent: number;
+      powerMs: number;
+      screenGlow: number;
+      reflection: number;
+      knobDegreesPerDetent: number;
+    };
+    coffee: {
+      brewSeconds: number;
+      hotMinutes: number;
+      dripMs: number;
+      steamOpacity: number;
+      steamRiseSeconds: number;
+    };
+    clock: {
+      hourHandWidth: number;
+      minuteHandWidth: number;
+      glassHighlight: number;
+    };
+    plant: {
+      swayDeg: number;
+      swayMinSeconds: number;
+      swayMaxSeconds: number;
+    };
+    shelf: { bookLean: number; spineGlow: number };
+    window: { litWindowOpacity: number };
+    notebook: { coverNumber: number };
+  };
   sky: {
     keys: SkyKey[];
     sunriseHour: number;
@@ -119,56 +160,56 @@ export const sceneConfig: SceneConfig = {
       kind: "washer",
       number: 1,
       position: { x: 1, y: 0, z: 0 },
-      size: { w: 2, d: 2, h: 2.6 },
+      size: { w: 2, d: 2, h: 2.8 },
     },
     {
       id: "washer-2",
       kind: "washer",
       number: 2,
       position: { x: 3, y: 0, z: 0 },
-      size: { w: 2, d: 2, h: 2.6 },
+      size: { w: 2, d: 2, h: 2.8 },
     },
     {
       id: "washer-3",
       kind: "washer",
       number: 3,
-      position: { x: 1, y: 0, z: 2.6 },
-      size: { w: 2, d: 2, h: 2.6 },
+      position: { x: 1, y: 0, z: 2.8 },
+      size: { w: 2, d: 2, h: 2.8 },
     },
     {
       id: "washer-4",
       kind: "washer",
       number: 4,
-      position: { x: 3, y: 0, z: 2.6 },
-      size: { w: 2, d: 2, h: 2.6 },
+      position: { x: 3, y: 0, z: 2.8 },
+      size: { w: 2, d: 2, h: 2.8 },
     },
     {
       id: "dryer-1",
       kind: "dryer",
       number: 1,
       position: { x: 5.5, y: 0, z: 0 },
-      size: { w: 2, d: 2, h: 2.6 },
+      size: { w: 2, d: 2, h: 2.8 },
     },
     {
       id: "dryer-2",
       kind: "dryer",
       number: 2,
       position: { x: 7.5, y: 0, z: 0 },
-      size: { w: 2, d: 2, h: 2.6 },
+      size: { w: 2, d: 2, h: 2.8 },
     },
     {
       id: "dryer-3",
       kind: "dryer",
       number: 3,
-      position: { x: 5.5, y: 0, z: 2.6 },
-      size: { w: 2, d: 2, h: 2.6 },
+      position: { x: 5.5, y: 0, z: 2.8 },
+      size: { w: 2, d: 2, h: 2.8 },
     },
     {
       id: "dryer-4",
       kind: "dryer",
       number: 4,
-      position: { x: 7.5, y: 0, z: 2.6 },
-      size: { w: 2, d: 2, h: 2.6 },
+      position: { x: 7.5, y: 0, z: 2.8 },
+      size: { w: 2, d: 2, h: 2.8 },
     },
     {
       id: "counter",
@@ -179,8 +220,8 @@ export const sceneConfig: SceneConfig = {
     {
       id: "coffee-machine",
       kind: "coffee-machine",
-      position: { x: 11.4, y: 0.3, z: 2.8 },
-      size: { w: 1.2, d: 1, h: 1.4 },
+      position: { x: 11.3, y: 0.2, z: 2.8 },
+      size: { w: 1.4, d: 1.1, h: 1.6 },
     },
     {
       id: "clock",
@@ -197,8 +238,8 @@ export const sceneConfig: SceneConfig = {
     {
       id: "tv",
       kind: "tv",
-      position: { x: 0, y: 3.6, z: 4.8 },
-      size: { w: 1.2, d: 1.8, h: 1.5 },
+      position: { x: 0, y: 3.3, z: 4.6 },
+      size: { w: 1.2, d: 2.6, h: 1.8 },
     },
     {
       id: "window",
@@ -217,6 +258,12 @@ export const sceneConfig: SceneConfig = {
       kind: "notebook",
       position: { x: 7.6, y: 6.6, z: 2.4 },
       size: { w: 0.9, d: 0.7, h: 0.1 },
+    },
+    {
+      id: "mug",
+      kind: "mug",
+      position: { x: 8.5, y: 6.4, z: 2.4 },
+      size: { w: 0.4, d: 0.4, h: 0.34 },
     },
     {
       id: "stool-1",
@@ -268,6 +315,44 @@ export const sceneConfig: SceneConfig = {
     dryerCycleMinutes: [5, 10, 15],
     defaultWasherCycleMinutes: 30,
     defaultDryerCycleMinutes: 10,
+  },
+  details: {
+    machine: {
+      doorOpenDeg: 100,
+      doorSwingMs: 420,
+      drumSecondsPerTurn: 2.4,
+      tumbleOpacity: 0.55,
+      displayGlow: 0.5,
+      dryerGlow: 0.16,
+      dialSettleMs: 180,
+    },
+    tv: {
+      stations: [
+        "rainy café",
+        "piano night",
+        "late wash",
+        "tape hiss",
+        "city at 3 a.m.",
+      ],
+      defaultVolumePercent: 60,
+      volumeStepPercent: 10,
+      powerMs: 360,
+      screenGlow: 0.22,
+      reflection: 0.1,
+      knobDegreesPerDetent: 36,
+    },
+    coffee: {
+      brewSeconds: 40,
+      hotMinutes: 4,
+      dripMs: 900,
+      steamOpacity: 0.5,
+      steamRiseSeconds: 3.2,
+    },
+    clock: { hourHandWidth: 2, minuteHandWidth: 1.25, glassHighlight: 0.08 },
+    plant: { swayDeg: 1.4, swayMinSeconds: 7, swayMaxSeconds: 10 },
+    shelf: { bookLean: 0.14, spineGlow: 0.6 },
+    window: { litWindowOpacity: 0.7 },
+    notebook: { coverNumber: 1 },
   },
   sky: {
     keys: [

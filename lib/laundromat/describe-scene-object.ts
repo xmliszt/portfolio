@@ -31,6 +31,7 @@ export function describeSceneObject(object: SceneObject) {
     case "stool":
     case "plant":
     case "basket":
+    case "mug":
       return undefined;
     default: {
       const unhandled: never = object;
