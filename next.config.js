@@ -48,6 +48,9 @@ const nextConfig = {
         source: "/",
         destination: "/about#top",
         permanent: true,
+        missing: [
+          { type: "host", value: "laundromat\\.(liyuxuan\\.dev|localhost)" },
+        ],
       },
     ];
   },
