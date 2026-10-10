@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { Fragment, useEffect, useRef, useState } from "react";
 import {
   animate,
   motion,
@@ -14,6 +14,12 @@ import type { Camera, Viewport } from "@/lib/laundromat/compute-camera";
 import { computeCamera } from "@/lib/laundromat/compute-camera";
 import { describeSceneObject } from "@/lib/laundromat/describe-scene-object";
 import { getCameraMoveDurationMs } from "@/lib/laundromat/get-camera-move-duration-ms";
+import { describeMachine } from "@/lib/laundromat/laundry/describe-machine";
+import type { MachineControl } from "@/lib/laundromat/laundry/describe-machine-control";
+import { describeMachineControl } from "@/lib/laundromat/laundry/describe-machine-control";
+import { formatRemainingTime } from "@/lib/laundromat/laundry/format-remaining-time";
+import { getCycleMinutes } from "@/lib/laundromat/laundry/get-cycle-minutes";
+import { getMachineStatus } from "@/lib/laundromat/laundry/get-machine-status";
 import type { CameraFocus } from "@/lib/laundromat/parse-camera-focus";
 import { parseCameraFocus } from "@/lib/laundromat/parse-camera-focus";
 import type { FocusTarget } from "@/lib/laundromat/scene-config";
@@ -21,12 +27,15 @@ import { sceneConfig } from "@/lib/laundromat/scene-config";
 import { cn } from "@/lib/utils";
 
 import { HitTargetButton } from "./hit-target-button";
+import { MachineControlButton } from "./machine-control-button";
 import { RoomDrawing } from "./room-drawing";
 import { SceneTooltip } from "./scene-tooltip";
+import { useLaundry } from "./use-laundry";
 
 const SCENE_UNIT_PX = 40;
 const TOOLTIP_DELAY_MS = 300;
 const FOCUS_TARGETS = ["shelf", "notebook"] satisfies FocusTarget[];
+const DIAL_DEGREES_PER_DETENT = 60;
 
 const layout = buildSceneLayout({ config: sceneConfig, unit: SCENE_UNIT_PX });
 
@@ -66,6 +75,75 @@ export function LaundromatScene() {
     undefined
   );
   const previousFocusRef = useRef(focus);
+  const laundry = useLaundry();
+
+  const machineViews = Object.fromEntries(
+    layout.objects.flatMap(({ object }) => {
+      if (object.kind !== "washer" && object.kind !== "dryer") return [];
+      const machine = {
+        id: object.id,
+        kind: object.kind,
+        number: object.number,
+      };
+      const status = getMachineStatus({
+        state: laundry.state,
+        machine,
+        now: laundry.now,
+      });
+      const cycle = getCycleMinutes({
+        state: laundry.state,
+        machine,
+        machines: sceneConfig.machines,
+      });
+      const readout = (() => {
+        switch (status.kind) {
+          case "running":
+            return formatRemainingTime(status.remainingMs);
+          case "done":
+            return "done";
+          default:
+            return `${String(cycle.minutes).padStart(2, "0")}:00`;
+        }
+      })();
+      return [
+        [
+          object.id,
+          {
+            machine,
+            status,
+            cycle,
+            readout,
+            dialAngleDeg: -90 + cycle.detent * DIAL_DEGREES_PER_DETENT,
+          },
+        ],
+      ];
+    })
+  );
+  type MachineView = (typeof machineViews)[string];
+
+  function describeControl(options: {
+    view: MachineView;
+    control: MachineControl;
+  }) {
+    const { view } = options;
+    return describeMachineControl({
+      control: options.control,
+      machine: view.machine,
+      status: view.status,
+      minutes: view.cycle.minutes,
+      nextMinutes: view.cycle.next,
+      notifications: laundry.notifications,
+    });
+  }
+
+  function describeObject(objectId: string) {
+    const view = machineViews[objectId];
+    if (view !== undefined) return describeMachine(view);
+    const laidOut = layout.objects.find(({ object }) => object.id === objectId);
+    return laidOut === undefined
+      ? undefined
+      : describeSceneObject(laidOut.object);
+  }
 
   useEffect(() => {
     const root = rootRef.current;
@@ -224,6 +302,37 @@ export function LaundromatScene() {
     if (focus !== "room") setFocus("room");
   }
 
+  function handleControlPress(options: {
+    view: MachineView;
+    control: MachineControl;
+    step: 1 | -1;
+  }) {
+    const { view, control, step } = options;
+    if (focus !== "room") {
+      setFocus("room");
+      return;
+    }
+    switch (control) {
+      case "dial":
+        laundry.dispatch({ type: "turn-dial", machine: view.machine, step });
+        return;
+      case "start":
+        if (view.status.kind === "running") {
+          void laundry.remind(view.machine);
+          return;
+        }
+        laundry.start(view.machine);
+        return;
+      case "door":
+        laundry.dispatch({ type: "open-door", machine: view.machine });
+        return;
+      default: {
+        const unhandled: never = control;
+        return unhandled;
+      }
+    }
+  }
+
   function handleBackdropClick(event: React.MouseEvent<HTMLDivElement>) {
     if (focus === "room") return;
     const isOnHitTarget =
@@ -234,10 +343,26 @@ export function LaundromatScene() {
 
   const tooltip = (() => {
     if (tooltipId === undefined || viewport === undefined) return undefined;
-    const laidOut = layout.objects.find(
-      ({ object }) => object.id === tooltipId
-    );
-    if (laidOut === undefined) return undefined;
+    const target = layout.objects
+      .flatMap((laidOut) => [
+        {
+          id: laidOut.object.id,
+          bounds: laidOut.bounds,
+          text: () => describeObject(laidOut.object.id)?.tooltip,
+        },
+        ...laidOut.controls.map((control) => ({
+          id: control.id,
+          bounds: control.bounds,
+          text: () => {
+            const view = machineViews[laidOut.object.id];
+            return view === undefined
+              ? undefined
+              : describeControl({ view, control: control.control }).tooltip;
+          },
+        })),
+      ])
+      .find(({ id }) => id === tooltipId);
+    if (target === undefined) return undefined;
     const camera = computeCamera({
       focus,
       viewport,
@@ -245,12 +370,11 @@ export function LaundromatScene() {
       config: sceneConfig,
     });
     return {
-      text: describeSceneObject(laidOut.object)?.tooltip,
+      text: target.text(),
       position: {
         x:
-          (laidOut.bounds.x + laidOut.bounds.width / 2) * camera.scale +
-          camera.x,
-        y: laidOut.bounds.y * camera.scale + camera.y,
+          (target.bounds.x + target.bounds.width / 2) * camera.scale + camera.x,
+        y: target.bounds.y * camera.scale + camera.y,
       },
     };
   })();
@@ -280,29 +404,71 @@ export function LaundromatScene() {
           highlightedId={highlightedId}
           focusedObjectId={focusedObjectId}
           dimAmount={sceneConfig.camera.unfocusedDim}
+          machineViews={machineViews}
         />
         {layout.objects.map((laidOut) => {
-          const description = describeSceneObject(laidOut.object);
-          if (description === undefined) return null;
           const { id } = laidOut.object;
+          const description = describeObject(id);
+          if (description === undefined) return null;
           const focusTarget = findFocusTarget(id);
+          const view = machineViews[id];
           return (
-            <HitTargetButton
-              key={id}
-              laidOut={laidOut}
-              label={description.label}
-              pressed={
-                focusTarget === undefined ? undefined : focusTarget === focus
-              }
-              onActivate={() => handleActivate(id)}
-              onPointerShowTooltip={() =>
-                showTooltip({ objectId: id, source: "pointer" })
-              }
-              onKeyboardShowTooltip={() =>
-                showTooltip({ objectId: id, source: "keyboard" })
-              }
-              onHideTooltip={() => hideTooltip(id)}
-            />
+            <Fragment key={id}>
+              <HitTargetButton
+                laidOut={laidOut}
+                label={description.label}
+                pressed={
+                  focusTarget === undefined ? undefined : focusTarget === focus
+                }
+                onActivate={() => handleActivate(id)}
+                onPointerShowTooltip={() =>
+                  showTooltip({ objectId: id, source: "pointer" })
+                }
+                onKeyboardShowTooltip={() =>
+                  showTooltip({ objectId: id, source: "keyboard" })
+                }
+                onHideTooltip={() => hideTooltip(id)}
+              />
+              {view !== undefined &&
+                laidOut.controls.map((control) => {
+                  const controlDescription = describeControl({
+                    view,
+                    control: control.control,
+                  });
+                  return (
+                    <MachineControlButton
+                      key={control.id}
+                      control={control}
+                      label={controlDescription.label}
+                      enabled={controlDescription.enabled}
+                      onPress={() =>
+                        handleControlPress({
+                          view,
+                          control: control.control,
+                          step: 1,
+                        })
+                      }
+                      onStepBack={() =>
+                        handleControlPress({
+                          view,
+                          control: control.control,
+                          step: -1,
+                        })
+                      }
+                      onPointerShowTooltip={() =>
+                        showTooltip({ objectId: control.id, source: "pointer" })
+                      }
+                      onKeyboardShowTooltip={() =>
+                        showTooltip({
+                          objectId: control.id,
+                          source: "keyboard",
+                        })
+                      }
+                      onHideTooltip={() => hideTooltip(control.id)}
+                    />
+                  );
+                })}
+            </Fragment>
           );
         })}
       </motion.div>

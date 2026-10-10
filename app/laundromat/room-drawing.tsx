@@ -1,6 +1,8 @@
 import type { SceneLayout } from "@/lib/laundromat/build-scene-layout";
+import type { MachineStatus } from "@/lib/laundromat/laundry/get-machine-status";
 import { toSvgPoints } from "@/lib/laundromat/to-svg-points";
 
+import { PlaceholderMachine } from "./placeholder-machine";
 import { PlaceholderObject } from "./placeholder-object";
 
 type RoomDrawingProps = {
@@ -8,6 +10,13 @@ type RoomDrawingProps = {
   highlightedId: string | undefined;
   focusedObjectId: string | undefined;
   dimAmount: number;
+  machineViews: {
+    [objectId: string]: {
+      status: MachineStatus;
+      readout: string;
+      dialAngleDeg: number;
+    };
+  };
 };
 
 export function RoomDrawing(props: RoomDrawingProps) {
@@ -52,13 +61,25 @@ export function RoomDrawing(props: RoomDrawingProps) {
           ))}
         </g>
       </g>
-      {layout.objects.map((laidOut) => (
-        <PlaceholderObject
-          key={laidOut.object.id}
-          laidOut={laidOut}
-          highlighted={laidOut.object.id === props.highlightedId}
-        />
-      ))}
+      {layout.objects.map((laidOut) => {
+        const view = props.machineViews[laidOut.object.id];
+        return view === undefined ? (
+          <PlaceholderObject
+            key={laidOut.object.id}
+            laidOut={laidOut}
+            highlighted={laidOut.object.id === props.highlightedId}
+          />
+        ) : (
+          <PlaceholderMachine
+            key={laidOut.object.id}
+            laidOut={laidOut}
+            highlightedId={props.highlightedId}
+            status={view.status}
+            readout={view.readout}
+            dialAngleDeg={view.dialAngleDeg}
+          />
+        );
+      })}
       <rect
         width={layout.size.width}
         height={layout.size.height}

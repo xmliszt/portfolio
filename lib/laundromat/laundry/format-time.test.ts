@@ -1,0 +1,32 @@
+import assert from "node:assert/strict";
+import { test } from "node:test";
+
+import { formatClockTime } from "./format-clock-time";
+import { formatRemainingTime } from "./format-remaining-time";
+
+test("formats remaining time as mm:ss, rounding seconds up", () => {
+  assert.equal(formatRemainingTime(60 * 60_000), "60:00");
+  assert.equal(formatRemainingTime(1_122_001), "18:43");
+  assert.equal(formatRemainingTime(1), "00:01");
+  assert.equal(formatRemainingTime(0), "00:00");
+  assert.equal(formatRemainingTime(-5_000), "00:00");
+});
+
+test("formats local clock time with a.m. and p.m.", () => {
+  assert.equal(
+    formatClockTime(new Date(2026, 0, 1, 1, 24).getTime()),
+    "1:24 a.m."
+  );
+  assert.equal(
+    formatClockTime(new Date(2026, 0, 1, 0, 5).getTime()),
+    "12:05 a.m."
+  );
+  assert.equal(
+    formatClockTime(new Date(2026, 0, 1, 12, 0).getTime()),
+    "12:00 p.m."
+  );
+  assert.equal(
+    formatClockTime(new Date(2026, 0, 1, 23, 59).getTime()),
+    "11:59 p.m."
+  );
+});

@@ -55,6 +55,21 @@ test("keeps every hit target at least 24px on a laptop at room zoom", () => {
   }
 });
 
+test("keeps every machine control at least 24px on a laptop at room zoom", () => {
+  const camera = computeCamera({
+    focus: "room",
+    viewport: laptop,
+    layout,
+    config: sceneConfig,
+  });
+  const controls = layout.objects.flatMap((laidOut) => laidOut.controls);
+  assert.equal(controls.length, 24);
+  for (const { id, bounds } of controls) {
+    assert.ok(bounds.width * camera.scale >= MIN_HIT_TARGET_PX, id);
+    assert.ok(bounds.height * camera.scale >= MIN_HIT_TARGET_PX, id);
+  }
+});
+
 test("zooms in on a phone rather than shrinking hit targets below 24px", () => {
   const phone = { width: 390, height: 844 };
   const camera = computeCamera({
