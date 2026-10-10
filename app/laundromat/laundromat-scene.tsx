@@ -3,6 +3,7 @@
 import { Fragment, useEffect, useMemo, useRef, useState } from "react";
 import {
   animate,
+  AnimatePresence,
   motion,
   useMotionValue,
   useReducedMotion,
@@ -24,6 +25,10 @@ import { formatRemainingTime } from "@/lib/laundromat/laundry/format-remaining-t
 import { getBasketContents } from "@/lib/laundromat/laundry/get-basket-contents";
 import { getCycleMinutes } from "@/lib/laundromat/laundry/get-cycle-minutes";
 import { getMachineStatus } from "@/lib/laundromat/laundry/get-machine-status";
+import { describeShelfBook } from "@/lib/laundromat/notebook/describe-shelf-book";
+import { getShelfBookId } from "@/lib/laundromat/notebook/get-shelf-book-id";
+import { getShelfBookOutline } from "@/lib/laundromat/notebook/get-shelf-book-outline";
+import { getShelfBookPlacements } from "@/lib/laundromat/notebook/get-shelf-book-placements";
 import type { CameraFocus } from "@/lib/laundromat/parse-camera-focus";
 import { parseCameraFocus } from "@/lib/laundromat/parse-camera-focus";
 import type { FocusTarget, SceneConfig } from "@/lib/laundromat/scene-config";
@@ -33,6 +38,9 @@ import { describeTvControl } from "@/lib/laundromat/tv/describe-tv-control";
 import { getYouTubeWatchUrl } from "@/lib/laundromat/tv/get-youtube-watch-url";
 import { cn } from "@/lib/utils";
 
+import { NotebookBook } from "./notebook/notebook-book";
+import { ShelfBookButton } from "./notebook/shelf-book-button";
+import { useNotebookShelf } from "./notebook/use-notebook-shelf";
 import type { SceneViews } from "./objects/scene-views";
 import { HitTargetButton } from "./hit-target-button";
 import { RoomDrawing } from "./room-drawing";
@@ -58,6 +66,11 @@ function getFocusedObjectId(options: {
     : options.config.camera.focusTargets[options.focus].objectId;
 }
 
+function parseBookNumber(value: string | null) {
+  const number = Number.parseInt(value ?? "", 10);
+  return Number.isInteger(number) && number > 0 ? number : undefined;
+}
+
 function findFocusTarget(options: { objectId: string; config: SceneConfig }) {
   return FOCUS_TARGETS.find(
     (target) =>
@@ -80,6 +93,8 @@ export function LaundromatScene(props: LaundromatSceneProps) {
   const searchParams = useSearchParams();
   const focus = parseCameraFocus(searchParams.get("focus"));
   const focusedObjectId = getFocusedObjectId({ focus, config });
+  const bookNumber =
+    focus === "notebook" ? parseBookNumber(searchParams.get("book")) : undefined;
   const prefersReducedMotion = useReducedMotion() ?? false;
   const sceneHour = useSceneHour();
   const hour = props.hourOverride ?? sceneHour;
@@ -103,6 +118,46 @@ export function LaundromatScene(props: LaundromatSceneProps) {
   const previousFocusRef = useRef(focus);
   const laundry = useLaundry();
   const appliances = useRoomAppliances(config);
+  const notebookShelf = useNotebookShelf();
+  const shelf = notebookShelf.shelf;
+  const filledBooks = shelf?.kind === "online" ? shelf.books : [];
+  const coverNumber =
+    shelf?.kind === "online"
+      ? shelf.currentNumber
+      : config.details.notebook.coverNumber;
+  const notebookObjectId = config.camera.focusTargets.notebook.objectId;
+  const shelfObject = layout.objects.find(
+    ({ object }) => object.id === config.camera.focusTargets.shelf.objectId
+  )?.object;
+  const shelfBooks =
+    shelfObject === undefined
+      ? []
+      : getShelfBookPlacements({
+          shelf: shelfObject,
+          bookNumbers: filledBooks.map(({ number }) => number),
+          lean: config.details.shelf.bookLean,
+        }).flatMap((placement) => {
+          const book = filledBooks.find(
+            ({ number }) => number === placement.number
+          );
+          if (book === undefined) return [];
+          return [
+            {
+              id: getShelfBookId(placement.number),
+              number: placement.number,
+              ...getShelfBookOutline({
+                book: placement,
+                projection: layout.projection,
+              }),
+              ...describeShelfBook({
+                number: book.number,
+                startedAtMs: Date.parse(book.startedAt),
+                filledAtMs: Date.parse(book.filledAt),
+                entryCount: book.entryCount,
+              }),
+            },
+          ];
+        });
   const tvSettings = config.details.tv;
   const {
     setContainer: setTvAudioContainer,
@@ -163,6 +218,8 @@ export function LaundromatScene(props: LaundromatSceneProps) {
     tv: { state: appliances.tv, noSignal: isTvNoSignal },
     coffee: appliances.coffee,
     basket: getBasketContents(laundry.state.load),
+    shelfBookNumbers: filledBooks.map(({ number }) => number),
+    notebookNumber: coverNumber,
   };
 
   function describeControl(options: {
@@ -307,10 +364,12 @@ export function LaundromatScene(props: LaundromatSceneProps) {
     []
   );
 
-  function setFocus(next: CameraFocus) {
+  function setFocus(next: CameraFocus, book?: number) {
     const params = new URLSearchParams(searchParams.toString());
     if (next === "room") params.delete("focus");
     else params.set("focus", next);
+    if (book === undefined) params.delete("book");
+    else params.set("book", String(book));
     const query = params.toString();
     router.push(query === "" ? window.location.pathname : `?${query}`, {
       scroll: false,
@@ -461,12 +520,13 @@ export function LaundromatScene(props: LaundromatSceneProps) {
     if (focus === "room") return;
     const isOnHitTarget =
       event.target instanceof Element &&
-      event.target.closest("[data-hit-target]") !== null;
+      event.target.closest("[data-hit-target], [data-notebook]") !== null;
     if (!isOnHitTarget) setFocus("room");
   }
 
   const tooltip = (() => {
     if (tooltipId === undefined || viewport === undefined) return undefined;
+    if (focus === "notebook") return undefined;
     const target = layout.objects
       .flatMap((laidOut) => [
         {
@@ -481,6 +541,13 @@ export function LaundromatScene(props: LaundromatSceneProps) {
             describeControl({ objectId: laidOut.object.id, control })?.tooltip,
         })),
       ])
+      .concat(
+        shelfBooks.map((book) => ({
+          id: book.id,
+          bounds: book.bounds,
+          text: () => book.tooltip,
+        }))
+      )
       .find(({ id }) => id === tooltipId);
     if (target === undefined) return undefined;
     const camera = computeCamera({ focus, viewport, layout, config });
@@ -491,6 +558,43 @@ export function LaundromatScene(props: LaundromatSceneProps) {
           (target.bounds.x + target.bounds.width / 2) * camera.scale + camera.x,
         y: target.bounds.y * camera.scale + camera.y,
       },
+    };
+  })();
+
+  const bookLift = (() => {
+    if (viewport === undefined) return undefined;
+    const page = config.notebook.page;
+    const bookWidth = page.width * 2;
+    const bookHeight = page.height + config.notebook.statusBarPx;
+    const fill = config.notebook.bookViewportFill;
+    const scale = Math.min(
+      (viewport.width * fill) / bookWidth,
+      (viewport.height * fill) / bookHeight
+    );
+    const to = { x: 0, y: 0, scale, opacity: 1 };
+    const notebookObject = layout.objects.find(
+      ({ object }) => object.id === notebookObjectId
+    );
+    if (notebookObject === undefined || prefersReducedMotion) {
+      return { from: { ...to, opacity: 0 }, to };
+    }
+    const camera = computeCamera({
+      focus: "notebook",
+      viewport,
+      layout,
+      config,
+    });
+    const { bounds } = notebookObject;
+    const centerX = (bounds.x + bounds.width / 2) * camera.scale + camera.x;
+    const centerY = (bounds.y + bounds.height / 2) * camera.scale + camera.y;
+    return {
+      from: {
+        x: centerX - viewport.width / 2,
+        y: centerY - viewport.height / 2,
+        scale: (bounds.width * camera.scale) / page.width,
+        opacity: 0,
+      },
+      to,
     };
   })();
 
@@ -518,6 +622,7 @@ export function LaundromatScene(props: LaundromatSceneProps) {
           layout={layout}
           highlightedId={highlightedId}
           focusedObjectId={focusedObjectId}
+          hiddenObjectId={focus === "notebook" ? notebookObjectId : undefined}
           dimAmount={config.camera.unfocusedDim}
           views={views}
           hour={hour}
@@ -580,7 +685,56 @@ export function LaundromatScene(props: LaundromatSceneProps) {
             </Fragment>
           );
         })}
+        {focus === "shelf" &&
+          shelfBooks.map((book) => (
+            <ShelfBookButton
+              key={book.id}
+              id={book.id}
+              outline={book.outline}
+              bounds={book.bounds}
+              label={book.label}
+              onActivate={() => setFocus("notebook", book.number)}
+              onPointerShowTooltip={() =>
+                showTooltip({ objectId: book.id, source: "pointer" })
+              }
+              onKeyboardShowTooltip={() =>
+                showTooltip({ objectId: book.id, source: "keyboard" })
+              }
+              onHideTooltip={() => hideTooltip(book.id)}
+            />
+          ))}
       </motion.div>
+      <AnimatePresence>
+        {focus === "notebook" && bookLift !== undefined && (
+          <motion.div
+            key="notebook"
+            className="pointer-events-none absolute inset-0 flex items-center justify-center"
+          >
+            <motion.div
+              className="pointer-events-auto origin-center"
+              initial={bookLift.from}
+              animate={bookLift.to}
+              exit={{ ...bookLift.from, transition: { duration: 0.32 } }}
+              transition={{
+                duration: prefersReducedMotion
+                  ? 0.2
+                  : config.details.notebook.liftMs / 1000,
+                ease: config.camera.ease,
+              }}
+            >
+              <NotebookBook
+                key={bookNumber ?? "current"}
+                config={config}
+                bookNumber={bookNumber}
+                coverNumber={coverNumber}
+                reducedMotion={prefersReducedMotion}
+                onPlaced={() => void notebookShelf.refresh()}
+                onClose={() => setFocus("room")}
+              />
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
       <SceneTooltip text={tooltip?.text} position={tooltip?.position} />
       <div
         ref={setTvAudioContainer}

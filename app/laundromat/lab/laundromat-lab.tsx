@@ -178,6 +178,7 @@ const objectDials = {
   shelf: {
     bookLean: [details.shelf.bookLean, 0, 0.4, 0.01],
     spineGlow: [details.shelf.spineGlow, 0, 1, 0.01],
+    bookLift: [details.shelf.bookLift, 0, 0.5, 0.01],
     _collapsed: true,
   },
   window: {
@@ -186,6 +187,14 @@ const objectDials = {
   },
   notebook: {
     coverNumber: [details.notebook.coverNumber, 1, 99, 1],
+    liftMs: [details.notebook.liftMs, 0, 1600, 10],
+    coverOpenMs: [details.notebook.coverOpenMs, 0, 2000, 10],
+    riffleSheets: [details.notebook.riffleSheets, 1, 8, 1],
+    riffleStaggerMs: [details.notebook.riffleStaggerMs, 0, 300, 5],
+    riffleSheetMs: [details.notebook.riffleSheetMs, 100, 1500, 10],
+    turnMs: [details.notebook.turnMs, 100, 2000, 10],
+    curlStrength: [details.notebook.curlStrength, 0, 1, 0.01],
+    inkSpeed: [details.notebook.inkSpeed, 0.25, 4, 0.05],
     _collapsed: true,
   },
 } satisfies DialConfig;
@@ -326,7 +335,10 @@ export default function LaundromatLab() {
         plant: objectValues.plant,
         shelf: objectValues.shelf,
         window: objectValues.window,
-        notebook: objectValues.notebook,
+        notebook: {
+          ...objectValues.notebook,
+          turnEase: details.notebook.turnEase,
+        },
       },
     } satisfies SceneConfig;
   }, [tokens, lightValues, cameraValues, placement, skyValues, objectValues]);

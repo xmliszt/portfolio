@@ -1,3 +1,4 @@
+import type { NotebookScript } from "./supabase/notebook-types";
 import type { TvStation } from "./tv/tv-state";
 
 export type IsoPoint = { x: number; y: number; z: number };
@@ -32,6 +33,15 @@ type FocusTargets = {
 };
 
 export type FocusTarget = keyof FocusTargets;
+
+export type NotebookPage = {
+  width: number;
+  height: number;
+  marginX: number;
+  marginTop: number;
+  marginBottom: number;
+  textDropRatio: number;
+};
 
 export type SkyKey = { hour: number; top: string; horizon: string };
 
@@ -127,9 +137,29 @@ export type SceneConfig = {
       swayMinSeconds: number;
       swayMaxSeconds: number;
     };
-    shelf: { bookLean: number; spineGlow: number };
+    shelf: { bookLean: number; spineGlow: number; bookLift: number };
     window: { litWindowOpacity: number };
-    notebook: { coverNumber: number };
+    notebook: {
+      coverNumber: number;
+      liftMs: number;
+      coverOpenMs: number;
+      riffleSheets: number;
+      riffleStaggerMs: number;
+      riffleSheetMs: number;
+      turnMs: number;
+      turnEase: [number, number, number, number];
+      curlStrength: number;
+      inkSpeed: number;
+    };
+  };
+  notebook: {
+    page: NotebookPage;
+    offlineBook: { pageCount: number; linesPerPage: number };
+    statusBarPx: number;
+    maxChars: number;
+    counterFromRatio: number;
+    bookViewportFill: number;
+    fontSizeRatio: { [script in NotebookScript]: number };
   };
   sky: {
     keys: SkyKey[];
@@ -395,9 +425,45 @@ export const sceneConfig: SceneConfig = {
     },
     clock: { hourHandWidth: 2, minuteHandWidth: 1.25, glassHighlight: 0.08 },
     plant: { swayDeg: 1.4, swayMinSeconds: 7, swayMaxSeconds: 10 },
-    shelf: { bookLean: 0.14, spineGlow: 0.6 },
+    shelf: { bookLean: 0.14, spineGlow: 0.6, bookLift: 0.12 },
     window: { litWindowOpacity: 0.7 },
-    notebook: { coverNumber: 1 },
+    notebook: {
+      coverNumber: 1,
+      liftMs: 650,
+      coverOpenMs: 950,
+      riffleSheets: 4,
+      riffleStaggerMs: 70,
+      riffleSheetMs: 560,
+      turnMs: 720,
+      turnEase: [0.45, 0.05, 0.3, 1],
+      curlStrength: 0.55,
+      inkSpeed: 1.6,
+    },
+  },
+  notebook: {
+    page: {
+      width: 500,
+      height: 840,
+      marginX: 52,
+      marginTop: 56,
+      marginBottom: 64,
+      textDropRatio: 0.16,
+    },
+    offlineBook: { pageCount: 48, linesPerPage: 24 },
+    statusBarPx: 72,
+    maxChars: 1200,
+    counterFromRatio: 0.8,
+    bookViewportFill: 0.88,
+    fontSizeRatio: {
+      latin: 0.84,
+      korean: 0.88,
+      japanese: 0.6,
+      chinese: 0.66,
+      arabic: 0.7,
+      hebrew: 0.6,
+      devanagari: 0.66,
+      bengali: 0.66,
+    },
   },
   sky: {
     keys: [

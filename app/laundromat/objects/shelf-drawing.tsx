@@ -1,31 +1,25 @@
 import type { LaidOutObject } from "@/lib/laundromat/build-scene-layout";
 import { getFacePlane } from "@/lib/laundromat/get-face-plane";
+import { getShelfBookId } from "@/lib/laundromat/notebook/get-shelf-book-id";
+import type { ShelfBookPlacement } from "@/lib/laundromat/notebook/get-shelf-book-placements";
 import type { IsoProjection } from "@/lib/laundromat/project-iso-point";
 import { projectIsoPoint } from "@/lib/laundromat/project-iso-point";
 import type { SceneConfig } from "@/lib/laundromat/scene-config";
 import { toSvgPoints } from "@/lib/laundromat/to-svg-points";
+import { cn } from "@/lib/utils";
 
 import { IsoBox } from "./iso-box";
 import { partStroke } from "./part-stroke";
 
 const BOARD_THICKNESS = 0.08;
 const BRACKET_DROP = 0.5;
-const BOOKS = [
-  { thickness: 0.16, height: 1.18, depth: 0.58 },
-  { thickness: 0.19, height: 1.3, depth: 0.62 },
-  { thickness: 0.14, height: 1.06, depth: 0.54 },
-  { thickness: 0.18, height: 1.24, depth: 0.6 },
-  { thickness: 0.15, height: 1.36, depth: 0.62 },
-  { thickness: 0.2, height: 1.12, depth: 0.56 },
-  { thickness: 0.16, height: 1.28, depth: 0.6 },
-  { thickness: 0.17, height: 1.2, depth: 0.58 },
-  { thickness: 0.15, height: 1.1, depth: 0.56 },
-];
 
 type ShelfDrawingProps = {
   laidOut: LaidOutObject;
   projection: IsoProjection;
   highlighted: boolean;
+  highlightedId: string | undefined;
+  books: ShelfBookPlacement[];
   details: SceneConfig["details"]["shelf"];
 };
 
@@ -37,18 +31,6 @@ export function ShelfDrawing(props: ShelfDrawingProps) {
     return projectIsoPoint({ point: { x, y, z }, projection });
   }
   const brackets = [p.y + 0.3, p.y + size.d - 0.36];
-  const boardTop = p.z + BOARD_THICKNESS;
-  const books = BOOKS.reduce<
-    { y: number; book: (typeof BOOKS)[number]; lean: number }[]
-  >((placed, book, index) => {
-    const previous = placed.at(-1);
-    const y =
-      previous === undefined
-        ? p.y + 0.14
-        : previous.y + previous.book.thickness + 0.01;
-    const lean = index === BOOKS.length - 1 ? details.bookLean : 0;
-    return [...placed, { y: y + lean, book, lean }];
-  }, []);
   return (
     <g className={partStroke(props.highlighted)} strokeLinejoin="round">
       {brackets.map((y) => (
@@ -71,21 +53,23 @@ export function ShelfDrawing(props: ShelfDrawingProps) {
         size={{ w: size.w, d: size.d, h: BOARD_THICKNESS }}
         projection={projection}
       />
-      {books.map(({ y, book, lean }) => {
-        const x0 = p.x + 0.06;
-        const x1 = x0 + book.depth;
+      {props.books.map((book) => {
+        const isLifted = props.highlightedId === getShelfBookId(book.number);
+        const lift = isLifted ? details.bookLift : 0;
+        const { x0, x1, y, lean } = book;
+        const z0 = book.z0 + lift;
+        const z1 = book.z1 + lift;
         const y1 = y + book.thickness;
-        const z1 = boardTop + Math.min(book.height, size.h - BOARD_THICKNESS);
         const topY = y - lean;
         const front = [
-          at(x0, y1, boardTop),
-          at(x1, y1, boardTop),
+          at(x0, y1, z0),
+          at(x1, y1, z0),
           at(x1, topY + book.thickness, z1),
           at(x0, topY + book.thickness, z1),
         ];
         const spine = [
-          at(x1, y, boardTop),
-          at(x1, y1, boardTop),
+          at(x1, y, z0),
+          at(x1, y1, z0),
           at(x1, topY + book.thickness, z1),
           at(x1, topY, z1),
         ];
@@ -97,13 +81,16 @@ export function ShelfDrawing(props: ShelfDrawingProps) {
         ];
         const spinePlane = getFacePlane({
           plane: "side",
-          origin: { x: x1, y: y1, z: boardTop + (z1 - boardTop) },
+          origin: { x: x1, y: y1, z: z1 },
           projection,
         });
-        const spineHeight = (z1 - boardTop) * unit;
+        const spineHeight = (z1 - z0) * unit;
         const spineWidth = book.thickness * unit;
         return (
-          <g key={y}>
+          <g
+            key={book.number}
+            className={cn(isLifted && "stroke-[var(--lm-ink-hi)]")}
+          >
             <polygon
               className="fill-[var(--lm-face)]"
               points={toSvgPoints(front)}
@@ -130,13 +117,22 @@ export function ShelfDrawing(props: ShelfDrawingProps) {
                   x2={spineWidth - 0.5}
                   y2={spineHeight - 5}
                 />
-                <circle
-                  cx={spineWidth / 2}
-                  cy={9}
-                  r={0.9}
-                  className="fill-[var(--lm-accent-hi)] stroke-none"
-                  opacity={props.highlighted ? details.spineGlow : 0}
-                />
+                <text
+                  x={spineWidth / 2}
+                  y={10}
+                  textAnchor="middle"
+                  dominantBaseline="central"
+                  fontSize={Math.min(4, spineWidth * 0.6)}
+                  className={cn(
+                    "stroke-none font-[family-name:var(--lm-font-display)] transition-[fill,opacity] duration-200",
+                    isLifted
+                      ? "fill-[var(--lm-accent-hi)]"
+                      : "fill-[var(--lm-ink)]"
+                  )}
+                  opacity={isLifted ? details.spineGlow : 0.45}
+                >
+                  {book.number}
+                </text>
               </g>
             )}
           </g>

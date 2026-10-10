@@ -17,4 +17,6 @@ export type SceneViews = {
   tv: TvView;
   coffee: CoffeePhase;
   basket: BasketContents;
+  shelfBookNumbers: number[];
+  notebookNumber: number;
 };
