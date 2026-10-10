@@ -31,6 +31,7 @@ import { MachineControlButton } from "./machine-control-button";
 import { RoomDrawing } from "./room-drawing";
 import { SceneTooltip } from "./scene-tooltip";
 import { useLaundry } from "./use-laundry";
+import { useSceneHour } from "./use-scene-hour";
 
 const SCENE_UNIT_PX = 40;
 const TOOLTIP_DELAY_MS = 300;
@@ -57,6 +58,7 @@ export function LaundromatScene() {
   const focus = parseCameraFocus(searchParams.get("focus"));
   const focusedObjectId = getFocusedObjectId(focus);
   const prefersReducedMotion = useReducedMotion() ?? false;
+  const hour = useSceneHour();
 
   const rootRef = useRef<HTMLDivElement>(null);
   const [viewport, setViewport] = useState<Viewport>();
@@ -405,6 +407,8 @@ export function LaundromatScene() {
           focusedObjectId={focusedObjectId}
           dimAmount={sceneConfig.camera.unfocusedDim}
           machineViews={machineViews}
+          hour={hour}
+          config={sceneConfig}
         />
         {layout.objects.map((laidOut) => {
           const { id } = laidOut.object;

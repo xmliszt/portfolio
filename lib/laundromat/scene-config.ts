@@ -70,6 +70,8 @@ export type SceneConfig = {
     poolIntensity: number;
     lampNoonRatio: number;
     daylightPatchStrength: number;
+    lampColor: string;
+    daylightColor: string;
   };
   machines: {
     washerCycleMinutes: number[];
@@ -81,6 +83,11 @@ export type SceneConfig = {
     keys: SkyKey[];
     sunriseHour: number;
     sunsetHour: number;
+    twilightHours: number;
+    sunColor: string;
+    sunWarmColor: string;
+    moonColor: string;
+    starColor: string;
     timeJumpGlideMs: number;
   };
 };
@@ -249,7 +256,13 @@ export const sceneConfig: SceneConfig = {
     ease: [0.22, 0.8, 0.2, 1],
     unfocusedDim: 0.35,
   },
-  light: { poolIntensity: 1, lampNoonRatio: 0.5, daylightPatchStrength: 0.12 },
+  light: {
+    poolIntensity: 1,
+    lampNoonRatio: 0.5,
+    daylightPatchStrength: 0.12,
+    lampColor: "#ff9a2e",
+    daylightColor: "#d6e4f0",
+  },
   machines: {
     washerCycleMinutes: [25, 30, 45, 60],
     dryerCycleMinutes: [5, 10, 15],
@@ -271,6 +284,11 @@ export const sceneConfig: SceneConfig = {
     ],
     sunriseHour: 5.75,
     sunsetHour: 19.25,
+    twilightHours: 1.5,
+    sunColor: "#fff3d6",
+    sunWarmColor: "#ffa65c",
+    moonColor: "#dfe3ea",
+    starColor: "#c9d2e0",
     timeJumpGlideMs: 2000,
   },
 };

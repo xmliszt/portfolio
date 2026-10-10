@@ -1,9 +1,21 @@
-import type { SceneLayout } from "@/lib/laundromat/build-scene-layout";
+import { Fragment } from "react";
+
+import type {
+  LaidOutObject,
+  SceneLayout,
+} from "@/lib/laundromat/build-scene-layout";
+import { getTimeOfDay } from "@/lib/laundromat/get-time-of-day";
 import type { MachineStatus } from "@/lib/laundromat/laundry/get-machine-status";
+import type { SceneConfig } from "@/lib/laundromat/scene-config";
 import { toSvgPoints } from "@/lib/laundromat/to-svg-points";
 
 import { PlaceholderMachine } from "./placeholder-machine";
 import { PlaceholderObject } from "./placeholder-object";
+import { RoomLight } from "./room-light";
+import { WallClock } from "./wall-clock";
+import { WindowSky } from "./window-sky";
+
+const CLOCK_FACE_RATIO = 0.88;
 
 type RoomDrawingProps = {
   layout: SceneLayout;
@@ -17,10 +29,49 @@ type RoomDrawingProps = {
       dialAngleDeg: number;
     };
   };
+  hour: number | undefined;
+  config: SceneConfig;
 };
 
 export function RoomDrawing(props: RoomDrawingProps) {
-  const { layout } = props;
+  const { layout, config, hour } = props;
+  const timeOfDay =
+    hour === undefined ? undefined : getTimeOfDay({ hour, config });
+  const windowObject = layout.objects.find(
+    ({ object }) => object.kind === "window"
+  );
+
+  function renderTimeOfDay(laidOut: LaidOutObject) {
+    if (hour === undefined || timeOfDay === undefined) return null;
+    const { kind, position, size } = laidOut.object;
+    if (kind === "window") {
+      return (
+        <WindowSky
+          laidOut={laidOut}
+          timeOfDay={timeOfDay}
+          projection={layout.projection}
+          sky={config.sky}
+        />
+      );
+    }
+    if (kind === "clock") {
+      return (
+        <WallClock
+          center={{
+            x: position.x + size.w / 2,
+            y: position.y + size.d,
+            z: position.z + size.h / 2,
+          }}
+          radius={(Math.min(size.w, size.h) / 2) * CLOCK_FACE_RATIO}
+          wall="back"
+          hour={hour}
+          projection={layout.projection}
+        />
+      );
+    }
+    return null;
+  }
+
   const focused = layout.objects.find(
     ({ object }) => object.id === props.focusedObjectId
   );
@@ -61,23 +112,34 @@ export function RoomDrawing(props: RoomDrawingProps) {
           ))}
         </g>
       </g>
+      {timeOfDay !== undefined && (
+        <RoomLight
+          window={windowObject}
+          timeOfDay={timeOfDay}
+          projection={layout.projection}
+          config={config}
+        />
+      )}
       {layout.objects.map((laidOut) => {
         const view = props.machineViews[laidOut.object.id];
-        return view === undefined ? (
-          <PlaceholderObject
-            key={laidOut.object.id}
-            laidOut={laidOut}
-            highlighted={laidOut.object.id === props.highlightedId}
-          />
-        ) : (
-          <PlaceholderMachine
-            key={laidOut.object.id}
-            laidOut={laidOut}
-            highlightedId={props.highlightedId}
-            status={view.status}
-            readout={view.readout}
-            dialAngleDeg={view.dialAngleDeg}
-          />
+        return (
+          <Fragment key={laidOut.object.id}>
+            {view === undefined ? (
+              <PlaceholderObject
+                laidOut={laidOut}
+                highlighted={laidOut.object.id === props.highlightedId}
+              />
+            ) : (
+              <PlaceholderMachine
+                laidOut={laidOut}
+                highlightedId={props.highlightedId}
+                status={view.status}
+                readout={view.readout}
+                dialAngleDeg={view.dialAngleDeg}
+              />
+            )}
+            {renderTimeOfDay(laidOut)}
+          </Fragment>
         );
       })}
       <rect

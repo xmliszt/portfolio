@@ -71,6 +71,7 @@ export function buildSceneLayout(options: {
       at(0, depth, wallHeight),
       at(0, 0, wallHeight),
     ],
+    projection,
     gridLines,
     objects: sortByDepth(options.config.objects).map((object) => {
       const faces = getBoxFaces({

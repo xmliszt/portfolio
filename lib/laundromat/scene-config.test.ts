@@ -52,6 +52,12 @@ test("uses six-digit hex for every token and sky colour", () => {
   const colours = [
     ...Object.values(sceneConfig.tokens),
     ...sceneConfig.sky.keys.flatMap((key) => [key.top, key.horizon]),
+    sceneConfig.light.lampColor,
+    sceneConfig.light.daylightColor,
+    sceneConfig.sky.sunColor,
+    sceneConfig.sky.sunWarmColor,
+    sceneConfig.sky.moonColor,
+    sceneConfig.sky.starColor,
   ];
   for (const colour of colours) {
     assert.match(colour, /^#[0-9a-f]{6}$/);
