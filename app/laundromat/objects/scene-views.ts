@@ -10,9 +10,11 @@ export type MachineView = {
   doorOpen: boolean;
 };
 
+export type TvView = { state: TvState; noSignal: boolean };
+
 export type SceneViews = {
   machines: { [objectId: string]: MachineView };
-  tv: TvState;
+  tv: TvView;
   coffee: CoffeePhase;
   basket: BasketContents;
   shelfBookNumbers: number[];

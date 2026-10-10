@@ -109,7 +109,7 @@ export function ObjectWorkbench(props: ObjectWorkbenchProps) {
               doorOpen: props.doorOpen,
             },
           },
-    tv: appliances.tv,
+    tv: { state: appliances.tv, noSignal: false },
     coffee: appliances.coffee,
     basket: props.basket,
     shelfBookNumbers: WORKBENCH_SHELF_BOOKS,

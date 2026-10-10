@@ -6,7 +6,12 @@ import { describeTvControl } from "./describe-tv-control";
 import type { TvState } from "./tv-state";
 
 const settings = {
-  stations: ["rainy café", "piano night", "late wash"],
+  stations: ["rainy café", "piano night", "late wash"].map((label) => ({
+    label,
+    videoId: `${label}-id`,
+    channel: "Lofi Girl",
+    placeholder: false,
+  })),
   volumeStepPercent: 10,
 };
 const on: TvState = { on: true, station: 1, volumePercent: 60 };
@@ -41,7 +46,7 @@ test("offers to turn the TV off when on, and on when off", () => {
   );
 });
 
-test("turns the TV on from the screen, and shows the station once on", () => {
+test("turns the TV on from the screen, and offers YouTube once on", () => {
   assert.deepEqual(
     describeTvControl({ control: "screen", state: off, settings }),
     { label: "TV screen, off, turn on", tooltip: "turn on", enabled: true }
@@ -49,9 +54,9 @@ test("turns the TV on from the screen, and shows the station once on", () => {
   assert.deepEqual(
     describeTvControl({ control: "screen", state: on, settings }),
     {
-      label: "TV screen, ch 02 · piano night",
-      tooltip: "ch 02 · piano night",
-      enabled: false,
+      label: "TV screen, ch 02 · piano night, watch on YouTube",
+      tooltip: "watch on YouTube ↗",
+      enabled: true,
     }
   );
 });

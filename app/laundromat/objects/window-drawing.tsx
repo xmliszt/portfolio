@@ -50,7 +50,7 @@ const LIT_WINDOWS = [
 ];
 
 type WindowDrawingProps = {
-  laidOut: LaidOutObject;
+  laidOut: Pick<LaidOutObject, "object">;
   projection: IsoProjection;
   highlighted: boolean;
   timeOfDay: TimeOfDay | undefined;
