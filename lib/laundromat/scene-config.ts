@@ -73,7 +73,12 @@ export type SceneConfig = {
     lampColor: string;
     daylightColor: string;
   };
-  machines: { washerCycleMinutes: number[]; dryerCycleMinutes: number[] };
+  machines: {
+    washerCycleMinutes: number[];
+    dryerCycleMinutes: number[];
+    defaultWasherCycleMinutes: number;
+    defaultDryerCycleMinutes: number;
+  };
   sky: {
     keys: SkyKey[];
     sunriseHour: number;
@@ -261,6 +266,8 @@ export const sceneConfig: SceneConfig = {
   machines: {
     washerCycleMinutes: [25, 30, 45, 60],
     dryerCycleMinutes: [5, 10, 15],
+    defaultWasherCycleMinutes: 30,
+    defaultDryerCycleMinutes: 10,
   },
   sky: {
     keys: [

@@ -1,8 +1,11 @@
 import { getBoxFaces } from "./get-box-faces";
+import { getMachineFace } from "./get-machine-face";
 import type { IsoProjection, ScreenPoint } from "./project-iso-point";
 import { projectIsoPoint } from "./project-iso-point";
 import type { SceneConfig } from "./scene-config";
 import { sortByDepth } from "./sort-by-depth";
+
+const MACHINE_CONTROLS = ["dial", "start", "door"] as const;
 
 const COS_30 = Math.cos(Math.PI / 6);
 const SIN_30 = Math.sin(Math.PI / 6);
@@ -76,7 +79,33 @@ export function buildSceneLayout(options: {
         size: object.size,
         projection,
       });
-      return { object, faces, bounds: getBounds(faces.outline) };
+      const machineFace =
+        object.kind === "washer" || object.kind === "dryer"
+          ? getMachineFace({
+              position: object.position,
+              size: object.size,
+              projection,
+            })
+          : undefined;
+      const controls =
+        machineFace === undefined
+          ? []
+          : MACHINE_CONTROLS.map((control) => {
+              const outline = machineFace.controlOutlines[control];
+              return {
+                id: `${object.id}-${control}`,
+                control,
+                outline,
+                bounds: getBounds(outline),
+              };
+            });
+      return {
+        object,
+        faces,
+        bounds: getBounds(faces.outline),
+        machineFace,
+        controls,
+      };
     }),
   };
 }

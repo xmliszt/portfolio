@@ -1,4 +1,5 @@
 import type { LaidOutObject } from "@/lib/laundromat/build-scene-layout";
+import { toClipPath } from "@/lib/laundromat/to-clip-path";
 
 type HitTargetButtonProps = {
   laidOut: LaidOutObject;
@@ -12,9 +13,7 @@ type HitTargetButtonProps = {
 
 export function HitTargetButton(props: HitTargetButtonProps) {
   const { bounds, faces } = props.laidOut;
-  const clipPath = `polygon(${faces.outline
-    .map((point) => `${point.x - bounds.x}px ${point.y - bounds.y}px`)
-    .join(", ")})`;
+  const clipPath = toClipPath({ outline: faces.outline, bounds });
 
   function handleFocus(event: React.FocusEvent<HTMLButtonElement>) {
     if (event.currentTarget.matches(":focus-visible")) {

@@ -23,7 +23,11 @@ function getRoomScale(options: {
   const smallestTargetSide = Math.min(
     ...layout.objects
       .filter(({ object }) => describeSceneObject(object) !== undefined)
-      .map(({ bounds }) => Math.min(bounds.width, bounds.height))
+      .flatMap(({ bounds, controls }) => [
+        bounds,
+        ...controls.map((control) => control.bounds),
+      ])
+      .map((bounds) => Math.min(bounds.width, bounds.height))
   );
   return Math.max(fitScale, MIN_HIT_TARGET_PX / smallestTargetSide);
 }
