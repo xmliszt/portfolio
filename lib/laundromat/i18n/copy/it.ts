@@ -1,0 +1,259 @@
+import type { LaundromatCopy } from "@/lib/laundromat/i18n/laundromat-copy";
+import type { MachineKind } from "@/lib/laundromat/scene-config";
+
+export const it = {
+  locale: "it",
+  languageName: "Italiano",
+  site: {
+    name: "laundro.cafe",
+    title: "laundro.cafe: un timer di concentrazione accogliente, con lofi",
+    description:
+      "Fai il bucato come timer di concentrazione in una lavanderia tranquilla. Lavare, asciugare, concentrarsi, lofi, caffè, un quaderno per sconosciuti o semplicemente staccare. Gratis, senza registrazione.",
+    intro:
+      "Una lavanderia tranquilla nel tuo browser. Avvia una lavatrice o un'asciugatrice da 5 a 60 minuti come timer di concentrazione e ricevi una notifica quando ha finito, ascolta stazioni lo-fi in TV, preparati un caffè e lascia un biglietto scritto a mano nel quaderno condiviso. I quaderni pieni finiscono sullo scaffale.",
+    keywords: [
+      "lavanderia",
+      "timer di concentrazione",
+      "pomodoro",
+      "lofi",
+      "musica per lavorare",
+      "studia con me",
+      "accogliente",
+      "quaderno condiviso",
+    ],
+    inspiredBy: "ispirato a",
+    openGraphLocale: "it_IT",
+  },
+  toolbar: {
+    soundOn: "audio attivo",
+    soundOff: "audio disattivato",
+    share: "condividi",
+    linkCopied: "link copiato",
+    shareText:
+      "Una lavanderia tranquilla nel tuo browser. Carica un bucato, lascia andare il timer e leggi i biglietti che hanno lasciato gli altri.",
+    language: "Lingua",
+  },
+  tabDone: "finito",
+  readoutDone: "fine",
+  matWelcome: "benvenuti",
+  machine: {
+    name: (machine: { kind: MachineKind; number: number }) =>
+      `${machine.kind === "washer" ? "Lavatrice" : "Asciugatrice"} ${machine.number}`,
+    freeLabel: (o: { name: string }) => `${o.name}, libera`,
+    freeTooltip: (o: { name: string }) => `${o.name} · libera`,
+    loadedLabel: (o: { name: string }) =>
+      `${o.name}, caricata, pronta a partire`,
+    loadedTooltip: (o: { name: string }) => `${o.name} · caricata`,
+    runningLabel: (o: { name: string; kind: MachineKind; remaining: string }) =>
+      `${o.name}, ${o.kind === "washer" ? "in lavaggio" : "in asciugatura"}, mancano ${o.remaining}`,
+    runningTooltip: (o: { kind: MachineKind; time: string }) =>
+      `${o.kind === "washer" ? "in lavaggio" : "in asciugatura"} · finisce alle ${o.time}`,
+    doneLabel: (o: { name: string }) =>
+      `${o.name}, finito, tira fuori il bucato`,
+    doneTooltip: (o: { name: string }) => `${o.name} · finito`,
+    othersRunningLabel: (o: {
+      name: string;
+      kind: MachineKind;
+      remaining: string;
+    }) =>
+      `${o.name}, ${o.kind === "washer" ? "sta lavando" : "sta asciugando"} il bucato di qualcun altro, mancano ${o.remaining}`,
+    othersRunningTooltip: (o: { kind: MachineKind; time: string }) =>
+      `qualcun altro sta ${o.kind === "washer" ? "lavando" : "asciugando"} · finisce alle ${o.time}`,
+    othersDoneLabel: (o: { name: string }) =>
+      `${o.name}, il bucato di qualcun altro è pronto`,
+    othersDoneTooltip: (o: { name: string }) =>
+      `${o.name} · di qualcun altro, finito`,
+    doneNotificationTitle: (o: { name: string }) => `${o.name} · finito`,
+    doneNotificationBody: (o: { kind: MachineKind }) =>
+      o.kind === "washer"
+        ? "tira fuori il bucato e scegli un'asciugatrice"
+        : "il tuo bucato è asciutto",
+  },
+  machineControl: {
+    controlInUseLabel: (o: {
+      name: string;
+      control: "dial" | "start" | "door";
+    }) =>
+      `${o.name}, ${{ dial: "manopola", start: "tasto di avvio", door: "oblò" }[o.control]}: lo sta usando qualcun altro`,
+    othersRunningTooltip: (o: { kind: MachineKind; time: string }) =>
+      `${o.kind === "washer" ? "lavaggio" : "asciugatura"} di qualcun altro · finisce alle ${o.time}`,
+    othersDoneTooltip: "bucato di qualcun altro · aspetta il suo proprietario",
+    doneAt: (o: { time: string }) => `finisce alle ${o.time}`,
+    dialLabel: (o: { name: string; minutes: number }) =>
+      `${o.name}, programma, ${o.minutes} minuti`,
+    dialTooltip: (o: { minutes: number; nextMinutes: number }) =>
+      `gira · ${o.minutes} min → ${o.nextMinutes} min`,
+    startLabel: (o: {
+      name: string;
+      kind: MachineKind;
+      minutes: number;
+      canNotify: boolean;
+    }) =>
+      `${o.name}, avvia, ${o.kind === "washer" ? "lavaggio" : "asciugatura"} di ${o.minutes} minuti${o.canNotify ? ", ti avvisa quando ha finito" : ""}`,
+    startTooltip: (o: {
+      kind: MachineKind;
+      minutes: number;
+      canNotify: boolean;
+    }) =>
+      `avvia · ${o.kind === "washer" ? "lavaggio" : "asciugatura"} di ${o.minutes} min${o.canNotify ? " · ti avvisa" : ""}`,
+    remindLabel: (o: { name: string; kind: MachineKind }) =>
+      `${o.name}, avvisami quando finisce ${o.kind === "washer" ? "il lavaggio" : "l'asciugatura"}`,
+    remindTooltip: (o: { doneAt: string }) => `avvisami · ${o.doneAt}`,
+    runningStartLabel: (o: {
+      name: string;
+      reminderOn: boolean;
+      doneAt: string;
+    }) =>
+      `${o.name}, avvia, ${o.reminderOn ? "promemoria attivo, " : ""}${o.doneAt}`,
+    reminderOnTooltip: (o: { doneAt: string }) =>
+      `promemoria attivo · ${o.doneAt}`,
+    idleStartLabel: (o: { name: string }) => `${o.name}, avvia`,
+    loadFirstTooltip: "prima carica il bucato",
+    runningDoorTooltip: (o: { kind: MachineKind; doneAt: string }) =>
+      `${o.kind === "washer" ? "in lavaggio" : "in asciugatura"} · ${o.doneAt}`,
+    doneDoorTooltip: "apri l'oblò · tira fuori il bucato",
+    loadedDoorTooltip: "apri l'oblò · riprendi il bucato",
+    loadableDoorTooltip: "carica il bucato",
+    doorLabel: (o: { name: string }) => `${o.name}, oblò`,
+    doorLabelWithHint: (o: { name: string; hint: string }) =>
+      `${o.name}, oblò, ${o.hint}`,
+  },
+  entranceMat: {
+    readyLabel: (o: { laundry: "wet" | "folded" }) =>
+      `Zerbino, porta a casa il tuo bucato ${o.laundry === "folded" ? "asciutto" : "lavato"}`,
+    readyTooltip: "torna a casa · porta con te il bucato",
+    waitingLabel: "Zerbino, la strada di casa quando il bucato è pronto",
+    waitingTooltip: "la strada di casa · prima finisci il bucato",
+  },
+  coffee: {
+    machineLabel: "Macchina del caffè",
+    brewingMachineLabel: "Macchina del caffè, il caffè sta uscendo",
+    brewingTooltip: "sta uscendo…",
+    hotMachineLabel: "Macchina del caffè, c'è un caffè caldo sul tavolo",
+    hotMachineTooltip: "il caffè è sul tavolo",
+    idleSwitchLabel: "Interruttore della macchina del caffè, fai un caffè",
+    idleSwitchTooltip: "fai un caffè",
+    brewingSwitchLabel:
+      "Interruttore della macchina del caffè, il caffè sta uscendo",
+    hotSwitchLabel: "Interruttore della macchina del caffè, fanne un altro",
+    hotSwitchTooltip: "un altro",
+  },
+  tv: {
+    stations: {
+      "rainy-cafe": "caffè sotto la pioggia",
+      "piano-night": "notte al piano",
+      "late-wash": "bucato a tarda ora",
+      "tape-hiss": "fruscio di nastro",
+      "city-at-3am": "la città alle 3 di notte",
+    },
+    station: (o: { channel: string; name: string }) =>
+      `can. ${o.channel} · ${o.name}`,
+    offLabel: "TV, spenta",
+    offTooltip: "tv · spenta",
+    onLabel: (o: { station: string }) => `TV, accesa, ${o.station}`,
+    screenOnLabel: (o: { station: string }) =>
+      `Schermo della TV, ${o.station}, guarda su YouTube`,
+    screenOnTooltip: "guarda su YouTube ↗",
+    screenOffLabel: "Schermo della TV, spento, accendi",
+    turnOn: "accendi",
+    tunerLabel: (o: { station: string }) => `Canale della TV, ${o.station}`,
+    tunerTooltip: (o: { nextName: string }) =>
+      `stazione successiva · ${o.nextName}`,
+    volumeLabel: (o: { percent: number }) => `Volume della TV, ${o.percent}%`,
+    volumeTooltip: (o: { percent: number }) => `volume · ${o.percent}%`,
+    powerOnLabel: "Accensione della TV, accesa, spegni",
+    turnOff: "spegni",
+    powerOffLabel: "Accensione della TV, spenta, accendi",
+    noSignal: "nessun segnale",
+  },
+  shelf: {
+    loadingLabel: "Scaffale, cerco i quaderni pieni",
+    loadingTooltip: "do un'occhiata allo scaffale…",
+    offlineLabel: "Scaffale, offline al momento",
+    offlineTooltip: "lo scaffale è offline al momento",
+    emptyLabel: "Scaffale, ancora nessun quaderno pieno",
+    emptyTooltip: "ancora nessun quaderno pieno",
+    readyLabel: "Guarda lo scaffale dei quaderni pieni",
+    bookCount: (o: { count: number }) =>
+      o.count === 1 ? "1 quaderno pieno" : `${o.count} quaderni pieni`,
+    bookLabel: (o: { number: number; span: string; entries: string }) =>
+      `Apri il quaderno n. ${o.number}, ${o.span}, ${o.entries}`,
+    entryCount: (o: { count: number }) =>
+      `${o.count} ${o.count === 1 ? "biglietto" : "biglietti"}`,
+  },
+  notebook: {
+    objectLabel: "Apri il quaderno",
+    objectTooltip: "biglietti di sconosciuti",
+    number: (o: { number: number }) => `n. ${o.number}`,
+    dialogLabel: (o: { number: number }) => `Quaderno n. ${o.number}`,
+    daySpan: (o: { from: string; to: string }) => `${o.from} – ${o.to}`,
+    since: (o: { day: string }) => `dal ${o.day}`,
+    insideCover: "risguardo",
+    insideCoverAndPage: (o: { page: number }) => `risguardo · p. ${o.page}`,
+    page: (o: { page: number }) => `p. ${o.page}`,
+    pages: (o: { left: number; right: number }) => `pp. ${o.left}–${o.right}`,
+    pageButtonLabel: (o: { page: number }) =>
+      `Pagina ${o.page}, vai a un'altra pagina`,
+    previousPage: "Pagina precedente",
+    nextPage: "Pagina successiva",
+    scrubberLabel: "Pagina",
+    goToPage: "vai alla pagina",
+    pageInputLabel: (o: { pageCount: number }) =>
+      `Numero di pagina, da 1 a ${o.pageCount}`,
+    report: "segnala",
+    reported: "segnalato",
+    opening: "apro il quaderno…",
+    missing: (o: { number: number }) => `non esiste il quaderno n. ${o.number}`,
+    full: (o: { number: number }) =>
+      `il quaderno n. ${o.number} è pieno · solo lettura`,
+    someoneWritingInNotebook:
+      "qualcuno sta scrivendo nel quaderno · aspetta il tuo turno",
+    someoneWriting: "qualcuno sta scrivendo adesso · aspetta il tuo turno",
+    startsNext: (o: { number: number }) =>
+      `questo biglietto apre il quaderno n. ${o.number}`,
+    writePromptBeforeKeys: "scrivi un biglietto per la prossima persona · ",
+    writePromptAfterKeys: " per salvarlo",
+    textareaLabel: "Scrivi un biglietto nel quaderno",
+    notifyWhenFree: "avvisami quando è libero",
+    notifyPending: "ti avviseremo",
+    saveNote: "salva il mio biglietto",
+    savingNote: "salvataggio…",
+    close: "chiudi",
+    freeNotificationTitle: "il quaderno è libero",
+    freeNotificationBody: "tocca a te scrivere",
+    leaveFailures: {
+      offline: "il quaderno è offline al momento · il tuo biglietto resta qui",
+      rate_limited: "un biglietto ogni due minuti · riprova tra poco",
+      daily_limit_reached: "basta biglietti per oggi · torna domani",
+      contains_link: "niente link nel quaderno",
+      too_long: "troppo lungo per il quaderno · accorcialo un po'",
+      sign_off_too_long: "la firma è troppo lunga",
+      empty_body: "prima scrivi qualcosa",
+      unknown: "qualcosa è andato storto · riprova",
+    },
+  },
+  firstVisit: {
+    garments: {
+      tee: "maglietta",
+      jeans: "jeans",
+      sweater: "maglione",
+      towel: "asciugamano",
+      socks: "calzini",
+      shirt: "camicia",
+    },
+    garmentLabel: (o: { garment: string }) => `Metti nel cesto: ${o.garment}`,
+    basketEmpty: "butta qui i vestiti sparsi sul pavimento",
+    basketPartial: (o: { count: number; total: number }) =>
+      `${o.count} su ${o.total} dentro · aggiungine altri o vai alla porta`,
+    basketFull: "tutto dentro · vai alla porta",
+    lampOffTooltip: "spegni la lampada",
+    lampOnTooltip: "accendi la lampada",
+    lampOffLabel: "Spegni la lampada",
+    lampOnLabel: "Accendi la lampada",
+    doorReadyTooltip: "portalo in lavanderia",
+    doorWaitingTooltip: "prima raccogli il bucato",
+    doorReadyLabel: "Porta il cesto in lavanderia",
+    doorWaitingLabel: "Porta della lavanderia, prima raccogli il bucato",
+    justListen: "ascolta e basta →",
+  },
+} satisfies LaundromatCopy;

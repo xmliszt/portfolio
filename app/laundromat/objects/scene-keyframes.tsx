@@ -1,0 +1,74 @@
+import {
+  LAMP_FLICKER_MS,
+  LAMP_FLICKER_STEPS,
+} from "@/lib/laundromat/lamp-flicker-steps";
+import type { SceneConfig } from "@/lib/laundromat/scene-config";
+
+const LEAF_FLUTTER_RATIO = 0.5;
+
+const lampFlickerFrames = [
+  ...LAMP_FLICKER_STEPS.map(
+    ({ atMs, level }) =>
+      `  ${((atMs / LAMP_FLICKER_MS) * 100).toFixed(1)}% { opacity: ${level}; }`
+  ),
+  "  100% { opacity: 1; }",
+].join("\n");
+
+type SceneKeyframesProps = {
+  plant: SceneConfig["details"]["plant"];
+};
+
+export function SceneKeyframes(props: SceneKeyframesProps) {
+  const sway = props.plant.swayDeg;
+  return (
+    <style>{`
+@keyframes lm-spin { to { transform: rotate(360deg); } }
+@keyframes lm-lamp-flicker {
+${lampFlickerFrames}
+}
+@media (prefers-reduced-motion: no-preference) {
+  [data-lm-lamp-switch="on"] .lm-lamp { animation: lm-lamp-flicker ${LAMP_FLICKER_MS}ms steps(1, end); }
+  [data-lm-lamp-switch] .lm-lamp > * { transition: none !important; }
+}
+@keyframes lm-tumble {
+  0%, 100% { transform: rotate(0deg); }
+  55% { transform: rotate(68deg); }
+  68% { transform: rotate(6deg); }
+  78% { transform: rotate(16deg); }
+}
+@keyframes lm-tumble-high {
+  0%, 100% { transform: rotate(0deg); }
+  50% { transform: rotate(96deg); }
+  64% { transform: rotate(-4deg); }
+  76% { transform: rotate(10deg); }
+}
+@keyframes lm-slosh {
+  from { transform: rotate(-7deg) translateX(-1.5px); }
+  to { transform: rotate(7deg) translateX(1.5px); }
+}
+@keyframes lm-sway { from { transform: rotate(${-sway * LEAF_FLUTTER_RATIO}deg); } to { transform: rotate(${sway * LEAF_FLUTTER_RATIO}deg); } }
+@keyframes lm-bend { from { transform: skewX(${-sway}deg); } to { transform: skewX(${sway}deg); } }
+@keyframes lm-rise {
+  0% { opacity: 0; transform: translateY(0); }
+  30% { opacity: 1; }
+  100% { opacity: 0; transform: translateY(-14px); }
+}
+@keyframes lm-stream { to { stroke-dashoffset: -6.8; } }
+@keyframes lm-fade-out { 0%, 70% { opacity: 1; } 100% { opacity: 0; } }
+@keyframes lm-pulse { 50% { opacity: 0.35; } }
+@keyframes lm-scan-drift { to { transform: translateY(var(--lm-scan-step)); } }
+@keyframes lm-flicker {
+  0%, 100% { opacity: 0.3; }
+  8% { opacity: 1; }
+  10% { opacity: 0.2; }
+  47% { opacity: 0.6; }
+  50% { opacity: 0; }
+}
+@keyframes lm-static { from { opacity: 0.9; transform: translateY(-6px); } to { opacity: 0; transform: translateY(0); } }
+@keyframes lm-power-flash { from { opacity: 0.95; } to { opacity: 0; } }
+@media (prefers-reduced-motion: reduce) {
+  [data-lm-motion] { animation: none !important; transition: none !important; }
+}
+`}</style>
+  );
+}

@@ -1,0 +1,755 @@
+"use client";
+
+import { useEffect, useRef, useState } from "react";
+import { motion, useReducedMotion } from "motion/react";
+
+import { useLaundromatCopy } from "@/app/laundromat/i18n/use-laundromat-copy";
+import { SceneTooltip } from "@/app/laundromat/scene-tooltip";
+import { useSoundBoard } from "@/app/laundromat/sound/use-sound-board";
+import { useSceneHour } from "@/app/laundromat/use-scene-hour";
+import type {
+  BedroomConfig,
+  GarmentKind,
+} from "@/lib/laundromat/first-visit/bedroom-config";
+import { describeHamperBasket } from "@/lib/laundromat/first-visit/describe-hamper-basket";
+import { getGarmentFootprint } from "@/lib/laundromat/first-visit/get-garment-footprint";
+import { getHamperBasket } from "@/lib/laundromat/first-visit/get-hamper-basket";
+import { getTossFlight } from "@/lib/laundromat/first-visit/get-toss-flight";
+import { getFacePlane } from "@/lib/laundromat/get-face-plane";
+import { getTimeOfDay } from "@/lib/laundromat/get-time-of-day";
+import type { ScreenPoint } from "@/lib/laundromat/project-iso-point";
+import { projectIsoPoint } from "@/lib/laundromat/project-iso-point";
+import type { SceneConfig } from "@/lib/laundromat/scene-config";
+import { cn } from "@/lib/utils";
+
+import { BedroomDoor } from "./bedroom-door";
+import { BedroomDrawing } from "./bedroom-drawing";
+import { CrumpledBall } from "./crumpled-ball";
+import { GarmentDrawing } from "./garment-drawing";
+import { HamperBasketDrawing } from "./hamper-basket-drawing";
+import { useIdleNudge } from "./use-idle-nudge";
+
+const DRAG_THRESHOLD_PX = 4;
+const HIT_PADDING_PX = 4;
+const LAND_DELAY_MS = 90;
+const SETTLE_CLEAR_DELAY_MS = 40;
+const LAMP_HEIGHT = 0.82;
+const COS_30 = Math.cos(Math.PI / 6);
+const SIN_30 = Math.sin(Math.PI / 6);
+const PUSH_EASE: [number, number, number, number] = [0.65, 0, 0.35, 1];
+const FADE_OUT_EASE: [number, number, number, number] = [0.55, 0, 1, 0.45];
+
+type Flight = {
+  kind: GarmentKind;
+  from: ScreenPoint;
+  isDrop: boolean;
+  path: ReturnType<typeof getTossFlight>;
+};
+
+type Drag = {
+  kind: GarmentKind;
+  startX: number;
+  startY: number;
+  dx: number;
+  dy: number;
+  moved: boolean;
+};
+
+type Hover = GarmentKind | "basket" | "door" | "lamp";
+
+type Phase = "room" | "opening" | "entering";
+
+type Fit = { scale: number; x: number; y: number };
+
+type FirstVisitProps = {
+  scene: SceneConfig;
+  bedroom: BedroomConfig;
+  hourOverride?: number;
+  cleanPile: boolean;
+  onWalkIn: () => void;
+  onListen: () => void;
+};
+
+export function FirstVisit(props: FirstVisitProps) {
+  const { copy } = useLaundromatCopy();
+  const { bedroom, scene } = props;
+  const { projection, stage, door } = bedroom;
+  const { walkIn } = bedroom.motion;
+  const prefersReducedMotion = useReducedMotion() ?? false;
+  const sceneHour = useSceneHour();
+  const hour = props.hourOverride ?? sceneHour;
+  const timeOfDay =
+    hour === undefined ? undefined : getTimeOfDay({ hour, config: scene });
+
+  const rootRef = useRef<HTMLDivElement>(null);
+  const timersRef = useRef<number[]>([]);
+  const [fit, setFit] = useState<Fit>();
+  const [inBasket, setInBasket] = useState<
+    { kind: GarmentKind; slotIndex: number }[]
+  >([]);
+  const [flights, setFlights] = useState<Flight[]>([]);
+  const [drag, setDrag] = useState<Drag>();
+  const [settling, setSettling] = useState<GarmentKind>();
+  const [hover, setHover] = useState<Hover>();
+  const [lampSwitch, setLampSwitch] = useState<boolean>();
+  const sound = useSoundBoard();
+  const isLampOn = lampSwitch ?? (timeOfDay?.lampIntensity ?? 1) > 0.5;
+  const [isTouched, setIsTouched] = useState(false);
+  const [phase, setPhase] = useState<Phase>("room");
+  const [isWarm, setIsWarm] = useState(false);
+  const [jiggles, setJiggles] = useState(0);
+  const [bumps, setBumps] = useState(0);
+
+  const kinds = bedroom.garments.map((garment) => garment.kind);
+  const unavailable = [
+    ...inBasket.map((item) => item.kind),
+    ...flights.map((flight) => flight.kind),
+  ];
+  const { nudge, resetIdle } = useIdleNudge({
+    kinds,
+    unavailable,
+    isPaused: drag !== undefined || hover !== undefined,
+    isStopped: isTouched || phase !== "room",
+    config: bedroom.motion.nudge,
+  });
+
+  useEffect(() => {
+    const root = rootRef.current;
+    if (root === null) return;
+    const observer = new ResizeObserver(([entry]) => {
+      const { width, height } = entry.contentRect;
+      const scale = Math.min(width / stage.width, height / stage.height);
+      setFit({
+        scale,
+        x: (width - stage.width * scale) / 2,
+        y: (height - stage.height * scale) / 2,
+      });
+    });
+    observer.observe(root);
+    return () => observer.disconnect();
+  }, [stage]);
+
+  useEffect(() => {
+    const timers = timersRef.current;
+    return () => timers.forEach((timer) => window.clearTimeout(timer));
+  }, []);
+
+  function later(delayMs: number, run: () => void) {
+    timersRef.current.push(window.setTimeout(run, delayMs));
+  }
+
+  const floorPlane = `${getFacePlane({ plane: "top", origin: { x: 0, y: 0, z: 0 }, projection }).transform} scale(${projection.unit})`;
+  const basket = getHamperBasket({ basket: bedroom.basket, projection });
+  const footprints = Object.fromEntries(
+    bedroom.garments.map((garment) => [
+      garment.kind,
+      getGarmentFootprint({ garment, projection }),
+    ])
+  );
+  const lampTableTop =
+    bedroom.bedsideTable.position.z + bedroom.bedsideTable.size.h;
+  const lampTop = projectIsoPoint({
+    point: { ...bedroom.lamp.center, z: lampTableTop + LAMP_HEIGHT },
+    projection,
+  });
+  const lampBottom = projectIsoPoint({
+    point: { ...bedroom.lamp.center, z: lampTableTop },
+    projection,
+  });
+  const lampHitWidth = bedroom.lamp.shadeRadius * 2.6 * projection.unit;
+  const doorTopLeft = projectIsoPoint({
+    point: { x: 0, y: door.fromY + door.width, z: door.height },
+    projection,
+  });
+  const doorway = projectIsoPoint({
+    point: { x: 0, y: door.fromY + door.width / 2, z: door.height / 2 },
+    projection,
+  });
+  const isReady = inBasket.length > 0;
+  const isInRoom = phase === "room";
+
+  function isOverBasket(point: ScreenPoint) {
+    const zone = basket.dropZone;
+    return (
+      point.x >= zone.x &&
+      point.x <= zone.x + zone.width &&
+      point.y >= zone.y &&
+      point.y <= zone.y + zone.height
+    );
+  }
+
+  function toss(options: {
+    kind: GarmentKind;
+    from: ScreenPoint;
+    isDrop: boolean;
+  }) {
+    const { kind } = options;
+    if (unavailable.includes(kind)) return;
+    setIsTouched(true);
+    setHover(undefined);
+    const slotIndex = inBasket.length + flights.length;
+    if (prefersReducedMotion) {
+      setInBasket((current) => [...current, { kind, slotIndex }]);
+      return;
+    }
+    const path = getTossFlight({
+      from: options.from,
+      mouth: basket.mouth,
+      slotIndex,
+      drop: options.isDrop,
+      motion: bedroom.motion,
+    });
+    setFlights((current) => [
+      ...current,
+      { kind, from: options.from, isDrop: options.isDrop, path },
+    ]);
+    later(path.durationMs + LAND_DELAY_MS, () => {
+      setFlights((current) => current.filter((flight) => flight.kind !== kind));
+      setInBasket((current) => [...current, { kind, slotIndex }]);
+      setBumps((current) => current + 1);
+      sound?.play("collect-laundry", { volume: 0.35 });
+    });
+  }
+
+  function focusAfterToss(kind: GarmentKind) {
+    const next = kinds.find(
+      (other) => other !== kind && !unavailable.includes(other)
+    );
+    const selector =
+      next === undefined
+        ? "[data-bedroom-door-target]"
+        : `[data-garment-target="${next}"]`;
+    requestAnimationFrame(() =>
+      rootRef.current?.querySelector<HTMLElement>(selector)?.focus()
+    );
+  }
+
+  function handleGarmentPointerDown(options: {
+    event: React.PointerEvent<HTMLButtonElement>;
+    kind: GarmentKind;
+  }) {
+    const { event } = options;
+    if (event.button !== 0 || !isInRoom) return;
+    event.currentTarget.setPointerCapture(event.pointerId);
+    setIsTouched(true);
+    setSettling(undefined);
+    setDrag({
+      kind: options.kind,
+      startX: event.clientX,
+      startY: event.clientY,
+      dx: 0,
+      dy: 0,
+      moved: false,
+    });
+  }
+
+  function handleGarmentPointerMove(event: React.PointerEvent) {
+    if (drag === undefined || fit === undefined) return;
+    const clientDx = event.clientX - drag.startX;
+    const clientDy = event.clientY - drag.startY;
+    setDrag({
+      ...drag,
+      dx: clientDx / fit.scale,
+      dy: clientDy / fit.scale,
+      moved: drag.moved || Math.hypot(clientDx, clientDy) > DRAG_THRESHOLD_PX,
+    });
+  }
+
+  function settleBack(kind: GarmentKind) {
+    setSettling(kind);
+    later(bedroom.motion.settleMs + SETTLE_CLEAR_DELAY_MS, () =>
+      setSettling((current) => (current === kind ? undefined : current))
+    );
+  }
+
+  function handleGarmentPointerUp() {
+    if (drag === undefined) return;
+    setDrag(undefined);
+    const { center } = footprints[drag.kind];
+    const point = { x: center.x + drag.dx, y: center.y + drag.dy };
+    const isOver = drag.moved && isOverBasket(point);
+    if (!drag.moved || isOver) {
+      toss({ kind: drag.kind, from: point, isDrop: isOver });
+      return;
+    }
+    settleBack(drag.kind);
+  }
+
+  function handleGarmentPointerCancel() {
+    if (drag === undefined) return;
+    setDrag(undefined);
+    settleBack(drag.kind);
+  }
+
+  function handleGarmentClick(options: {
+    event: React.MouseEvent<HTMLButtonElement>;
+    kind: GarmentKind;
+  }) {
+    if (options.event.detail !== 0 || !isInRoom) return;
+    toss({
+      kind: options.kind,
+      from: footprints[options.kind].center,
+      isDrop: false,
+    });
+    focusAfterToss(options.kind);
+  }
+
+  function handleHover(target: Hover) {
+    setHover(target);
+    resetIdle();
+  }
+
+  function clearHover(target: Hover) {
+    setHover((current) => (current === target ? undefined : current));
+  }
+
+  function handleDoorClick() {
+    if (!isInRoom) return;
+    if (!isReady) {
+      sound?.play("door-locked");
+      setJiggles((current) => current + 1);
+      setHover("door");
+      return;
+    }
+    setHover(undefined);
+    setPhase("opening");
+    sound?.play("room-door-open");
+    props.onWalkIn();
+    if (prefersReducedMotion) {
+      setPhase("entering");
+      return;
+    }
+    later(walkIn.pushStartMs, () => {
+      setPhase("entering");
+      setIsWarm(true);
+    });
+    later(walkIn.arriveStartMs, () => setIsWarm(false));
+  }
+
+  function handleLampClick() {
+    sound?.play("coffee-switch", { volume: 0.7 });
+    setLampSwitch(!isLampOn);
+  }
+
+  function handleLampFocus(event: React.FocusEvent<HTMLButtonElement>) {
+    if (event.currentTarget.matches(":focus-visible")) setHover("lamp");
+  }
+
+  function handleDoorFocus(event: React.FocusEvent<HTMLButtonElement>) {
+    if (event.currentTarget.matches(":focus-visible")) setHover("door");
+  }
+
+  const tooltip = (() => {
+    if (!isInRoom || fit === undefined) return undefined;
+    const target = (() => {
+      if (hover === "door") {
+        return {
+          text: isReady
+            ? copy.firstVisit.doorReadyTooltip
+            : copy.firstVisit.doorWaitingTooltip,
+          at: projectIsoPoint({
+            point: {
+              x: 0,
+              y: door.fromY + door.width / 2,
+              z: door.height + 0.2,
+            },
+            projection,
+          }),
+        };
+      }
+      if (hover === "lamp") {
+        return {
+          text: isLampOn
+            ? copy.firstVisit.lampOffTooltip
+            : copy.firstVisit.lampOnTooltip,
+          at: { x: lampTop.x, y: lampTop.y - 4 },
+        };
+      }
+      if (hover === "basket" && drag === undefined) {
+        return {
+          text: describeHamperBasket({
+            count: inBasket.length,
+            total: kinds.length,
+            copy,
+          }),
+          at: { x: basket.mouth.x, y: basket.bounds.y - 4 },
+        };
+      }
+      return undefined;
+    })();
+    if (target === undefined) return undefined;
+    return {
+      text: target.text,
+      position: {
+        x: fit.x + target.at.x * fit.scale,
+        y: fit.y + target.at.y * fit.scale,
+      },
+    };
+  })();
+
+  const stagePush = (() => {
+    if (phase !== "entering") return undefined;
+    if (prefersReducedMotion) {
+      return {
+        target: { opacity: 0 },
+        transition: { duration: walkIn.reducedFadeMs / 1000 },
+      };
+    }
+    return {
+      target: {
+        scale: walkIn.pushScale,
+        filter: `blur(${walkIn.pushBlurPx}px)`,
+        opacity: 0,
+      },
+      transition: {
+        scale: {
+          duration: walkIn.pushMs / 1000,
+          ease: PUSH_EASE,
+        },
+        filter: {
+          duration: walkIn.pushBlurMs / 1000,
+          delay: walkIn.pushBlurDelayMs / 1000,
+          ease: FADE_OUT_EASE,
+        },
+        opacity: {
+          duration: walkIn.pushFadeMs / 1000,
+          delay: walkIn.pushFadeDelayMs / 1000,
+          ease: FADE_OUT_EASE,
+        },
+      },
+    };
+  })();
+
+  function renderGarment(kind: GarmentKind) {
+    const isDragging = drag?.kind === kind;
+    const isLive = isDragging || hover === kind;
+    return (
+      <GarmentDrawing
+        key={kind}
+        kind={kind}
+        floorPlane={floorPlane}
+        footprint={footprints[kind].transform}
+        offset={
+          isDragging && drag !== undefined
+            ? { x: drag.dx, y: drag.dy }
+            : { x: 0, y: 0 }
+        }
+        live={isLive}
+        lifted={hover === kind && !isDragging}
+        settling={settling === kind}
+        fading={flights.some((flight) => flight.kind === kind)}
+        nudge={
+          nudge?.kind === kind ? (nudge.count % 2 === 0 ? "a" : "b") : undefined
+        }
+        glowFilter="url(#lm-fv-glow)"
+        liftPx={bedroom.motion.hoverLiftPx}
+        settleMs={bedroom.motion.settleMs}
+      />
+    );
+  }
+
+  const onFloor = kinds.filter(
+    (kind) =>
+      !inBasket.some((item) => item.kind === kind) &&
+      !flights.some((flight) => flight.kind === kind && flight.isDrop)
+  );
+  const onTop = onFloor.filter(
+    (kind) =>
+      (drag?.kind === kind || settling === kind) &&
+      !flights.some((flight) => flight.kind === kind)
+  );
+  const isAccepting =
+    drag !== undefined &&
+    drag.moved &&
+    isOverBasket({
+      x: footprints[drag.kind].center.x + drag.dx,
+      y: footprints[drag.kind].center.y + drag.dy,
+    });
+
+  return (
+    <div
+      ref={rootRef}
+      data-first-visit
+      className={cn(
+        "absolute inset-0 overflow-hidden",
+        !isInRoom && "pointer-events-none [&_a]:pointer-events-none"
+      )}
+    >
+      {fit !== undefined && (
+        <div
+          className="absolute top-0 left-0 origin-top-left"
+          style={{
+            width: stage.width,
+            height: stage.height,
+            transform: `translate(${fit.x}px, ${fit.y}px) scale(${fit.scale})`,
+          }}
+        >
+          <motion.div
+            className="absolute inset-0"
+            style={{
+              transformOrigin: `${doorway.x}px ${doorway.y}px`,
+              willChange:
+                phase === "entering" ? "transform, filter, opacity" : undefined,
+            }}
+            initial={false}
+            animate={stagePush?.target}
+            transition={stagePush?.transition}
+          >
+            <svg
+              aria-hidden
+              width={stage.width}
+              height={stage.height}
+              viewBox={`0 0 ${stage.width} ${stage.height}`}
+              className="pointer-events-none absolute top-0 left-0 overflow-visible"
+            >
+              <defs>
+                <filter
+                  id="lm-fv-glow"
+                  filterUnits="userSpaceOnUse"
+                  x={-stage.width}
+                  y={-stage.height}
+                  width={stage.width * 3}
+                  height={stage.height * 3}
+                >
+                  <feGaussianBlur stdDeviation={2.2} result="blur" />
+                  <feMerge>
+                    <feMergeNode in="blur" />
+                    <feMergeNode in="SourceGraphic" />
+                  </feMerge>
+                </filter>
+                <filter
+                  id="lm-fv-glow-units"
+                  filterUnits="userSpaceOnUse"
+                  x={-2}
+                  y={-2}
+                  width={8}
+                  height={8}
+                >
+                  <feGaussianBlur
+                    stdDeviation={2.2 / projection.unit}
+                    result="blur"
+                  />
+                  <feMerge>
+                    <feMergeNode in="blur" />
+                    <feMergeNode in="SourceGraphic" />
+                  </feMerge>
+                </filter>
+                <filter
+                  id="lm-fv-spill"
+                  filterUnits="userSpaceOnUse"
+                  x={0}
+                  y={0}
+                  width={stage.width}
+                  height={stage.height}
+                >
+                  <feGaussianBlur stdDeviation={6} />
+                </filter>
+              </defs>
+              <g
+                className="[&_*]:[vector-effect:non-scaling-stroke]"
+                strokeWidth={1}
+              >
+                <BedroomDrawing
+                  bedroom={bedroom}
+                  projection={projection}
+                  timeOfDay={timeOfDay}
+                  hour={hour}
+                  scene={scene}
+                  lampOn={isLampOn}
+                  lampHighlighted={hover === "lamp"}
+                  cleanPile={props.cleanPile}
+                />
+                <BedroomDoor
+                  door={door}
+                  walkIn={walkIn}
+                  projection={projection}
+                  ready={isReady}
+                  opening={phase !== "room"}
+                  swings={!prefersReducedMotion}
+                  jiggles={jiggles}
+                  glowFilter="url(#lm-fv-glow-units)"
+                  spillFilter="url(#lm-fv-spill)"
+                />
+                {onFloor
+                  .filter((kind) => !onTop.includes(kind))
+                  .map(renderGarment)}
+                <HamperBasketDrawing
+                  basket={basket}
+                  pile={inBasket}
+                  bumps={bumps}
+                  highlighted={hover === "basket"}
+                  accepting={isAccepting}
+                  glowFilter="url(#lm-fv-glow)"
+                >
+                  {flights.map((flight) => {
+                    const durationS = flight.path.durationMs / 1000;
+                    return (
+                      <g
+                        key={flight.kind}
+                        transform={`translate(${flight.from.x} ${flight.from.y})`}
+                      >
+                        <motion.g
+                          initial={{ x: 0 }}
+                          animate={{ x: flight.path.dx }}
+                          transition={{
+                            duration: durationS,
+                            ease: [0.33, 0.66, 0.45, 1],
+                          }}
+                        >
+                          <motion.g
+                            initial={{ y: 0 }}
+                            animate={{
+                              y: [0, flight.path.peak, flight.path.dy],
+                            }}
+                            transition={{
+                              duration: durationS,
+                              times: [0, 0.42, 1],
+                              ease: [
+                                [0.2, 0.65, 0.4, 1],
+                                [0.6, 0, 0.85, 0.45],
+                              ],
+                            }}
+                          >
+                            <motion.g
+                              initial={{ rotate: 0, scale: 1.08 }}
+                              animate={{
+                                rotate: flight.path.spinDeg,
+                                scale: 0.94,
+                              }}
+                              transition={{
+                                duration: durationS,
+                                ease: [0.3, 0.6, 0.45, 1],
+                              }}
+                            >
+                              <CrumpledBall />
+                            </motion.g>
+                          </motion.g>
+                        </motion.g>
+                      </g>
+                    );
+                  })}
+                </HamperBasketDrawing>
+                {onTop.map(renderGarment)}
+              </g>
+            </svg>
+
+            <div
+              aria-hidden
+              className="absolute"
+              style={{
+                left: basket.bounds.x,
+                top: basket.bounds.y,
+                width: basket.bounds.width,
+                height: basket.bounds.height,
+              }}
+              onPointerEnter={() => handleHover("basket")}
+              onPointerLeave={() => clearHover("basket")}
+            />
+            {onFloor
+              .filter((kind) => !flights.some((flight) => flight.kind === kind))
+              .map((kind) => {
+                const { bounds } = footprints[kind];
+                const isDragging = drag?.kind === kind;
+                const offset = isDragging ? drag : undefined;
+                return (
+                  <button
+                    key={kind}
+                    type="button"
+                    data-garment-target={kind}
+                    aria-label={copy.firstVisit.garmentLabel({
+                      garment: copy.firstVisit.garments[kind],
+                    })}
+                    className="absolute touch-none rounded-md bg-transparent outline-none focus-visible:outline-1 focus-visible:outline-offset-2 focus-visible:outline-[var(--lm-ink)] focus-visible:outline-dashed"
+                    style={{
+                      left: bounds.x - HIT_PADDING_PX + (offset?.dx ?? 0),
+                      top: bounds.y - HIT_PADDING_PX + (offset?.dy ?? 0),
+                      width: bounds.width + HIT_PADDING_PX * 2,
+                      height: bounds.height + HIT_PADDING_PX * 2,
+                      cursor: isDragging && drag?.moved ? "grabbing" : "grab",
+                    }}
+                    onPointerDown={(event) =>
+                      handleGarmentPointerDown({ event, kind })
+                    }
+                    onPointerMove={handleGarmentPointerMove}
+                    onPointerUp={handleGarmentPointerUp}
+                    onPointerCancel={handleGarmentPointerCancel}
+                    onPointerEnter={() => handleHover(kind)}
+                    onPointerLeave={() => clearHover(kind)}
+                    onClick={(event) => handleGarmentClick({ event, kind })}
+                  />
+                );
+              })}
+            <button
+              type="button"
+              aria-label={
+                isLampOn
+                  ? copy.firstVisit.lampOffLabel
+                  : copy.firstVisit.lampOnLabel
+              }
+              aria-pressed={isLampOn}
+              className="absolute cursor-pointer rounded-md bg-transparent outline-none focus-visible:outline-1 focus-visible:outline-offset-2 focus-visible:outline-[var(--lm-ink)] focus-visible:outline-dashed"
+              style={{
+                left: lampTop.x - lampHitWidth / 2,
+                top: lampTop.y - HIT_PADDING_PX,
+                width: lampHitWidth,
+                height: lampBottom.y - lampTop.y + HIT_PADDING_PX,
+              }}
+              onClick={handleLampClick}
+              onPointerEnter={() => handleHover("lamp")}
+              onPointerLeave={() => clearHover("lamp")}
+              onFocus={handleLampFocus}
+              onBlur={() => clearHover("lamp")}
+            />
+            <div
+              className="absolute top-0 left-0 origin-top-left"
+              style={{
+                transform: `matrix(${COS_30}, ${-SIN_30}, 0, 1, ${doorTopLeft.x}, ${doorTopLeft.y})`,
+              }}
+            >
+              <button
+                type="button"
+                data-bedroom-door-target
+                aria-label={
+                  isReady
+                    ? copy.firstVisit.doorReadyLabel
+                    : copy.firstVisit.doorWaitingLabel
+                }
+                className="absolute top-0 left-0 cursor-pointer rounded-md bg-transparent outline-none focus-visible:outline-1 focus-visible:outline-offset-2 focus-visible:outline-[var(--lm-ink)] focus-visible:outline-dashed"
+                style={{
+                  width: door.width * projection.unit,
+                  height: door.height * projection.unit,
+                }}
+                onClick={handleDoorClick}
+                onPointerEnter={() => handleHover("door")}
+                onPointerLeave={() => clearHover("door")}
+                onFocus={handleDoorFocus}
+                onBlur={() => clearHover("door")}
+              />
+            </div>
+          </motion.div>
+        </div>
+      )}
+      {fit !== undefined && !prefersReducedMotion && (
+        <div
+          aria-hidden
+          className="pointer-events-none absolute inset-0"
+          style={{
+            opacity: isWarm ? 0.5 : 0,
+            transition: isWarm
+              ? `opacity ${walkIn.warmInMs}ms cubic-bezier(0.65, 0, 0.35, 1)`
+              : `opacity ${walkIn.warmOutMs}ms cubic-bezier(0.23, 1, 0.32, 1)`,
+            background: `radial-gradient(circle at ${fit.x + doorway.x * fit.scale}px ${fit.y + doorway.y * fit.scale}px, var(--lm-accent-hi) 0%, var(--lm-accent) 28%, color-mix(in srgb, var(--lm-accent) 14%, var(--lm-bg)) 70%, var(--lm-bg) 100%)`,
+          }}
+        />
+      )}
+      <SceneTooltip text={tooltip?.text} position={tooltip?.position} />
+      <button
+        type="button"
+        className="absolute right-9 bottom-7 cursor-pointer bg-transparent px-1.5 py-3 text-[11px] text-[var(--lm-line)] lowercase transition-colors duration-200 outline-none hover:text-[var(--lm-ink)] focus-visible:outline-1 focus-visible:outline-[var(--lm-line)] focus-visible:outline-dashed"
+        onClick={props.onListen}
+      >
+        {copy.firstVisit.justListen}
+      </button>
+    </div>
+  );
+}

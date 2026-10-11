@@ -4,15 +4,20 @@ const appSecurityHeaders = [
   { key: "X-XSS-Protection", value: "1; mode=block" },
 ];
 
+const isDevelopment = process.env.NODE_ENV === "development";
+
 const withPWA = require("next-pwa")({
   dest: "public",
   register: true,
   skipWaiting: true,
-  disable: process.env.NODE_ENV === "development",
+  disable: isDevelopment,
 });
 
 const nextConfig = {
   reactStrictMode: true,
+  pageExtensions: isDevelopment
+    ? ["tsx", "ts", "jsx", "js", "dev.tsx"]
+    : ["tsx", "ts", "jsx", "js"],
   images: {
     remotePatterns: [
       {
@@ -48,6 +53,9 @@ const nextConfig = {
         source: "/",
         destination: "/about#top",
         permanent: true,
+        missing: [
+          { type: "host", value: "laundromat\\.(liyuxuan\\.dev|localhost)" },
+        ],
       },
     ];
   },

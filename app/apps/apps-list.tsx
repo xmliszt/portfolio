@@ -3,17 +3,17 @@
 import { motion } from "motion/react";
 import Link from "next/link";
 
-import { AppData } from "@/app/apps/data";
+import { AppsListEntry } from "@/app/apps/data";
 
 import { AppIcon } from "./app-icon";
 
-export function AppsList({ apps }: { apps: AppData[] }) {
+export function AppsList({ apps }: { apps: AppsListEntry[] }) {
   return (
     <div className="flex flex-col gap-4">
       {apps.map((app) => (
         <Link
           key={app.id}
-          href={`/apps/${app.id}`}
+          href={app.href}
           className="group bg-card hover:bg-accent border-border/50 relative flex items-center gap-x-6 rounded-3xl border p-4 transition-all hover:scale-[1.01] active:scale-[0.99]"
         >
           <AppIcon
