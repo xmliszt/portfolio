@@ -22,6 +22,15 @@ const PLANK_WIDTH = 0.42;
 const PLANK_JOINT_STEP = 1.9;
 const SKIRTING_HEIGHT = 0.12;
 const CURTAIN_DROP = 0.3;
+const CURTAIN_FOLDS = 5;
+const HEM_STEP = 0.05;
+const ROD = { y: -0.22, overhang: 0.44, bracket: 0.06, finial: 0.045 };
+const FOLD_FILL_CLASSES = [
+  "fill-[var(--lm-face)]",
+  "fill-[var(--lm-shade-2)]",
+  "fill-[var(--lm-wall)]",
+  "fill-[var(--lm-shade-1)]",
+];
 const LAMP_GLOW_OPACITY = 0.14;
 const POOL_PEAK_OPACITY = 0.2;
 const BED_LIGHT_PEAK_OPACITY = 0.6;
@@ -78,6 +87,22 @@ export function BedroomDrawing(props: BedroomDrawingProps) {
     projection,
   });
   const curtainLength = window.size.h - 0.32 + CURTAIN_DROP;
+  const rodEnds = [
+    { faceX: -ROD.overhang, outward: -1 },
+    { faceX: openingWidth + ROD.overhang, outward: 1 },
+  ] as const;
+  const curtainPanels = [
+    { from: -0.36, to: 0.3 },
+    { from: openingWidth + 0.36, to: openingWidth - 0.3 },
+  ].map((panel) => ({
+    folds: Array.from(
+      { length: CURTAIN_FOLDS + 1 },
+      (_, fold) => panel.from + ((panel.to - panel.from) * fold) / CURTAIN_FOLDS
+    ),
+  }));
+  function hemAt(fold: number) {
+    return curtainLength - (fold % 2 === 0 ? 0 : HEM_STEP);
+  }
   const daylightPatch = getDaylightPatch({
     wallX: window.size.w,
     fromY: opening.near,
@@ -234,50 +259,85 @@ export function BedroomDrawing(props: BedroomDrawingProps) {
         timeOfDay={timeOfDay}
         config={scene}
       />
+      {rodEnds.map((end) => (
+        <IsoBox
+          key={end.faceX}
+          position={{
+            x: 0,
+            y: opening.far - end.faceX - ROD.bracket / 2,
+            z: opening.top - ROD.y - ROD.bracket / 2,
+          }}
+          size={{ w: window.size.w + 0.04, d: ROD.bracket, h: ROD.bracket }}
+          projection={projection}
+        />
+      ))}
       <g
         transform={`${curtainPlane.transform} scale(${unit})`}
         className="stroke-[var(--lm-line)]"
+        strokeLinejoin="round"
       >
-        {[
-          { edge: -0.32, inner: 0.3, sway: 0.16 },
-          {
-            edge: openingWidth + 0.32,
-            inner: openingWidth - 0.3,
-            sway: openingWidth - 0.16,
-          },
-        ].map((panel) => (
-          <g key={panel.edge}>
-            <path
-              className="fill-[var(--lm-face)]"
-              d={`M ${panel.edge} -0.2 L ${panel.inner} -0.2 Q ${panel.sway + (panel.inner - panel.sway) * 0.4} ${curtainLength * 0.3} ${panel.sway} ${curtainLength * 0.5} Q ${panel.sway - (panel.inner - panel.sway) * 0.6} ${curtainLength * 0.7} ${panel.inner - (panel.inner - panel.sway) * 0.5} ${curtainLength} L ${panel.edge} ${curtainLength} Z`}
-            />
+        {curtainPanels.map((panel) => (
+          <g key={panel.folds[0]}>
+            {panel.folds.slice(1).map((x, fold) => {
+              const from = panel.folds[fold]!;
+              return (
+                <polygon
+                  key={x}
+                  className={cn(
+                    "stroke-none",
+                    FOLD_FILL_CLASSES[fold % FOLD_FILL_CLASSES.length]
+                  )}
+                  points={`${from},${ROD.y} ${x},${ROD.y} ${x},${hemAt(fold + 1)} ${from},${hemAt(fold)}`}
+                />
+              );
+            })}
             <path
               className="fill-none stroke-[var(--lm-detail)]"
-              d={[0.25, 0.5, 0.75]
-                .map((ratio) => {
-                  const x =
-                    panel.edge + (panel.inner - panel.edge) * ratio * 0.8;
-                  return `M ${x} -0.18 Q ${x + 0.02} ${curtainLength * 0.5} ${x - 0.02} ${curtainLength - 0.02}`;
-                })
+              d={panel.folds
+                .slice(1, -1)
+                .map((x, fold) => `M ${x} ${ROD.y} L ${x} ${hemAt(fold + 1)}`)
                 .join(" ")}
+            />
+            <polygon
+              className="fill-none"
+              points={[
+                `${panel.folds.at(0)},${ROD.y}`,
+                `${panel.folds.at(-1)},${ROD.y}`,
+                ...panel.folds
+                  .map((x, fold) => `${x},${hemAt(fold)}`)
+                  .toReversed(),
+              ].join(" ")}
             />
           </g>
         ))}
         <line
           className="stroke-[var(--lm-ink)]"
           strokeWidth={1.4}
-          x1={-0.44}
-          y1={-0.22}
-          x2={openingWidth + 0.44}
-          y2={-0.22}
+          x1={rodEnds[0].faceX}
+          y1={ROD.y}
+          x2={rodEnds[1].faceX}
+          y2={ROD.y}
         />
-        {[-0.46, openingWidth + 0.46].map((x) => (
+        {curtainPanels.flatMap((panel) =>
+          panel.folds
+            .filter((_, fold) => fold % 2 === 0)
+            .map((x) => (
+              <circle
+                key={x}
+                className="fill-none stroke-[var(--lm-ink)]"
+                cx={x}
+                cy={ROD.y}
+                r={0.035}
+              />
+            ))
+        )}
+        {rodEnds.map((end) => (
           <circle
-            key={x}
-            className="fill-[var(--lm-face)] stroke-[var(--lm-ink)]"
-            cx={x}
-            cy={-0.22}
-            r={0.04}
+            key={end.faceX}
+            className="fill-[var(--lm-ink)] stroke-none"
+            cx={end.faceX + end.outward * ROD.finial}
+            cy={ROD.y}
+            r={ROD.finial}
           />
         ))}
       </g>
@@ -440,6 +500,35 @@ export function BedroomDrawing(props: BedroomDrawingProps) {
             y={0.12 * unit}
             width={(bed.headboard.size.w - 0.24) * unit}
             height={(bed.headboard.size.h - 0.5) * unit}
+          />
+        </g>
+        <g
+          transform={headboardFront.transform}
+          className="pointer-events-none stroke-none"
+          style={{ opacity: lampIntensity * BED_LIGHT_PEAK_OPACITY, ...glide }}
+        >
+          <radialGradient
+            id={`${id}-headboard-light`}
+            gradientUnits="userSpaceOnUse"
+            cx={(lamp.center.x - bed.headboard.position.x) * unit}
+            cy={(bed.headboard.size.h - shadeBottom) * unit}
+            r={BED_LIGHT_REACH * unit}
+          >
+            <stop
+              offset={0}
+              stopColor={scene.light.lampColor}
+              stopOpacity={0.8}
+            />
+            <stop
+              offset={1}
+              stopColor={scene.light.lampColor}
+              stopOpacity={0}
+            />
+          </radialGradient>
+          <rect
+            fill={`url(#${id}-headboard-light)`}
+            width={bed.headboard.size.w * unit}
+            height={bed.headboard.size.h * unit}
           />
         </g>
         {box(bed.frame)}

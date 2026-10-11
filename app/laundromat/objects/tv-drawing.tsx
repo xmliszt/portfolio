@@ -5,6 +5,7 @@ import type { IsoProjection } from "@/lib/laundromat/project-iso-point";
 import { projectIsoPoint } from "@/lib/laundromat/project-iso-point";
 import type { SceneConfig } from "@/lib/laundromat/scene-config";
 import { toSvgPoints } from "@/lib/laundromat/to-svg-points";
+import { fitCaptionFontSize } from "@/lib/laundromat/tv/fit-caption-font-size";
 import { formatStation } from "@/lib/laundromat/tv/format-station";
 import { cn } from "@/lib/utils";
 
@@ -16,6 +17,7 @@ import type { TvView } from "./scene-views";
 const TUNER_DETENTS = 12;
 const SCANLINE_GAP = 2.5;
 const GRILLE_GAP = 3;
+const CAPTION_INSET = 6;
 
 type TvDrawingProps = {
   laidOut: LaidOutObject;
@@ -74,6 +76,8 @@ export function TvDrawing(props: TvDrawingProps) {
     copy,
   });
   const credit = details.stations[tv.station]?.channel;
+  const creditText = credit === undefined ? undefined : `${credit} · youtube`;
+  const captionWidth = glass.width - 2 * CAPTION_INSET;
   const screenBox = {
     x: -glass.width / 2,
     y: -glass.height / 2,
@@ -285,12 +289,19 @@ export function TvDrawing(props: TvDrawingProps) {
                 />
               )}
             </g>
-            <g className="stroke-none font-[family-name:var(--lm-font-mono)] lowercase">
+            <g
+              clipPath={`url(#${glassClipId})`}
+              className="stroke-none font-[family-name:var(--lm-font-mono)] lowercase"
+            >
               <text
                 key={tv.station}
-                x={screenBox.x + 6}
+                x={screenBox.x + CAPTION_INSET}
                 y={screenBox.y + 9}
-                fontSize={5}
+                fontSize={fitCaptionFontSize({
+                  text: station,
+                  maxWidth: captionWidth,
+                  maxFontSize: 5,
+                })}
                 className="fill-[var(--lm-accent-hi)]"
                 style={{
                   animation: `lm-fade-out ${details.osdSeconds}s ease-out forwards`,
@@ -302,23 +313,31 @@ export function TvDrawing(props: TvDrawingProps) {
                 <text
                   x={0}
                   y={1.5}
-                  fontSize={5}
+                  fontSize={fitCaptionFontSize({
+                    text: copy.tv.noSignal,
+                    maxWidth: captionWidth,
+                    maxFontSize: 5,
+                  })}
                   textAnchor="middle"
                   className="fill-[var(--lm-ink-hi)]"
                 >
                   {copy.tv.noSignal}
                 </text>
               ) : (
-                credit !== undefined && (
+                creditText !== undefined && (
                   <text
-                    x={screenBox.x + 6}
+                    x={screenBox.x + CAPTION_INSET}
                     y={screenBox.y + screenBox.height - 5}
-                    fontSize={3.5}
+                    fontSize={fitCaptionFontSize({
+                      text: creditText,
+                      maxWidth: captionWidth,
+                      maxFontSize: 3.5,
+                    })}
                     className="fill-[var(--lm-ink-hi)]"
                     opacity={0.8}
                     data-tv-credit
                   >
-                    {`${credit} · youtube`}
+                    {creditText}
                   </text>
                 )
               )}
