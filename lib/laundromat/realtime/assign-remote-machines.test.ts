@@ -252,3 +252,38 @@ test("gives a machine two visitors both claim to the first in order and moves th
   assert.equal(assigned["washer-1"]?.visitorId, "a");
   assert.ok(Object.values(assigned).some((placed) => placed.visitorId === "b"));
 });
+
+test("keeps others where they are when the visitor loads an empty washer or dryer", () => {
+  const others = [
+    ...["a", "b"].map((visitorId) => buildWashingPresence({ visitorId })),
+    {
+      visitorId: "c",
+      load: {
+        phase: "running" as const,
+        kind: "dryer" as const,
+        startedAt: now - 60_000,
+        durationMs: 25 * 60_000,
+      },
+    },
+  ];
+  const before = assignRemoteMachines({
+    machines,
+    ownMachineId: undefined,
+    ownRegion: undefined,
+    others,
+    now,
+  });
+  const emptyMachines = machines.filter(({ id }) => before[id] === undefined);
+  assert.ok(emptyMachines.some(({ kind }) => kind === "washer"));
+  assert.ok(emptyMachines.some(({ kind }) => kind === "dryer"));
+  for (const { id } of emptyMachines) {
+    const after = assignRemoteMachines({
+      machines,
+      ownMachineId: id,
+      ownRegion: undefined,
+      others,
+      now,
+    });
+    assert.deepEqual(after, before, id);
+  }
+});

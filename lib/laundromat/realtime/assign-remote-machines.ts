@@ -41,7 +41,7 @@ function hashVisitorId(visitorId: string) {
   );
 }
 
-/** Return which of `machines` hold another visitor's laundry, keyed by machine id: one per visitor, at most three per kind, nearest to `ownRegion` first, then done before running (earliest started first) before loaded, never `ownMachineId`, and always one machine of each kind left free while the visitor's own laundry is not in that kind; a running load lingers `DONE_LINGER_MS` after it ends, loaded and done loads stay until the visitor takes them out, each load sits in the machine its `machineId` names when that machine is free, and otherwise in the slot the visitor's id hashes to, or the first free one. */
+/** Return which of `machines` hold another visitor's laundry, keyed by machine id: one per visitor, at most three per kind, nearest to `ownRegion` first, then done before running (earliest started first) before loaded, never `ownMachineId`, and always one machine of each kind left free while the visitor's own laundry is not in that kind; a running load lingers `DONE_LINGER_MS` after it ends, loaded and done loads stay until the visitor takes them out, each load sits in the machine its `machineId` names when that machine is free, and otherwise in the machine of its kind the visitor's id hashes to when that one is free, or the first free one. */
 export function assignRemoteMachines(options: {
   machines: { id: string; kind: MachineKind }[];
   ownMachineId: string | undefined;
@@ -58,9 +58,11 @@ export function assignRemoteMachines(options: {
   });
   return Object.fromEntries(
     kinds.flatMap((kind) => {
-      const slots = options.machines.filter(
-        (machine) =>
-          machine.kind === kind && machine.id !== options.ownMachineId
+      const kindMachines = options.machines.filter(
+        (machine) => machine.kind === kind
+      );
+      const slots = kindMachines.filter(
+        (machine) => machine.id !== options.ownMachineId
       );
       const isOwnInKind = options.machines.some(
         (machine) =>
@@ -114,9 +116,11 @@ export function assignRemoteMachines(options: {
           const free = slots.filter(
             (slot) => !taken.some(([id]) => id === slot.id)
           );
-          const preferred = hashVisitorId(other.visitorId) % slots.length;
+          const preferred = kindMachines.at(
+            hashVisitorId(other.visitorId) % kindMachines.length
+          );
           const slot =
-            free.find((candidate) => candidate.id === slots[preferred]?.id) ??
+            free.find((candidate) => candidate.id === preferred?.id) ??
             free.at(0);
           if (slot === undefined) return taken;
           return [
