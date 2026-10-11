@@ -5,6 +5,7 @@ import { motion, useReducedMotion } from "motion/react";
 
 import type { BedroomConfig } from "@/lib/laundromat/first-visit/bedroom-config";
 import { bedroomConfig } from "@/lib/laundromat/first-visit/bedroom-config";
+import type { ScreenPoint } from "@/lib/laundromat/project-iso-point";
 import type { SceneConfig } from "@/lib/laundromat/scene-config";
 
 import { FirstVisit } from "./first-visit/first-visit";
@@ -15,9 +16,14 @@ import { SoundToggle } from "./sound/sound-toggle";
 import { LaundromatScene } from "./laundromat-scene";
 import { ShareButton } from "./share-button";
 
-const HEAD_HOME_FADE_MS = 700;
+const HEAD_HOME_DIM_MS = 700;
+const HEAD_HOME_REVEAL_MS = 1400;
+const LIGHT_IN_EASE: [number, number, number, number] = [0.55, 0, 1, 0.45];
+const LIGHT_SIZE = "500vmax";
 
 type Arrival = "hidden" | "arriving" | "arrived";
+
+type HomeVeil = "dimming" | "revealing";
 
 type LaundromatEntryProps = {
   config: SceneConfig;
@@ -32,12 +38,13 @@ export function LaundromatEntry(props: LaundromatEntryProps) {
   const arrivedFlag = useArrivedFlag();
   const [isBackHome, setIsBackHome] = useState(false);
   const [hasCleanPile, setHasCleanPile] = useState(false);
-  const [isLeaving, setIsLeaving] = useState(false);
+  const [homeVeil, setHomeVeil] = useState<HomeVeil>();
   const hasArrived =
     props.ignoreArrivedFlag || isBackHome ? false : arrivedFlag.hasArrived;
   const prefersReducedMotion = useReducedMotion() ?? false;
   const [arrival, setArrival] = useState<Arrival>("hidden");
   const [isBedroomGone, setIsBedroomGone] = useState(false);
+  const [doorLight, setDoorLight] = useState<ScreenPoint>();
   const sceneRef = useRef<HTMLDivElement>(null);
   const timersRef = useRef<number[]>([]);
   const visibleArrival = hasArrived === true ? "arrived" : arrival;
@@ -70,15 +77,22 @@ export function LaundromatEntry(props: LaundromatEntryProps) {
     if (!props.ignoreArrivedFlag) arrivedFlag.markArrived();
   }
 
-  function handleWalkIn() {
+  const lightCoverMs = walkIn.pushStartMs + walkIn.lightInMs;
+  const lightOutStartMs = lightCoverMs + walkIn.whiteMs;
+
+  function handleWalkIn(options: { doorway: ScreenPoint }) {
     markArrived();
     if (prefersReducedMotion) {
       setArrival("arriving");
       later(walkIn.reducedFadeMs, leaveBedroom);
       return;
     }
-    later(walkIn.arriveStartMs, () => setArrival("arriving"));
-    later(walkIn.bedroomGoneMs, leaveBedroom);
+    setDoorLight(options.doorway);
+    later(lightCoverMs, () => {
+      setArrival("arrived");
+      leaveBedroom();
+    });
+    later(lightOutStartMs + walkIn.lightOutMs, () => setDoorLight(undefined));
   }
 
   function handleListen() {
@@ -88,14 +102,22 @@ export function LaundromatEntry(props: LaundromatEntryProps) {
   }
 
   function handleHeadHome() {
-    setIsLeaving(true);
-    later(prefersReducedMotion ? 0 : HEAD_HOME_FADE_MS, () => {
-      setIsLeaving(false);
+    function goHome() {
       setIsBackHome(true);
       setHasCleanPile(true);
       setIsBedroomGone(false);
       setArrival("hidden");
+    }
+    if (prefersReducedMotion) {
+      goHome();
+      return;
+    }
+    setHomeVeil("dimming");
+    later(HEAD_HOME_DIM_MS, () => {
+      goHome();
+      setHomeVeil("revealing");
     });
+    later(HEAD_HOME_DIM_MS + HEAD_HOME_REVEAL_MS, () => setHomeVeil(undefined));
   }
 
   function handleAnimationEnd(event: React.AnimationEvent<HTMLDivElement>) {
@@ -111,12 +133,7 @@ export function LaundromatEntry(props: LaundromatEntryProps) {
         <ShareButton />
       </div>
       {isFirstVisit && (
-        <motion.div
-          className="absolute inset-0"
-          initial={{ opacity: isBackHome && !prefersReducedMotion ? 0 : 1 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: HEAD_HOME_FADE_MS / 1000, ease: "easeOut" }}
-        >
+        <div className="absolute inset-0">
           <FirstVisit
             scene={props.config}
             bedroom={bedroom}
@@ -125,7 +142,7 @@ export function LaundromatEntry(props: LaundromatEntryProps) {
             onWalkIn={handleWalkIn}
             onListen={handleListen}
           />
-        </motion.div>
+        </div>
       )}
       <div
         ref={sceneRef}
@@ -133,21 +150,81 @@ export function LaundromatEntry(props: LaundromatEntryProps) {
         data-lm-arrival={visibleArrival}
         className="absolute inset-0 outline-none data-[lm-arrival=hidden]:pointer-events-none data-[lm-arrival=hidden]:opacity-0"
         onAnimationEnd={handleAnimationEnd}
-        style={
-          isLeaving
-            ? {
-                opacity: 0,
-                transition: `opacity ${HEAD_HOME_FADE_MS}ms ease-in`,
-              }
-            : undefined
-        }
       >
         <LaundromatScene
           config={props.config}
           hourOverride={props.hourOverride}
           onHeadHome={handleHeadHome}
+          hidden={visibleArrival === "hidden"}
         />
       </div>
+      {doorLight !== undefined && (
+        <motion.div
+          aria-hidden
+          className="pointer-events-none absolute inset-0 overflow-hidden"
+          initial={{ opacity: 1 }}
+          animate={{ opacity: 0 }}
+          transition={{
+            duration: walkIn.lightOutMs / 1000,
+            delay: lightOutStartMs / 1000,
+            ease: "easeInOut",
+          }}
+        >
+          <motion.div
+            className="absolute rounded-full"
+            style={{
+              left: doorLight.x,
+              top: doorLight.y,
+              width: LIGHT_SIZE,
+              height: LIGHT_SIZE,
+              x: "-50%",
+              y: "-50%",
+              background:
+                "radial-gradient(circle closest-side, var(--lm-accent-hi) 0%, var(--lm-accent) 70%, transparent 100%)",
+            }}
+            initial={{ scale: 0.02, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            transition={{
+              scale: {
+                duration: walkIn.lightInMs / 1000,
+                delay: walkIn.pushStartMs / 1000,
+                ease: LIGHT_IN_EASE,
+              },
+              opacity: {
+                duration: walkIn.lightInMs / 2000,
+                delay: walkIn.pushStartMs / 1000,
+                ease: "easeOut",
+              },
+            }}
+          />
+          <motion.div
+            className="absolute inset-0"
+            style={{
+              background: "color-mix(in srgb, var(--lm-accent-hi) 20%, white)",
+            }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{
+              duration: walkIn.whiteMs / 1000,
+              delay: lightCoverMs / 1000,
+              ease: "easeOut",
+            }}
+          />
+        </motion.div>
+      )}
+      {homeVeil !== undefined && (
+        <motion.div
+          aria-hidden
+          className="absolute inset-0 bg-black"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: homeVeil === "dimming" ? 1 : 0 }}
+          transition={
+            homeVeil === "dimming"
+              ? { duration: HEAD_HOME_DIM_MS / 1000, ease: "easeIn" }
+              : { duration: HEAD_HOME_REVEAL_MS / 1000, ease: "easeOut" }
+          }
+        />
+      )}
     </div>
   );
 }

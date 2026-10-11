@@ -543,28 +543,38 @@ export function BedroomDrawing(props: BedroomDrawingProps) {
           <BedLaundryPile bed={bed} projection={projection} />
         )}
       </g>
-      <g
-        transform={`translate(0 ${-blanketTop * unit}) ${floorPlane}`}
-        className="pointer-events-none"
-        style={{ opacity: lampIntensity * BED_LIGHT_PEAK_OPACITY, ...glide }}
-      >
-        <clipPath id={`${id}-bed-top`}>
-          <rect
-            x={bed.mattress.position.x}
-            y={bed.mattress.position.y}
-            width={bed.mattress.size.w}
-            height={bed.mattress.size.d}
+      {[
+        { key: "bed-top", z: blanketTop, face: bed.mattress },
+        {
+          key: "headboard-top",
+          z: bed.headboard.position.z + bed.headboard.size.h,
+          face: bed.headboard,
+        },
+      ].map((top) => (
+        <g
+          key={top.key}
+          transform={`translate(0 ${-top.z * unit}) ${floorPlane}`}
+          className="pointer-events-none"
+          style={{ opacity: lampIntensity * BED_LIGHT_PEAK_OPACITY, ...glide }}
+        >
+          <clipPath id={`${id}-${top.key}`}>
+            <rect
+              x={top.face.position.x}
+              y={top.face.position.y}
+              width={top.face.size.w}
+              height={top.face.size.d}
+            />
+          </clipPath>
+          <ellipse
+            fill={`url(#${id}-pool)`}
+            clipPath={`url(#${id}-${top.key})`}
+            cx={lamp.center.x}
+            cy={lamp.center.y}
+            rx={BED_LIGHT_REACH}
+            ry={BED_LIGHT_REACH}
           />
-        </clipPath>
-        <ellipse
-          fill={`url(#${id}-pool)`}
-          clipPath={`url(#${id}-bed-top)`}
-          cx={lamp.center.x}
-          cy={lamp.center.y}
-          rx={BED_LIGHT_REACH}
-          ry={BED_LIGHT_REACH}
-        />
-      </g>
+        </g>
+      ))}
     </g>
   );
 }

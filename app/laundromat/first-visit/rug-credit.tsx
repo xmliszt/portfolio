@@ -21,8 +21,8 @@ export function RugCredit(props: RugCreditProps) {
     >
       <text
         x={x}
-        y={centerY - 0.36}
-        fontSize={0.1}
+        y={centerY - 0.47}
+        fontSize={0.13}
         className="fill-[var(--lm-detail)]"
       >
         {copy.site.inspiredBy}
@@ -34,10 +34,10 @@ export function RugCredit(props: RugCreditProps) {
         tabIndex={-1}
         className={LINK_CLASS}
       >
-        <text x={x} y={centerY - 0.12} fontSize={0.14}>
+        <text x={x} y={centerY - 0.16} fontSize={0.18}>
           {INSPIRATION_BOOK.title}
         </text>
-        <text x={x} y={centerY + 0.08} fontSize={0.11}>
+        <text x={x} y={centerY + 0.1} fontSize={0.14}>
           《{INSPIRATION_BOOK.originalTitle}》
         </text>
       </a>
@@ -48,7 +48,7 @@ export function RugCredit(props: RugCreditProps) {
         tabIndex={-1}
         className={LINK_CLASS}
       >
-        <text x={x} y={centerY + 0.32} fontSize={0.1}>
+        <text x={x} y={centerY + 0.42} fontSize={0.13}>
           {INSPIRATION_BOOK.author} · {INSPIRATION_BOOK.originalAuthor}
         </text>
       </a>

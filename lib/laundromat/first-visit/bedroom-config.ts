@@ -70,15 +70,12 @@ export type BedroomConfig = {
       pushBlurPx: number;
       pushBlurDelayMs: number;
       pushBlurMs: number;
-      pushFadeDelayMs: number;
-      pushFadeMs: number;
-      warmInMs: number;
-      warmOutMs: number;
-      arriveStartMs: number;
+      lightInMs: number;
+      whiteMs: number;
+      lightOutMs: number;
       arriveMs: number;
       arriveFromScale: number;
       arriveBlurPx: number;
-      bedroomGoneMs: number;
       reducedFadeMs: number;
     };
   };
@@ -197,15 +194,12 @@ export const bedroomConfig: BedroomConfig = {
       pushBlurPx: 10,
       pushBlurDelayMs: 300,
       pushBlurMs: 850,
-      pushFadeDelayMs: 500,
-      pushFadeMs: 700,
-      warmInMs: 900,
-      warmOutMs: 1200,
-      arriveStartMs: 980,
+      lightInMs: 900,
+      whiteMs: 450,
+      lightOutMs: 1000,
       arriveMs: 1350,
       arriveFromScale: 1.1,
       arriveBlurPx: 14,
-      bedroomGoneMs: 1800,
       reducedFadeMs: 400,
     },
   },

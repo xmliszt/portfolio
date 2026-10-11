@@ -66,14 +66,15 @@ type FirstVisitProps = {
   bedroom: BedroomConfig;
   hourOverride?: number;
   cleanPile: boolean;
-  onWalkIn: () => void;
+  onWalkIn: (options: { doorway: ScreenPoint }) => void;
   onListen: () => void;
 };
 
 export function FirstVisit(props: FirstVisitProps) {
   const { copy } = useLaundromatCopy();
   const { bedroom, scene } = props;
-  const { projection, stage, door } = bedroom;
+  const { projection, stage, door, room } = bedroom;
+  const { roomPaddingRatio } = scene.camera;
   const { walkIn } = bedroom.motion;
   const prefersReducedMotion = useReducedMotion() ?? false;
   const sceneHour = useSceneHour();
@@ -96,7 +97,6 @@ export function FirstVisit(props: FirstVisitProps) {
   const isLampOn = lampSwitch ?? (timeOfDay?.lampIntensity ?? 1) > 0.5;
   const [isTouched, setIsTouched] = useState(false);
   const [phase, setPhase] = useState<Phase>("room");
-  const [isWarm, setIsWarm] = useState(false);
   const [jiggles, setJiggles] = useState(0);
   const [bumps, setBumps] = useState(0);
 
@@ -116,18 +116,33 @@ export function FirstVisit(props: FirstVisitProps) {
   useEffect(() => {
     const root = rootRef.current;
     if (root === null) return;
+    const corners = [0, room.width].flatMap((x) =>
+      [0, room.depth].flatMap((y) =>
+        [0, room.wallHeight].map((z) =>
+          projectIsoPoint({ point: { x, y, z }, projection })
+        )
+      )
+    );
+    const left = Math.min(...corners.map((corner) => corner.x));
+    const right = Math.max(...corners.map((corner) => corner.x));
+    const top = Math.min(...corners.map((corner) => corner.y));
+    const bottom = Math.max(...corners.map((corner) => corner.y));
+    const fill = 1 - 2 * roomPaddingRatio;
     const observer = new ResizeObserver(([entry]) => {
       const { width, height } = entry.contentRect;
-      const scale = Math.min(width / stage.width, height / stage.height);
+      const scale = Math.min(
+        (width * fill) / (right - left),
+        (height * fill) / (bottom - top)
+      );
       setFit({
         scale,
-        x: (width - stage.width * scale) / 2,
-        y: (height - stage.height * scale) / 2,
+        x: width / 2 - ((left + right) / 2) * scale,
+        y: height / 2 - ((top + bottom) / 2) * scale,
       });
     });
     observer.observe(root);
     return () => observer.disconnect();
-  }, [stage]);
+  }, [room, projection, roomPaddingRatio]);
 
   useEffect(() => {
     const timers = timersRef.current;
@@ -304,7 +319,7 @@ export function FirstVisit(props: FirstVisitProps) {
   }
 
   function handleDoorClick() {
-    if (!isInRoom) return;
+    if (!isInRoom || fit === undefined) return;
     if (!isReady) {
       sound?.play("door-locked");
       setJiggles((current) => current + 1);
@@ -314,16 +329,17 @@ export function FirstVisit(props: FirstVisitProps) {
     setHover(undefined);
     setPhase("opening");
     sound?.play("room-door-open");
-    props.onWalkIn();
+    props.onWalkIn({
+      doorway: {
+        x: fit.x + doorway.x * fit.scale,
+        y: fit.y + doorway.y * fit.scale,
+      },
+    });
     if (prefersReducedMotion) {
       setPhase("entering");
       return;
     }
-    later(walkIn.pushStartMs, () => {
-      setPhase("entering");
-      setIsWarm(true);
-    });
-    later(walkIn.arriveStartMs, () => setIsWarm(false));
+    later(walkIn.pushStartMs, () => setPhase("entering"));
   }
 
   function handleLampClick() {
@@ -399,7 +415,6 @@ export function FirstVisit(props: FirstVisitProps) {
       target: {
         scale: walkIn.pushScale,
         filter: `blur(${walkIn.pushBlurPx}px)`,
-        opacity: 0,
       },
       transition: {
         scale: {
@@ -409,11 +424,6 @@ export function FirstVisit(props: FirstVisitProps) {
         filter: {
           duration: walkIn.pushBlurMs / 1000,
           delay: walkIn.pushBlurDelayMs / 1000,
-          ease: FADE_OUT_EASE,
-        },
-        opacity: {
-          duration: walkIn.pushFadeMs / 1000,
-          delay: walkIn.pushFadeDelayMs / 1000,
           ease: FADE_OUT_EASE,
         },
       },
@@ -489,7 +499,7 @@ export function FirstVisit(props: FirstVisitProps) {
             style={{
               transformOrigin: `${doorway.x}px ${doorway.y}px`,
               willChange:
-                phase === "entering" ? "transform, filter, opacity" : undefined,
+                phase === "entering" ? "transform, filter" : undefined,
             }}
             initial={false}
             animate={stagePush?.target}
@@ -728,19 +738,6 @@ export function FirstVisit(props: FirstVisitProps) {
             </div>
           </motion.div>
         </div>
-      )}
-      {fit !== undefined && !prefersReducedMotion && (
-        <div
-          aria-hidden
-          className="pointer-events-none absolute inset-0"
-          style={{
-            opacity: isWarm ? 0.5 : 0,
-            transition: isWarm
-              ? `opacity ${walkIn.warmInMs}ms cubic-bezier(0.65, 0, 0.35, 1)`
-              : `opacity ${walkIn.warmOutMs}ms cubic-bezier(0.23, 1, 0.32, 1)`,
-            background: `radial-gradient(circle at ${fit.x + doorway.x * fit.scale}px ${fit.y + doorway.y * fit.scale}px, var(--lm-accent-hi) 0%, var(--lm-accent) 28%, color-mix(in srgb, var(--lm-accent) 14%, var(--lm-bg)) 70%, var(--lm-bg) 100%)`,
-          }}
-        />
       )}
       <SceneTooltip text={tooltip?.text} position={tooltip?.position} />
       <button
