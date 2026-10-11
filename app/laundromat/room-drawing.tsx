@@ -7,6 +7,7 @@ import { SceneKeyframes } from "./objects/scene-keyframes";
 import { SceneObjectDrawing } from "./objects/scene-object-drawing";
 import type { SceneViews } from "./objects/scene-views";
 import type { LampSwitch } from "./sound/use-scene-sounds";
+import { FloorHalos } from "./floor-halos";
 import { RoomLampGlow } from "./room-lamp-glow";
 import { RoomLight } from "./room-light";
 
@@ -88,6 +89,7 @@ export function RoomDrawing(props: RoomDrawingProps) {
           config={config}
         />
       )}
+      <FloorHalos layout={layout} />
       {layout.objects
         .filter(({ object }) => object.id !== props.hiddenObjectId)
         .map((laidOut) => (

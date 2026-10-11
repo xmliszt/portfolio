@@ -1,6 +1,8 @@
 import { getIsoCylinder } from "@/lib/laundromat/get-iso-cylinder";
 import type { IsoProjection } from "@/lib/laundromat/project-iso-point";
 
+import { CylinderSides } from "./cylinder-sides";
+
 type IsoCylinderProps = {
   center: { x: number; y: number };
   bottom: number;
@@ -8,18 +10,14 @@ type IsoCylinderProps = {
   radius: number;
   topRadius?: number;
   projection: IsoProjection;
-  bodyClassName?: string;
   topClassName?: string;
 };
 
 export function IsoCylinder(props: IsoCylinderProps) {
-  const { top, body } = getIsoCylinder(props);
+  const { top, body, facets } = getIsoCylinder(props);
   return (
     <g>
-      <path
-        className={props.bodyClassName ?? "fill-[var(--lm-face)]"}
-        d={body}
-      />
+      <CylinderSides body={body} facets={facets} />
       <ellipse
         className={props.topClassName ?? "fill-[var(--lm-face-top)]"}
         cx={top.cx}

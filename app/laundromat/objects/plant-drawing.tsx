@@ -4,6 +4,7 @@ import { getIsoEllipse } from "@/lib/laundromat/get-iso-ellipse";
 import type { IsoProjection } from "@/lib/laundromat/project-iso-point";
 import type { SceneConfig } from "@/lib/laundromat/scene-config";
 
+import { CylinderSides } from "./cylinder-sides";
 import { partStroke } from "./part-stroke";
 
 type Leaf = {
@@ -280,7 +281,7 @@ export function PlantDrawing(props: PlantDrawingProps) {
       <g transform={`translate(${soil.cx} ${soil.cy}) scale(${scale})`}>
         <g {...bend}>{renderLeaves("back")}</g>
       </g>
-      <path d={pot.body} className="fill-[var(--lm-face)]" />
+      <CylinderSides body={pot.body} facets={pot.facets} />
       <path d={rim.body} className="fill-[var(--lm-face-top)]" />
       <ellipse {...rim.top} className="fill-[var(--lm-face-top)]" />
       <ellipse

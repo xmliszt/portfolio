@@ -8,6 +8,7 @@ import { toSvgPoints } from "@/lib/laundromat/to-svg-points";
 import { formatStation } from "@/lib/laundromat/tv/format-station";
 import { cn } from "@/lib/utils";
 
+import { BoxBevel } from "./box-bevel";
 import { IsoBox } from "./iso-box";
 import { partStroke } from "./part-stroke";
 import type { TvView } from "./scene-views";
@@ -114,6 +115,7 @@ export function TvDrawing(props: TvDrawingProps) {
           className="fill-[var(--lm-face-top)]"
           points={toSvgPoints(faces.top)}
         />
+        <BoxBevel points={faces.bevel} />
         {antennaTips.map((tip) => (
           <g key={`${tip.x},${tip.y}`}>
             <line

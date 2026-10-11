@@ -4,6 +4,7 @@ import { getIsoEllipse } from "@/lib/laundromat/get-iso-ellipse";
 import type { IsoProjection } from "@/lib/laundromat/project-iso-point";
 import type { SceneConfig } from "@/lib/laundromat/scene-config";
 
+import { CylinderSides } from "./cylinder-sides";
 import { partStroke } from "./part-stroke";
 import { SteamWisps } from "./steam-wisps";
 
@@ -54,7 +55,7 @@ export function MugDrawing(props: MugDrawingProps) {
         className="fill-none stroke-[var(--lm-face)]"
         strokeWidth={1}
       />
-      <path d={mug.body} className="fill-[var(--lm-face)]" />
+      <CylinderSides body={mug.body} facets={mug.facets} />
       <ellipse {...mug.top} className="fill-[var(--lm-face-top)]" />
       <ellipse
         {...inner}

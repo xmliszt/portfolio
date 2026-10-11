@@ -3,6 +3,8 @@ import type { IsoProjection } from "@/lib/laundromat/project-iso-point";
 import type { IsoPoint, IsoSize } from "@/lib/laundromat/scene-config";
 import { toSvgPoints } from "@/lib/laundromat/to-svg-points";
 
+import { BoxBevel } from "./box-bevel";
+
 type IsoBoxProps = {
   position: IsoPoint;
   size: IsoSize;
@@ -29,6 +31,7 @@ export function IsoBox(props: IsoBoxProps) {
         className="fill-[var(--lm-face-top)]"
         points={toSvgPoints(faces.top)}
       />
+      <BoxBevel points={faces.bevel} />
     </g>
   );
 }
