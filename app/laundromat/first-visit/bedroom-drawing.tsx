@@ -22,15 +22,15 @@ const PLANK_WIDTH = 0.42;
 const PLANK_JOINT_STEP = 1.9;
 const SKIRTING_HEIGHT = 0.12;
 const CURTAIN_DROP = 0.3;
-const CURTAIN_FOLDS = 5;
-const HEM_STEP = 0.05;
-const ROD = { y: -0.22, overhang: 0.44, bracket: 0.06, finial: 0.045 };
-const FOLD_FILL_CLASSES = [
-  "fill-[var(--lm-face)]",
-  "fill-[var(--lm-shade-2)]",
-  "fill-[var(--lm-wall)]",
-  "fill-[var(--lm-shade-1)]",
-];
+const CURTAIN_FOLDS = 7;
+const PLEAT_DEPTH = 0.08;
+const SILL_CLEARANCE = 0.26;
+const ROD = {
+  y: -0.22,
+  overhang: 0.44,
+  bracket: 0.06,
+  finial: 0.045,
+};
 const LAMP_GLOW_OPACITY = 0.14;
 const POOL_PEAK_OPACITY = 0.2;
 const BED_LIGHT_PEAK_OPACITY = 0.6;
@@ -81,12 +81,14 @@ export function BedroomDrawing(props: BedroomDrawingProps) {
     top: window.position.z + window.size.h - 0.16,
   };
   const openingWidth = opening.far - opening.near;
+  const rodX = window.size.w + SILL_CLEARANCE;
   const curtainPlane = getFacePlane({
     plane: "side",
-    origin: { x: window.size.w + 0.04, y: opening.far, z: opening.top },
+    origin: { x: rodX, y: opening.far, z: opening.top },
     projection,
   });
-  const curtainLength = window.size.h - 0.32 + CURTAIN_DROP;
+  const curtainTop = opening.top - ROD.y;
+  const curtainBottom = opening.top - (window.size.h - 0.32 + CURTAIN_DROP);
   const rodEnds = [
     { faceX: -ROD.overhang, outward: -1 },
     { faceX: openingWidth + ROD.overhang, outward: 1 },
@@ -95,14 +97,14 @@ export function BedroomDrawing(props: BedroomDrawingProps) {
     { from: -0.36, to: 0.3 },
     { from: openingWidth + 0.36, to: openingWidth - 0.3 },
   ].map((panel) => ({
-    folds: Array.from(
-      { length: CURTAIN_FOLDS + 1 },
-      (_, fold) => panel.from + ((panel.to - panel.from) * fold) / CURTAIN_FOLDS
-    ),
+    folds: Array.from({ length: CURTAIN_FOLDS + 1 }, (_, fold) => ({
+      faceX: panel.from + ((panel.to - panel.from) * fold) / CURTAIN_FOLDS,
+      x: fold % 2 === 0 ? rodX : rodX - PLEAT_DEPTH,
+      y:
+        opening.far -
+        (panel.from + ((panel.to - panel.from) * fold) / CURTAIN_FOLDS),
+    })),
   }));
-  function hemAt(fold: number) {
-    return curtainLength - (fold % 2 === 0 ? 0 : HEM_STEP);
-  }
   const daylightPatch = getDaylightPatch({
     wallX: window.size.w,
     fromY: opening.near,
@@ -258,6 +260,7 @@ export function BedroomDrawing(props: BedroomDrawingProps) {
         highlighted={false}
         timeOfDay={timeOfDay}
         config={scene}
+        view="skyline"
       />
       {rodEnds.map((end) => (
         <IsoBox
@@ -267,49 +270,66 @@ export function BedroomDrawing(props: BedroomDrawingProps) {
             y: opening.far - end.faceX - ROD.bracket / 2,
             z: opening.top - ROD.y - ROD.bracket / 2,
           }}
-          size={{ w: window.size.w + 0.04, d: ROD.bracket, h: ROD.bracket }}
+          size={{ w: rodX, d: ROD.bracket, h: ROD.bracket }}
           projection={projection}
         />
       ))}
+      <g className="stroke-[var(--lm-line)]" strokeLinejoin="round">
+        {curtainPanels.map((panel, side) => (
+          <g key={side}>
+            {panel.folds.slice(1).map((to, fold) => {
+              const from = panel.folds[fold]!;
+              const facesFront = (to.x - from.x) * (from.y - to.y) > 0;
+              return (
+                <polygon
+                  key={to.faceX}
+                  className={cn(
+                    "stroke-none",
+                    facesFront
+                      ? "fill-[var(--lm-shade-2)]"
+                      : "fill-[var(--lm-wall)]"
+                  )}
+                  points={toSvgPoints([
+                    at(from.x, from.y, curtainTop),
+                    at(to.x, to.y, curtainTop),
+                    at(to.x, to.y, curtainBottom),
+                    at(from.x, from.y, curtainBottom),
+                  ])}
+                />
+              );
+            })}
+            <g className="stroke-[var(--lm-detail)]">
+              {panel.folds.slice(1, -1).map((fold) => {
+                const top = at(fold.x, fold.y, curtainTop);
+                const bottom = at(fold.x, fold.y, curtainBottom);
+                return (
+                  <line
+                    key={fold.faceX}
+                    x1={top.x}
+                    y1={top.y}
+                    x2={bottom.x}
+                    y2={bottom.y}
+                  />
+                );
+              })}
+            </g>
+            <polygon
+              className="fill-none"
+              points={toSvgPoints([
+                ...panel.folds.map((fold) => at(fold.x, fold.y, curtainTop)),
+                ...panel.folds
+                  .map((fold) => at(fold.x, fold.y, curtainBottom))
+                  .toReversed(),
+              ])}
+            />
+          </g>
+        ))}
+      </g>
       <g
         transform={`${curtainPlane.transform} scale(${unit})`}
         className="stroke-[var(--lm-line)]"
         strokeLinejoin="round"
       >
-        {curtainPanels.map((panel) => (
-          <g key={panel.folds[0]}>
-            {panel.folds.slice(1).map((x, fold) => {
-              const from = panel.folds[fold]!;
-              return (
-                <polygon
-                  key={x}
-                  className={cn(
-                    "stroke-none",
-                    FOLD_FILL_CLASSES[fold % FOLD_FILL_CLASSES.length]
-                  )}
-                  points={`${from},${ROD.y} ${x},${ROD.y} ${x},${hemAt(fold + 1)} ${from},${hemAt(fold)}`}
-                />
-              );
-            })}
-            <path
-              className="fill-none stroke-[var(--lm-detail)]"
-              d={panel.folds
-                .slice(1, -1)
-                .map((x, fold) => `M ${x} ${ROD.y} L ${x} ${hemAt(fold + 1)}`)
-                .join(" ")}
-            />
-            <polygon
-              className="fill-none"
-              points={[
-                `${panel.folds.at(0)},${ROD.y}`,
-                `${panel.folds.at(-1)},${ROD.y}`,
-                ...panel.folds
-                  .map((x, fold) => `${x},${hemAt(fold)}`)
-                  .toReversed(),
-              ].join(" ")}
-            />
-          </g>
-        ))}
         <line
           className="stroke-[var(--lm-ink)]"
           strokeWidth={1.4}
@@ -321,11 +341,11 @@ export function BedroomDrawing(props: BedroomDrawingProps) {
         {curtainPanels.flatMap((panel) =>
           panel.folds
             .filter((_, fold) => fold % 2 === 0)
-            .map((x) => (
+            .map((fold) => (
               <circle
-                key={x}
+                key={fold.faceX}
                 className="fill-none stroke-[var(--lm-ink)]"
-                cx={x}
+                cx={fold.faceX}
                 cy={ROD.y}
                 r={0.035}
               />

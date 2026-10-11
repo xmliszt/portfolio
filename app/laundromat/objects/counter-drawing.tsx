@@ -9,6 +9,7 @@ const TOE_KICK = { height: 0.22, inset: 0.16 };
 const SLAB = { thickness: 0.14, overhang: 0.08 };
 const DRAWER_HEIGHT = 0.5;
 const GAP = 3;
+const END_PANEL_INSET = 6;
 
 type CounterDrawingProps = {
   laidOut: LaidOutObject;
@@ -25,6 +26,15 @@ export function CounterDrawing(props: CounterDrawingProps) {
   const front = getFacePlane({
     plane: "front",
     origin: { x: p.x, y: p.y + bodyDepth, z: p.z + size.h - SLAB.thickness },
+    projection,
+  });
+  const side = getFacePlane({
+    plane: "side",
+    origin: {
+      x: p.x + size.w,
+      y: p.y + bodyDepth,
+      z: p.z + size.h - SLAB.thickness,
+    },
     projection,
   });
   const width = size.w * unit;
@@ -99,6 +109,16 @@ export function CounterDrawing(props: CounterDrawingProps) {
             </g>
           );
         })}
+      </g>
+      <g transform={side.transform} strokeWidth={0.75}>
+        <rect
+          x={END_PANEL_INSET}
+          y={END_PANEL_INSET}
+          width={bodyDepth * unit - 2 * END_PANEL_INSET}
+          height={height - 2 * END_PANEL_INSET}
+          rx={1}
+          className="fill-none stroke-[var(--lm-detail)]"
+        />
       </g>
       <IsoBox
         position={{

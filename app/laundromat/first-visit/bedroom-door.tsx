@@ -68,20 +68,31 @@ export function BedroomDoor(props: BedroomDoorProps) {
     if (props.opening) return 0.18 + 0.3 * openness;
     return props.ready ? 0.12 : 0;
   })();
-  const casing = [
-    {
+  const casing = {
+    hingePost: {
       position: { x: 0, y: door.fromY - CASING, z: 0 },
-      size: { w: CASING, d: CASING, h: door.height + CASING },
+      size: { w: CASING, d: CASING, h: door.height },
     },
-    {
+    latchPost: {
       position: { x: 0, y: hingeY, z: 0 },
-      size: { w: CASING, d: CASING, h: door.height + CASING },
+      size: { w: CASING, d: CASING, h: door.height },
     },
-    {
+    header: {
       position: { x: 0, y: door.fromY - CASING, z: door.height },
       size: { w: CASING, d: door.width + CASING * 2, h: CASING },
     },
-  ];
+  };
+  function casingPart(part: keyof typeof casing) {
+    return (
+      <g className="stroke-[var(--lm-line)]">
+        <IsoBox
+          position={casing[part].position}
+          size={casing[part].size}
+          projection={projection}
+        />
+      </g>
+    );
+  }
 
   return (
     <g data-bedroom-door strokeLinejoin="round">
@@ -117,16 +128,7 @@ export function BedroomDoor(props: BedroomDoorProps) {
         points={toSvgPoints(spill)}
         style={{ opacity: spillOpacity }}
       />
-      <g className="stroke-[var(--lm-line)]">
-        {casing.map((part) => (
-          <IsoBox
-            key={`${part.position.y},${part.position.z}`}
-            position={part.position}
-            size={part.size}
-            projection={projection}
-          />
-        ))}
-      </g>
+      {casingPart("hingePost")}
       <polygon
         className="fill-[var(--lm-face)] stroke-[var(--lm-line)]"
         points={toSvgPoints(panel.edge)}
@@ -204,6 +206,8 @@ export function BedroomDoor(props: BedroomDoorProps) {
           r={0.015}
         />
       </g>
+      {casingPart("latchPost")}
+      {casingPart("header")}
     </g>
   );
 }

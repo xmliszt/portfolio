@@ -18,6 +18,14 @@ const TUNER_DETENTS = 12;
 const SCANLINE_GAP = 2.5;
 const GRILLE_GAP = 3;
 const CAPTION_INSET = 6;
+const SHELF = {
+  thickness: 0.08,
+  overhang: 0.1,
+  bracketInset: 0.4,
+  bracketReach: 0.75,
+  bracketDrop: 1.5,
+  bracketThickness: 0.05,
+};
 
 type TvDrawingProps = {
   laidOut: LaidOutObject;
@@ -95,15 +103,66 @@ export function TvDrawing(props: TvDrawingProps) {
   return (
     <g data-tv={tv.on ? "on" : "off"} strokeLinejoin="round">
       <g className="stroke-[var(--lm-line)]">
+        {[
+          position.y + SHELF.bracketInset,
+          position.y + size.d - SHELF.bracketInset,
+        ].map((y) => {
+          const bracketTop = position.z - SHELF.thickness;
+          const wallTop = { x: position.x, z: bracketTop };
+          const tip = {
+            x: position.x + size.w * SHELF.bracketReach,
+            z: bracketTop,
+          };
+          const foot = { x: position.x, z: bracketTop - SHELF.bracketDrop };
+          function onBracket(corner: { x: number; z: number }, offset: number) {
+            return projectIsoPoint({
+              point: { x: corner.x, y: y + offset, z: corner.z },
+              projection,
+            });
+          }
+          const thickness = SHELF.bracketThickness;
+          const back = [wallTop, tip, foot].map((corner) =>
+            onBracket(corner, 0)
+          );
+          const front = [wallTop, tip, foot].map((corner) =>
+            onBracket(corner, thickness)
+          );
+          const underside = [
+            onBracket(tip, 0),
+            onBracket(foot, 0),
+            onBracket(foot, thickness),
+            onBracket(tip, thickness),
+          ];
+          return (
+            <g key={y}>
+              <polygon
+                className="fill-[var(--lm-face)]"
+                points={toSvgPoints(back)}
+              />
+              <polygon
+                className="fill-[var(--lm-wall)]"
+                points={toSvgPoints(underside)}
+              />
+              <polygon
+                className="fill-[var(--lm-face)]"
+                points={toSvgPoints(front)}
+              />
+            </g>
+          );
+        })}
         <IsoBox
-          position={{ x: position.x, y: midY - 0.32, z: position.z - 0.5 }}
-          size={{ w: 0.08, d: 0.64, h: 0.42 }}
+          position={{
+            x: position.x,
+            y: position.y - SHELF.overhang,
+            z: position.z - SHELF.thickness,
+          }}
+          size={{
+            w: size.w + SHELF.overhang,
+            d: size.d + 2 * SHELF.overhang,
+            h: SHELF.thickness,
+          }}
           projection={projection}
-        />
-        <IsoBox
-          position={{ x: position.x, y: midY - 0.1, z: position.z - 0.2 }}
-          size={{ w: size.w * 0.7, d: 0.2, h: 0.14 }}
-          projection={projection}
+          bevel={false}
         />
       </g>
       <g className={partStroke(props.highlightedId === object.id)}>

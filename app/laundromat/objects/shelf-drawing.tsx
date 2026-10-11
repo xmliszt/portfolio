@@ -12,7 +12,7 @@ import { IsoBox } from "./iso-box";
 import { partStroke } from "./part-stroke";
 
 const BOARD_THICKNESS = 0.08;
-const BRACKET_DROP = 0.5;
+const BRACKET_DROP = 1;
 
 const BOOK_LIFT_MS = 260;
 
@@ -54,6 +54,7 @@ export function ShelfDrawing(props: ShelfDrawingProps) {
         position={p}
         size={{ w: size.w, d: size.d, h: BOARD_THICKNESS }}
         projection={projection}
+        bevel={false}
       />
       {props.books.map((book) => {
         const isLifted = props.highlightedId === getShelfBookId(book.number);

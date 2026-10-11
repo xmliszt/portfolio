@@ -184,6 +184,7 @@ export type SceneConfig = {
     starColor: string;
     timeJumpGlideMs: number;
   };
+  street: { oppositeDistance: number; oppositeHeight: number };
 };
 
 export const sceneConfig: SceneConfig = {
@@ -525,4 +526,5 @@ export const sceneConfig: SceneConfig = {
     starColor: "#c9d2e0",
     timeJumpGlideMs: 2000,
   },
+  street: { oppositeDistance: 12, oppositeHeight: 5.5 },
 };

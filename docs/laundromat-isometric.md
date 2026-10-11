@@ -9,7 +9,7 @@ Our world unit is about 1 m (`COLUMN_RADIUS = 0.06`), and Anatomy's is about 1 s
 ### Volume
 - **Four side tones.** Boxes paint `--lm-face` (front, +y), `--lm-wall` (side, +x) and `--lm-face-top`. `--lm-shade-1` and `--lm-shade-2` sit between `wall` and `face` (`SHADE_FILL_CLASSES`, darkest first). Anatomy steps its shades about 3% apart in luminance.
 - **Cylinders shade by facet.** `getIsoCylinder` returns `facets`: the visible half in four bands of equal screen width, shaded `wall`, `shade-1`, `shade-2`, `face` from right to left, so a cylinder is lit like a box. Draw them with `CylinderSides`. `IsoCylinder`, the mug, the plant pot and the basket use it.
-- **Bevel highlight.** `getBoxFaces` returns `bevel`: a line on the top from the left silhouette corner, 1.2 px inside the near corner, to the right silhouette corner. `BoxBevel` draws it; `IsoBox`, the machines and the TV use it.
+- **Bevel highlight.** `getBoxFaces` returns `bevel`: a line on the top from the left silhouette corner, 1.2 px inside the near corner, to the right silhouette corner. `BoxBevel` draws it; `IsoBox`, the machines and the TV use it. Thin boards (the window sill, shelf boards, the coffee machine lid) pass `bevel={false}`: on a long narrow top the line converges on the corners and reads as a misaligned edge.
 - **Halo under what stands on the floor.** `getFloorHalo` gives the footprint of machines and the counter, and an ellipse under round furniture, for objects at `position.z === 0`. `FloorHalos` draws them as one group before all objects: blur `0.2 * unit`, opacity 0.45, shifted `0.08 * unit` down. Keep it soft; a heavier halo reads as a hole in the floor.
 - **Not done yet: rounded corners.** Anatomy's slabs are rounded rectangles whose corner facets step through the shades; ours are sharp boxes.
 
@@ -46,9 +46,14 @@ Our world unit is about 1 m (`COLUMN_RADIUS = 0.06`), and Anatomy's is about 1 s
 - **WebGL and 3D modes.** Not needed for the current objects.
 
 ## Findings at 4× (2026-10-11)
-Done: cylinder shading, box bevels, floor halos, kick plates on floor-level machines.
+Done: cylinder shading, box bevels, floor halos, kick plates on floor-level machines, side service panels on machines, counter end panel, stool footrest spokes, coffee machine rebuilt with feet, gauge, reservoir lid and side water window, window sill nose between the frame posts, curtain pleats in depth in front of the sill, TV wall shelf.
+
+Painter's-order faults found and fixed: the coffee machine base was painted over its tower, and the bedroom door panel was painted over its latch post and header (the header is always nearer than the panel, open or closed).
+
+## Light through the window
+The laundromat window shows the street (`StreetView`), not the sky, so the sun and moon are never drawn there. `getStreetLight` gives one light, the sun by day and the moon by night, with its colour, strength and shadow offset per unit of height. The street's tint, the shadow of the building across the street (`config.street`), the post shadows and the room's floor patch (`getWindowLightPatch`) all use that same light, so they always agree. The bedroom window keeps the skyline.
 
 Open:
-- **Washer and dryer stacks:** large bare top faces and a blank side face on each stack (Anatomy's "one big plain slab"). Dials have no knurl. Panel lines are inset from the face edges instead of running edge to edge.
-- **Stools:** the footrest ring has nothing holding it to the post. The base has no feet or screws.
+- **Washer and dryer stacks:** large bare top faces. Dials have no knurl. Panel lines are inset from the face edges instead of running edge to edge.
+- **Stools:** the base has no feet or screws.
 - **Table:** the pen lies on the top with no shadow.

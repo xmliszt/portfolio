@@ -5,8 +5,9 @@ import { projectIsoPoint } from "./project-iso-point";
 import type { IsoPoint, IsoSize, MachineKind } from "./scene-config";
 
 const PLINTH_HEIGHT = 0.12;
+const SIDE_PANEL_INSET = 0.14;
 
-/** Return the `transform` from a machine's front-face pixels to scene pixels, the face-pixel `rects` of its parts, the scene quad of its kick plate on the side face (`sidePlinth`, empty above the floor), and each control's scene outline. */
+/** Return the `transform` from a machine's front-face pixels to scene pixels, the face-pixel `rects` of its parts, the scene quad of its kick plate on the side face (`sidePlinth`, empty above the floor), the `sideTransform` from side-face pixels to scene pixels with the face-pixel `sidePanel` on it, and each control's scene outline. */
 export function getMachineFace(options: {
   kind: MachineKind;
   position: IsoPoint;
@@ -64,9 +65,27 @@ export function getMachineFace(options: {
     },
   } satisfies { [part: string]: FaceRect };
 
+  const side = getFacePlane({
+    plane: "side",
+    origin: {
+      x: position.x + size.w,
+      y: position.y + size.d,
+      z: position.z + size.h,
+    },
+    projection,
+  });
+  const sidePanel = {
+    x: SIDE_PANEL_INSET * unit,
+    y: SIDE_PANEL_INSET * unit,
+    width: (size.d - 2 * SIDE_PANEL_INSET) * unit,
+    height: (size.h - plinthHeight - 2 * SIDE_PANEL_INSET) * unit,
+  } satisfies FaceRect;
+
   return {
     transform: plane.transform,
     rects,
+    sideTransform: side.transform,
+    sidePanel,
     sidePlinth:
       plinthHeight === 0
         ? []

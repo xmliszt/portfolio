@@ -9,6 +9,7 @@ type IsoBoxProps = {
   position: IsoPoint;
   size: IsoSize;
   projection: IsoProjection;
+  bevel?: boolean;
 };
 
 export function IsoBox(props: IsoBoxProps) {
@@ -31,7 +32,7 @@ export function IsoBox(props: IsoBoxProps) {
         className="fill-[var(--lm-face-top)]"
         points={toSvgPoints(faces.top)}
       />
-      <BoxBevel points={faces.bevel} />
+      {props.bevel !== false && <BoxBevel points={faces.bevel} />}
     </g>
   );
 }

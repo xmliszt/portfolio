@@ -1,8 +1,9 @@
 import { useId } from "react";
 
 import type { LaidOutObject } from "@/lib/laundromat/build-scene-layout";
-import { getDaylightPatch } from "@/lib/laundromat/get-daylight-patch";
+import { getStreetLight } from "@/lib/laundromat/get-street-light";
 import type { TimeOfDay } from "@/lib/laundromat/get-time-of-day";
+import { getWindowLightPatch } from "@/lib/laundromat/get-window-light-patch";
 import type { IsoProjection } from "@/lib/laundromat/project-iso-point";
 import { projectIsoPoint } from "@/lib/laundromat/project-iso-point";
 import type { SceneConfig } from "@/lib/laundromat/scene-config";
@@ -13,7 +14,7 @@ import { DaylightPatch } from "./daylight-patch";
 const POOL_SEGMENTS = 48;
 const POOL_RADIUS_RATIO = 0.36;
 const POOL_PEAK_OPACITY = 0.14;
-const DAYLIGHT_PATCH_REACH = 2.6;
+const MOON_PATCH_OPACITY = 0.5;
 
 type RoomLightProps = {
   window: LaidOutObject | undefined;
@@ -41,16 +42,20 @@ export function RoomLight(props: RoomLightProps) {
     );
   });
 
-  const daylightPatch = (() => {
+  const streetLight = getStreetLight({ timeOfDay, sky: config.sky });
+  const windowLight = (() => {
     if (props.window === undefined) return undefined;
     const { position, size } = props.window.object;
-    return getDaylightPatch({
-      wallX: position.x + size.w,
+    return getWindowLightPatch({
+      wallX: position.x,
       fromY: position.y,
       toY: position.y + size.d,
-      reach: DAYLIGHT_PATCH_REACH,
-      sun: timeOfDay.sun,
-    }).map((point) => onFloor(point.x, point.y));
+      bottom: position.z,
+      top: position.z + size.h,
+      shadow: streetLight.shadow,
+      street: config.street,
+      floor: { width, depth },
+    })?.map((point) => onFloor(point.x, point.y));
   })();
 
   return (
@@ -71,11 +76,19 @@ export function RoomLight(props: RoomLightProps) {
           }}
         />
       </g>
-      {daylightPatch !== undefined && (
+      {windowLight !== undefined && (
         <DaylightPatch
-          points={daylightPatch}
-          color={timeOfDay.daylightPatchColor}
-          opacity={timeOfDay.daylightPatchOpacity}
+          points={windowLight}
+          color={
+            timeOfDay.sun === undefined
+              ? config.sky.moonColor
+              : timeOfDay.daylightPatchColor
+          }
+          opacity={
+            timeOfDay.sun === undefined
+              ? streetLight.strength * MOON_PATCH_OPACITY
+              : timeOfDay.daylightPatchOpacity
+          }
           glideMs={config.sky.timeJumpGlideMs}
         />
       )}

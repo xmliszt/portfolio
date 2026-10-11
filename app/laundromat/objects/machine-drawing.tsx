@@ -11,6 +11,8 @@ import { partStroke } from "./part-stroke";
 import type { MachineView } from "./scene-views";
 
 const DRUM_RIBS = [0, 120, 240];
+const SIDE_LOUVERS = [2, 3, 4, 5];
+const LOUVER_PITCH = 6;
 
 function getRingPath(options: {
   center: { x: number; y: number };
@@ -85,6 +87,44 @@ export function MachineDrawing(props: MachineDrawingProps) {
             className="fill-[var(--lm-recess)]"
             points={toSvgPoints(face.sidePlinth)}
           />
+        )}
+      </g>
+      <g transform={face.sideTransform} strokeWidth={0.75}>
+        <rect
+          {...face.sidePanel}
+          rx={2}
+          className="fill-none stroke-[var(--lm-detail)]"
+        />
+        {SIDE_LOUVERS.map((at) => (
+          <rect
+            key={at}
+            x={face.sidePanel.x + face.sidePanel.width * 0.2}
+            y={face.sidePanel.y + face.sidePanel.height - at * LOUVER_PITCH}
+            width={face.sidePanel.width * 0.6}
+            height={LOUVER_PITCH / 2}
+            rx={LOUVER_PITCH / 4}
+            className="fill-[var(--lm-recess)] stroke-[var(--lm-detail)]"
+          />
+        ))}
+        {[0, 1].flatMap((column) =>
+          [0, 1].map((row) => (
+            <circle
+              key={`${column},${row}`}
+              cx={
+                face.sidePanel.x +
+                column * face.sidePanel.width +
+                (column === 0 ? 5 : -5)
+              }
+              cy={
+                face.sidePanel.y +
+                row * face.sidePanel.height +
+                (row === 0 ? 5 : -5)
+              }
+              r={0.9}
+              className="fill-[var(--lm-detail)] stroke-[var(--lm-line)]"
+              strokeWidth={0.4}
+            />
+          ))
         )}
       </g>
       <g

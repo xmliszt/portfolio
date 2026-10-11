@@ -87,6 +87,7 @@ export function SceneObjectDrawing(props: SceneObjectDrawingProps) {
           {...shared}
           timeOfDay={props.timeOfDay}
           config={config}
+          view="street"
         />
       );
     case "clock":

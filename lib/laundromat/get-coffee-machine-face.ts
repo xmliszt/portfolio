@@ -6,6 +6,8 @@ import type { IsoPoint, IsoSize } from "./scene-config";
 
 const BASE_HEIGHT = 0.3;
 
+export const COFFEE_FOOT_HEIGHT = 0.05;
+
 export const COFFEE_TOWER_DEPTH = 0.42;
 
 export const COFFEE_CARAFE = {
@@ -34,7 +36,7 @@ export function getCoffeeMachineFace(options: {
     projection,
   });
   const width = size.w * unit;
-  const height = BASE_HEIGHT * unit;
+  const height = (BASE_HEIGHT - COFFEE_FOOT_HEIGHT) * unit;
   const rects = {
     base: { x: 0, y: 0, width, height },
     switch: { x: width - 0.84 * unit, y: 0, width: 0.8 * unit, height },

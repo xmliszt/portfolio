@@ -10,9 +10,11 @@ import { toSvgPoints } from "@/lib/laundromat/to-svg-points";
 
 import { IsoBox } from "./iso-box";
 import { partStroke } from "./part-stroke";
+import { StreetView } from "./street-view";
 
 const CASING = 0.16;
 const GLASS_X = 0.06;
+const SILL_NOSE_DEPTH = 0.1;
 const SUN_RADIUS = 0.28;
 const MOON_RADIUS = 0.2;
 const MOON_AT = { across: 0.3, up: 0.8 };
@@ -33,6 +35,8 @@ const FAR_SKYLINE = [
   { at: 0.71, width: 0.13, height: 0.44 },
   { at: 0.83, width: 0.17, height: 0.32 },
 ];
+const SKYLINE_DEPTH_PER_WIDTH = 0.7;
+const SKYLINE_MAX_DEPTH = 0.1;
 const NEAR_SKYLINE = [
   { at: -0.02, width: 0.22, height: 0.22 },
   { at: 0.2, width: 0.14, height: 0.3 },
@@ -55,6 +59,7 @@ type WindowDrawingProps = {
   highlighted: boolean;
   timeOfDay: TimeOfDay | undefined;
   config: SceneConfig;
+  view: "street" | "skyline";
 };
 
 export function WindowDrawing(props: WindowDrawingProps) {
@@ -122,6 +127,48 @@ export function WindowDrawing(props: WindowDrawingProps) {
     at(glassX, opening.far, opening.bottom),
   ];
 
+  function skylineBlock(options: {
+    building: { at: number; width: number; height: number };
+    tones: { front: string; side: string; top: string };
+  }) {
+    const { building, tones } = options;
+    const left = building.at * paneWidth;
+    const right = left + building.width * paneWidth;
+    const top = (1 - building.height) * paneHeight;
+    const depth =
+      Math.min(building.width * SKYLINE_DEPTH_PER_WIDTH, SKYLINE_MAX_DEPTH) *
+      paneWidth;
+    return (
+      <g key={building.at}>
+        <polygon
+          className={tones.side}
+          points={toSvgPoints([
+            { x: left, y: top },
+            { x: left - depth, y: top - depth },
+            { x: left - depth, y: paneHeight },
+            { x: left, y: paneHeight },
+          ])}
+        />
+        <polygon
+          className={tones.top}
+          points={toSvgPoints([
+            { x: left, y: top },
+            { x: right, y: top },
+            { x: right - depth, y: top - depth },
+            { x: left - depth, y: top - depth },
+          ])}
+        />
+        <rect
+          className={tones.front}
+          x={left}
+          y={top}
+          width={right - left}
+          height={paneHeight - top}
+        />
+      </g>
+    );
+  }
+
   return (
     <g data-window strokeLinejoin="round">
       <defs>
@@ -149,90 +196,99 @@ export function WindowDrawing(props: WindowDrawingProps) {
         <IsoBox position={p} size={size} projection={projection} />
       </g>
       <g clipPath={`url(#${id}-opening)`}>
-        <g transform={glass.transform}>
-          <rect
-            width={paneWidth}
-            height={paneHeight}
-            fill={`url(#${id}-sky)`}
+        {props.view === "street" ? (
+          <StreetView
+            wallX={p.x}
+            opening={opening}
+            projection={projection}
+            timeOfDay={timeOfDay}
+            config={config}
           />
-          <g style={{ opacity: nightOpacity, ...glide }}>
-            {STARS.map((star) => {
-              const point = onPane(star);
-              return (
-                <circle
-                  key={`${star.across},${star.up}`}
-                  cx={point.x}
-                  cy={point.y}
-                  r={0.7}
-                  fill={sky.starColor}
-                />
-              );
-            })}
-            <circle
-              cx={moon.x}
-              cy={moon.y}
-              r={MOON_RADIUS * unit}
-              fill={sky.moonColor}
+        ) : (
+          <g transform={glass.transform}>
+            <rect
+              width={paneWidth}
+              height={paneHeight}
+              fill={`url(#${id}-sky)`}
             />
-          </g>
-          {sun !== undefined && (
-            <circle
-              cx={sun.center.x}
-              cy={sun.center.y}
-              r={SUN_RADIUS * unit}
-              fill={sun.color}
-            />
-          )}
-          <g
-            className="fill-[var(--lm-wall)] stroke-[var(--lm-detail)]"
-            strokeWidth={0.5}
-            opacity={0.75}
-          >
-            {FAR_SKYLINE.map((building) => (
-              <rect
-                key={building.at}
-                x={building.at * paneWidth}
-                y={(1 - building.height) * paneHeight}
-                width={building.width * paneWidth}
-                height={building.height * paneHeight}
+            <g style={{ opacity: nightOpacity, ...glide }}>
+              {STARS.map((star) => {
+                const point = onPane(star);
+                return (
+                  <circle
+                    key={`${star.across},${star.up}`}
+                    cx={point.x}
+                    cy={point.y}
+                    r={0.7}
+                    fill={sky.starColor}
+                  />
+                );
+              })}
+              <circle
+                cx={moon.x}
+                cy={moon.y}
+                r={MOON_RADIUS * unit}
+                fill={sky.moonColor}
               />
-            ))}
-          </g>
-          <g
-            className="fill-[var(--lm-recess)] stroke-[var(--lm-detail)]"
-            strokeWidth={0.5}
-          >
-            {NEAR_SKYLINE.map((building) => (
-              <rect
-                key={building.at}
-                x={building.at * paneWidth}
-                y={(1 - building.height) * paneHeight}
-                width={building.width * paneWidth}
-                height={building.height * paneHeight}
+            </g>
+            {sun !== undefined && (
+              <circle
+                cx={sun.center.x}
+                cy={sun.center.y}
+                r={SUN_RADIUS * unit}
+                fill={sun.color}
               />
-            ))}
+            )}
+            <g
+              className="stroke-[var(--lm-detail)]"
+              strokeWidth={0.5}
+              opacity={0.75}
+            >
+              {FAR_SKYLINE.toSorted((a, b) => b.at - a.at).map((building) =>
+                skylineBlock({
+                  building,
+                  tones: {
+                    front: "fill-[var(--lm-wall)]",
+                    side: "fill-[var(--lm-face)]",
+                    top: "fill-[var(--lm-face-top)]",
+                  },
+                })
+              )}
+            </g>
+            <g
+              className="fill-[var(--lm-accent-hi)]"
+              style={{
+                opacity: nightOpacity * config.details.window.litWindowOpacity,
+                ...glide,
+              }}
+            >
+              {LIT_WINDOWS.map((lit) => {
+                const building = FAR_SKYLINE[lit.building + 1];
+                return (
+                  <rect
+                    key={`${lit.building},${lit.column},${lit.row}`}
+                    x={building.at * paneWidth + 2 + lit.column * 3}
+                    y={(1 - building.height) * paneHeight + 3 + lit.row * 4}
+                    width={1.4}
+                    height={2}
+                  />
+                );
+              })}
+            </g>
+            <g className="stroke-[var(--lm-detail)]" strokeWidth={0.5}>
+              {NEAR_SKYLINE.toSorted((a, b) => b.at - a.at).map((building) =>
+                skylineBlock({
+                  building,
+                  tones: {
+                    front: "fill-[var(--lm-recess)]",
+                    side: "fill-[var(--lm-wall)]",
+                    top: "fill-[var(--lm-face)]",
+                  },
+                })
+              )}
+            </g>
           </g>
-          <g
-            className="fill-[var(--lm-accent-hi)]"
-            style={{
-              opacity: nightOpacity * config.details.window.litWindowOpacity,
-              ...glide,
-            }}
-          >
-            {LIT_WINDOWS.map((lit) => {
-              const building = FAR_SKYLINE[lit.building + 1];
-              return (
-                <rect
-                  key={`${lit.building},${lit.column},${lit.row}`}
-                  x={building.at * paneWidth + 2 + lit.column * 3}
-                  y={(1 - building.height) * paneHeight + 3 + lit.row * 4}
-                  width={1.4}
-                  height={2}
-                />
-              );
-            })}
-          </g>
-        </g>
+        )}
         <g className="stroke-[var(--lm-line)]">
           <polygon
             className="fill-[var(--lm-wall-2)]"
@@ -275,16 +331,17 @@ export function WindowDrawing(props: WindowDrawingProps) {
       <g className={partStroke(props.highlighted)}>
         <IsoBox
           position={{
-            x: p.x,
-            y: opening.near - 0.12,
-            z: opening.bottom - 0.12,
+            x: outer,
+            y: opening.near,
+            z: p.z,
           }}
           size={{
-            w: size.w + 0.16,
-            d: opening.far - opening.near + 0.24,
-            h: 0.12,
+            w: SILL_NOSE_DEPTH,
+            d: opening.far - opening.near,
+            h: CASING,
           }}
           projection={projection}
+          bevel={false}
         />
       </g>
     </g>
