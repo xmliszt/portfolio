@@ -16,6 +16,7 @@ import { getDraftPlacement } from "@/lib/laundromat/notebook/get-draft-placement
 import { getEntrySpreads } from "@/lib/laundromat/notebook/get-entry-spreads";
 import { getSpreadOfPage } from "@/lib/laundromat/notebook/get-spread-of-page";
 import { isRtlScript } from "@/lib/laundromat/notebook/is-rtl-script";
+import { keepTrailingSpace } from "@/lib/laundromat/notebook/keep-trailing-space";
 import type { FittedEntry } from "@/lib/laundromat/notebook/layout-page-rows";
 import { layoutPageRows } from "@/lib/laundromat/notebook/layout-page-rows";
 import { wrapEntryText } from "@/lib/laundromat/notebook/wrap-entry-text";
@@ -282,10 +283,16 @@ export function NotebookBook(props: NotebookBookProps) {
     linesPerPage: notebook.linesPerPage,
   });
   const shownDraftFit = fitEntry({
-    text: pageDraft.replace(/[^\S\n]+$/u, ""),
+    text: pageDraft,
     maxWidthPx,
     measure: getMeasure(draftStyle),
     linesPerPage: notebook.linesPerPage,
+  });
+  const shownDraftLines = keepTrailingSpace({
+    lines: shownDraftFit.lines,
+    text: pageDraft,
+    maxWidthPx,
+    measure: getMeasure(draftStyle),
   });
   const draftPlacement = getDraftPlacement({
     linesUsed: notebook.linesUsed,
@@ -303,8 +310,8 @@ export function NotebookBook(props: NotebookBookProps) {
         id: DRAFT_ID,
         page: draftPlacement.page,
         lineStart: draftPlacement.lineStart,
-        lineCount: Math.max(1, shownDraftFit.lines.length),
-        lines: shownDraftFit.lines.length === 0 ? [""] : shownDraftFit.lines,
+        lineCount: Math.max(1, shownDraftLines.length),
+        lines: shownDraftLines.length === 0 ? [""] : shownDraftLines,
         meta: undefined,
       }
     : undefined;
