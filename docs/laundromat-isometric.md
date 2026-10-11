@@ -7,11 +7,11 @@ Our world unit is about 1 m (`COLUMN_RADIUS = 0.06`), and Anatomy's is about 1 s
 ## Rules that apply
 
 ### Volume
-- **Four side tones, not two.** We paint every box with `--lm-face` (front), `--lm-wall` (side) and `--lm-face-top`. Anatomy buckets each visible side by how it faces the light into four shades about 3% apart in luminance (dark: `#0f0f0f`, `#121212`, `#151515`, `#181818`), plus a lighter top. For us that means two more tokens between `wall` and `face`, used by rounded corners and cylinders.
-- **Rounded corners on boxes.** Anatomy's slabs are rounded rectangles (`slabOf(plan, z, h, P, steps, bevel)`), so each corner is a few narrow facets that step through the shades. That is where most of its sense of volume comes from. Our `getBoxFaces` returns three sharp quads. A rounded variant would return the corner facets as extra polygons with their shade index.
-- **Bevel highlight.** A thin line inset 0.4–1.6 px on the top face, along the visible edges, running into the silhouette corners. Cheap: one extra path per box.
-- **Cylinders shade by facet.** `getIsoCylinder` returns one `body` path with one fill. Split the visible half into facets (about 3 px wide on screen) and give each a shade by its angle to the light. Stools, the table, the mug, the plant pot and the basket all use it.
-- **Halo under anything that stands or is lifted.** A blurred fill under the base (`filter: blur(9px)`, opacity 0.9 in dark, shifted 3 px down). Nothing in our scene has one, so objects sit on the floor without weight. Add it per object in its own paint slot, before the object.
+- **Four side tones.** Boxes paint `--lm-face` (front, +y), `--lm-wall` (side, +x) and `--lm-face-top`. `--lm-shade-1` and `--lm-shade-2` sit between `wall` and `face` (`SHADE_FILL_CLASSES`, darkest first). Anatomy steps its shades about 3% apart in luminance.
+- **Cylinders shade by facet.** `getIsoCylinder` returns `facets`: the visible half in four bands of equal screen width, shaded `wall`, `shade-1`, `shade-2`, `face` from right to left, so a cylinder is lit like a box. Draw them with `CylinderSides`. `IsoCylinder`, the mug, the plant pot and the basket use it.
+- **Bevel highlight.** `getBoxFaces` returns `bevel`: a line on the top from the left silhouette corner, 1.2 px inside the near corner, to the right silhouette corner. `BoxBevel` draws it; `IsoBox`, the machines and the TV use it.
+- **Halo under what stands on the floor.** `getFloorHalo` gives the footprint of machines and the counter, and an ellipse under round furniture, for objects at `position.z === 0`. `FloorHalos` draws them as one group before all objects: blur `0.2 * unit`, opacity 0.45, shifted `0.08 * unit` down. Keep it soft; a heavier halo reads as a hole in the floor.
+- **Not done yet: rounded corners.** Anatomy's slabs are rounded rectangles whose corner facets step through the shades; ours are sharp boxes.
 
 ### Parts
 - **Many small parts, each with a job.** At 4× every region should still show something real. A large bare face is unfinished work.
@@ -46,8 +46,9 @@ Our world unit is about 1 m (`COLUMN_RADIUS = 0.06`), and Anatomy's is about 1 s
 - **WebGL and 3D modes.** Not needed for the current objects.
 
 ## Findings at 4× (2026-10-11)
-- **Washer and dryer stacks:** large bare top faces and a blank side face on each stack (Anatomy's "one big plain slab"). No plinth, kick plate or feet. No bevels. Dials have no knurl. Panel lines are inset from the face edges instead of running edge to edge.
-- **Stools:** cylinders are one flat tone. The footrest ring has nothing holding it to the post. The base has no feet or screws.
-- **Table:** one flat tone on the top and base. The pen lies on the top with no shadow.
-- **Mug:** flat body.
-- **All objects:** no halo under them.
+Done: cylinder shading, box bevels, floor halos, kick plates on floor-level machines.
+
+Open:
+- **Washer and dryer stacks:** large bare top faces and a blank side face on each stack (Anatomy's "one big plain slab"). Dials have no knurl. Panel lines are inset from the face edges instead of running edge to edge.
+- **Stools:** the footrest ring has nothing holding it to the post. The base has no feet or screws.
+- **Table:** the pen lies on the top with no shadow.

@@ -2,6 +2,8 @@ import assert from "node:assert/strict";
 import { test } from "node:test";
 
 import { getFloorHalo } from "./get-floor-halo";
+import { getIsoEllipse } from "./get-iso-ellipse";
+import { projectIsoPoint } from "./project-iso-point";
 import type { SceneObject } from "./scene-config";
 
 const projection = { unit: 10, origin: { x: 100, y: 50 } };
@@ -25,7 +27,17 @@ test("draws a box's footprint under a machine on the floor", () => {
     object: buildObject({ kind: "washer", z: 0 }),
     projection,
   });
-  assert.equal(halo?.kind, "polygon");
+  assert.deepEqual(halo, {
+    kind: "polygon",
+    points: [
+      { x: 1, y: 1 },
+      { x: 3, y: 1 },
+      { x: 3, y: 3 },
+      { x: 1, y: 3 },
+    ].map((corner) =>
+      projectIsoPoint({ point: { ...corner, z: 0 }, projection })
+    ),
+  });
 });
 
 test("draws an ellipse under round furniture", () => {
@@ -33,7 +45,10 @@ test("draws an ellipse under round furniture", () => {
     object: buildObject({ kind: "table", z: 0 }),
     projection,
   });
-  assert.equal(halo?.kind, "ellipse");
+  assert.deepEqual(halo, {
+    kind: "ellipse",
+    ...getIsoEllipse({ center: { x: 2, y: 2, z: 0 }, radius: 0.8, projection }),
+  });
 });
 
 test("skips lifted, wall-mounted and flat objects", () => {

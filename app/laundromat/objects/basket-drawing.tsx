@@ -9,6 +9,7 @@ import type { IsoProjection } from "@/lib/laundromat/project-iso-point";
 import { toSvgPoints } from "@/lib/laundromat/to-svg-points";
 import { cn } from "@/lib/utils";
 
+import { CylinderSides } from "./cylinder-sides";
 import { partStroke } from "./part-stroke";
 
 const WEAVE_ROWS = [0.2, 0.4, 0.6, 0.8];
@@ -293,7 +294,7 @@ export function BasketDrawing(props: BasketDrawingProps) {
           <path d={heapClip} />
         </clipPath>
       </defs>
-      <path d={body.body} className="fill-[var(--lm-face)]" />
+      <CylinderSides body={body.body} facets={body.facets} />
       <g className="fill-none stroke-[var(--lm-detail)]" strokeWidth={0.75}>
         {WEAVE_ROWS.map((row) => {
           const ellipse = getIsoEllipse({

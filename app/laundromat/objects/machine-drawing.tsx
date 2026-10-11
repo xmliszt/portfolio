@@ -1,6 +1,5 @@
 import type { LaidOutObject } from "@/lib/laundromat/build-scene-layout";
 import { getDialAngleDeg } from "@/lib/laundromat/laundry/get-dial-angle-deg";
-import type { ScreenPoint } from "@/lib/laundromat/project-iso-point";
 import type { SceneConfig } from "@/lib/laundromat/scene-config";
 import { toSvgPoints } from "@/lib/laundromat/to-svg-points";
 import { cn } from "@/lib/utils";
@@ -12,7 +11,6 @@ import { partStroke } from "./part-stroke";
 import type { MachineView } from "./scene-views";
 
 const DRUM_RIBS = [0, 120, 240];
-const PLINTH_HEIGHT = 0.12;
 
 function getRingPath(options: {
   center: { x: number; y: number };
@@ -41,7 +39,7 @@ export function MachineDrawing(props: MachineDrawingProps) {
   if (face?.target !== "machine") return null;
   const { details, view } = props;
   const isDryer = object.kind === "dryer";
-  const { panel, dial, readout, start, band, door, body } = face.rects;
+  const { panel, dial, readout, start, band, door, body, plinth } = face.rects;
   const isSomeoneElses = view.status.kind === "occupied";
   const isRunning =
     view.status.kind === "running" ||
@@ -62,22 +60,6 @@ export function MachineDrawing(props: MachineDrawingProps) {
   };
   const doorRadius = door.width / 2;
   const hingeX = door.x - 1.5;
-  const plinthRatio =
-    object.position.z === 0 ? PLINTH_HEIGHT / object.size.h : 0;
-  const plinthPx = body.height * plinthRatio;
-  const [sideBack, sideNear, sideNearTop, sideBackTop] = faces.side;
-  function towardTop(from: ScreenPoint, to: ScreenPoint) {
-    return {
-      x: from.x + (to.x - from.x) * plinthRatio,
-      y: from.y + (to.y - from.y) * plinthRatio,
-    };
-  }
-  const sidePlinth = [
-    sideBack,
-    sideNear,
-    towardTop(sideNear, sideNearTop),
-    towardTop(sideBack, sideBackTop),
-  ];
   const ticks = props.machineCycles.map((_, detent) =>
     getDialAngleDeg({ detent, detentCount: props.machineCycles.length })
   );
@@ -98,10 +80,10 @@ export function MachineDrawing(props: MachineDrawingProps) {
           points={toSvgPoints(faces.top)}
         />
         <BoxBevel points={faces.bevel} />
-        {plinthRatio > 0 && (
+        {face.sidePlinth.length > 0 && (
           <polygon
             className="fill-[var(--lm-recess)]"
-            points={toSvgPoints(sidePlinth)}
+            points={toSvgPoints(face.sidePlinth)}
           />
         )}
       </g>
@@ -110,20 +92,14 @@ export function MachineDrawing(props: MachineDrawingProps) {
         className="[&_*]:transition-[stroke] [&_*]:duration-200"
         strokeWidth={1}
       >
-        {plinthPx > 0 && (
+        {plinth.height > 0 && (
           <>
-            <rect
-              x={body.x}
-              y={body.y + body.height - plinthPx}
-              width={body.width}
-              height={plinthPx}
-              className="fill-[var(--lm-recess)] stroke-none"
-            />
+            <rect {...plinth} className="fill-[var(--lm-recess)] stroke-none" />
             <line
-              x1={body.x}
-              y1={body.y + body.height - plinthPx}
-              x2={body.x + body.width}
-              y2={body.y + body.height - plinthPx}
+              x1={plinth.x}
+              y1={plinth.y}
+              x2={plinth.x + plinth.width}
+              y2={plinth.y}
               className={partStroke(props.highlightedId === object.id)}
             />
           </>
@@ -132,7 +108,7 @@ export function MachineDrawing(props: MachineDrawingProps) {
           x={body.x + 2}
           y={body.y + 2}
           width={body.width - 4}
-          height={body.height - 4 - plinthPx}
+          height={body.height - 4 - plinth.height}
           rx={2}
           className="fill-none stroke-[var(--lm-detail)]"
         />

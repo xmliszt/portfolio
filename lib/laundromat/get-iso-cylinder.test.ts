@@ -47,10 +47,11 @@ test("spans the visible side from the right silhouette to the left", () => {
 test("joins each facet to the next without a gap", () => {
   const { facets } = buildCylinder({ radius: 1, topRadius: 0.5 });
   facets.slice(1).forEach((facet, index) => {
-    const previous = facets[index]!.points;
+    const previous = facets.at(index);
+    assert.ok(previous);
     assert.deepEqual(
       facet.points.at(0),
-      previous.at(previous.length / 2 - 1),
+      previous.points.at(previous.points.length / 2 - 1),
       `facet ${facet.shade} starts where facet ${index} ends`
     );
   });
