@@ -32,6 +32,7 @@ export const fr = {
     shareText:
       "Une laverie tranquille dans ton navigateur. Lance une machine, laisse tourner le minuteur et lis les mots que les autres ont laissés.",
     language: "Langue",
+    builtBy: "fait avec ❤️ par Li Yuxuan",
   },
   tabDone: "fini",
   readoutDone: "fini",

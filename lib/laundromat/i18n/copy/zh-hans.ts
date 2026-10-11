@@ -32,6 +32,7 @@ export const zhHans = {
     shareText:
       "浏览器里一间安静的自助洗衣店。放一桶衣服进去，让计时器走着，读读别人留下的话。",
     language: "语言",
+    builtBy: "李雨轩制作",
   },
   tabDone: "好了",
   readoutDone: "好了",

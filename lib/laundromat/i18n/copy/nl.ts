@@ -31,6 +31,7 @@ export const nl = {
     shareText:
       "Een rustige wasserette in je browser. Stop er een was in, laat de timer lopen en lees de berichtjes die mensen hebben achtergelaten.",
     language: "Taal",
+    builtBy: "met ❤️ gemaakt door Li Yuxuan",
   },
   tabDone: "klaar",
   readoutDone: "klaar",

@@ -33,6 +33,7 @@ export const ptBR = {
     shareText:
       "Uma lavanderia tranquila no seu navegador. Coloque uma leva de roupa, deixe o timer rodar e leia os recados que as pessoas deixaram.",
     language: "Idioma",
+    builtBy: "feito com ❤️ por Li Yuxuan",
   },
   tabDone: "pronto",
   readoutDone: "fim",

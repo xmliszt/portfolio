@@ -37,6 +37,7 @@ export const hi = {
     shareText:
       "तुम्हारे ब्राउज़र में एक शांत लॉन्ड्री। कपड़े डालो, टाइमर चलने दो, और लोगों के छोड़े हुए नोट पढ़ो।",
     language: "भाषा",
+    builtBy: "Li Yuxuan ने ❤️ से बनाया",
   },
   tabDone: "हो गया",
   readoutDone: "पूरा",

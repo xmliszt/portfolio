@@ -45,6 +45,7 @@ export const pl = {
     shareText:
       "Spokojna pralnia w przeglądarce. Wrzuć pranie, niech timer leci, i poczytaj liściki, które zostawili inni.",
     language: "Język",
+    builtBy: "zrobione z ❤️ przez Li Yuxuan",
   },
   tabDone: "gotowe",
   readoutDone: "gotowe",

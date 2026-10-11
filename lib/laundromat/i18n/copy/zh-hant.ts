@@ -32,6 +32,7 @@ export const zhHant = {
     shareText:
       "瀏覽器裡一間安靜的自助洗衣店。丟一籃衣服進去，讓計時器跑著，讀讀別人留下的話。",
     language: "語言",
+    builtBy: "李雨軒製作",
   },
   tabDone: "好了",
   readoutDone: "好了",

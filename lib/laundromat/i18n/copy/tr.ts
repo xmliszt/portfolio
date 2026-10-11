@@ -31,6 +31,7 @@ export const tr = {
     shareText:
       "Tarayıcında sakin bir çamaşırhane. Makineye çamaşırını at, zamanlayıcı işlesin ve insanların bıraktığı notları oku.",
     language: "Dil",
+    builtBy: "Li Yuxuan tarafından ❤️ ile yapıldı",
   },
   tabDone: "bitti",
   readoutDone: "bitti",

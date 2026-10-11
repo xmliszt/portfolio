@@ -13,6 +13,7 @@ import { useArrivedFlag } from "./first-visit/use-arrived-flag";
 import { LanguagePicker } from "./i18n/language-picker";
 import { SoundToggle } from "./sound/sound-toggle";
 import { LaundromatScene } from "./laundromat-scene";
+import { PortfolioLink } from "./portfolio-link";
 import { ShareButton } from "./share-button";
 
 const HEAD_HOME_DIM_MS = 700;
@@ -129,6 +130,7 @@ export function LaundromatEntry(props: LaundromatEntryProps) {
         <LanguagePicker />
         <SoundToggle />
         <ShareButton />
+        <PortfolioLink />
       </div>
       {isFirstVisit && (
         <div className="absolute inset-0">

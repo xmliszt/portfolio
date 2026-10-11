@@ -37,6 +37,7 @@ export const id = {
     shareText:
       "Laundry yang tenang di browser kamu. Masukkan cucian, biarkan timer berjalan, dan baca catatan yang ditinggalkan orang-orang.",
     language: "Bahasa",
+    builtBy: "dibuat dengan ❤️ oleh Li Yuxuan",
   },
   tabDone: "selesai",
   readoutDone: "beres",

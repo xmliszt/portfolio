@@ -37,6 +37,7 @@ export const vi = {
     shareText:
       "Một tiệm giặt yên tĩnh trong trình duyệt của bạn. Bỏ đồ vào máy, để đồng hồ chạy, và đọc những lời nhắn người khác để lại.",
     language: "Ngôn ngữ",
+    builtBy: "được làm với ❤️ bởi Li Yuxuan",
   },
   tabDone: "xong",
   readoutDone: "xong",

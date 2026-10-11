@@ -32,6 +32,7 @@ export const de = {
     shareText:
       "Ein ruhiger Waschsalon in deinem Browser. Steck eine Ladung rein, lass den Timer laufen und lies die Notizen, die andere hinterlassen haben.",
     language: "Sprache",
+    builtBy: "mit ❤️ gebaut von Li Yuxuan",
   },
   tabDone: "fertig",
   readoutDone: "ende",

@@ -32,6 +32,7 @@ export const it = {
     shareText:
       "Una lavanderia tranquilla nel tuo browser. Carica un bucato, lascia andare il timer e leggi i biglietti che hanno lasciato gli altri.",
     language: "Lingua",
+    builtBy: "fatto con ❤️ da Li Yuxuan",
   },
   tabDone: "finito",
   readoutDone: "fine",
