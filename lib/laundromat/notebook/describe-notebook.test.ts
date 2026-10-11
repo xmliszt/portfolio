@@ -60,8 +60,21 @@ test("describes a filled book on the shelf", () => {
     entryCount: 301,
     copy: en,
   });
-  assert.equal(book.tooltip, "mar 30 – may 11 · 301 entries");
-  assert.equal(book.label, "Open notebook No. 3, mar 30 – may 11, 301 entries");
+  assert.equal(book.tooltip, "mar 30 – may 11 · 2026 · 301 entries");
+  assert.equal(
+    book.label,
+    "Open notebook No. 3, mar 30 – may 11, 2026, 301 entries"
+  );
+  assert.equal(
+    describeShelfBook({
+      number: 4,
+      startedAtMs: new Date(2026, 11, 20).getTime(),
+      filledAtMs: new Date(2027, 0, 4).getTime(),
+      entryCount: 12,
+      copy: en,
+    }).tooltip,
+    "dec 20 – jan 4 · 2026–2027 · 12 entries"
+  );
   assert.match(
     describeShelfBook({
       number: 1,

@@ -1,5 +1,7 @@
 "use client";
 
+import { useState } from "react";
+
 import { useLaundromatCopy } from "@/app/laundromat/i18n/use-laundromat-copy";
 import type { PageRow } from "@/lib/laundromat/notebook/layout-page-rows";
 import type { NotebookPage as NotebookPageSettings } from "@/lib/laundromat/scene-config";
@@ -55,6 +57,7 @@ type NotebookPageProps = {
 export function NotebookPage(props: NotebookPageProps) {
   const { copy } = useLaundromatCopy();
   const { settings, content, pitch } = props;
+  const [hoveredEntryId, setHoveredEntryId] = useState<string>();
   const shading =
     props.side === "left"
       ? "inset -18px 0 24px -20px rgb(0 0 0 / 0.35)"
@@ -116,6 +119,16 @@ export function NotebookPage(props: NotebookPageProps) {
           settings={settings}
           pitch={pitch}
           controls={props.controls}
+          entryHovered={row.entryId === hoveredEntryId}
+          onHoverChange={(hovered) =>
+            setHoveredEntryId((current) =>
+              hovered
+                ? row.entryId
+                : current === row.entryId
+                  ? undefined
+                  : current
+            )
+          }
         />
       ))}
       {props.remoteCaret !== undefined && (
@@ -184,6 +197,8 @@ type PageRowLineProps = {
   settings: NotebookPageSettings;
   pitch: number;
   controls: PageControls | undefined;
+  entryHovered: boolean;
+  onHoverChange: (hovered: boolean) => void;
 };
 
 function PageRowLine(props: PageRowLineProps) {
@@ -209,10 +224,12 @@ function PageRowLine(props: PageRowLineProps) {
     return (
       <div
         className={cn(
-          "group absolute flex items-center text-[11px] text-[var(--lm-ink-pen)] transition-opacity duration-300",
+          "absolute flex items-center text-[11px] text-[var(--lm-ink-pen)] transition-opacity duration-300",
           row.isRtl && "flex-row-reverse"
         )}
         style={{ ...box, opacity: row.ink === "plain" ? 0.45 : 0 }}
+        onPointerEnter={() => props.onHoverChange(true)}
+        onPointerLeave={() => props.onHoverChange(false)}
       >
         <span className="truncate">{row.text}</span>
         {reportEntryId !== undefined && props.controls !== undefined && (
@@ -222,8 +239,8 @@ function PageRowLine(props: PageRowLineProps) {
             onClick={() => props.controls?.onReport(reportEntryId)}
             className={cn(
               "absolute -right-12 cursor-pointer px-1.5 py-1 opacity-0 transition-opacity duration-200 outline-none",
-              "group-hover:opacity-100 focus-visible:opacity-100 focus-visible:outline-1 focus-visible:outline-dashed",
-              isReported && "opacity-100"
+              "focus-visible:opacity-100 focus-visible:outline-1 focus-visible:outline-dashed",
+              (isReported || props.entryHovered) && "opacity-100"
             )}
           >
             {isReported ? copy.notebook.reported : copy.notebook.report}
@@ -243,6 +260,8 @@ function PageRowLine(props: PageRowLineProps) {
       dir={row.isRtl ? "rtl" : "ltr"}
       className="absolute overflow-visible"
       style={{ ...box, ...textStyle }}
+      onPointerEnter={() => props.onHoverChange(true)}
+      onPointerLeave={() => props.onHoverChange(false)}
     >
       {row.ink === "inking" && props.controls !== undefined ? (
         <InkedLine

@@ -10,7 +10,7 @@ type DescribeShelfBookOptions = {
   copy: LaundromatCopy;
 };
 
-/** Return the shelf book's hit target `label` and its `tooltip`, `mar 30 – may 11 · 301 entries`. */
+/** Return the shelf book's hit target `label` and its `tooltip`, `mar 30 – may 11 · 2026 · 301 entries`. */
 export function describeShelfBook(options: DescribeShelfBookOptions) {
   const { copy } = options;
   const span = copy.notebook.daySpan({
@@ -23,9 +23,17 @@ export function describeShelfBook(options: DescribeShelfBookOptions) {
       locale: copy.locale,
     }),
   });
+  const startYear = new Date(options.startedAtMs).getFullYear();
+  const endYear = new Date(options.filledAtMs).getFullYear();
+  const years =
+    startYear === endYear ? `${startYear}` : `${startYear}–${endYear}`;
   const entries = copy.shelf.entryCount({ count: options.entryCount });
   return {
-    label: copy.shelf.bookLabel({ number: options.number, span, entries }),
-    tooltip: `${span} · ${entries}`,
+    label: copy.shelf.bookLabel({
+      number: options.number,
+      span: `${span}, ${years}`,
+      entries,
+    }),
+    tooltip: `${span} · ${years} · ${entries}`,
   };
 }

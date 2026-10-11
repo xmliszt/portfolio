@@ -476,7 +476,7 @@ export const sceneConfig: SceneConfig = {
       turnMs: 720,
       turnEase: [0.45, 0.05, 0.3, 1],
       curlStrength: 0.55,
-      inkSpeed: 1.6,
+      inkSpeed: 4,
     },
   },
   notebook: {

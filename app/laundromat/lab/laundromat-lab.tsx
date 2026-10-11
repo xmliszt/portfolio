@@ -212,7 +212,7 @@ const objectDials = {
     riffleSheetMs: [details.notebook.riffleSheetMs, 100, 1500, 10],
     turnMs: [details.notebook.turnMs, 100, 2000, 10],
     curlStrength: [details.notebook.curlStrength, 0, 1, 0.01],
-    inkSpeed: [details.notebook.inkSpeed, 0.25, 4, 0.05],
+    inkSpeed: [details.notebook.inkSpeed, 0.25, 8, 0.05],
     _collapsed: true,
   },
 } satisfies DialConfig;
