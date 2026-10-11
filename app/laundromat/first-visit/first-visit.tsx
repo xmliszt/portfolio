@@ -12,6 +12,7 @@ import type {
   GarmentKind,
 } from "@/lib/laundromat/first-visit/bedroom-config";
 import { describeHamperBasket } from "@/lib/laundromat/first-visit/describe-hamper-basket";
+import { getCoverScale } from "@/lib/laundromat/first-visit/get-cover-scale";
 import { getGarmentFootprint } from "@/lib/laundromat/first-visit/get-garment-footprint";
 import { getHamperBasket } from "@/lib/laundromat/first-visit/get-hamper-basket";
 import { getTossFlight } from "@/lib/laundromat/first-visit/get-toss-flight";
@@ -59,14 +60,20 @@ type Hover = GarmentKind | "basket" | "door" | "lamp";
 
 type Phase = "room" | "opening" | "entering";
 
-type Fit = { scale: number; x: number; y: number };
+type Fit = {
+  scale: number;
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+};
 
 type FirstVisitProps = {
   scene: SceneConfig;
   bedroom: BedroomConfig;
   hourOverride?: number;
   cleanPile: boolean;
-  onWalkIn: (options: { doorway: ScreenPoint }) => void;
+  onWalkIn: () => void;
   onListen: () => void;
 };
 
@@ -138,6 +145,8 @@ export function FirstVisit(props: FirstVisitProps) {
         scale,
         x: width / 2 - ((left + right) / 2) * scale,
         y: height / 2 - ((top + bottom) / 2) * scale,
+        width,
+        height,
       });
     });
     observer.observe(root);
@@ -180,6 +189,14 @@ export function FirstVisit(props: FirstVisitProps) {
     point: { x: 0, y: door.fromY + door.width / 2, z: door.height / 2 },
     projection,
   });
+  const doorwayOutline = [
+    { y: door.fromY, z: 0 },
+    { y: door.fromY + door.width, z: 0 },
+    { y: door.fromY + door.width, z: door.height },
+    { y: door.fromY, z: door.height },
+  ].map((corner) =>
+    projectIsoPoint({ point: { x: 0, ...corner }, projection })
+  );
   const isReady = inBasket.length > 0;
   const isInRoom = phase === "room";
 
@@ -329,12 +346,7 @@ export function FirstVisit(props: FirstVisitProps) {
     setHover(undefined);
     setPhase("opening");
     sound?.play("room-door-open");
-    props.onWalkIn({
-      doorway: {
-        x: fit.x + doorway.x * fit.scale,
-        y: fit.y + doorway.y * fit.scale,
-      },
-    });
+    props.onWalkIn();
     if (prefersReducedMotion) {
       setPhase("entering");
       return;
@@ -411,14 +423,29 @@ export function FirstVisit(props: FirstVisitProps) {
         transition: { duration: walkIn.reducedFadeMs / 1000 },
       };
     }
+    if (fit === undefined) return undefined;
+    const doorwayOnScreen = {
+      x: fit.x + doorway.x * fit.scale,
+      y: fit.y + doorway.y * fit.scale,
+    };
+    const coverScale = getCoverScale({
+      polygon: doorwayOutline,
+      center: doorway,
+      view: {
+        left: doorwayOnScreen.x / fit.scale,
+        right: (fit.width - doorwayOnScreen.x) / fit.scale,
+        top: doorwayOnScreen.y / fit.scale,
+        bottom: (fit.height - doorwayOnScreen.y) / fit.scale,
+      },
+    });
     return {
       target: {
-        scale: walkIn.pushScale,
+        scale: coverScale * walkIn.pushCoverMargin,
         filter: `blur(${walkIn.pushBlurPx}px)`,
       },
       transition: {
         scale: {
-          duration: walkIn.pushMs / 1000,
+          duration: walkIn.lightInMs / 1000,
           ease: PUSH_EASE,
         },
         filter: {
@@ -502,7 +529,8 @@ export function FirstVisit(props: FirstVisitProps) {
                 phase === "entering" ? "transform, filter" : undefined,
             }}
             initial={false}
-            animate={stagePush?.target}
+            variants={{ rest: {}, push: stagePush?.target ?? {} }}
+            animate={stagePush === undefined ? "rest" : "push"}
             transition={stagePush?.transition}
           >
             <svg

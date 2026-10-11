@@ -5,7 +5,6 @@ import { motion, useReducedMotion } from "motion/react";
 
 import type { BedroomConfig } from "@/lib/laundromat/first-visit/bedroom-config";
 import { bedroomConfig } from "@/lib/laundromat/first-visit/bedroom-config";
-import type { ScreenPoint } from "@/lib/laundromat/project-iso-point";
 import type { SceneConfig } from "@/lib/laundromat/scene-config";
 
 import { FirstVisit } from "./first-visit/first-visit";
@@ -18,8 +17,7 @@ import { ShareButton } from "./share-button";
 
 const HEAD_HOME_DIM_MS = 700;
 const HEAD_HOME_REVEAL_MS = 1400;
-const LIGHT_IN_EASE: [number, number, number, number] = [0.55, 0, 1, 0.45];
-const LIGHT_SIZE = "500vmax";
+const LIGHT_FILL_MS = 300;
 
 type Arrival = "hidden" | "arriving" | "arrived";
 
@@ -44,7 +42,7 @@ export function LaundromatEntry(props: LaundromatEntryProps) {
   const prefersReducedMotion = useReducedMotion() ?? false;
   const [arrival, setArrival] = useState<Arrival>("hidden");
   const [isBedroomGone, setIsBedroomGone] = useState(false);
-  const [doorLight, setDoorLight] = useState<ScreenPoint>();
+  const [isDoorLit, setIsDoorLit] = useState(false);
   const sceneRef = useRef<HTMLDivElement>(null);
   const timersRef = useRef<number[]>([]);
   const visibleArrival = hasArrived === true ? "arrived" : arrival;
@@ -80,19 +78,19 @@ export function LaundromatEntry(props: LaundromatEntryProps) {
   const lightCoverMs = walkIn.pushStartMs + walkIn.lightInMs;
   const lightOutStartMs = lightCoverMs + walkIn.whiteMs;
 
-  function handleWalkIn(options: { doorway: ScreenPoint }) {
+  function handleWalkIn() {
     markArrived();
     if (prefersReducedMotion) {
       setArrival("arriving");
       later(walkIn.reducedFadeMs, leaveBedroom);
       return;
     }
-    setDoorLight(options.doorway);
+    setIsDoorLit(true);
     later(lightCoverMs, () => {
       setArrival("arrived");
       leaveBedroom();
     });
-    later(lightOutStartMs + walkIn.lightOutMs, () => setDoorLight(undefined));
+    later(lightOutStartMs + walkIn.lightOutMs, () => setIsDoorLit(false));
   }
 
   function handleListen() {
@@ -158,7 +156,7 @@ export function LaundromatEntry(props: LaundromatEntryProps) {
           hidden={visibleArrival === "hidden"}
         />
       </div>
-      {doorLight !== undefined && (
+      {isDoorLit && (
         <motion.div
           aria-hidden
           className="pointer-events-none absolute inset-0 overflow-hidden"
@@ -171,30 +169,13 @@ export function LaundromatEntry(props: LaundromatEntryProps) {
           }}
         >
           <motion.div
-            className="absolute rounded-full"
-            style={{
-              left: doorLight.x,
-              top: doorLight.y,
-              width: LIGHT_SIZE,
-              height: LIGHT_SIZE,
-              x: "-50%",
-              y: "-50%",
-              background:
-                "radial-gradient(circle closest-side, var(--lm-accent-hi) 0%, var(--lm-accent) 70%, transparent 100%)",
-            }}
-            initial={{ scale: 0.02, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
+            className="absolute inset-0 bg-[var(--lm-accent-hi)]"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
             transition={{
-              scale: {
-                duration: walkIn.lightInMs / 1000,
-                delay: walkIn.pushStartMs / 1000,
-                ease: LIGHT_IN_EASE,
-              },
-              opacity: {
-                duration: walkIn.lightInMs / 2000,
-                delay: walkIn.pushStartMs / 1000,
-                ease: "easeOut",
-              },
+              duration: LIGHT_FILL_MS / 1000,
+              delay: (lightCoverMs - LIGHT_FILL_MS) / 1000,
+              ease: "easeIn",
             }}
           />
           <motion.div

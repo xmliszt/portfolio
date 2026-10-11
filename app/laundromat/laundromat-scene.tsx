@@ -16,7 +16,7 @@ import {
   useMotionValue,
   useReducedMotion,
 } from "motion/react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 
 import type { LaidOutControl } from "@/lib/laundromat/build-scene-layout";
 import { buildSceneLayout } from "@/lib/laundromat/build-scene-layout";
@@ -30,6 +30,7 @@ import { describeSceneObject } from "@/lib/laundromat/describe-scene-object";
 import { getCameraMoveDurationMs } from "@/lib/laundromat/get-camera-move-duration-ms";
 import { getTimeOfDay } from "@/lib/laundromat/get-time-of-day";
 import { describeEntranceMat } from "@/lib/laundromat/laundry/describe-entrance-mat";
+import { describeLaundryBasket } from "@/lib/laundromat/laundry/describe-laundry-basket";
 import { describeMachine } from "@/lib/laundromat/laundry/describe-machine";
 import type { MachineControl } from "@/lib/laundromat/laundry/describe-machine-control";
 import { describeMachineControl } from "@/lib/laundromat/laundry/describe-machine-control";
@@ -117,13 +118,17 @@ type LaundromatSceneProps = {
   hidden?: boolean;
 };
 
+function toFocusUrl(params: URLSearchParams) {
+  const query = params.toString();
+  return query === "" ? window.location.pathname : `?${query}`;
+}
+
 export function LaundromatScene(props: LaundromatSceneProps) {
   const { config } = props;
   const layout = useMemo(
     () => buildSceneLayout({ config, unit: SCENE_UNIT_PX }),
     [config]
   );
-  const router = useRouter();
   const searchParams = useSearchParams();
   const focus = parseCameraFocus(searchParams.get("focus"));
   const focusedObjectId = getFocusedObjectId({ focus, config });
@@ -226,11 +231,16 @@ export function LaundromatScene(props: LaundromatSceneProps) {
           return undefined;
         case "loaded":
         case "done":
-          return { phase: ownLoad.kind, kind: ownLoad.machine.kind };
+          return {
+            phase: ownLoad.kind,
+            kind: ownLoad.machine.kind,
+            machineId: ownLoad.machine.id,
+          };
         case "running":
           return {
             phase: "running",
             kind: ownLoad.machine.kind,
+            machineId: ownLoad.machine.id,
             startedAt: ownLoad.startedAt,
             durationMs: ownLoad.durationMs,
           };
@@ -432,11 +442,8 @@ export function LaundromatScene(props: LaundromatSceneProps) {
     const params = new URLSearchParams(searchParams.toString());
     params.delete("focus");
     params.delete("book");
-    const query = params.toString();
-    router.replace(query === "" ? window.location.pathname : `?${query}`, {
-      scroll: false,
-    });
-  }, [isShelfFocusBlocked, router, searchParams]);
+    window.history.replaceState(null, "", toFocusUrl(params));
+  }, [isShelfFocusBlocked, searchParams]);
   const views: SceneViews = {
     machines: machineViews,
     tv: { state: appliances.tv, noSignal: isTvNoSignal },
@@ -511,6 +518,8 @@ export function LaundromatScene(props: LaundromatSceneProps) {
         return describeCoffeeCup({ cup: appliances.cup, copy });
       case "mat":
         return entranceMat;
+      case "basket":
+        return describeLaundryBasket({ basket, copy });
       case "shelf":
         return shelfDescription;
       default:
@@ -644,10 +653,8 @@ export function LaundromatScene(props: LaundromatSceneProps) {
     else params.set("focus", next);
     if (book === undefined) params.delete("book");
     else params.set("book", String(book));
-    const query = params.toString();
-    router.push(query === "" ? window.location.pathname : `?${query}`, {
-      scroll: false,
-    });
+    // The history API updates `useSearchParams` without a server round trip.
+    window.history.pushState(null, "", toFocusUrl(params));
   }
 
   useEffect(() => {

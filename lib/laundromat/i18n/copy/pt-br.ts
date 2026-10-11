@@ -130,6 +130,20 @@ export const ptBR = {
     waitingLabel: "Capacho, o caminho de casa quando sua roupa estiver pronta",
     waitingTooltip: "o caminho de casa · termine sua roupa primeiro",
   },
+  laundryBasket: {
+    labels: {
+      empty: "Cesto de roupa, vazio",
+      dirty: "Cesto de roupa, roupa para lavar",
+      wet: "Cesto de roupa, roupa molhada para secar",
+      folded: "Cesto de roupa, roupa limpa e seca",
+    },
+    tooltips: {
+      empty: "cesto · vazio",
+      dirty: "roupa suja · para a lavadora",
+      wet: "roupa molhada · para a secadora",
+      folded: "limpa e seca · pronta pra ir pra casa",
+    },
+  },
   coffee: {
     machineLabel: "Cafeteira",
     brewingMachineLabel: "Cafeteira, passando café",

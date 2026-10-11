@@ -4,6 +4,7 @@ import type { RemoteLoad, RoomPresence } from "./room-presence";
 
 const MAX_CLOCK_SKEW_MS = 60_000;
 const MAX_CYCLE_MS = 2 * 60 * 60_000;
+const MAX_MACHINE_ID_LENGTH = 40;
 
 function isObject(value: unknown): value is object {
   return typeof value === "object" && value !== null;
@@ -17,10 +18,16 @@ function parseLoad(value: unknown): RemoteLoad | undefined {
   ) {
     return undefined;
   }
+  const machine =
+    "machineId" in value &&
+    typeof value.machineId === "string" &&
+    value.machineId.length <= MAX_MACHINE_ID_LENGTH
+      ? { machineId: value.machineId }
+      : {};
   // A load without `phase` comes from a tab that only ever shared running cycles.
   const phase = "phase" in value ? value.phase : "running";
   if (phase === "loaded" || phase === "done") {
-    return { phase, kind: value.kind };
+    return { phase, kind: value.kind, ...machine };
   }
   if (
     phase !== "running" ||
@@ -34,6 +41,7 @@ function parseLoad(value: unknown): RemoteLoad | undefined {
   return {
     phase: "running",
     kind: value.kind,
+    ...machine,
     startedAt: value.startedAt,
     durationMs: value.durationMs,
   };

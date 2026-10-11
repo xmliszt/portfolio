@@ -131,6 +131,20 @@ export const en = {
     waitingLabel: "Welcome mat, the way home once your laundry is done",
     waitingTooltip: "the way home · finish your laundry first",
   },
+  laundryBasket: {
+    labels: {
+      empty: "Laundry basket, empty",
+      dirty: "Laundry basket, clothes to wash",
+      wet: "Laundry basket, wet clothes to dry",
+      folded: "Laundry basket, clean dry clothes",
+    },
+    tooltips: {
+      empty: "basket · empty",
+      dirty: "dirty clothes · into a washer",
+      wet: "wet clothes · into a dryer",
+      folded: "clean and dry · ready to go home",
+    },
+  },
   coffee: {
     machineLabel: "Coffee machine",
     brewingMachineLabel: "Coffee machine, brewing",

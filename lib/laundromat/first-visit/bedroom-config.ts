@@ -65,8 +65,7 @@ export type BedroomConfig = {
       openDeg: number;
       springOmega: number;
       pushStartMs: number;
-      pushMs: number;
-      pushScale: number;
+      pushCoverMargin: number;
       pushBlurPx: number;
       pushBlurDelayMs: number;
       pushBlurMs: number;
@@ -189,8 +188,7 @@ export const bedroomConfig: BedroomConfig = {
       openDeg: 84,
       springOmega: 7,
       pushStartMs: 520,
-      pushMs: 1200,
-      pushScale: 5,
+      pushCoverMargin: 1.15,
       pushBlurPx: 10,
       pushBlurDelayMs: 300,
       pushBlurMs: 850,

@@ -134,6 +134,20 @@ export const id = {
     waitingLabel: "Keset, jalan pulang setelah cucianmu selesai",
     waitingTooltip: "jalan pulang · selesaikan cucianmu dulu",
   },
+  laundryBasket: {
+    labels: {
+      empty: "Keranjang cucian, kosong",
+      dirty: "Keranjang cucian, pakaian untuk dicuci",
+      wet: "Keranjang cucian, pakaian basah untuk dikeringkan",
+      folded: "Keranjang cucian, pakaian bersih dan kering",
+    },
+    tooltips: {
+      empty: "keranjang · kosong",
+      dirty: "pakaian kotor · ke mesin cuci",
+      wet: "pakaian basah · ke mesin pengering",
+      folded: "bersih dan kering · siap pulang",
+    },
+  },
   coffee: {
     machineLabel: "Mesin kopi",
     brewingMachineLabel: "Mesin kopi, sedang menyeduh",

@@ -15,6 +15,7 @@ import { describeCoffeeMachine } from "@/lib/laundromat/coffee/describe-coffee-m
 import { describeCoffeeSwitch } from "@/lib/laundromat/coffee/describe-coffee-switch";
 import { describeSceneObject } from "@/lib/laundromat/describe-scene-object";
 import { describeEntranceMat } from "@/lib/laundromat/laundry/describe-entrance-mat";
+import { describeLaundryBasket } from "@/lib/laundromat/laundry/describe-laundry-basket";
 import { describeMachine } from "@/lib/laundromat/laundry/describe-machine";
 import { describeMachineControl } from "@/lib/laundromat/laundry/describe-machine-control";
 import { formatRemainingTime } from "@/lib/laundromat/laundry/format-remaining-time";
@@ -149,6 +150,8 @@ export function ObjectWorkbench(props: ObjectWorkbenchProps) {
         return describeCoffeeMachine({ phase: appliances.coffee, copy });
       case "mug":
         return describeCoffeeCup({ cup: appliances.cup, copy });
+      case "basket":
+        return describeLaundryBasket({ basket: props.basket, copy });
       default:
         return describeSceneObject({ object, copy });
     }

@@ -115,6 +115,20 @@ export const pl = {
     waitingLabel: "Wycieraczka, droga do domu, gdy pranie będzie gotowe",
     waitingTooltip: "droga do domu · najpierw skończ pranie",
   },
+  laundryBasket: {
+    labels: {
+      empty: "Kosz na pranie, pusty",
+      dirty: "Kosz na pranie, rzeczy do prania",
+      wet: "Kosz na pranie, mokre rzeczy do suszenia",
+      folded: "Kosz na pranie, czyste suche rzeczy",
+    },
+    tooltips: {
+      empty: "kosz · pusty",
+      dirty: "brudne rzeczy · do pralki",
+      wet: "mokre rzeczy · do suszarki",
+      folded: "czyste i suche · gotowe do domu",
+    },
+  },
   coffee: {
     machineLabel: "Ekspres do kawy",
     brewingMachineLabel: "Ekspres do kawy, parzy",

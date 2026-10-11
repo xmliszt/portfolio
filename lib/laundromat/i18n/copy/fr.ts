@@ -128,6 +128,20 @@ export const fr = {
     waitingLabel: "Paillasson, le chemin du retour une fois ton linge fini",
     waitingTooltip: "le chemin du retour · finis d'abord ta lessive",
   },
+  laundryBasket: {
+    labels: {
+      empty: "Panier à linge, vide",
+      dirty: "Panier à linge, linge à laver",
+      wet: "Panier à linge, linge mouillé à sécher",
+      folded: "Panier à linge, linge propre et sec",
+    },
+    tooltips: {
+      empty: "panier · vide",
+      dirty: "linge sale · dans une machine à laver",
+      wet: "linge mouillé · dans un sèche-linge",
+      folded: "propre et sec · prêt à rentrer",
+    },
+  },
   coffee: {
     machineLabel: "Machine à café",
     brewingMachineLabel: "Machine à café, café en préparation",

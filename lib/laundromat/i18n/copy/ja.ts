@@ -127,6 +127,20 @@ export const ja = {
     waitingLabel: "玄関マット、洗濯が終わったらここから帰る",
     waitingTooltip: "帰り道 · 先に洗濯を終わらせて",
   },
+  laundryBasket: {
+    labels: {
+      empty: "ランドリーバスケット、空",
+      dirty: "ランドリーバスケット、洗う服",
+      wet: "ランドリーバスケット、乾かす濡れた服",
+      folded: "ランドリーバスケット、乾いたきれいな服",
+    },
+    tooltips: {
+      empty: "かご · 空っぽ",
+      dirty: "汚れた服 · 洗濯機へ",
+      wet: "濡れた服 · 乾燥機へ",
+      folded: "きれいに乾いた · 帰る準備OK",
+    },
+  },
   coffee: {
     machineLabel: "コーヒーマシン",
     brewingMachineLabel: "コーヒーマシン、抽出中",

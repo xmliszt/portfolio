@@ -74,6 +74,7 @@ export function useRoom(presence: OwnPresence | undefined) {
 
   const loadPhase = presence?.load?.phase;
   const loadKind = presence?.load?.kind;
+  const loadMachineId = presence?.load?.machineId;
   const loadStartedAt =
     presence?.load?.phase === "running" ? presence.load.startedAt : undefined;
   const loadDurationMs =
@@ -85,8 +86,10 @@ export function useRoom(presence: OwnPresence | undefined) {
     if (visitorId === undefined) return;
     const load = ((): RemoteLoad | undefined => {
       if (loadKind === undefined) return undefined;
+      const machine =
+        loadMachineId === undefined ? {} : { machineId: loadMachineId };
       if (loadPhase === "loaded" || loadPhase === "done") {
-        return { phase: loadPhase, kind: loadKind };
+        return { phase: loadPhase, kind: loadKind, ...machine };
       }
       if (loadStartedAt === undefined || loadDurationMs === undefined) {
         return undefined;
@@ -94,6 +97,7 @@ export function useRoom(presence: OwnPresence | undefined) {
       return {
         phase: "running",
         kind: loadKind,
+        ...machine,
         startedAt: loadStartedAt,
         durationMs: loadDurationMs,
       };
@@ -115,6 +119,7 @@ export function useRoom(presence: OwnPresence | undefined) {
     visitorId,
     loadPhase,
     loadKind,
+    loadMachineId,
     loadStartedAt,
     loadDurationMs,
     regionLatDeg,

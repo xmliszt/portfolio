@@ -41,7 +41,7 @@ function hashVisitorId(visitorId: string) {
   );
 }
 
-/** Return which of `machines` hold another visitor's laundry, keyed by machine id: one per visitor, at most three per kind, nearest to `ownRegion` first, then done before running (earliest started first) before loaded, never `ownMachineId`, and always one machine of each kind left free while the visitor's own laundry is not in that kind; a running load lingers `DONE_LINGER_MS` after it ends, loaded and done loads stay until the visitor takes them out, and each visitor keeps the slot their id hashes to whenever it is free. */
+/** Return which of `machines` hold another visitor's laundry, keyed by machine id: one per visitor, at most three per kind, nearest to `ownRegion` first, then done before running (earliest started first) before loaded, never `ownMachineId`, and always one machine of each kind left free while the visitor's own laundry is not in that kind; a running load lingers `DONE_LINGER_MS` after it ends, loaded and done loads stay until the visitor takes them out, each load sits in the machine its `machineId` names when that machine is free, and otherwise in the slot the visitor's id hashes to, or the first free one. */
 export function assignRemoteMachines(options: {
   machines: { id: string; kind: MachineKind }[];
   ownMachineId: string | undefined;
@@ -88,20 +88,42 @@ export function assignRemoteMachines(options: {
             a.visitorId.localeCompare(b.visitorId)
         )
         .slice(0, Math.max(0, capacity));
-      return visible.reduce<[string, RemoteMachine][]>((taken, other) => {
-        const free = slots.filter(
-          (slot) => !taken.some(([id]) => id === slot.id)
-        );
-        const preferred = hashVisitorId(other.visitorId) % slots.length;
-        const slot =
-          free.find((candidate) => candidate.id === slots[preferred]?.id) ??
-          free.at(0);
-        if (slot === undefined) return taken;
-        return [
-          ...taken,
-          [slot.id, { visitorId: other.visitorId, load: other.load }],
-        ];
-      }, []);
+      const claimedMachines = visible.reduce<[string, RemoteMachine][]>(
+        (taken, other) => {
+          const slot = slots.find(
+            (candidate) =>
+              candidate.id === other.load.machineId &&
+              !taken.some(([id]) => id === candidate.id)
+          );
+          if (slot === undefined) return taken;
+          return [
+            ...taken,
+            [slot.id, { visitorId: other.visitorId, load: other.load }],
+          ];
+        },
+        []
+      );
+      return visible
+        .filter(
+          (other) =>
+            !claimedMachines.some(
+              ([, placed]) => placed.visitorId === other.visitorId
+            )
+        )
+        .reduce<[string, RemoteMachine][]>((taken, other) => {
+          const free = slots.filter(
+            (slot) => !taken.some(([id]) => id === slot.id)
+          );
+          const preferred = hashVisitorId(other.visitorId) % slots.length;
+          const slot =
+            free.find((candidate) => candidate.id === slots[preferred]?.id) ??
+            free.at(0);
+          if (slot === undefined) return taken;
+          return [
+            ...taken,
+            [slot.id, { visitorId: other.visitorId, load: other.load }],
+          ];
+        }, claimedMachines);
     })
   );
 }

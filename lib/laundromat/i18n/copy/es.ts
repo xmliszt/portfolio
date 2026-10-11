@@ -129,6 +129,20 @@ export const es = {
     waitingLabel: "Felpudo, el camino a casa cuando tu ropa esté lista",
     waitingTooltip: "el camino a casa · termina primero tu colada",
   },
+  laundryBasket: {
+    labels: {
+      empty: "Cesto de la ropa, vacío",
+      dirty: "Cesto de la ropa, ropa para lavar",
+      wet: "Cesto de la ropa, ropa mojada para secar",
+      folded: "Cesto de la ropa, ropa limpia y seca",
+    },
+    tooltips: {
+      empty: "cesto · vacío",
+      dirty: "ropa sucia · a una lavadora",
+      wet: "ropa mojada · a una secadora",
+      folded: "limpia y seca · lista para volver a casa",
+    },
+  },
   coffee: {
     machineLabel: "Cafetera",
     brewingMachineLabel: "Cafetera, preparando café",

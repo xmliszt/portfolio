@@ -12,13 +12,13 @@ export function isInteractiveSceneObject(object: SceneObject) {
     case "mat":
     case "mug":
     case "plant":
+    case "basket":
       return true;
     case "counter":
     case "window":
     case "clock":
     case "table":
     case "stool":
-    case "basket":
       return false;
     default: {
       const unhandled: never = object;

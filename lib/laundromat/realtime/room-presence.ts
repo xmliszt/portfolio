@@ -2,14 +2,15 @@ import type { MachineKind } from "@/lib/laundromat/scene-config";
 import type { NotebookScript } from "@/lib/laundromat/supabase/notebook-types";
 
 export type RemoteLoad =
-  | { phase: "loaded"; kind: MachineKind }
+  | { phase: "loaded"; kind: MachineKind; machineId?: string }
   | {
       phase: "running";
       kind: MachineKind;
+      machineId?: string;
       startedAt: number;
       durationMs: number;
     }
-  | { phase: "done"; kind: MachineKind };
+  | { phase: "done"; kind: MachineKind; machineId?: string };
 
 export type RoomRegion = { latDeg: number; lonDeg: number };
 

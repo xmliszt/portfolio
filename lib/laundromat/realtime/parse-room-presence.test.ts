@@ -81,3 +81,22 @@ test("reads laundry sitting in a machine before and after its cycle", () => {
     undefined
   );
 });
+
+test("reads the machine a load is in, and drops one that is not a short string", () => {
+  const read = (machineId: unknown) =>
+    parseRoomPresence({
+      value: {
+        sessionId: "s",
+        visitorId: "v",
+        load: { phase: "loaded", kind: "washer", machineId },
+      },
+      now: Date.UTC(2026, 9, 11),
+    })?.load;
+  assert.deepEqual(read("washer-3"), {
+    phase: "loaded",
+    kind: "washer",
+    machineId: "washer-3",
+  });
+  assert.deepEqual(read(7), { phase: "loaded", kind: "washer" });
+  assert.deepEqual(read("x".repeat(41)), { phase: "loaded", kind: "washer" });
+});

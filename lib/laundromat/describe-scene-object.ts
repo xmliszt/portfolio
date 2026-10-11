@@ -47,12 +47,16 @@ export function describeSceneObject(options: {
       };
     case "plant":
       return { label: copy.plant.label, tooltip: copy.plant.tooltip };
+    case "basket":
+      return {
+        label: copy.laundryBasket.labels.empty,
+        tooltip: copy.laundryBasket.tooltips.empty,
+      };
     case "counter":
     case "window":
     case "clock":
     case "table":
     case "stool":
-    case "basket":
       return undefined;
     default: {
       const unhandled: never = object;

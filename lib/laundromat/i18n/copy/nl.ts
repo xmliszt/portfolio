@@ -101,6 +101,20 @@ export const nl = {
     waitingLabel: "Deurmat, de weg naar huis als je was klaar is",
     waitingTooltip: "de weg naar huis · maak eerst je was af",
   },
+  laundryBasket: {
+    labels: {
+      empty: "Wasmand, leeg",
+      dirty: "Wasmand, was om te wassen",
+      wet: "Wasmand, natte was om te drogen",
+      folded: "Wasmand, schone droge was",
+    },
+    tooltips: {
+      empty: "mand · leeg",
+      dirty: "vuile was · in een wasmachine",
+      wet: "natte was · in een droger",
+      folded: "schoon en droog · klaar om naar huis te gaan",
+    },
+  },
   coffee: {
     machineLabel: "Koffiezetapparaat",
     brewingMachineLabel: "Koffiezetapparaat, bezig met zetten",

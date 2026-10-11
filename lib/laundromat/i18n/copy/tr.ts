@@ -99,6 +99,20 @@ export const tr = {
     waitingLabel: "Paspas, çamaşırın bitince eve dönüş yolu",
     waitingTooltip: "eve dönüş yolu · önce çamaşırını bitir",
   },
+  laundryBasket: {
+    labels: {
+      empty: "Çamaşır sepeti, boş",
+      dirty: "Çamaşır sepeti, yıkanacak çamaşırlar",
+      wet: "Çamaşır sepeti, kurutulacak ıslak çamaşırlar",
+      folded: "Çamaşır sepeti, temiz ve kuru çamaşırlar",
+    },
+    tooltips: {
+      empty: "sepet · boş",
+      dirty: "kirli çamaşırlar · çamaşır makinesine",
+      wet: "ıslak çamaşırlar · kurutma makinesine",
+      folded: "temiz ve kuru · eve dönmeye hazır",
+    },
+  },
   coffee: {
     machineLabel: "Kahve makinesi",
     brewingMachineLabel: "Kahve makinesi, demleniyor",

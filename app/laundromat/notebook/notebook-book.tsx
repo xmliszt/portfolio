@@ -9,7 +9,7 @@ import {
   useState,
 } from "react";
 import { uniq } from "lodash";
-import { motion, useTransform } from "motion/react";
+import { motion, useIsPresent, useTransform } from "motion/react";
 
 import { useLaundromatCopy } from "@/app/laundromat/i18n/use-laundromat-copy";
 import { useSoundBoard } from "@/app/laundromat/sound/use-sound-board";
@@ -444,8 +444,11 @@ export function NotebookBook(props: NotebookBookProps) {
     };
   }
 
+  const restoredDraftRef = useRef("");
   useEffect(() => {
-    setDraft(readStoredDraft());
+    const restored = readStoredDraft();
+    restoredDraftRef.current = restored;
+    setDraft(restored);
   }, []);
 
   const loadRequestRef = useRef(0);
@@ -607,6 +610,29 @@ export function NotebookBook(props: NotebookBookProps) {
   }, [canWrite, draft, onWritingChange]);
 
   useEffect(() => () => onWritingChange(false), [onWritingChange]);
+
+  const isPresent = useIsPresent();
+  const onDraftChangeRef = useRef(props.onDraftChange);
+  useEffect(() => {
+    onDraftChangeRef.current = props.onDraftChange;
+  });
+  useEffect(() => {
+    if (isPresent || !isWritable) return;
+    setDraft("");
+    writeStoredDraft("");
+    onWritingChange(false);
+    onDraftChangeRef.current({ text: "", script: "latin" });
+  }, [isPresent, isWritable, onWritingChange]);
+  useEffect(() => {
+    const restored = restoredDraftRef.current;
+    if (restored === "" || !canWrite) return;
+    restoredDraftRef.current = "";
+    onWritingChange(true);
+    onDraftChangeRef.current({
+      text: restored,
+      script: detectScript(restored),
+    });
+  }, [canWrite, onWritingChange]);
 
   const lastDraftRef = useRef(pageDraft);
   useEffect(() => {

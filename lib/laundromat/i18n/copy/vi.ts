@@ -132,6 +132,20 @@ export const vi = {
     waitingLabel: "Thảm chào mừng, đường về nhà khi đồ đã xong",
     waitingTooltip: "đường về nhà · giặt xong đồ đã",
   },
+  laundryBasket: {
+    labels: {
+      empty: "Giỏ đồ giặt, trống",
+      dirty: "Giỏ đồ giặt, quần áo cần giặt",
+      wet: "Giỏ đồ giặt, quần áo ướt cần sấy",
+      folded: "Giỏ đồ giặt, quần áo sạch và khô",
+    },
+    tooltips: {
+      empty: "giỏ · trống",
+      dirty: "đồ bẩn · cho vào máy giặt",
+      wet: "đồ ướt · cho vào máy sấy",
+      folded: "sạch và khô · sẵn sàng về nhà",
+    },
+  },
   coffee: {
     machineLabel: "Máy pha cà phê",
     brewingMachineLabel: "Máy pha cà phê, đang pha",

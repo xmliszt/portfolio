@@ -16,13 +16,15 @@ const now = Date.UTC(2026, 9, 11, 10);
 function buildWashingPresence(options: {
   visitorId: string;
   startedMinutesAgo?: number;
+  machineId?: string;
 }) {
-  const { visitorId, startedMinutesAgo = 1 } = options;
+  const { visitorId, startedMinutesAgo = 1, machineId } = options;
   return {
     visitorId,
     load: {
       phase: "running" as const,
       kind: "washer" as const,
+      ...(machineId === undefined ? {} : { machineId }),
       startedAt: now - startedMinutesAgo * 60_000,
       durationMs: 25 * 60_000,
     },
@@ -179,4 +181,74 @@ test("keeps laundry that is loaded or done in its machine until it is taken out"
     ["done", "done"],
     ["loaded", "loaded"],
   ]);
+});
+
+test("shows another visitor's load in the machine they really use", () => {
+  const assigned = assignRemoteMachines({
+    machines,
+    ownMachineId: undefined,
+    ownRegion: undefined,
+    others: [buildWashingPresence({ visitorId: "a", machineId: "washer-3" })],
+    now,
+  });
+  assert.deepEqual(Object.keys(assigned), ["washer-3"]);
+});
+
+test("keeps a claimed machine for its visitor even when an earlier visitor hashes to it", () => {
+  const unclaimed = assignRemoteMachines({
+    machines,
+    ownMachineId: undefined,
+    ownRegion: undefined,
+    others: [buildWashingPresence({ visitorId: "a", startedMinutesAgo: 5 })],
+    now,
+  });
+  const hashedSlot = Object.keys(unclaimed).at(0);
+  assert.ok(hashedSlot !== undefined);
+  const assigned = assignRemoteMachines({
+    machines,
+    ownMachineId: undefined,
+    ownRegion: undefined,
+    others: [
+      buildWashingPresence({ visitorId: "a", startedMinutesAgo: 5 }),
+      buildWashingPresence({ visitorId: "b", machineId: hashedSlot }),
+    ],
+    now,
+  });
+  assert.equal(assigned[hashedSlot]?.visitorId, "b");
+  assert.equal(Object.keys(assigned).length, 2);
+});
+
+test("moves another visitor's load elsewhere when it claims the visitor's own machine", () => {
+  const assigned = assignRemoteMachines({
+    machines,
+    ownMachineId: "washer-2",
+    ownRegion: undefined,
+    others: [buildWashingPresence({ visitorId: "a", machineId: "washer-2" })],
+    now,
+  });
+  assert.equal(assigned["washer-2"], undefined);
+  assert.equal(Object.keys(assigned).length, 1);
+});
+
+test("gives a machine two visitors both claim to the first in order and moves the other", () => {
+  const assigned = assignRemoteMachines({
+    machines,
+    ownMachineId: undefined,
+    ownRegion: undefined,
+    others: [
+      buildWashingPresence({
+        visitorId: "a",
+        startedMinutesAgo: 5,
+        machineId: "washer-1",
+      }),
+      buildWashingPresence({
+        visitorId: "b",
+        startedMinutesAgo: 1,
+        machineId: "washer-1",
+      }),
+    ],
+    now,
+  });
+  assert.equal(assigned["washer-1"]?.visitorId, "a");
+  assert.ok(Object.values(assigned).some((placed) => placed.visitorId === "b"));
 });

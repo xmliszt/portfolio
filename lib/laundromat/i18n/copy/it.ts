@@ -130,6 +130,20 @@ export const it = {
     waitingLabel: "Zerbino, la strada di casa quando il bucato è pronto",
     waitingTooltip: "la strada di casa · prima finisci il bucato",
   },
+  laundryBasket: {
+    labels: {
+      empty: "Cesto della biancheria, vuoto",
+      dirty: "Cesto della biancheria, panni da lavare",
+      wet: "Cesto della biancheria, panni bagnati da asciugare",
+      folded: "Cesto della biancheria, panni puliti e asciutti",
+    },
+    tooltips: {
+      empty: "cesto · vuoto",
+      dirty: "panni sporchi · in lavatrice",
+      wet: "panni bagnati · nell'asciugatrice",
+      folded: "puliti e asciutti · pronti per tornare a casa",
+    },
+  },
   coffee: {
     machineLabel: "Macchina del caffè",
     brewingMachineLabel: "Macchina del caffè, il caffè sta uscendo",

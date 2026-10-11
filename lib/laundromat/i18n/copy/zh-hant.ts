@@ -121,6 +121,20 @@ export const zhHant = {
     waitingLabel: "門墊，衣服好了就從這裡回家",
     waitingTooltip: "回家的路 · 先把衣服洗完",
   },
+  laundryBasket: {
+    labels: {
+      empty: "洗衣籃，空的",
+      dirty: "洗衣籃，待洗的衣服",
+      wet: "洗衣籃，待烘乾的濕衣服",
+      folded: "洗衣籃，乾淨的乾衣服",
+    },
+    tooltips: {
+      empty: "籃子 · 空的",
+      dirty: "髒衣服 · 放進洗衣機",
+      wet: "濕衣服 · 放進烘乾機",
+      folded: "洗好烘乾了 · 可以回家了",
+    },
+  },
   coffee: {
     machineLabel: "咖啡機",
     brewingMachineLabel: "咖啡機，正在煮",

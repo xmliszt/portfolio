@@ -127,6 +127,20 @@ export const ko = {
     waitingLabel: "현관 매트, 빨래가 끝나면 여기로 집에 가",
     waitingTooltip: "집에 가는 길 · 빨래부터 끝내자",
   },
+  laundryBasket: {
+    labels: {
+      empty: "빨래 바구니, 비어 있음",
+      dirty: "빨래 바구니, 빨 옷",
+      wet: "빨래 바구니, 말릴 젖은 옷",
+      folded: "빨래 바구니, 깨끗하게 마른 옷",
+    },
+    tooltips: {
+      empty: "바구니 · 비어 있어",
+      dirty: "빨랫감 · 세탁기로",
+      wet: "젖은 옷 · 건조기로",
+      folded: "다 말랐어 · 집에 갈 준비 끝",
+    },
+  },
   coffee: {
     machineLabel: "커피 머신",
     brewingMachineLabel: "커피 머신, 내리는 중",

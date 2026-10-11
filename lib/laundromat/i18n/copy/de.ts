@@ -131,6 +131,20 @@ export const de = {
       "Fußmatte, der Weg nach Hause, sobald deine Wäsche fertig ist",
     waitingTooltip: "der Weg nach Hause · erst die Wäsche fertig machen",
   },
+  laundryBasket: {
+    labels: {
+      empty: "Wäschekorb, leer",
+      dirty: "Wäschekorb, Wäsche zum Waschen",
+      wet: "Wäschekorb, nasse Wäsche zum Trocknen",
+      folded: "Wäschekorb, saubere trockene Wäsche",
+    },
+    tooltips: {
+      empty: "Korb · leer",
+      dirty: "schmutzige Wäsche · ab in die Waschmaschine",
+      wet: "nasse Wäsche · ab in den Trockner",
+      folded: "sauber und trocken · bereit für zu Hause",
+    },
+  },
   coffee: {
     machineLabel: "Kaffeemaschine",
     brewingMachineLabel: "Kaffeemaschine, Kaffee läuft durch",

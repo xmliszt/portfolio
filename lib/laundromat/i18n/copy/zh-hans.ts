@@ -121,6 +121,20 @@ export const zhHans = {
     waitingLabel: "门垫，衣服好了就从这里回家",
     waitingTooltip: "回家的路 · 先把衣服洗完",
   },
+  laundryBasket: {
+    labels: {
+      empty: "洗衣篮，空的",
+      dirty: "洗衣篮，待洗的衣服",
+      wet: "洗衣篮，待烘干的湿衣服",
+      folded: "洗衣篮，干净的干衣服",
+    },
+    tooltips: {
+      empty: "篮子 · 空的",
+      dirty: "脏衣服 · 放进洗衣机",
+      wet: "湿衣服 · 放进烘干机",
+      folded: "洗好烘干了 · 可以回家了",
+    },
+  },
   coffee: {
     machineLabel: "咖啡机",
     brewingMachineLabel: "咖啡机，正在煮",
