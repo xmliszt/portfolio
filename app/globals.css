@@ -206,3 +206,7 @@ code[data-line-numbers-max-digits="3"] > [data-line]::before {
     clip-path: circle(200% at 0% 0%);
   }
 }
+
+body:has([data-laundromat-root]) [data-site-chrome] {
+  display: none;
+}

@@ -123,7 +123,9 @@ export default function RootLayout({
           <TooltipProvider delayDuration={800}>
             <BgmProvider>
               <TOCProvider>
-                <GradientBlur placement="top" position="fixed" />
+                <div data-site-chrome className="contents">
+                  <GradientBlur placement="top" position="fixed" />
+                </div>
                 <main className="h-screen max-h-screen w-screen overflow-hidden">
                   <ScrollAreaWithTOCTracker>
                     <div
@@ -150,52 +152,56 @@ export default function RootLayout({
                     </div>
                   </ScrollAreaWithTOCTracker>
                 </main>
-                <GradientBlur placement="bottom" position="fixed" />
-                {/* Right side floating TOC drawer: show when in mobile view port */}
-                <FloatingTOCDrawer>
-                  <FloatingTOCDrawerHeader>
-                    {/* BGM Control */}
-                    <BGMPlayer />
-                    {/* BGM Info */}
-                    <BGMInfo />
-                    {/* Theme switch */}
-                    <ThemeSwitch showRing={false} />
-                  </FloatingTOCDrawerHeader>
-                </FloatingTOCDrawer>
+                <div data-site-chrome className="contents">
+                  <GradientBlur placement="bottom" position="fixed" />
+                  {/* Right side floating TOC drawer: show when in mobile view port */}
+                  <FloatingTOCDrawer>
+                    <FloatingTOCDrawerHeader>
+                      {/* BGM Control */}
+                      <BGMPlayer />
+                      {/* BGM Info */}
+                      <BGMInfo />
+                      {/* Theme switch */}
+                      <ThemeSwitch showRing={false} />
+                    </FloatingTOCDrawerHeader>
+                  </FloatingTOCDrawer>
+                </div>
               </TOCProvider>
-              {/* Show when in mobile view port */}
-              <FloatingNavigationProvider>
-                <FloatingNavigationBar>
-                  <FloatingNavigationBarHeader>
-                    {/* BGM Control */}
-                    <BGMPlayer />
-                    {/* BGM Info */}
-                    <BGMInfo />
-                    {/* Theme switch */}
-                    <ThemeSwitch showRing={false} />
-                  </FloatingNavigationBarHeader>
-                  <FloatingNavigationBarContent>
-                    {ROUTES.map((route) => (
-                      <NavigationBarItem key={route.path} href={route.path}>
-                        {route.name}
-                      </NavigationBarItem>
-                    ))}
-                  </FloatingNavigationBarContent>
-                </FloatingNavigationBar>
-              </FloatingNavigationProvider>
-              {/* Theme switch */}
-              <div className="fixed right-4 bottom-10 z-50 hidden md:right-10 md:block">
-                <ThemeSwitch showRing />
-              </div>
-              {/* BGM player */}
-              <div
-                className={cn(
-                  "fixed top-8 right-4 z-50 hidden items-center gap-x-4",
-                  "md:right-10 md:flex"
-                )}
-              >
-                <BGMInfo />
-                <BGMPlayer />
+              <div data-site-chrome className="contents">
+                {/* Show when in mobile view port */}
+                <FloatingNavigationProvider>
+                  <FloatingNavigationBar>
+                    <FloatingNavigationBarHeader>
+                      {/* BGM Control */}
+                      <BGMPlayer />
+                      {/* BGM Info */}
+                      <BGMInfo />
+                      {/* Theme switch */}
+                      <ThemeSwitch showRing={false} />
+                    </FloatingNavigationBarHeader>
+                    <FloatingNavigationBarContent>
+                      {ROUTES.map((route) => (
+                        <NavigationBarItem key={route.path} href={route.path}>
+                          {route.name}
+                        </NavigationBarItem>
+                      ))}
+                    </FloatingNavigationBarContent>
+                  </FloatingNavigationBar>
+                </FloatingNavigationProvider>
+                {/* Theme switch */}
+                <div className="fixed right-4 bottom-10 z-50 hidden md:right-10 md:block">
+                  <ThemeSwitch showRing />
+                </div>
+                {/* BGM player */}
+                <div
+                  className={cn(
+                    "fixed top-8 right-4 z-50 hidden items-center gap-x-4",
+                    "md:right-10 md:flex"
+                  )}
+                >
+                  <BGMInfo />
+                  <BGMPlayer />
+                </div>
               </div>
             </BgmProvider>
           </TooltipProvider>
@@ -203,7 +209,9 @@ export default function RootLayout({
           <Analytics />
 
           {/* Copyright */}
-          <Copyright />
+          <div data-site-chrome className="contents">
+            <Copyright />
+          </div>
         </ThemeProvider>
       </body>
     </html>
