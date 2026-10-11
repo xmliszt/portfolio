@@ -13,12 +13,15 @@ import { detectScript } from "@/lib/laundromat/notebook/detect-script";
 import { fitEntry } from "@/lib/laundromat/notebook/fit-entry";
 import { formatEntryDay } from "@/lib/laundromat/notebook/format-entry-day";
 import { getDraftPlacement } from "@/lib/laundromat/notebook/get-draft-placement";
+import { getDraftRowMarks } from "@/lib/laundromat/notebook/get-draft-row-marks";
+import { getEntryLineCount } from "@/lib/laundromat/notebook/get-entry-line-count";
 import { getEntrySpreads } from "@/lib/laundromat/notebook/get-entry-spreads";
 import { getSpreadOfPage } from "@/lib/laundromat/notebook/get-spread-of-page";
 import { isRtlScript } from "@/lib/laundromat/notebook/is-rtl-script";
 import { keepTrailingSpace } from "@/lib/laundromat/notebook/keep-trailing-space";
 import type { FittedEntry } from "@/lib/laundromat/notebook/layout-page-rows";
 import { layoutPageRows } from "@/lib/laundromat/notebook/layout-page-rows";
+import { wrapEntryLines } from "@/lib/laundromat/notebook/wrap-entry-lines";
 import { wrapEntryText } from "@/lib/laundromat/notebook/wrap-entry-text";
 import type { SceneConfig } from "@/lib/laundromat/scene-config";
 import type { NotebookScript } from "@/lib/laundromat/supabase/notebook-types";
@@ -116,6 +119,7 @@ export function NotebookBook(props: NotebookBookProps) {
   const [result, setResult] = useState<NotebookResult>();
   const [phase, setPhase] = useState<BookPhase>("closed");
   const [draft, setDraft] = useState("");
+  const [selection, setSelection] = useState({ start: 0, end: 0 });
   const [failure, setFailure] = useState<LeaveEntryFailure>();
   const [isLeaving, setIsLeaving] = useState(false);
   const [ink, setInk] = useState<{ entryId: string; line: number }>();
@@ -282,25 +286,27 @@ export function NotebookBook(props: NotebookBookProps) {
     measure: getMeasure(draftStyle),
     linesPerPage: notebook.linesPerPage,
   });
-  const shownDraftFit = fitEntry({
-    text: pageDraft,
-    maxWidthPx,
-    measure: getMeasure(draftStyle),
-    linesPerPage: notebook.linesPerPage,
-  });
   const shownDraftLines = keepTrailingSpace({
-    lines: shownDraftFit.lines,
+    lines: wrapEntryLines({
+      text: pageDraft,
+      maxWidthPx,
+      measure: getMeasure(draftStyle),
+    }),
     text: pageDraft,
     maxWidthPx,
     measure: getMeasure(draftStyle),
   });
   const draftPlacement = getDraftPlacement({
     linesUsed: notebook.linesUsed,
-    lineCount: Math.max(2, shownDraftFit.lineCount),
+    lineCount: Math.max(2, getEntryLineCount(shownDraftLines.length)),
     linesPerPage: notebook.linesPerPage,
     pageCount: notebook.pageCount,
   });
   const writeSpread = getSpreadOfPage(draftPlacement.caretPage);
+  const shownSelection =
+    props.lock.kind === "taken"
+      ? { start: pageDraft.length, end: pageDraft.length }
+      : selection;
   const isDraftVisible =
     isWritable &&
     !draftPlacement.startsNewBook &&
@@ -311,7 +317,10 @@ export function NotebookBook(props: NotebookBookProps) {
         page: draftPlacement.page,
         lineStart: draftPlacement.lineStart,
         lineCount: Math.max(1, shownDraftLines.length),
-        lines: shownDraftLines.length === 0 ? [""] : shownDraftLines,
+        lines:
+          shownDraftLines.length === 0
+            ? [""]
+            : shownDraftLines.map((line) => line.text),
         meta: undefined,
       }
     : undefined;
@@ -370,15 +379,20 @@ export function NotebookBook(props: NotebookBookProps) {
     }).flatMap((row): RowView[] => {
       const style = styles[row.entryId];
       if (style === undefined) return [];
-      const isDraft = row.entryId === DRAFT_ID;
-      return [
-        {
-          ...row,
-          ...style,
-          ink: getInkState(row),
-          hasCaret: isDraft && row.isLastTextRow && phase === "open",
-        },
-      ];
+      const line =
+        row.entryId === DRAFT_ID && row.kind === "text" && phase === "open"
+          ? shownDraftLines.at(row.lineInEntry)
+          : undefined;
+      const marks =
+        line === undefined
+          ? { selected: undefined, caretAt: undefined }
+          : getDraftRowMarks({
+              start: line.start,
+              length: line.text.length,
+              nextStart: shownDraftLines.at(row.lineInEntry + 1)?.start,
+              selection: shownSelection,
+            });
+      return [{ ...row, ...style, ink: getInkState(row), ...marks }];
     });
     return { content, rows };
   }
@@ -486,6 +500,7 @@ export function NotebookBook(props: NotebookBookProps) {
   function handleDraftChange(event: React.ChangeEvent<HTMLTextAreaElement>) {
     const next = event.target.value.slice(0, config.notebook.maxChars);
     setDraft(next);
+    readSelection(event.target);
     setFailure(undefined);
     writeStoredDraft(next);
     props.onWritingChange(next.trim() !== "");
@@ -562,6 +577,13 @@ export function NotebookBook(props: NotebookBookProps) {
   async function handleReport(entryId: number) {
     setReportedIds((ids) => [...ids, entryId]);
     await reportNotebookEntry(entryId).catch(() => ({ kind: "offline" }));
+  }
+
+  function readSelection(textarea: HTMLTextAreaElement) {
+    setSelection({
+      start: textarea.selectionStart,
+      end: textarea.selectionEnd,
+    });
   }
 
   function handleTextareaKeyDown(
@@ -856,6 +878,8 @@ export function NotebookBook(props: NotebookBookProps) {
           maxLength={config.notebook.maxChars}
           onChange={handleDraftChange}
           onKeyDown={handleTextareaKeyDown}
+          onSelect={(event) => readSelection(event.currentTarget)}
+          onFocus={(event) => readSelection(event.currentTarget)}
         />
       )}
       <div

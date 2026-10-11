@@ -20,7 +20,8 @@ export type RowView = PageRow & {
   fontSizePx: number;
   isRtl: boolean;
   ink: "plain" | "inking" | "waiting";
-  hasCaret: boolean;
+  selected: { from: number; to: number } | undefined;
+  caretAt: number | undefined;
   reportEntryId: number | undefined;
 };
 
@@ -233,14 +234,34 @@ function PageRowLine(props: PageRowLineProps) {
           className={textClassName}
           style={{ opacity: row.ink === "waiting" ? 0 : 1 }}
         >
-          {row.text}
+          {(() => {
+            if (row.selected !== undefined) {
+              const { from, to } = row.selected;
+              return (
+                <>
+                  {row.text.slice(0, from)}
+                  <span className="bg-[var(--lm-accent)]/30">
+                    {row.text.slice(from, to)}
+                  </span>
+                  {row.text.slice(to)}
+                </>
+              );
+            }
+            if (row.caretAt !== undefined) {
+              return (
+                <>
+                  {row.text.slice(0, row.caretAt)}
+                  <span
+                    aria-hidden
+                    className="-mr-[1.5px] inline-block h-[0.8em] w-[1.5px] translate-y-[0.12em] bg-[var(--lm-accent)] motion-safe:animate-[lm-caret_1.1s_steps(1)_infinite]"
+                  />
+                  {row.text.slice(row.caretAt)}
+                </>
+              );
+            }
+            return row.text;
+          })()}
         </span>
-      )}
-      {row.hasCaret && (
-        <span
-          aria-hidden
-          className="ml-px inline-block h-[0.8em] w-[1.5px] translate-y-[0.12em] bg-[var(--lm-accent)] motion-safe:animate-[lm-caret_1.1s_steps(1)_infinite]"
-        />
       )}
     </div>
   );
