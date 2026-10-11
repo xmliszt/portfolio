@@ -46,6 +46,7 @@ const DRAFT_STORAGE_KEY = "laundromat:notebook-draft";
 const DRAFT_ID = "draft";
 const FADE_MS = 220;
 const WRITING_IDLE_RELEASE_MS = 90_000;
+const TAB_SPACES = "    ";
 
 type BookPhase = "closed" | "opening" | "open";
 
@@ -280,9 +281,15 @@ export function NotebookBook(props: NotebookBookProps) {
     measure: getMeasure(draftStyle),
     linesPerPage: notebook.linesPerPage,
   });
+  const shownDraftFit = fitEntry({
+    text: pageDraft.replace(/[^\S\n]+$/u, ""),
+    maxWidthPx,
+    measure: getMeasure(draftStyle),
+    linesPerPage: notebook.linesPerPage,
+  });
   const draftPlacement = getDraftPlacement({
     linesUsed: notebook.linesUsed,
-    lineCount: Math.max(2, draftFit.lineCount),
+    lineCount: Math.max(2, shownDraftFit.lineCount),
     linesPerPage: notebook.linesPerPage,
     pageCount: notebook.pageCount,
   });
@@ -296,8 +303,8 @@ export function NotebookBook(props: NotebookBookProps) {
         id: DRAFT_ID,
         page: draftPlacement.page,
         lineStart: draftPlacement.lineStart,
-        lineCount: Math.max(1, draftFit.lines.length),
-        lines: draftFit.lines.length === 0 ? [""] : draftFit.lines,
+        lineCount: Math.max(1, shownDraftFit.lines.length),
+        lines: shownDraftFit.lines.length === 0 ? [""] : shownDraftFit.lines,
         meta: undefined,
       }
     : undefined;
@@ -556,6 +563,18 @@ export function NotebookBook(props: NotebookBookProps) {
     if (event.key === "Enter" && (event.metaKey || event.ctrlKey)) {
       event.preventDefault();
       void handleLeave();
+      return;
+    }
+    if (event.key === "Tab" && !event.shiftKey && canWrite) {
+      event.preventDefault();
+      const textarea = event.currentTarget;
+      textarea.setRangeText(
+        TAB_SPACES,
+        textarea.selectionStart,
+        textarea.selectionEnd,
+        "end"
+      );
+      textarea.dispatchEvent(new Event("input", { bubbles: true }));
     }
   }
 
@@ -825,7 +844,7 @@ export function NotebookBook(props: NotebookBookProps) {
           readOnly={!canWrite}
           ref={textareaRef}
           aria-label={copy.notebook.textareaLabel}
-          className="sr-only"
+          className="sr-only caret-transparent"
           value={draft}
           maxLength={config.notebook.maxChars}
           onChange={handleDraftChange}
