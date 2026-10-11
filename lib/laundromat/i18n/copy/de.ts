@@ -6,21 +6,22 @@ export const de = {
   languageName: "Deutsch",
   site: {
     name: "laundro.cafe",
-    title: "laundro.cafe: ein ruhiger Ort zum Konzentrieren in deinem Browser",
+    title: "laundro.cafe: gemütlicher Fokus-Timer im Waschsalon, mit Lofi",
     description:
-      "Ein ruhiger Waschsalon in deinem Browser. Wasch deine Wäsche als Fokus-Timer, lass Lo-Fi im Fernseher laufen, koch dir einen Kaffee und hinterlass eine Notiz im gemeinsamen Notizbuch.",
+      "Wasch deine Wäsche als Fokus-Timer in einem ruhigen Waschsalon. Waschen, trocknen, fokussieren, Lofi, Kaffee, ein Notizbuch für Fremde oder einfach abschalten. Kostenlos, ohne Anmeldung.",
     intro:
       "Ein ruhiger Waschsalon in deinem Browser. Starte eine Waschmaschine oder einen Trockner für 5 bis 60 Minuten als Fokus-Timer und bekomm eine Benachrichtigung, wenn er fertig ist, hör Lo-Fi-Sender im Fernseher, koch dir einen Kaffee und hinterlass eine handgeschriebene Notiz im gemeinsamen Notizbuch. Volle Notizbücher kommen ins Regal.",
     keywords: [
       "Waschsalon",
       "Fokus-Timer",
       "Pomodoro",
-      "Lo-Fi",
+      "Lofi",
+      "Musik zum Arbeiten",
+      "Lernen",
       "gemütlich",
-      "isometrisch",
-      "interaktiv",
       "gemeinsames Notizbuch",
     ],
+    inspiredBy: "inspiriert von",
     openGraphLocale: "de_DE",
   },
   toolbar: {

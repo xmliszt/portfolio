@@ -11,21 +11,22 @@ export const en = {
   languageName: "English",
   site: {
     name: "laundro.cafe",
-    title: "laundro.cafe: a quiet place to focus in your browser",
+    title: "laundro.cafe: a cozy laundromat focus timer with lofi",
     description:
-      "A quiet laundromat in your browser. Do your laundry as a focus timer, play lo-fi on the TV, brew a coffee, and leave a note in the shared notebook.",
+      "Do your laundry as a focus timer in a quiet laundromat. Wash, dry, focus, lofi, coffee, a notebook for strangers, or just zone out. Free, no sign-up.",
     intro:
       "A quiet laundromat in your browser. Start a washer or dryer cycle from 5 to 60 minutes as a focus timer and get a notification when it is done, play lo-fi stations on the TV, brew a coffee, and leave a handwritten note in the shared notebook. Filled notebooks go on the shelf.",
     keywords: [
       "laundromat",
       "focus timer",
-      "pomodoro",
-      "lo-fi",
+      "pomodoro timer",
+      "lofi",
+      "focus music for work",
+      "study with me",
       "cozy",
-      "isometric",
-      "interactive",
       "shared notebook",
     ],
+    inspiredBy: "inspired by",
     openGraphLocale: "en_US",
   },
   toolbar: {

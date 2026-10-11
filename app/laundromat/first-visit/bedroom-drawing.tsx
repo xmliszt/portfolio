@@ -16,6 +16,7 @@ import { toSvgPoints } from "@/lib/laundromat/to-svg-points";
 import { cn } from "@/lib/utils";
 
 import { BedLaundryPile } from "./bed-laundry-pile";
+import { RugCredit } from "./rug-credit";
 
 const PLANK_WIDTH = 0.42;
 const PLANK_JOINT_STEP = 1.9;
@@ -351,6 +352,7 @@ export function BedroomDrawing(props: BedroomDrawingProps) {
             />
           ))}
         </g>
+        <RugCredit rug={rug} />
       </g>
 
       <g className="stroke-[var(--lm-line)]">

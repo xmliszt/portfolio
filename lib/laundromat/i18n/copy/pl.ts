@@ -19,21 +19,22 @@ export const pl = {
   languageName: "Polski",
   site: {
     name: "laundro.cafe",
-    title: "laundro.cafe: spokojne miejsce do skupienia w przeglądarce",
+    title: "laundro.cafe: przytulny timer skupienia w pralni, z lofi",
     description:
-      "Spokojna pralnia w przeglądarce. Zrób pranie jako timer skupienia, włącz lo-fi w telewizorze, zaparz kawę i zostaw liścik we wspólnym notesie.",
+      "Zrób pranie jako timer skupienia w spokojnej pralni. Pranie, suszenie, skupienie, lofi, kawa, notes dla nieznajomych albo po prostu odpoczynek. Za darmo, bez rejestracji.",
     intro:
       "Spokojna pralnia w przeglądarce. Uruchom pralkę albo suszarkę na 5 do 60 minut jako timer skupienia i dostań powiadomienie, gdy skończy, włącz stacje lo-fi w telewizorze, zaparz kawę i zostaw odręczny liścik we wspólnym notesie. Zapełnione notesy trafiają na półkę.",
     keywords: [
       "pralnia",
       "timer skupienia",
       "pomodoro",
-      "lo-fi",
+      "lofi",
+      "muzyka do pracy",
+      "nauka",
       "przytulnie",
-      "izometryczny",
-      "interaktywny",
       "wspólny notes",
     ],
+    inspiredBy: "inspiracja",
     openGraphLocale: "pl_PL",
   },
   toolbar: {

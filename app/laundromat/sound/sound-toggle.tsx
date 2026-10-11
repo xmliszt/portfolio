@@ -1,6 +1,8 @@
 "use client";
 
 import { useLaundromatCopy } from "@/app/laundromat/i18n/use-laundromat-copy";
+import { TOOLBAR_BUTTON_CLASS } from "@/app/laundromat/toolbar-button-class";
+import { ToolbarLabel } from "@/app/laundromat/toolbar-label";
 
 import { useSoundMuted } from "./use-sound-muted";
 
@@ -17,13 +19,13 @@ export function SoundToggle() {
     <button
       type="button"
       aria-pressed={!isMuted}
-      className="flex cursor-pointer items-center gap-x-1.5 bg-transparent px-1.5 py-2 text-[11px] text-[var(--lm-line)] lowercase transition-colors duration-200 outline-none hover:text-[var(--lm-ink)] focus-visible:outline-1 focus-visible:outline-[var(--lm-line)] focus-visible:outline-dashed"
+      className={TOOLBAR_BUTTON_CLASS}
       onClick={handleToggle}
     >
       <svg
         aria-hidden
         viewBox="0 0 12 12"
-        className="size-3 fill-none stroke-current"
+        className="size-3 shrink-0 fill-none stroke-current"
         strokeWidth={1}
         strokeLinecap="round"
         strokeLinejoin="round"
@@ -35,7 +37,9 @@ export function SoundToggle() {
           <path d="M8.5 4a3 3 0 0 1 0 4M10 2.5a5 5 0 0 1 0 7" />
         )}
       </svg>
-      {isMuted ? copy.toolbar.soundOff : copy.toolbar.soundOn}
+      <ToolbarLabel>
+        {isMuted ? copy.toolbar.soundOff : copy.toolbar.soundOn}
+      </ToolbarLabel>
     </button>
   );
 }

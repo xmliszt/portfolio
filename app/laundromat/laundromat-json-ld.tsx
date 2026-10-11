@@ -1,5 +1,6 @@
 import { LAUNDROMAT_ORIGIN } from "@/lib/laundromat/hosts";
 import type { LaundromatLocale } from "@/lib/laundromat/i18n/laundromat-locales";
+import { INSPIRATION_BOOK } from "@/lib/laundromat/inspiration-book";
 
 type LaundromatJsonLdProps = {
   name: string;
@@ -36,10 +37,29 @@ export function LaundromatJsonLd(props: LaundromatJsonLdProps) {
         browserRequirements: "Requires JavaScript.",
         isAccessibleForFree: true,
         offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
-        image: `${LAUNDROMAT_ORIGIN}/laundromat/opengraph-image`,
+        image: `${LAUNDROMAT_ORIGIN}/laundromat/og.png`,
         isPartOf: { "@id": `${LAUNDROMAT_ORIGIN}/#website` },
         author,
         creator: author,
+        isBasedOn: {
+          "@type": "Book",
+          name: INSPIRATION_BOOK.title,
+          alternateName: INSPIRATION_BOOK.originalTitle,
+          isbn: INSPIRATION_BOOK.isbn,
+          url: INSPIRATION_BOOK.url,
+          author: {
+            "@type": "Person",
+            name: INSPIRATION_BOOK.author,
+            alternateName: INSPIRATION_BOOK.originalAuthor,
+            url: INSPIRATION_BOOK.authorUrl,
+            sameAs: [INSPIRATION_BOOK.authorInstagramUrl],
+          },
+          translator: {
+            "@type": "Person",
+            name: INSPIRATION_BOOK.translator,
+            sameAs: [INSPIRATION_BOOK.translatorXUrl],
+          },
+        },
       },
     ],
   };

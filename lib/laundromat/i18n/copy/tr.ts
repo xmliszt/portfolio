@@ -5,21 +5,22 @@ export const tr = {
   languageName: "Türkçe",
   site: {
     name: "laundro.cafe",
-    title: "laundro.cafe: tarayıcında odaklanmak için sakin bir yer",
+    title: "laundro.cafe: çamaşırhanede huzurlu bir odak zamanlayıcısı ve lofi",
     description:
-      "Tarayıcında sakin bir çamaşırhane. Çamaşırını odak zamanlayıcısı olarak yıka, televizyonda lo-fi aç, bir kahve demle ve ortak deftere bir not bırak.",
+      "Sakin bir çamaşırhanede çamaşırını odak zamanlayıcısı olarak yıka. Yıka, kurut, odaklan, lofi, kahve, yabancılar için bir defter ya da sadece dalıp git. Ücretsiz, kayıt yok.",
     intro:
       "Tarayıcında sakin bir çamaşırhane. Odak zamanlayıcısı olarak 5 ile 60 dakika arasında bir yıkama ya da kurutma başlat ve bitince bildirim al, televizyonda lo-fi kanalları aç, bir kahve demle ve ortak deftere el yazısıyla bir not bırak. Dolan defterler rafa kaldırılır.",
     keywords: [
       "çamaşırhane",
       "odak zamanlayıcısı",
       "pomodoro",
-      "lo-fi",
+      "lofi",
+      "çalışma müziği",
+      "ders çalışma",
       "huzurlu",
-      "izometrik",
-      "etkileşimli",
       "ortak defter",
     ],
+    inspiredBy: "ilham kaynağı",
     openGraphLocale: "tr_TR",
   },
   toolbar: {

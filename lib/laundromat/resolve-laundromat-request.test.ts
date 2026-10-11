@@ -45,6 +45,20 @@ test("rewrites other domain paths under /laundromat", () => {
   );
 });
 
+test("serves the domain's own robots.txt, sitemap.xml and favicon.ico", () => {
+  for (const pathname of ["/robots.txt", "/sitemap.xml", "/favicon.ico"]) {
+    assert.deepEqual(
+      resolveLaundromatRequest({
+        hostname: "laundro.cafe",
+        pathname,
+        search: "",
+        locale: "en",
+      }),
+      { kind: "rewrite", pathname: `/laundromat${pathname}` }
+    );
+  }
+});
+
 test("does not prefix a domain path twice", () => {
   assert.deepEqual(
     resolveLaundromatRequest({

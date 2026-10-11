@@ -5,21 +5,22 @@ export const nl = {
   languageName: "Nederlands",
   site: {
     name: "laundro.cafe",
-    title: "laundro.cafe: een rustige plek om te focussen in je browser",
+    title: "laundro.cafe: een gezellige focustimer in de wasserette, met lofi",
     description:
-      "Een rustige wasserette in je browser. Doe je was als focustimer, zet lo-fi op de tv, zet een kop koffie en laat een berichtje achter in het gedeelde notitieboek.",
+      "Doe je was als focustimer in een rustige wasserette. Wassen, drogen, focussen, lofi, koffie, een notitieboek voor vreemden, of gewoon even niks. Gratis, zonder account.",
     intro:
       "Een rustige wasserette in je browser. Start een wasmachine of droger voor 5 tot 60 minuten als focustimer en krijg een melding als hij klaar is, zet lo-fi-zenders op de tv, zet een kop koffie en laat een handgeschreven berichtje achter in het gedeelde notitieboek. Volle notitieboeken gaan op de plank.",
     keywords: [
       "wasserette",
       "focustimer",
       "pomodoro",
-      "lo-fi",
+      "lofi",
+      "muziek om te werken",
+      "studeren",
       "gezellig",
-      "isometrisch",
-      "interactief",
       "gedeeld notitieboek",
     ],
+    inspiredBy: "geïnspireerd door",
     openGraphLocale: "nl_NL",
   },
   toolbar: {

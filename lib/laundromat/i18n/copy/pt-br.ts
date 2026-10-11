@@ -6,21 +6,23 @@ export const ptBR = {
   languageName: "Português (Brasil)",
   site: {
     name: "laundro.cafe",
-    title: "laundro.cafe: um cantinho tranquilo para focar no seu navegador",
+    title:
+      "laundro.cafe: um timer de foco aconchegante numa lavanderia, com lofi",
     description:
-      "Uma lavanderia tranquila no seu navegador. Lave a roupa como timer de foco, coloque lo-fi na TV, passe um café e deixe um recado no caderno compartilhado.",
+      "Lave a roupa como timer de foco numa lavanderia tranquila. Lavar, secar, focar, lofi, café, um caderno para desconhecidos ou só desligar. Grátis, sem cadastro.",
     intro:
       "Uma lavanderia tranquila no seu navegador. Ligue uma lavadora ou secadora de 5 a 60 minutos como timer de foco e receba uma notificação quando terminar, ouça estações lo-fi na TV, passe um café e deixe um recado escrito à mão no caderno compartilhado. Os cadernos cheios vão para a estante.",
     keywords: [
       "lavanderia",
       "timer de foco",
       "pomodoro",
-      "lo-fi",
+      "lofi",
+      "música para trabalhar",
+      "estude comigo",
       "aconchegante",
-      "isométrico",
-      "interativo",
       "caderno compartilhado",
     ],
+    inspiredBy: "inspirado em",
     openGraphLocale: "pt_BR",
   },
   toolbar: {

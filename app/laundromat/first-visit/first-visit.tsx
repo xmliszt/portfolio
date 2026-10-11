@@ -472,7 +472,7 @@ export function FirstVisit(props: FirstVisitProps) {
       data-first-visit
       className={cn(
         "absolute inset-0 overflow-hidden",
-        !isInRoom && "pointer-events-none"
+        !isInRoom && "pointer-events-none [&_a]:pointer-events-none"
       )}
     >
       {fit !== undefined && (

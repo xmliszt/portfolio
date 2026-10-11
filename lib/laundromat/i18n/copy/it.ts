@@ -6,22 +6,22 @@ export const it = {
   languageName: "Italiano",
   site: {
     name: "laundro.cafe",
-    title:
-      "laundro.cafe: un angolo tranquillo per concentrarti nel tuo browser",
+    title: "laundro.cafe: un timer di concentrazione accogliente, con lofi",
     description:
-      "Una lavanderia tranquilla nel tuo browser. Fai il bucato come timer di concentrazione, metti un po' di lo-fi in TV, preparati un caffè e lascia un biglietto nel quaderno condiviso.",
+      "Fai il bucato come timer di concentrazione in una lavanderia tranquilla. Lavare, asciugare, concentrarsi, lofi, caffè, un quaderno per sconosciuti o semplicemente staccare. Gratis, senza registrazione.",
     intro:
       "Una lavanderia tranquilla nel tuo browser. Avvia una lavatrice o un'asciugatrice da 5 a 60 minuti come timer di concentrazione e ricevi una notifica quando ha finito, ascolta stazioni lo-fi in TV, preparati un caffè e lascia un biglietto scritto a mano nel quaderno condiviso. I quaderni pieni finiscono sullo scaffale.",
     keywords: [
       "lavanderia",
       "timer di concentrazione",
       "pomodoro",
-      "lo-fi",
+      "lofi",
+      "musica per lavorare",
+      "studia con me",
       "accogliente",
-      "isometrico",
-      "interattivo",
       "quaderno condiviso",
     ],
+    inspiredBy: "ispirato a",
     openGraphLocale: "it_IT",
   },
   toolbar: {

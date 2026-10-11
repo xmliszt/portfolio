@@ -30,6 +30,14 @@ export const metadata: Metadata = {
   title: { default: en.site.title, template: `%s · ${en.site.name}` },
   applicationName: en.site.name,
   appleWebApp: { title: en.site.name },
+  manifest: "/laundromat/manifest.webmanifest",
+  icons: {
+    icon: [
+      { url: "/laundromat/icon-32.png", sizes: "32x32", type: "image/png" },
+      { url: "/laundromat/icon-16.png", sizes: "16x16", type: "image/png" },
+    ],
+    apple: "/laundromat/apple-touch-icon.png",
+  },
   authors: [{ name: "Li Yuxuan", url: "https://liyuxuan.dev/about" }],
   creator: "Li Yuxuan",
   publisher: "Li Yuxuan",

@@ -11,21 +11,22 @@ export const id = {
   languageName: "Bahasa Indonesia",
   site: {
     name: "laundro.cafe",
-    title: "laundro.cafe: tempat tenang untuk fokus di browser kamu",
+    title: "laundro.cafe: timer fokus yang nyaman di laundry, dengan lofi",
     description:
-      "Laundry yang tenang di browser kamu. Cuci baju sebagai timer fokus, putar lo-fi di TV, seduh kopi, dan tinggalkan catatan di buku catatan bersama.",
+      "Cuci baju sebagai timer fokus di laundry yang tenang. Cuci, keringkan, fokus, lofi, kopi, buku catatan untuk orang asing, atau sekadar melamun. Gratis, tanpa daftar.",
     intro:
       "Laundry yang tenang di browser kamu. Nyalakan mesin cuci atau pengering selama 5 sampai 60 menit sebagai timer fokus dan dapatkan notifikasi saat selesai, putar stasiun lo-fi di TV, seduh kopi, dan tinggalkan catatan tulisan tangan di buku catatan bersama. Buku catatan yang sudah penuh disimpan di rak.",
     keywords: [
       "laundry",
       "timer fokus",
       "pomodoro",
-      "lo-fi",
+      "lofi",
+      "musik kerja",
+      "belajar",
       "nyaman",
-      "isometrik",
-      "interaktif",
       "buku catatan bersama",
     ],
+    inspiredBy: "terinspirasi dari",
     openGraphLocale: "id_ID",
   },
   toolbar: {

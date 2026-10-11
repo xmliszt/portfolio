@@ -6,22 +6,22 @@ export const fr = {
   languageName: "Français",
   site: {
     name: "laundro.cafe",
-    title:
-      "laundro.cafe : un coin tranquille pour te concentrer dans ton navigateur",
+    title: "laundro.cafe : un minuteur de concentration cosy, avec du lofi",
     description:
-      "Une laverie tranquille dans ton navigateur. Fais ta lessive comme minuteur de concentration, mets du lo-fi à la télé, prépare un café et laisse un mot dans le carnet partagé.",
+      "Fais ta lessive comme minuteur de concentration dans une laverie tranquille. Laver, sécher, se concentrer, lofi, café, un carnet pour des inconnus, ou juste rêvasser. Gratuit, sans inscription.",
     intro:
       "Une laverie tranquille dans ton navigateur. Lance un lave-linge ou un sèche-linge de 5 à 60 minutes comme minuteur de concentration et reçois une notification à la fin, écoute des stations lo-fi à la télé, prépare un café et laisse un mot écrit à la main dans le carnet partagé. Les carnets remplis vont sur l'étagère.",
     keywords: [
       "laverie",
       "minuteur de concentration",
       "pomodoro",
-      "lo-fi",
+      "lofi",
+      "musique pour travailler",
+      "étudier avec moi",
       "cosy",
-      "isométrique",
-      "interactif",
       "carnet partagé",
     ],
+    inspiredBy: "inspiré de",
     openGraphLocale: "fr_FR",
   },
   toolbar: {

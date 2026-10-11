@@ -1,7 +1,6 @@
 import { MetadataRoute } from "next";
 
 import { getAllAppIds } from "@/app/apps/data";
-import { LAUNDROMAT_ORIGIN } from "@/lib/laundromat/hosts";
 
 import { apps, hobbies, posts, tags } from "#site/content";
 
@@ -63,12 +62,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
     },
     {
       url: "https://liyuxuan.dev/contacts",
-      lastModified: new Date(),
-      changeFrequency: "always",
-      priority: 1,
-    },
-    {
-      url: LAUNDROMAT_ORIGIN,
       lastModified: new Date(),
       changeFrequency: "always",
       priority: 1,

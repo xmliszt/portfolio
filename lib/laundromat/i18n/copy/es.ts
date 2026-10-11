@@ -6,22 +6,22 @@ export const es = {
   languageName: "Español",
   site: {
     name: "laundro.cafe",
-    title:
-      "laundro.cafe: un rincón tranquilo para concentrarte en tu navegador",
+    title: "laundro.cafe: un temporizador de concentración acogedor con lofi",
     description:
-      "Una lavandería tranquila en tu navegador. Haz la colada como temporizador de concentración, pon lo-fi en la tele, prepárate un café y deja una nota en el cuaderno compartido.",
+      "Haz la colada como temporizador de concentración en una lavandería tranquila. Lavar, secar, concentrarte, lofi, café, un cuaderno para desconocidos o simplemente desconectar. Gratis, sin registro.",
     intro:
       "Una lavandería tranquila en tu navegador. Pon una lavadora o una secadora de 5 a 60 minutos como temporizador de concentración y recibe un aviso cuando termine, escucha emisoras lo-fi en la tele, prepárate un café y deja una nota escrita a mano en el cuaderno compartido. Los cuadernos llenos van a la estantería.",
     keywords: [
       "lavandería",
       "temporizador de concentración",
       "pomodoro",
-      "lo-fi",
+      "lofi",
+      "música para trabajar",
+      "estudia conmigo",
       "acogedor",
-      "isométrico",
-      "interactivo",
       "cuaderno compartido",
     ],
+    inspiredBy: "inspirado en",
     openGraphLocale: "es_ES",
   },
   toolbar: {

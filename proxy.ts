@@ -44,6 +44,16 @@ export const config = {
       ],
     },
     {
+      source: "/(robots\\.txt|sitemap\\.xml|favicon\\.ico)",
+      has: [
+        {
+          type: "host",
+          value:
+            "((www\\.)?laundro\\.cafe|laundromat\\.(liyuxuan\\.dev|localhost))",
+        },
+      ],
+    },
+    {
       source: "/laundromat/:path*",
       has: [{ type: "host", value: "(www\\.)?liyuxuan\\.dev" }],
     },

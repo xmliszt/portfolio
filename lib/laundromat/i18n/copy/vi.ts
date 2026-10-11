@@ -11,21 +11,22 @@ export const vi = {
   languageName: "Tiếng Việt",
   site: {
     name: "laundro.cafe",
-    title: "laundro.cafe: một góc yên tĩnh để tập trung ngay trong trình duyệt",
+    title: "laundro.cafe: hẹn giờ tập trung ấm cúng trong tiệm giặt, cùng lofi",
     description:
-      "Một tiệm giặt yên tĩnh trong trình duyệt của bạn. Giặt đồ như một bộ hẹn giờ tập trung, mở nhạc lo-fi trên TV, pha một tách cà phê và để lại vài dòng trong cuốn sổ chung.",
+      "Giặt đồ như một bộ hẹn giờ tập trung trong một tiệm giặt yên tĩnh. Giặt, sấy, tập trung, lofi, cà phê, cuốn sổ cho người lạ, hoặc chỉ ngồi thả hồn. Miễn phí, không cần đăng ký.",
     intro:
       "Một tiệm giặt yên tĩnh trong trình duyệt của bạn. Chạy máy giặt hoặc máy sấy từ 5 đến 60 phút làm bộ hẹn giờ tập trung và nhận thông báo khi xong, mở các kênh lo-fi trên TV, pha một tách cà phê và viết tay một lời nhắn trong cuốn sổ chung. Sổ viết kín sẽ được xếp lên kệ.",
     keywords: [
       "tiệm giặt",
       "hẹn giờ tập trung",
       "pomodoro",
-      "lo-fi",
+      "lofi",
+      "nhạc làm việc",
+      "học cùng",
       "ấm cúng",
-      "isometric",
-      "tương tác",
       "sổ chung",
     ],
+    inspiredBy: "lấy cảm hứng từ",
     openGraphLocale: "vi_VN",
   },
   toolbar: {

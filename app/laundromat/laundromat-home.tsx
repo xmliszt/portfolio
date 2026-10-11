@@ -25,7 +25,6 @@ export function LaundromatHome(props: LaundromatHomeProps) {
         locale={props.locale}
       />
       <LaundromatCopyProvider locale={props.locale}>
-        <LaundromatIntro />
         <Suspense>
           <SoundBoardProvider>
             <SupabaseRoomProvider>
@@ -33,6 +32,7 @@ export function LaundromatHome(props: LaundromatHomeProps) {
             </SupabaseRoomProvider>
           </SoundBoardProvider>
         </Suspense>
+        <LaundromatIntro />
       </LaundromatCopyProvider>
     </div>
   );

@@ -5,6 +5,8 @@ import { useEffect, useState } from "react";
 import { LAUNDROMAT_ORIGIN } from "@/lib/laundromat/hosts";
 
 import { useLaundromatCopy } from "./i18n/use-laundromat-copy";
+import { TOOLBAR_BUTTON_CLASS } from "./toolbar-button-class";
+import { ToolbarLabel } from "./toolbar-label";
 
 const COPIED_NOTICE_MS = 2200;
 
@@ -47,20 +49,20 @@ export function ShareButton() {
   return (
     <button
       type="button"
-      className="flex cursor-pointer items-center gap-x-1.5 bg-transparent px-1.5 py-2 text-[11px] text-[var(--lm-line)] lowercase transition-colors duration-200 outline-none hover:text-[var(--lm-ink)] focus-visible:outline-1 focus-visible:outline-[var(--lm-line)] focus-visible:outline-dashed"
+      className={TOOLBAR_BUTTON_CLASS}
       onClick={handleShare}
     >
       <svg
         aria-hidden
         viewBox="0 0 12 12"
-        className="size-3 fill-none stroke-current"
+        className="size-3 shrink-0 fill-none stroke-current"
         strokeWidth={1}
         strokeLinecap="round"
         strokeLinejoin="round"
       >
         <path d="M6 1.5v6.5M3.5 4L6 1.5 8.5 4M2.5 6.5v3.5h7V6.5" />
       </svg>
-      <span role="status" className="select-text">
+      <ToolbarLabel role="status" open={state !== "idle"}>
         {(() => {
           switch (state) {
             case "idle":
@@ -75,7 +77,7 @@ export function ShareButton() {
             }
           }
         })()}
-      </span>
+      </ToolbarLabel>
     </button>
   );
 }
