@@ -9,12 +9,12 @@ export const ROUTES: Route[] = [
     name: "about me",
   },
   {
-    path: "/projects",
-    name: "projects",
-  },
-  {
     path: "/apps",
     name: "apps",
+  },
+  {
+    path: "/projects",
+    name: "projects",
   },
   {
     path: "/playground",

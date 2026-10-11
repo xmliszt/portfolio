@@ -213,17 +213,62 @@ export type AppsListEntry = {
   href: string;
 };
 
+const laundromatEntry: AppsListEntry = {
+  id: "laundromat",
+  name: "Laundro Cafe",
+  subtitle: "A quiet laundromat in your browser",
+  icon: {
+    light: "/apps/laundro-cafe-icon.svg",
+    dark: "/apps/laundro-cafe-icon.svg",
+    alt: "Laundro Cafe icon",
+  },
+  href: LAUNDROMAT_ORIGIN,
+};
+
 const webApps: AppsListEntry[] = [
   {
-    id: "laundromat",
-    name: "laundro.cafe",
-    subtitle: "A quiet laundromat in your browser",
+    id: "moire",
+    name: "Moiré",
+    subtitle: "A personal system for cultivating taste",
     icon: {
-      light: "/apps/laundromat-icon.svg",
-      dark: "/apps/laundromat-icon.svg",
-      alt: "laundro.cafe icon",
+      light: "/apps/moire-icon.svg",
+      dark: "/apps/moire-icon.svg",
+      alt: "Moiré icon",
     },
-    href: LAUNDROMAT_ORIGIN,
+    href: "/moire",
+  },
+  {
+    id: "lumon-industries",
+    name: "Lumon Industries",
+    subtitle: "Macro Data Refinement, from Severance",
+    icon: {
+      light: "/apps/lumon-icon.svg",
+      dark: "/apps/lumon-icon.svg",
+      alt: "Lumon Industries icon",
+    },
+    href: "https://lumon-industries.liyuxuan.dev/",
+  },
+  {
+    id: "taboo-ai",
+    name: "Taboo AI",
+    subtitle: "Learn English by playing Taboo with AI",
+    icon: {
+      light: "/apps/taboo-ai-icon.png",
+      dark: "/apps/taboo-ai-icon.png",
+      alt: "Taboo AI icon",
+    },
+    href: "https://taboo-ai.com",
+  },
+  {
+    id: "convo-ai",
+    name: "Convo AI",
+    subtitle: "Deprecated",
+    icon: {
+      light: "/apps/convo-ai-icon.png",
+      dark: "/apps/convo-ai-icon.png",
+      alt: "Convo AI icon",
+    },
+    href: "https://convo-ai.liyuxuan.dev/",
   },
 ];
 
@@ -235,7 +280,7 @@ export function getAppsListEntries(): AppsListEntry[] {
     icon: app.icon,
     href: `/apps/${app.id}`,
   }));
-  return [...iosApps, ...webApps];
+  return [laundromatEntry, ...iosApps, ...webApps];
 }
 
 export function getAppById(id: string): AppData | undefined {

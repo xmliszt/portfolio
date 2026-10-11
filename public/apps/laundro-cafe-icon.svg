@@ -1,0 +1,254 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+<style>.iso-faces *{vector-effect:non-scaling-stroke}</style>
+<defs>
+<linearGradient id="w-edge" x1="0" y1="0" x2="1" y2="0">
+<stop offset="0" stop-color="#000000" stop-opacity="0.35"></stop>
+<stop offset="1" stop-color="#000000" stop-opacity="0"></stop>
+</linearGradient>
+<radialGradient id="w-glass" cx="-18" cy="-24" r="96" gradientUnits="userSpaceOnUse">
+<stop offset="0" stop-color="#ff9a2e" stop-opacity="0.26"></stop>
+<stop offset="0.7" stop-color="#ff9a2e" stop-opacity="0.1"></stop>
+<stop offset="1" stop-color="#ff9a2e" stop-opacity="0.03"></stop>
+</radialGradient>
+<radialGradient id="w-pool" cx="0.5" cy="0.5" r="0.5">
+<stop offset="0" stop-color="#ff9a2e" stop-opacity="0.22"></stop>
+<stop offset="1" stop-color="#ff9a2e" stop-opacity="0"></stop>
+</radialGradient>
+<pattern id="w-perf" width="9" height="7.8" patternUnits="userSpaceOnUse">
+<circle cx="2.25" cy="1.95" r="1.05" fill="#24272a"></circle>
+<circle cx="6.75" cy="5.85" r="1.05" fill="#24272a"></circle>
+</pattern>
+<filter id="w-halo" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="24"></feGaussianBlur></filter>
+<filter id="w-halo-s" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="2.6"></feGaussianBlur></filter>
+<filter id="w-led" x="-200%" y="-200%" width="500%" height="500%"><feGaussianBlur stdDeviation="2.4"></feGaussianBlur></filter>
+<clipPath id="w-glass-clip"><circle cx="0" cy="0" r="84"></circle></clipPath>
+<g id="w-screw">
+<circle r="2.6" fill="#1b1d1f" stroke="#3d4144" stroke-width="0.8"></circle>
+<line x1="-1.6" y1="-0.7" x2="1.6" y2="0.7" stroke="#4a4f53" stroke-width="0.8"></line>
+</g>
+<g id="w-drum">
+<g clip-path="url(#w-glass-clip)">
+<circle r="84" fill="#0b0c0d"></circle>
+<g>
+
+<circle r="76" fill="url(#w-perf)"></circle>
+<circle r="76" fill="none" stroke="#2b2e30" stroke-width="1"></circle>
+<circle r="30" fill="#101112" stroke="#2b2e30" stroke-width="1"></circle>
+<circle r="30" fill="url(#w-perf)" opacity="0.6"></circle>
+<circle r="5" fill="#17181a" stroke="#3d4144" stroke-width="1"></circle>
+<circle r="18" fill="none" stroke="#1f2123" stroke-width="1" stroke-dasharray="1 5"></circle>
+<g>
+<path d="M -10 -76 L 10 -76 L 6 -54 Q 0 -50 -6 -54 Z" fill="#1d1f21" stroke="#4a4f53" stroke-width="1"></path>
+<circle cx="0" cy="-64" r="1.3" fill="#0b0c0d"></circle><circle cx="0" cy="-58" r="1.1" fill="#0b0c0d"></circle>
+</g>
+<g transform="rotate(120)">
+<path d="M -10 -76 L 10 -76 L 6 -54 Q 0 -50 -6 -54 Z" fill="#1d1f21" stroke="#4a4f53" stroke-width="1"></path>
+<circle cx="0" cy="-64" r="1.3" fill="#0b0c0d"></circle><circle cx="0" cy="-58" r="1.1" fill="#0b0c0d"></circle>
+</g>
+<g transform="rotate(240)">
+<path d="M -10 -76 L 10 -76 L 6 -54 Q 0 -50 -6 -54 Z" fill="#1d1f21" stroke="#4a4f53" stroke-width="1"></path>
+<circle cx="0" cy="-64" r="1.3" fill="#0b0c0d"></circle><circle cx="0" cy="-58" r="1.1" fill="#0b0c0d"></circle>
+</g>
+</g>
+<g stroke-linejoin="round" stroke-linecap="round">
+
+<g>
+<path d="M -86 58 C -72 50, -54 52, -42 60 L -46 80 C -62 86, -78 82, -88 72 Z" fill="#202225" stroke="#4a4f53" stroke-width="1"></path>
+<path d="M -66 52 L -58 62 L -50 54" fill="#26282b" stroke="#5a5f63" stroke-width="0.9"></path>
+<path d="M -58 62 L -54 82" fill="none" stroke="#3d4144" stroke-width="0.9"></path>
+<path d="M -56 63 L -52 82" fill="none" stroke="#3d4144" stroke-width="0.6" stroke-dasharray="1.2 1.6"></path>
+<circle cx="-60" cy="70" r="1.7" fill="#2b2e30" stroke="#868b8f" stroke-width="0.6"></circle>
+<circle cx="-59" cy="79" r="1.7" fill="#2b2e30" stroke="#868b8f" stroke-width="0.6"></circle>
+</g>
+<g>
+<path d="M -84 20 C -74 2, -52 -6, -36 2 C -27 8, -28 22, -38 29 L -60 42 C -72 47, -84 38, -84 20 Z" fill="#1f2124" stroke="#4a4f53" stroke-width="1"></path>
+<path d="M -36 2 C -27 8, -28 22, -38 29 L -45 24 C -37 18, -37 9, -42 5 Z" fill="#26282b" stroke="#5a5f63" stroke-width="0.9"></path>
+<path d="M -37 5 L -42 8 M -34 9.5 L -40 11.5 M -33 14 L -40 15 M -33.5 18.5 L -40.5 19 M -35 23 L -42 22.5 M -37 26.5 L -43.5 25.5" fill="none" stroke="#3d4144" stroke-width="0.8"></path>
+<path d="M -72 18 l 2.6 2.6 l 2.6 -2.6 M -64 12 l 2.6 2.6 l 2.6 -2.6 M -66 26 l 2.6 2.6 l 2.6 -2.6 M -58 22 l 2.6 2.6 l 2.6 -2.6 M -76 30 l 2.6 2.6 l 2.6 -2.6 M -52 14 l 2.6 2.6 l 2.6 -2.6" fill="none" stroke="#33363a" stroke-width="0.8"></path>
+<path d="M -70 6 C -62 12, -58 22, -60 34" fill="none" stroke="#2b2e30" stroke-width="1"></path>
+</g>
+<g>
+<path d="M -72 36 C -52 24, -12 21, 20 29 L 58 39 C 65 41, 67 52, 60 56 L 22 50 C -8 46, -44 52, -68 61 C -76 56, -78 43, -72 36 Z" fill="#1c1e21" stroke="#5a5f63" stroke-width="1"></path>
+<path d="M -64 44 C -42 36, -10 34, 22 40 L 56 47" fill="none" stroke="#868b8f" stroke-opacity="0.6" stroke-width="0.7" stroke-dasharray="1.6 1.8"></path>
+<path d="M -64 47.5 C -42 39.5, -10 37.5, 22 43.5 L 55 50.5" fill="none" stroke="#868b8f" stroke-opacity="0.6" stroke-width="0.7" stroke-dasharray="1.6 1.8"></path>
+<path d="M 51 37.5 L 47 53.5 M 55 38.5 L 51 54.5" fill="none" stroke="#4a4f53" stroke-width="0.9"></path>
+<path d="M -32 27 C -26 34, -24 41, -27 50 M 6 27 C 10 34, 10 40, 6 47" fill="none" stroke="#2b2e30" stroke-width="1.2"></path>
+<path d="M -50 30 C -38 26, -24 25, -12 26" fill="none" stroke="#ffc77a" stroke-opacity="0.22" stroke-width="1"></path>
+<circle cx="-18" cy="31" r="1.6" fill="#ff9a2e" fill-opacity="0.55" stroke="#ffc77a" stroke-opacity="0.7" stroke-width="0.6"></circle>
+</g>
+<g>
+<path d="M -2 57 C 9 41, 40 35, 62 43 C 77 49, 81 63, 73 75 C 57 85, 20 87, 4 77 C -4 71, -5 63, -2 57 Z" fill="#212326" stroke="#4a4f53" stroke-width="1"></path>
+<path d="M 13 49 C 30 43, 50 45, 66 53 L 69 59 C 51 51, 28 49, 9 55 Z" fill="#2c2f32" stroke="#4a4f53" stroke-width="0.7"></path>
+<path d="M 8 65 C 28 59, 50 61, 72 67 M 10 71 C 30 66, 50 68, 68 74 M 14 77 C 30 74, 48 75, 62 79" fill="none" stroke="#3a3d41" stroke-width="1" stroke-dasharray="0.6 2"></path>
+<path d="M 6 74 C 22 83, 54 82, 70 72" fill="none" stroke="#5a5f63" stroke-width="0.6" stroke-dasharray="1.4 1.6"></path>
+<path d="M 30 46 C 34 54, 34 62, 30 72" fill="none" stroke="#1a1c1e" stroke-width="1.4"></path>
+<path d="M 24 41 C 38 37, 52 39, 62 44" fill="none" stroke="#ffc77a" stroke-opacity="0.2" stroke-width="1"></path>
+</g>
+</g>
+<g stroke-linejoin="round" stroke-linecap="round">
+
+<g transform="translate(26 34) rotate(-18)">
+<path d="M -24 -18 C -16 -26, -4 -28, 2 -22 L 10 -8 C 14 -2, 10 6, 2 6 C -4 6, -8 2, -10 -4 L -18 -10 C -22 -12, -26 -14, -24 -18 Z" fill="#202225" stroke="#5a5f63" stroke-width="1"></path>
+<path d="M -19.5 -21.5 L -13.5 -12.5 M -13.5 -24.5 L -7.5 -15.5 M -7.5 -26 L -2.5 -17.5" fill="none" stroke="#4a4f53" stroke-width="1.8"></path>
+<path d="M -24 -18 C -22 -14, -19 -11, -18 -10 M -22.5 -20 L -20.5 -16.5" fill="none" stroke="#3d4144" stroke-width="0.7"></path>
+<path d="M 3 5.5 C 8 4, 11 0, 10.5 -4" fill="none" stroke="#868b8f" stroke-opacity="0.5" stroke-width="0.6" stroke-dasharray="1.2 1.4"></path>
+<path d="M -4 -24 C 0 -24, 2 -22, 3 -20" fill="none" stroke="#ffc77a" stroke-opacity="0.25" stroke-width="0.9"></path>
+</g>
+</g>
+<path d="M -92 30 C -62 22, -32 38, -2 30 C 28 22, 58 38, 92 30 L 92 92 L -92 92 Z" fill="#ff9a2e" fill-opacity="0.07" stroke="none">
+</path>
+<path d="M -92 30 C -62 22, -32 38, -2 30 C 28 22, 58 38, 92 30" fill="none" stroke="#ffc77a" stroke-opacity="0.38" stroke-width="1">
+</path>
+<g fill="none" stroke="#ffc77a" stroke-opacity="0.38" stroke-width="0.7">
+
+<circle cx="-72" cy="25.5" r="2.4"></circle><circle cx="-66.5" cy="23.5" r="1.4"></circle><circle cx="-68" cy="28.5" r="1"></circle>
+<circle cx="-22" cy="31.5" r="1.9"></circle><circle cx="-17" cy="29.5" r="1.1"></circle>
+<circle cx="34" cy="25.5" r="2.2"></circle><circle cx="39.5" cy="27" r="1.3"></circle><circle cx="30" cy="27.5" r="0.9"></circle>
+<circle cx="70" cy="31.5" r="1.6"></circle>
+</g>
+<circle r="84" fill="url(#w-glass)"></circle>
+<path d="M -60 -44 A 74 74 0 0 1 14 -73" fill="none" stroke="#ffffff" stroke-opacity="0.13" stroke-width="7" stroke-linecap="round"></path>
+<path d="M -70 -20 A 73 73 0 0 1 -66 -32" fill="none" stroke="#ffffff" stroke-opacity="0.22" stroke-width="2.4" stroke-linecap="round"></path>
+<path d="M 50 58 A 76 76 0 0 0 66 36" fill="none" stroke="#ffffff" stroke-opacity="0.07" stroke-width="3" stroke-linecap="round"></path>
+</g>
+</g>
+<g id="w-full" stroke-linejoin="round">
+<rect x="18" y="440" width="28" height="6" rx="1" fill="#121314" stroke="#3d4144" stroke-width="1"></rect>
+<rect x="314" y="440" width="28" height="6" rx="1" fill="#121314" stroke="#3d4144" stroke-width="1"></rect>
+<line x1="14" y1="446" x2="50" y2="446" stroke="#3d4144" stroke-width="1"></line>
+<line x1="310" y1="446" x2="346" y2="446" stroke="#3d4144" stroke-width="1"></line>
+<rect x="0" y="0" width="360" height="440" rx="6" fill="#17181a" stroke="#4a4f53" stroke-width="1"></rect>
+<rect x="0.5" y="0.5" width="10" height="439" rx="5" fill="url(#w-edge)"></rect>
+<line x1="7" y1="1.6" x2="353" y2="1.6" stroke="#e6e8e9" stroke-opacity="0.1" stroke-width="1"></line>
+<rect x="4" y="4" width="352" height="432" rx="4" fill="none" stroke="#2b2e30" stroke-width="1"></rect>
+<rect x="10" y="10" width="340" height="88" rx="4" fill="#1b1d1f" stroke="#2b2e30" stroke-width="1"></rect>
+<line x1="13" y1="14" x2="347" y2="14" stroke="#e6e8e9" stroke-opacity="0.06" stroke-width="1"></line>
+<use href="#w-screw" x="17" y="17"></use>
+<use href="#w-screw" x="343" y="17"></use>
+<use href="#w-screw" x="17" y="91"></use>
+<use href="#w-screw" x="343" y="91"></use>
+<g transform="translate(64 56)">
+<path d="M -25.81 25.81 A 36.5 36.5 0 1 1 25.81 25.81" fill="none" stroke="#5a5f63" stroke-width="3" stroke-dasharray="1 27.67"></path>
+<path d="M -24.75 24.75 A 35 35 0 1 1 24.75 24.75" fill="none" stroke="#3d4144" stroke-width="2" stroke-dasharray="0.6 13.14"></path>
+<path d="M -22.6 22.6 A 32 32 0 1 1 22.6 22.6" fill="none" stroke="#2b2e30" stroke-width="1"></path>
+<text x="-31" y="31" font-size="6" fill="#5a5f63" text-anchor="middle" font-family="IBM Plex Mono, monospace">5</text>
+<text x="0" y="-41" font-size="6" fill="#5a5f63" text-anchor="middle" font-family="IBM Plex Mono, monospace">25</text>
+<text x="31" y="31" font-size="6" fill="#5a5f63" text-anchor="middle" font-family="IBM Plex Mono, monospace">60</text>
+<circle r="26" fill="#121314"></circle>
+<circle r="24.5" fill="#17181a" stroke="#4a4f53" stroke-width="1"></circle>
+<circle r="22.6" fill="none" stroke="#2b2e30" stroke-width="3" stroke-dasharray="0.9 4.98"></circle>
+<circle r="16" fill="#1d1f21" stroke="#3d4144" stroke-width="1"></circle>
+<path d="M -11 -11 A 15.5 15.5 0 0 1 4 -15" fill="none" stroke="#e6e8e9" stroke-opacity="0.18" stroke-width="1.2" stroke-linecap="round"></path>
+<g transform="rotate(-20)">
+<line x1="0" y1="-3" x2="0" y2="-20.5" stroke="#e6e8e9" stroke-width="1.6" stroke-linecap="round"></line>
+<rect x="-2.4" y="-14" width="4.8" height="14" rx="2.4" fill="none" stroke="#4a4f53" stroke-width="0.8"></rect>
+</g>
+<circle r="1.6" fill="#3d4144"></circle>
+</g>
+<text x="132" y="27" font-size="6.5" fill="#5a5f63" font-family="IBM Plex Mono, monospace" letter-spacing="0.5">time left</text>
+<text x="252" y="27" font-size="6.5" fill="#5a5f63" text-anchor="end" font-family="IBM Plex Mono, monospace">min</text>
+<rect x="130" y="31" width="122" height="44" rx="3" fill="#0b0c0d" stroke="#3d4144" stroke-width="1"></rect>
+<rect x="134" y="35" width="114" height="36" rx="2" fill="#0e0f10" stroke="#1f2123" stroke-width="1"></rect>
+<rect x="134" y="35" width="114" height="36" rx="2" fill="#ff9a2e" fill-opacity="0.06"></rect>
+<text x="191" y="62" font-size="28" fill="#1d1f21" text-anchor="middle" font-family="IBM Plex Mono, monospace">88:88</text>
+<text x="191" y="62" font-size="28" fill="#ff9a2e" text-anchor="middle" font-family="IBM Plex Mono, monospace">18:42</text>
+<line x1="136" y1="37.5" x2="200" y2="37.5" stroke="#e6e8e9" stroke-opacity="0.07" stroke-width="1"></line>
+<text x="132" y="87" font-size="6.5" fill="#5a5f63" font-family="IBM Plex Mono, monospace">no. 01 · 8 kg</text>
+<circle cx="268" cy="38" r="2.6" fill="#ff9a2e"></circle>
+<circle cx="268" cy="38" r="3.4" fill="#ff9a2e" opacity="0.7" filter="url(#w-led)"></circle>
+<text x="276" y="40.4" font-size="7" fill="#868b8f" font-family="IBM Plex Mono, monospace">wash</text>
+<circle cx="268" cy="54" r="2.6" fill="#1b1d1f" stroke="#3d4144" stroke-width="0.8"></circle>
+<text x="276" y="56.4" font-size="7" fill="#5a5f63" font-family="IBM Plex Mono, monospace">rinse</text>
+<circle cx="268" cy="70" r="2.6" fill="#1b1d1f" stroke="#3d4144" stroke-width="0.8"></circle>
+<text x="276" y="72.4" font-size="7" fill="#5a5f63" font-family="IBM Plex Mono, monospace">spin</text>
+<g transform="translate(327 54)">
+<circle r="14.5" fill="#121314" stroke="#3d4144" stroke-width="1"></circle>
+<circle r="11" fill="#1d1f21" stroke="#4a4f53" stroke-width="1"></circle>
+<circle r="8" fill="none" stroke="#2b2e30" stroke-width="1"></circle>
+<path d="M -2.2 -3.6 L 3.6 0 L -2.2 3.6 Z" fill="none" stroke="#868b8f" stroke-width="0.9"></path>
+<path d="M -8 -6 A 10 10 0 0 1 -1 -10" fill="none" stroke="#e6e8e9" stroke-opacity="0.16" stroke-width="1" stroke-linecap="round"></path>
+<text x="0" y="25" font-size="6.5" fill="#5a5f63" text-anchor="middle" font-family="IBM Plex Mono, monospace">start</text>
+</g>
+<circle cx="343" cy="35" r="1.6" fill="#ff9a2e"></circle>
+<circle cx="343" cy="35" r="2.6" fill="#ff9a2e" opacity="0.6" filter="url(#w-led)"></circle>
+<rect x="10" y="104" width="172" height="30" rx="3" fill="#1b1d1f" stroke="#4a4f53" stroke-width="1"></rect>
+<rect x="13" y="107" width="166" height="24" rx="2" fill="none" stroke="#2b2e30" stroke-width="1"></rect>
+<rect x="20" y="113" width="48" height="12" rx="6" fill="#0e0f10" stroke="#3d4144" stroke-width="1"></rect>
+<line x1="26" y1="116" x2="62" y2="116" stroke="#000000" stroke-opacity="0.5" stroke-width="1.4"></line>
+<text x="124" y="122" font-size="7" fill="#5a5f63" text-anchor="middle" font-family="IBM Plex Mono, monospace" letter-spacing="3">I · II · ◦</text>
+<rect x="194" y="108" width="62" height="22" rx="2" fill="#1b1d1f" stroke="#3d4144" stroke-width="1"></rect>
+<rect x="203" y="117" width="44" height="4" rx="2" fill="#050606" stroke="#3d4144" stroke-width="0.8"></rect>
+<text x="225" y="113.6" font-size="4.5" fill="#5a5f63" text-anchor="middle" font-family="IBM Plex Mono, monospace">coin</text>
+<rect x="266" y="106" width="84" height="26" rx="2" fill="#0e0f10" stroke="#2b2e30" stroke-width="1"></rect>
+<text x="273" y="122" font-size="6.5" fill="#5a5f63" font-family="IBM Plex Mono, monospace">washer</text>
+<text x="343" y="124" font-size="15" fill="#e6e8e9" text-anchor="end" font-family="Gowun Batang, serif">01</text>
+<line x1="10" y1="142" x2="350" y2="142" stroke="#2b2e30" stroke-width="1"></line>
+<g transform="translate(180 286)">
+<circle r="108" fill="#ff9a2e" opacity="0.3" filter="url(#w-halo)"></circle>
+<circle cy="3" r="118" fill="#0d0e0f"></circle>
+<g transform="translate(-134 -46)">
+<rect x="0" y="0" width="26" height="30" rx="3" fill="#1b1d1f" stroke="#4a4f53" stroke-width="1"></rect>
+<line x1="13" y1="2" x2="13" y2="28" stroke="#2b2e30" stroke-width="1"></line>
+<use href="#w-screw" x="6.5" y="8"></use>
+<use href="#w-screw" x="6.5" y="22"></use>
+<rect x="24" y="8" width="16" height="14" rx="1.5" fill="#1b1d1f" stroke="#4a4f53" stroke-width="1"></rect>
+</g>
+<g transform="translate(-134 26)">
+<rect x="0" y="0" width="26" height="30" rx="3" fill="#1b1d1f" stroke="#4a4f53" stroke-width="1"></rect>
+<line x1="13" y1="2" x2="13" y2="28" stroke="#2b2e30" stroke-width="1"></line>
+<use href="#w-screw" x="6.5" y="8"></use>
+<use href="#w-screw" x="6.5" y="22"></use>
+<rect x="24" y="8" width="16" height="14" rx="1.5" fill="#1b1d1f" stroke="#4a4f53" stroke-width="1"></rect>
+</g>
+<circle r="116" fill="#1d1f21" stroke="#ff9a2e" stroke-opacity="0.75" stroke-width="1.2"></circle>
+<circle r="110" fill="none" stroke="#2b2e30" stroke-width="1"></circle>
+<circle r="104" fill="none" stroke="#3d4144" stroke-width="1"></circle>
+<path d="M -38.3 -105.2 A 112 112 0 0 0 -105.2 -38.3" fill="none" stroke="#e6e8e9" stroke-opacity="0.32" stroke-width="1.6" stroke-linecap="round"></path>
+<path d="M 38.3 105.2 A 112 112 0 0 0 97 56" fill="none" stroke="#e6e8e9" stroke-opacity="0.1" stroke-width="1.2" stroke-linecap="round"></path>
+<circle r="113" fill="none" stroke="#3d4144" stroke-width="0.8" stroke-dasharray="0.8 22.9" transform="rotate(11)"></circle>
+<circle r="97" fill="#111213" stroke="#4a4f53" stroke-width="1"></circle>
+<circle r="93" fill="none" stroke="#1f2123" stroke-width="1.4"></circle>
+<circle r="89.5" fill="none" stroke="#2b2e30" stroke-width="1"></circle>
+<circle r="86.5" fill="none" stroke="#1a1c1e" stroke-width="2"></circle>
+<use href="#w-drum"></use>
+<circle r="84" fill="none" stroke="#ffc77a" stroke-opacity="0.65" stroke-width="1"></circle>
+<circle r="81" fill="none" stroke="#ffc77a" stroke-opacity="0.15" stroke-width="1"></circle>
+<rect x="108" y="-32" width="22" height="64" rx="10" fill="#1d1f21" stroke="#4a4f53" stroke-width="1"></rect>
+<rect x="113" y="-24" width="12" height="48" rx="6" fill="#0b0c0d" stroke="#2b2e30" stroke-width="1"></rect>
+<line x1="119" y1="-18" x2="119" y2="18" stroke="#3d4144" stroke-width="1"></line>
+</g>
+<rect x="10" y="406" width="340" height="26" rx="2" fill="#1b1d1f" stroke="#2b2e30" stroke-width="1"></rect>
+<rect x="128" y="411" width="104" height="3" rx="1.5" fill="#0b0c0d"></rect>
+<rect x="128" y="417.5" width="104" height="3" rx="1.5" fill="#0b0c0d"></rect>
+<rect x="128" y="424" width="104" height="3" rx="1.5" fill="#0b0c0d"></rect>
+<use href="#w-screw" x="22" y="419"></use>
+<use href="#w-screw" x="338" y="419"></use>
+<text x="34" y="421.5" font-size="7" fill="#5a5f63" font-family="IBM Plex Mono, monospace">laundro.cafe</text>
+</g>
+</defs>
+<rect width="512" height="512" fill="#0c0d0e"></rect>
+<ellipse cx="236" cy="420" rx="210" ry="70" fill="url(#w-pool)"></ellipse>
+<g class="iso-faces">
+<g transform="matrix(0.433 0.25 0.433 -0.25 96 147)">
+<rect x="0" y="0" width="360" height="380" rx="4" fill="#1b1d1f" stroke="#4a4f53" stroke-width="1"></rect>
+<rect x="10" y="10" width="340" height="360" rx="3" fill="none" stroke="#2b2e30" stroke-width="1"></rect>
+<line x1="180" y1="10" x2="180" y2="370" stroke="#202225" stroke-width="1"></line>
+<circle cx="22" cy="22" r="3" fill="none" stroke="#3d4144" stroke-width="1"></circle>
+<circle cx="338" cy="22" r="3" fill="none" stroke="#3d4144" stroke-width="1"></circle>
+<circle cx="22" cy="358" r="3" fill="none" stroke="#3d4144" stroke-width="1"></circle>
+<circle cx="338" cy="358" r="3" fill="none" stroke="#3d4144" stroke-width="1"></circle>
+</g>
+<g transform="matrix(0.433 -0.25 0 0.5 251.9 237)">
+<rect x="0" y="0" width="380" height="440" rx="4" fill="#131415" stroke="#4a4f53" stroke-width="1"></rect>
+<rect x="8" y="8" width="364" height="424" rx="3" fill="none" stroke="#202225" stroke-width="1"></rect>
+<line x1="0" y1="98" x2="380" y2="98" stroke="#202225" stroke-width="1"></line>
+<rect x="120" y="386" width="150" height="5" rx="2.5" fill="#0b0c0d"></rect>
+<rect x="120" y="396" width="150" height="5" rx="2.5" fill="#0b0c0d"></rect>
+<rect x="120" y="406" width="150" height="5" rx="2.5" fill="#0b0c0d"></rect>
+<rect x="120" y="416" width="150" height="5" rx="2.5" fill="#0b0c0d"></rect>
+<circle cx="200" cy="200" r="16" fill="#0e0f10" stroke="#2b2e30" stroke-width="1"></circle>
+<circle cx="200" cy="200" r="6" fill="none" stroke="#3d4144" stroke-width="1"></circle>
+</g>
+</g>
+<g transform="matrix(0.433 0.25 0 0.5 96 147)"><use href="#w-full"></use></g>
+</svg>
