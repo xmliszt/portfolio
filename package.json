@@ -15,6 +15,7 @@
     "velite:dev": "velite --watch",
     "db:gen-types": "bash scripts/supabase-gen-types.sh",
     "db:push": "supabase db push",
+    "sounds:generate": "node --env-file-if-exists=.env --import ./lib/laundromat/testing/register-ts-resolution.mjs scripts/generate-laundromat-sounds.mts",
     "three": "^0.165.0",
     "wiggle": "^0.0.14",
     "codegen:craft": "node scripts/generate-station-code.js"

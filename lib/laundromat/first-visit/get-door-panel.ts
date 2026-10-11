@@ -7,7 +7,7 @@ const COS_30 = Math.cos(Math.PI / 6);
 const SIN_30 = Math.sin(Math.PI / 6);
 const SHADE_PER_SIN = 0.35;
 
-/** Return the SVG `transform` that maps door-local units (across from the hinge, down from the top) onto the panel swung `angleDeg` into the room about its hinge on the `x = 0` wall, the panel's free-edge polygon and its shade opacity. */
+/** Return the SVG `transform` that maps door-local units (across from the hinge, down from the top) onto the panel swung `angleDeg` into the room about its hinge at `door.fromY` on the `x = 0` wall, the panel's free-edge polygon and its shade opacity. */
 export function getDoorPanel(options: {
   angleDeg: number;
   door: BedroomConfig["door"];
@@ -18,7 +18,7 @@ export function getDoorPanel(options: {
   const theta = (options.angleDeg * Math.PI) / 180;
   const sin = Math.sin(theta);
   const cos = Math.cos(theta);
-  const hingeY = door.fromY + door.width;
+  const hingeY = door.fromY;
   const top = projectIsoPoint({
     point: { x: 0, y: hingeY, z: door.height },
     projection,
@@ -27,15 +27,15 @@ export function getDoorPanel(options: {
     return projectIsoPoint({
       point: {
         x: door.width * sin - options.back * cos,
-        y: hingeY - door.width * cos - options.back * sin,
+        y: hingeY + door.width * cos + options.back * sin,
         z: options.z,
       },
       projection,
     });
   }
   const across = {
-    x: (sin + cos) * COS_30 * unit,
-    y: (sin - cos) * SIN_30 * unit,
+    x: (sin - cos) * COS_30 * unit,
+    y: (sin + cos) * SIN_30 * unit,
   };
   return {
     transform: `matrix(${across.x} ${across.y} 0 ${unit} ${top.x} ${top.y})`,

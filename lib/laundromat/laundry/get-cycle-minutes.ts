@@ -7,10 +7,7 @@ export function getCycleMinutes(options: {
   machines: MachineCycles;
 }) {
   const { machines, machine } = options;
-  const choices =
-    machine.kind === "washer"
-      ? machines.washerCycleMinutes
-      : machines.dryerCycleMinutes;
+  const choices = machines.cycleMinutes;
   const fallback =
     machine.kind === "washer"
       ? machines.defaultWasherCycleMinutes

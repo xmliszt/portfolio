@@ -1,14 +1,17 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
 
+import { en } from "@/lib/laundromat/i18n/copy/en";
+
 import { describeTv } from "./describe-tv";
 import { describeTvControl } from "./describe-tv-control";
 import type { TvState } from "./tv-state";
+import { TV_STATION_IDS } from "./tv-state";
 
 const settings = {
-  stations: ["rainy café", "piano night", "late wash"].map((label) => ({
-    label,
-    videoId: `${label}-id`,
+  stations: TV_STATION_IDS.slice(0, 3).map((id) => ({
+    id,
+    videoId: `${id}-video`,
     channel: "Lofi Girl",
     placeholder: false,
   })),
@@ -19,7 +22,7 @@ const off: TvState = { ...on, on: false };
 
 test("names the next station on the tuner", () => {
   assert.deepEqual(
-    describeTvControl({ control: "tuner", state: on, settings }),
+    describeTvControl({ control: "tuner", state: on, settings, copy: en }),
     {
       label: "TV channel, ch 02 · piano night",
       tooltip: "next station · late wash",
@@ -30,29 +33,32 @@ test("names the next station on the tuner", () => {
 
 test("states the volume", () => {
   assert.equal(
-    describeTvControl({ control: "volume", state: on, settings }).tooltip,
+    describeTvControl({ control: "volume", state: on, settings, copy: en })
+      .tooltip,
     "volume · 60%"
   );
 });
 
 test("offers to turn the TV off when on, and on when off", () => {
   assert.equal(
-    describeTvControl({ control: "power", state: on, settings }).tooltip,
+    describeTvControl({ control: "power", state: on, settings, copy: en })
+      .tooltip,
     "turn off"
   );
   assert.equal(
-    describeTvControl({ control: "power", state: off, settings }).tooltip,
+    describeTvControl({ control: "power", state: off, settings, copy: en })
+      .tooltip,
     "turn on"
   );
 });
 
 test("turns the TV on from the screen, and offers YouTube once on", () => {
   assert.deepEqual(
-    describeTvControl({ control: "screen", state: off, settings }),
+    describeTvControl({ control: "screen", state: off, settings, copy: en }),
     { label: "TV screen, off, turn on", tooltip: "turn on", enabled: true }
   );
   assert.deepEqual(
-    describeTvControl({ control: "screen", state: on, settings }),
+    describeTvControl({ control: "screen", state: on, settings, copy: en }),
     {
       label: "TV screen, ch 02 · piano night, watch on YouTube",
       tooltip: "watch on YouTube ↗",
@@ -62,11 +68,11 @@ test("turns the TV on from the screen, and offers YouTube once on", () => {
 });
 
 test("labels the TV body with its state", () => {
-  assert.deepEqual(describeTv({ state: off, settings }), {
+  assert.deepEqual(describeTv({ state: off, settings, copy: en }), {
     label: "TV, off",
     tooltip: "tv · off",
   });
-  assert.deepEqual(describeTv({ state: on, settings }), {
+  assert.deepEqual(describeTv({ state: on, settings, copy: en }), {
     label: "TV, on, ch 02 · piano night",
     tooltip: "ch 02 · piano night",
   });

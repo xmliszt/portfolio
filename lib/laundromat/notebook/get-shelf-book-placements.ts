@@ -40,12 +40,17 @@ export function getShelfBookPlacements(
   const { position: p, size } = options.shelf;
   const boardTop = p.z + BOARD_THICKNESS;
   const shelfEnd = p.y + size.d - FIRST_BOOK_OFFSET;
-  const sizes = options.bookNumbers.map(
-    (number, index) => ({ number, ...BOOK_SIZES[index % BOOK_SIZES.length] })
-  );
+  const sizes = options.bookNumbers.map((number, index) => ({
+    number,
+    ...BOOK_SIZES[index % BOOK_SIZES.length],
+  }));
   const fitting = sizes.reduceRight<typeof sizes>((kept, book) => {
-    const used = kept.reduce((sum, { thickness }) => sum + thickness + BOOK_GAP, 0);
-    return p.y + FIRST_BOOK_OFFSET + used + book.thickness + options.lean <= shelfEnd
+    const used = kept.reduce(
+      (sum, { thickness }) => sum + thickness + BOOK_GAP,
+      0
+    );
+    return p.y + FIRST_BOOK_OFFSET + used + book.thickness + options.lean <=
+      shelfEnd
       ? [book, ...kept]
       : kept;
   }, []);
@@ -55,7 +60,8 @@ export function getShelfBookPlacements(
       previous === undefined
         ? p.y + FIRST_BOOK_OFFSET
         : previous.y - previous.lean + previous.thickness + BOOK_GAP;
-    const lean = index === fitting.length - 1 && fitting.length > 1 ? options.lean : 0;
+    const lean =
+      index === fitting.length - 1 && fitting.length > 1 ? options.lean : 0;
     return [
       ...placed,
       {

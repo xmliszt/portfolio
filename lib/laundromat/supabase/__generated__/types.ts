@@ -155,6 +155,7 @@ export type Database = {
           line_start: number;
           notebook_id: number;
           page: number;
+          report_count: number;
           script: string;
           sign_off: string | null;
         };
@@ -167,6 +168,7 @@ export type Database = {
           line_start: number;
           notebook_id: number;
           page: number;
+          report_count?: number;
           script: string;
           sign_off?: string | null;
         };
@@ -179,6 +181,7 @@ export type Database = {
           line_start?: number;
           notebook_id?: number;
           page?: number;
+          report_count?: number;
           script?: string;
           sign_off?: string | null;
         };
@@ -306,6 +309,7 @@ export type Database = {
           line_start: number;
           notebook_id: number;
           page: number;
+          report_count: number;
           script: string;
           sign_off: string | null;
         };

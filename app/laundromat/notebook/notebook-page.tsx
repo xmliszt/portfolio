@@ -1,5 +1,6 @@
 "use client";
 
+import { useLaundromatCopy } from "@/app/laundromat/i18n/use-laundromat-copy";
 import type { PageRow } from "@/lib/laundromat/notebook/layout-page-rows";
 import type { NotebookPage as NotebookPageSettings } from "@/lib/laundromat/scene-config";
 import type { NotebookScript } from "@/lib/laundromat/supabase/notebook-types";
@@ -42,6 +43,7 @@ type NotebookPageProps = {
 };
 
 export function NotebookPage(props: NotebookPageProps) {
+  const { copy } = useLaundromatCopy();
   const { settings, content, pitch } = props;
   const shading =
     props.side === "left"
@@ -59,7 +61,7 @@ export function NotebookPage(props: NotebookPageProps) {
       >
         <span className="h-px w-36 bg-[var(--lm-line)]" />
         <span className="font-[family-name:var(--lm-font-display)] text-[28px] text-[var(--lm-ink)]">
-          {`No. ${content.number}`}
+          {copy.notebook.number({ number: content.number })}
         </span>
         <span className="h-px w-36 bg-[var(--lm-line)]" />
       </div>
@@ -73,7 +75,7 @@ export function NotebookPage(props: NotebookPageProps) {
         style={{ boxShadow: shading }}
       >
         <span className="font-[family-name:var(--lm-font-display)] text-[22px] opacity-60">
-          {`No. ${content.number}`}
+          {copy.notebook.number({ number: content.number })}
         </span>
         <span className="text-[11px] opacity-50">{content.span}</span>
       </div>
@@ -110,13 +112,13 @@ export function NotebookPage(props: NotebookPageProps) {
         <button
           type="button"
           tabIndex={props.controls?.onNumber === undefined ? -1 : 0}
-          aria-label={`Page ${content.page}, go to another page`}
+          aria-label={copy.notebook.pageButtonLabel({ page: content.page })}
           disabled={props.controls?.onNumber === undefined}
           onClick={props.controls?.onNumber}
           className={cn(
             "absolute bottom-4 left-1/2 -translate-x-1/2 px-3 py-2",
             "font-[family-name:var(--lm-font-display)] text-[13px] text-[var(--lm-ink-pen)]/50 outline-none",
-            "underline-offset-4 enabled:cursor-pointer enabled:hover:underline focus-visible:outline-1 focus-visible:outline-dashed"
+            "underline-offset-4 focus-visible:outline-1 focus-visible:outline-dashed enabled:cursor-pointer enabled:hover:underline"
           )}
         >
           {content.page}
@@ -125,7 +127,11 @@ export function NotebookPage(props: NotebookPageProps) {
       {props.controls?.onCorner !== undefined && (
         <button
           type="button"
-          aria-label={props.side === "left" ? "Previous page" : "Next page"}
+          aria-label={
+            props.side === "left"
+              ? copy.notebook.previousPage
+              : copy.notebook.nextPage
+          }
           onClick={props.controls.onCorner}
           className={cn(
             "group absolute bottom-0 size-16 cursor-pointer outline-none",
@@ -156,6 +162,7 @@ type PageRowLineProps = {
 };
 
 function PageRowLine(props: PageRowLineProps) {
+  const { copy } = useLaundromatCopy();
   const { row, settings, pitch } = props;
   const top =
     settings.marginTop +
@@ -189,12 +196,12 @@ function PageRowLine(props: PageRowLineProps) {
             disabled={isReported}
             onClick={() => props.controls?.onReport(reportEntryId)}
             className={cn(
-              "absolute -right-12 cursor-pointer px-1.5 py-1 opacity-0 outline-none transition-opacity duration-200",
+              "absolute -right-12 cursor-pointer px-1.5 py-1 opacity-0 transition-opacity duration-200 outline-none",
               "group-hover:opacity-100 focus-visible:opacity-100 focus-visible:outline-1 focus-visible:outline-dashed",
               isReported && "opacity-100"
             )}
           >
-            {isReported ? "reported" : "report"}
+            {isReported ? copy.notebook.reported : copy.notebook.report}
           </button>
         )}
       </div>

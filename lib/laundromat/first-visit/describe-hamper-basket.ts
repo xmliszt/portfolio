@@ -1,11 +1,15 @@
+import type { LaundromatCopy } from "@/lib/laundromat/i18n/laundromat-copy";
+
 /** Return the basket's tooltip for `count` of `total` garments in it. */
 export function describeHamperBasket(options: {
   count: number;
   total: number;
+  copy: LaundromatCopy;
 }) {
-  if (options.count === 0) return "toss the clothes from the floor in here";
+  const copy = options.copy.firstVisit;
+  if (options.count === 0) return copy.basketEmpty;
   if (options.count < options.total) {
-    return `${options.count} of ${options.total} in · add more, or head to the door`;
+    return copy.basketPartial({ count: options.count, total: options.total });
   }
-  return "all in · head to the door";
+  return copy.basketFull;
 }

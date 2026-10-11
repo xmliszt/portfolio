@@ -9,7 +9,6 @@ const projection = { unit: 10, origin: { x: 100, y: 50 } };
 function buildGarment(options: { rotateDeg: number }): Garment {
   return {
     kind: "towel",
-    name: "towel",
     at: { x: 2, y: 2 },
     rotateDeg: options.rotateDeg,
     scale: { x: 1, y: 1 },

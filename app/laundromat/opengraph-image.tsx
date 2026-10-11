@@ -2,7 +2,7 @@ import { ImageResponse } from "next/og";
 
 import { sceneConfig } from "@/lib/laundromat/scene-config";
 
-export const alt = "Laundromat: a quiet laundromat in your browser";
+export const alt = "laundro.cafe: a quiet laundromat in your browser";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
@@ -74,7 +74,7 @@ export default function OpengraphImage() {
         </div>
         <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
           <div style={{ fontSize: 88, color: tokens.inkHi, letterSpacing: -2 }}>
-            Laundromat
+            laundro.cafe
           </div>
           <div style={{ fontSize: 30 }}>
             Do your laundry, play lo-fi on the TV, leave a note.

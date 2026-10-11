@@ -1,6 +1,7 @@
 import { useMemo, useState } from "react";
 
 import { HitTargetButton } from "@/app/laundromat/hit-target-button";
+import { useLaundromatCopy } from "@/app/laundromat/i18n/use-laundromat-copy";
 import type { SceneViews } from "@/app/laundromat/objects/scene-views";
 import { RoomDrawing } from "@/app/laundromat/room-drawing";
 import { SceneControlButton } from "@/app/laundromat/scene-control-button";
@@ -11,18 +12,19 @@ import { buildSceneLayout } from "@/lib/laundromat/build-scene-layout";
 import { describeCoffeeMachine } from "@/lib/laundromat/coffee/describe-coffee-machine";
 import { describeCoffeeSwitch } from "@/lib/laundromat/coffee/describe-coffee-switch";
 import { describeSceneObject } from "@/lib/laundromat/describe-scene-object";
+import { describeEntranceMat } from "@/lib/laundromat/laundry/describe-entrance-mat";
 import { describeMachine } from "@/lib/laundromat/laundry/describe-machine";
 import { describeMachineControl } from "@/lib/laundromat/laundry/describe-machine-control";
 import { formatRemainingTime } from "@/lib/laundromat/laundry/format-remaining-time";
 import type { BasketContents } from "@/lib/laundromat/laundry/get-basket-contents";
 import { getCycleMinutes } from "@/lib/laundromat/laundry/get-cycle-minutes";
+import { getDialAngleDeg } from "@/lib/laundromat/laundry/get-dial-angle-deg";
 import type { MachineStatus } from "@/lib/laundromat/laundry/get-machine-status";
 import type { SceneConfig, SceneObject } from "@/lib/laundromat/scene-config";
 import { describeTv } from "@/lib/laundromat/tv/describe-tv";
 import { describeTvControl } from "@/lib/laundromat/tv/describe-tv-control";
 
 const WORKBENCH_UNIT_PX = 40;
-const DIAL_DEGREES_PER_DETENT = 60;
 const MS_PER_MINUTE = 60_000;
 const KNOB_CONTROLS: LaidOutControl["control"][] = ["dial", "tuner", "volume"];
 const WORKBENCH_SHELF_BOOKS = [1, 2, 3, 4, 5, 6, 7, 8, 9];
@@ -42,6 +44,7 @@ type ObjectWorkbenchProps = {
 };
 
 export function ObjectWorkbench(props: ObjectWorkbenchProps) {
+  const { copy } = useLaundromatCopy();
   const { config, object } = props;
   const [hoveredId, setHoveredId] = useState<string>();
   const [cycleMinutes, setCycleMinutes] = useState<{
@@ -104,32 +107,40 @@ export function ObjectWorkbench(props: ObjectWorkbenchProps) {
             [object.id]: {
               status: machine.status,
               readout: machine.readout,
-              dialAngleDeg:
-                -90 + machine.cycle.detent * DIAL_DEGREES_PER_DETENT,
+              dialAngleDeg: getDialAngleDeg({
+                detent: machine.cycle.detent,
+                detentCount: config.machines.cycleMinutes.length,
+              }),
               doorOpen: props.doorOpen,
             },
           },
     tv: { state: appliances.tv, noSignal: false },
     coffee: appliances.coffee,
     basket: props.basket,
+    matReady: describeEntranceMat({ basket: props.basket, copy }).ready,
     shelfBookNumbers: WORKBENCH_SHELF_BOOKS,
     notebookNumber: config.details.notebook.coverNumber,
   };
 
   function describeObject() {
     if (machine !== undefined) {
-      return describeMachine({ machine: machine.ref, status: machine.status });
+      return describeMachine({
+        machine: machine.ref,
+        status: machine.status,
+        copy,
+      });
     }
     switch (object.kind) {
       case "tv":
         return describeTv({
           state: appliances.tv,
           settings: config.details.tv,
+          copy,
         });
       case "coffee-machine":
-        return describeCoffeeMachine(appliances.coffee);
+        return describeCoffeeMachine({ phase: appliances.coffee, copy });
       default:
-        return describeSceneObject(object);
+        return describeSceneObject({ object, copy });
     }
   }
 
@@ -145,15 +156,17 @@ export function ObjectWorkbench(props: ObjectWorkbenchProps) {
               minutes: machine.cycle.minutes,
               nextMinutes: machine.cycle.next,
               notifications: "unsupported",
+              copy,
             });
       case "tv":
         return describeTvControl({
           control: control.control,
           state: appliances.tv,
           settings: config.details.tv,
+          copy,
         });
       case "coffee":
-        return describeCoffeeSwitch(appliances.coffee);
+        return describeCoffeeSwitch({ phase: appliances.coffee, copy });
       default: {
         const unhandled: never = control;
         return unhandled;
@@ -233,6 +246,7 @@ export function ObjectWorkbench(props: ObjectWorkbenchProps) {
             dimAmount={0}
             views={views}
             hour={props.hour}
+            lampSwitch={undefined}
             config={config}
           />
           {laidOut !== undefined && description !== undefined && (

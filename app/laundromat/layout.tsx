@@ -1,10 +1,16 @@
 import { Metadata, Viewport } from "next";
 import { Gowun_Batang, IBM_Plex_Mono } from "next/font/google";
 
+import { getCursorCss } from "@/lib/laundromat/get-cursor-css";
 import { LAUNDROMAT_ORIGIN } from "@/lib/laundromat/hosts";
+import { en } from "@/lib/laundromat/i18n/copy/en";
+import { getLaundromatLocaleMetadata } from "@/lib/laundromat/i18n/get-laundromat-locale-metadata";
+import { DEFAULT_LAUNDROMAT_LOCALE } from "@/lib/laundromat/i18n/laundromat-locales";
 import { sceneConfig } from "@/lib/laundromat/scene-config";
 import { toCssVariables } from "@/lib/laundromat/to-css-variables";
 import { cn } from "@/lib/utils";
+
+import { LaundromatCursor } from "./laundromat-cursor";
 
 const fontDisplay = Gowun_Batang({
   subsets: ["latin"],
@@ -18,29 +24,17 @@ const fontMono = IBM_Plex_Mono({
   variable: "--lm-font-mono",
 });
 
-const title = "Laundromat";
-const description =
-  "A quiet laundromat in your browser. Do your laundry, play lo-fi on the TV, and leave a note in the shared notebook.";
-
 export const metadata: Metadata = {
+  ...getLaundromatLocaleMetadata(DEFAULT_LAUNDROMAT_LOCALE),
   metadataBase: new URL(LAUNDROMAT_ORIGIN),
-  title,
-  description,
-  alternates: { canonical: LAUNDROMAT_ORIGIN },
-  openGraph: {
-    title,
-    description,
-    url: LAUNDROMAT_ORIGIN,
-    siteName: title,
-    locale: "en_US",
-    type: "website",
-  },
-  twitter: {
-    card: "summary_large_image",
-    title,
-    description,
-    creator: "@xmliszt",
-  },
+  title: { default: en.site.title, template: `%s · ${en.site.name}` },
+  applicationName: en.site.name,
+  appleWebApp: { title: en.site.name },
+  authors: [{ name: "Li Yuxuan", url: "https://liyuxuan.dev/about" }],
+  creator: "Li Yuxuan",
+  publisher: "Li Yuxuan",
+  category: "productivity",
+  robots: { index: true, follow: true },
 };
 
 export const viewport: Viewport = {
@@ -64,8 +58,9 @@ export default function LaundromatLayout(props: LaundromatLayoutProps) {
         fontMono.variable
       )}
     >
-      <style>{`[data-laundromat-root] { ${toCssVariables(sceneConfig.tokens)} }`}</style>
+      <style>{`[data-laundromat-root] { ${toCssVariables(sceneConfig.tokens)} }\n${getCursorCss(sceneConfig.tokens)}`}</style>
       {props.children}
+      <LaundromatCursor />
     </div>
   );
 }

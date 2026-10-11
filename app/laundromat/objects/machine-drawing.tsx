@@ -1,16 +1,29 @@
 import type { LaidOutObject } from "@/lib/laundromat/build-scene-layout";
+import { getDialAngleDeg } from "@/lib/laundromat/laundry/get-dial-angle-deg";
 import type { SceneConfig } from "@/lib/laundromat/scene-config";
 import { toSvgPoints } from "@/lib/laundromat/to-svg-points";
 import { cn } from "@/lib/utils";
 
+import { DrumLaundry } from "./drum-laundry";
+import { MachineDoorSwing } from "./machine-door-swing";
 import { partStroke } from "./part-stroke";
 import type { MachineView } from "./scene-views";
 
 const DRUM_RIBS = [0, 120, 240];
-const LOAD_BLOBS = [
-  "M -7 3 C -6 -1 -1 -2 1 1 C 4 -2 8 0 7 4 C 5 8 -5 8 -7 3 Z",
-  "M -3 -5 C 0 -8 5 -6 4 -2 C 3 1 -2 1 -3 -1 Z",
-];
+
+function getRingPath(options: {
+  center: { x: number; y: number };
+  outerRadius: number;
+  innerRadius: number;
+}) {
+  const { center } = options;
+  return [options.outerRadius, options.innerRadius]
+    .map(
+      (radius) =>
+        `M ${center.x - radius} ${center.y} a ${radius} ${radius} 0 1 0 ${radius * 2} 0 a ${radius} ${radius} 0 1 0 ${-radius * 2} 0 Z`
+    )
+    .join(" ");
+}
 
 type MachineDrawingProps = {
   laidOut: LaidOutObject;
@@ -26,9 +39,12 @@ export function MachineDrawing(props: MachineDrawingProps) {
   const { details, view } = props;
   const isDryer = object.kind === "dryer";
   const { panel, dial, readout, start, band, door, body } = face.rects;
-  const isRunning = view.status.kind === "running";
-  const isLive = isRunning || view.status.kind === "done";
-  const hasLaundry = isLive || view.status.kind === "loaded";
+  const isSomeoneElses = view.status.kind === "occupied";
+  const isRunning =
+    view.status.kind === "running" ||
+    (view.status.kind === "occupied" && view.status.remainingMs > 0);
+  const isLive = view.status.kind === "running" || view.status.kind === "done";
+  const hasLaundry = isLive || isSomeoneElses || view.status.kind === "loaded";
   function isHighlighted(part: string) {
     return props.highlightedId === `${object.id}-${part}`;
   }
@@ -43,9 +59,9 @@ export function MachineDrawing(props: MachineDrawingProps) {
   };
   const doorRadius = door.width / 2;
   const hingeX = door.x - 1.5;
-  const doorAngle = (view.doorOpen ? details.doorOpenDeg : 0) * (Math.PI / 180);
-  const doorSwing = `translate(${hingeX}px, 0px) matrix(${Math.cos(doorAngle) - Math.sin(doorAngle)}, ${Math.sin(doorAngle)}, 0, 1, 0, 0) translate(${-hingeX}px, 0px)`;
-  const ticks = props.machineCycles.map((_, index) => -90 + index * 60);
+  const ticks = props.machineCycles.map((_, detent) =>
+    getDialAngleDeg({ detent, detentCount: props.machineCycles.length })
+  );
 
   return (
     <g data-machine-status={view.status.kind} strokeLinejoin="round">
@@ -153,7 +169,7 @@ export function MachineDrawing(props: MachineDrawingProps) {
             "stroke-none font-[family-name:var(--lm-font-mono)] tabular-nums",
             isLive
               ? "fill-[var(--lm-accent)]"
-              : view.status.kind === "loaded"
+              : view.status.kind === "loaded" || isSomeoneElses
                 ? "fill-[var(--lm-ink-hi)]"
                 : "fill-[var(--lm-ink)]"
           )}
@@ -292,12 +308,54 @@ export function MachineDrawing(props: MachineDrawingProps) {
           r={doorRadius - 4}
           className="fill-[var(--lm-recess)] stroke-[var(--lm-detail)]"
         />
-        <g
-          data-lm-motion
-          style={{
-            transform: doorSwing,
-            transition: `transform ${details.doorSwingMs}ms cubic-bezier(0.2, 0.8, 0.2, 1)`,
-          }}
+        <g transform={`translate(${doorCenter.x} ${doorCenter.y})`}>
+          {isDryer && isRunning && (
+            <circle
+              r={doorRadius - 6}
+              className="fill-[var(--lm-accent)] stroke-none"
+              opacity={details.dryerGlow}
+            />
+          )}
+          {hasLaundry && (
+            <DrumLaundry
+              radius={doorRadius - 7}
+              running={isRunning}
+              wet={!isDryer}
+              secondsPerTurn={details.drumSecondsPerTurn}
+            />
+          )}
+          <g
+            data-lm-motion
+            style={
+              isRunning
+                ? {
+                    animation: `lm-spin ${details.drumSecondsPerTurn}s linear infinite`,
+                  }
+                : undefined
+            }
+          >
+            <circle
+              r={doorRadius - 7}
+              className="fill-none stroke-[var(--lm-detail)]"
+              strokeWidth={0.75}
+              strokeDasharray="1.5 2.5"
+            />
+            {DRUM_RIBS.map((angle) => (
+              <path
+                key={angle}
+                d={`M -1.6 ${-(doorRadius - 7)} L 0 ${-(doorRadius - 10.5)} L 1.6 ${-(doorRadius - 7)}`}
+                transform={`rotate(${angle})`}
+                className="fill-[var(--lm-face)] stroke-[var(--lm-detail)]"
+                strokeWidth={0.75}
+              />
+            ))}
+          </g>
+        </g>
+        <MachineDoorSwing
+          hingeX={hingeX}
+          open={view.doorOpen}
+          openDeg={details.doorOpenDeg}
+          swingMs={details.doorSwingMs}
         >
           {[0.22, 0.78].map((at) => (
             <rect
@@ -311,10 +369,13 @@ export function MachineDrawing(props: MachineDrawingProps) {
               strokeWidth={0.75}
             />
           ))}
-          <circle
-            cx={doorCenter.x}
-            cy={doorCenter.y}
-            r={doorRadius}
+          <path
+            d={getRingPath({
+              center: doorCenter,
+              outerRadius: doorRadius,
+              innerRadius: doorRadius - 4.5,
+            })}
+            fillRule="evenodd"
             className={cn(
               "fill-[var(--lm-face-top)]",
               isLive
@@ -340,60 +401,14 @@ export function MachineDrawing(props: MachineDrawingProps) {
             cy={doorCenter.y}
             r={doorRadius - 4.5}
             className="fill-[var(--lm-recess)] stroke-[var(--lm-detail)]"
+            fillOpacity={details.tumbleOpacity}
           />
-          <g transform={`translate(${doorCenter.x} ${doorCenter.y})`}>
-            {isDryer && isRunning && (
-              <circle
-                r={doorRadius - 6}
-                className="fill-[var(--lm-accent)] stroke-none"
-                opacity={details.dryerGlow}
-              />
-            )}
-            <g
-              data-lm-motion
-              style={
-                isRunning
-                  ? {
-                      animation: `lm-spin ${details.drumSecondsPerTurn}s linear infinite`,
-                    }
-                  : undefined
-              }
-            >
-              <circle
-                r={doorRadius - 7}
-                className="fill-none stroke-[var(--lm-detail)]"
-                strokeWidth={0.75}
-                strokeDasharray="1.5 2.5"
-              />
-              {DRUM_RIBS.map((angle) => (
-                <path
-                  key={angle}
-                  d={`M -1.6 ${-(doorRadius - 7)} L 0 ${-(doorRadius - 10.5)} L 1.6 ${-(doorRadius - 7)}`}
-                  transform={`rotate(${angle})`}
-                  className="fill-[var(--lm-face)] stroke-[var(--lm-detail)]"
-                  strokeWidth={0.75}
-                />
-              ))}
-              {hasLaundry && (
-                <g
-                  transform={`translate(0 ${doorRadius * 0.28})`}
-                  opacity={details.tumbleOpacity}
-                  className="fill-[var(--lm-detail)] stroke-[var(--lm-line)]"
-                  strokeWidth={0.75}
-                >
-                  {LOAD_BLOBS.map((blob) => (
-                    <path key={blob} d={blob} />
-                  ))}
-                </g>
-              )}
-            </g>
-            <path
-              d={`M ${-(doorRadius - 9)} -2 A ${doorRadius - 9} ${doorRadius - 9} 0 0 1 -2 ${-(doorRadius - 9)}`}
-              className="fill-none stroke-[var(--lm-ink-hi)]"
-              strokeOpacity={0.18}
-              strokeWidth={1}
-            />
-          </g>
+          <path
+            d={`M ${doorCenter.x - (doorRadius - 9)} ${doorCenter.y - 2} A ${doorRadius - 9} ${doorRadius - 9} 0 0 1 ${doorCenter.x - 2} ${doorCenter.y - (doorRadius - 9)}`}
+            className="fill-none stroke-[var(--lm-ink-hi)]"
+            strokeOpacity={0.18}
+            strokeWidth={1}
+          />
           {isHighlighted("door") && !isLive && (
             <circle
               cx={doorCenter.x}
@@ -403,7 +418,7 @@ export function MachineDrawing(props: MachineDrawingProps) {
               strokeOpacity={0.4}
             />
           )}
-        </g>
+        </MachineDoorSwing>
       </g>
     </g>
   );

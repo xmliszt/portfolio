@@ -9,6 +9,7 @@ import { ClockDrawing } from "./clock-drawing";
 import { CoffeeMachineDrawing } from "./coffee-machine-drawing";
 import { CounterDrawing } from "./counter-drawing";
 import { MachineDrawing } from "./machine-drawing";
+import { MatDrawing } from "./mat-drawing";
 import { MugDrawing } from "./mug-drawing";
 import { NotebookDrawing } from "./notebook-drawing";
 import { PlantDrawing } from "./plant-drawing";
@@ -45,11 +46,7 @@ export function SceneObjectDrawing(props: SceneObjectDrawingProps) {
           laidOut={laidOut}
           highlightedId={props.highlightedId}
           view={view}
-          machineCycles={
-            object.kind === "washer"
-              ? config.machines.washerCycleMinutes
-              : config.machines.dryerCycleMinutes
-          }
+          machineCycles={config.machines.cycleMinutes}
           details={details.machine}
         />
       );
@@ -106,9 +103,7 @@ export function SceneObjectDrawing(props: SceneObjectDrawingProps) {
     case "stool":
       return <StoolDrawing {...shared} />;
     case "notebook":
-      return (
-        <NotebookDrawing {...shared} coverNumber={views.notebookNumber} />
-      );
+      return <NotebookDrawing {...shared} coverNumber={views.notebookNumber} />;
     case "shelf":
       return (
         <ShelfDrawing
@@ -124,6 +119,8 @@ export function SceneObjectDrawing(props: SceneObjectDrawingProps) {
       );
     case "basket":
       return <BasketDrawing {...shared} contents={views.basket} />;
+    case "mat":
+      return <MatDrawing {...shared} ready={views.matReady} />;
     case "counter":
       return <CounterDrawing {...shared} />;
     default: {

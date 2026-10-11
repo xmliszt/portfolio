@@ -10,7 +10,9 @@ export function useNotebookShelf() {
   const [shelf, setShelf] = useState<ShelfResult>();
 
   const refresh = useCallback(async () => {
-    const next = await loadShelf().catch((): ShelfResult => ({ kind: "offline" }));
+    const next = await loadShelf().catch(
+      (): ShelfResult => ({ kind: "offline" })
+    );
     setShelf(next);
   }, []);
 

@@ -1,3 +1,5 @@
+import type { LaundromatLocale } from "@/lib/laundromat/i18n/laundromat-locales";
+
 const MONTHS = [
   "jan",
   "feb",
@@ -13,8 +15,17 @@ const MONTHS = [
   "dec",
 ];
 
-/** Return the local day of `timestampMs` as `oct 8`. */
-export function formatEntryDay(timestampMs: number) {
-  const date = new Date(timestampMs);
+/** Return the local day of `timestampMs` in `locale`: `oct 8` in English, the locale's short month and day otherwise. */
+export function formatEntryDay(options: {
+  timestampMs: number;
+  locale: LaundromatLocale;
+}) {
+  if (options.locale !== "en") {
+    return new Intl.DateTimeFormat(options.locale, {
+      month: "short",
+      day: "numeric",
+    }).format(options.timestampMs);
+  }
+  const date = new Date(options.timestampMs);
   return `${MONTHS[date.getMonth()]} ${date.getDate()}`;
 }

@@ -5,9 +5,17 @@ import type { DialConfig } from "dialkit";
 import { DialRoot, useDialKit, useDialKitController } from "dialkit";
 import { useRouter } from "next/navigation";
 
+import { LaundromatEntry } from "@/app/laundromat/laundromat-entry";
 import { LaundromatScene } from "@/app/laundromat/laundromat-scene";
+import { createFakeRoomSource } from "@/app/laundromat/realtime/create-fake-room-source";
+import { RoomSourceContext } from "@/app/laundromat/realtime/room-source-context";
+import { SoundBoardProvider } from "@/app/laundromat/sound/sound-board-provider";
+import type { BedroomConfig } from "@/lib/laundromat/first-visit/bedroom-config";
+import { bedroomConfig } from "@/lib/laundromat/first-visit/bedroom-config";
 import { getTimeOfDay } from "@/lib/laundromat/get-time-of-day";
 import type { BasketContents } from "@/lib/laundromat/laundry/get-basket-contents";
+import { detectScript } from "@/lib/laundromat/notebook/detect-script";
+import type { RoomPresence } from "@/lib/laundromat/realtime/room-presence";
 import type { SceneConfig } from "@/lib/laundromat/scene-config";
 import { sceneConfig } from "@/lib/laundromat/scene-config";
 import { toCssVariables } from "@/lib/laundromat/to-css-variables";
@@ -21,6 +29,8 @@ import "dialkit/styles.css";
 const PANEL_OPTIONS = { persist: true, defaultCollapsed: true };
 const SNAP_OPTIONS = ["0.05", "0.1", "0.25", "0.5", "1"];
 const COPIED_NOTICE_MS = 2000;
+const FAKE_NOTEBOOKS_COOKIE = "laundromat_fake_notebooks";
+const VIEWS = ["laundromat", "hamper room"];
 
 function formatHour(hour: number) {
   const minutes = Math.round(hour * 60) % (24 * 60);
@@ -96,7 +106,7 @@ const cameraDials = {
 
 const lightDials = {
   poolIntensity: [light.poolIntensity, 0, 2, 0.01],
-  lampNoonRatio: [light.lampNoonRatio, 0, 1, 0.01],
+  lampOnDaylight: [light.lampOnDaylight, 0, 1, 0.01],
   daylightPatchStrength: [light.daylightPatchStrength, 0, 1, 0.01],
   lampColor: light.lampColor,
   daylightColor: light.daylightColor,
@@ -158,7 +168,7 @@ const objectDials = {
   coffee: {
     brewSeconds: [details.coffee.brewSeconds, 2, 180, 1],
     hotMinutes: [details.coffee.hotMinutes, 0.1, 30, 0.1],
-    dripMs: [details.coffee.dripMs, 200, 3000, 10],
+    streamFlowMs: [details.coffee.streamFlowMs, 60, 2000, 10],
     steamOpacity: [details.coffee.steamOpacity, 0, 1, 0.01],
     steamRiseSeconds: [details.coffee.steamRiseSeconds, 0.5, 8, 0.1],
     _collapsed: true,
@@ -230,8 +240,86 @@ const workbenchDials = {
   basket: { type: "select", options: WORKBENCH_BASKETS, default: "dirty" },
 } satisfies DialConfig;
 
+const { garments, stage: _stage, motion, ...bedroomLayout } = bedroomConfig;
+
+const hamperRoomDials = {
+  layout: { ...bedroomLayout, _collapsed: true },
+  garments: Object.fromEntries(
+    garments.map((garment) => [
+      garment.kind,
+      {
+        x: garment.at.x,
+        y: garment.at.y,
+        rotateDeg: garment.rotateDeg,
+        scaleX: garment.scale.x,
+        scaleY: garment.scale.y,
+        _collapsed: true,
+      },
+    ])
+  ),
+  motion: { ...motion, _collapsed: true },
+} satisfies DialConfig;
+
+const viewDials = {
+  room: { type: "select", options: VIEWS, default: "laundromat" },
+  replay: { type: "action", label: "replay hamper room" },
+  fakeNotebooks: false,
+} satisfies DialConfig;
+
+const realtimeDials = {
+  othersWashing: [0, 0, 5, 1],
+  othersDrying: [0, 0, 5, 1],
+  someoneWriting: false,
+  writerDraft: {
+    type: "text",
+    default: "the dryer on the end is my favourite",
+  },
+} satisfies DialConfig;
+
+const FAKE_CYCLE_MS = 25 * 60_000;
+const FAKE_START_GAP_MS = 4 * 60_000;
+
+function buildFakePeers(options: {
+  othersWashing: number;
+  othersDrying: number;
+  someoneWriting: boolean;
+  now: number;
+}) {
+  const loads = [
+    ...Array.from({ length: options.othersWashing }, () => "washer" as const),
+    ...Array.from({ length: options.othersDrying }, () => "dryer" as const),
+  ];
+  const peers: RoomPresence[] = loads.map((kind, index) => {
+    const indexInKind = loads
+      .slice(0, index)
+      .filter((other) => other === kind).length;
+    return {
+      sessionId: `fake-${kind}-${indexInKind}`,
+      visitorId: `fake-${kind}-${indexInKind}`,
+      load: {
+        kind,
+        startedAt: options.now - (indexInKind + 1) * FAKE_START_GAP_MS,
+        durationMs: FAKE_CYCLE_MS,
+      },
+    };
+  });
+  return options.someoneWriting
+    ? [
+        ...peers,
+        {
+          sessionId: FAKE_WRITER_ID,
+          visitorId: FAKE_WRITER_ID,
+          writingSince: options.now - 60_000,
+        },
+      ]
+    : peers;
+}
+
+const FAKE_WRITER_ID = "fake-writer";
+
 const exportDials = {
   copyConfig: { type: "action", label: "copy config json" },
+  copyHamperRoom: { type: "action", label: "copy hamper room json" },
 } satisfies DialConfig;
 
 export default function LaundromatLab() {
@@ -239,6 +327,7 @@ export default function LaundromatLab() {
   const [deviceHour, setDeviceHour] = useState(getDeviceHour);
   const [isPlayingDay, setIsPlayingDay] = useState(false);
   const [isCopied, setIsCopied] = useState(false);
+  const [replayCount, setReplayCount] = useState(0);
 
   const tokens = useDialKit("Tokens", sceneConfig.tokens, {
     id: "laundromat-lab-tokens",
@@ -274,10 +363,43 @@ export default function LaundromatLab() {
     id: "laundromat-lab-workbench",
     ...PANEL_OPTIONS,
   });
+  const view = useDialKit("View", viewDials, {
+    id: "laundromat-lab-view",
+    persist: true,
+    onAction: () => setReplayCount((count) => count + 1),
+  });
+  const realtime = useDialKit("Realtime", realtimeDials, {
+    id: "laundromat-lab-realtime",
+    ...PANEL_OPTIONS,
+  });
+  const [fakeRoom] = useState(() => createFakeRoomSource());
+  const { othersWashing, othersDrying, someoneWriting, writerDraft } = realtime;
+  useEffect(() => {
+    fakeRoom.setPeers(
+      buildFakePeers({
+        othersWashing,
+        othersDrying,
+        someoneWriting,
+        now: Date.now(),
+      })
+    );
+  }, [fakeRoom, othersWashing, othersDrying, someoneWriting]);
+  useEffect(() => {
+    if (!someoneWriting) return;
+    fakeRoom.setDraft({
+      sessionId: FAKE_WRITER_ID,
+      text: writerDraft,
+      script: detectScript(writerDraft),
+    });
+  }, [fakeRoom, someoneWriting, writerDraft]);
+  const hamperRoom = useDialKit("Hamper room", hamperRoomDials, {
+    id: "laundromat-lab-hamper-room",
+    ...PANEL_OPTIONS,
+  });
   useDialKit("Export", exportDials, {
     id: "laundromat-lab-export",
     defaultCollapsed: true,
-    onAction: handleCopyConfig,
+    onAction: handleCopy,
   });
   const {
     values: timeValues,
@@ -343,6 +465,35 @@ export default function LaundromatLab() {
     } satisfies SceneConfig;
   }, [tokens, lightValues, cameraValues, placement, skyValues, objectValues]);
 
+  const bedroom = useMemo(() => {
+    const { _collapsed, ...layout } = hamperRoom.layout;
+    const { _collapsed: _motionCollapsed, ...motionValues } = hamperRoom.motion;
+    return {
+      ...bedroomConfig,
+      ...layout,
+      garments: bedroomConfig.garments.map((garment) => {
+        const dials = hamperRoom.garments[garment.kind];
+        return {
+          ...garment,
+          at: { x: dials.x, y: dials.y },
+          rotateDeg: dials.rotateDeg,
+          scale: { x: dials.scaleX, y: dials.scaleY },
+        };
+      }),
+      motion: motionValues,
+    } satisfies BedroomConfig;
+  }, [hamperRoom]);
+
+  const { fakeNotebooks } = view;
+  const [sceneKey, setSceneKey] = useState(0);
+  useEffect(() => {
+    document.cookie = `${FAKE_NOTEBOOKS_COOKIE}=${fakeNotebooks ? "1" : "0"}; path=/; samesite=lax`;
+    setSceneKey((key) => key + 1);
+    return () => {
+      document.cookie = `${FAKE_NOTEBOOKS_COOKIE}=0; path=/; samesite=lax`;
+    };
+  }, [fakeNotebooks]);
+
   useEffect(() => {
     const interval = window.setInterval(
       () => setDeviceHour(getDeviceHour()),
@@ -389,8 +540,9 @@ export default function LaundromatLab() {
     }
   }
 
-  async function handleCopyConfig() {
-    await navigator.clipboard.writeText(JSON.stringify(config, null, 2));
+  async function handleCopy(action: string) {
+    const value = action === "copyHamperRoom" ? bedroom : config;
+    await navigator.clipboard.writeText(JSON.stringify(value, null, 2));
     setIsCopied(true);
   }
 
@@ -443,12 +595,27 @@ export default function LaundromatLab() {
           {isCopied ? "config copied" : ""}
         </p>
       </div>
-      <div className="min-h-0 min-w-0">
-        <LaundromatScene
-          config={config}
-          hourOverride={timeValues.override ? timeValues.hour : undefined}
-        />
-      </div>
+      <SoundBoardProvider>
+        <RoomSourceContext.Provider value={fakeRoom.source}>
+          <div className="min-h-0 min-w-0">
+            {view.room === "hamper room" ? (
+              <LaundromatEntry
+                key={`${replayCount}-${sceneKey}`}
+                config={config}
+                bedroom={bedroom}
+                hourOverride={timeValues.override ? timeValues.hour : undefined}
+                ignoreArrivedFlag
+              />
+            ) : (
+              <LaundromatScene
+                key={sceneKey}
+                config={config}
+                hourOverride={timeValues.override ? timeValues.hour : undefined}
+              />
+            )}
+          </div>
+        </RoomSourceContext.Provider>
+      </SoundBoardProvider>
       <DialRoot position="top-right" theme="dark" />
     </div>
   );

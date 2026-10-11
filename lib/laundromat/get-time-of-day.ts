@@ -25,7 +25,7 @@ function getSky(options: { hour: number; sky: SceneConfig["sky"] }) {
 
 export type TimeOfDay = ReturnType<typeof getTimeOfDay>;
 
-/** Return the sky colours, sun, night and lamp levels of the room at fractional `hour` (0–24, wrapped). */
+/** Return the sky colours, `daylight`, `nightOpacity`, `sun`, `isLampOn`, `lampIntensity`, `daylightPatchOpacity` and `daylightPatchColor` of the room at fractional `hour` (0–24, wrapped). */
 export function getTimeOfDay(options: { hour: number; config: SceneConfig }) {
   const { sky, light } = options.config;
   const hour = ((options.hour % 24) + 24) % 24;
@@ -37,6 +37,7 @@ export function getTimeOfDay(options: { hour: number; config: SceneConfig }) {
   const sunProgress =
     (hour - sky.sunriseHour) / (sky.sunsetHour - sky.sunriseHour);
   const sunElevation = isSunUp ? Math.sin(Math.PI * sunProgress) : 0;
+  const isLampOn = daylight < light.lampOnDaylight;
   return {
     hour,
     ...getSky({ hour, sky }),
@@ -53,8 +54,13 @@ export function getTimeOfDay(options: { hour: number; config: SceneConfig }) {
           }),
         }
       : undefined,
-    lampIntensity:
-      light.poolIntensity * (1 - (1 - light.lampNoonRatio) * sunElevation),
+    isLampOn,
+    lampIntensity: isLampOn ? light.poolIntensity * (1 - daylight) : 0,
     daylightPatchOpacity: light.daylightPatchStrength * daylight,
+    daylightPatchColor: mixHexColors({
+      from: sky.sunWarmColor,
+      to: light.daylightColor,
+      amount: smoothstep(sunElevation * 2.5),
+    }),
   };
 }

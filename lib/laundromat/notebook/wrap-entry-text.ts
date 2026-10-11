@@ -17,37 +17,32 @@ function splitGraphemes(text: string) {
 }
 
 function breakToken(options: WrapEntryTextOptions) {
-  return splitGraphemes(options.text).reduce<WrapState>(
-    (state, grapheme) => {
-      const candidate = state.line + grapheme;
-      if (state.line === "" || options.measure(candidate) <= options.maxWidthPx) {
-        return { lines: state.lines, line: candidate };
-      }
-      return { lines: [...state.lines, state.line], line: grapheme };
-    },
-    EMPTY_WRAP
-  );
+  return splitGraphemes(options.text).reduce<WrapState>((state, grapheme) => {
+    const candidate = state.line + grapheme;
+    if (state.line === "" || options.measure(candidate) <= options.maxWidthPx) {
+      return { lines: state.lines, line: candidate };
+    }
+    return { lines: [...state.lines, state.line], line: grapheme };
+  }, EMPTY_WRAP);
 }
 
 function wrapParagraph(options: WrapEntryTextOptions) {
   const tokens = options.text.match(TOKEN_PATTERN) ?? [];
-  const wrapped = tokens.reduce<WrapState>(
-    (state, token) => {
-      const isSpace = /^\s+$/.test(token);
-      const candidate = state.line + token;
-      if (options.measure(candidate.trimEnd()) <= options.maxWidthPx) {
-        return { lines: state.lines, line: candidate };
-      }
-      if (isSpace) return { lines: [...state.lines, state.line], line: "" };
-      const lines = state.line === "" ? state.lines : [...state.lines, state.line];
-      if (options.measure(token) > options.maxWidthPx) {
-        const broken = breakToken({ ...options, text: token });
-        return { lines: [...lines, ...broken.lines], line: broken.line };
-      }
-      return { lines, line: token };
-    },
-    EMPTY_WRAP
-  );
+  const wrapped = tokens.reduce<WrapState>((state, token) => {
+    const isSpace = /^\s+$/.test(token);
+    const candidate = state.line + token;
+    if (options.measure(candidate.trimEnd()) <= options.maxWidthPx) {
+      return { lines: state.lines, line: candidate };
+    }
+    if (isSpace) return { lines: [...state.lines, state.line], line: "" };
+    const lines =
+      state.line === "" ? state.lines : [...state.lines, state.line];
+    if (options.measure(token) > options.maxWidthPx) {
+      const broken = breakToken({ ...options, text: token });
+      return { lines: [...lines, ...broken.lines], line: broken.line };
+    }
+    return { lines, line: token };
+  }, EMPTY_WRAP);
   return [...wrapped.lines, wrapped.line].map((line) => line.trimEnd());
 }
 

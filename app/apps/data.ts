@@ -216,12 +216,12 @@ export type AppsListEntry = {
 const webApps: AppsListEntry[] = [
   {
     id: "laundromat",
-    name: "Laundromat",
+    name: "laundro.cafe",
     subtitle: "A quiet laundromat in your browser",
     icon: {
       light: "/apps/laundromat-icon.svg",
       dark: "/apps/laundromat-icon.svg",
-      alt: "Laundromat Icon",
+      alt: "laundro.cafe icon",
     },
     href: LAUNDROMAT_ORIGIN,
   },

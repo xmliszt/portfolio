@@ -5,6 +5,7 @@ import type { TegakiBundle } from "tegaki";
 import { TegakiRenderer } from "tegaki/react";
 
 import type { NotebookScript } from "@/lib/laundromat/supabase/notebook-types";
+import { cn } from "@/lib/utils";
 
 import { loadTegakiFont } from "./load-tegaki-font";
 
@@ -56,7 +57,7 @@ export function InkedLine(props: InkedLineProps) {
       fallbackFont={props.fontFamily}
       time={{ mode: "uncontrolled", speed: props.speed }}
       onComplete={onComplete}
-      className={props.className}
+      className={cn("block", props.className)}
     >
       {props.text}
     </TegakiRenderer>

@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 
+import { LAUNDROMAT_LOCALE_COOKIE } from "@/lib/laundromat/i18n/laundromat-locales";
+import { resolveLaundromatLocale } from "@/lib/laundromat/i18n/resolve-laundromat-locale";
 import { resolveLaundromatRequest } from "@/lib/laundromat/resolve-laundromat-request";
 
 export function proxy(request: NextRequest) {
@@ -7,6 +9,10 @@ export function proxy(request: NextRequest) {
     hostname: request.headers.get("host")?.split(":", 1).at(0) ?? "",
     pathname: request.nextUrl.pathname,
     search: request.nextUrl.search,
+    locale: resolveLaundromatLocale({
+      cookieLocale: request.cookies.get(LAUNDROMAT_LOCALE_COOKIE)?.value,
+      acceptLanguage: request.headers.get("accept-language") ?? undefined,
+    }),
   });
   switch (resolution.kind) {
     case "rewrite": {
@@ -15,7 +21,7 @@ export function proxy(request: NextRequest) {
       return NextResponse.rewrite(url);
     }
     case "redirect":
-      return NextResponse.redirect(resolution.url);
+      return NextResponse.redirect(resolution.url, 308);
     case "pass":
       return NextResponse.next();
     default: {
@@ -29,7 +35,13 @@ export const config = {
   matcher: [
     {
       source: "/((?!api/|_next/|.*\\..*).*)",
-      has: [{ type: "host", value: "laundromat\\.(liyuxuan\\.dev|localhost)" }],
+      has: [
+        {
+          type: "host",
+          value:
+            "((www\\.)?laundro\\.cafe|laundromat\\.(liyuxuan\\.dev|localhost))",
+        },
+      ],
     },
     {
       source: "/laundromat/:path*",

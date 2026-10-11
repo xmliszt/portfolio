@@ -6,6 +6,8 @@ import { toSvgPoints } from "@/lib/laundromat/to-svg-points";
 import { SceneKeyframes } from "./objects/scene-keyframes";
 import { SceneObjectDrawing } from "./objects/scene-object-drawing";
 import type { SceneViews } from "./objects/scene-views";
+import type { LampSwitch } from "./sound/use-scene-sounds";
+import { RoomLampGlow } from "./room-lamp-glow";
 import { RoomLight } from "./room-light";
 
 type RoomDrawingProps = {
@@ -16,6 +18,7 @@ type RoomDrawingProps = {
   dimAmount: number;
   views: SceneViews;
   hour: number | undefined;
+  lampSwitch: LampSwitch | undefined;
   config: SceneConfig;
 };
 
@@ -45,6 +48,7 @@ export function RoomDrawing(props: RoomDrawingProps) {
       height={layout.size.height}
       viewBox={`0 0 ${layout.size.width} ${layout.size.height}`}
       className="pointer-events-none absolute top-0 left-0 overflow-visible"
+      data-lm-lamp-switch={props.lampSwitch}
     >
       <SceneKeyframes plant={config.details.plant} />
       <g
@@ -93,6 +97,14 @@ export function RoomDrawing(props: RoomDrawingProps) {
             {...objectProps}
           />
         ))}
+      {timeOfDay !== undefined && (
+        <RoomLampGlow
+          timeOfDay={timeOfDay}
+          projection={layout.projection}
+          size={layout.size}
+          config={config}
+        />
+      )}
       <rect
         width={layout.size.width}
         height={layout.size.height}

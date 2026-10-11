@@ -1,6 +1,6 @@
 import type { TvEvent, TvSettings, TvState } from "./tv-state";
 
-/** Return the TV state after `event`: power toggles, tuning wraps around `stations`, volume clamps to 0–100%. */
+/** Return the TV state after `event`: power toggles, tuning wraps around `stations`, volume steps through 0–100% and wraps past either end. */
 export function transitionTv(options: {
   state: TvState;
   event: TvEvent;
@@ -17,17 +17,13 @@ export function transitionTv(options: {
         station: (((state.station + event.step) % count) + count) % count,
       };
     }
-    case "volume":
-      return {
-        ...state,
-        volumePercent: Math.min(
-          100,
-          Math.max(
-            0,
-            state.volumePercent + event.step * settings.volumeStepPercent
-          )
-        ),
-      };
+    case "volume": {
+      const next =
+        state.volumePercent + event.step * settings.volumeStepPercent;
+      if (next > 100) return { ...state, volumePercent: 0 };
+      if (next < 0) return { ...state, volumePercent: 100 };
+      return { ...state, volumePercent: next };
+    }
     default: {
       const unhandled: never = event;
       return unhandled;

@@ -1,3 +1,5 @@
+import type { LaundromatCopy } from "@/lib/laundromat/i18n/laundromat-copy";
+
 import { formatClockTime } from "./format-clock-time";
 import type { MachineStatus } from "./get-machine-status";
 import type { MachineRef } from "./laundry-state";
@@ -24,30 +26,57 @@ export function describeMachineControl(options: {
   minutes: number;
   nextMinutes: number;
   notifications: NotificationAvailability;
+  copy: LaundromatCopy;
 }): ControlDescription {
   const { machine, status, minutes } = options;
-  const name = `${machine.kind === "washer" ? "Washer" : "Dryer"} ${machine.number}`;
-  const noun = machine.kind === "washer" ? "wash" : "dry";
+  const { kind } = machine;
+  const copy = options.copy.machineControl;
+  const name = options.copy.machine.name(machine);
   const doneAt =
     status.kind === "running"
-      ? `done at ${formatClockTime(status.endsAt)}`
-      : undefined;
+      ? copy.doneAt({
+          time: formatClockTime({
+            timestampMs: status.endsAt,
+            locale: options.copy.locale,
+          }),
+        })
+      : "";
+  if (status.kind === "occupied") {
+    const tooltip =
+      status.remainingMs > 0
+        ? copy.othersRunningTooltip({
+            kind,
+            time: formatClockTime({
+              timestampMs: status.endsAt,
+              locale: options.copy.locale,
+            }),
+          })
+        : copy.othersDoneTooltip;
+    return {
+      label: copy.controlInUseLabel({ name, control: options.control }),
+      tooltip,
+      enabled: false,
+    };
+  }
   switch (options.control) {
     case "dial": {
       const enabled = status.kind !== "running" && status.kind !== "done";
       return {
-        label: `${name} cycle, ${minutes} minutes`,
+        label: copy.dialLabel({ name, minutes }),
         tooltip: enabled
-          ? `turn · ${minutes} min → ${options.nextMinutes} min`
+          ? copy.dialTooltip({ minutes, nextMinutes: options.nextMinutes })
           : undefined,
         enabled,
       };
     }
     case "start": {
       if (status.kind === "loaded") {
+        const canNotify =
+          options.notifications === "default" ||
+          options.notifications === "granted";
         return {
-          label: `${name} start, ${minutes} minute ${noun}`,
-          tooltip: `start · ${minutes} min ${noun}`,
+          label: copy.startLabel({ name, kind, minutes, canNotify }),
+          tooltip: copy.startTooltip({ kind, minutes, canNotify }),
           enabled: true,
         };
       }
@@ -58,20 +87,24 @@ export function describeMachineControl(options: {
             options.notifications === "granted");
         if (canRemind) {
           return {
-            label: `${name}, remind me when the ${noun} is done`,
-            tooltip: `remind me · ${doneAt}`,
+            label: copy.remindLabel({ name, kind }),
+            tooltip: copy.remindTooltip({ doneAt }),
             enabled: true,
           };
         }
         return {
-          label: `${name} start, ${status.remind ? "reminder on, " : ""}${doneAt}`,
-          tooltip: status.remind ? `reminder on · ${doneAt}` : doneAt,
+          label: copy.runningStartLabel({
+            name,
+            reminderOn: status.remind,
+            doneAt,
+          }),
+          tooltip: status.remind ? copy.reminderOnTooltip({ doneAt }) : doneAt,
           enabled: false,
         };
       }
       return {
-        label: `${name} start`,
-        tooltip: status.kind === "loadable" ? "load laundry first" : undefined,
+        label: copy.idleStartLabel({ name }),
+        tooltip: status.kind === "loadable" ? copy.loadFirstTooltip : undefined,
         enabled: false,
       };
     }
@@ -79,13 +112,13 @@ export function describeMachineControl(options: {
       const tooltip = (() => {
         switch (status.kind) {
           case "running":
-            return `${machine.kind === "washer" ? "washing" : "drying"} · ${doneAt}`;
+            return copy.runningDoorTooltip({ kind, doneAt });
           case "done":
-            return "open door · take laundry out";
+            return copy.doneDoorTooltip;
           case "loaded":
-            return "open door · take laundry back out";
+            return copy.loadedDoorTooltip;
           case "loadable":
-            return "load laundry";
+            return copy.loadableDoorTooltip;
           case "unavailable":
             return undefined;
           default: {
@@ -96,7 +129,9 @@ export function describeMachineControl(options: {
       })();
       return {
         label:
-          tooltip === undefined ? `${name} door` : `${name} door, ${tooltip}`,
+          tooltip === undefined
+            ? copy.doorLabel({ name })
+            : copy.doorLabelWithHint({ name, hint: tooltip }),
         tooltip,
         enabled:
           status.kind === "done" ||

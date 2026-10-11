@@ -16,8 +16,7 @@ const otherWasher: MachineRef = { id: "washer-3", kind: "washer", number: 3 };
 const dryer: MachineRef = { id: "dryer-1", kind: "dryer", number: 1 };
 const startedAt = Date.UTC(2026, 0, 1, 0, 54);
 const machines: MachineCycles = {
-  washerCycleMinutes: [25, 30, 45, 60],
-  dryerCycleMinutes: [5, 10, 15],
+  cycleMinutes: [5, 10, 15, 20, 25, 30, 45, 60],
   defaultWasherCycleMinutes: 30,
   defaultDryerCycleMinutes: 10,
 };
@@ -193,12 +192,12 @@ test("turn-dial wraps around past the last and first detents", () => {
     state: atLast,
     event: { type: "turn-dial", machine: washer, step: 1 },
   });
-  assert.equal(forward.cycleMinutes["washer-2"], 25);
+  assert.equal(forward.cycleMinutes["washer-2"], 5);
   const back = transition({
     state: atLast,
     event: { type: "turn-dial", machine: dryer, step: -1 },
   });
-  assert.equal(back.cycleMinutes["dryer-1"], 15);
+  assert.equal(back.cycleMinutes["dryer-1"], 60);
 });
 
 test("turn-dial works on the loaded machine", () => {
@@ -366,4 +365,24 @@ test("walks the whole wash, dry and wash-again loop", () => {
       "loaded",
     ]
   );
+});
+
+test("collect takes washed or dried laundry home and leaves anything else alone", () => {
+  for (const load of [
+    { kind: "folded" },
+    { kind: "carrying", laundry: "wet" },
+  ] satisfies LaundryLoad[]) {
+    const next = transition({
+      state: buildState({ load }),
+      event: { type: "collect" },
+    });
+    assert.deepEqual(next.load, { kind: "carrying", laundry: "dirty" });
+  }
+  for (const state of [
+    buildState({ load: { kind: "carrying", laundry: "dirty" } }),
+    buildState({ load: { kind: "loaded", machine: washer } }),
+    buildRunning({ machine: dryer }),
+  ]) {
+    assert.equal(transition({ state, event: { type: "collect" } }), state);
+  }
 });

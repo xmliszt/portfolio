@@ -1,0 +1,260 @@
+import type { LaundromatCopy } from "@/lib/laundromat/i18n/laundromat-copy";
+import type { MachineKind } from "@/lib/laundromat/scene-config";
+
+export const de = {
+  locale: "de",
+  languageName: "Deutsch",
+  site: {
+    name: "laundro.cafe",
+    title: "laundro.cafe: ein ruhiger Ort zum Konzentrieren in deinem Browser",
+    description:
+      "Ein ruhiger Waschsalon in deinem Browser. Wasch deine Wäsche als Fokus-Timer, lass Lo-Fi im Fernseher laufen, koch dir einen Kaffee und hinterlass eine Notiz im gemeinsamen Notizbuch.",
+    intro:
+      "Ein ruhiger Waschsalon in deinem Browser. Starte eine Waschmaschine oder einen Trockner für 5 bis 60 Minuten als Fokus-Timer und bekomm eine Benachrichtigung, wenn er fertig ist, hör Lo-Fi-Sender im Fernseher, koch dir einen Kaffee und hinterlass eine handgeschriebene Notiz im gemeinsamen Notizbuch. Volle Notizbücher kommen ins Regal.",
+    keywords: [
+      "Waschsalon",
+      "Fokus-Timer",
+      "Pomodoro",
+      "Lo-Fi",
+      "gemütlich",
+      "isometrisch",
+      "interaktiv",
+      "gemeinsames Notizbuch",
+    ],
+    openGraphLocale: "de_DE",
+  },
+  toolbar: {
+    soundOn: "Ton an",
+    soundOff: "Ton aus",
+    share: "teilen",
+    linkCopied: "Link kopiert",
+    shareText:
+      "Ein ruhiger Waschsalon in deinem Browser. Steck eine Ladung rein, lass den Timer laufen und lies die Notizen, die andere hinterlassen haben.",
+    language: "Sprache",
+  },
+  tabDone: "fertig",
+  readoutDone: "ende",
+  matWelcome: "willkommen",
+  machine: {
+    name: (machine: { kind: MachineKind; number: number }) =>
+      `${machine.kind === "washer" ? "Waschmaschine" : "Trockner"} ${machine.number}`,
+    freeLabel: (o: { name: string }) => `${o.name}, frei`,
+    freeTooltip: (o: { name: string }) => `${o.name} · frei`,
+    loadedLabel: (o: { name: string }) =>
+      `${o.name}, beladen, bereit zum Starten`,
+    loadedTooltip: (o: { name: string }) => `${o.name} · beladen`,
+    runningLabel: (o: { name: string; kind: MachineKind; remaining: string }) =>
+      `${o.name}, ${o.kind === "washer" ? "wäscht" : "trocknet"}, noch ${o.remaining}`,
+    runningTooltip: (o: { kind: MachineKind; time: string }) =>
+      `${o.kind === "washer" ? "wäscht" : "trocknet"} · fertig um ${o.time}`,
+    doneLabel: (o: { name: string }) =>
+      `${o.name}, fertig, nimm deine Wäsche heraus`,
+    doneTooltip: (o: { name: string }) => `${o.name} · fertig`,
+    othersRunningLabel: (o: {
+      name: string;
+      kind: MachineKind;
+      remaining: string;
+    }) =>
+      `${o.name}, ${o.kind === "washer" ? "wäscht" : "trocknet"} die Wäsche von jemand anderem, noch ${o.remaining}`,
+    othersRunningTooltip: (o: { kind: MachineKind; time: string }) =>
+      `jemand anderes ${o.kind === "washer" ? "wäscht" : "trocknet"} · fertig um ${o.time}`,
+    othersDoneLabel: (o: { name: string }) =>
+      `${o.name}, die Wäsche von jemand anderem ist fertig`,
+    othersDoneTooltip: (o: { name: string }) =>
+      `${o.name} · von jemand anderem, fertig`,
+    doneNotificationTitle: (o: { name: string }) => `${o.name} · fertig`,
+    doneNotificationBody: (o: { kind: MachineKind }) =>
+      o.kind === "washer"
+        ? "nimm deine Wäsche heraus und such dir einen Trockner aus"
+        : "deine Wäsche ist trocken",
+  },
+  machineControl: {
+    controlInUseLabel: (o: {
+      name: string;
+      control: "dial" | "start" | "door";
+    }) =>
+      `${o.name}, ${{ dial: "Drehknopf", start: "Starttaste", door: "Tür" }[o.control]}, wird gerade von jemand anderem benutzt`,
+    othersRunningTooltip: (o: { kind: MachineKind; time: string }) =>
+      `${o.kind === "washer" ? "Waschgang" : "Trockengang"} von jemand anderem · fertig um ${o.time}`,
+    othersDoneTooltip:
+      "Wäsche von jemand anderem · wartet auf ihre Besitzerin oder ihren Besitzer",
+    doneAt: (o: { time: string }) => `fertig um ${o.time}`,
+    dialLabel: (o: { name: string; minutes: number }) =>
+      `${o.name}, Programm, ${o.minutes} Minuten`,
+    dialTooltip: (o: { minutes: number; nextMinutes: number }) =>
+      `drehen · ${o.minutes} Min. → ${o.nextMinutes} Min.`,
+    startLabel: (o: {
+      name: string;
+      kind: MachineKind;
+      minutes: number;
+      canNotify: boolean;
+    }) =>
+      `${o.name}, starten, ${o.kind === "washer" ? "Waschgang" : "Trockengang"} mit ${o.minutes} Minuten${o.canNotify ? ", benachrichtigt dich, wenn er fertig ist" : ""}`,
+    startTooltip: (o: {
+      kind: MachineKind;
+      minutes: number;
+      canNotify: boolean;
+    }) =>
+      `starten · ${o.minutes} Min. ${o.kind === "washer" ? "waschen" : "trocknen"}${o.canNotify ? " · mit Benachrichtigung" : ""}`,
+    remindLabel: (o: { name: string; kind: MachineKind }) =>
+      `${o.name}, erinnere mich, wenn der ${o.kind === "washer" ? "Waschgang" : "Trockengang"} fertig ist`,
+    remindTooltip: (o: { doneAt: string }) => `erinnere mich · ${o.doneAt}`,
+    runningStartLabel: (o: {
+      name: string;
+      reminderOn: boolean;
+      doneAt: string;
+    }) =>
+      `${o.name}, starten, ${o.reminderOn ? "Erinnerung an, " : ""}${o.doneAt}`,
+    reminderOnTooltip: (o: { doneAt: string }) => `Erinnerung an · ${o.doneAt}`,
+    idleStartLabel: (o: { name: string }) => `${o.name}, starten`,
+    loadFirstTooltip: "erst Wäsche einladen",
+    runningDoorTooltip: (o: { kind: MachineKind; doneAt: string }) =>
+      `${o.kind === "washer" ? "wäscht" : "trocknet"} · ${o.doneAt}`,
+    doneDoorTooltip: "Tür öffnen · Wäsche herausnehmen",
+    loadedDoorTooltip: "Tür öffnen · Wäsche wieder herausnehmen",
+    loadableDoorTooltip: "Wäsche einladen",
+    doorLabel: (o: { name: string }) => `${o.name}, Tür`,
+    doorLabelWithHint: (o: { name: string; hint: string }) =>
+      `${o.name}, Tür, ${o.hint}`,
+  },
+  entranceMat: {
+    readyLabel: (o: { laundry: "wet" | "folded" }) =>
+      `Fußmatte, nimm deine ${o.laundry === "folded" ? "trockene" : "gewaschene"} Wäsche mit nach Hause`,
+    readyTooltip: "nach Hause · nimm deine Wäsche mit",
+    waitingLabel:
+      "Fußmatte, der Weg nach Hause, sobald deine Wäsche fertig ist",
+    waitingTooltip: "der Weg nach Hause · erst die Wäsche fertig machen",
+  },
+  coffee: {
+    machineLabel: "Kaffeemaschine",
+    brewingMachineLabel: "Kaffeemaschine, Kaffee läuft durch",
+    brewingTooltip: "Kaffee läuft…",
+    hotMachineLabel: "Kaffeemaschine, ein heißer Kaffee steht auf dem Tisch",
+    hotMachineTooltip: "Kaffee steht auf dem Tisch",
+    idleSwitchLabel: "Schalter der Kaffeemaschine, Kaffee kochen",
+    idleSwitchTooltip: "Kaffee kochen",
+    brewingSwitchLabel: "Schalter der Kaffeemaschine, Kaffee läuft durch",
+    hotSwitchLabel: "Schalter der Kaffeemaschine, noch einen Kaffee kochen",
+    hotSwitchTooltip: "noch einen",
+  },
+  tv: {
+    stations: {
+      "rainy-cafe": "café im regen",
+      "piano-night": "klaviernacht",
+      "late-wash": "späte wäsche",
+      "tape-hiss": "bandrauschen",
+      "city-at-3am": "stadt um 3 uhr nachts",
+    },
+    station: (o: { channel: string; name: string }) =>
+      `K ${o.channel} · ${o.name}`,
+    offLabel: "Fernseher, aus",
+    offTooltip: "Fernseher · aus",
+    onLabel: (o: { station: string }) => `Fernseher, an, ${o.station}`,
+    screenOnLabel: (o: { station: string }) =>
+      `Bildschirm, ${o.station}, auf YouTube ansehen`,
+    screenOnTooltip: "auf YouTube ansehen ↗",
+    screenOffLabel: "Bildschirm, aus, einschalten",
+    turnOn: "einschalten",
+    tunerLabel: (o: { station: string }) => `Fernsehsender, ${o.station}`,
+    tunerTooltip: (o: { nextName: string }) =>
+      `nächster Sender · ${o.nextName}`,
+    volumeLabel: (o: { percent: number }) =>
+      `Lautstärke des Fernsehers, ${o.percent} %`,
+    volumeTooltip: (o: { percent: number }) => `Lautstärke · ${o.percent} %`,
+    powerOnLabel: "Ein-/Ausschalter des Fernsehers, an, ausschalten",
+    turnOff: "ausschalten",
+    powerOffLabel: "Ein-/Ausschalter des Fernsehers, aus, einschalten",
+    noSignal: "kein Signal",
+  },
+  shelf: {
+    loadingLabel: "Regal, sucht nach vollen Notizbüchern",
+    loadingTooltip: "schaue ins Regal…",
+    offlineLabel: "Regal, gerade offline",
+    offlineTooltip: "das Regal ist gerade offline",
+    emptyLabel: "Regal, noch keine vollen Notizbücher",
+    emptyTooltip: "noch keine vollen Notizbücher",
+    readyLabel: "Das Regal mit den vollen Notizbüchern ansehen",
+    bookCount: (o: { count: number }) =>
+      o.count === 1 ? "1 volles Notizbuch" : `${o.count} volle Notizbücher`,
+    bookLabel: (o: { number: number; span: string; entries: string }) =>
+      `Notizbuch Nr. ${o.number} öffnen, ${o.span}, ${o.entries}`,
+    entryCount: (o: { count: number }) =>
+      `${o.count} ${o.count === 1 ? "Eintrag" : "Einträge"}`,
+  },
+  notebook: {
+    objectLabel: "Das Notizbuch öffnen",
+    objectTooltip: "Notizen von Fremden",
+    number: (o: { number: number }) => `Nr. ${o.number}`,
+    dialogLabel: (o: { number: number }) => `Notizbuch Nr. ${o.number}`,
+    daySpan: (o: { from: string; to: string }) => `${o.from} – ${o.to}`,
+    since: (o: { day: string }) => `seit ${o.day}`,
+    insideCover: "Innendeckel",
+    insideCoverAndPage: (o: { page: number }) => `Innendeckel · S. ${o.page}`,
+    page: (o: { page: number }) => `S. ${o.page}`,
+    pages: (o: { left: number; right: number }) => `S. ${o.left}–${o.right}`,
+    pageButtonLabel: (o: { page: number }) =>
+      `Seite ${o.page}, zu einer anderen Seite springen`,
+    previousPage: "Vorherige Seite",
+    nextPage: "Nächste Seite",
+    scrubberLabel: "Seite",
+    goToPage: "zur Seite",
+    pageInputLabel: (o: { pageCount: number }) =>
+      `Seitenzahl, 1 bis ${o.pageCount}`,
+    report: "melden",
+    reported: "gemeldet",
+    opening: "Notizbuch wird geöffnet…",
+    missing: (o: { number: number }) =>
+      `es gibt kein Notizbuch Nr. ${o.number}`,
+    full: (o: { number: number }) =>
+      `Notizbuch Nr. ${o.number} ist voll · nur lesen`,
+    someoneWritingInNotebook:
+      "jemand schreibt gerade ins Notizbuch · warte, bis du dran bist",
+    someoneWriting: "jemand schreibt gerade · warte, bis du dran bist",
+    startsNext: (o: { number: number }) =>
+      `mit dieser Notiz beginnt Notizbuch Nr. ${o.number}`,
+    writePromptBeforeKeys: "schreib eine Notiz für die nächste Person · ",
+    writePromptAfterKeys: " zum Speichern",
+    textareaLabel: "Eine Notiz ins Notizbuch schreiben",
+    notifyWhenFree: "sag mir, wenn es frei ist",
+    notifyPending: "wir sagen dir Bescheid",
+    saveNote: "Notiz speichern",
+    savingNote: "wird gespeichert…",
+    close: "schließen",
+    freeNotificationTitle: "das Notizbuch ist frei",
+    freeNotificationBody: "du bist dran mit Schreiben",
+    leaveFailures: {
+      offline: "das Notizbuch ist gerade offline · deine Notiz bleibt hier",
+      rate_limited: "eine Notiz alle zwei Minuten · versuch es gleich noch mal",
+      daily_limit_reached: "genug Notizen für heute · komm morgen wieder",
+      contains_link: "keine Links im Notizbuch",
+      too_long: "zu lang für das Notizbuch · kürz sie ein bisschen",
+      sign_off_too_long: "die Unterschrift ist zu lang",
+      empty_body: "schreib zuerst etwas",
+      unknown: "etwas ist schiefgelaufen · versuch es noch mal",
+    },
+  },
+  firstVisit: {
+    garments: {
+      tee: "T-Shirt",
+      jeans: "Jeans",
+      sweater: "Pullover",
+      towel: "Handtuch",
+      socks: "Socken",
+      shirt: "Hemd",
+    },
+    garmentLabel: (o: { garment: string }) => `In den Korb legen: ${o.garment}`,
+    basketEmpty: "wirf die Kleidung vom Boden hier rein",
+    basketPartial: (o: { count: number; total: number }) =>
+      `${o.count} von ${o.total} drin · leg mehr rein oder geh zur Tür`,
+    basketFull: "alles drin · geh zur Tür",
+    lampOffTooltip: "Lampe ausschalten",
+    lampOnTooltip: "Lampe einschalten",
+    lampOffLabel: "Die Lampe ausschalten",
+    lampOnLabel: "Die Lampe einschalten",
+    doorReadyTooltip: "zum Waschsalon tragen",
+    doorWaitingTooltip: "heb zuerst deine Wäsche auf",
+    doorReadyLabel: "Den Korb zum Waschsalon tragen",
+    doorWaitingLabel: "Tür zum Waschsalon, heb zuerst deine Wäsche auf",
+    justListen: "nur zuhören →",
+  },
+} satisfies LaundromatCopy;

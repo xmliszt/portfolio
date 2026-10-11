@@ -135,6 +135,10 @@ function createCurlScene(options: {
         tBack: { value: back },
       },
     });
+    if (!gl.getProgramParameter(program.program, gl.LINK_STATUS)) {
+      gl.getExtension("WEBGL_lose_context")?.loseContext();
+      return undefined;
+    }
     const geometry = new Plane(gl, {
       widthSegments: WIDTH_SEGMENTS,
       heightSegments: HEIGHT_SEGMENTS,

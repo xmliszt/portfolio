@@ -38,15 +38,18 @@ test("lies flat in the wall when shut", () => {
   const apply = parseMatrix(panel.transform);
   approximately(
     apply(door.width, door.height),
-    projectIsoPoint({ point: { x: 0, y: door.fromY, z: 0 }, projection })
+    projectIsoPoint({
+      point: { x: 0, y: door.fromY + door.width, z: 0 },
+      projection,
+    })
   );
   assert.equal(panel.shade, 0);
 });
 
-test("swings the free edge into the room about the hinge", () => {
+test("swings the free edge into the room about the hinge at the back of the frame", () => {
   const panel = getDoorPanel({ angleDeg: 90, door, projection });
   const apply = parseMatrix(panel.transform);
-  const hingeY = door.fromY + door.width;
+  const hingeY = door.fromY;
   approximately(
     apply(0, 0),
     projectIsoPoint({ point: { x: 0, y: hingeY, z: door.height }, projection })

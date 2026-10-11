@@ -3,7 +3,7 @@ import { test } from "node:test";
 
 import { buildSceneLayout } from "./build-scene-layout";
 import { computeCamera, MIN_HIT_TARGET_PX } from "./compute-camera";
-import { describeSceneObject } from "./describe-scene-object";
+import { isInteractiveSceneObject } from "./is-interactive-scene-object";
 import { sceneConfig } from "./scene-config";
 
 const layout = buildSceneLayout({ config: sceneConfig, unit: 40 });
@@ -49,7 +49,7 @@ test("keeps every hit target at least 24px on a laptop at room zoom", () => {
     config: sceneConfig,
   });
   for (const { object, bounds } of layout.objects) {
-    if (describeSceneObject(object) === undefined) continue;
+    if (!isInteractiveSceneObject(object)) continue;
     assert.ok(bounds.width * camera.scale >= MIN_HIT_TARGET_PX, object.id);
     assert.ok(bounds.height * camera.scale >= MIN_HIT_TARGET_PX, object.id);
   }

@@ -1,5 +1,6 @@
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
+import type { LaundromatCopy } from "@/lib/laundromat/i18n/laundromat-copy";
 import type { NotificationAvailability } from "@/lib/laundromat/laundry/describe-machine-control";
 import { getTabTitle } from "@/lib/laundromat/laundry/get-tab-title";
 import type {
@@ -10,6 +11,9 @@ import { INITIAL_LAUNDRY_STATE } from "@/lib/laundromat/laundry/laundry-state";
 import { parseLaundryState } from "@/lib/laundromat/laundry/parse-laundry-state";
 import { transitionLaundry } from "@/lib/laundromat/laundry/transition-laundry";
 import { sceneConfig } from "@/lib/laundromat/scene-config";
+
+import { useLaundromatCopy } from "./i18n/use-laundromat-copy";
+import { showNotification } from "./show-notification";
 
 const VISITOR_ID_STORAGE_KEY = "laundromat:visitor-id";
 const LAUNDRY_STORAGE_KEY_PREFIX = "laundromat:laundry:";
@@ -27,21 +31,27 @@ function readNotificationAvailability(): NotificationAvailability {
   return "Notification" in window ? Notification.permission : "unsupported";
 }
 
-function showDoneNotification(machine: MachineRef) {
-  const name = `${machine.kind} ${machine.number}`;
-  new Notification(`${name} · done`, {
-    body:
-      machine.kind === "washer"
-        ? "take your laundry out and pick a dryer"
-        : "your laundry is dry",
+function showDoneNotification(options: {
+  machine: MachineRef;
+  copy: LaundromatCopy;
+}) {
+  const copy = options.copy.machine;
+  const { machine } = options;
+  showNotification({
+    title: copy.doneNotificationTitle({
+      name: copy.name(machine).toLocaleLowerCase(options.copy.locale),
+    }),
+    body: copy.doneNotificationBody({ kind: machine.kind }),
     tag: `laundromat-${machine.id}`,
   });
 }
 
-/** Return this visitor's laundry state, kept in `localStorage`, ticking while a cycle runs, with the tab title and done notification kept in step. */
+/** Return this visitor's id and laundry state, kept in `localStorage`, ticking while a cycle runs, with the tab title and done notification kept in step. */
 export function useLaundry() {
+  const { copy } = useLaundromatCopy();
   const [state, setState] = useState(INITIAL_LAUNDRY_STATE);
   const [storageKey, setStorageKey] = useState<string>();
+  const [visitorId, setVisitorId] = useState<string>();
   const [now, setNow] = useState(() => Date.now());
   const [notifications, setNotifications] =
     useState<NotificationAvailability>("unsupported");
@@ -57,8 +67,22 @@ export function useLaundry() {
     );
   }
 
+  const tick = useCallback(() => {
+    const tickedAt = Date.now();
+    setNow(tickedAt);
+    setState((current) =>
+      transitionLaundry({
+        state: current,
+        event: { type: "tick", now: tickedAt },
+        machines: sceneConfig.machines,
+      })
+    );
+  }, []);
+
   useEffect(() => {
-    const key = `${LAUNDRY_STORAGE_KEY_PREFIX}${readOrCreateVisitorId()}`;
+    const id = readOrCreateVisitorId();
+    setVisitorId(id);
+    const key = `${LAUNDRY_STORAGE_KEY_PREFIX}${id}`;
     const restored = parseLaundryState(window.localStorage.getItem(key));
     if (restored !== undefined) setState(restored);
     setStorageKey(key);
@@ -84,17 +108,6 @@ export function useLaundry() {
   const isRunning = state.load.kind === "running";
   useEffect(() => {
     if (!isRunning) return;
-    function tick() {
-      const tickedAt = Date.now();
-      setNow(tickedAt);
-      setState((current) =>
-        transitionLaundry({
-          state: current,
-          event: { type: "tick", now: tickedAt },
-          machines: sceneConfig.machines,
-        })
-      );
-    }
     tick();
     const interval = window.setInterval(tick, TICK_MS);
     document.addEventListener("visibilitychange", tick);
@@ -102,7 +115,17 @@ export function useLaundry() {
       window.clearInterval(interval);
       document.removeEventListener("visibilitychange", tick);
     };
-  }, [isRunning]);
+  }, [isRunning, tick]);
+
+  const endsAt =
+    state.load.kind === "running"
+      ? state.load.startedAt + state.load.durationMs
+      : undefined;
+  useEffect(() => {
+    if (endsAt === undefined) return;
+    const timeout = window.setTimeout(tick, Math.max(0, endsAt - Date.now()));
+    return () => window.clearTimeout(timeout);
+  }, [endsAt, tick]);
 
   useEffect(() => {
     const originalTitle = document.title;
@@ -111,7 +134,7 @@ export function useLaundry() {
     };
   }, []);
 
-  const tabTitle = getTabTitle({ state, now });
+  const tabTitle = getTabTitle({ state, now, copy });
   useEffect(() => {
     function applyTitle() {
       if (document.title !== tabTitle) document.title = tabTitle;
@@ -135,12 +158,13 @@ export function useLaundry() {
       state.load.kind === "done" &&
       readNotificationAvailability() === "granted"
     ) {
-      showDoneNotification(state.load.machine);
+      showDoneNotification({ machine: state.load.machine, copy });
     }
-  }, [state.load]);
+  }, [state.load, copy]);
 
   function start(machine: MachineRef) {
     dispatch({ type: "start", machine, now: Date.now() });
+    void remind(machine);
   }
 
   async function remind(machine: MachineRef) {
@@ -153,5 +177,5 @@ export function useLaundry() {
     if (permission === "granted") dispatch({ type: "remind", machine });
   }
 
-  return { state, now, notifications, dispatch, start, remind };
+  return { visitorId, state, now, notifications, dispatch, start, remind };
 }

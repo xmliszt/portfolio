@@ -12,9 +12,10 @@ import type { TvState } from "@/lib/laundromat/tv/tv-state";
 export function useTvAudio(options: {
   tv: TvState;
   details: SceneConfig["details"]["tv"];
+  muted: boolean;
   onSkipStation: () => void;
 }) {
-  const { tv, details, onSkipStation } = options;
+  const { tv, details, muted, onSkipStation } = options;
   const [container, setContainer] = useState<HTMLDivElement | null>(null);
   const sourceRef = useRef<AudioSource>(undefined);
   const failedStreakRef = useRef(0);
@@ -30,7 +31,7 @@ export function useTvAudio(options: {
   useEffect(() => () => sourceRef.current?.destroy(), []);
 
   useEffect(() => {
-    if (!tv.on || videoId === undefined || container === null) {
+    if (!tv.on || muted || videoId === undefined || container === null) {
       sourceRef.current?.pause();
       return;
     }
@@ -48,7 +49,7 @@ export function useTvAudio(options: {
     source.setVolume(tv.volumePercent);
     source.setStation(videoId);
     source.play();
-  }, [container, tv.on, tv.volumePercent, videoId, stallMs]);
+  }, [container, tv.on, tv.volumePercent, muted, videoId, stallMs]);
 
   const isNoSignal = tv.on && audioState === "error";
   const stationCount = details.stations.length;

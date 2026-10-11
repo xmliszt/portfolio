@@ -21,7 +21,8 @@ export type FurnitureKind =
   | "stool"
   | "plant"
   | "basket"
-  | "mug";
+  | "mug"
+  | "mat";
 
 export type SceneObject =
   | (Placement & { kind: MachineKind; number: number })
@@ -81,14 +82,13 @@ export type SceneConfig = {
   };
   light: {
     poolIntensity: number;
-    lampNoonRatio: number;
+    lampOnDaylight: number;
     daylightPatchStrength: number;
     lampColor: string;
     daylightColor: string;
   };
   machines: {
-    washerCycleMinutes: number[];
-    dryerCycleMinutes: number[];
+    cycleMinutes: number[];
     defaultWasherCycleMinutes: number;
     defaultDryerCycleMinutes: number;
   };
@@ -123,7 +123,7 @@ export type SceneConfig = {
     coffee: {
       brewSeconds: number;
       hotMinutes: number;
-      dripMs: number;
+      streamFlowMs: number;
       steamOpacity: number;
       steamRiseSeconds: number;
     };
@@ -273,43 +273,43 @@ export const sceneConfig: SceneConfig = {
     {
       id: "shelf",
       kind: "shelf",
-      position: { x: 0, y: 0.8, z: 3.6 },
+      position: { x: 0, y: 2.4, z: 2.5 },
       size: { w: 0.8, d: 2.4, h: 1.6 },
     },
     {
       id: "tv",
       kind: "tv",
-      position: { x: 0, y: 3.3, z: 4.6 },
+      position: { x: 0, y: 2.8, z: 5.7 },
       size: { w: 1.2, d: 2.6, h: 1.8 },
     },
     {
       id: "window",
       kind: "window",
-      position: { x: 0, y: 6, z: 2.4 },
+      position: { x: 0, y: 6.1, z: 2.4 },
       size: { w: 0.3, d: 3, h: 3.2 },
     },
     {
       id: "table",
       kind: "table",
-      position: { x: 7, y: 6, z: 0 },
+      position: { x: 7.3, y: 6, z: 0 },
       size: { w: 2, d: 2, h: 2.4 },
     },
     {
       id: "notebook",
       kind: "notebook",
-      position: { x: 7.6, y: 6.6, z: 2.4 },
+      position: { x: 7.7, y: 6.8, z: 2.4 },
       size: { w: 0.9, d: 0.7, h: 0.1 },
     },
     {
       id: "mug",
       kind: "mug",
-      position: { x: 8.5, y: 6.4, z: 2.4 },
+      position: { x: 8.5, y: 6.2, z: 2.4 },
       size: { w: 0.4, d: 0.4, h: 0.34 },
     },
     {
       id: "stool-1",
       kind: "stool",
-      position: { x: 5.6, y: 6.4, z: 0 },
+      position: { x: 6.7, y: 7.6, z: 0 },
       size: { w: 0.9, d: 0.9, h: 1.8 },
     },
     {
@@ -321,13 +321,19 @@ export const sceneConfig: SceneConfig = {
     {
       id: "plant",
       kind: "plant",
-      position: { x: 12.4, y: 3, z: 0 },
+      position: { x: 12.6, y: 3, z: 0 },
       size: { w: 1.2, d: 1.2, h: 2.6 },
+    },
+    {
+      id: "mat",
+      kind: "mat",
+      position: { x: 11.6, y: 8.2, z: 0 },
+      size: { w: 2.2, d: 1.4, h: 0.05 },
     },
     {
       id: "basket",
       kind: "basket",
-      position: { x: 3, y: 4, z: 0 },
+      position: { x: 1.4, y: 3.5, z: 0 },
       size: { w: 1.4, d: 1.4, h: 1.1 },
     },
   ],
@@ -345,87 +351,86 @@ export const sceneConfig: SceneConfig = {
     unfocusedDim: 0.35,
   },
   light: {
-    poolIntensity: 1,
-    lampNoonRatio: 0.5,
-    daylightPatchStrength: 0.12,
+    poolIntensity: 0.98,
+    lampOnDaylight: 0.5,
+    daylightPatchStrength: 0.39,
     lampColor: "#ff9a2e",
     daylightColor: "#d6e4f0",
   },
   machines: {
-    washerCycleMinutes: [25, 30, 45, 60],
-    dryerCycleMinutes: [5, 10, 15],
-    defaultWasherCycleMinutes: 30,
-    defaultDryerCycleMinutes: 10,
+    cycleMinutes: [5, 10, 15, 20, 25, 30, 45, 60],
+    defaultWasherCycleMinutes: 25,
+    defaultDryerCycleMinutes: 5,
   },
   details: {
     machine: {
       doorOpenDeg: 100,
-      doorSwingMs: 420,
+      doorSwingMs: 590,
       drumSecondsPerTurn: 2.4,
-      tumbleOpacity: 0.55,
-      displayGlow: 0.5,
-      dryerGlow: 0.16,
+      tumbleOpacity: 0.26,
+      displayGlow: 1,
+      dryerGlow: 1,
       dialSettleMs: 180,
     },
     tv: {
       stations: [
         {
-          label: "rainy café",
-          videoId: "7NOSDKb0HlU",
-          channel: "Chillhop Music",
-          placeholder: true,
+          id: "rainy-cafe",
+          videoId: "c0_ejQQcrwI",
+          channel: "Calmed By Nature",
+          placeholder: false,
         },
         {
-          label: "piano night",
-          videoId: "rUxyKA_-grg",
-          channel: "Lofi Girl",
-          placeholder: true,
+          id: "piano-night",
+          videoId: "8dFExnve2do",
+          channel: "Smooth Piano Jazz",
+          placeholder: false,
         },
         {
-          label: "late wash",
-          videoId: "5yx6BWlEVcY",
-          channel: "Chillhop Music",
-          placeholder: true,
+          id: "late-wash",
+          videoId: "zW5wpJY1rgQ",
+          channel: "Mimi Lofi Chill",
+          placeholder: false,
         },
         {
-          label: "tape hiss",
-          videoId: "lTRiuFIWV54",
-          channel: "Lofi Girl",
-          placeholder: true,
+          id: "tape-hiss",
+          videoId: "tiyuRJthHwc",
+          channel: "chill chill journal",
+          placeholder: false,
         },
         {
-          label: "city at 3 a.m.",
-          videoId: "4xDzrJKXOOY",
-          channel: "Lofi Girl",
-          placeholder: true,
+          id: "city-at-3am",
+          videoId: "zsvYVVRAk0c",
+          channel: "Nostalgic Synthwave",
+          placeholder: false,
         },
       ],
       stallSeconds: 12,
       noSignalMs: 1200,
       osdSeconds: 2.4,
       staticMs: 240,
-      thumbnailDim: 0.2,
-      scanlineOpacity: 0.35,
+      thumbnailDim: 0.17,
+      scanlineOpacity: 0.41,
       scanlineDriftSeconds: 3,
-      vignette: 0.6,
-      flicker: 0.05,
+      vignette: 0.71,
+      flicker: 0.18,
       defaultVolumePercent: 60,
       volumeStepPercent: 10,
       powerMs: 360,
-      screenGlow: 0.22,
-      reflection: 0.1,
-      knobDegreesPerDetent: 36,
+      screenGlow: 1,
+      reflection: 0.12,
+      knobDegreesPerDetent: 39,
     },
     coffee: {
       brewSeconds: 40,
-      hotMinutes: 4,
-      dripMs: 900,
+      hotMinutes: 6.5,
+      streamFlowMs: 260,
       steamOpacity: 0.5,
       steamRiseSeconds: 3.2,
     },
     clock: { hourHandWidth: 2, minuteHandWidth: 1.25, glassHighlight: 0.08 },
-    plant: { swayDeg: 1.4, swayMinSeconds: 7, swayMaxSeconds: 10 },
-    shelf: { bookLean: 0.14, spineGlow: 0.6, bookLift: 0.12 },
+    plant: { swayDeg: 5.65, swayMinSeconds: 8, swayMaxSeconds: 8.5 },
+    shelf: { bookLean: 0.14, spineGlow: 0.69, bookLift: 0.19 },
     window: { litWindowOpacity: 0.7 },
     notebook: {
       coverNumber: 1,

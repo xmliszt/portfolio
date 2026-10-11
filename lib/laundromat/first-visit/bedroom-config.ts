@@ -10,7 +10,6 @@ export type GarmentKind =
 
 export type Garment = {
   kind: GarmentKind;
-  name: string;
   at: { x: number; y: number };
   rotateDeg: number;
   scale: { x: number; y: number };
@@ -91,41 +90,41 @@ export const bedroomConfig: BedroomConfig = {
   room: { width: 7, depth: 5.5, wallHeight: 4 },
   window: {
     position: { x: 0, y: 0.55, z: 1.5 },
-    size: { w: 0.28, d: 2.05, h: 2.05 },
+    size: { w: 0.28, d: 2, h: 2 },
   },
-  door: { fromY: 3.05, width: 1.15, height: 2.5, thickness: 0.06 },
-  clock: { center: { x: 2.25, y: 0.1, z: 3 }, radius: 0.27, depth: 0.1 },
+  door: { fromY: 3, width: 1.1, height: 2.5, thickness: 0.06 },
+  clock: { center: { x: 3.3, y: 0.1, z: 3 }, radius: 0.27, depth: 0.07 },
   bedsideTable: {
-    position: { x: 3.65, y: 0.08, z: 0 },
+    position: { x: 3.7, y: 0.08, z: 0 },
     size: { w: 0.62, d: 0.55, h: 0.62 },
   },
-  lamp: { center: { x: 3.96, y: 0.36 }, shadeRadius: 0.24 },
+  lamp: { center: { x: 4, y: 0.36 }, shadeRadius: 0.21 },
   bed: {
     headboard: {
       position: { x: 4.4, y: 0, z: 0 },
       size: { w: 2.6, d: 0.14, h: 1.2 },
     },
     frame: {
-      position: { x: 4.45, y: 0.14, z: 0 },
+      position: { x: 4.5, y: 0.14, z: 0 },
       size: { w: 2.5, d: 2.6, h: 0.32 },
     },
     mattress: {
-      position: { x: 4.52, y: 0.18, z: 0.32 },
-      size: { w: 2.36, d: 2.5, h: 0.26 },
+      position: { x: 4.5, y: 0.18, z: 0.32 },
+      size: { w: 2.4, d: 2.5, h: 0.26 },
     },
     pillow: {
-      position: { x: 4.75, y: 0.3, z: 0.58 },
+      position: { x: 4.8, y: 0.3, z: 0.58 },
       size: { w: 1.9, d: 0.55, h: 0.16 },
     },
     blanket: {
-      position: { x: 4.48, y: 1.02, z: 0.34 },
-      size: { w: 2.44, d: 1.7, h: 0.28 },
+      position: { x: 4.5, y: 1, z: 0.34 },
+      size: { w: 2.4, d: 1.7, h: 0.28 },
     },
   },
-  rug: { at: { x: 1.75, y: 2.65 }, width: 3.4, depth: 2.45 },
-  lightPool: { at: { x: 3.4, y: 1.2 }, radiusX: 2, radiusY: 1.7 },
+  rug: { at: { x: 1.8, y: 2.6 }, width: 3.4, depth: 2.5 },
+  lightPool: { at: { x: 3.4, y: 1.2 }, radiusX: 1.7, radiusY: 1.3 },
   basket: {
-    center: { x: 1.25, y: 2.15 },
+    center: { x: 3.2, y: 1.8 },
     radius: 0.5,
     baseRadius: 0.42,
     height: 0.66,
@@ -133,45 +132,39 @@ export const bedroomConfig: BedroomConfig = {
   garments: [
     {
       kind: "tee",
-      name: "t-shirt",
-      at: { x: 2.3, y: 2.95 },
+      at: { x: 2.3, y: 3 },
       rotateDeg: 18,
       scale: { x: 1, y: 0.95 },
     },
     {
       kind: "jeans",
-      name: "jeans",
-      at: { x: 4.25, y: 3.45 },
-      rotateDeg: -28,
-      scale: { x: 0.78, y: 1.25 },
+      at: { x: 3.9, y: 3.5 },
+      rotateDeg: -41,
+      scale: { x: 0.78, y: 1.3 },
     },
     {
       kind: "sweater",
-      name: "sweater",
-      at: { x: 3.15, y: 4.75 },
+      at: { x: 3.1, y: 4.8 },
       rotateDeg: -8,
       scale: { x: 1.3, y: 0.95 },
     },
     {
       kind: "towel",
-      name: "towel",
-      at: { x: 5.35, y: 2.95 },
+      at: { x: 5.8, y: 3.8 },
       rotateDeg: 32,
       scale: { x: 0.95, y: 0.58 },
     },
     {
       kind: "socks",
-      name: "socks",
-      at: { x: 1.55, y: 4.95 },
+      at: { x: 1.6, y: 5 },
       rotateDeg: 40,
       scale: { x: 0.55, y: 0.55 },
     },
     {
       kind: "shirt",
-      name: "shirt",
-      at: { x: 5.2, y: 4.95 },
+      at: { x: 5.2, y: 5 },
       rotateDeg: 12,
-      scale: { x: 1.15, y: 1 },
+      scale: { x: 1.1, y: 1 },
     },
   ],
   motion: {
@@ -210,7 +203,7 @@ export const bedroomConfig: BedroomConfig = {
       warmOutMs: 1200,
       arriveStartMs: 980,
       arriveMs: 1350,
-      arriveFromScale: 1.08,
+      arriveFromScale: 1.1,
       arriveBlurPx: 14,
       bedroomGoneMs: 1800,
       reducedFadeMs: 400,

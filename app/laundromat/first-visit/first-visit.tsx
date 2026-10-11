@@ -3,7 +3,9 @@
 import { useEffect, useRef, useState } from "react";
 import { motion, useReducedMotion } from "motion/react";
 
+import { useLaundromatCopy } from "@/app/laundromat/i18n/use-laundromat-copy";
 import { SceneTooltip } from "@/app/laundromat/scene-tooltip";
+import { useSoundBoard } from "@/app/laundromat/sound/use-sound-board";
 import { useSceneHour } from "@/app/laundromat/use-scene-hour";
 import type {
   BedroomConfig,
@@ -31,6 +33,7 @@ const DRAG_THRESHOLD_PX = 4;
 const HIT_PADDING_PX = 4;
 const LAND_DELAY_MS = 90;
 const SETTLE_CLEAR_DELAY_MS = 40;
+const LAMP_HEIGHT = 0.82;
 const COS_30 = Math.cos(Math.PI / 6);
 const SIN_30 = Math.sin(Math.PI / 6);
 const PUSH_EASE: [number, number, number, number] = [0.65, 0, 0.35, 1];
@@ -52,7 +55,7 @@ type Drag = {
   moved: boolean;
 };
 
-type Hover = GarmentKind | "basket" | "door";
+type Hover = GarmentKind | "basket" | "door" | "lamp";
 
 type Phase = "room" | "opening" | "entering";
 
@@ -61,16 +64,20 @@ type Fit = { scale: number; x: number; y: number };
 type FirstVisitProps = {
   scene: SceneConfig;
   bedroom: BedroomConfig;
+  hourOverride?: number;
+  cleanPile: boolean;
   onWalkIn: () => void;
   onListen: () => void;
 };
 
 export function FirstVisit(props: FirstVisitProps) {
+  const { copy } = useLaundromatCopy();
   const { bedroom, scene } = props;
   const { projection, stage, door } = bedroom;
   const { walkIn } = bedroom.motion;
   const prefersReducedMotion = useReducedMotion() ?? false;
-  const hour = useSceneHour();
+  const sceneHour = useSceneHour();
+  const hour = props.hourOverride ?? sceneHour;
   const timeOfDay =
     hour === undefined ? undefined : getTimeOfDay({ hour, config: scene });
 
@@ -84,6 +91,9 @@ export function FirstVisit(props: FirstVisitProps) {
   const [drag, setDrag] = useState<Drag>();
   const [settling, setSettling] = useState<GarmentKind>();
   const [hover, setHover] = useState<Hover>();
+  const [lampSwitch, setLampSwitch] = useState<boolean>();
+  const sound = useSoundBoard();
+  const isLampOn = lampSwitch ?? (timeOfDay?.lampIntensity ?? 1) > 0.5;
   const [isTouched, setIsTouched] = useState(false);
   const [phase, setPhase] = useState<Phase>("room");
   const [isWarm, setIsWarm] = useState(false);
@@ -136,6 +146,17 @@ export function FirstVisit(props: FirstVisitProps) {
       getGarmentFootprint({ garment, projection }),
     ])
   );
+  const lampTableTop =
+    bedroom.bedsideTable.position.z + bedroom.bedsideTable.size.h;
+  const lampTop = projectIsoPoint({
+    point: { ...bedroom.lamp.center, z: lampTableTop + LAMP_HEIGHT },
+    projection,
+  });
+  const lampBottom = projectIsoPoint({
+    point: { ...bedroom.lamp.center, z: lampTableTop },
+    projection,
+  });
+  const lampHitWidth = bedroom.lamp.shadeRadius * 2.6 * projection.unit;
   const doorTopLeft = projectIsoPoint({
     point: { x: 0, y: door.fromY + door.width, z: door.height },
     projection,
@@ -186,6 +207,7 @@ export function FirstVisit(props: FirstVisitProps) {
       setFlights((current) => current.filter((flight) => flight.kind !== kind));
       setInBasket((current) => [...current, { kind, slotIndex }]);
       setBumps((current) => current + 1);
+      sound?.play("collect-laundry", { volume: 0.35 });
     });
   }
 
@@ -284,12 +306,14 @@ export function FirstVisit(props: FirstVisitProps) {
   function handleDoorClick() {
     if (!isInRoom) return;
     if (!isReady) {
+      sound?.play("door-locked");
       setJiggles((current) => current + 1);
       setHover("door");
       return;
     }
     setHover(undefined);
     setPhase("opening");
+    sound?.play("room-door-open");
     props.onWalkIn();
     if (prefersReducedMotion) {
       setPhase("entering");
@@ -302,6 +326,15 @@ export function FirstVisit(props: FirstVisitProps) {
     later(walkIn.arriveStartMs, () => setIsWarm(false));
   }
 
+  function handleLampClick() {
+    sound?.play("coffee-switch", { volume: 0.7 });
+    setLampSwitch(!isLampOn);
+  }
+
+  function handleLampFocus(event: React.FocusEvent<HTMLButtonElement>) {
+    if (event.currentTarget.matches(":focus-visible")) setHover("lamp");
+  }
+
   function handleDoorFocus(event: React.FocusEvent<HTMLButtonElement>) {
     if (event.currentTarget.matches(":focus-visible")) setHover("door");
   }
@@ -312,8 +345,8 @@ export function FirstVisit(props: FirstVisitProps) {
       if (hover === "door") {
         return {
           text: isReady
-            ? "carry it to the laundromat"
-            : "pick up your laundry first",
+            ? copy.firstVisit.doorReadyTooltip
+            : copy.firstVisit.doorWaitingTooltip,
           at: projectIsoPoint({
             point: {
               x: 0,
@@ -324,11 +357,20 @@ export function FirstVisit(props: FirstVisitProps) {
           }),
         };
       }
+      if (hover === "lamp") {
+        return {
+          text: isLampOn
+            ? copy.firstVisit.lampOffTooltip
+            : copy.firstVisit.lampOnTooltip,
+          at: { x: lampTop.x, y: lampTop.y - 4 },
+        };
+      }
       if (hover === "basket" && drag === undefined) {
         return {
           text: describeHamperBasket({
             count: inBasket.length,
             total: kinds.length,
+            copy,
           }),
           at: { x: basket.mouth.x, y: basket.bounds.y - 4 },
         };
@@ -513,6 +555,9 @@ export function FirstVisit(props: FirstVisitProps) {
                   timeOfDay={timeOfDay}
                   hour={hour}
                   scene={scene}
+                  lampOn={isLampOn}
+                  lampHighlighted={hover === "lamp"}
+                  cleanPile={props.cleanPile}
                 />
                 <BedroomDoor
                   door={door}
@@ -604,9 +649,6 @@ export function FirstVisit(props: FirstVisitProps) {
               .filter((kind) => !flights.some((flight) => flight.kind === kind))
               .map((kind) => {
                 const { bounds } = footprints[kind];
-                const garment = bedroom.garments.find(
-                  (candidate) => candidate.kind === kind
-                );
                 const isDragging = drag?.kind === kind;
                 const offset = isDragging ? drag : undefined;
                 return (
@@ -614,7 +656,9 @@ export function FirstVisit(props: FirstVisitProps) {
                     key={kind}
                     type="button"
                     data-garment-target={kind}
-                    aria-label={`Put the ${garment?.name ?? kind} in the basket`}
+                    aria-label={copy.firstVisit.garmentLabel({
+                      garment: copy.firstVisit.garments[kind],
+                    })}
                     className="absolute touch-none rounded-md bg-transparent outline-none focus-visible:outline-1 focus-visible:outline-offset-2 focus-visible:outline-[var(--lm-ink)] focus-visible:outline-dashed"
                     style={{
                       left: bounds.x - HIT_PADDING_PX + (offset?.dx ?? 0),
@@ -635,6 +679,27 @@ export function FirstVisit(props: FirstVisitProps) {
                   />
                 );
               })}
+            <button
+              type="button"
+              aria-label={
+                isLampOn
+                  ? copy.firstVisit.lampOffLabel
+                  : copy.firstVisit.lampOnLabel
+              }
+              aria-pressed={isLampOn}
+              className="absolute cursor-pointer rounded-md bg-transparent outline-none focus-visible:outline-1 focus-visible:outline-offset-2 focus-visible:outline-[var(--lm-ink)] focus-visible:outline-dashed"
+              style={{
+                left: lampTop.x - lampHitWidth / 2,
+                top: lampTop.y - HIT_PADDING_PX,
+                width: lampHitWidth,
+                height: lampBottom.y - lampTop.y + HIT_PADDING_PX,
+              }}
+              onClick={handleLampClick}
+              onPointerEnter={() => handleHover("lamp")}
+              onPointerLeave={() => clearHover("lamp")}
+              onFocus={handleLampFocus}
+              onBlur={() => clearHover("lamp")}
+            />
             <div
               className="absolute top-0 left-0 origin-top-left"
               style={{
@@ -646,8 +711,8 @@ export function FirstVisit(props: FirstVisitProps) {
                 data-bedroom-door-target
                 aria-label={
                   isReady
-                    ? "Carry the basket to the laundromat"
-                    : "Door to the laundromat, pick up your laundry first"
+                    ? copy.firstVisit.doorReadyLabel
+                    : copy.firstVisit.doorWaitingLabel
                 }
                 className="absolute top-0 left-0 cursor-pointer rounded-md bg-transparent outline-none focus-visible:outline-1 focus-visible:outline-offset-2 focus-visible:outline-[var(--lm-ink)] focus-visible:outline-dashed"
                 style={{
@@ -683,7 +748,7 @@ export function FirstVisit(props: FirstVisitProps) {
         className="absolute right-9 bottom-7 cursor-pointer bg-transparent px-1.5 py-3 text-[11px] text-[var(--lm-line)] lowercase transition-colors duration-200 outline-none hover:text-[var(--lm-ink)] focus-visible:outline-1 focus-visible:outline-[var(--lm-line)] focus-visible:outline-dashed"
         onClick={props.onListen}
       >
-        just listen →
+        {copy.firstVisit.justListen}
       </button>
     </div>
   );

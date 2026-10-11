@@ -16,15 +16,27 @@ const nanumPenScript = Nanum_Pen_Script({
   subsets: ["latin"],
   weight: "400",
   preload: false,
+  display: "block",
 });
-const kleeOne = Klee_One({ subsets: ["latin"], weight: "400", preload: false });
+const kleeOne = Klee_One({
+  subsets: ["latin"],
+  weight: "400",
+  preload: false,
+  display: "block",
+});
+// CJK faces load one unicode-range slice per new character, so `block` hides a just-typed glyph for its download instead of flashing it in a system font.
 const lxgwWenKai = LXGW_WenKai_TC({
   subsets: ["latin"],
   weight: "400",
   preload: false,
+  display: "block",
 });
 const amiri = Amiri({ subsets: ["arabic"], weight: "400", preload: false });
-const suezOne = Suez_One({ subsets: ["hebrew"], weight: "400", preload: false });
+const suezOne = Suez_One({
+  subsets: ["hebrew"],
+  weight: "400",
+  preload: false,
+});
 const tillana = Tillana({
   subsets: ["devanagari"],
   weight: "400",

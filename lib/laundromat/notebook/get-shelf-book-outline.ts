@@ -1,4 +1,7 @@
-import type { IsoProjection, ScreenPoint } from "@/lib/laundromat/project-iso-point";
+import type {
+  IsoProjection,
+  ScreenPoint,
+} from "@/lib/laundromat/project-iso-point";
 import { projectIsoPoint } from "@/lib/laundromat/project-iso-point";
 
 import type { ShelfBookPlacement } from "./get-shelf-book-placements";

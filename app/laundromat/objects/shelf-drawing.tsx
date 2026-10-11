@@ -14,6 +14,8 @@ import { partStroke } from "./part-stroke";
 const BOARD_THICKNESS = 0.08;
 const BRACKET_DROP = 0.5;
 
+const BOOK_LIFT_MS = 260;
+
 type ShelfDrawingProps = {
   laidOut: LaidOutObject;
   projection: IsoProjection;
@@ -55,10 +57,8 @@ export function ShelfDrawing(props: ShelfDrawingProps) {
       />
       {props.books.map((book) => {
         const isLifted = props.highlightedId === getShelfBookId(book.number);
-        const lift = isLifted ? details.bookLift : 0;
-        const { x0, x1, y, lean } = book;
-        const z0 = book.z0 + lift;
-        const z1 = book.z1 + lift;
+        const liftPx = isLifted ? details.bookLift * unit : 0;
+        const { x0, x1, y, lean, z0, z1 } = book;
         const y1 = y + book.thickness;
         const topY = y - lean;
         const front = [
@@ -89,7 +89,12 @@ export function ShelfDrawing(props: ShelfDrawingProps) {
         return (
           <g
             key={book.number}
+            data-lm-motion
             className={cn(isLifted && "stroke-[var(--lm-ink-hi)]")}
+            style={{
+              transform: `translateY(${-liftPx}px)`,
+              transition: `transform ${BOOK_LIFT_MS}ms cubic-bezier(0.2, 0.9, 0.3, 1.2), stroke 200ms`,
+            }}
           >
             <polygon
               className="fill-[var(--lm-face)]"
@@ -100,7 +105,11 @@ export function ShelfDrawing(props: ShelfDrawingProps) {
               points={toSvgPoints(spine)}
             />
             <polygon
-              className="fill-[var(--lm-paper)]"
+              className="fill-[var(--lm-face-top)]"
+              points={toSvgPoints(top)}
+            />
+            <polygon
+              className="fill-[var(--lm-paper)] stroke-none"
               fillOpacity={0.14}
               points={toSvgPoints(top)}
             />

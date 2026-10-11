@@ -3,11 +3,12 @@ import { test } from "node:test";
 
 import { transitionTv } from "./transition-tv";
 import type { TvEvent, TvState } from "./tv-state";
+import { TV_STATION_IDS } from "./tv-state";
 
 const settings = {
-  stations: ["a", "b", "c"].map((label) => ({
-    label,
-    videoId: label,
+  stations: TV_STATION_IDS.slice(0, 3).map((id) => ({
+    id,
+    videoId: id,
     channel: "Lofi Girl",
     placeholder: false,
   })),
@@ -36,7 +37,7 @@ test("wraps tuning past either end of the station list", () => {
   );
 });
 
-test("steps volume and clamps it to 0–100%", () => {
+test("steps volume and wraps it past either end of 0–100%", () => {
   assert.equal(
     transition({ state: off, event: { type: "volume", step: 1 } })
       .volumePercent,
@@ -46,12 +47,12 @@ test("steps volume and clamps it to 0–100%", () => {
   assert.equal(
     transition({ state: loud, event: { type: "volume", step: 1 } })
       .volumePercent,
-    100
+    0
   );
   const quiet = { ...off, volumePercent: 0 };
   assert.equal(
     transition({ state: quiet, event: { type: "volume", step: -1 } })
       .volumePercent,
-    0
+    100
   );
 });

@@ -81,14 +81,12 @@ test("shows the sun only between sunrise and sunset, highest at midday", () => {
   assert.equal(at(5.75).sun?.color, sceneConfig.sky.sunWarmColor);
 });
 
-test("keeps the lamp full at night and dims it to the noon ratio at midday", () => {
+test("keeps the lamp full at night and off through the day", () => {
   approximately(at(22).lampIntensity, sceneConfig.light.poolIntensity);
   approximately(at(3).lampIntensity, sceneConfig.light.poolIntensity);
-  approximately(
-    at(12.5).lampIntensity,
-    sceneConfig.light.poolIntensity * sceneConfig.light.lampNoonRatio
-  );
-  assert.ok(at(9).lampIntensity < at(22).lampIntensity);
+  approximately(at(12.5).lampIntensity, 0);
+  approximately(at(9).lampIntensity, 0);
+  assert.ok(at(sceneConfig.sky.sunsetHour).lampIntensity > 0);
 });
 
 test("lays the daylight patch only during the day", () => {
@@ -97,4 +95,33 @@ test("lays the daylight patch only during the day", () => {
     at(12).daylightPatchOpacity,
     sceneConfig.light.daylightPatchStrength
   );
+});
+
+test("warms the window light at sunrise and sunset and cools it at noon", () => {
+  const { sky, light } = sceneConfig;
+  assert.equal(at(sky.sunriseHour).daylightPatchColor, sky.sunWarmColor);
+  assert.equal(at(sky.sunsetHour).daylightPatchColor, sky.sunWarmColor);
+  assert.equal(at(12.5).daylightPatchColor, light.daylightColor);
+  assert.notEqual(
+    at(sky.sunsetHour - 0.5).daylightPatchColor,
+    light.daylightColor
+  );
+});
+
+test("switches the lamp on once daylight drops below lampOnDaylight", () => {
+  const { sunsetHour, twilightHours } = sceneConfig.sky;
+  const hours = Array.from(
+    { length: 101 },
+    (_, index) => sunsetHour - twilightHours + (index / 100) * twilightHours
+  );
+  const firstOn = hours.find((hour) => at(hour).isLampOn);
+  assert.ok(firstOn !== undefined);
+  assert.ok(at(firstOn).daylight < sceneConfig.light.lampOnDaylight);
+  assert.ok(
+    at(firstOn).lampIntensity >
+      sceneConfig.light.poolIntensity * (1 - sceneConfig.light.lampOnDaylight) -
+        0.05,
+    "the lamp comes on at a visible level, not from zero"
+  );
+  assert.equal(at(firstOn - 0.1).isLampOn, false);
 });

@@ -37,7 +37,10 @@ export function layoutPageRows(options: LayoutPageRowsOptions): PageRow[] {
   const { linesPerPage } = options;
   return options.entries.flatMap((entry) => {
     const firstLine = (entry.page - 1) * linesPerPage + entry.lineStart - 1;
-    const textRowCount = Math.max(0, entry.lineCount - (entry.meta === undefined ? 0 : 1));
+    const textRowCount = Math.max(
+      0,
+      entry.lineCount - (entry.meta === undefined ? 0 : 1)
+    );
     const textRows = entry.lines.slice(0, textRowCount).map(
       (text, index): RowAtLine => ({
         kind: "text",
@@ -60,7 +63,10 @@ export function layoutPageRows(options: LayoutPageRowsOptions): PageRow[] {
             },
           ];
     return [...textRows, ...metaRows].flatMap((row) => {
-      const position = getLinePosition({ lineIndex: row.lineIndex, linesPerPage });
+      const position = getLinePosition({
+        lineIndex: row.lineIndex,
+        linesPerPage,
+      });
       if (position.page !== options.page) return [];
       return [
         {

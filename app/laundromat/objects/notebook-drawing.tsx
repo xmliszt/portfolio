@@ -1,3 +1,4 @@
+import { useLaundromatCopy } from "@/app/laundromat/i18n/use-laundromat-copy";
 import type { LaidOutObject } from "@/lib/laundromat/build-scene-layout";
 import { getFacePlane } from "@/lib/laundromat/get-face-plane";
 import type { IsoProjection } from "@/lib/laundromat/project-iso-point";
@@ -17,6 +18,7 @@ type NotebookDrawingProps = {
 };
 
 export function NotebookDrawing(props: NotebookDrawingProps) {
+  const { copy } = useLaundromatCopy();
   const { position: p, size } = props.laidOut.object;
   const { faces } = props.laidOut;
   const { projection } = props;
@@ -145,7 +147,7 @@ export function NotebookDrawing(props: NotebookDrawingProps) {
           fontSize={6}
           className="fill-[var(--lm-ink)] stroke-none font-[family-name:var(--lm-font-display)]"
         >
-          {`No. ${props.coverNumber}`}
+          {copy.notebook.number({ number: props.coverNumber })}
         </text>
       </g>
       <polygon

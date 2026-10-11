@@ -1,6 +1,14 @@
 "use client";
 
-import { Fragment, useEffect, useMemo, useRef, useState } from "react";
+import {
+  Fragment,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import {
   animate,
   AnimatePresence,
@@ -18,44 +26,62 @@ import type { Camera, Viewport } from "@/lib/laundromat/compute-camera";
 import { computeCamera } from "@/lib/laundromat/compute-camera";
 import { describeSceneObject } from "@/lib/laundromat/describe-scene-object";
 import { getCameraMoveDurationMs } from "@/lib/laundromat/get-camera-move-duration-ms";
+import { getTimeOfDay } from "@/lib/laundromat/get-time-of-day";
+import { describeEntranceMat } from "@/lib/laundromat/laundry/describe-entrance-mat";
 import { describeMachine } from "@/lib/laundromat/laundry/describe-machine";
 import type { MachineControl } from "@/lib/laundromat/laundry/describe-machine-control";
 import { describeMachineControl } from "@/lib/laundromat/laundry/describe-machine-control";
 import { formatRemainingTime } from "@/lib/laundromat/laundry/format-remaining-time";
 import { getBasketContents } from "@/lib/laundromat/laundry/get-basket-contents";
 import { getCycleMinutes } from "@/lib/laundromat/laundry/get-cycle-minutes";
+import { getDialAngleDeg } from "@/lib/laundromat/laundry/get-dial-angle-deg";
+import type { MachineStatus } from "@/lib/laundromat/laundry/get-machine-status";
 import { getMachineStatus } from "@/lib/laundromat/laundry/get-machine-status";
+import { describeShelf } from "@/lib/laundromat/notebook/describe-shelf";
 import { describeShelfBook } from "@/lib/laundromat/notebook/describe-shelf-book";
 import { getShelfBookId } from "@/lib/laundromat/notebook/get-shelf-book-id";
 import { getShelfBookOutline } from "@/lib/laundromat/notebook/get-shelf-book-outline";
 import { getShelfBookPlacements } from "@/lib/laundromat/notebook/get-shelf-book-placements";
 import type { CameraFocus } from "@/lib/laundromat/parse-camera-focus";
 import { parseCameraFocus } from "@/lib/laundromat/parse-camera-focus";
+import { assignRemoteMachines } from "@/lib/laundromat/realtime/assign-remote-machines";
+import { chooseNotebookWriter } from "@/lib/laundromat/realtime/choose-notebook-writer";
 import type { FocusTarget, SceneConfig } from "@/lib/laundromat/scene-config";
+import type { NotebookScript } from "@/lib/laundromat/supabase/notebook-types";
 import { describeTv } from "@/lib/laundromat/tv/describe-tv";
 import type { TvControl } from "@/lib/laundromat/tv/describe-tv-control";
 import { describeTvControl } from "@/lib/laundromat/tv/describe-tv-control";
 import { getYouTubeWatchUrl } from "@/lib/laundromat/tv/get-youtube-watch-url";
 import { cn } from "@/lib/utils";
 
+import { useLaundromatCopy } from "./i18n/use-laundromat-copy";
 import { NotebookBook } from "./notebook/notebook-book";
+import type { NotebookLock } from "./notebook/notebook-lock";
 import { ShelfBookButton } from "./notebook/shelf-book-button";
 import { useNotebookShelf } from "./notebook/use-notebook-shelf";
 import type { SceneViews } from "./objects/scene-views";
+import { RoomSourceContext } from "./realtime/room-source-context";
+import { useRoom } from "./realtime/use-room";
+import { useVisitorRegion } from "./realtime/use-visitor-region";
+import { useSceneSounds } from "./sound/use-scene-sounds";
+import { useSoundBoard } from "./sound/use-sound-board";
+import { useSoundMuted } from "./sound/use-sound-muted";
 import { HitTargetButton } from "./hit-target-button";
 import { RoomDrawing } from "./room-drawing";
 import { SceneControlButton } from "./scene-control-button";
 import { SceneTooltip } from "./scene-tooltip";
+import { showNotification } from "./show-notification";
 import { useLaundry } from "./use-laundry";
 import { useRoomAppliances } from "./use-room-appliances";
 import { useSceneHour } from "./use-scene-hour";
+import { useTickingNow } from "./use-ticking-now";
 import { useTvAudio } from "./use-tv-audio";
 
 const SCENE_UNIT_PX = 40;
 const TOOLTIP_DELAY_MS = 300;
 const FOCUS_TARGETS = ["shelf", "notebook"] satisfies FocusTarget[];
-const DIAL_DEGREES_PER_DETENT = 60;
 const KNOB_CONTROLS: LaidOutControl["control"][] = ["dial", "tuner", "volume"];
+const DOOR_HOLD_OPEN_MS = 700;
 
 function getFocusedObjectId(options: {
   focus: CameraFocus;
@@ -81,6 +107,7 @@ function findFocusTarget(options: { objectId: string; config: SceneConfig }) {
 type LaundromatSceneProps = {
   config: SceneConfig;
   hourOverride?: number;
+  onHeadHome?: () => void;
 };
 
 export function LaundromatScene(props: LaundromatSceneProps) {
@@ -94,7 +121,9 @@ export function LaundromatScene(props: LaundromatSceneProps) {
   const focus = parseCameraFocus(searchParams.get("focus"));
   const focusedObjectId = getFocusedObjectId({ focus, config });
   const bookNumber =
-    focus === "notebook" ? parseBookNumber(searchParams.get("book")) : undefined;
+    focus === "notebook"
+      ? parseBookNumber(searchParams.get("book"))
+      : undefined;
   const prefersReducedMotion = useReducedMotion() ?? false;
   const sceneHour = useSceneHour();
   const hour = props.hourOverride ?? sceneHour;
@@ -104,6 +133,8 @@ export function LaundromatScene(props: LaundromatSceneProps) {
   const [isReady, setIsReady] = useState(false);
   const [highlightedId, setHighlightedId] = useState<string>();
   const [tooltipId, setTooltipId] = useState<string>();
+  const [openDoorId, setOpenDoorId] = useState<string>();
+  const doorTimerRef = useRef<number>(undefined);
   const tooltipTimerRef = useRef<number>(undefined);
   const tooltipCooldownTimerRef = useRef<number>(undefined);
   const isTooltipWarmRef = useRef(false);
@@ -116,6 +147,9 @@ export function LaundromatScene(props: LaundromatSceneProps) {
     undefined
   );
   const previousFocusRef = useRef(focus);
+  const sound = useSoundBoard();
+  const { copy } = useLaundromatCopy();
+  const { muted: isSoundMuted } = useSoundMuted();
   const laundry = useLaundry();
   const appliances = useRoomAppliances(config);
   const notebookShelf = useNotebookShelf();
@@ -154,6 +188,7 @@ export function LaundromatScene(props: LaundromatSceneProps) {
                 startedAtMs: Date.parse(book.startedAt),
                 filledAtMs: Date.parse(book.filledAt),
                 entryCount: book.entryCount,
+                copy,
               }),
             },
           ];
@@ -166,8 +201,119 @@ export function LaundromatScene(props: LaundromatSceneProps) {
   } = useTvAudio({
     tv: appliances.tv,
     details: tvSettings,
+    muted: isSoundMuted,
     onSkipStation: () => appliances.dispatchTv({ type: "tune", step: 1 }),
   });
+
+  const [writingSince, setWritingSince] = useState<number>();
+  const ownLoad = laundry.state.load;
+  const roomSource = useContext(RoomSourceContext);
+  const ownRegion = useVisitorRegion({ enabled: roomSource !== undefined });
+  const ownPresence = useMemo(
+    () =>
+      laundry.visitorId === undefined
+        ? undefined
+        : {
+            visitorId: laundry.visitorId,
+            ...(ownRegion === undefined ? {} : { region: ownRegion }),
+            ...(ownLoad.kind === "running"
+              ? {
+                  load: {
+                    kind: ownLoad.machine.kind,
+                    startedAt: ownLoad.startedAt,
+                    durationMs: ownLoad.durationMs,
+                  },
+                }
+              : {}),
+            ...(writingSince === undefined ? {} : { writingSince }),
+          },
+    [laundry.visitorId, ownRegion, ownLoad, writingSince]
+  );
+  const room = useRoom(ownPresence);
+  const roomNow = useTickingNow(
+    room.peers.some(
+      ({ load, writingSince }) =>
+        load !== undefined || writingSince !== undefined
+    )
+  );
+  const now = Math.max(laundry.now, roomNow);
+  const remoteMachines = assignRemoteMachines({
+    machines: layout.objects.flatMap(({ object }) =>
+      object.kind === "washer" || object.kind === "dryer"
+        ? [{ id: object.id, kind: object.kind }]
+        : []
+    ),
+    ownMachineId:
+      ownLoad.kind === "carrying" || ownLoad.kind === "folded"
+        ? undefined
+        : ownLoad.machine.id,
+    others: room.peers.flatMap(({ visitorId, region, load }) =>
+      load === undefined || visitorId === laundry.visitorId
+        ? []
+        : [{ visitorId, region, load }]
+    ),
+    ownRegion,
+    now,
+  });
+  const notebookWriter = chooseNotebookWriter({
+    presences: [
+      ...room.peers,
+      ...(ownPresence === undefined
+        ? []
+        : [{ ...ownPresence, sessionId: room.sessionId }]),
+    ],
+    now,
+  });
+  const notebookLock: NotebookLock =
+    notebookWriter === undefined || notebookWriter === room.sessionId
+      ? { kind: "free" }
+      : { kind: "taken", draft: room.drafts[notebookWriter] };
+
+  const [wantsFreeNotice, setWantsFreeNotice] = useState(false);
+  const isNotebookTaken = notebookLock.kind === "taken";
+  const wasNotebookTakenRef = useRef(isNotebookTaken);
+  useEffect(() => {
+    const wasTaken = wasNotebookTakenRef.current;
+    wasNotebookTakenRef.current = isNotebookTaken;
+    if (!wasTaken || isNotebookTaken || !wantsFreeNotice || !room.isConnected) {
+      return;
+    }
+    setWantsFreeNotice(false);
+    sound?.play("notebook-free");
+    showNotification({
+      title: copy.notebook.freeNotificationTitle,
+      body: copy.notebook.freeNotificationBody,
+      tag: "laundromat-notebook",
+    });
+  }, [isNotebookTaken, wantsFreeNotice, sound, room.isConnected, copy]);
+
+  const { refresh: refreshShelf } = notebookShelf;
+  const wasNotebookTakenForShelfRef = useRef(isNotebookTaken);
+  useEffect(() => {
+    const wasTaken = wasNotebookTakenForShelfRef.current;
+    wasNotebookTakenForShelfRef.current = isNotebookTaken;
+    if (wasTaken && !isNotebookTaken) void refreshShelf();
+  }, [isNotebookTaken, refreshShelf]);
+  const handleNotebookPlaced = useCallback(() => {
+    void refreshShelf();
+  }, [refreshShelf]);
+
+  const handleWritingChange = useCallback((isWriting: boolean) => {
+    setWritingSince((current) =>
+      isWriting ? (current ?? Date.now()) : undefined
+    );
+  }, []);
+
+  function handleDraftChange(draft: { text: string; script: NotebookScript }) {
+    room.sendDraft(draft);
+  }
+
+  async function handleRequestFreeNotice() {
+    setWantsFreeNotice(true);
+    if ("Notification" in window && Notification.permission === "default") {
+      await Notification.requestPermission();
+    }
+  }
 
   const machineViews = Object.fromEntries(
     layout.objects.flatMap(({ object }) => {
@@ -177,11 +323,15 @@ export function LaundromatScene(props: LaundromatSceneProps) {
         kind: object.kind,
         number: object.number,
       };
-      const status = getMachineStatus({
-        state: laundry.state,
-        machine,
-        now: laundry.now,
-      });
+      const remote = remoteMachines[object.id];
+      const status: MachineStatus =
+        remote === undefined
+          ? getMachineStatus({ state: laundry.state, machine, now })
+          : {
+              kind: "occupied",
+              endsAt: remote.endsAt,
+              remainingMs: Math.max(0, remote.endsAt - now),
+            };
       const cycle = getCycleMinutes({
         state: laundry.state,
         machine,
@@ -192,7 +342,11 @@ export function LaundromatScene(props: LaundromatSceneProps) {
           case "running":
             return formatRemainingTime(status.remainingMs);
           case "done":
-            return "done";
+            return copy.readoutDone;
+          case "occupied":
+            return status.remainingMs > 0
+              ? formatRemainingTime(status.remainingMs)
+              : copy.readoutDone;
           default:
             return `${String(cycle.minutes).padStart(2, "0")}:00`;
         }
@@ -205,19 +359,46 @@ export function LaundromatScene(props: LaundromatSceneProps) {
             status,
             cycle,
             readout,
-            dialAngleDeg: -90 + cycle.detent * DIAL_DEGREES_PER_DETENT,
-            doorOpen: false,
+            dialAngleDeg: getDialAngleDeg({
+              detent: cycle.detent,
+              detentCount: config.machines.cycleMinutes.length,
+            }),
+            doorOpen: openDoorId === object.id,
           },
         ],
       ];
     })
   );
   type MachineView = (typeof machineViews)[string];
+  const basket = getBasketContents(laundry.state.load);
+  const entranceMat = describeEntranceMat({ basket, copy });
+  const shelfDescription = describeShelf({
+    shelf:
+      shelf === undefined
+        ? { kind: "loading" }
+        : shelf.kind === "online"
+          ? { kind: "online", bookCount: shelfBooks.length }
+          : { kind: "offline" },
+    copy,
+  });
+  const isShelfFocusBlocked =
+    focus === "shelf" && shelf !== undefined && !shelfDescription.ready;
+  useEffect(() => {
+    if (!isShelfFocusBlocked) return;
+    const params = new URLSearchParams(searchParams.toString());
+    params.delete("focus");
+    params.delete("book");
+    const query = params.toString();
+    router.replace(query === "" ? window.location.pathname : `?${query}`, {
+      scroll: false,
+    });
+  }, [isShelfFocusBlocked, router, searchParams]);
   const views: SceneViews = {
     machines: machineViews,
     tv: { state: appliances.tv, noSignal: isTvNoSignal },
     coffee: appliances.coffee,
-    basket: getBasketContents(laundry.state.load),
+    basket,
+    matReady: entranceMat.ready,
     shelfBookNumbers: filledBooks.map(({ number }) => number),
     notebookNumber: coverNumber,
   };
@@ -238,6 +419,7 @@ export function LaundromatScene(props: LaundromatSceneProps) {
           minutes: view.cycle.minutes,
           nextMinutes: view.cycle.next,
           notifications: laundry.notifications,
+          copy,
         });
       }
       case "tv":
@@ -245,9 +427,10 @@ export function LaundromatScene(props: LaundromatSceneProps) {
           control: control.control,
           state: appliances.tv,
           settings: tvSettings,
+          copy,
         });
       case "coffee":
-        return describeCoffeeSwitch(appliances.coffee);
+        return describeCoffeeSwitch({ phase: appliances.coffee, copy });
       default: {
         const unhandled: never = control;
         return unhandled;
@@ -257,18 +440,51 @@ export function LaundromatScene(props: LaundromatSceneProps) {
 
   function describeObject(objectId: string) {
     const view = machineViews[objectId];
-    if (view !== undefined) return describeMachine(view);
+    if (view !== undefined) return describeMachine({ ...view, copy });
     const laidOut = layout.objects.find(({ object }) => object.id === objectId);
     if (laidOut === undefined) return undefined;
     switch (laidOut.object.kind) {
       case "tv":
-        return describeTv({ state: appliances.tv, settings: tvSettings });
+        return describeTv({
+          state: appliances.tv,
+          settings: tvSettings,
+          copy,
+        });
       case "coffee-machine":
-        return describeCoffeeMachine(appliances.coffee);
+        return describeCoffeeMachine({ phase: appliances.coffee, copy });
+      case "mat":
+        return entranceMat;
+      case "shelf":
+        return shelfDescription;
       default:
-        return describeSceneObject(laidOut.object);
+        return describeSceneObject({ object: laidOut.object, copy });
     }
   }
+
+  const runningStatuses = Object.values(machineViews).filter(
+    ({ status }) =>
+      status.kind === "running" ||
+      (status.kind === "occupied" && status.remainingMs > 0)
+  );
+  const isWasherRunning = runningStatuses.some(
+    ({ machine }) => machine.kind === "washer"
+  );
+  const isDryerRunning = runningStatuses.some(
+    ({ machine }) => machine.kind === "dryer"
+  );
+  const isTvHissing =
+    appliances.tv.on && (tvAudioState === "buffering" || isTvNoSignal);
+  const lampSwitch = useSceneSounds({
+    sound,
+    isWasherRunning,
+    isDryerRunning,
+    coffeeKind: appliances.coffee.kind,
+    isTvHissing,
+    isLampOn:
+      hour === undefined ? undefined : getTimeOfDay({ hour, config }).isLampOn,
+    loadKind: laundry.state.load.kind,
+    focus,
+  });
 
   useEffect(() => {
     const root = rootRef.current;
@@ -360,6 +576,7 @@ export function LaundromatScene(props: LaundromatSceneProps) {
     () => () => {
       window.clearTimeout(tooltipTimerRef.current);
       window.clearTimeout(tooltipCooldownTimerRef.current);
+      window.clearTimeout(doorTimerRef.current);
     },
     []
   );
@@ -419,7 +636,22 @@ export function LaundromatScene(props: LaundromatSceneProps) {
   }
 
   function handleActivate(objectId: string) {
+    const isMat = layout.objects.some(
+      ({ object }) => object.id === objectId && object.kind === "mat"
+    );
+    if (isMat) {
+      if (focus !== "room") setFocus("room");
+      if (!entranceMat.ready) return;
+      sound?.play("sliding-door");
+      laundry.dispatch({ type: "collect" });
+      props.onHeadHome?.();
+      return;
+    }
     const target = findFocusTarget({ objectId, config });
+    if (target === "shelf" && !shelfDescription.ready) {
+      if (focus !== "room") setFocus("room");
+      return;
+    }
     if (target !== undefined) {
       if (target !== focus) setFocus(target);
       return;
@@ -437,6 +669,7 @@ export function LaundromatScene(props: LaundromatSceneProps) {
       setFocus("room");
       return;
     }
+    if (KNOB_CONTROLS.includes(control.control)) sound?.play("knob-click");
     switch (control.target) {
       case "machine": {
         const view = machineViews[options.objectId];
@@ -449,6 +682,8 @@ export function LaundromatScene(props: LaundromatSceneProps) {
         pressTvControl({ control: control.control, step });
         return;
       case "coffee":
+        sound?.play("coffee-switch");
+        sound?.play("coffee-beep");
         appliances.brew();
         return;
       default: {
@@ -461,6 +696,7 @@ export function LaundromatScene(props: LaundromatSceneProps) {
   function pressTvControl(options: { control: TvControl; step: 1 | -1 }) {
     switch (options.control) {
       case "tuner":
+        if (appliances.tv.on) sound?.play("tv-static");
         appliances.dispatchTv({ type: "tune", step: options.step });
         return;
       case "volume":
@@ -480,6 +716,7 @@ export function LaundromatScene(props: LaundromatSceneProps) {
         return;
       }
       case "power":
+        sound?.play("coffee-switch");
         appliances.dispatchTv({ type: "power" });
         return;
       default: {
@@ -487,6 +724,19 @@ export function LaundromatScene(props: LaundromatSceneProps) {
         return unhandled;
       }
     }
+  }
+
+  function swingDoor(objectId: string) {
+    window.clearTimeout(doorTimerRef.current);
+    sound?.play("door-latch-open");
+    setOpenDoorId(objectId);
+    doorTimerRef.current = window.setTimeout(() => {
+      setOpenDoorId(undefined);
+      doorTimerRef.current = window.setTimeout(
+        () => sound?.play("door-latch-close"),
+        config.details.machine.doorSwingMs * 0.8
+      );
+    }, config.details.machine.doorSwingMs + DOOR_HOLD_OPEN_MS);
   }
 
   function pressMachineControl(options: {
@@ -500,6 +750,7 @@ export function LaundromatScene(props: LaundromatSceneProps) {
         laundry.dispatch({ type: "turn-dial", machine: view.machine, step });
         return;
       case "start":
+        sound?.play("start-button");
         if (view.status.kind === "running") {
           void laundry.remind(view.machine);
           return;
@@ -508,6 +759,10 @@ export function LaundromatScene(props: LaundromatSceneProps) {
         return;
       case "door":
         laundry.dispatch({ type: "open-door", machine: view.machine });
+        swingDoor(view.machine.id);
+        if (view.status.kind === "done" || view.status.kind === "loadable") {
+          sound?.play("collect-laundry", { volume: 0.5 });
+        }
         return;
       default: {
         const unhandled: never = control;
@@ -626,6 +881,7 @@ export function LaundromatScene(props: LaundromatSceneProps) {
           dimAmount={config.camera.unfocusedDim}
           views={views}
           hour={hour}
+          lampSwitch={lampSwitch}
           config={config}
         />
         {layout.objects.map((laidOut) => {
@@ -728,8 +984,13 @@ export function LaundromatScene(props: LaundromatSceneProps) {
                 bookNumber={bookNumber}
                 coverNumber={coverNumber}
                 reducedMotion={prefersReducedMotion}
-                onPlaced={() => void notebookShelf.refresh()}
+                onPlaced={handleNotebookPlaced}
                 onClose={() => setFocus("room")}
+                lock={notebookLock}
+                freeNoticeOn={wantsFreeNotice}
+                onWritingChange={handleWritingChange}
+                onDraftChange={handleDraftChange}
+                onRequestFreeNotice={handleRequestFreeNotice}
               />
             </motion.div>
           </motion.div>

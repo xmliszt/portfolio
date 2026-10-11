@@ -1,6 +1,8 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
 
+import { en } from "@/lib/laundromat/i18n/copy/en";
+
 import { describeCoffeeMachine } from "./describe-coffee-machine";
 import { describeCoffeeSwitch } from "./describe-coffee-switch";
 import { getCoffeePhase } from "./get-coffee-phase";
@@ -31,22 +33,35 @@ test("brews with progress, then holds a hot cup, then goes idle", () => {
 });
 
 test("disables the switch only while brewing", () => {
-  assert.deepEqual(describeCoffeeSwitch({ kind: "idle" }), {
-    label: "Coffee machine switch, brew a coffee",
-    tooltip: "brew a coffee",
-    enabled: true,
-  });
+  assert.deepEqual(
+    describeCoffeeSwitch({ phase: { kind: "idle" }, copy: en }),
+    {
+      label: "Coffee machine switch, brew a coffee",
+      tooltip: "brew a coffee",
+      enabled: true,
+    }
+  );
   assert.equal(
-    describeCoffeeSwitch({ kind: "brewing", progress: 0.5 }).enabled,
+    describeCoffeeSwitch({
+      phase: { kind: "brewing", progress: 0.5 },
+      copy: en,
+    }).enabled,
     false
   );
-  assert.equal(describeCoffeeSwitch({ kind: "hot" }).enabled, true);
+  assert.equal(
+    describeCoffeeSwitch({ phase: { kind: "hot" }, copy: en }).enabled,
+    true
+  );
 });
 
 test("gives the idle machine body no tooltip", () => {
-  assert.equal(describeCoffeeMachine({ kind: "idle" }).tooltip, undefined);
   assert.equal(
-    describeCoffeeMachine({ kind: "brewing", progress: 0 }).tooltip,
+    describeCoffeeMachine({ phase: { kind: "idle" }, copy: en }).tooltip,
+    undefined
+  );
+  assert.equal(
+    describeCoffeeMachine({ phase: { kind: "brewing", progress: 0 }, copy: en })
+      .tooltip,
     "brewing…"
   );
 });

@@ -13,7 +13,8 @@ type PageLeafProps = {
   pageWidth: number;
 };
 
-const FACE_CLASS = "absolute inset-0 overflow-hidden [backface-visibility:hidden]";
+const FACE_CLASS =
+  "absolute inset-0 overflow-hidden [backface-visibility:hidden]";
 
 export function PageLeaf(props: PageLeafProps) {
   const transform = useTransform(

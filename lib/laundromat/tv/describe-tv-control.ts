@@ -1,3 +1,5 @@
+import type { LaundromatCopy } from "@/lib/laundromat/i18n/laundromat-copy";
+
 import { formatStation } from "./format-station";
 import type { TvSettings, TvState } from "./tv-state";
 
@@ -8,47 +10,55 @@ export function describeTvControl(options: {
   control: TvControl;
   state: TvState;
   settings: TvSettings;
+  copy: LaundromatCopy;
 }) {
   const { state, settings } = options;
   const { stations } = settings;
-  const station = formatStation({ index: state.station, stations });
+  const copy = options.copy.tv;
+  const station = formatStation({
+    index: state.station,
+    stations,
+    copy: options.copy,
+  });
   switch (options.control) {
     case "screen":
       return state.on
         ? {
-            label: `TV screen, ${station}, watch on YouTube`,
-            tooltip: "watch on YouTube ↗",
+            label: copy.screenOnLabel({ station }),
+            tooltip: copy.screenOnTooltip,
             enabled: true,
           }
         : {
-            label: "TV screen, off, turn on",
-            tooltip: "turn on",
+            label: copy.screenOffLabel,
+            tooltip: copy.turnOn,
             enabled: true,
           };
     case "tuner": {
-      const next = (state.station + 1) % stations.length;
+      const next = stations[(state.station + 1) % stations.length];
       return {
-        label: `TV channel, ${station}`,
-        tooltip: `next station · ${stations[next]?.label}`,
+        label: copy.tunerLabel({ station }),
+        tooltip: copy.tunerTooltip({
+          nextName: next === undefined ? "" : copy.stations[next.id],
+        }),
         enabled: true,
       };
     }
     case "volume":
       return {
-        label: `TV volume, ${state.volumePercent}%`,
-        tooltip: `volume · ${state.volumePercent}%`,
+        label: copy.volumeLabel({ percent: state.volumePercent }),
+        tooltip: copy.volumeTooltip({ percent: state.volumePercent }),
         enabled: true,
       };
     case "power":
       return state.on
         ? {
-            label: "TV power, on, turn off",
-            tooltip: "turn off",
+            label: copy.powerOnLabel,
+            tooltip: copy.turnOff,
             enabled: true,
           }
         : {
-            label: "TV power, off, turn on",
-            tooltip: "turn on",
+            label: copy.powerOffLabel,
+            tooltip: copy.turnOn,
             enabled: true,
           };
     default: {

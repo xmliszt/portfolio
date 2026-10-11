@@ -97,6 +97,14 @@ export function transitionLaundry(options: {
         return state;
       }
       return { ...state, load: { ...load, remind: true } };
+    case "collect": {
+      const isFinished =
+        load.kind === "folded" ||
+        (load.kind === "carrying" && load.laundry === "wet");
+      return isFinished
+        ? { ...state, load: { kind: "carrying", laundry: "dirty" } }
+        : state;
+    }
     case "tick":
       if (
         load.kind !== "running" ||

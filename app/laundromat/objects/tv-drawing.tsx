@@ -1,3 +1,4 @@
+import { useLaundromatCopy } from "@/app/laundromat/i18n/use-laundromat-copy";
 import { useStationThumbnail } from "@/app/laundromat/use-station-thumbnail";
 import type { LaidOutObject } from "@/lib/laundromat/build-scene-layout";
 import type { IsoProjection } from "@/lib/laundromat/project-iso-point";
@@ -24,6 +25,7 @@ type TvDrawingProps = {
 };
 
 export function TvDrawing(props: TvDrawingProps) {
+  const { copy } = useLaundromatCopy();
   const { object, faces, face } = props.laidOut;
   const { state: tv, noSignal } = props.view;
   const thumbnailUrl = useStationThumbnail(
@@ -68,6 +70,7 @@ export function TvDrawing(props: TvDrawingProps) {
   const station = formatStation({
     index: tv.station,
     stations: details.stations,
+    copy,
   });
   const credit = details.stations[tv.station]?.channel;
   const screenBox = {
@@ -301,7 +304,7 @@ export function TvDrawing(props: TvDrawingProps) {
                   textAnchor="middle"
                   className="fill-[var(--lm-ink-hi)]"
                 >
-                  no signal
+                  {copy.tv.noSignal}
                 </text>
               ) : (
                 credit !== undefined && (

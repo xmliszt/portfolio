@@ -5,7 +5,8 @@ export type MachineStatus =
   | { kind: "loadable" }
   | { kind: "loaded" }
   | { kind: "running"; endsAt: number; remainingMs: number; remind: boolean }
-  | { kind: "done" };
+  | { kind: "done" }
+  | { kind: "occupied"; endsAt: number; remainingMs: number };
 
 /** Return what `machine` can do right now for this visitor's laundry. */
 export function getMachineStatus(options: {

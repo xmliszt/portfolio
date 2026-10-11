@@ -13,6 +13,7 @@ import { SteamWisps } from "./steam-wisps";
 
 const TOWER_DEPTH = 0.42;
 const HEAD_HEIGHT = 0.36;
+const HEAD_DEPTH = 0.56;
 const CARAFE = { radius: 0.26, topRadius: 0.21, bottom: 0.32, top: 0.9 };
 
 type CoffeeMachineDrawingProps = {
@@ -22,6 +23,8 @@ type CoffeeMachineDrawingProps = {
   phase: CoffeePhase;
   details: SceneConfig["details"]["coffee"];
 };
+
+const STREAM_DASH = "6 0.8";
 
 export function CoffeeMachineDrawing(props: CoffeeMachineDrawingProps) {
   const { object, face } = props.laidOut;
@@ -73,11 +76,7 @@ export function CoffeeMachineDrawing(props: CoffeeMachineDrawingProps) {
     projection,
   });
   const headBottom = p.z + size.h - HEAD_HEIGHT;
-  const spout = getIsoEllipse({
-    center: { ...carafeCenter, z: headBottom },
-    radius: 0.08,
-    projection,
-  });
+
   const tower = getFacePlane({
     plane: "front",
     origin: { x: p.x, y: p.y + TOWER_DEPTH, z: p.z + size.h },
@@ -91,6 +90,9 @@ export function CoffeeMachineDrawing(props: CoffeeMachineDrawingProps) {
     height: towerHeight - 0.62 * unit,
   };
   const handleX = carafe.top.cx + carafe.top.rx;
+  const streamStyle: React.CSSProperties = {
+    animation: `lm-stream ${details.streamFlowMs}ms linear infinite`,
+  };
   const { switch: switchRect } = face.rects;
 
   return (
@@ -140,33 +142,25 @@ export function CoffeeMachineDrawing(props: CoffeeMachineDrawingProps) {
         ))}
       </g>
       <g className={partStroke(isHighlighted)}>
-        <IsoBox
-          position={{ x: p.x + 0.08, y: p.y + TOWER_DEPTH, z: headBottom }}
-          size={{ w: size.w - 0.16, d: 0.56, h: HEAD_HEIGHT }}
-          projection={projection}
-        />
-        <ellipse
-          {...spout}
-          className="fill-[var(--lm-recess)]"
-          strokeWidth={0.75}
-        />
-      </g>
-      {phase.kind === "brewing" && (
-        <circle
-          data-lm-motion
-          cx={spout.cx}
-          cy={spout.cy + 2}
-          r={0.9}
-          className="fill-[var(--lm-accent)] stroke-none"
-          style={{ animation: `lm-drip ${details.dripMs}ms ease-in infinite` }}
-        />
-      )}
-      <g className={partStroke(isHighlighted)}>
         {fill > 0 && (
           <g className="stroke-[var(--lm-detail)]" strokeWidth={0.75}>
             <path d={liquid.body} className="fill-[var(--lm-detail)]" />
             <ellipse {...liquid.top} className="fill-[var(--lm-recess)]" />
           </g>
+        )}
+        {phase.kind === "brewing" && (
+          <line
+            data-lm-motion
+            x1={carafe.top.cx}
+            y1={carafe.top.cy}
+            x2={carafe.top.cx}
+            y2={liquid.top.cy}
+            className="stroke-[var(--lm-accent)]"
+            strokeWidth={1.2}
+            strokeLinecap="round"
+            strokeDasharray={STREAM_DASH}
+            style={streamStyle}
+          />
         )}
         <path
           d={carafe.body}
@@ -194,6 +188,13 @@ export function CoffeeMachineDrawing(props: CoffeeMachineDrawingProps) {
           y2={carafe.top.cy + 6}
           className="stroke-[var(--lm-ink-hi)]"
           strokeOpacity={0.15}
+        />
+      </g>
+      <g className={partStroke(isHighlighted)}>
+        <IsoBox
+          position={{ x: p.x + 0.08, y: p.y + TOWER_DEPTH, z: headBottom }}
+          size={{ w: size.w - 0.16, d: HEAD_DEPTH, h: HEAD_HEIGHT }}
+          projection={projection}
         />
       </g>
       {isLive && (

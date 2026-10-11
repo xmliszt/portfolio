@@ -224,6 +224,13 @@ export function PlantDrawing(props: PlantDrawingProps) {
     projection,
   });
   const scale = projection.unit / 40;
+  const bendSeconds = (details.swayMinSeconds + details.swayMaxSeconds) / 2;
+  const bend = {
+    "data-lm-motion": true,
+    style: {
+      animation: `lm-bend ${bendSeconds}s ease-in-out infinite alternate`,
+    },
+  };
   function renderLeaves(layer: Leaf["layer"]) {
     return LEAVES.filter((leaf) => leaf.layer === layer).map((leaf) => {
       const seconds =
@@ -271,7 +278,7 @@ export function PlantDrawing(props: PlantDrawingProps) {
       strokeLinecap="round"
     >
       <g transform={`translate(${soil.cx} ${soil.cy}) scale(${scale})`}>
-        {renderLeaves("back")}
+        <g {...bend}>{renderLeaves("back")}</g>
       </g>
       <path d={pot.body} className="fill-[var(--lm-face)]" />
       <path d={rim.body} className="fill-[var(--lm-face-top)]" />
@@ -282,13 +289,15 @@ export function PlantDrawing(props: PlantDrawingProps) {
         strokeWidth={0.75}
       />
       <g transform={`translate(${soil.cx} ${soil.cy}) scale(${scale})`}>
-        {renderLeaves("middle")}
-        <g className="fill-none" strokeWidth={0.75}>
-          {VINES.map((vine) => (
-            <path key={vine} d={vine} />
-          ))}
+        <g {...bend}>
+          {renderLeaves("middle")}
+          <g className="fill-none" strokeWidth={0.75}>
+            {VINES.map((vine) => (
+              <path key={vine} d={vine} />
+            ))}
+          </g>
+          {renderLeaves("front")}
         </g>
-        {renderLeaves("front")}
       </g>
     </g>
   );

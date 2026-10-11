@@ -5,8 +5,18 @@ export type TvEvent =
   | { type: "tune"; step: 1 | -1 }
   | { type: "volume"; step: 1 | -1 };
 
+export const TV_STATION_IDS = [
+  "rainy-cafe",
+  "piano-night",
+  "late-wash",
+  "tape-hiss",
+  "city-at-3am",
+] as const;
+
+export type TvStationId = (typeof TV_STATION_IDS)[number];
+
 export type TvStation = {
-  label: string;
+  id: TvStationId;
   videoId: string;
   channel: string;
   placeholder: boolean;

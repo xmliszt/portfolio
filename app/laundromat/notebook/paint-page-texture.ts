@@ -74,7 +74,12 @@ export function paintPageTexture(options: PaintPageTextureOptions) {
     settings.height - settings.marginTop - settings.marginBottom;
   const ruleCount = Math.round(bodyHeight / pitch);
   for (let rule = 1; rule <= ruleCount; rule += 1) {
-    context.fillRect(0, settings.marginTop + rule * pitch - 1, settings.width, 1);
+    context.fillRect(
+      0,
+      settings.marginTop + rule * pitch - 1,
+      settings.width,
+      1
+    );
   }
 
   context.fillStyle = palette.inkPen;

@@ -1,0 +1,242 @@
+import type { LaundromatCopy } from "@/lib/laundromat/i18n/laundromat-copy";
+import type { MachineKind } from "@/lib/laundromat/scene-config";
+
+export const zhHans = {
+  locale: "zh-Hans",
+  languageName: "简体中文",
+  site: {
+    name: "laundro.cafe",
+    title: "laundro.cafe：浏览器里一个安静的专注角落",
+    description:
+      "浏览器里一间安静的自助洗衣店。把洗衣当作专注计时器，用电视放 lo-fi，煮一杯咖啡，再在共享笔记本里留一句话。",
+    intro:
+      "浏览器里一间安静的自助洗衣店。启动一台洗衣机或烘干机，设定 5 到 60 分钟作为专注计时，结束时会收到通知；用电视放 lo-fi 电台，煮一杯咖啡，再在共享笔记本里手写留言。写满的笔记本会放到书架上。",
+    keywords: [
+      "自助洗衣店",
+      "专注计时器",
+      "番茄钟",
+      "lo-fi",
+      "治愈",
+      "等距",
+      "互动",
+      "共享笔记本",
+    ],
+    openGraphLocale: "zh_CN",
+  },
+  toolbar: {
+    soundOn: "声音开",
+    soundOff: "声音关",
+    share: "分享",
+    linkCopied: "链接已复制",
+    shareText:
+      "浏览器里一间安静的自助洗衣店。放一桶衣服进去，让计时器走着，读读别人留下的话。",
+    language: "语言",
+  },
+  tabDone: "好了",
+  readoutDone: "好了",
+  matWelcome: "欢迎",
+  machine: {
+    name: (machine: { kind: MachineKind; number: number }) =>
+      `${machine.kind === "washer" ? "洗衣机" : "烘干机"} ${machine.number}`,
+    freeLabel: (o: { name: string }) => `${o.name}，空闲`,
+    freeTooltip: (o: { name: string }) => `${o.name} · 空闲`,
+    loadedLabel: (o: { name: string }) => `${o.name}，衣服已放入，可以启动`,
+    loadedTooltip: (o: { name: string }) => `${o.name} · 已放入`,
+    runningLabel: (o: { name: string; kind: MachineKind; remaining: string }) =>
+      `${o.name}，${o.kind === "washer" ? "洗衣中" : "烘干中"}，还剩 ${o.remaining}`,
+    runningTooltip: (o: { kind: MachineKind; time: string }) =>
+      `${o.kind === "washer" ? "洗衣中" : "烘干中"} · ${o.time} 结束`,
+    doneLabel: (o: { name: string }) => `${o.name}，好了，把衣服取出来吧`,
+    doneTooltip: (o: { name: string }) => `${o.name} · 好了`,
+    othersRunningLabel: (o: {
+      name: string;
+      kind: MachineKind;
+      remaining: string;
+    }) =>
+      `${o.name}，正在${o.kind === "washer" ? "洗" : "烘干"}别人的衣服，还剩 ${o.remaining}`,
+    othersRunningTooltip: (o: { kind: MachineKind; time: string }) =>
+      `别人在${o.kind === "washer" ? "洗衣" : "烘干"} · ${o.time} 结束`,
+    othersDoneLabel: (o: { name: string }) => `${o.name}，别人的衣服好了`,
+    othersDoneTooltip: (o: { name: string }) => `${o.name} · 别人的，好了`,
+    doneNotificationTitle: (o: { name: string }) => `${o.name} · 好了`,
+    doneNotificationBody: (o: { kind: MachineKind }) =>
+      o.kind === "washer" ? "把衣服取出来，选一台烘干机" : "你的衣服烘干了",
+  },
+  machineControl: {
+    controlInUseLabel: (o: {
+      name: string;
+      control: "dial" | "start" | "door";
+    }) =>
+      `${o.name} ${{ dial: "旋钮", start: "启动键", door: "机门" }[o.control]}，别人正在使用`,
+    othersRunningTooltip: (o: { kind: MachineKind; time: string }) =>
+      `别人的${o.kind === "washer" ? "洗衣" : "烘干"} · ${o.time} 结束`,
+    othersDoneTooltip: "别人的衣服 · 等主人来取",
+    doneAt: (o: { time: string }) => `${o.time} 结束`,
+    dialLabel: (o: { name: string; minutes: number }) =>
+      `${o.name} 时长，${o.minutes} 分钟`,
+    dialTooltip: (o: { minutes: number; nextMinutes: number }) =>
+      `转动 · ${o.minutes} 分钟 → ${o.nextMinutes} 分钟`,
+    startLabel: (o: {
+      name: string;
+      kind: MachineKind;
+      minutes: number;
+      canNotify: boolean;
+    }) =>
+      `${o.name} 启动，${o.minutes} 分钟${o.kind === "washer" ? "洗衣" : "烘干"}${o.canNotify ? "，结束时通知你" : ""}`,
+    startTooltip: (o: {
+      kind: MachineKind;
+      minutes: number;
+      canNotify: boolean;
+    }) =>
+      `启动 · ${o.minutes} 分钟${o.kind === "washer" ? "洗衣" : "烘干"}${o.canNotify ? " · 会通知你" : ""}`,
+    remindLabel: (o: { name: string; kind: MachineKind }) =>
+      `${o.name}，${o.kind === "washer" ? "洗好" : "烘干"}时提醒我`,
+    remindTooltip: (o: { doneAt: string }) => `提醒我 · ${o.doneAt}`,
+    runningStartLabel: (o: {
+      name: string;
+      reminderOn: boolean;
+      doneAt: string;
+    }) => `${o.name} 启动，${o.reminderOn ? "已开启提醒，" : ""}${o.doneAt}`,
+    reminderOnTooltip: (o: { doneAt: string }) => `已开启提醒 · ${o.doneAt}`,
+    idleStartLabel: (o: { name: string }) => `${o.name} 启动`,
+    loadFirstTooltip: "先放衣服",
+    runningDoorTooltip: (o: { kind: MachineKind; doneAt: string }) =>
+      `${o.kind === "washer" ? "洗衣中" : "烘干中"} · ${o.doneAt}`,
+    doneDoorTooltip: "开门 · 取出衣服",
+    loadedDoorTooltip: "开门 · 把衣服拿回来",
+    loadableDoorTooltip: "放入衣服",
+    doorLabel: (o: { name: string }) => `${o.name} 机门`,
+    doorLabelWithHint: (o: { name: string; hint: string }) =>
+      `${o.name} 机门，${o.hint}`,
+  },
+  entranceMat: {
+    readyLabel: (o: { laundry: "wet" | "folded" }) =>
+      `门垫，带上${o.laundry === "folded" ? "烘干的" : "洗好的"}衣服回家`,
+    readyTooltip: "回家 · 带上你的衣服",
+    waitingLabel: "门垫，衣服好了就从这里回家",
+    waitingTooltip: "回家的路 · 先把衣服洗完",
+  },
+  coffee: {
+    machineLabel: "咖啡机",
+    brewingMachineLabel: "咖啡机，正在煮",
+    brewingTooltip: "正在煮…",
+    hotMachineLabel: "咖啡机，桌上有一杯热咖啡",
+    hotMachineTooltip: "咖啡在桌上",
+    idleSwitchLabel: "咖啡机开关，煮一杯咖啡",
+    idleSwitchTooltip: "煮一杯咖啡",
+    brewingSwitchLabel: "咖啡机开关，正在煮",
+    hotSwitchLabel: "咖啡机开关，再煮一杯",
+    hotSwitchTooltip: "再来一杯",
+  },
+  tv: {
+    stations: {
+      "rainy-cafe": "雨天咖啡馆",
+      "piano-night": "钢琴之夜",
+      "late-wash": "深夜洗衣",
+      "tape-hiss": "磁带沙沙",
+      "city-at-3am": "凌晨三点的城市",
+    },
+    station: (o: { channel: string; name: string }) =>
+      `${o.channel} 台 · ${o.name}`,
+    offLabel: "电视，关",
+    offTooltip: "电视 · 关",
+    onLabel: (o: { station: string }) => `电视，开，${o.station}`,
+    screenOnLabel: (o: { station: string }) =>
+      `电视屏幕，${o.station}，在 YouTube 上观看`,
+    screenOnTooltip: "在 YouTube 上观看 ↗",
+    screenOffLabel: "电视屏幕，关，打开",
+    turnOn: "打开",
+    tunerLabel: (o: { station: string }) => `电视频道，${o.station}`,
+    tunerTooltip: (o: { nextName: string }) => `下一个电台 · ${o.nextName}`,
+    volumeLabel: (o: { percent: number }) => `电视音量，${o.percent}%`,
+    volumeTooltip: (o: { percent: number }) => `音量 · ${o.percent}%`,
+    powerOnLabel: "电视电源，开，关闭",
+    turnOff: "关闭",
+    powerOffLabel: "电视电源，关，打开",
+    noSignal: "无信号",
+  },
+  shelf: {
+    loadingLabel: "书架，正在查看写满的笔记本",
+    loadingTooltip: "正在看书架…",
+    offlineLabel: "书架，暂时离线",
+    offlineTooltip: "书架暂时离线",
+    emptyLabel: "书架，还没有写满的笔记本",
+    emptyTooltip: "还没有写满的笔记本",
+    readyLabel: "看看放着写满笔记本的书架",
+    bookCount: (o: { count: number }) => `${o.count} 本写满的笔记本`,
+    bookLabel: (o: { number: number; span: string; entries: string }) =>
+      `打开第 ${o.number} 本笔记本，${o.span}，${o.entries}`,
+    entryCount: (o: { count: number }) => `${o.count} 条留言`,
+  },
+  notebook: {
+    objectLabel: "打开笔记本",
+    objectTooltip: "陌生人的留言",
+    number: (o: { number: number }) => `第 ${o.number} 本`,
+    dialogLabel: (o: { number: number }) => `第 ${o.number} 本笔记本`,
+    daySpan: (o: { from: string; to: string }) => `${o.from} – ${o.to}`,
+    since: (o: { day: string }) => `始于 ${o.day}`,
+    insideCover: "封面内页",
+    insideCoverAndPage: (o: { page: number }) => `封面内页 · 第 ${o.page} 页`,
+    page: (o: { page: number }) => `第 ${o.page} 页`,
+    pages: (o: { left: number; right: number }) => `第 ${o.left}–${o.right} 页`,
+    pageButtonLabel: (o: { page: number }) => `第 ${o.page} 页，翻到其他页`,
+    previousPage: "上一页",
+    nextPage: "下一页",
+    scrubberLabel: "页码",
+    goToPage: "翻到",
+    pageInputLabel: (o: { pageCount: number }) => `页码，1 到 ${o.pageCount}`,
+    report: "举报",
+    reported: "已举报",
+    opening: "正在打开笔记本…",
+    missing: (o: { number: number }) => `没有第 ${o.number} 本笔记本`,
+    full: (o: { number: number }) => `第 ${o.number} 本笔记本已写满 · 只能阅读`,
+    someoneWritingInNotebook: "有人正在笔记本上写字 · 等一等",
+    someoneWriting: "有人正在写 · 等一等",
+    startsNext: (o: { number: number }) =>
+      `这条留言会开启第 ${o.number} 本笔记本`,
+    writePromptBeforeKeys: "给下一个人留句话 · 按",
+    writePromptAfterKeys: "保存",
+    textareaLabel: "在笔记本上写一句话",
+    notifyWhenFree: "空出来时告诉我",
+    notifyPending: "到时会通知你",
+    saveNote: "保存我的留言",
+    savingNote: "正在保存…",
+    close: "关闭",
+    freeNotificationTitle: "笔记本空出来了",
+    freeNotificationBody: "轮到你写了",
+    leaveFailures: {
+      offline: "笔记本暂时离线 · 你写的内容还留在这里",
+      rate_limited: "每两分钟只能留一条 · 稍后再试",
+      daily_limit_reached: "今天留得够多了 · 明天再来",
+      contains_link: "笔记本里不能放链接",
+      too_long: "太长了，写不下 · 再短一点",
+      sign_off_too_long: "署名太长了",
+      empty_body: "先写点什么吧",
+      unknown: "出了点问题 · 再试一次",
+    },
+  },
+  firstVisit: {
+    garments: {
+      tee: "T 恤",
+      jeans: "牛仔裤",
+      sweater: "毛衣",
+      towel: "毛巾",
+      socks: "袜子",
+      shirt: "衬衫",
+    },
+    garmentLabel: (o: { garment: string }) => `把${o.garment}放进篮子`,
+    basketEmpty: "把地上的衣服扔进来",
+    basketPartial: (o: { count: number; total: number }) =>
+      `已放 ${o.count}/${o.total} 件 · 再放几件，或者走向门口`,
+    basketFull: "都放好了 · 走向门口",
+    lampOffTooltip: "关灯",
+    lampOnTooltip: "开灯",
+    lampOffLabel: "关掉台灯",
+    lampOnLabel: "打开台灯",
+    doorReadyTooltip: "拿去洗衣店",
+    doorWaitingTooltip: "先把衣服收拾好",
+    doorReadyLabel: "把篮子拿去洗衣店",
+    doorWaitingLabel: "通往洗衣店的门，先把衣服收拾好",
+    justListen: "只听听 →",
+  },
+} satisfies LaundromatCopy;

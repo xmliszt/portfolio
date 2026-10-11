@@ -20,8 +20,16 @@ import { toNotebookScript } from "@/lib/laundromat/supabase/to-notebook-script";
 import { readVisitorId } from "@/lib/laundromat/visitor/read-visitor-id";
 import { signVisitorId } from "@/lib/laundromat/visitor/sign-visitor-id";
 
+import { createFakeNotebookStore } from "./create-fake-notebook-store";
+
 const VISITOR_COOKIE = "laundromat_visitor";
 const VISITOR_COOKIE_MAX_AGE_S = 60 * 60 * 24 * 365;
+const FAKE_NOTEBOOKS_COOKIE = "laundromat_fake_notebooks";
+
+const devFakeNotebookStore =
+  process.env.NODE_ENV === "development"
+    ? createFakeNotebookStore()
+    : undefined;
 
 export type NotebookEntryView = {
   id: number;
@@ -52,7 +60,12 @@ export type ShelfBook = {
 };
 
 export type ShelfResult =
-  | { kind: "online"; currentNumber: number; currentEntryCount: number; books: ShelfBook[] }
+  | {
+      kind: "online";
+      currentNumber: number;
+      currentEntryCount: number;
+      books: ShelfBook[];
+    }
   | { kind: "offline" };
 
 export type NotebookResult =
@@ -97,6 +110,14 @@ function toNotebookView(options: {
   };
 }
 
+async function readFakeNotebooks() {
+  if (devFakeNotebookStore === undefined) return undefined;
+  const cookieStore = await cookies();
+  return cookieStore.get(FAKE_NOTEBOOKS_COOKIE)?.value === "1"
+    ? devFakeNotebookStore
+    : undefined;
+}
+
 async function readOrCreateVisitorId(secret: string) {
   const cookieStore = await cookies();
   const existing = readVisitorId({
@@ -117,6 +138,8 @@ async function readOrCreateVisitorId(secret: string) {
 
 /** Load the current notebook's number and size and every filled notebook for the shelf, or `offline` when the database is not configured or not reachable. */
 export async function loadShelf(): Promise<ShelfResult> {
+  const fake = await readFakeNotebooks();
+  if (fake !== undefined) return fake.loadShelf();
   const client = createLaundromatServiceClient();
   if (client === undefined) return { kind: "offline" };
   try {
@@ -144,6 +167,8 @@ export async function loadShelf(): Promise<ShelfResult> {
 export async function loadNotebook(
   number: number | undefined
 ): Promise<NotebookResult> {
+  const fake = await readFakeNotebooks();
+  if (fake !== undefined) return fake.loadNotebook(number);
   const client = createLaundromatServiceClient();
   if (client === undefined) return { kind: "offline" };
   try {
@@ -170,6 +195,8 @@ export async function leaveEntry(options: {
   script: NotebookScript;
   lineCount: number;
 }): Promise<LeaveEntryResult> {
+  const fake = await readFakeNotebooks();
+  if (fake !== undefined) return fake.leaveEntry(options);
   const client = createLaundromatServiceClient();
   const secret = process.env.LAUNDROMAT_VISITOR_SECRET;
   if (client === undefined || !secret) return { kind: "offline" };
@@ -204,6 +231,7 @@ export async function leaveEntry(options: {
 export async function reportNotebookEntry(
   entryId: number
 ): Promise<ReportEntryResult> {
+  if ((await readFakeNotebooks()) !== undefined) return { kind: "reported" };
   const client = createLaundromatServiceClient();
   const secret = process.env.LAUNDROMAT_VISITOR_SECRET;
   if (client === undefined || !secret) return { kind: "offline" };

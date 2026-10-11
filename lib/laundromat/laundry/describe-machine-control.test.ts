@@ -1,6 +1,8 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
 
+import { en } from "@/lib/laundromat/i18n/copy/en";
+
 import { describeMachine } from "./describe-machine";
 import { describeMachineControl } from "./describe-machine-control";
 import type { MachineStatus } from "./get-machine-status";
@@ -28,6 +30,7 @@ function describe(options: {
     status: options.status,
     minutes: 30,
     nextMinutes: 45,
+    copy: en,
     notifications: options.notifications ?? "default",
   });
 }
@@ -96,10 +99,18 @@ test("the dial names its next detent unless the machine is busy", () => {
 
 test("start starts a loaded machine and asks to load an empty one", () => {
   assert.deepEqual(describe({ control: "start", status: { kind: "loaded" } }), {
-    label: "Washer 2 start, 30 minute wash",
-    tooltip: "start · 30 min wash",
+    label: "Washer 2 start, 30 minute wash, notifies you when done",
+    tooltip: "start · 30 min wash · notifies you",
     enabled: true,
   });
+  assert.equal(
+    describe({
+      control: "start",
+      status: { kind: "loaded" },
+      notifications: "denied",
+    }).tooltip,
+    "start · 30 min wash"
+  );
   assert.equal(
     describe({ control: "start", status: { kind: "loadable" } }).tooltip,
     "load laundry first"
@@ -154,12 +165,19 @@ test("the door says what opening it does in each status", () => {
 });
 
 test("the machine body states its status", () => {
-  assert.deepEqual(describeMachine({ machine: washer, status: running }), {
-    label: "Washer 2, washing, 18:42 left",
-    tooltip: "washing · done at 1:24 a.m.",
-  });
   assert.deepEqual(
-    describeMachine({ machine: dryer, status: { kind: "done" } }),
+    describeMachine({ machine: washer, status: running, copy: en }),
+    {
+      label: "Washer 2, washing, 18:42 left",
+      tooltip: "washing · done at 1:24 a.m.",
+    }
+  );
+  assert.deepEqual(
+    describeMachine({
+      machine: dryer,
+      status: { kind: "done" },
+      copy: en,
+    }),
     {
       label: "Dryer 1, done, take your laundry out",
       tooltip: "dryer 1 · done",

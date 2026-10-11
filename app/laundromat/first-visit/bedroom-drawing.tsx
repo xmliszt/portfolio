@@ -1,9 +1,11 @@
 import { useId } from "react";
 
+import { DaylightPatch } from "@/app/laundromat/daylight-patch";
 import { IsoBox } from "@/app/laundromat/objects/iso-box";
 import { WindowDrawing } from "@/app/laundromat/objects/window-drawing";
 import { WallClock } from "@/app/laundromat/wall-clock";
 import type { BedroomConfig } from "@/lib/laundromat/first-visit/bedroom-config";
+import { getDaylightPatch } from "@/lib/laundromat/get-daylight-patch";
 import { getFacePlane } from "@/lib/laundromat/get-face-plane";
 import { getIsoCylinder } from "@/lib/laundromat/get-iso-cylinder";
 import type { TimeOfDay } from "@/lib/laundromat/get-time-of-day";
@@ -11,6 +13,9 @@ import type { IsoProjection } from "@/lib/laundromat/project-iso-point";
 import { projectIsoPoint } from "@/lib/laundromat/project-iso-point";
 import type { IsoPoint, SceneConfig } from "@/lib/laundromat/scene-config";
 import { toSvgPoints } from "@/lib/laundromat/to-svg-points";
+import { cn } from "@/lib/utils";
+
+import { BedLaundryPile } from "./bed-laundry-pile";
 
 const PLANK_WIDTH = 0.42;
 const PLANK_JOINT_STEP = 1.9;
@@ -18,6 +23,8 @@ const SKIRTING_HEIGHT = 0.12;
 const CURTAIN_DROP = 0.3;
 const LAMP_GLOW_OPACITY = 0.14;
 const POOL_PEAK_OPACITY = 0.2;
+const BED_LIGHT_PEAK_OPACITY = 0.6;
+const BED_LIGHT_REACH = 2.2;
 const DAYLIGHT_PATCH_REACH = 2.3;
 
 type BedroomDrawingProps = {
@@ -26,6 +33,9 @@ type BedroomDrawingProps = {
   timeOfDay: TimeOfDay | undefined;
   hour: number | undefined;
   scene: SceneConfig;
+  lampOn: boolean;
+  lampHighlighted: boolean;
+  cleanPile: boolean;
 };
 
 export function BedroomDrawing(props: BedroomDrawingProps) {
@@ -38,7 +48,7 @@ export function BedroomDrawing(props: BedroomDrawingProps) {
   }
   const floorPlane = `${getFacePlane({ plane: "top", origin: { x: 0, y: 0, z: 0 }, projection }).transform} scale(${unit})`;
   const glide = { transition: `opacity ${scene.sky.timeJumpGlideMs}ms` };
-  const lampIntensity = timeOfDay?.lampIntensity ?? 1;
+  const lampIntensity = props.lampOn ? 1 : 0;
 
   const plankRows = Array.from(
     { length: Math.floor(depth / PLANK_WIDTH) },
@@ -67,12 +77,13 @@ export function BedroomDrawing(props: BedroomDrawingProps) {
     projection,
   });
   const curtainLength = window.size.h - 0.32 + CURTAIN_DROP;
-  const daylightPatch = [
-    at(window.size.w, opening.near, 0),
-    at(window.size.w + DAYLIGHT_PATCH_REACH, opening.near + 0.5, 0),
-    at(window.size.w + DAYLIGHT_PATCH_REACH, opening.far + 0.5, 0),
-    at(window.size.w, opening.far, 0),
-  ];
+  const daylightPatch = getDaylightPatch({
+    wallX: window.size.w,
+    fromY: opening.near,
+    toY: opening.far,
+    reach: DAYLIGHT_PATCH_REACH,
+    sun: timeOfDay?.sun,
+  }).map((point) => at(point.x, point.y, 0));
 
   const { bedsideTable, lamp, bed, rug } = bedroom;
   const tableFront = getFacePlane({
@@ -282,11 +293,11 @@ export function BedroomDrawing(props: BedroomDrawingProps) {
         />
       )}
 
-      <polygon
-        className="pointer-events-none"
-        fill={scene.light.daylightColor}
-        points={toSvgPoints(daylightPatch)}
-        style={{ opacity: timeOfDay?.daylightPatchOpacity ?? 0, ...glide }}
+      <DaylightPatch
+        points={daylightPatch}
+        color={timeOfDay?.daylightPatchColor ?? scene.light.daylightColor}
+        opacity={timeOfDay?.daylightPatchOpacity ?? 0}
+        glideMs={scene.sky.timeJumpGlideMs}
       />
       <g
         transform={floorPlane}
@@ -378,27 +389,44 @@ export function BedroomDrawing(props: BedroomDrawingProps) {
           x2={stemTop.x}
           y2={stemTop.y}
         />
-        <ellipse
-          className="fill-[var(--lm-accent-hi)]"
-          cx={shade.base.cx}
-          cy={shade.base.cy}
-          rx={shade.base.rx * 0.8}
-          ry={shade.base.ry * 0.8}
-          opacity={0.85}
-        />
-        <path
-          className="fill-[var(--lm-face)] stroke-[var(--lm-accent)]"
-          d={shade.body}
-        />
-        <path
-          className="fill-[var(--lm-accent)] stroke-none"
-          d={shade.body}
-          opacity={0.16}
-        />
-        <ellipse
-          {...shade.top}
-          className="fill-[var(--lm-recess)] stroke-[var(--lm-accent)]"
-        />
+        <g
+          className={cn(
+            "[&_*]:transition-[stroke,fill,opacity] [&_*]:duration-300",
+            props.lampHighlighted && "stroke-[var(--lm-ink-hi)]"
+          )}
+        >
+          <ellipse
+            className={
+              props.lampOn
+                ? "fill-[var(--lm-accent-hi)]"
+                : "fill-[var(--lm-face-top)]"
+            }
+            cx={shade.base.cx}
+            cy={shade.base.cy}
+            rx={shade.base.rx * 0.8}
+            ry={shade.base.ry * 0.8}
+            opacity={props.lampOn ? 0.85 : 1}
+          />
+          <path
+            className={cn(
+              "fill-[var(--lm-face)]",
+              props.lampOn && "stroke-[var(--lm-accent)]"
+            )}
+            d={shade.body}
+          />
+          <path
+            className="fill-[var(--lm-accent)] stroke-none"
+            d={shade.body}
+            opacity={props.lampOn ? 0.16 : 0}
+          />
+          <ellipse
+            {...shade.top}
+            className={cn(
+              "fill-[var(--lm-recess)]",
+              props.lampOn && "stroke-[var(--lm-accent)]"
+            )}
+          />
+        </g>
 
         {box(bed.headboard)}
         <g
@@ -419,6 +447,31 @@ export function BedroomDrawing(props: BedroomDrawingProps) {
         <polyline
           className="fill-none stroke-[var(--lm-detail)]"
           points={toSvgPoints(blanketFold)}
+        />
+        {props.cleanPile && (
+          <BedLaundryPile bed={bed} projection={projection} />
+        )}
+      </g>
+      <g
+        transform={`translate(0 ${-blanketTop * unit}) ${floorPlane}`}
+        className="pointer-events-none"
+        style={{ opacity: lampIntensity * BED_LIGHT_PEAK_OPACITY, ...glide }}
+      >
+        <clipPath id={`${id}-bed-top`}>
+          <rect
+            x={bed.mattress.position.x}
+            y={bed.mattress.position.y}
+            width={bed.mattress.size.w}
+            height={bed.mattress.size.d}
+          />
+        </clipPath>
+        <ellipse
+          fill={`url(#${id}-pool)`}
+          clipPath={`url(#${id}-bed-top)`}
+          cx={lamp.center.x}
+          cy={lamp.center.y}
+          rx={BED_LIGHT_REACH}
+          ry={BED_LIGHT_REACH}
         />
       </g>
     </g>

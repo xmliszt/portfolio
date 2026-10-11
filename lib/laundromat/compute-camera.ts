@@ -1,5 +1,5 @@
 import type { SceneLayout } from "./build-scene-layout";
-import { describeSceneObject } from "./describe-scene-object";
+import { isInteractiveSceneObject } from "./is-interactive-scene-object";
 import type { CameraFocus } from "./parse-camera-focus";
 import type { SceneConfig } from "./scene-config";
 
@@ -22,7 +22,7 @@ function getRoomScale(options: {
   );
   const smallestTargetSide = Math.min(
     ...layout.objects
-      .filter(({ object }) => describeSceneObject(object) !== undefined)
+      .filter(({ object }) => isInteractiveSceneObject(object))
       .flatMap(({ bounds, controls }) => [
         bounds,
         ...controls.map((control) => control.bounds),

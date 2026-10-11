@@ -1,4 +1,4 @@
-import { Database } from "@/lib/laundromat/supabase/__generated__/types";
+import type { Database } from "@/lib/laundromat/supabase/__generated__/types";
 
 export type LaundromatDatabase = Database;
 

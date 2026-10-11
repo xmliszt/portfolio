@@ -1,29 +1,45 @@
+import type { LaundromatCopy } from "./i18n/laundromat-copy";
 import type { SceneObject } from "./scene-config";
 
 /** Return the hit target's `label` and `tooltip` for `object`, or `undefined` when the object is not interactive. */
-export function describeSceneObject(object: SceneObject) {
+export function describeSceneObject(options: {
+  object: SceneObject;
+  copy: LaundromatCopy;
+}) {
+  const { object, copy } = options;
   switch (object.kind) {
     case "washer":
+    case "dryer": {
+      const name = copy.machine.name(object);
       return {
-        label: `Washer ${object.number}, free`,
-        tooltip: `washer ${object.number} · free`,
+        label: copy.machine.freeLabel({ name }),
+        tooltip: copy.machine.freeTooltip({
+          name: name.toLocaleLowerCase(copy.locale),
+        }),
       };
-    case "dryer":
-      return {
-        label: `Dryer ${object.number}, free`,
-        tooltip: `dryer ${object.number} · free`,
-      };
+    }
     case "tv":
-      return { label: "TV, off", tooltip: "tv · off" };
+      return { label: copy.tv.offLabel, tooltip: copy.tv.offTooltip };
     case "coffee-machine":
-      return { label: "Coffee machine", tooltip: "brew a coffee" };
+      return {
+        label: copy.coffee.machineLabel,
+        tooltip: copy.coffee.idleSwitchTooltip,
+      };
     case "shelf":
       return {
-        label: "Look at the shelf of filled notebooks",
-        tooltip: "filled notebooks",
+        label: copy.shelf.loadingLabel,
+        tooltip: copy.shelf.loadingTooltip,
       };
     case "notebook":
-      return { label: "Open the notebook", tooltip: "notes from strangers" };
+      return {
+        label: copy.notebook.objectLabel,
+        tooltip: copy.notebook.objectTooltip,
+      };
+    case "mat":
+      return {
+        label: copy.entranceMat.waitingLabel,
+        tooltip: copy.entranceMat.waitingTooltip,
+      };
     case "counter":
     case "window":
     case "clock":
