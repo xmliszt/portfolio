@@ -45,6 +45,7 @@ export function getFloorHalo(options: {
     case "tv":
     case "window":
     case "clock":
+    case "tube-display":
     case "shelf":
     case "notebook":
     case "mug":

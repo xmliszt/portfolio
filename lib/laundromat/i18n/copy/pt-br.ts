@@ -173,6 +173,14 @@ export const ptBR = {
     label: "Planta, tocar na grama",
     tooltip: "tocar na grama",
   },
+  tubeDisplay: {
+    label: (o: { count: number }) =>
+      `Contador de válvulas, ${o.count === 1 ? "só você aqui" : `${o.count} pessoas aqui`}`,
+    tooltip: (o: { count: number }) =>
+      o.count === 1 ? "só você aqui" : `${o.count} pessoas aqui`,
+    offLabel: "Contador de válvulas, desligado",
+    offTooltip: "desligado",
+  },
   tv: {
     stations: {
       "rainy-cafe": "café na chuva",

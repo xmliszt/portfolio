@@ -142,6 +142,14 @@ export const tr = {
     label: "Bitki, çimlere dokun",
     tooltip: "çimlere dokun",
   },
+  tubeDisplay: {
+    label: (o: { count: number }) =>
+      `Tüplü sayaç, ${o.count === 1 ? "burada sadece sen varsın" : `burada ${o.count} kişi`}`,
+    tooltip: (o: { count: number }) =>
+      o.count === 1 ? "burada sadece sen varsın" : `burada ${o.count} kişi`,
+    offLabel: "Tüplü sayaç, kapalı",
+    offTooltip: "kapalı",
+  },
   tv: {
     stations: {
       "rainy-cafe": "yağmurlu kafe",

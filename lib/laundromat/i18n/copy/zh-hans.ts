@@ -164,6 +164,14 @@ export const zhHans = {
     label: "盆栽，摸摸草",
     tooltip: "摸摸草",
   },
+  tubeDisplay: {
+    label: (o: { count: number }) =>
+      `辉光管计数器，${o.count === 1 ? "只有你在这里" : `这里有 ${o.count} 个人`}`,
+    tooltip: (o: { count: number }) =>
+      o.count === 1 ? "只有你在这里" : `这里有 ${o.count} 个人`,
+    offLabel: "辉光管计数器，关闭",
+    offTooltip: "关闭",
+  },
   tv: {
     stations: {
       "rainy-cafe": "雨天咖啡馆",

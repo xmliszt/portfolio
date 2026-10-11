@@ -158,6 +158,16 @@ export const pl = {
     label: "Roślina, dotknij trawy",
     tooltip: "dotknij trawy",
   },
+  tubeDisplay: {
+    label: (o: { count: number }) =>
+      `Licznik lampowy, ${o.count === 1 ? "tylko ty tutaj" : `${o.count} ${pluralize({ count: o.count, one: "osoba", few: "osoby", many: "osób" })} tutaj`}`,
+    tooltip: (o: { count: number }) =>
+      o.count === 1
+        ? "tylko ty tutaj"
+        : `${o.count} ${pluralize({ count: o.count, one: "osoba", few: "osoby", many: "osób" })} tutaj`,
+    offLabel: "Licznik lampowy, wyłączony",
+    offTooltip: "wyłączony",
+  },
   tv: {
     stations: {
       "rainy-cafe": "deszczowa kawiarnia",

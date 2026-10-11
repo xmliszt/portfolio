@@ -1,10 +1,11 @@
 import type { LaundromatCopy } from "./i18n/laundromat-copy";
 import type { SceneObject } from "./scene-config";
 
-/** Return the hit target's `label` and `tooltip` for `object`, or `undefined` when the object is not interactive. */
+/** Return the hit target's `label` and `tooltip` for `object`, counting `peopleHere` on the tube display, or `undefined` when the object is not interactive. */
 export function describeSceneObject(options: {
   object: SceneObject;
   copy: LaundromatCopy;
+  peopleHere?: number;
 }) {
   const { object, copy } = options;
   switch (object.kind) {
@@ -52,6 +53,16 @@ export function describeSceneObject(options: {
         label: copy.laundryBasket.labels.empty,
         tooltip: copy.laundryBasket.tooltips.empty,
       };
+    case "tube-display":
+      return options.peopleHere === undefined
+        ? {
+            label: copy.tubeDisplay.offLabel,
+            tooltip: copy.tubeDisplay.offTooltip,
+          }
+        : {
+            label: copy.tubeDisplay.label({ count: options.peopleHere }),
+            tooltip: copy.tubeDisplay.tooltip({ count: options.peopleHere }),
+          };
     case "counter":
     case "window":
     case "clock":

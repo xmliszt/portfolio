@@ -174,6 +174,14 @@ export const en = {
     label: "Plant, touch grass",
     tooltip: "touch grass",
   },
+  tubeDisplay: {
+    label: (o: { count: number }) =>
+      `Tube counter, ${o.count === 1 ? "just you here" : `${o.count} people here`}`,
+    tooltip: (o: { count: number }) =>
+      o.count === 1 ? "just you here" : `${o.count} people here`,
+    offLabel: "Tube counter, off",
+    offTooltip: "off",
+  },
   tv: {
     stations: {
       "rainy-cafe": "rainy café",

@@ -56,6 +56,7 @@ export function ObjectWorkbench(props: ObjectWorkbenchProps) {
   const [openedAt] = useState(() => Date.now());
   const appliances = useRoomAppliances(config);
   const [plantTouchCount, setPlantTouchCount] = useState(0);
+  const [tubeRollCount, setTubeRollCount] = useState(0);
   const layout = useMemo(() => {
     const { size } = object;
     return buildSceneLayout({
@@ -129,6 +130,8 @@ export function ObjectWorkbench(props: ObjectWorkbenchProps) {
     matReady: describeEntranceMat({ basket: props.basket, copy }).ready,
     shelfBookNumbers: WORKBENCH_SHELF_BOOKS,
     notebookNumber: config.details.notebook.coverNumber,
+    peopleHere: 3,
+    tubeRollCount,
   };
 
   function describeObject() {
@@ -153,7 +156,11 @@ export function ObjectWorkbench(props: ObjectWorkbenchProps) {
       case "basket":
         return describeLaundryBasket({ basket: props.basket, copy });
       default:
-        return describeSceneObject({ object, copy });
+        return describeSceneObject({
+          object,
+          copy,
+          peopleHere: views.peopleHere,
+        });
     }
   }
 
@@ -231,6 +238,7 @@ export function ObjectWorkbench(props: ObjectWorkbenchProps) {
     setHoveredId(object.id);
     if (object.kind === "plant") setPlantTouchCount((count) => count + 1);
     if (object.kind === "mug") appliances.dispatchCoffee({ type: "drink" });
+    if (object.kind === "tube-display") setTubeRollCount((count) => count + 1);
   }
 
   const laidOut = layout.objects.at(0);

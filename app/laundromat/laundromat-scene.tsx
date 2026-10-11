@@ -49,6 +49,7 @@ import type { CameraFocus } from "@/lib/laundromat/parse-camera-focus";
 import { parseCameraFocus } from "@/lib/laundromat/parse-camera-focus";
 import { assignRemoteMachines } from "@/lib/laundromat/realtime/assign-remote-machines";
 import { chooseNotebookWriter } from "@/lib/laundromat/realtime/choose-notebook-writer";
+import { getPeopleHere } from "@/lib/laundromat/realtime/get-people-here";
 import type {
   RemoteDraft,
   RemoteEntry,
@@ -165,6 +166,7 @@ export function LaundromatScene(props: LaundromatSceneProps) {
   const laundry = useLaundry();
   const appliances = useRoomAppliances(config);
   const [plantTouchCount, setPlantTouchCount] = useState(0);
+  const [tubeRollCount, setTubeRollCount] = useState(0);
   const notebookShelf = useNotebookShelf();
   const shelf = notebookShelf.shelf;
   const filledBooks = shelf?.kind === "online" ? shelf.books : [];
@@ -265,6 +267,11 @@ export function LaundromatScene(props: LaundromatSceneProps) {
     )
   );
   const now = Math.max(laundry.now, roomNow);
+  const peopleHere = getPeopleHere({
+    isSynced: room.isConnected && room.isSynced,
+    peers: room.peers,
+    ownVisitorId: laundry.visitorId,
+  });
   const remoteMachines = assignRemoteMachines({
     machines: layout.objects.flatMap(({ object }) =>
       object.kind === "washer" || object.kind === "dryer"
@@ -457,6 +464,8 @@ export function LaundromatScene(props: LaundromatSceneProps) {
     matReady: entranceMat.ready,
     shelfBookNumbers: filledBooks.map(({ number }) => number),
     notebookNumber: coverNumber,
+    peopleHere,
+    tubeRollCount,
   };
 
   function describeControl(options: {
@@ -523,7 +532,11 @@ export function LaundromatScene(props: LaundromatSceneProps) {
       case "shelf":
         return shelfDescription;
       default:
-        return describeSceneObject({ object: laidOut.object, copy });
+        return describeSceneObject({
+          object: laidOut.object,
+          copy,
+          peopleHere,
+        });
     }
   }
 
@@ -713,9 +726,13 @@ export function LaundromatScene(props: LaundromatSceneProps) {
     }
     const kind = layout.objects.find(({ object }) => object.id === objectId)
       ?.object.kind;
-    if (kind === "mug" || kind === "plant") {
+    if (kind === "mug" || kind === "plant" || kind === "tube-display") {
       if (focus !== "room") {
         setFocus("room");
+        return;
+      }
+      if (kind === "tube-display") {
+        setTubeRollCount((count) => count + 1);
         return;
       }
       if (kind === "plant") {

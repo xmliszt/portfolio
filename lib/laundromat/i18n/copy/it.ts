@@ -176,6 +176,14 @@ export const it = {
     label: "Pianta, tocca l'erba",
     tooltip: "tocca l'erba",
   },
+  tubeDisplay: {
+    label: (o: { count: number }) =>
+      `Contatore a valvole, ${o.count === 1 ? "solo tu qui" : `${o.count} persone qui`}`,
+    tooltip: (o: { count: number }) =>
+      o.count === 1 ? "solo tu qui" : `${o.count} persone qui`,
+    offLabel: "Contatore a valvole, spento",
+    offTooltip: "spento",
+  },
   tv: {
     stations: {
       "rainy-cafe": "caffè sotto la pioggia",

@@ -175,6 +175,14 @@ export const vi = {
     label: "Chậu cây, chạm vào cỏ",
     tooltip: "chạm vào cỏ",
   },
+  tubeDisplay: {
+    label: (o: { count: number }) =>
+      `Bộ đếm đèn ống, ${o.count === 1 ? "chỉ có bạn ở đây" : `${o.count} người ở đây`}`,
+    tooltip: (o: { count: number }) =>
+      o.count === 1 ? "chỉ có bạn ở đây" : `${o.count} người ở đây`,
+    offLabel: "Bộ đếm đèn ống, tắt",
+    offTooltip: "tắt",
+  },
   tv: {
     stations: {
       "rainy-cafe": "quán cà phê ngày mưa",

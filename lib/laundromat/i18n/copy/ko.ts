@@ -170,6 +170,14 @@ export const ko = {
     label: "화분, 풀 만지기",
     tooltip: "풀 만지기",
   },
+  tubeDisplay: {
+    label: (o: { count: number }) =>
+      `닉시관 카운터, ${o.count === 1 ? "혼자 있어요" : `지금 ${o.count}명`}`,
+    tooltip: (o: { count: number }) =>
+      o.count === 1 ? "혼자 있어요" : `지금 ${o.count}명`,
+    offLabel: "닉시관 카운터, 꺼짐",
+    offTooltip: "꺼짐",
+  },
   tv: {
     stations: {
       "rainy-cafe": "비 오는 카페",

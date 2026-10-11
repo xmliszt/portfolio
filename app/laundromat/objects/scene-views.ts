@@ -24,4 +24,6 @@ export type SceneViews = {
   matReady: boolean;
   shelfBookNumbers: number[];
   notebookNumber: number;
+  peopleHere: number | undefined;
+  tubeRollCount: number;
 };

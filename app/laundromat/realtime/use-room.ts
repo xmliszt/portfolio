@@ -17,13 +17,14 @@ const DRAFT_SEND_INTERVAL_MS = 150;
 
 type OwnPresence = Omit<RoomPresence, "sessionId">;
 
-/** Join the laundromat room as this tab while `presence` is set, keeping it tracked, and return this tab's `sessionId`, whether the room is connected, the other tabs last seen here, the latest draft of each, the last entry another tab saved, `sendDraft`, throttled and sent again whenever someone new arrives, and `sendEntry`. */
+/** Join the laundromat room as this tab while `presence` is set, keeping it tracked, and return this tab's `sessionId`, whether the room is connected, whether presence has synced since it connected, the other tabs last seen here, the latest draft of each, the last entry another tab saved, `sendDraft`, throttled and sent again whenever someone new arrives, and `sendEntry`. */
 export function useRoom(presence: OwnPresence | undefined) {
   const source = useContext(RoomSourceContext);
   const [sessionId] = useState(() => crypto.randomUUID());
   const [peers, setPeers] = useState<RoomPresence[]>([]);
   const peersRef = useRef(peers);
   const [isConnected, setIsConnected] = useState(false);
+  const [isSynced, setIsSynced] = useState(false);
   const [drafts, setDrafts] = useState<{ [sessionId: string]: RemoteDraft }>(
     {}
   );
@@ -40,8 +41,12 @@ export function useRoom(presence: OwnPresence | undefined) {
       onPeers: (next) => {
         peersRef.current = next;
         setPeers(next);
+        setIsSynced(true);
       },
-      onConnectedChange: setIsConnected,
+      onConnectedChange: (connected) => {
+        setIsConnected(connected);
+        if (!connected) setIsSynced(false);
+      },
       onDraft: (draft) => {
         const isTrackedPeer = peersRef.current.some(
           (peer) => peer.sessionId === draft.sessionId
@@ -69,6 +74,7 @@ export function useRoom(presence: OwnPresence | undefined) {
       setDrafts({});
       setLastEntry(undefined);
       setIsConnected(false);
+      setIsSynced(false);
     };
   }, [source, sessionId, visitorId]);
 
@@ -158,6 +164,7 @@ export function useRoom(presence: OwnPresence | undefined) {
   return {
     sessionId,
     isConnected,
+    isSynced,
     peers,
     drafts,
     lastEntry,

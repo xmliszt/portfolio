@@ -157,6 +157,16 @@ export const ru = {
     label: "Растение, потрогать траву",
     tooltip: "потрогать траву",
   },
+  tubeDisplay: {
+    label: (o: { count: number }) =>
+      `Ламповый счётчик, ${o.count === 1 ? "здесь только ты" : `здесь ${o.count} ${pluralize({ count: o.count, one: "человек", few: "человека", many: "человек" })}`}`,
+    tooltip: (o: { count: number }) =>
+      o.count === 1
+        ? "здесь только ты"
+        : `здесь ${o.count} ${pluralize({ count: o.count, one: "человек", few: "человека", many: "человек" })}`,
+    offLabel: "Ламповый счётчик, выключен",
+    offTooltip: "выключен",
+  },
   tv: {
     stations: {
       "rainy-cafe": "дождливое кафе",

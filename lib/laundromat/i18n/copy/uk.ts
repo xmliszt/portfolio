@@ -157,6 +157,16 @@ export const uk = {
     label: "Рослина, торкнутися трави",
     tooltip: "торкнутися трави",
   },
+  tubeDisplay: {
+    label: (o: { count: number }) =>
+      `Ламповий лічильник, ${o.count === 1 ? "тут лише ти" : `тут ${o.count} ${pluralize({ count: o.count, one: "людина", few: "людини", many: "людей" })}`}`,
+    tooltip: (o: { count: number }) =>
+      o.count === 1
+        ? "тут лише ти"
+        : `тут ${o.count} ${pluralize({ count: o.count, one: "людина", few: "людини", many: "людей" })}`,
+    offLabel: "Ламповий лічильник, вимкнено",
+    offTooltip: "вимкнено",
+  },
   tv: {
     stations: {
       "rainy-cafe": "дощове кафе",

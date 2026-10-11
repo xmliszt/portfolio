@@ -15,6 +15,7 @@ export type FurnitureKind =
   | "tv"
   | "window"
   | "clock"
+  | "tube-display"
   | "shelf"
   | "table"
   | "notebook"
@@ -145,6 +146,11 @@ export type SceneConfig = {
     };
     shelf: { bookLean: number; spineGlow: number; bookLift: number };
     window: { litWindowOpacity: number };
+    tubeDisplay: {
+      digitGlow: number;
+      ghostOpacity: number;
+      rollMs: number;
+    };
     notebook: {
       coverNumber: number;
       liftMs: number;
@@ -279,6 +285,12 @@ export const sceneConfig: SceneConfig = {
       kind: "clock",
       position: { x: 11.4, y: 0, z: 6 },
       size: { w: 1.2, d: 0.15, h: 1.2 },
+    },
+    {
+      id: "tube-display",
+      kind: "tube-display",
+      position: { x: 4.05, y: 0, z: 6.55 },
+      size: { w: 2.4, d: 0.45, h: 0.9 },
     },
     {
       id: "shelf",
@@ -448,6 +460,11 @@ export const sceneConfig: SceneConfig = {
     },
     shelf: { bookLean: 0.14, spineGlow: 0.69, bookLift: 0.19 },
     window: { litWindowOpacity: 0.7 },
+    tubeDisplay: {
+      digitGlow: 1,
+      ghostOpacity: 0.12,
+      rollMs: 900,
+    },
     notebook: {
       coverNumber: 1,
       liftMs: 650,

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useReducedMotion } from "motion/react";
 
 import type { LaidOutObject } from "@/lib/laundromat/build-scene-layout";
@@ -14,18 +14,19 @@ import { IsoBox } from "./iso-box";
 import { IsoCylinder } from "./iso-cylinder";
 import { partStroke } from "./part-stroke";
 
-const TUBE_COUNT = 3;
-const PLINTH_HEIGHT = 0.28;
-const SOCKET_HEIGHT = 0.12;
-const SOCKET_RADIUS = 0.31;
-const GLASS_RADIUS = 0.26;
-const GLASS_HEIGHT = 0.8;
+const TUBE_COUNT = 6;
+const PLINTH_HEIGHT = 0.2;
+const SOCKET_HEIGHT = 0.08;
+const SOCKET_RADIUS = 0.17;
+const GLASS_RADIUS = 0.14;
+const GLASS_HEIGHT = 0.5;
+const DIGIT_INSET = GLASS_HEIGHT * 0.1;
 const DOME_RATIO = 0.9;
-const TIP_HEIGHT = 0.07;
-const BRACKET_INSET = 0.45;
-const BRACKET_DROP = 0.3;
+const TIP_HEIGHT = 0.05;
+const BRACKET_INSET = 0.3;
+const BRACKET_DROP = 0.25;
 const ROLL_STEP_MS = 55;
-const MESH_COLUMNS = 5;
+const MESH_COLUMNS = 3;
 const SCREW_RADIUS = 0.55;
 const HIGHLIGHT_OFFSET = 0.55;
 const HIGHLIGHT_DOME_RISE = Math.sqrt(1 - HIGHLIGHT_OFFSET ** 2);
@@ -44,27 +45,34 @@ export function TubeDisplayDrawing(props: TubeDisplayDrawingProps) {
   const { position, size } = props.laidOut.object;
   const prefersReducedMotion = useReducedMotion();
   const [rollStep, setRollStep] = useState<number>();
+  const rollTimerRef = useRef<number>(undefined);
   const isLit = props.count !== undefined;
 
+  useEffect(() => () => window.clearInterval(rollTimerRef.current), []);
+
   useEffect(() => {
-    if (props.count === undefined || prefersReducedMotion) return;
-    if (details.rollMs <= 0) return;
+    if (!isLit || prefersReducedMotion || details.rollMs <= 0) return;
+    const isRolling = rollTimerRef.current !== undefined;
+    if (isRolling) return;
     const startedAt = Date.now();
     setRollStep(0);
-    const timer = window.setInterval(() => {
+    rollTimerRef.current = window.setInterval(() => {
       const elapsed = Date.now() - startedAt;
       if (elapsed >= details.rollMs) {
-        window.clearInterval(timer);
+        window.clearInterval(rollTimerRef.current);
+        rollTimerRef.current = undefined;
         setRollStep(undefined);
         return;
       }
       setRollStep(Math.floor(elapsed / ROLL_STEP_MS));
     }, ROLL_STEP_MS);
-    return () => {
-      window.clearInterval(timer);
-      setRollStep(undefined);
-    };
-  }, [props.count, props.rollCount, details.rollMs, prefersReducedMotion]);
+  }, [
+    isLit,
+    props.count,
+    props.rollCount,
+    details.rollMs,
+    prefersReducedMotion,
+  ]);
 
   function at(point: IsoPoint) {
     return projectIsoPoint({ point, projection });
@@ -82,10 +90,10 @@ export function TubeDisplayDrawing(props: TubeDisplayDrawingProps) {
   }).map((tube, index) => ({
     ...tube,
     shown:
-      rollStep === undefined
+      rollStep === undefined || !tube.lit
         ? tube.digit
         : (tube.digit + rollStep + index * 3) % 10,
-    lit: isLit && (tube.lit || rollStep !== undefined),
+    lit: isLit && tube.lit,
   }));
   const brackets = [
     position.x + BRACKET_INSET,
@@ -224,10 +232,11 @@ export function TubeDisplayDrawing(props: TubeDisplayDrawingProps) {
         ].join(" ");
         const digitPlane = getFacePlane({
           plane: "front",
-          origin: { x: centerX, y: tubeY, z: glassTop - 0.08 },
+          origin: { x: centerX, y: tubeY, z: glassTop - DIGIT_INSET },
           projection,
         });
-        const digitHeight = (GLASS_HEIGHT - 0.2) * unit;
+        const digitHeight = (GLASS_HEIGHT - DIGIT_INSET * 3) * unit;
+        const meshBottom = digitHeight + DIGIT_INSET * unit;
         const meshHalf = GLASS_RADIUS * unit * 0.95;
         return (
           <g key={index}>
@@ -254,9 +263,9 @@ export function TubeDisplayDrawing(props: TubeDisplayDrawingProps) {
               />
               <line
                 x1={-meshHalf}
-                y1={digitHeight + 0.08 * unit}
+                y1={meshBottom}
                 x2={meshHalf}
-                y2={digitHeight + 0.08 * unit}
+                y2={meshBottom}
                 className="stroke-[var(--lm-detail)]"
                 strokeWidth={0.6}
               />
@@ -306,7 +315,7 @@ export function TubeDisplayDrawing(props: TubeDisplayDrawingProps) {
                     x1={x}
                     y1={0}
                     x2={x}
-                    y2={digitHeight + 0.08 * unit}
+                    y2={meshBottom}
                     className="stroke-[var(--lm-detail)]"
                     strokeWidth={0.4}
                     opacity={0.35}

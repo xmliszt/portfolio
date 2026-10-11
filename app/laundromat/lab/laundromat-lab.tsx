@@ -197,6 +197,12 @@ const objectDials = {
     litWindowOpacity: [details.window.litWindowOpacity, 0, 1, 0.01],
     _collapsed: true,
   },
+  tubeDisplay: {
+    digitGlow: [details.tubeDisplay.digitGlow, 0, 1, 0.01],
+    ghostOpacity: [details.tubeDisplay.ghostOpacity, 0, 0.5, 0.01],
+    rollMs: [details.tubeDisplay.rollMs, 0, 3000, 50],
+    _collapsed: true,
+  },
   notebook: {
     coverNumber: [details.notebook.coverNumber, 1, 99, 1],
     liftMs: [details.notebook.liftMs, 0, 1600, 10],
@@ -460,6 +466,7 @@ export default function LaundromatLab() {
         plant: objectValues.plant,
         shelf: objectValues.shelf,
         window: objectValues.window,
+        tubeDisplay: objectValues.tubeDisplay,
         notebook: {
           ...objectValues.notebook,
           turnEase: details.notebook.turnEase,

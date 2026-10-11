@@ -176,6 +176,14 @@ export const hi = {
     label: "पौधा, घास छुओ",
     tooltip: "घास छुओ",
   },
+  tubeDisplay: {
+    label: (o: { count: number }) =>
+      `ट्यूब काउंटर, ${o.count === 1 ? "यहाँ सिर्फ़ तुम" : `यहाँ ${o.count} लोग`}`,
+    tooltip: (o: { count: number }) =>
+      o.count === 1 ? "यहाँ सिर्फ़ तुम" : `यहाँ ${o.count} लोग`,
+    offLabel: "ट्यूब काउंटर, बंद",
+    offTooltip: "बंद",
+  },
   tv: {
     stations: {
       "rainy-cafe": "बारिश वाला कैफ़े",

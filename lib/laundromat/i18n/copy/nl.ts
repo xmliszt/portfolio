@@ -145,6 +145,14 @@ export const nl = {
     label: "Plant, gras aanraken",
     tooltip: "gras aanraken",
   },
+  tubeDisplay: {
+    label: (o: { count: number }) =>
+      `Buizenteller, ${o.count === 1 ? "alleen jij hier" : `${o.count} mensen hier`}`,
+    tooltip: (o: { count: number }) =>
+      o.count === 1 ? "alleen jij hier" : `${o.count} mensen hier`,
+    offLabel: "Buizenteller, uit",
+    offTooltip: "uit",
+  },
   tv: {
     stations: {
       "rainy-cafe": "regenachtig café",

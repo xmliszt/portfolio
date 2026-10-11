@@ -13,6 +13,7 @@ export function isInteractiveSceneObject(object: SceneObject) {
     case "mug":
     case "plant":
     case "basket":
+    case "tube-display":
       return true;
     case "counter":
     case "window":

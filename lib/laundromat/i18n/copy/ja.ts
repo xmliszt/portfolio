@@ -170,6 +170,14 @@ export const ja = {
     label: "観葉植物、草に触れる",
     tooltip: "草に触れる",
   },
+  tubeDisplay: {
+    label: (o: { count: number }) =>
+      `ニキシー管カウンター、${o.count === 1 ? "いるのはあなただけ" : `いま${o.count}人`}`,
+    tooltip: (o: { count: number }) =>
+      o.count === 1 ? "いるのはあなただけ" : `いま${o.count}人`,
+    offLabel: "ニキシー管カウンター、オフ",
+    offTooltip: "オフ",
+  },
   tv: {
     stations: {
       "rainy-cafe": "雨のカフェ",

@@ -17,6 +17,7 @@ import type { SceneViews } from "./scene-views";
 import { ShelfDrawing } from "./shelf-drawing";
 import { StoolDrawing } from "./stool-drawing";
 import { TableDrawing } from "./table-drawing";
+import { TubeDisplayDrawing } from "./tube-display-drawing";
 import { TvDrawing } from "./tv-drawing";
 import { WindowDrawing } from "./window-drawing";
 
@@ -130,6 +131,15 @@ export function SceneObjectDrawing(props: SceneObjectDrawingProps) {
       return <MatDrawing {...shared} ready={views.matReady} />;
     case "counter":
       return <CounterDrawing {...shared} />;
+    case "tube-display":
+      return (
+        <TubeDisplayDrawing
+          {...shared}
+          count={views.peopleHere}
+          rollCount={views.tubeRollCount}
+          details={details.tubeDisplay}
+        />
+      );
     default: {
       const unhandled: never = object;
       return unhandled;

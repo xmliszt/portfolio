@@ -177,6 +177,14 @@ export const id = {
     label: "Tanaman, sentuh rumput",
     tooltip: "sentuh rumput",
   },
+  tubeDisplay: {
+    label: (o: { count: number }) =>
+      `Penghitung tabung, ${o.count === 1 ? "cuma kamu di sini" : `${o.count} orang di sini`}`,
+    tooltip: (o: { count: number }) =>
+      o.count === 1 ? "cuma kamu di sini" : `${o.count} orang di sini`,
+    offLabel: "Penghitung tabung, mati",
+    offTooltip: "mati",
+  },
   tv: {
     stations: {
       "rainy-cafe": "kafe saat hujan",
