@@ -1,6 +1,7 @@
 import { Metadata } from "next";
 
 import { ShadowSubtitle } from "@/app/[slug]/shadow-subtitle";
+import { BackToAppsLink } from "@/app/apps/back-to-apps-link";
 import { openGraph } from "@/app/metadata";
 
 import { MoireContent } from "./moire-content";
@@ -23,13 +24,19 @@ export default async function MoirePage() {
   const graph = await getMoireGraph();
 
   return (
-    <article className="prose prose-stone dark:prose-invert relative">
-      <h1 className="group relative">
-        <a id="top" className="[visibility:hidden] relative -top-16 block"></a>
-        moiré
-        <ShadowSubtitle>摩尔纹</ShadowSubtitle>
-      </h1>
-      <MoireContent graph={graph} />
-    </article>
+    <>
+      <BackToAppsLink />
+      <article className="prose prose-stone dark:prose-invert relative">
+        <h1 className="group relative">
+          <a
+            id="top"
+            className="[visibility:hidden] relative -top-16 block"
+          ></a>
+          moiré
+          <ShadowSubtitle>摩尔纹</ShadowSubtitle>
+        </h1>
+        <MoireContent graph={graph} />
+      </article>
+    </>
   );
 }

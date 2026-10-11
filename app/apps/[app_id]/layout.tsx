@@ -1,8 +1,8 @@
 "use client";
 
-import { ArrowLeft, Park } from "@phosphor-icons/react/dist/ssr";
-import Link from "next/link";
 import { usePathname } from "next/navigation";
+
+import { BackToAppsLink } from "@/app/apps/back-to-apps-link";
 
 type PlaygroundLayoutProps = {
   children: React.ReactNode;
@@ -15,18 +15,7 @@ export default function PlaygroundLayout(props: PlaygroundLayoutProps) {
 
   return (
     <div className="mx-auto max-w-4xl space-y-16">
-      {isAppRootLevel && (
-        <Link href="/apps" className="group">
-          <div className="mb-12 flex items-center gap-2 text-sm">
-            <ArrowLeft
-              size={18}
-              className="group-hover:animate-wobble-horizontal"
-            />
-            <Park size={24} />
-            Back to Apps
-          </div>
-        </Link>
-      )}
+      {isAppRootLevel && <BackToAppsLink />}
 
       <div>{props.children}</div>
 
