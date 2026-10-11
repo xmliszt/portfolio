@@ -43,7 +43,7 @@ export function MachineDrawing(props: MachineDrawingProps) {
   const isSomeoneElses = view.status.kind === "occupied";
   const isRunning =
     view.status.kind === "running" ||
-    (view.status.kind === "occupied" && view.status.remainingMs > 0);
+    (view.status.kind === "occupied" && view.status.phase === "running");
   const isLive = view.status.kind === "running" || view.status.kind === "done";
   const hasLaundry = isLive || isSomeoneElses || view.status.kind === "loaded";
   function isHighlighted(part: string) {

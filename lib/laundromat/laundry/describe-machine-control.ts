@@ -42,16 +42,26 @@ export function describeMachineControl(options: {
         })
       : "";
   if (status.kind === "occupied") {
-    const tooltip =
-      status.remainingMs > 0
-        ? copy.othersRunningTooltip({
+    const tooltip = (() => {
+      switch (status.phase) {
+        case "loaded":
+          return copy.othersLoadedTooltip;
+        case "running":
+          return copy.othersRunningTooltip({
             kind,
             time: formatClockTime({
               timestampMs: status.endsAt,
               locale: options.copy.locale,
             }),
-          })
-        : copy.othersDoneTooltip;
+          });
+        case "done":
+          return copy.othersDoneTooltip;
+        default: {
+          const unhandled: never = status;
+          return unhandled;
+        }
+      }
+    })();
     return {
       label: copy.controlInUseLabel({ name, control: options.control }),
       tooltip,

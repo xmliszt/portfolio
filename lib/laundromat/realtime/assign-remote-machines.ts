@@ -8,8 +8,31 @@ const DONE_LINGER_MS = 90_000;
 
 export type RemoteMachine = {
   visitorId: string;
-  endsAt: number;
+  load: RemoteLoad;
 };
+
+function getSortStart(load: RemoteLoad) {
+  switch (load.phase) {
+    case "done":
+      return 0;
+    case "running":
+      return load.startedAt;
+    case "loaded":
+      return Number.MAX_SAFE_INTEGER;
+    default: {
+      const unhandled: never = load;
+      return unhandled;
+    }
+  }
+}
+
+function isShown(options: { load: RemoteLoad; now: number }) {
+  const { load } = options;
+  return (
+    load.phase !== "running" ||
+    options.now < load.startedAt + load.durationMs + DONE_LINGER_MS
+  );
+}
 
 function hashVisitorId(visitorId: string) {
   return [...visitorId].reduce(
@@ -18,7 +41,7 @@ function hashVisitorId(visitorId: string) {
   );
 }
 
-/** Return which of `machines` show another visitor's load, keyed by machine id: one per visitor, at most three per kind, nearest to `ownRegion` first and then earliest started, never `ownMachineId`, and always one machine of each kind left free while the visitor's own laundry is not in that kind; a load lingers `DONE_LINGER_MS` after it ends, and each visitor keeps the slot their id hashes to whenever it is free. */
+/** Return which of `machines` hold another visitor's laundry, keyed by machine id: one per visitor, at most three per kind, nearest to `ownRegion` first, then done before running (earliest started first) before loaded, never `ownMachineId`, and always one machine of each kind left free while the visitor's own laundry is not in that kind; a running load lingers `DONE_LINGER_MS` after it ends, loaded and done loads stay until the visitor takes them out, and each visitor keeps the slot their id hashes to whenever it is free. */
 export function assignRemoteMachines(options: {
   machines: { id: string; kind: MachineKind }[];
   ownMachineId: string | undefined;
@@ -48,18 +71,20 @@ export function assignRemoteMachines(options: {
         slots.length - (isOwnInKind ? 0 : 1)
       );
       const visible = uniqueOthers
-        .filter(({ load }) => load.kind === kind)
+        .filter(
+          ({ load }) =>
+            load.kind === kind && isShown({ load, now: options.now })
+        )
         .map(({ visitorId, region, load }) => ({
           visitorId,
-          endsAt: load.startedAt + load.durationMs,
-          startedAt: load.startedAt,
+          load,
+          sortStart: getSortStart(load),
           tier: getRegionTier({ own: options.ownRegion, other: region }),
         }))
-        .filter(({ endsAt }) => options.now < endsAt + DONE_LINGER_MS)
         .toSorted(
           (a, b) =>
             a.tier - b.tier ||
-            a.startedAt - b.startedAt ||
+            a.sortStart - b.sortStart ||
             a.visitorId.localeCompare(b.visitorId)
         )
         .slice(0, Math.max(0, capacity));
@@ -74,7 +99,7 @@ export function assignRemoteMachines(options: {
         if (slot === undefined) return taken;
         return [
           ...taken,
-          [slot.id, { visitorId: other.visitorId, endsAt: other.endsAt }],
+          [slot.id, { visitorId: other.visitorId, load: other.load }],
         ];
       }, []);
     })

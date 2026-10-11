@@ -1,11 +1,22 @@
 import type { FaceRect } from "./get-face-plane";
 import { getFacePlane } from "./get-face-plane";
-import type { IsoProjection } from "./project-iso-point";
+import { getIsoEllipse } from "./get-iso-ellipse";
+import type { IsoProjection, ScreenPoint } from "./project-iso-point";
 import type { IsoPoint, IsoSize } from "./scene-config";
 
 const BASE_HEIGHT = 0.3;
 
-/** Return the base height and the `transform` from the front of a coffee machine's base to scene pixels, the face-pixel `rects` on it, and the switch's scene outline. */
+export const COFFEE_TOWER_DEPTH = 0.42;
+
+export const COFFEE_CARAFE = {
+  radius: 0.26,
+  topRadius: 0.21,
+  bottom: 0.32,
+  top: 0.9,
+  depthFromTower: 0.3,
+};
+
+/** Return the base height and the `transform` from the front of a coffee machine's base to scene pixels, the face-pixel `rects` on it, and the scene outlines of the switch and the carafe. */
 export function getCoffeeMachineFace(options: {
   position: IsoPoint;
   size: IsoSize;
@@ -29,10 +40,33 @@ export function getCoffeeMachineFace(options: {
     switch: { x: width - 0.84 * unit, y: 0, width: 0.8 * unit, height },
   } satisfies { [part: string]: FaceRect };
 
+  const carafeCenter = {
+    x: position.x + size.w / 2,
+    y: position.y + COFFEE_TOWER_DEPTH + COFFEE_CARAFE.depthFromTower,
+  };
+  const carafeBase = getIsoEllipse({
+    center: { ...carafeCenter, z: position.z + COFFEE_CARAFE.bottom },
+    radius: COFFEE_CARAFE.radius,
+    projection,
+  });
+  const carafeTop = getIsoEllipse({
+    center: { ...carafeCenter, z: position.z + COFFEE_CARAFE.top },
+    radius: COFFEE_CARAFE.radius,
+    projection,
+  });
+  const flask: ScreenPoint[] = [
+    { x: carafeTop.cx - carafeTop.rx, y: carafeTop.cy },
+    { x: carafeTop.cx, y: carafeTop.cy - carafeTop.ry },
+    { x: carafeTop.cx + carafeTop.rx, y: carafeTop.cy },
+    { x: carafeBase.cx + carafeBase.rx, y: carafeBase.cy },
+    { x: carafeBase.cx, y: carafeBase.cy + carafeBase.ry },
+    { x: carafeBase.cx - carafeBase.rx, y: carafeBase.cy },
+  ];
+
   return {
     baseHeight: BASE_HEIGHT,
     transform: plane.transform,
     rects,
-    controlOutlines: { switch: plane.toOutline(rects.switch) },
+    controlOutlines: { switch: plane.toOutline(rects.switch), flask },
   };
 }

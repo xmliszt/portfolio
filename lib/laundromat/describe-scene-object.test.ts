@@ -7,7 +7,7 @@ import { describeSceneObject } from "./describe-scene-object";
 import { isInteractiveSceneObject } from "./is-interactive-scene-object";
 import { sceneConfig } from "./scene-config";
 
-test("gives every machine, both focus targets and the mat a label and tooltip", () => {
+test("gives every machine, both focus targets, the mat, the mug and the plant a label and tooltip", () => {
   const interactiveIds = sceneConfig.objects
     .filter((object) => describeSceneObject({ object, copy: en }) !== undefined)
     .map((object) => object.id);
@@ -18,7 +18,9 @@ test("gives every machine, both focus targets and the mat a label and tooltip", 
     "dryer-3",
     "dryer-4",
     "mat",
+    "mug",
     "notebook",
+    "plant",
     "shelf",
     "tv",
     "washer-1",

@@ -67,6 +67,7 @@ export type SceneTokens = {
   paper: string;
   paperRule: string;
   inkPen: string;
+  remotePen: string;
 };
 
 export type SceneConfig = {
@@ -124,6 +125,7 @@ export type SceneConfig = {
       knobDegreesPerDetent: number;
     };
     coffee: {
+      flaskPortions: number;
       brewSeconds: number;
       hotMinutes: number;
       streamFlowMs: number;
@@ -139,6 +141,7 @@ export type SceneConfig = {
       swayDeg: number;
       swayMinSeconds: number;
       swayMaxSeconds: number;
+      wiggleMs: number;
     };
     shelf: { bookLean: number; spineGlow: number; bookLift: number };
     window: { litWindowOpacity: number };
@@ -199,6 +202,7 @@ export const sceneConfig: SceneConfig = {
     paper: "#e4dfd4",
     paperRule: "#cfc8b9",
     inkPen: "#2a2b2e",
+    remotePen: "#3f7fd9",
   },
   room: { width: 14, depth: 10, wallHeight: 8 },
   objects: [
@@ -428,6 +432,7 @@ export const sceneConfig: SceneConfig = {
       knobDegreesPerDetent: 39,
     },
     coffee: {
+      flaskPortions: 4,
       brewSeconds: 40,
       hotMinutes: 6.5,
       streamFlowMs: 260,
@@ -435,7 +440,12 @@ export const sceneConfig: SceneConfig = {
       steamRiseSeconds: 3.2,
     },
     clock: { hourHandWidth: 2, minuteHandWidth: 1.25, glassHighlight: 0.08 },
-    plant: { swayDeg: 5.65, swayMinSeconds: 8, swayMaxSeconds: 8.5 },
+    plant: {
+      swayDeg: 5.65,
+      swayMinSeconds: 8,
+      swayMaxSeconds: 8.5,
+      wiggleMs: 900,
+    },
     shelf: { bookLean: 0.14, spineGlow: 0.69, bookLift: 0.19 },
     window: { litWindowOpacity: 0.7 },
     notebook: {

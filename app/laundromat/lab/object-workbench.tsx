@@ -9,6 +9,8 @@ import { SceneTooltip } from "@/app/laundromat/scene-tooltip";
 import { useRoomAppliances } from "@/app/laundromat/use-room-appliances";
 import type { LaidOutControl } from "@/lib/laundromat/build-scene-layout";
 import { buildSceneLayout } from "@/lib/laundromat/build-scene-layout";
+import { describeCoffeeCup } from "@/lib/laundromat/coffee/describe-coffee-cup";
+import { describeCoffeeFlask } from "@/lib/laundromat/coffee/describe-coffee-flask";
 import { describeCoffeeMachine } from "@/lib/laundromat/coffee/describe-coffee-machine";
 import { describeCoffeeSwitch } from "@/lib/laundromat/coffee/describe-coffee-switch";
 import { describeSceneObject } from "@/lib/laundromat/describe-scene-object";
@@ -52,6 +54,7 @@ export function ObjectWorkbench(props: ObjectWorkbenchProps) {
   }>({});
   const [openedAt] = useState(() => Date.now());
   const appliances = useRoomAppliances(config);
+  const [plantTouchCount, setPlantTouchCount] = useState(0);
   const layout = useMemo(() => {
     const { size } = object;
     return buildSceneLayout({
@@ -116,6 +119,11 @@ export function ObjectWorkbench(props: ObjectWorkbenchProps) {
           },
     tv: { state: appliances.tv, noSignal: false },
     coffee: appliances.coffee,
+    cup: {
+      full: appliances.cup.kind === "full",
+      steaming: appliances.isCupSteaming,
+    },
+    plantTouchCount,
     basket: props.basket,
     matReady: describeEntranceMat({ basket: props.basket, copy }).ready,
     shelfBookNumbers: WORKBENCH_SHELF_BOOKS,
@@ -139,6 +147,8 @@ export function ObjectWorkbench(props: ObjectWorkbenchProps) {
         });
       case "coffee-machine":
         return describeCoffeeMachine({ phase: appliances.coffee, copy });
+      case "mug":
+        return describeCoffeeCup({ cup: appliances.cup, copy });
       default:
         return describeSceneObject({ object, copy });
     }
@@ -166,7 +176,13 @@ export function ObjectWorkbench(props: ObjectWorkbenchProps) {
           copy,
         });
       case "coffee":
-        return describeCoffeeSwitch({ phase: appliances.coffee, copy });
+        return control.control === "flask"
+          ? describeCoffeeFlask({
+              phase: appliances.coffee,
+              cup: appliances.cup,
+              copy,
+            })
+          : describeCoffeeSwitch({ phase: appliances.coffee, copy });
       default: {
         const unhandled: never = control;
         return unhandled;
@@ -197,13 +213,21 @@ export function ObjectWorkbench(props: ObjectWorkbenchProps) {
             return;
         }
       case "coffee":
-        appliances.brew();
+        appliances.dispatchCoffee({
+          type: control.control === "flask" ? "pour" : "brew",
+        });
         return;
       default: {
         const unhandled: never = control;
         return unhandled;
       }
     }
+  }
+
+  function handleObjectActivate() {
+    setHoveredId(object.id);
+    if (object.kind === "plant") setPlantTouchCount((count) => count + 1);
+    if (object.kind === "mug") appliances.dispatchCoffee({ type: "drink" });
   }
 
   const laidOut = layout.objects.at(0);
@@ -254,7 +278,7 @@ export function ObjectWorkbench(props: ObjectWorkbenchProps) {
               laidOut={laidOut}
               label={description.label}
               pressed={undefined}
-              onActivate={() => setHoveredId(object.id)}
+              onActivate={handleObjectActivate}
               onPointerShowTooltip={() => setHoveredId(object.id)}
               onKeyboardShowTooltip={() => setHoveredId(object.id)}
               onHideTooltip={() => setHoveredId(undefined)}

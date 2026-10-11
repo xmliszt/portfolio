@@ -1,6 +1,13 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import {
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import { uniq } from "lodash";
 import { motion, useTransform } from "motion/react";
 
@@ -11,6 +18,7 @@ import type { LeaveEntryFailure } from "@/lib/laundromat/notebook/describe-leave
 import { describeLeaveFailure } from "@/lib/laundromat/notebook/describe-leave-failure";
 import { detectScript } from "@/lib/laundromat/notebook/detect-script";
 import { fitEntry } from "@/lib/laundromat/notebook/fit-entry";
+import { fitsNotebook } from "@/lib/laundromat/notebook/fits-notebook";
 import { formatEntryDay } from "@/lib/laundromat/notebook/format-entry-day";
 import { getDraftPlacement } from "@/lib/laundromat/notebook/get-draft-placement";
 import { getDraftRowMarks } from "@/lib/laundromat/notebook/get-draft-row-marks";
@@ -23,6 +31,10 @@ import type { FittedEntry } from "@/lib/laundromat/notebook/layout-page-rows";
 import { layoutPageRows } from "@/lib/laundromat/notebook/layout-page-rows";
 import { wrapEntryLines } from "@/lib/laundromat/notebook/wrap-entry-lines";
 import { wrapEntryText } from "@/lib/laundromat/notebook/wrap-entry-text";
+import type {
+  RemoteDraft,
+  RemoteEntry,
+} from "@/lib/laundromat/realtime/room-presence";
 import type { SceneConfig } from "@/lib/laundromat/scene-config";
 import type { NotebookScript } from "@/lib/laundromat/supabase/notebook-types";
 import { cn } from "@/lib/utils";
@@ -35,7 +47,7 @@ import {
   reportNotebookEntry,
 } from "./notebook-actions";
 import type { NotebookLock } from "./notebook-lock";
-import type { PageContent, RowView } from "./notebook-page";
+import type { PageContent, RemoteCaret, RowView } from "./notebook-page";
 import { NotebookPage } from "./notebook-page";
 import type { CurlTurn } from "./page-curl-canvas";
 import { PageCurlCanvas } from "./page-curl-canvas";
@@ -72,7 +84,9 @@ type NotebookBookProps = {
   lock: NotebookLock;
   freeNoticeOn: boolean;
   onWritingChange: (isWriting: boolean) => void;
-  onDraftChange: (draft: { text: string; script: NotebookScript }) => void;
+  onDraftChange: (draft: Omit<RemoteDraft, "sessionId">) => void;
+  remoteEntry: RemoteEntry | undefined;
+  onEntryPlaced: (entry: Omit<RemoteEntry, "sessionId">) => void;
   onRequestFreeNotice: () => void;
 };
 
@@ -127,6 +141,7 @@ export function NotebookBook(props: NotebookBookProps) {
   const [isJumping, setIsJumping] = useState(false);
   const [curlMode, setCurlMode] = useState<"webgl" | "css">("webgl");
   const [localEntries, setLocalEntries] = useState<NotebookView["entries"]>([]);
+  const [handoffDraft, setHandoffDraft] = useState<RemoteDraft>();
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const { getMeasure, loadMeasure } = useTextMeasurers();
 
@@ -140,7 +155,7 @@ export function NotebookBook(props: NotebookBookProps) {
     ease: details.turnEase,
     reducedMotion: props.reducedMotion,
   });
-  const { spread, turn, goToSpread } = turns;
+  const { spread, turn, goToSpread, setSpread } = turns;
   const sound = useSoundBoard();
 
   useEffect(() => {
@@ -270,10 +285,12 @@ export function NotebookBook(props: NotebookBookProps) {
     });
   }, [notebook.entries, getEntryStyle, getMeasure, maxWidthPx, copy.locale]);
 
-  const remoteDraft =
-    props.lock.kind === "taken" ? props.lock.draft : undefined;
-  const pageDraft =
-    props.lock.kind === "taken" ? (remoteDraft?.text ?? "") : draft;
+  const takenDraft = props.lock.kind === "taken" ? props.lock.draft : undefined;
+  const remoteDraft = props.lock.kind === "taken" ? takenDraft : handoffDraft;
+  const pageDraft = (() => {
+    if (props.lock.kind === "taken") return remoteDraft?.text ?? "";
+    return handoffDraft?.text ?? draft;
+  })();
   const trimmedDraft = pageDraft.trimEnd();
   const draftScript = remoteDraft?.script ?? detectScript(trimmedDraft);
   const draftStyle = getEntryStyle({
@@ -303,10 +320,18 @@ export function NotebookBook(props: NotebookBookProps) {
     pageCount: notebook.pageCount,
   });
   const writeSpread = getSpreadOfPage(draftPlacement.caretPage);
-  const shownSelection =
-    props.lock.kind === "taken"
-      ? { start: pageDraft.length, end: pageDraft.length }
-      : selection;
+  const isRemoteDraft =
+    props.lock.kind === "taken" || handoffDraft !== undefined;
+  const shownSelection = (() => {
+    if (!isRemoteDraft) return selection;
+    return (
+      remoteDraft?.selection ?? {
+        start: pageDraft.length,
+        end: pageDraft.length,
+      }
+    );
+  })();
+  const markTone = isRemoteDraft ? "remote" : "own";
   const isDraftVisible =
     isWritable &&
     !draftPlacement.startsNewBook &&
@@ -380,7 +405,10 @@ export function NotebookBook(props: NotebookBookProps) {
       const style = styles[row.entryId];
       if (style === undefined) return [];
       const line =
-        row.entryId === DRAFT_ID && row.kind === "text" && phase === "open"
+        row.entryId === DRAFT_ID &&
+        row.kind === "text" &&
+        phase === "open" &&
+        (canWrite || isRemoteDraft)
           ? shownDraftLines.at(row.lineInEntry)
           : undefined;
       const marks =
@@ -392,9 +420,28 @@ export function NotebookBook(props: NotebookBookProps) {
               nextStart: shownDraftLines.at(row.lineInEntry + 1)?.start,
               selection: shownSelection,
             });
-      return [{ ...row, ...style, ink: getInkState(row), ...marks }];
+      return [{ ...row, ...style, ink: getInkState(row), ...marks, markTone }];
     });
     return { content, rows };
+  }
+
+  function getRemoteCaret(rows: RowView[]): RemoteCaret | undefined {
+    if (props.lock.kind !== "taken") return undefined;
+    const row = rows.find(
+      (candidate) =>
+        candidate.entryId === DRAFT_ID && candidate.caretAt !== undefined
+    );
+    if (row === undefined || row.caretAt === undefined) return undefined;
+    const offsetPx = getMeasure(draftStyle)(row.text.slice(0, row.caretAt));
+    return {
+      left: row.isRtl
+        ? settings.width - settings.marginX - offsetPx
+        : settings.marginX + offsetPx,
+      top:
+        settings.marginTop + row.row * pitch + pitch * settings.textDropRatio,
+      fontFamily: row.fontFamily,
+      fontSizePx: row.fontSizePx,
+    };
   }
 
   useEffect(() => {
@@ -402,23 +449,38 @@ export function NotebookBook(props: NotebookBookProps) {
   }, []);
 
   const loadRequestRef = useRef(0);
-  const reloadNotebook = useCallback(async (bookNumber: number | undefined) => {
-    loadRequestRef.current += 1;
-    const request = loadRequestRef.current;
-    setIsReloading(true);
-    const next = await loadNotebook(bookNumber).catch(
-      (): NotebookResult => ({ kind: "offline" })
-    );
-    if (request !== loadRequestRef.current) return false;
-    setIsReloading(false);
-    if (next.kind === "offline") {
-      setResult((current) => (current?.kind === "online" ? current : next));
+  const pendingEntryPageRef = useRef<number>(undefined);
+  const reloadNotebook = useCallback(
+    async (bookNumber: number | undefined) => {
+      loadRequestRef.current += 1;
+      const request = loadRequestRef.current;
+      setIsReloading(true);
+      const next = await loadNotebook(bookNumber).catch(
+        (): NotebookResult => ({ kind: "offline" })
+      );
+      if (request !== loadRequestRef.current) return false;
+      setIsReloading(false);
+      if (lockRef.current.kind === "free") setHandoffDraft(undefined);
+      if (next.kind === "offline") {
+        pendingEntryPageRef.current = undefined;
+        setResult((current) => (current?.kind === "online" ? current : next));
+        return true;
+      }
+      setResult(next);
+      setLocalEntries([]);
+      const entryPage = pendingEntryPageRef.current;
+      pendingEntryPageRef.current = undefined;
+      if (
+        next.kind === "online" &&
+        entryPage !== undefined &&
+        entryPage <= next.notebook.pageCount
+      ) {
+        setSpread(getSpreadOfPage(entryPage));
+      }
       return true;
-    }
-    setResult(next);
-    setLocalEntries([]);
-    return true;
-  }, []);
+    },
+    [setSpread]
+  );
 
   useEffect(() => {
     void reloadNotebook(props.bookNumber);
@@ -465,6 +527,9 @@ export function NotebookBook(props: NotebookBookProps) {
 
   const { bookNumber, onPlaced } = props;
   const isTaken = props.lock.kind === "taken";
+  useEffect(() => {
+    if (isTaken) setHandoffDraft(takenDraft);
+  }, [isTaken, takenDraft]);
   const wasTakenRef = useRef(isTaken);
   useEffect(() => {
     const wasTaken = wasTakenRef.current;
@@ -474,6 +539,60 @@ export function NotebookBook(props: NotebookBookProps) {
       if (isLatest) onPlaced();
     });
   }, [isWritable, isTaken, bookNumber, onPlaced, reloadNotebook]);
+
+  const writerSessionIdRef = useRef<string>(undefined);
+  useEffect(() => {
+    if (props.lock.kind === "taken") {
+      writerSessionIdRef.current = props.lock.writerSessionId;
+    }
+  }, [props.lock]);
+
+  const { remoteEntry, reducedMotion } = props;
+  const handledEntryIdRef = useRef(props.remoteEntry?.entry.id);
+  useLayoutEffect(() => {
+    if (
+      remoteEntry === undefined ||
+      !isWritable ||
+      handledEntryIdRef.current === remoteEntry.entry.id
+    ) {
+      return;
+    }
+    handledEntryIdRef.current = remoteEntry.entry.id;
+    const isFromWriter =
+      remoteEntry.sessionId === writerSessionIdRef.current &&
+      (isTaken || handoffDraft !== undefined);
+    if (!isFromWriter) return;
+    setHandoffDraft(undefined);
+    const { entry } = remoteEntry;
+    if (remoteEntry.notebookNumber !== notebook.number) {
+      pendingEntryPageRef.current = entry.page;
+      void reloadNotebook(undefined);
+      return;
+    }
+    const { linesPerPage, pageCount } = notebook;
+    if (
+      !fitsNotebook({ ...entry, linesPerPage, pageCount }) ||
+      notebook.entries.some((existing) => existing.id === entry.id)
+    ) {
+      return;
+    }
+    setLocalEntries((entries) => [...entries, entry]);
+    const entrySpreads = getEntrySpreads({ ...entry, linesPerPage });
+    const canReplay =
+      !reducedMotion &&
+      entrySpreads.length === 1 &&
+      entrySpreads.at(0) === spread;
+    setInk(canReplay ? { entryId: String(entry.id), line: 0 } : undefined);
+  }, [
+    remoteEntry,
+    isWritable,
+    isTaken,
+    handoffDraft,
+    notebook,
+    reloadNotebook,
+    spread,
+    reducedMotion,
+  ]);
 
   useEffect(() => {
     if (isTaken) onWritingChange(false);
@@ -500,11 +619,25 @@ export function NotebookBook(props: NotebookBookProps) {
   function handleDraftChange(event: React.ChangeEvent<HTMLTextAreaElement>) {
     const next = event.target.value.slice(0, config.notebook.maxChars);
     setDraft(next);
-    readSelection(event.target);
+    const nextSelection = readSelection(event.target);
     setFailure(undefined);
     writeStoredDraft(next);
     props.onWritingChange(next.trim() !== "");
-    props.onDraftChange({ text: next, script: detectScript(next) });
+    props.onDraftChange({
+      text: next,
+      script: detectScript(next),
+      selection: nextSelection,
+    });
+  }
+
+  function handleSelect(textarea: HTMLTextAreaElement) {
+    const nextSelection = readSelection(textarea);
+    if (!canWrite || draft.trim() === "") return;
+    props.onDraftChange({
+      text: draft,
+      script: detectScript(draft),
+      selection: nextSelection,
+    });
   }
 
   async function handleLeave() {
@@ -541,10 +674,18 @@ export function NotebookBook(props: NotebookBookProps) {
       props.onWritingChange(false);
       return;
     }
+    props.onEntryPlaced({
+      notebookNumber: placed.notebookNumber,
+      entry: placed.entry,
+    });
     setDraft("");
     writeStoredDraft("");
     props.onWritingChange(false);
-    props.onDraftChange({ text: "", script: draftScript });
+    props.onDraftChange({
+      text: "",
+      script: draftScript,
+      selection: { start: 0, end: 0 },
+    });
     props.onPlaced();
     if (placed.notebookNumber !== notebook.number) {
       const isLatest = await reloadNotebook(undefined);
@@ -580,10 +721,9 @@ export function NotebookBook(props: NotebookBookProps) {
   }
 
   function readSelection(textarea: HTMLTextAreaElement) {
-    setSelection({
-      start: textarea.selectionStart,
-      end: textarea.selectionEnd,
-    });
+    const next = { start: textarea.selectionStart, end: textarea.selectionEnd };
+    setSelection(next);
+    return next;
   }
 
   function handleTextareaKeyDown(
@@ -676,6 +816,7 @@ export function NotebookBook(props: NotebookBookProps) {
         settings={settings}
         pitch={pitch}
         rows={spec.rows}
+        remoteCaret={getRemoteCaret(spec.rows)}
         controls={
           options.isInteractive
             ? {
@@ -844,6 +985,7 @@ export function NotebookBook(props: NotebookBookProps) {
                 settings={settings}
                 pitch={pitch}
                 rows={[]}
+                remoteCaret={undefined}
                 controls={undefined}
               />
             </div>
@@ -878,8 +1020,8 @@ export function NotebookBook(props: NotebookBookProps) {
           maxLength={config.notebook.maxChars}
           onChange={handleDraftChange}
           onKeyDown={handleTextareaKeyDown}
-          onSelect={(event) => readSelection(event.currentTarget)}
-          onFocus={(event) => readSelection(event.currentTarget)}
+          onSelect={(event) => handleSelect(event.currentTarget)}
+          onFocus={(event) => handleSelect(event.currentTarget)}
         />
       )}
       <div

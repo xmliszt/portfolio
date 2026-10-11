@@ -47,6 +47,14 @@ ${lampFlickerFrames}
   to { transform: rotate(7deg) translateX(1.5px); }
 }
 @keyframes lm-sway { from { transform: rotate(${-sway * LEAF_FLUTTER_RATIO}deg); } to { transform: rotate(${sway * LEAF_FLUTTER_RATIO}deg); } }
+@keyframes lm-wiggle {
+  0%, 100% { transform: rotate(0deg); }
+  12% { transform: rotate(${-sway * 1.6}deg); }
+  28% { transform: rotate(${sway * 1.3}deg); }
+  44% { transform: rotate(${-sway * 0.9}deg); }
+  60% { transform: rotate(${sway * 0.55}deg); }
+  78% { transform: rotate(${-sway * 0.25}deg); }
+}
 @keyframes lm-bend { from { transform: skewX(${-sway}deg); } to { transform: skewX(${sway}deg); } }
 @keyframes lm-rise {
   0% { opacity: 0; transform: translateY(0); }

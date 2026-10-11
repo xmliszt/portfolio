@@ -12,6 +12,7 @@ type MugDrawingProps = {
   laidOut: LaidOutObject;
   projection: IsoProjection;
   highlighted: boolean;
+  full: boolean;
   steaming: boolean;
   details: SceneConfig["details"]["coffee"];
 };
@@ -62,8 +63,10 @@ export function MugDrawing(props: MugDrawingProps) {
         className="fill-[var(--lm-recess)] stroke-[var(--lm-detail)]"
         strokeWidth={0.75}
       />
-      <ellipse {...coffee} className="fill-[var(--lm-detail)] stroke-none" />
-      {props.steaming && (
+      {props.full && (
+        <ellipse {...coffee} className="fill-[var(--lm-detail)] stroke-none" />
+      )}
+      {props.full && props.steaming && (
         <SteamWisps
           x={mug.top.cx}
           y={mug.top.cy - 1}

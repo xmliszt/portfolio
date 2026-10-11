@@ -27,6 +27,7 @@ export function createFakeRoomSource() {
       return {
         update: () => {},
         sendDraft: () => {},
+        sendEntry: () => {},
         leave() {
           state.listeners = state.listeners.filter(
             (candidate) => candidate !== listener

@@ -59,6 +59,10 @@ export const ptBR = {
       `${o.name}, ${o.kind === "washer" ? "lavando" : "secando"} a roupa de outra pessoa, faltam ${o.remaining}`,
     othersRunningTooltip: (o: { kind: MachineKind; time: string }) =>
       `outra pessoa está ${o.kind === "washer" ? "lavando" : "secando"} · termina às ${o.time}`,
+    othersLoadedLabel: (o: { name: string }) =>
+      `${o.name}, tem a roupa de outra pessoa`,
+    othersLoadedTooltip: (o: { name: string }) =>
+      `${o.name} · roupa de outra pessoa, não iniciada`,
     othersDoneLabel: (o: { name: string }) =>
       `${o.name}, a roupa de outra pessoa está pronta`,
     othersDoneTooltip: (o: { name: string }) =>
@@ -77,6 +81,7 @@ export const ptBR = {
       `${o.name}, ${{ dial: "seletor", start: "botão de início", door: "porta" }[o.control]}: outra pessoa está usando`,
     othersRunningTooltip: (o: { kind: MachineKind; time: string }) =>
       `${o.kind === "washer" ? "lavagem" : "secagem"} de outra pessoa · termina às ${o.time}`,
+    othersLoadedTooltip: "roupa de outra pessoa · ainda não iniciada",
     othersDoneTooltip: "roupa de outra pessoa · esperando o dono",
     doneAt: (o: { time: string }) => `termina às ${o.time}`,
     dialLabel: (o: { name: string; minutes: number }) =>
@@ -129,13 +134,30 @@ export const ptBR = {
     machineLabel: "Cafeteira",
     brewingMachineLabel: "Cafeteira, passando café",
     brewingTooltip: "passando…",
-    hotMachineLabel: "Cafeteira, tem um café quente na mesa",
-    hotMachineTooltip: "o café está na mesa",
     idleSwitchLabel: "Botão da cafeteira, passar um café",
     idleSwitchTooltip: "passar um café",
     brewingSwitchLabel: "Botão da cafeteira, passando café",
-    hotSwitchLabel: "Botão da cafeteira, passar outro café",
-    hotSwitchTooltip: "mais um",
+    readyMachineLabel: "Cafeteira, tem café na jarra",
+    readyMachineTooltip: "o café está pronto",
+    topUpSwitchLabel: "Botão da cafeteira, completar a jarra",
+    topUpSwitchTooltip: "completar a jarra",
+    fullSwitchLabel: "Botão da cafeteira, a jarra está cheia",
+    fullSwitchTooltip: "a jarra está cheia · sirva uma xícara antes",
+    emptyFlaskLabel: "Jarra de café, vazia",
+    emptyFlaskTooltip: "a jarra está vazia",
+    brewingFlaskLabel: "Jarra de café, passando café",
+    pourLabel: "Jarra de café, servir uma xícara",
+    pourTooltip: "servir uma xícara",
+    cupFullFlaskLabel: "Jarra de café, termine sua xícara antes",
+    cupFullFlaskTooltip: "termine sua xícara antes",
+    fullCupLabel: "Xícara de café, beber",
+    fullCupTooltip: "beber",
+    emptyCupLabel: "Xícara de café, vazia",
+    emptyCupTooltip: "xícara vazia",
+  },
+  plant: {
+    label: "Planta, tocar na grama",
+    tooltip: "tocar na grama",
   },
   tv: {
     stations: {

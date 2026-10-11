@@ -17,7 +17,7 @@ const TV_CONTROLS = [
   "volume",
   "power",
 ] satisfies TvControl[];
-const COFFEE_CONTROLS = ["switch"] satisfies CoffeeControl[];
+const COFFEE_CONTROLS = ["switch", "flask"] satisfies CoffeeControl[];
 
 const COS_30 = Math.cos(Math.PI / 6);
 const SIN_30 = Math.sin(Math.PI / 6);

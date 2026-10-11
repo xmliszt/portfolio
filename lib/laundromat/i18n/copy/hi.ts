@@ -64,6 +64,10 @@ export const hi = {
       `${o.name}, किसी और के कपड़े ${o.kind === "washer" ? "धुल" : "सूख"} रहे हैं, ${o.remaining} बाकी`,
     othersRunningTooltip: (o: { kind: MachineKind; time: string }) =>
       `कोई और कपड़े ${o.kind === "washer" ? "धो" : "सुखा"} रहा है · ${o.time} पर खत्म`,
+    othersLoadedLabel: (o: { name: string }) =>
+      `${o.name}, इसमें किसी और के कपड़े हैं`,
+    othersLoadedTooltip: (o: { name: string }) =>
+      `${o.name} · किसी और के कपड़े, शुरू नहीं हुआ`,
     othersDoneLabel: (o: { name: string }) =>
       `${o.name}, किसी और के कपड़े तैयार हैं`,
     othersDoneTooltip: (o: { name: string }) => `${o.name} · किसी और के, तैयार`,
@@ -81,6 +85,7 @@ export const hi = {
       `${o.name} का ${o.control === "dial" ? "डायल" : o.control === "start" ? "स्टार्ट बटन" : "दरवाज़ा"}, कोई और इस्तेमाल कर रहा है`,
     othersRunningTooltip: (o: { kind: MachineKind; time: string }) =>
       `किसी और की ${o.kind === "washer" ? "धुलाई" : "सुखाई"} · ${o.time} पर खत्म`,
+    othersLoadedTooltip: "किसी और के कपड़े · अभी शुरू नहीं हुआ",
     othersDoneTooltip: "किसी और के कपड़े · अपने मालिक का इंतज़ार",
     doneAt: (o: { time: string }) => `${o.time} पर खत्म`,
     dialLabel: (o: { name: string; minutes: number }) =>
@@ -132,13 +137,30 @@ export const hi = {
     machineLabel: "कॉफ़ी मशीन",
     brewingMachineLabel: "कॉफ़ी मशीन, कॉफ़ी बन रही है",
     brewingTooltip: "बन रही है…",
-    hotMachineLabel: "कॉफ़ी मशीन, मेज़ पर एक गरम कॉफ़ी रखी है",
-    hotMachineTooltip: "कॉफ़ी मेज़ पर है",
     idleSwitchLabel: "कॉफ़ी मशीन का स्विच, कॉफ़ी बनाओ",
     idleSwitchTooltip: "एक कॉफ़ी बनाओ",
     brewingSwitchLabel: "कॉफ़ी मशीन का स्विच, कॉफ़ी बन रही है",
-    hotSwitchLabel: "कॉफ़ी मशीन का स्विच, एक और कॉफ़ी बनाओ",
-    hotSwitchTooltip: "एक और बनाओ",
+    readyMachineLabel: "कॉफ़ी मशीन, जग में कॉफ़ी है",
+    readyMachineTooltip: "कॉफ़ी तैयार है",
+    topUpSwitchLabel: "कॉफ़ी मशीन का स्विच, जग फिर से भरो",
+    topUpSwitchTooltip: "जग भरो",
+    fullSwitchLabel: "कॉफ़ी मशीन का स्विच, जग भरा हुआ है",
+    fullSwitchTooltip: "जग भरा है · पहले एक कप डालो",
+    emptyFlaskLabel: "कॉफ़ी जग, ख़ाली",
+    emptyFlaskTooltip: "जग ख़ाली है",
+    brewingFlaskLabel: "कॉफ़ी जग, कॉफ़ी बन रही है",
+    pourLabel: "कॉफ़ी जग, एक कप डालो",
+    pourTooltip: "एक कप डालो",
+    cupFullFlaskLabel: "कॉफ़ी जग, पहले अपना कप ख़त्म करो",
+    cupFullFlaskTooltip: "पहले कप ख़त्म करो",
+    fullCupLabel: "कॉफ़ी का कप, पियो",
+    fullCupTooltip: "पियो",
+    emptyCupLabel: "कॉफ़ी का कप, ख़ाली",
+    emptyCupTooltip: "ख़ाली कप",
+  },
+  plant: {
+    label: "पौधा, घास छुओ",
+    tooltip: "घास छुओ",
   },
   tv: {
     stations: {

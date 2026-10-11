@@ -59,6 +59,10 @@ export const it = {
       `${o.name}, ${o.kind === "washer" ? "sta lavando" : "sta asciugando"} il bucato di qualcun altro, mancano ${o.remaining}`,
     othersRunningTooltip: (o: { kind: MachineKind; time: string }) =>
       `qualcun altro sta ${o.kind === "washer" ? "lavando" : "asciugando"} · finisce alle ${o.time}`,
+    othersLoadedLabel: (o: { name: string }) =>
+      `${o.name}, c'è il bucato di qualcun altro`,
+    othersLoadedTooltip: (o: { name: string }) =>
+      `${o.name} · bucato di qualcun altro, non avviato`,
     othersDoneLabel: (o: { name: string }) =>
       `${o.name}, il bucato di qualcun altro è pronto`,
     othersDoneTooltip: (o: { name: string }) =>
@@ -77,6 +81,7 @@ export const it = {
       `${o.name}, ${{ dial: "manopola", start: "tasto di avvio", door: "oblò" }[o.control]}: lo sta usando qualcun altro`,
     othersRunningTooltip: (o: { kind: MachineKind; time: string }) =>
       `${o.kind === "washer" ? "lavaggio" : "asciugatura"} di qualcun altro · finisce alle ${o.time}`,
+    othersLoadedTooltip: "bucato di qualcun altro · non ancora avviato",
     othersDoneTooltip: "bucato di qualcun altro · aspetta il suo proprietario",
     doneAt: (o: { time: string }) => `finisce alle ${o.time}`,
     dialLabel: (o: { name: string; minutes: number }) =>
@@ -129,14 +134,33 @@ export const it = {
     machineLabel: "Macchina del caffè",
     brewingMachineLabel: "Macchina del caffè, il caffè sta uscendo",
     brewingTooltip: "sta uscendo…",
-    hotMachineLabel: "Macchina del caffè, c'è un caffè caldo sul tavolo",
-    hotMachineTooltip: "il caffè è sul tavolo",
     idleSwitchLabel: "Interruttore della macchina del caffè, fai un caffè",
     idleSwitchTooltip: "fai un caffè",
     brewingSwitchLabel:
       "Interruttore della macchina del caffè, il caffè sta uscendo",
-    hotSwitchLabel: "Interruttore della macchina del caffè, fanne un altro",
-    hotSwitchTooltip: "un altro",
+    readyMachineLabel: "Macchina del caffè, c'è caffè nella caraffa",
+    readyMachineTooltip: "il caffè è pronto",
+    topUpSwitchLabel:
+      "Interruttore della macchina del caffè, riempi la caraffa",
+    topUpSwitchTooltip: "riempi la caraffa",
+    fullSwitchLabel:
+      "Interruttore della macchina del caffè, la caraffa è piena",
+    fullSwitchTooltip: "la caraffa è piena · versa prima una tazza",
+    emptyFlaskLabel: "Caraffa del caffè, vuota",
+    emptyFlaskTooltip: "la caraffa è vuota",
+    brewingFlaskLabel: "Caraffa del caffè, il caffè sta uscendo",
+    pourLabel: "Caraffa del caffè, versa una tazza",
+    pourTooltip: "versa una tazza",
+    cupFullFlaskLabel: "Caraffa del caffè, finisci prima la tua tazza",
+    cupFullFlaskTooltip: "finisci prima la tazza",
+    fullCupLabel: "Tazza di caffè, bevi",
+    fullCupTooltip: "bevi",
+    emptyCupLabel: "Tazza di caffè, vuota",
+    emptyCupTooltip: "tazza vuota",
+  },
+  plant: {
+    label: "Pianta, tocca l'erba",
+    tooltip: "tocca l'erba",
   },
   tv: {
     stations: {

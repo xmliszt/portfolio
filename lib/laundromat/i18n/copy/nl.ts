@@ -52,6 +52,9 @@ export const nl = {
       `${o.name}, ${o.kind === "washer" ? "wast" : "droogt"} de was van iemand anders, nog ${o.remaining}`,
     othersRunningTooltip: (o) =>
       `iemand anders is aan het ${o.kind === "washer" ? "wassen" : "drogen"} · klaar om ${o.time}`,
+    othersLoadedLabel: (o) => `${o.name}, de was van iemand anders zit erin`,
+    othersLoadedTooltip: (o) =>
+      `${o.name} · was van iemand anders, niet gestart`,
     othersDoneLabel: (o) => `${o.name}, de was van iemand anders is klaar`,
     othersDoneTooltip: (o) => `${o.name} · van iemand anders, klaar`,
     doneNotificationTitle: (o) => `${o.name} · klaar`,
@@ -65,6 +68,7 @@ export const nl = {
       `${{ dial: "Draaiknop", start: "Startknop", door: "Deur" }[o.control]} van ${o.name}, in gebruik door iemand anders`,
     othersRunningTooltip: (o) =>
       `${o.kind === "washer" ? "wasbeurt" : "droogbeurt"} van iemand anders · klaar om ${o.time}`,
+    othersLoadedTooltip: "was van iemand anders · nog niet gestart",
     othersDoneTooltip: "de was van iemand anders · wacht op de eigenaar",
     doneAt: (o) => `klaar om ${o.time}`,
     dialLabel: (o) =>
@@ -101,15 +105,31 @@ export const nl = {
     machineLabel: "Koffiezetapparaat",
     brewingMachineLabel: "Koffiezetapparaat, bezig met zetten",
     brewingTooltip: "koffie zetten…",
-    hotMachineLabel: "Koffiezetapparaat, er staat warme koffie op tafel",
-    hotMachineTooltip: "koffie staat op tafel",
     idleSwitchLabel: "Schakelaar van het koffiezetapparaat, zet een kop koffie",
     idleSwitchTooltip: "zet een kop koffie",
     brewingSwitchLabel:
       "Schakelaar van het koffiezetapparaat, bezig met zetten",
-    hotSwitchLabel:
-      "Schakelaar van het koffiezetapparaat, zet nog een kop koffie",
-    hotSwitchTooltip: "nog eentje",
+    readyMachineLabel: "Koffiezetapparaat, er zit koffie in de kan",
+    readyMachineTooltip: "koffie is klaar",
+    topUpSwitchLabel: "Schakelaar van het koffiezetapparaat, kan bijvullen",
+    topUpSwitchTooltip: "kan bijvullen",
+    fullSwitchLabel: "Schakelaar van het koffiezetapparaat, de kan is vol",
+    fullSwitchTooltip: "kan is vol · schenk eerst een kop in",
+    emptyFlaskLabel: "Koffiekan, leeg",
+    emptyFlaskTooltip: "kan is leeg",
+    brewingFlaskLabel: "Koffiekan, bezig met zetten",
+    pourLabel: "Koffiekan, schenk een kop in",
+    pourTooltip: "schenk een kop in",
+    cupFullFlaskLabel: "Koffiekan, drink eerst je kop leeg",
+    cupFullFlaskTooltip: "drink eerst je kop leeg",
+    fullCupLabel: "Koffiekop, drinken",
+    fullCupTooltip: "drinken",
+    emptyCupLabel: "Koffiekop, leeg",
+    emptyCupTooltip: "lege kop",
+  },
+  plant: {
+    label: "Plant, gras aanraken",
+    tooltip: "gras aanraken",
   },
   tv: {
     stations: {

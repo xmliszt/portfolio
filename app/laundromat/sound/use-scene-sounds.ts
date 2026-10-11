@@ -63,7 +63,7 @@ export function useSceneSounds(options: {
   useOnChange({
     value: coffeeKind,
     onChange: ({ previous, current }) => {
-      if (previous === "brewing" && current === "hot") {
+      if (previous === "brewing" && current === "ready") {
         sound?.play("coffee-brew-done");
       }
     },

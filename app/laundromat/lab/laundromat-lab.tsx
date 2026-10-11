@@ -166,6 +166,7 @@ const objectDials = {
     _collapsed: true,
   },
   coffee: {
+    flaskPortions: [details.coffee.flaskPortions, 1, 8, 1],
     brewSeconds: [details.coffee.brewSeconds, 2, 180, 1],
     hotMinutes: [details.coffee.hotMinutes, 0.1, 30, 0.1],
     streamFlowMs: [details.coffee.streamFlowMs, 60, 2000, 10],
@@ -183,6 +184,7 @@ const objectDials = {
     swayDeg: [details.plant.swayDeg, 0, 6, 0.05],
     swayMinSeconds: [details.plant.swayMinSeconds, 1, 20, 0.5],
     swayMaxSeconds: [details.plant.swayMaxSeconds, 1, 30, 0.5],
+    wiggleMs: [details.plant.wiggleMs, 200, 3000, 50],
     _collapsed: true,
   },
   shelf: {
@@ -297,6 +299,7 @@ function buildFakePeers(options: {
       sessionId: `fake-${kind}-${indexInKind}`,
       visitorId: `fake-${kind}-${indexInKind}`,
       load: {
+        phase: "running",
         kind,
         startedAt: options.now - (indexInKind + 1) * FAKE_START_GAP_MS,
         durationMs: FAKE_CYCLE_MS,

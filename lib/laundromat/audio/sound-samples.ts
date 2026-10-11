@@ -133,6 +133,30 @@ export const SOUND_SAMPLES = {
     promptInfluence: 0.7,
     gain: 0.5,
   },
+  "coffee-pour": {
+    kind: "generated",
+    prompt:
+      "Pouring hot coffee from a glass coffee pot into a ceramic mug, short liquid pour with a rising pitch as the mug fills, close-up, quiet room",
+    durationSeconds: 1.5,
+    promptInfluence: 0.6,
+    gain: 0.7,
+  },
+  "coffee-sip": {
+    kind: "generated",
+    prompt:
+      "One person taking a slow sip of hot coffee from a ceramic mug, a soft slurp and a quiet swallow, then the mug set down gently on a wooden table, close-up, dry",
+    durationSeconds: 1.5,
+    promptInfluence: 0.6,
+    gain: 0.7,
+  },
+  "touch-grass": {
+    kind: "generated",
+    prompt:
+      "A hand brushing through the leaves of a small potted houseplant, soft leafy rustle, close-up, quiet room",
+    durationSeconds: 1,
+    promptInfluence: 0.6,
+    gain: 0.7,
+  },
   "washer-running": {
     kind: "generated",
     prompt:

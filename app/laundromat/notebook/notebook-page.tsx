@@ -22,7 +22,15 @@ export type RowView = PageRow & {
   ink: "plain" | "inking" | "waiting";
   selected: { from: number; to: number } | undefined;
   caretAt: number | undefined;
+  markTone: "own" | "remote";
   reportEntryId: number | undefined;
+};
+
+export type RemoteCaret = {
+  left: number;
+  top: number;
+  fontFamily: string;
+  fontSizePx: number;
 };
 
 type PageControls = {
@@ -40,6 +48,7 @@ type NotebookPageProps = {
   settings: NotebookPageSettings;
   pitch: number;
   rows: RowView[];
+  remoteCaret: RemoteCaret | undefined;
   controls: PageControls | undefined;
 };
 
@@ -109,6 +118,21 @@ export function NotebookPage(props: NotebookPageProps) {
           controls={props.controls}
         />
       ))}
+      {props.remoteCaret !== undefined && (
+        <span
+          aria-hidden
+          className="pointer-events-none absolute top-0 left-0 transition-transform duration-150 ease-out"
+          style={{
+            transform: `translate(${props.remoteCaret.left}px, ${props.remoteCaret.top}px)`,
+            height: pitch,
+            lineHeight: `${pitch}px`,
+            fontFamily: props.remoteCaret.fontFamily,
+            fontSize: props.remoteCaret.fontSizePx,
+          }}
+        >
+          <span className="-ml-px inline-block h-[0.8em] w-[2px] translate-y-[0.12em] rounded-full bg-[var(--lm-remote-pen)]" />
+        </span>
+      )}
       {content.kind === "paper" && (
         <button
           type="button"
@@ -240,14 +264,20 @@ function PageRowLine(props: PageRowLineProps) {
               return (
                 <>
                   {row.text.slice(0, from)}
-                  <span className="bg-[var(--lm-accent)]/30">
+                  <span
+                    className={
+                      row.markTone === "remote"
+                        ? "bg-[var(--lm-remote-pen)]/25"
+                        : "bg-[var(--lm-accent)]/30"
+                    }
+                  >
                     {row.text.slice(from, to)}
                   </span>
                   {row.text.slice(to)}
                 </>
               );
             }
-            if (row.caretAt !== undefined) {
+            if (row.caretAt !== undefined && row.markTone === "own") {
               return (
                 <>
                   {row.text.slice(0, row.caretAt)}

@@ -2,6 +2,8 @@
   "coffee-beep",
   "coffee-brew-done",
   "coffee-brewing",
+  "coffee-pour",
+  "coffee-sip",
   "coffee-switch",
   "collect-laundry",
   "door-latch-close",
@@ -15,6 +17,7 @@
   "room-door-open",
   "sliding-door",
   "start-button",
+  "touch-grass",
   "tv-no-signal",
   "tv-static",
   "washer-running"

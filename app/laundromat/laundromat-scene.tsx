@@ -20,6 +20,8 @@ import { useRouter, useSearchParams } from "next/navigation";
 
 import type { LaidOutControl } from "@/lib/laundromat/build-scene-layout";
 import { buildSceneLayout } from "@/lib/laundromat/build-scene-layout";
+import { describeCoffeeCup } from "@/lib/laundromat/coffee/describe-coffee-cup";
+import { describeCoffeeFlask } from "@/lib/laundromat/coffee/describe-coffee-flask";
 import { describeCoffeeMachine } from "@/lib/laundromat/coffee/describe-coffee-machine";
 import { describeCoffeeSwitch } from "@/lib/laundromat/coffee/describe-coffee-switch";
 import type { Camera, Viewport } from "@/lib/laundromat/compute-camera";
@@ -46,8 +48,12 @@ import type { CameraFocus } from "@/lib/laundromat/parse-camera-focus";
 import { parseCameraFocus } from "@/lib/laundromat/parse-camera-focus";
 import { assignRemoteMachines } from "@/lib/laundromat/realtime/assign-remote-machines";
 import { chooseNotebookWriter } from "@/lib/laundromat/realtime/choose-notebook-writer";
+import type {
+  RemoteDraft,
+  RemoteEntry,
+  RemoteLoad,
+} from "@/lib/laundromat/realtime/room-presence";
 import type { FocusTarget, SceneConfig } from "@/lib/laundromat/scene-config";
-import type { NotebookScript } from "@/lib/laundromat/supabase/notebook-types";
 import { describeTv } from "@/lib/laundromat/tv/describe-tv";
 import type { TvControl } from "@/lib/laundromat/tv/describe-tv-control";
 import { describeTvControl } from "@/lib/laundromat/tv/describe-tv-control";
@@ -108,6 +114,7 @@ type LaundromatSceneProps = {
   config: SceneConfig;
   hourOverride?: number;
   onHeadHome?: () => void;
+  hidden?: boolean;
 };
 
 export function LaundromatScene(props: LaundromatSceneProps) {
@@ -152,6 +159,7 @@ export function LaundromatScene(props: LaundromatSceneProps) {
   const { muted: isSoundMuted } = useSoundMuted();
   const laundry = useLaundry();
   const appliances = useRoomAppliances(config);
+  const [plantTouchCount, setPlantTouchCount] = useState(0);
   const notebookShelf = useNotebookShelf();
   const shelf = notebookShelf.shelf;
   const filledBooks = shelf?.kind === "online" ? shelf.books : [];
@@ -201,7 +209,7 @@ export function LaundromatScene(props: LaundromatSceneProps) {
   } = useTvAudio({
     tv: appliances.tv,
     details: tvSettings,
-    muted: isSoundMuted,
+    muted: isSoundMuted || props.hidden === true,
     onSkipStation: () => appliances.dispatchTv({ type: "tune", step: 1 }),
   });
 
@@ -209,26 +217,36 @@ export function LaundromatScene(props: LaundromatSceneProps) {
   const ownLoad = laundry.state.load;
   const roomSource = useContext(RoomSourceContext);
   const ownRegion = useVisitorRegion({ enabled: roomSource !== undefined });
-  const ownPresence = useMemo(
-    () =>
-      laundry.visitorId === undefined
-        ? undefined
-        : {
-            visitorId: laundry.visitorId,
-            ...(ownRegion === undefined ? {} : { region: ownRegion }),
-            ...(ownLoad.kind === "running"
-              ? {
-                  load: {
-                    kind: ownLoad.machine.kind,
-                    startedAt: ownLoad.startedAt,
-                    durationMs: ownLoad.durationMs,
-                  },
-                }
-              : {}),
-            ...(writingSince === undefined ? {} : { writingSince }),
-          },
-    [laundry.visitorId, ownRegion, ownLoad, writingSince]
-  );
+  const ownPresence = useMemo(() => {
+    if (laundry.visitorId === undefined) return undefined;
+    const load = ((): RemoteLoad | undefined => {
+      switch (ownLoad.kind) {
+        case "carrying":
+        case "folded":
+          return undefined;
+        case "loaded":
+        case "done":
+          return { phase: ownLoad.kind, kind: ownLoad.machine.kind };
+        case "running":
+          return {
+            phase: "running",
+            kind: ownLoad.machine.kind,
+            startedAt: ownLoad.startedAt,
+            durationMs: ownLoad.durationMs,
+          };
+        default: {
+          const unhandled: never = ownLoad;
+          return unhandled;
+        }
+      }
+    })();
+    return {
+      visitorId: laundry.visitorId,
+      ...(ownRegion === undefined ? {} : { region: ownRegion }),
+      ...(load === undefined ? {} : { load }),
+      ...(writingSince === undefined ? {} : { writingSince }),
+    };
+  }, [laundry.visitorId, ownRegion, ownLoad, writingSince]);
   const room = useRoom(ownPresence);
   const roomNow = useTickingNow(
     room.peers.some(
@@ -267,7 +285,11 @@ export function LaundromatScene(props: LaundromatSceneProps) {
   const notebookLock: NotebookLock =
     notebookWriter === undefined || notebookWriter === room.sessionId
       ? { kind: "free" }
-      : { kind: "taken", draft: room.drafts[notebookWriter] };
+      : {
+          kind: "taken",
+          writerSessionId: notebookWriter,
+          draft: room.drafts[notebookWriter],
+        };
 
   const [wantsFreeNotice, setWantsFreeNotice] = useState(false);
   const isNotebookTaken = notebookLock.kind === "taken";
@@ -304,8 +326,12 @@ export function LaundromatScene(props: LaundromatSceneProps) {
     );
   }, []);
 
-  function handleDraftChange(draft: { text: string; script: NotebookScript }) {
+  function handleDraftChange(draft: Omit<RemoteDraft, "sessionId">) {
     room.sendDraft(draft);
+  }
+
+  function handleEntryPlaced(entry: Omit<RemoteEntry, "sessionId">) {
+    room.sendEntry(entry);
   }
 
   async function handleRequestFreeNotice() {
@@ -324,14 +350,23 @@ export function LaundromatScene(props: LaundromatSceneProps) {
         number: object.number,
       };
       const remote = remoteMachines[object.id];
-      const status: MachineStatus =
-        remote === undefined
-          ? getMachineStatus({ state: laundry.state, machine, now })
-          : {
+      const status = ((): MachineStatus => {
+        if (remote === undefined) {
+          return getMachineStatus({ state: laundry.state, machine, now });
+        }
+        if (remote.load.phase !== "running") {
+          return { kind: "occupied", phase: remote.load.phase };
+        }
+        const endsAt = remote.load.startedAt + remote.load.durationMs;
+        return endsAt > now
+          ? {
               kind: "occupied",
-              endsAt: remote.endsAt,
-              remainingMs: Math.max(0, remote.endsAt - now),
-            };
+              phase: "running",
+              endsAt,
+              remainingMs: endsAt - now,
+            }
+          : { kind: "occupied", phase: "done" };
+      })();
       const cycle = getCycleMinutes({
         state: laundry.state,
         machine,
@@ -344,9 +379,18 @@ export function LaundromatScene(props: LaundromatSceneProps) {
           case "done":
             return copy.readoutDone;
           case "occupied":
-            return status.remainingMs > 0
-              ? formatRemainingTime(status.remainingMs)
-              : copy.readoutDone;
+            switch (status.phase) {
+              case "loaded":
+                return `${String(cycle.minutes).padStart(2, "0")}:00`;
+              case "running":
+                return formatRemainingTime(status.remainingMs);
+              case "done":
+                return copy.readoutDone;
+              default: {
+                const unhandled: never = status;
+                return unhandled;
+              }
+            }
           default:
             return `${String(cycle.minutes).padStart(2, "0")}:00`;
         }
@@ -397,6 +441,11 @@ export function LaundromatScene(props: LaundromatSceneProps) {
     machines: machineViews,
     tv: { state: appliances.tv, noSignal: isTvNoSignal },
     coffee: appliances.coffee,
+    cup: {
+      full: appliances.cup.kind === "full",
+      steaming: appliances.isCupSteaming,
+    },
+    plantTouchCount,
     basket,
     matReady: entranceMat.ready,
     shelfBookNumbers: filledBooks.map(({ number }) => number),
@@ -430,7 +479,13 @@ export function LaundromatScene(props: LaundromatSceneProps) {
           copy,
         });
       case "coffee":
-        return describeCoffeeSwitch({ phase: appliances.coffee, copy });
+        return control.control === "flask"
+          ? describeCoffeeFlask({
+              phase: appliances.coffee,
+              cup: appliances.cup,
+              copy,
+            })
+          : describeCoffeeSwitch({ phase: appliances.coffee, copy });
       default: {
         const unhandled: never = control;
         return unhandled;
@@ -452,6 +507,8 @@ export function LaundromatScene(props: LaundromatSceneProps) {
         });
       case "coffee-machine":
         return describeCoffeeMachine({ phase: appliances.coffee, copy });
+      case "mug":
+        return describeCoffeeCup({ cup: appliances.cup, copy });
       case "mat":
         return entranceMat;
       case "shelf":
@@ -464,7 +521,7 @@ export function LaundromatScene(props: LaundromatSceneProps) {
   const runningStatuses = Object.values(machineViews).filter(
     ({ status }) =>
       status.kind === "running" ||
-      (status.kind === "occupied" && status.remainingMs > 0)
+      (status.kind === "occupied" && status.phase === "running")
   );
   const isWasherRunning = runningStatuses.some(
     ({ machine }) => machine.kind === "washer"
@@ -479,7 +536,7 @@ export function LaundromatScene(props: LaundromatSceneProps) {
     isWasherRunning,
     isDryerRunning,
     coffeeKind: appliances.coffee.kind,
-    isTvHissing,
+    isTvHissing: isTvHissing && props.hidden !== true,
     isLampOn:
       hour === undefined ? undefined : getTimeOfDay({ hour, config }).isLampOn,
     loadKind: laundry.state.load.kind,
@@ -647,6 +704,24 @@ export function LaundromatScene(props: LaundromatSceneProps) {
       props.onHeadHome?.();
       return;
     }
+    const kind = layout.objects.find(({ object }) => object.id === objectId)
+      ?.object.kind;
+    if (kind === "mug" || kind === "plant") {
+      if (focus !== "room") {
+        setFocus("room");
+        return;
+      }
+      if (kind === "plant") {
+        sound?.play("touch-grass");
+        setPlantTouchCount((count) => count + 1);
+        return;
+      }
+      if (appliances.cup.kind === "full") {
+        sound?.play("coffee-sip");
+        appliances.dispatchCoffee({ type: "drink" });
+      }
+      return;
+    }
     const target = findFocusTarget({ objectId, config });
     if (target === "shelf" && !shelfDescription.ready) {
       if (focus !== "room") setFocus("room");
@@ -682,9 +757,14 @@ export function LaundromatScene(props: LaundromatSceneProps) {
         pressTvControl({ control: control.control, step });
         return;
       case "coffee":
+        if (control.control === "flask") {
+          sound?.play("coffee-pour");
+          appliances.dispatchCoffee({ type: "pour" });
+          return;
+        }
         sound?.play("coffee-switch");
         sound?.play("coffee-beep");
-        appliances.brew();
+        appliances.dispatchCoffee({ type: "brew" });
         return;
       default: {
         const unhandled: never = control;
@@ -990,6 +1070,8 @@ export function LaundromatScene(props: LaundromatSceneProps) {
                 freeNoticeOn={wantsFreeNotice}
                 onWritingChange={handleWritingChange}
                 onDraftChange={handleDraftChange}
+                remoteEntry={room.lastEntry}
+                onEntryPlaced={handleEntryPlaced}
                 onRequestFreeNotice={handleRequestFreeNotice}
               />
             </motion.div>

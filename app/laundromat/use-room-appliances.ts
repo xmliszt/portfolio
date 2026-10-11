@@ -1,6 +1,9 @@
 import { useEffect, useState } from "react";
 
+import type { CoffeeEvent } from "@/lib/laundromat/coffee/coffee-state";
+import { INITIAL_COFFEE_STATE } from "@/lib/laundromat/coffee/coffee-state";
 import { getCoffeePhase } from "@/lib/laundromat/coffee/get-coffee-phase";
+import { transitionCoffee } from "@/lib/laundromat/coffee/transition-coffee";
 import type { SceneConfig } from "@/lib/laundromat/scene-config";
 import { transitionTv } from "@/lib/laundromat/tv/transition-tv";
 import type { TvEvent, TvState } from "@/lib/laundromat/tv/tv-state";
@@ -15,21 +18,26 @@ export function useRoomAppliances(config: SceneConfig) {
     station: 0,
     volumePercent: tvDetails.defaultVolumePercent,
   });
-  const [brewStartedAt, setBrewStartedAt] = useState<number>();
+  const [coffeeState, setCoffeeState] = useState(INITIAL_COFFEE_STATE);
   const [now, setNow] = useState(() => Date.now());
-  const coffee = getCoffeePhase({
-    brewStartedAt,
-    now,
+  const timing = {
+    flaskPortions: coffeeDetails.flaskPortions,
     brewMs: coffeeDetails.brewSeconds * 1000,
     hotMs: coffeeDetails.hotMinutes * MS_PER_MINUTE,
-  });
+  };
+  const coffee = getCoffeePhase({ state: coffeeState, now, timing });
+  const { cup } = coffeeState;
+  const isCupSteaming = cup.kind === "full" && now < cup.hotUntil;
 
-  const isCoffeeIdle = coffee.kind === "idle";
+  const isCoffeeChanging =
+    coffee.kind === "brewing" ||
+    (coffee.kind === "ready" && coffee.hot) ||
+    isCupSteaming;
   useEffect(() => {
-    if (isCoffeeIdle) return;
+    if (!isCoffeeChanging) return;
     const interval = window.setInterval(() => setNow(Date.now()), TICK_MS);
     return () => window.clearInterval(interval);
-  }, [isCoffeeIdle]);
+  }, [isCoffeeChanging]);
 
   function dispatchTv(event: TvEvent) {
     setTv((current) =>
@@ -37,11 +45,13 @@ export function useRoomAppliances(config: SceneConfig) {
     );
   }
 
-  function brew() {
-    const startedAt = Date.now();
-    setNow(startedAt);
-    setBrewStartedAt(startedAt);
+  function dispatchCoffee(event: CoffeeEvent) {
+    const at = Date.now();
+    setNow(at);
+    setCoffeeState((current) =>
+      transitionCoffee({ state: current, event, now: at, timing })
+    );
   }
 
-  return { tv, coffee, dispatchTv, brew };
+  return { tv, coffee, cup, isCupSteaming, dispatchTv, dispatchCoffee };
 }

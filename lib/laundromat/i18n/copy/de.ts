@@ -59,6 +59,10 @@ export const de = {
       `${o.name}, ${o.kind === "washer" ? "wäscht" : "trocknet"} die Wäsche von jemand anderem, noch ${o.remaining}`,
     othersRunningTooltip: (o: { kind: MachineKind; time: string }) =>
       `jemand anderes ${o.kind === "washer" ? "wäscht" : "trocknet"} · fertig um ${o.time}`,
+    othersLoadedLabel: (o: { name: string }) =>
+      `${o.name}, die Wäsche von jemand anderem ist drin`,
+    othersLoadedTooltip: (o: { name: string }) =>
+      `${o.name} · Wäsche von jemand anderem, nicht gestartet`,
     othersDoneLabel: (o: { name: string }) =>
       `${o.name}, die Wäsche von jemand anderem ist fertig`,
     othersDoneTooltip: (o: { name: string }) =>
@@ -77,6 +81,7 @@ export const de = {
       `${o.name}, ${{ dial: "Drehknopf", start: "Starttaste", door: "Tür" }[o.control]}, wird gerade von jemand anderem benutzt`,
     othersRunningTooltip: (o: { kind: MachineKind; time: string }) =>
       `${o.kind === "washer" ? "Waschgang" : "Trockengang"} von jemand anderem · fertig um ${o.time}`,
+    othersLoadedTooltip: "Wäsche von jemand anderem · noch nicht gestartet",
     othersDoneTooltip:
       "Wäsche von jemand anderem · wartet auf ihre Besitzerin oder ihren Besitzer",
     doneAt: (o: { time: string }) => `fertig um ${o.time}`,
@@ -130,13 +135,30 @@ export const de = {
     machineLabel: "Kaffeemaschine",
     brewingMachineLabel: "Kaffeemaschine, Kaffee läuft durch",
     brewingTooltip: "Kaffee läuft…",
-    hotMachineLabel: "Kaffeemaschine, ein heißer Kaffee steht auf dem Tisch",
-    hotMachineTooltip: "Kaffee steht auf dem Tisch",
     idleSwitchLabel: "Schalter der Kaffeemaschine, Kaffee kochen",
     idleSwitchTooltip: "Kaffee kochen",
     brewingSwitchLabel: "Schalter der Kaffeemaschine, Kaffee läuft durch",
-    hotSwitchLabel: "Schalter der Kaffeemaschine, noch einen Kaffee kochen",
-    hotSwitchTooltip: "noch einen",
+    readyMachineLabel: "Kaffeemaschine, Kaffee in der Kanne",
+    readyMachineTooltip: "Kaffee ist fertig",
+    topUpSwitchLabel: "Schalter der Kaffeemaschine, Kanne auffüllen",
+    topUpSwitchTooltip: "Kanne auffüllen",
+    fullSwitchLabel: "Schalter der Kaffeemaschine, die Kanne ist voll",
+    fullSwitchTooltip: "Kanne ist voll · erst eine Tasse einschenken",
+    emptyFlaskLabel: "Kaffeekanne, leer",
+    emptyFlaskTooltip: "Kanne ist leer",
+    brewingFlaskLabel: "Kaffeekanne, Kaffee läuft durch",
+    pourLabel: "Kaffeekanne, eine Tasse einschenken",
+    pourTooltip: "Tasse einschenken",
+    cupFullFlaskLabel: "Kaffeekanne, erst die Tasse austrinken",
+    cupFullFlaskTooltip: "erst austrinken",
+    fullCupLabel: "Kaffeetasse, trinken",
+    fullCupTooltip: "trinken",
+    emptyCupLabel: "Kaffeetasse, leer",
+    emptyCupTooltip: "leere Tasse",
+  },
+  plant: {
+    label: "Pflanze, Gras anfassen",
+    tooltip: "Gras anfassen",
   },
   tv: {
     stations: {

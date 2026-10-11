@@ -63,7 +63,7 @@ test("keeps every machine control at least 24px on a laptop at room zoom", () =>
     config: sceneConfig,
   });
   const controls = layout.objects.flatMap((laidOut) => laidOut.controls);
-  assert.equal(controls.length, 29);
+  assert.equal(controls.length, 30);
   for (const { id, bounds } of controls) {
     assert.ok(bounds.width * camera.scale >= MIN_HIT_TARGET_PX, id);
     assert.ok(bounds.height * camera.scale >= MIN_HIT_TARGET_PX, id);

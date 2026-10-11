@@ -1,9 +1,12 @@
 "use client";
 
 import { useContext, useEffect, useRef, useState } from "react";
+import { omit } from "lodash";
 
 import type {
   RemoteDraft,
+  RemoteEntry,
+  RemoteLoad,
   RoomPresence,
 } from "@/lib/laundromat/realtime/room-presence";
 
@@ -14,7 +17,7 @@ const DRAFT_SEND_INTERVAL_MS = 150;
 
 type OwnPresence = Omit<RoomPresence, "sessionId">;
 
-/** Join the laundromat room as this tab while `presence` is set, keeping it tracked, and return this tab's `sessionId`, whether the room is connected, the other tabs last seen here, the latest draft of each, and `sendDraft`, throttled and sent again whenever someone new arrives. */
+/** Join the laundromat room as this tab while `presence` is set, keeping it tracked, and return this tab's `sessionId`, whether the room is connected, the other tabs last seen here, the latest draft of each, the last entry another tab saved, `sendDraft`, throttled and sent again whenever someone new arrives, and `sendEntry`. */
 export function useRoom(presence: OwnPresence | undefined) {
   const source = useContext(RoomSourceContext);
   const [sessionId] = useState(() => crypto.randomUUID());
@@ -24,6 +27,7 @@ export function useRoom(presence: OwnPresence | undefined) {
   const [drafts, setDrafts] = useState<{ [sessionId: string]: RemoteDraft }>(
     {}
   );
+  const [lastEntry, setLastEntry] = useState<RemoteEntry>();
   const connectionRef = useRef<RoomConnection>(undefined);
   const latestDraftRef = useRef<RemoteDraft>(undefined);
   const draftTimerRef = useRef<number>(undefined);
@@ -45,6 +49,14 @@ export function useRoom(presence: OwnPresence | undefined) {
         if (!isTrackedPeer) return;
         setDrafts((current) => ({ ...current, [draft.sessionId]: draft }));
       },
+      onEntry: (entry) => {
+        const isTrackedPeer = peersRef.current.some(
+          (peer) => peer.sessionId === entry.sessionId
+        );
+        if (!isTrackedPeer) return;
+        setDrafts((current) => omit(current, entry.sessionId));
+        setLastEntry(entry);
+      },
     });
     connectionRef.current = connection;
     return () => {
@@ -55,28 +67,37 @@ export function useRoom(presence: OwnPresence | undefined) {
       peersRef.current = [];
       setPeers([]);
       setDrafts({});
+      setLastEntry(undefined);
       setIsConnected(false);
     };
   }, [source, sessionId, visitorId]);
 
+  const loadPhase = presence?.load?.phase;
   const loadKind = presence?.load?.kind;
-  const loadStartedAt = presence?.load?.startedAt;
-  const loadDurationMs = presence?.load?.durationMs;
+  const loadStartedAt =
+    presence?.load?.phase === "running" ? presence.load.startedAt : undefined;
+  const loadDurationMs =
+    presence?.load?.phase === "running" ? presence.load.durationMs : undefined;
   const writingSince = presence?.writingSince;
   const regionLatDeg = presence?.region?.latDeg;
   const regionLonDeg = presence?.region?.lonDeg;
   useEffect(() => {
     if (visitorId === undefined) return;
-    const load =
-      loadKind === undefined ||
-      loadStartedAt === undefined ||
-      loadDurationMs === undefined
-        ? undefined
-        : {
-            kind: loadKind,
-            startedAt: loadStartedAt,
-            durationMs: loadDurationMs,
-          };
+    const load = ((): RemoteLoad | undefined => {
+      if (loadKind === undefined) return undefined;
+      if (loadPhase === "loaded" || loadPhase === "done") {
+        return { phase: loadPhase, kind: loadKind };
+      }
+      if (loadStartedAt === undefined || loadDurationMs === undefined) {
+        return undefined;
+      }
+      return {
+        phase: "running",
+        kind: loadKind,
+        startedAt: loadStartedAt,
+        durationMs: loadDurationMs,
+      };
+    })();
     const region =
       regionLatDeg === undefined || regionLonDeg === undefined
         ? undefined
@@ -92,6 +113,7 @@ export function useRoom(presence: OwnPresence | undefined) {
     source,
     sessionId,
     visitorId,
+    loadPhase,
     loadKind,
     loadStartedAt,
     loadDurationMs,
@@ -124,5 +146,17 @@ export function useRoom(presence: OwnPresence | undefined) {
     }, DRAFT_SEND_INTERVAL_MS);
   }
 
-  return { sessionId, isConnected, peers, drafts, sendDraft };
+  function sendEntry(entry: Omit<RemoteEntry, "sessionId">) {
+    connectionRef.current?.sendEntry({ sessionId, ...entry });
+  }
+
+  return {
+    sessionId,
+    isConnected,
+    peers,
+    drafts,
+    lastEntry,
+    sendDraft,
+    sendEntry,
+  };
 }

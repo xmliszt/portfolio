@@ -9,12 +9,15 @@ export function describeCoffeeMachine(options: {
 }) {
   const copy = options.copy.coffee;
   switch (options.phase.kind) {
-    case "idle":
+    case "empty":
       return { label: copy.machineLabel, tooltip: undefined };
     case "brewing":
       return { label: copy.brewingMachineLabel, tooltip: copy.brewingTooltip };
-    case "hot":
-      return { label: copy.hotMachineLabel, tooltip: copy.hotMachineTooltip };
+    case "ready":
+      return {
+        label: copy.readyMachineLabel,
+        tooltip: copy.readyMachineTooltip,
+      };
     default: {
       const unhandled: never = options.phase;
       return unhandled;

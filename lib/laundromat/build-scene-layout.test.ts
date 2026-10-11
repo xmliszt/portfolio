@@ -44,6 +44,7 @@ test("gives the TV and the coffee machine their in-place controls", () => {
     )
     .flatMap(({ controls }) => controls.map((control) => control.id));
   assert.deepEqual(controlIds.toSorted(), [
+    "coffee-machine-flask",
     "coffee-machine-switch",
     "tv-power",
     "tv-screen",

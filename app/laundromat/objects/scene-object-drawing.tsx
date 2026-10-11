@@ -75,7 +75,8 @@ export function SceneObjectDrawing(props: SceneObjectDrawingProps) {
       return (
         <MugDrawing
           {...shared}
-          steaming={views.coffee.kind === "hot"}
+          full={views.cup.full}
+          steaming={views.cup.steaming}
           details={details.coffee}
         />
       );
@@ -97,7 +98,13 @@ export function SceneObjectDrawing(props: SceneObjectDrawingProps) {
         />
       );
     case "plant":
-      return <PlantDrawing {...shared} details={details.plant} />;
+      return (
+        <PlantDrawing
+          {...shared}
+          touchCount={views.plantTouchCount}
+          details={details.plant}
+        />
+      );
     case "table":
       return <TableDrawing {...shared} />;
     case "stool":

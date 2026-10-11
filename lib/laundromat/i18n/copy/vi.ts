@@ -62,6 +62,10 @@ export const vi = {
       `${o.name}, đang ${o.kind === "washer" ? "giặt" : "sấy"} đồ của người khác, còn ${o.remaining}`,
     othersRunningTooltip: (o: { kind: MachineKind; time: string }) =>
       `người khác đang ${o.kind === "washer" ? "giặt" : "sấy"} · xong lúc ${o.time}`,
+    othersLoadedLabel: (o: { name: string }) =>
+      `${o.name}, có đồ giặt của người khác bên trong`,
+    othersLoadedTooltip: (o: { name: string }) =>
+      `${o.name} · đồ của người khác, chưa chạy`,
     othersDoneLabel: (o: { name: string }) =>
       `${o.name}, đồ của người khác đã xong`,
     othersDoneTooltip: (o: { name: string }) =>
@@ -80,6 +84,7 @@ export const vi = {
       `${o.control === "dial" ? "Núm xoay" : o.control === "start" ? "Nút bắt đầu" : "Cửa"} ${o.name}, người khác đang dùng`,
     othersRunningTooltip: (o: { kind: MachineKind; time: string }) =>
       `lượt ${o.kind === "washer" ? "giặt" : "sấy"} của người khác · xong lúc ${o.time}`,
+    othersLoadedTooltip: "đồ giặt của người khác · chưa chạy",
     othersDoneTooltip: "đồ của người khác · đang chờ chủ",
     doneAt: (o: { time: string }) => `xong lúc ${o.time}`,
     dialLabel: (o: { name: string; minutes: number }) =>
@@ -131,13 +136,30 @@ export const vi = {
     machineLabel: "Máy pha cà phê",
     brewingMachineLabel: "Máy pha cà phê, đang pha",
     brewingTooltip: "đang pha…",
-    hotMachineLabel: "Máy pha cà phê, có một tách cà phê nóng trên bàn",
-    hotMachineTooltip: "cà phê ở trên bàn",
     idleSwitchLabel: "Công tắc máy pha cà phê, pha một tách",
     idleSwitchTooltip: "pha một tách",
     brewingSwitchLabel: "Công tắc máy pha cà phê, đang pha",
-    hotSwitchLabel: "Công tắc máy pha cà phê, pha thêm một tách",
-    hotSwitchTooltip: "pha thêm",
+    readyMachineLabel: "Máy pha cà phê, bình còn cà phê",
+    readyMachineTooltip: "cà phê xong rồi",
+    topUpSwitchLabel: "Công tắc máy pha cà phê, pha thêm cho đầy bình",
+    topUpSwitchTooltip: "pha thêm cho đầy",
+    fullSwitchLabel: "Công tắc máy pha cà phê, bình đã đầy",
+    fullSwitchTooltip: "bình đầy · rót một tách trước đã",
+    emptyFlaskLabel: "Bình cà phê, trống",
+    emptyFlaskTooltip: "bình đã hết",
+    brewingFlaskLabel: "Bình cà phê, đang pha",
+    pourLabel: "Bình cà phê, rót một tách",
+    pourTooltip: "rót một tách",
+    cupFullFlaskLabel: "Bình cà phê, uống hết tách trước đã",
+    cupFullFlaskTooltip: "uống hết tách trước đã",
+    fullCupLabel: "Tách cà phê, uống",
+    fullCupTooltip: "uống",
+    emptyCupLabel: "Tách cà phê, trống",
+    emptyCupTooltip: "tách trống",
+  },
+  plant: {
+    label: "Chậu cây, chạm vào cỏ",
+    tooltip: "chạm vào cỏ",
   },
   tv: {
     stations: {

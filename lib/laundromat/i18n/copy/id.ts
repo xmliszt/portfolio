@@ -63,6 +63,10 @@ export const id = {
       `${o.name}, sedang ${o.kind === "washer" ? "mencuci" : "mengeringkan"} cucian orang lain, sisa ${o.remaining}`,
     othersRunningTooltip: (o: { kind: MachineKind; time: string }) =>
       `orang lain sedang ${o.kind === "washer" ? "mencuci" : "mengeringkan"} · selesai pukul ${o.time}`,
+    othersLoadedLabel: (o: { name: string }) =>
+      `${o.name}, ada cucian orang lain di dalamnya`,
+    othersLoadedTooltip: (o: { name: string }) =>
+      `${o.name} · cucian orang lain, belum mulai`,
     othersDoneLabel: (o: { name: string }) =>
       `${o.name}, cucian orang lain sudah selesai`,
     othersDoneTooltip: (o: { name: string }) =>
@@ -81,6 +85,7 @@ export const id = {
       `${o.control === "dial" ? "Pemutar" : o.control === "start" ? "Tombol mulai" : "Pintu"} ${o.name}, sedang dipakai orang lain`,
     othersRunningTooltip: (o: { kind: MachineKind; time: string }) =>
       `cucian orang lain sedang ${o.kind === "washer" ? "dicuci" : "dikeringkan"} · selesai pukul ${o.time}`,
+    othersLoadedTooltip: "cucian orang lain · belum dimulai",
     othersDoneTooltip: "cucian orang lain · menunggu pemiliknya",
     doneAt: (o: { time: string }) => `selesai pukul ${o.time}`,
     dialLabel: (o: { name: string; minutes: number }) =>
@@ -133,13 +138,30 @@ export const id = {
     machineLabel: "Mesin kopi",
     brewingMachineLabel: "Mesin kopi, sedang menyeduh",
     brewingTooltip: "menyeduh…",
-    hotMachineLabel: "Mesin kopi, ada kopi panas di meja",
-    hotMachineTooltip: "kopinya ada di meja",
     idleSwitchLabel: "Sakelar mesin kopi, seduh kopi",
     idleSwitchTooltip: "seduh kopi",
     brewingSwitchLabel: "Sakelar mesin kopi, sedang menyeduh",
-    hotSwitchLabel: "Sakelar mesin kopi, seduh satu lagi",
-    hotSwitchTooltip: "seduh lagi",
+    readyMachineLabel: "Mesin kopi, ada kopi di teko",
+    readyMachineTooltip: "kopinya siap",
+    topUpSwitchLabel: "Sakelar mesin kopi, isi ulang teko",
+    topUpSwitchTooltip: "isi ulang teko",
+    fullSwitchLabel: "Sakelar mesin kopi, teko sudah penuh",
+    fullSwitchTooltip: "teko penuh · tuang secangkir dulu",
+    emptyFlaskLabel: "Teko kopi, kosong",
+    emptyFlaskTooltip: "teko kosong",
+    brewingFlaskLabel: "Teko kopi, sedang menyeduh",
+    pourLabel: "Teko kopi, tuang secangkir",
+    pourTooltip: "tuang secangkir",
+    cupFullFlaskLabel: "Teko kopi, habiskan cangkirmu dulu",
+    cupFullFlaskTooltip: "habiskan cangkirmu dulu",
+    fullCupLabel: "Cangkir kopi, minum",
+    fullCupTooltip: "minum",
+    emptyCupLabel: "Cangkir kopi, kosong",
+    emptyCupTooltip: "cangkir kosong",
+  },
+  plant: {
+    label: "Tanaman, sentuh rumput",
+    tooltip: "sentuh rumput",
   },
   tv: {
     stations: {

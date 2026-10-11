@@ -40,14 +40,19 @@ export function describeSceneObject(options: {
         label: copy.entranceMat.waitingLabel,
         tooltip: copy.entranceMat.waitingTooltip,
       };
+    case "mug":
+      return {
+        label: copy.coffee.emptyCupLabel,
+        tooltip: copy.coffee.emptyCupTooltip,
+      };
+    case "plant":
+      return { label: copy.plant.label, tooltip: copy.plant.tooltip };
     case "counter":
     case "window":
     case "clock":
     case "table":
     case "stool":
-    case "plant":
     case "basket":
-    case "mug":
       return undefined;
     default: {
       const unhandled: never = object;

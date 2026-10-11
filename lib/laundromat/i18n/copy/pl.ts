@@ -66,6 +66,9 @@ export const pl = {
       `${o.name}, ${o.kind === "washer" ? "pierze" : "suszy"} cudze pranie, zostało ${o.remaining}`,
     othersRunningTooltip: (o) =>
       `ktoś ${o.kind === "washer" ? "pierze" : "suszy"} · gotowe o ${o.time}`,
+    othersLoadedLabel: (o) => `${o.name}, w środku jest pranie kogoś innego`,
+    othersLoadedTooltip: (o) =>
+      `${o.name} · pranie kogoś innego, nieuruchomione`,
     othersDoneLabel: (o) => `${o.name}, cudze pranie jest gotowe`,
     othersDoneTooltip: (o) => `${o.name} · cudze, gotowe`,
     doneNotificationTitle: (o) => `${o.name} · gotowe`,
@@ -79,6 +82,7 @@ export const pl = {
       `${{ dial: "Pokrętło", start: "Przycisk start", door: "Drzwiczki" }[o.control]} (${o.name}), w użyciu przez kogoś innego`,
     othersRunningTooltip: (o) =>
       `cudze ${o.kind === "washer" ? "pranie" : "suszenie"} · gotowe o ${o.time}`,
+    othersLoadedTooltip: "pranie kogoś innego · jeszcze nieuruchomione",
     othersDoneTooltip: "cudze pranie · czeka na właściciela",
     doneAt: (o) => `gotowe o ${o.time}`,
     dialLabel: (o) =>
@@ -115,13 +119,30 @@ export const pl = {
     machineLabel: "Ekspres do kawy",
     brewingMachineLabel: "Ekspres do kawy, parzy",
     brewingTooltip: "parzy się…",
-    hotMachineLabel: "Ekspres do kawy, na stole stoi gorąca kawa",
-    hotMachineTooltip: "kawa na stole",
     idleSwitchLabel: "Włącznik ekspresu, zaparz kawę",
     idleSwitchTooltip: "zaparz kawę",
     brewingSwitchLabel: "Włącznik ekspresu, parzy",
-    hotSwitchLabel: "Włącznik ekspresu, zaparz kolejną kawę",
-    hotSwitchTooltip: "jeszcze jedną",
+    readyMachineLabel: "Ekspres do kawy, kawa w dzbanku",
+    readyMachineTooltip: "kawa gotowa",
+    topUpSwitchLabel: "Włącznik ekspresu, dolej do dzbanka",
+    topUpSwitchTooltip: "dolej do dzbanka",
+    fullSwitchLabel: "Włącznik ekspresu, dzbanek jest pełny",
+    fullSwitchTooltip: "dzbanek pełny · najpierw nalej filiżankę",
+    emptyFlaskLabel: "Dzbanek z kawą, pusty",
+    emptyFlaskTooltip: "dzbanek jest pusty",
+    brewingFlaskLabel: "Dzbanek z kawą, parzy",
+    pourLabel: "Dzbanek z kawą, nalej filiżankę",
+    pourTooltip: "nalej filiżankę",
+    cupFullFlaskLabel: "Dzbanek z kawą, najpierw dopij filiżankę",
+    cupFullFlaskTooltip: "najpierw dopij",
+    fullCupLabel: "Filiżanka kawy, wypij",
+    fullCupTooltip: "wypij",
+    emptyCupLabel: "Filiżanka kawy, pusta",
+    emptyCupTooltip: "pusta filiżanka",
+  },
+  plant: {
+    label: "Roślina, dotknij trawy",
+    tooltip: "dotknij trawy",
   },
   tv: {
     stations: {

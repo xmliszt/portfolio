@@ -10,15 +10,15 @@ export function isInteractiveSceneObject(object: SceneObject) {
     case "shelf":
     case "notebook":
     case "mat":
+    case "mug":
+    case "plant":
       return true;
     case "counter":
     case "window":
     case "clock":
     case "table":
     case "stool":
-    case "plant":
     case "basket":
-    case "mug":
       return false;
     default: {
       const unhandled: never = object;

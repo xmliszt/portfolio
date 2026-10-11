@@ -49,7 +49,13 @@ export function describeMachine(options: {
         tooltip: copy.doneTooltip({ name: tooltipName }),
       };
     case "occupied":
-      return status.remainingMs > 0
+      if (status.phase === "loaded") {
+        return {
+          label: copy.othersLoadedLabel({ name }),
+          tooltip: copy.othersLoadedTooltip({ name: tooltipName }),
+        };
+      }
+      return status.phase === "running"
         ? {
             label: copy.othersRunningLabel({
               name,

@@ -57,6 +57,9 @@ export const zhHant = {
       `${o.name}，正在${o.kind === "washer" ? "洗" : "烘"}別人的衣服，還剩 ${o.remaining}`,
     othersRunningTooltip: (o: { kind: MachineKind; time: string }) =>
       `別人在${o.kind === "washer" ? "洗衣" : "烘衣"} · ${o.time} 結束`,
+    othersLoadedLabel: (o: { name: string }) => `${o.name}，裡面有別人的衣服`,
+    othersLoadedTooltip: (o: { name: string }) =>
+      `${o.name} · 別人的衣服，還沒開始`,
     othersDoneLabel: (o: { name: string }) => `${o.name}，別人的衣服好了`,
     othersDoneTooltip: (o: { name: string }) => `${o.name} · 別人的，好了`,
     doneNotificationTitle: (o: { name: string }) => `${o.name} · 好了`,
@@ -71,6 +74,7 @@ export const zhHant = {
       `${o.name} ${{ dial: "旋鈕", start: "啟動鍵", door: "機門" }[o.control]}，別人正在使用`,
     othersRunningTooltip: (o: { kind: MachineKind; time: string }) =>
       `別人的${o.kind === "washer" ? "洗衣" : "烘衣"} · ${o.time} 結束`,
+    othersLoadedTooltip: "別人的衣服 · 還沒開始",
     othersDoneTooltip: "別人的衣服 · 等主人來拿",
     doneAt: (o: { time: string }) => `${o.time} 結束`,
     dialLabel: (o: { name: string; minutes: number }) =>
@@ -121,13 +125,30 @@ export const zhHant = {
     machineLabel: "咖啡機",
     brewingMachineLabel: "咖啡機，正在煮",
     brewingTooltip: "正在煮…",
-    hotMachineLabel: "咖啡機，桌上有一杯熱咖啡",
-    hotMachineTooltip: "咖啡在桌上",
     idleSwitchLabel: "咖啡機開關，煮一杯咖啡",
     idleSwitchTooltip: "煮一杯咖啡",
     brewingSwitchLabel: "咖啡機開關，正在煮",
-    hotSwitchLabel: "咖啡機開關，再煮一杯",
-    hotSwitchTooltip: "再來一杯",
+    readyMachineLabel: "咖啡機，壺裡有咖啡",
+    readyMachineTooltip: "咖啡好了",
+    topUpSwitchLabel: "咖啡機開關，把壺續滿",
+    topUpSwitchTooltip: "續滿咖啡壺",
+    fullSwitchLabel: "咖啡機開關，壺已經滿了",
+    fullSwitchTooltip: "壺滿了 · 先倒一杯",
+    emptyFlaskLabel: "咖啡壺，空的",
+    emptyFlaskTooltip: "壺空了",
+    brewingFlaskLabel: "咖啡壺，正在煮",
+    pourLabel: "咖啡壺，倒一杯",
+    pourTooltip: "倒一杯",
+    cupFullFlaskLabel: "咖啡壺，先喝完杯裡的",
+    cupFullFlaskTooltip: "先喝完這杯",
+    fullCupLabel: "咖啡杯，喝一口",
+    fullCupTooltip: "喝掉",
+    emptyCupLabel: "咖啡杯，空的",
+    emptyCupTooltip: "空杯子",
+  },
+  plant: {
+    label: "盆栽，摸摸草",
+    tooltip: "摸摸草",
   },
   tv: {
     stations: {

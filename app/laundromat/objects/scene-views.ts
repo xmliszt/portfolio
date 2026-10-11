@@ -12,10 +12,14 @@ export type MachineView = {
 
 export type TvView = { state: TvState; noSignal: boolean };
 
+export type CupView = { full: boolean; steaming: boolean };
+
 export type SceneViews = {
   machines: { [objectId: string]: MachineView };
   tv: TvView;
   coffee: CoffeePhase;
+  cup: CupView;
+  plantTouchCount: number;
   basket: BasketContents;
   matReady: boolean;
   shelfBookNumbers: number[];

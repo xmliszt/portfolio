@@ -20,7 +20,12 @@ test("reads a tracked presence and drops what it does not recognise", () => {
     {
       sessionId: "s",
       visitorId: "v",
-      load: { kind: "dryer", startedAt: 1, durationMs: 300_000 },
+      load: {
+        phase: "running",
+        kind: "dryer",
+        startedAt: 1,
+        durationMs: 300_000,
+      },
       writingSince: now - 1000,
     }
   );
@@ -48,4 +53,31 @@ test("ignores a writing claim from the far past or the future", () => {
       `${writingSince}`
     );
   }
+});
+
+test("reads laundry sitting in a machine before and after its cycle", () => {
+  for (const phase of ["loaded", "done"] as const) {
+    assert.deepEqual(
+      parseRoomPresence({
+        value: {
+          sessionId: "s",
+          visitorId: "v",
+          load: { phase, kind: "washer" },
+        },
+        now,
+      })?.load,
+      { phase, kind: "washer" }
+    );
+  }
+  assert.equal(
+    parseRoomPresence({
+      value: {
+        sessionId: "s",
+        visitorId: "v",
+        load: { phase: "running", kind: "washer" },
+      },
+      now,
+    })?.load,
+    undefined
+  );
 });

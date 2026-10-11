@@ -1,5 +1,9 @@
 import type { LaidOutObject } from "@/lib/laundromat/build-scene-layout";
 import type { CoffeePhase } from "@/lib/laundromat/coffee/get-coffee-phase";
+import {
+  COFFEE_CARAFE,
+  COFFEE_TOWER_DEPTH,
+} from "@/lib/laundromat/get-coffee-machine-face";
 import { getFacePlane } from "@/lib/laundromat/get-face-plane";
 import { getIsoCylinder } from "@/lib/laundromat/get-iso-cylinder";
 import { getIsoEllipse } from "@/lib/laundromat/get-iso-ellipse";
@@ -11,10 +15,8 @@ import { IsoBox } from "./iso-box";
 import { partStroke } from "./part-stroke";
 import { SteamWisps } from "./steam-wisps";
 
-const TOWER_DEPTH = 0.42;
 const HEAD_HEIGHT = 0.36;
 const HEAD_DEPTH = 0.56;
-const CARAFE = { radius: 0.26, topRadius: 0.21, bottom: 0.32, top: 0.9 };
 
 type CoffeeMachineDrawingProps = {
   laidOut: LaidOutObject;
@@ -34,52 +36,47 @@ export function CoffeeMachineDrawing(props: CoffeeMachineDrawingProps) {
   const { unit } = projection;
   const isHighlighted = props.highlightedId === object.id;
   const isSwitchHighlighted = props.highlightedId === `${object.id}-switch`;
-  const isLive = phase.kind !== "idle";
-  const fill = (() => {
-    switch (phase.kind) {
-      case "idle":
-        return 0;
-      case "brewing":
-        return phase.progress;
-      case "hot":
-        return 1;
-      default: {
-        const unhandled: never = phase;
-        return unhandled;
-      }
-    }
-  })();
-  const carafeCenter = { x: p.x + size.w / 2, y: p.y + TOWER_DEPTH + 0.3 };
-  const carafeBottom = p.z + CARAFE.bottom;
-  const carafeTop = p.z + CARAFE.top;
+  const isFlaskHighlighted = props.highlightedId === `${object.id}-flask`;
+  const isLive =
+    phase.kind === "brewing" || (phase.kind === "ready" && phase.hot);
+  const fill = phase.kind === "empty" ? 0 : phase.level;
+  const carafeCenter = {
+    x: p.x + size.w / 2,
+    y: p.y + COFFEE_TOWER_DEPTH + COFFEE_CARAFE.depthFromTower,
+  };
+  const carafeBottom = p.z + COFFEE_CARAFE.bottom;
+  const carafeTop = p.z + COFFEE_CARAFE.top;
   const liquidTop =
     carafeBottom + 0.04 + (carafeTop - carafeBottom - 0.12) * fill;
   const liquid = getIsoCylinder({
     center: carafeCenter,
     bottom: carafeBottom + 0.03,
     top: liquidTop,
-    radius: CARAFE.radius - 0.03,
-    topRadius: CARAFE.radius - 0.03 - (CARAFE.radius - CARAFE.topRadius) * fill,
+    radius: COFFEE_CARAFE.radius - 0.03,
+    topRadius:
+      COFFEE_CARAFE.radius -
+      0.03 -
+      (COFFEE_CARAFE.radius - COFFEE_CARAFE.topRadius) * fill,
     projection,
   });
   const carafe = getIsoCylinder({
     center: carafeCenter,
     bottom: carafeBottom,
     top: carafeTop,
-    radius: CARAFE.radius,
-    topRadius: CARAFE.topRadius,
+    radius: COFFEE_CARAFE.radius,
+    topRadius: COFFEE_CARAFE.topRadius,
     projection,
   });
   const plate = getIsoEllipse({
     center: { ...carafeCenter, z: p.z + face.baseHeight },
-    radius: CARAFE.radius + 0.06,
+    radius: COFFEE_CARAFE.radius + 0.06,
     projection,
   });
   const headBottom = p.z + size.h - HEAD_HEIGHT;
 
   const tower = getFacePlane({
     plane: "front",
-    origin: { x: p.x, y: p.y + TOWER_DEPTH, z: p.z + size.h },
+    origin: { x: p.x, y: p.y + COFFEE_TOWER_DEPTH, z: p.z + size.h },
     projection,
   });
   const towerHeight = (size.h - face.baseHeight) * unit;
@@ -100,7 +97,11 @@ export function CoffeeMachineDrawing(props: CoffeeMachineDrawingProps) {
       <g className={partStroke(isHighlighted)}>
         <IsoBox
           position={{ x: p.x, y: p.y, z: p.z + face.baseHeight }}
-          size={{ w: size.w, d: TOWER_DEPTH, h: size.h - face.baseHeight }}
+          size={{
+            w: size.w,
+            d: COFFEE_TOWER_DEPTH,
+            h: size.h - face.baseHeight,
+          }}
           projection={projection}
         />
         <IsoBox
@@ -141,7 +142,7 @@ export function CoffeeMachineDrawing(props: CoffeeMachineDrawingProps) {
           />
         ))}
       </g>
-      <g className={partStroke(isHighlighted)}>
+      <g className={partStroke(isHighlighted || isFlaskHighlighted)}>
         {fill > 0 && (
           <g className="stroke-[var(--lm-detail)]" strokeWidth={0.75}>
             <path d={liquid.body} className="fill-[var(--lm-detail)]" />
@@ -192,7 +193,11 @@ export function CoffeeMachineDrawing(props: CoffeeMachineDrawingProps) {
       </g>
       <g className={partStroke(isHighlighted)}>
         <IsoBox
-          position={{ x: p.x + 0.08, y: p.y + TOWER_DEPTH, z: headBottom }}
+          position={{
+            x: p.x + 0.08,
+            y: p.y + COFFEE_TOWER_DEPTH,
+            z: headBottom,
+          }}
           size={{ w: size.w - 0.16, d: HEAD_DEPTH, h: HEAD_HEIGHT }}
           projection={projection}
         />

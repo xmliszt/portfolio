@@ -17,6 +17,9 @@ export const SOUND_NAMES = [
   "lamp-flicker",
   "lamp-off",
   "coffee-beep",
+  "coffee-pour",
+  "coffee-sip",
+  "touch-grass",
 ] as const;
 
 export type SoundName = (typeof SOUND_NAMES)[number];

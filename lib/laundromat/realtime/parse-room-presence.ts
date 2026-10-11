@@ -13,7 +13,17 @@ function parseLoad(value: unknown): RemoteLoad | undefined {
   if (
     !isObject(value) ||
     !("kind" in value) ||
-    (value.kind !== "washer" && value.kind !== "dryer") ||
+    (value.kind !== "washer" && value.kind !== "dryer")
+  ) {
+    return undefined;
+  }
+  // A load without `phase` comes from a tab that only ever shared running cycles.
+  const phase = "phase" in value ? value.phase : "running";
+  if (phase === "loaded" || phase === "done") {
+    return { phase, kind: value.kind };
+  }
+  if (
+    phase !== "running" ||
     !("startedAt" in value && typeof value.startedAt === "number") ||
     !("durationMs" in value && typeof value.durationMs === "number") ||
     value.durationMs <= 0 ||
@@ -22,6 +32,7 @@ function parseLoad(value: unknown): RemoteLoad | undefined {
     return undefined;
   }
   return {
+    phase: "running",
     kind: value.kind,
     startedAt: value.startedAt,
     durationMs: value.durationMs,

@@ -21,6 +21,7 @@ function buildWashingPresence(options: {
   return {
     visitorId,
     load: {
+      phase: "running" as const,
       kind: "washer" as const,
       startedAt: now - startedMinutesAgo * 60_000,
       durationMs: 25 * 60_000,
@@ -157,4 +158,25 @@ test("shows nearby visitors before earlier ones far away", () => {
   const shown = Object.values(assigned).map(({ visitorId }) => visitorId);
   assert.ok(shown.includes("near"), "the nearby visitor is shown");
   assert.ok(!shown.includes("far-3"), "the latest far visitor makes room");
+});
+
+test("keeps laundry that is loaded or done in its machine until it is taken out", () => {
+  const assigned = assignRemoteMachines({
+    machines,
+    ownMachineId: undefined,
+    ownRegion: undefined,
+    others: [
+      { visitorId: "loaded", load: { phase: "loaded", kind: "washer" } },
+      { visitorId: "done", load: { phase: "done", kind: "washer" } },
+    ],
+    now,
+  });
+  const shown = Object.values(assigned).map(({ visitorId, load }) => [
+    visitorId,
+    load.phase,
+  ]);
+  assert.deepEqual(shown.toSorted(), [
+    ["done", "done"],
+    ["loaded", "loaded"],
+  ]);
 });

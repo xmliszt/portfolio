@@ -63,6 +63,10 @@ export const en = {
       `${o.name}, ${o.kind === "washer" ? "washing" : "drying"} someone else's laundry, ${o.remaining} left`,
     othersRunningTooltip: (o: { kind: MachineKind; time: string }) =>
       `someone else is ${o.kind === "washer" ? "washing" : "drying"} · done at ${o.time}`,
+    othersLoadedLabel: (o: { name: string }) =>
+      `${o.name}, someone else's laundry is in it`,
+    othersLoadedTooltip: (o: { name: string }) =>
+      `${o.name} · someone else's laundry, not started`,
     othersDoneLabel: (o: { name: string }) =>
       `${o.name}, someone else's laundry is done`,
     othersDoneTooltip: (o: { name: string }) =>
@@ -80,6 +84,7 @@ export const en = {
     }) => `${o.name} ${o.control}, in use by someone else`,
     othersRunningTooltip: (o: { kind: MachineKind; time: string }) =>
       `someone else's ${o.kind === "washer" ? "wash" : "dry"} · done at ${o.time}`,
+    othersLoadedTooltip: "someone else's laundry · not started yet",
     othersDoneTooltip: "someone else's laundry · waiting for its owner",
     doneAt: (o: { time: string }) => `done at ${o.time}`,
     dialLabel: (o: { name: string; minutes: number }) =>
@@ -130,13 +135,30 @@ export const en = {
     machineLabel: "Coffee machine",
     brewingMachineLabel: "Coffee machine, brewing",
     brewingTooltip: "brewing…",
-    hotMachineLabel: "Coffee machine, a hot coffee is on the table",
-    hotMachineTooltip: "coffee's on the table",
     idleSwitchLabel: "Coffee machine switch, brew a coffee",
     idleSwitchTooltip: "brew a coffee",
     brewingSwitchLabel: "Coffee machine switch, brewing",
-    hotSwitchLabel: "Coffee machine switch, brew another coffee",
-    hotSwitchTooltip: "brew another",
+    readyMachineLabel: "Coffee machine, coffee in the flask",
+    readyMachineTooltip: "coffee's ready",
+    topUpSwitchLabel: "Coffee machine switch, top up the flask",
+    topUpSwitchTooltip: "top up the flask",
+    fullSwitchLabel: "Coffee machine switch, the flask is full",
+    fullSwitchTooltip: "flask is full · pour a cup first",
+    emptyFlaskLabel: "Coffee flask, empty",
+    emptyFlaskTooltip: "flask is empty",
+    brewingFlaskLabel: "Coffee flask, brewing",
+    pourLabel: "Coffee flask, pour a cup",
+    pourTooltip: "pour a cup",
+    cupFullFlaskLabel: "Coffee flask, finish your cup first",
+    cupFullFlaskTooltip: "finish your cup first",
+    fullCupLabel: "Coffee cup, drink",
+    fullCupTooltip: "drink",
+    emptyCupLabel: "Coffee cup, empty",
+    emptyCupTooltip: "empty cup",
+  },
+  plant: {
+    label: "Plant, touch grass",
+    tooltip: "touch grass",
   },
   tv: {
     stations: {

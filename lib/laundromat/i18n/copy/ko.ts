@@ -58,6 +58,10 @@ export const ko = {
       `${o.name}, 다른 사람의 빨래 ${o.kind === "washer" ? "세탁 중" : "건조 중"}, ${o.remaining} 남음`,
     othersRunningTooltip: (o: { kind: MachineKind; time: string }) =>
       `다른 사람이 ${o.kind === "washer" ? "세탁 중" : "건조 중"} · ${o.time} 완료`,
+    othersLoadedLabel: (o: { name: string }) =>
+      `${o.name}, 다른 사람의 빨래가 들어 있어요`,
+    othersLoadedTooltip: (o: { name: string }) =>
+      `${o.name} · 다른 사람의 빨래, 시작 전`,
     othersDoneLabel: (o: { name: string }) =>
       `${o.name}, 다른 사람의 빨래가 끝남`,
     othersDoneTooltip: (o: { name: string }) =>
@@ -76,6 +80,7 @@ export const ko = {
       `${o.name} ${{ dial: "다이얼", start: "시작 버튼", door: "문" }[o.control]}, 다른 사람이 사용 중`,
     othersRunningTooltip: (o: { kind: MachineKind; time: string }) =>
       `다른 사람의 ${o.kind === "washer" ? "세탁" : "건조"} · ${o.time} 완료`,
+    othersLoadedTooltip: "다른 사람의 빨래 · 아직 시작 전",
     othersDoneTooltip: "다른 사람의 빨래 · 주인을 기다리는 중",
     doneAt: (o: { time: string }) => `${o.time} 완료`,
     dialLabel: (o: { name: string; minutes: number }) =>
@@ -126,13 +131,30 @@ export const ko = {
     machineLabel: "커피 머신",
     brewingMachineLabel: "커피 머신, 내리는 중",
     brewingTooltip: "내리는 중…",
-    hotMachineLabel: "커피 머신, 테이블에 따뜻한 커피가 있음",
-    hotMachineTooltip: "커피는 테이블 위에",
     idleSwitchLabel: "커피 머신 스위치, 커피 내리기",
     idleSwitchTooltip: "커피 내리기",
     brewingSwitchLabel: "커피 머신 스위치, 내리는 중",
-    hotSwitchLabel: "커피 머신 스위치, 한 잔 더 내리기",
-    hotSwitchTooltip: "한 잔 더",
+    readyMachineLabel: "커피 머신, 포트에 커피가 있음",
+    readyMachineTooltip: "커피 준비됨",
+    topUpSwitchLabel: "커피 머신 스위치, 포트 채우기",
+    topUpSwitchTooltip: "포트 채우기",
+    fullSwitchLabel: "커피 머신 스위치, 포트가 가득 참",
+    fullSwitchTooltip: "포트가 가득 참 · 먼저 한 잔 따르기",
+    emptyFlaskLabel: "커피 포트, 비어 있음",
+    emptyFlaskTooltip: "포트가 비어 있음",
+    brewingFlaskLabel: "커피 포트, 내리는 중",
+    pourLabel: "커피 포트, 한 잔 따르기",
+    pourTooltip: "한 잔 따르기",
+    cupFullFlaskLabel: "커피 포트, 잔을 먼저 비우기",
+    cupFullFlaskTooltip: "잔을 먼저 비우기",
+    fullCupLabel: "커피 잔, 마시기",
+    fullCupTooltip: "마시기",
+    emptyCupLabel: "커피 잔, 비어 있음",
+    emptyCupTooltip: "빈 잔",
+  },
+  plant: {
+    label: "화분, 풀 만지기",
+    tooltip: "풀 만지기",
   },
   tv: {
     stations: {

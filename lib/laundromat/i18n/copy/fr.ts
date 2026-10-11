@@ -57,6 +57,10 @@ export const fr = {
       `${o.name}, ${o.kind === "washer" ? "lave" : "sèche"} le linge de quelqu'un d'autre, encore ${o.remaining}`,
     othersRunningTooltip: (o: { kind: MachineKind; time: string }) =>
       `quelqu'un fait ${o.kind === "washer" ? "une lessive" : "un séchage"} · fini à ${o.time}`,
+    othersLoadedLabel: (o: { name: string }) =>
+      `${o.name}, le linge de quelqu'un d'autre est dedans`,
+    othersLoadedTooltip: (o: { name: string }) =>
+      `${o.name} · linge de quelqu'un d'autre, pas lancé`,
     othersDoneLabel: (o: { name: string }) =>
       `${o.name}, le linge de quelqu'un d'autre est prêt`,
     othersDoneTooltip: (o: { name: string }) =>
@@ -75,6 +79,7 @@ export const fr = {
       `${o.name}, ${{ dial: "sélecteur", start: "bouton de démarrage", door: "porte" }[o.control]} : quelqu'un d'autre s'en sert`,
     othersRunningTooltip: (o: { kind: MachineKind; time: string }) =>
       `${o.kind === "washer" ? "lavage" : "séchage"} de quelqu'un d'autre · fini à ${o.time}`,
+    othersLoadedTooltip: "linge de quelqu'un d'autre · pas encore lancé",
     othersDoneTooltip:
       "le linge de quelqu'un d'autre · attend son propriétaire",
     doneAt: (o: { time: string }) => `fini à ${o.time}`,
@@ -127,13 +132,30 @@ export const fr = {
     machineLabel: "Machine à café",
     brewingMachineLabel: "Machine à café, café en préparation",
     brewingTooltip: "ça coule…",
-    hotMachineLabel: "Machine à café, un café chaud t'attend sur la table",
-    hotMachineTooltip: "ton café est sur la table",
     idleSwitchLabel: "Bouton de la machine à café, préparer un café",
     idleSwitchTooltip: "préparer un café",
     brewingSwitchLabel: "Bouton de la machine à café, café en préparation",
-    hotSwitchLabel: "Bouton de la machine à café, préparer un autre café",
-    hotSwitchTooltip: "encore un",
+    readyMachineLabel: "Machine à café, du café dans la verseuse",
+    readyMachineTooltip: "le café est prêt",
+    topUpSwitchLabel: "Bouton de la machine à café, remplir la verseuse",
+    topUpSwitchTooltip: "remplir la verseuse",
+    fullSwitchLabel: "Bouton de la machine à café, la verseuse est pleine",
+    fullSwitchTooltip: "la verseuse est pleine · sers une tasse d'abord",
+    emptyFlaskLabel: "Verseuse, vide",
+    emptyFlaskTooltip: "la verseuse est vide",
+    brewingFlaskLabel: "Verseuse, café en préparation",
+    pourLabel: "Verseuse, servir une tasse",
+    pourTooltip: "servir une tasse",
+    cupFullFlaskLabel: "Verseuse, finis ta tasse d'abord",
+    cupFullFlaskTooltip: "finis ta tasse d'abord",
+    fullCupLabel: "Tasse de café, boire",
+    fullCupTooltip: "boire",
+    emptyCupLabel: "Tasse de café, vide",
+    emptyCupTooltip: "tasse vide",
+  },
+  plant: {
+    label: "Plante, toucher de l'herbe",
+    tooltip: "toucher de l'herbe",
   },
   tv: {
     stations: {

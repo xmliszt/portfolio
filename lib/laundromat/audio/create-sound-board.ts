@@ -1,6 +1,8 @@
 import { createRoomTail } from "./sounds/create-room-tail";
 import { playCoffeeBeep } from "./sounds/play-coffee-beep";
 import { playCoffeeBrewDone } from "./sounds/play-coffee-brew-done";
+import { playCoffeePour } from "./sounds/play-coffee-pour";
+import { playCoffeeSip } from "./sounds/play-coffee-sip";
 import { playCoffeeSwitch } from "./sounds/play-coffee-switch";
 import { playCollectLaundry } from "./sounds/play-collect-laundry";
 import { playDoneDing } from "./sounds/play-done-ding";
@@ -17,6 +19,7 @@ import { playRoomDoorOpen } from "./sounds/play-room-door-open";
 import { playSample } from "./sounds/play-sample";
 import { playSlidingDoor } from "./sounds/play-sliding-door";
 import { playStartButton } from "./sounds/play-start-button";
+import { playTouchGrass } from "./sounds/play-touch-grass";
 import { playTvStatic } from "./sounds/play-tv-static";
 import { startCoffeeBrewing } from "./sounds/start-coffee-brewing";
 import { startDryerRunning } from "./sounds/start-dryer-running";
@@ -54,6 +57,9 @@ const ONE_SHOTS = {
   "lamp-flicker": playLampFlicker,
   "lamp-off": playLampOff,
   "coffee-beep": playCoffeeBeep,
+  "coffee-pour": playCoffeePour,
+  "coffee-sip": playCoffeeSip,
+  "touch-grass": playTouchGrass,
 } satisfies { [name in SoundName]: (options: VoiceOptions) => void };
 
 const LOOPS = {
