@@ -13,20 +13,20 @@ This work is licensed under a
 
 ## Supabase schema workflow
 
-This project uses declarative Supabase schemas with one table per file under `supabase/schemas/public/`.
+This project uses declarative Supabase schemas, one Postgres schema per app and one table or function per file:
 
-To bootstrap or re-sync from production baseline:
+- `supabase/schemas/portfolio/` — tables for the personal site (`post_views`, `ratings`, `bgms`, `hobby_*`).
+- `supabase/schemas/laundro_cafe/` — tables and functions for laundro.cafe.
 
-1. Link the project: `supabase link --project-ref tvstbbuidvwgelgidaqy`
-2. (Optional) Dump production public schema: `supabase db dump --linked --schema public --file supabase/schemas/prod.sql`
-3. Break `prod.sql` into per-table files under `supabase/schemas/public/` or reconcile incrementally.
+Both schemas are listed in `[api] schemas` in `supabase/config.toml` and must also be in **Settings → Data API → Exposed schemas** on the hosted project. Add a schema there only after the migration that creates it is applied: exposing a schema that does not exist yet stops the whole Data API.
 
 When schema changes are made:
 
-1. Edit the SQL files under `supabase/schemas/public/` (one table per file).
+1. Edit the SQL files under `supabase/schemas/<schema>/`, and list any new file in `schema_paths` in `supabase/config.toml` in dependency order.
 2. Generate a migration from the declared state: `supabase db diff -f <migration_name>`.
-3. Apply migrations to the linked project: `npm run db:push`.
-4. Regenerate TypeScript types: `npm run db:gen-types`.
+3. Read the generated migration. The diff does not track column grants, schema grants, publications, data changes, or moving a table between schemas; write those by hand.
+4. Apply migrations to the linked project: `npm run db:push`.
+5. Regenerate TypeScript types: `npm run db:gen-types`.
 
 Development with Turbopack and Velite
 

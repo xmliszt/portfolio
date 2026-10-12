@@ -10,7 +10,7 @@ enabled = true
 port = 54321
 # Schemas to expose in your API. Tables, views and stored procedures in this schema will get API
 # endpoints. `public` and `graphql_public` schemas are included by default.
-schemas = ["public", "graphql_public"]
+schemas = ["public", "graphql_public", "portfolio", "laundro_cafe"]
 # Extra schemas to add to the search_path of every request.
 extra_search_path = ["public", "extensions"]
 # The maximum number of rows returns from a view, table, or stored procedure. Limits payload size
@@ -56,11 +56,19 @@ enabled = true
 # Specifies an ordered list of schema files that describe your database.
 # Supports glob patterns relative to supabase directory: "./schemas/*.sql"
 schema_paths = [
-  "./schemas/public/bgms.sql",
-  "./schemas/public/post_views.sql",
-  "./schemas/public/ratings.sql",
-  "./schemas/public/hobby_item_groups.sql",
-  "./schemas/public/hobby_items.sql",
+  "./schemas/portfolio/schema.sql",
+  "./schemas/portfolio/bgms.sql",
+  "./schemas/portfolio/post_views.sql",
+  "./schemas/portfolio/ratings.sql",
+  "./schemas/portfolio/hobby_item_groups.sql",
+  "./schemas/portfolio/hobby_items.sql",
+  "./schemas/laundro_cafe/schema.sql",
+  "./schemas/laundro_cafe/notebooks.sql",
+  "./schemas/laundro_cafe/notebook_entries.sql",
+  "./schemas/laundro_cafe/notebook_entry_authors.sql",
+  "./schemas/laundro_cafe/count_entry_report.sql",
+  "./schemas/laundro_cafe/entry_reports.sql",
+  "./schemas/laundro_cafe/append_entry.sql",
 ]
 
 [db.seed]

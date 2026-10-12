@@ -7,12 +7,7 @@ export type Json =
   | Json[]
 
 export type Database = {
-  // Allows to automatically instantiate createClient with right options
-  // instead of createClient<Database, { PostgrestVersion: 'XX' }>(URL, KEY)
-  __InternalSupabase: {
-    PostgrestVersion: "12.0.2 (a4e00ff)"
-  }
-  public: {
+  portfolio: {
     Tables: {
       bgms: {
         Row: {
@@ -34,38 +29,6 @@ export type Database = {
           title?: string
         }
         Relationships: []
-      }
-      entry_reports: {
-        Row: {
-          created_at: string
-          entry_id: number
-          id: number
-          reason: string | null
-          visitor_id: string
-        }
-        Insert: {
-          created_at?: string
-          entry_id: number
-          id?: never
-          reason?: string | null
-          visitor_id: string
-        }
-        Update: {
-          created_at?: string
-          entry_id?: number
-          id?: never
-          reason?: string | null
-          visitor_id?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "entry_reports_entry_id_fkey"
-            columns: ["entry_id"]
-            isOneToOne: false
-            referencedRelation: "notebook_entries"
-            referencedColumns: ["id"]
-          },
-        ]
       }
       hobby_item_groups: {
         Row: {
@@ -150,112 +113,6 @@ export type Database = {
           },
         ]
       }
-      notebook_entries: {
-        Row: {
-          body: string
-          created_at: string
-          hidden_at: string | null
-          id: number
-          line_count: number
-          line_start: number
-          notebook_id: number
-          page: number
-          report_count: number
-          script: string
-          sign_off: string | null
-        }
-        Insert: {
-          body: string
-          created_at?: string
-          hidden_at?: string | null
-          id?: never
-          line_count: number
-          line_start: number
-          notebook_id: number
-          page: number
-          report_count?: number
-          script: string
-          sign_off?: string | null
-        }
-        Update: {
-          body?: string
-          created_at?: string
-          hidden_at?: string | null
-          id?: never
-          line_count?: number
-          line_start?: number
-          notebook_id?: number
-          page?: number
-          report_count?: number
-          script?: string
-          sign_off?: string | null
-        }
-        Relationships: [
-          {
-            foreignKeyName: "notebook_entries_notebook_id_fkey"
-            columns: ["notebook_id"]
-            isOneToOne: false
-            referencedRelation: "notebooks"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      notebook_entry_authors: {
-        Row: {
-          created_at: string
-          entry_id: number
-          visitor_id: string
-        }
-        Insert: {
-          created_at?: string
-          entry_id: number
-          visitor_id: string
-        }
-        Update: {
-          created_at?: string
-          entry_id?: number
-          visitor_id?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "notebook_entry_authors_entry_id_fkey"
-            columns: ["entry_id"]
-            isOneToOne: true
-            referencedRelation: "notebook_entries"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      notebooks: {
-        Row: {
-          filled_at: string | null
-          id: number
-          lines_per_page: number
-          lines_used: number
-          number: number
-          page_count: number
-          started_at: string
-        }
-        Insert: {
-          filled_at?: string | null
-          id?: never
-          lines_per_page?: number
-          lines_used?: number
-          number: number
-          page_count?: number
-          started_at?: string
-        }
-        Update: {
-          filled_at?: string | null
-          id?: never
-          lines_per_page?: number
-          lines_used?: number
-          number?: number
-          page_count?: number
-          started_at?: string
-        }
-        Relationships: []
-      }
       post_views: {
         Row: {
           slug: string
@@ -297,34 +154,7 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      append_entry: {
-        Args: {
-          p_body: string
-          p_line_count: number
-          p_script: string
-          p_sign_off: string
-          p_visitor_id: string
-        }
-        Returns: {
-          body: string
-          created_at: string
-          hidden_at: string | null
-          id: number
-          line_count: number
-          line_start: number
-          notebook_id: number
-          page: number
-          report_count: number
-          script: string
-          sign_off: string | null
-        }
-        SetofOptions: {
-          from: "*"
-          to: "notebook_entries"
-          isOneToOne: true
-          isSetofReturn: false
-        }
-      }
+      [_ in never]: never
     }
     Enums: {
       [_ in never]: never
@@ -343,12 +173,12 @@ export type Tables<
   DefaultSchemaTableNameOrOptions extends
     | keyof (DefaultSchema["Tables"] & DefaultSchema["Views"])
     | { schema: keyof DatabaseWithoutInternals },
-  TableName extends (DefaultSchemaTableNameOrOptions extends {
+  TableName extends DefaultSchemaTableNameOrOptions extends {
     schema: keyof DatabaseWithoutInternals
   }
     ? keyof (DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"] &
         DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Views"])
-    : never) = never,
+    : never = never,
 > = DefaultSchemaTableNameOrOptions extends {
   schema: keyof DatabaseWithoutInternals
 }
@@ -372,11 +202,11 @@ export type TablesInsert<
   DefaultSchemaTableNameOrOptions extends
     | keyof DefaultSchema["Tables"]
     | { schema: keyof DatabaseWithoutInternals },
-  TableName extends (DefaultSchemaTableNameOrOptions extends {
+  TableName extends DefaultSchemaTableNameOrOptions extends {
     schema: keyof DatabaseWithoutInternals
   }
     ? keyof DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"]
-    : never) = never,
+    : never = never,
 > = DefaultSchemaTableNameOrOptions extends {
   schema: keyof DatabaseWithoutInternals
 }
@@ -397,11 +227,11 @@ export type TablesUpdate<
   DefaultSchemaTableNameOrOptions extends
     | keyof DefaultSchema["Tables"]
     | { schema: keyof DatabaseWithoutInternals },
-  TableName extends (DefaultSchemaTableNameOrOptions extends {
+  TableName extends DefaultSchemaTableNameOrOptions extends {
     schema: keyof DatabaseWithoutInternals
   }
     ? keyof DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"]
-    : never) = never,
+    : never = never,
 > = DefaultSchemaTableNameOrOptions extends {
   schema: keyof DatabaseWithoutInternals
 }
@@ -422,11 +252,11 @@ export type Enums<
   DefaultSchemaEnumNameOrOptions extends
     | keyof DefaultSchema["Enums"]
     | { schema: keyof DatabaseWithoutInternals },
-  EnumName extends (DefaultSchemaEnumNameOrOptions extends {
+  EnumName extends DefaultSchemaEnumNameOrOptions extends {
     schema: keyof DatabaseWithoutInternals
   }
     ? keyof DatabaseWithoutInternals[DefaultSchemaEnumNameOrOptions["schema"]]["Enums"]
-    : never) = never,
+    : never = never,
 > = DefaultSchemaEnumNameOrOptions extends {
   schema: keyof DatabaseWithoutInternals
 }
@@ -439,11 +269,11 @@ export type CompositeTypes<
   PublicCompositeTypeNameOrOptions extends
     | keyof DefaultSchema["CompositeTypes"]
     | { schema: keyof DatabaseWithoutInternals },
-  CompositeTypeName extends (PublicCompositeTypeNameOrOptions extends {
+  CompositeTypeName extends PublicCompositeTypeNameOrOptions extends {
     schema: keyof DatabaseWithoutInternals
   }
     ? keyof DatabaseWithoutInternals[PublicCompositeTypeNameOrOptions["schema"]]["CompositeTypes"]
-    : never) = never,
+    : never = never,
 > = PublicCompositeTypeNameOrOptions extends {
   schema: keyof DatabaseWithoutInternals
 }
@@ -453,7 +283,8 @@ export type CompositeTypes<
     : never
 
 export const Constants = {
-  public: {
+  portfolio: {
     Enums: {},
   },
 } as const
+

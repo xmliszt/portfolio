@@ -11,5 +11,6 @@ export function createLaundromatServiceClient() {
   if (!url || !serviceRoleKey) return undefined;
   return createClient<LaundromatDatabase>(url, serviceRoleKey, {
     auth: { persistSession: false },
+    db: { schema: "laundro_cafe" },
   });
 }
