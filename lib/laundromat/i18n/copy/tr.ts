@@ -217,6 +217,7 @@ export const tr = {
     full: (o) => `defter No. ${o.number} doldu · yalnızca okunabilir`,
     someoneWritingInNotebook: "biri deftere yazıyor · sıranı bekle",
     someoneWriting: "şu an biri yazıyor · sıranı bekle",
+    comeBackToWrite: "bir tane daha yazmak için iki dakika sonra gel",
     startsNext: (o) => `defter No. ${o.number} bu notla başlıyor`,
     writePromptBeforeKeys: "sonraki kişiye bir not yaz · ",
     writePromptAfterKeys: " ile kaydet",

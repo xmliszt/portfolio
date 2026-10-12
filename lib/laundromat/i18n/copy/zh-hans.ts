@@ -242,6 +242,7 @@ export const zhHans = {
     full: (o: { number: number }) => `第 ${o.number} 本笔记本已写满 · 只能阅读`,
     someoneWritingInNotebook: "有人正在笔记本上写字 · 等一等",
     someoneWriting: "有人正在写 · 等一等",
+    comeBackToWrite: "两分钟后再来写下一条",
     startsNext: (o: { number: number }) =>
       `这条留言会开启第 ${o.number} 本笔记本`,
     writePromptBeforeKeys: "给下一个人留句话 · 按",

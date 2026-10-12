@@ -51,6 +51,7 @@ import { parseCameraFocus } from "@/lib/laundromat/parse-camera-focus";
 import { assignRemoteMachines } from "@/lib/laundromat/realtime/assign-remote-machines";
 import { chooseCoffeeGroup } from "@/lib/laundromat/realtime/choose-coffee-group";
 import { chooseNotebookWriter } from "@/lib/laundromat/realtime/choose-notebook-writer";
+import { getNotebookLock } from "@/lib/laundromat/realtime/get-notebook-lock";
 import { getPeopleHere } from "@/lib/laundromat/realtime/get-people-here";
 import type {
   RemoteDraft,
@@ -66,7 +67,6 @@ import { cn } from "@/lib/utils";
 
 import { useLaundromatCopy } from "./i18n/use-laundromat-copy";
 import { NotebookBook } from "./notebook/notebook-book";
-import type { NotebookLock } from "./notebook/notebook-lock";
 import { ShelfBookButton } from "./notebook/shelf-book-button";
 import { useNotebookShelf } from "./notebook/use-notebook-shelf";
 import type { SceneViews } from "./objects/scene-views";
@@ -386,22 +386,22 @@ export function LaundromatScene(props: LaundromatSceneProps) {
     ],
     now,
   });
-  const notebookLock: NotebookLock =
-    notebookWriter === undefined || notebookWriter === room.sessionId
-      ? { kind: "free" }
-      : {
-          kind: "taken",
-          writerSessionId: notebookWriter,
-          draft: room.drafts[notebookWriter],
-        };
+  const notebookLock = getNotebookLock({
+    writerSessionId: notebookWriter,
+    ownSessionId: room.sessionId,
+    isOwnWriting: writingSince !== undefined,
+    room,
+  });
 
   const [wantsFreeNotice, setWantsFreeNotice] = useState(false);
   const isNotebookTaken = notebookLock.kind === "taken";
+  const isNotebookFree = notebookLock.kind === "free";
   const wasNotebookTakenRef = useRef(isNotebookTaken);
   useEffect(() => {
     const wasTaken = wasNotebookTakenRef.current;
-    wasNotebookTakenRef.current = isNotebookTaken;
-    if (!wasTaken || isNotebookTaken || !wantsFreeNotice || !room.isConnected) {
+    wasNotebookTakenRef.current =
+      isNotebookTaken || (wasTaken && !isNotebookFree);
+    if (!wasTaken || !isNotebookFree || !wantsFreeNotice || !room.isConnected) {
       return;
     }
     setWantsFreeNotice(false);
@@ -411,7 +411,14 @@ export function LaundromatScene(props: LaundromatSceneProps) {
       body: copy.notebook.freeNotificationBody,
       tag: "laundromat-notebook",
     });
-  }, [isNotebookTaken, wantsFreeNotice, sound, room.isConnected, copy]);
+  }, [
+    isNotebookTaken,
+    isNotebookFree,
+    wantsFreeNotice,
+    sound,
+    room.isConnected,
+    copy,
+  ]);
 
   const { refresh: refreshShelf } = notebookShelf;
   const wasNotebookTakenForShelfRef = useRef(isNotebookTaken);

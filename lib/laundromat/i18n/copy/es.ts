@@ -260,6 +260,7 @@ export const es = {
     someoneWritingInNotebook:
       "alguien está escribiendo en el cuaderno · espera tu turno",
     someoneWriting: "alguien está escribiendo ahora · espera tu turno",
+    comeBackToWrite: "vuelve en dos minutos para escribir otra",
     startsNext: (o: { number: number }) =>
       `esta nota abre el cuaderno n.º ${o.number}`,
     writePromptBeforeKeys: "escribe una nota para la próxima persona · ",

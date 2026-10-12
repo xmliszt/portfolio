@@ -237,6 +237,7 @@ export const pl = {
     full: (o) => `notes nr ${o.number} jest pełny · tylko do odczytu`,
     someoneWritingInNotebook: "ktoś pisze w notesie · poczekaj na swoją kolej",
     someoneWriting: "ktoś właśnie pisze · poczekaj na swoją kolej",
+    comeBackToWrite: "wróć za dwie minuty, żeby napisać kolejny",
     startsNext: (o) => `ten liścik zaczyna notes nr ${o.number}`,
     writePromptBeforeKeys: "napisz liścik dla następnej osoby · ",
     writePromptAfterKeys: ", by go zapisać",

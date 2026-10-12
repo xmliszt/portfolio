@@ -262,6 +262,7 @@ export const id = {
     someoneWritingInNotebook:
       "seseorang sedang menulis di buku catatan · tunggu giliranmu",
     someoneWriting: "seseorang sedang menulis · tunggu giliranmu",
+    comeBackToWrite: "kembali dua menit lagi untuk menulis yang berikutnya",
     startsNext: (o: { number: number }) =>
       `catatan ini membuka buku catatan No. ${o.number}`,
     writePromptBeforeKeys: "tulis catatan untuk orang berikutnya · ",

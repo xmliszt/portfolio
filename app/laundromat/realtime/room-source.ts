@@ -18,6 +18,7 @@ export type RoomSource = {
     onDraft: (draft: RemoteDraft) => void;
     onEntry: (entry: RemoteEntry) => void;
     onConnectedChange: (isConnected: boolean) => void;
+    onUrgentReadyChange: (isReady: boolean) => void;
   }) => RoomConnection;
   dispose: () => void;
 };

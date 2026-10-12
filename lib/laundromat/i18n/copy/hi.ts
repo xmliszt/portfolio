@@ -259,6 +259,7 @@ export const hi = {
     someoneWritingInNotebook:
       "कोई नोटबुक में लिख रहा है · अपनी बारी का इंतज़ार करो",
     someoneWriting: "कोई अभी लिख रहा है · अपनी बारी का इंतज़ार करो",
+    comeBackToWrite: "दूसरा नोट लिखने के लिए दो मिनट बाद आना",
     startsNext: (o: { number: number }) =>
       `यह नोट नोटबुक नं. ${o.number} की शुरुआत करेगा`,
     writePromptBeforeKeys: "अगले व्यक्ति के लिए एक नोट लिखो · ",

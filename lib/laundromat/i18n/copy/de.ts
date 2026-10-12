@@ -262,6 +262,7 @@ export const de = {
     someoneWritingInNotebook:
       "jemand schreibt gerade ins Notizbuch · warte, bis du dran bist",
     someoneWriting: "jemand schreibt gerade · warte, bis du dran bist",
+    comeBackToWrite: "komm in zwei Minuten wieder, um noch eine zu schreiben",
     startsNext: (o: { number: number }) =>
       `mit dieser Notiz beginnt Notizbuch Nr. ${o.number}`,
     writePromptBeforeKeys: "schreib eine Notiz für die nächste Person · ",

@@ -18,10 +18,11 @@ export function createFakeRoomSource() {
     listeners: Listener[];
   } = { peers: [], listeners: [] };
   const source: RoomSource = {
-    join({ onPeers, onDraft, onConnectedChange }) {
+    join({ onPeers, onDraft, onConnectedChange, onUrgentReadyChange }) {
       const listener = { onPeers, onDraft };
       state.listeners = [...state.listeners, listener];
       onConnectedChange(true);
+      onUrgentReadyChange(true);
       onPeers(state.peers);
       if (state.draft !== undefined) onDraft(state.draft);
       return {

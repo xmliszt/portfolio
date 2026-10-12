@@ -255,6 +255,7 @@ export const vi = {
     full: (o: { number: number }) => `sổ số ${o.number} đã kín · chỉ đọc`,
     someoneWritingInNotebook: "có người đang viết vào sổ · chờ đến lượt bạn",
     someoneWriting: "có người đang viết · chờ đến lượt bạn",
+    comeBackToWrite: "hai phút nữa quay lại để viết thêm một lời nhắn nhé",
     startsNext: (o: { number: number }) =>
       `lời nhắn này mở đầu sổ số ${o.number}`,
     writePromptBeforeKeys: "viết một lời nhắn cho người đến sau · ",

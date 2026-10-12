@@ -252,6 +252,7 @@ export const ja = {
       `ノート No. ${o.number} はいっぱい · 読むだけ`,
     someoneWritingInNotebook: "誰かがノートに書いている · 順番を待って",
     someoneWriting: "誰かがいま書いている · 順番を待って",
+    comeBackToWrite: "2分後にまた来て、もう1つ書いてね",
     startsNext: (o: { number: number }) =>
       `このメモからノート No. ${o.number} が始まる`,
     writePromptBeforeKeys: "次の人へメモを書こう · ",

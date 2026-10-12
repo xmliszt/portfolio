@@ -242,6 +242,7 @@ export const zhHant = {
     full: (o: { number: number }) => `第 ${o.number} 本筆記本已寫滿 · 只能閱讀`,
     someoneWritingInNotebook: "有人正在筆記本上寫字 · 等一下",
     someoneWriting: "有人正在寫 · 等一下",
+    comeBackToWrite: "兩分鐘後再來寫下一則",
     startsNext: (o: { number: number }) =>
       `這則留言會開啟第 ${o.number} 本筆記本`,
     writePromptBeforeKeys: "給下一個人留句話 · 按",

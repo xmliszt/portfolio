@@ -225,6 +225,7 @@ export const nl = {
     someoneWritingInNotebook:
       "iemand schrijft in het notitieboek · wacht je beurt af",
     someoneWriting: "iemand is nu aan het schrijven · wacht je beurt af",
+    comeBackToWrite: "kom over twee minuten terug om er nog een te schrijven",
     startsNext: (o) => `dit berichtje begint notitieboek nr. ${o.number}`,
     writePromptBeforeKeys: "schrijf een berichtje voor de volgende · ",
     writePromptAfterKeys: " om het op te slaan",

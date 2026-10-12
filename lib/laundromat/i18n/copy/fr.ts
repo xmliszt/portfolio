@@ -258,6 +258,7 @@ export const fr = {
     someoneWritingInNotebook:
       "quelqu'un écrit dans le carnet · attends ton tour",
     someoneWriting: "quelqu'un est en train d'écrire · attends ton tour",
+    comeBackToWrite: "reviens dans deux minutes pour en écrire un autre",
     startsNext: (o: { number: number }) =>
       `ce mot ouvre le carnet nº ${o.number}`,
     writePromptBeforeKeys: "écris un mot pour la prochaine personne · ",

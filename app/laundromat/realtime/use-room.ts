@@ -14,10 +14,11 @@ import type { RoomConnection } from "./room-source";
 import { RoomSourceContext } from "./room-source-context";
 
 const DRAFT_SEND_INTERVAL_MS = 150;
+const DOWN_AFTER_MS = 15_000;
 
 type OwnPresence = Omit<RoomPresence, "sessionId">;
 
-/** Join the laundromat room as this tab while `presence` is set, keeping it tracked, and return this tab's `sessionId`, whether the room is connected, whether presence has synced since it connected, the other tabs last seen here, the latest draft of each, the last entry another tab saved, `sendDraft`, throttled and sent again whenever someone new arrives, and `sendEntry`. */
+/** Join the laundromat room as this tab while `presence` is set, keeping it tracked, and return this tab's `sessionId`, whether the room is connected, `isConnecting` until the first connection succeeds or fails, whether presence has synced since it connected, `isUrgentReady` when a change to `writingSince` would reach the room now, `isDown` once a lost connection has stayed lost for `DOWN_AFTER_MS`, the other tabs last seen here, the latest draft of each, the last entry another tab saved, `sendDraft`, throttled and sent again whenever someone new arrives, and `sendEntry`. */
 export function useRoom(presence: OwnPresence | undefined) {
   const source = useContext(RoomSourceContext);
   const [sessionId] = useState(() => crypto.randomUUID());
@@ -25,6 +26,9 @@ export function useRoom(presence: OwnPresence | undefined) {
   const peersRef = useRef(peers);
   const [isConnected, setIsConnected] = useState(false);
   const [isSynced, setIsSynced] = useState(false);
+  const [hasConnectFailed, setHasConnectFailed] = useState(false);
+  const [isUrgentReady, setIsUrgentReady] = useState(false);
+  const [isDown, setIsDown] = useState(false);
   const [drafts, setDrafts] = useState<{ [sessionId: string]: RemoteDraft }>(
     {}
   );
@@ -36,18 +40,37 @@ export function useRoom(presence: OwnPresence | undefined) {
 
   useEffect(() => {
     if (source === undefined || visitorId === undefined) return;
+    const join: { isCurrent: boolean; downTimer?: number } = {
+      isCurrent: true,
+    };
     const connection = source.join({
       sessionId,
       onPeers: (next) => {
+        if (!join.isCurrent) return;
         peersRef.current = next;
         setPeers(next);
         setIsSynced(true);
       },
       onConnectedChange: (connected) => {
+        if (!join.isCurrent) return;
         setIsConnected(connected);
-        if (!connected) setIsSynced(false);
+        if (connected) {
+          window.clearTimeout(join.downTimer);
+          join.downTimer = undefined;
+          setIsDown(false);
+          return;
+        }
+        setIsSynced(false);
+        setHasConnectFailed(true);
+        join.downTimer ??= window.setTimeout(() => {
+          if (join.isCurrent) setIsDown(true);
+        }, DOWN_AFTER_MS);
+      },
+      onUrgentReadyChange: (isReady) => {
+        if (join.isCurrent) setIsUrgentReady(isReady);
       },
       onDraft: (draft) => {
+        if (!join.isCurrent) return;
         const isTrackedPeer = peersRef.current.some(
           (peer) => peer.sessionId === draft.sessionId
         );
@@ -55,6 +78,7 @@ export function useRoom(presence: OwnPresence | undefined) {
         setDrafts((current) => ({ ...current, [draft.sessionId]: draft }));
       },
       onEntry: (entry) => {
+        if (!join.isCurrent) return;
         const isTrackedPeer = peersRef.current.some(
           (peer) => peer.sessionId === entry.sessionId
         );
@@ -65,6 +89,8 @@ export function useRoom(presence: OwnPresence | undefined) {
     });
     connectionRef.current = connection;
     return () => {
+      join.isCurrent = false;
+      window.clearTimeout(join.downTimer);
       window.clearTimeout(draftTimerRef.current);
       draftTimerRef.current = undefined;
       connectionRef.current = undefined;
@@ -75,6 +101,9 @@ export function useRoom(presence: OwnPresence | undefined) {
       setLastEntry(undefined);
       setIsConnected(false);
       setIsSynced(false);
+      setHasConnectFailed(false);
+      setIsUrgentReady(false);
+      setIsDown(false);
     };
   }, [source, sessionId, visitorId]);
 
@@ -190,7 +219,10 @@ export function useRoom(presence: OwnPresence | undefined) {
   return {
     sessionId,
     isConnected,
+    isConnecting: source !== undefined && !isConnected && !hasConnectFailed,
     isSynced,
+    isUrgentReady,
+    isDown,
     peers,
     drafts,
     lastEntry,

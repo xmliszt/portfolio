@@ -236,6 +236,7 @@ export const ru = {
     full: (o) => `блокнот № ${o.number} заполнен · только чтение`,
     someoneWritingInNotebook: "кто-то пишет в блокноте · подожди своей очереди",
     someoneWriting: "кто-то сейчас пишет · подожди своей очереди",
+    comeBackToWrite: "возвращайся через две минуты, чтобы написать ещё одну",
     startsNext: (o) => `с этой записки начнётся блокнот № ${o.number}`,
     writePromptBeforeKeys: "напиши записку следующему · ",
     writePromptAfterKeys: ", чтобы сохранить",

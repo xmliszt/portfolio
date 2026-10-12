@@ -24,6 +24,7 @@ import { getDraftPlacement } from "@/lib/laundromat/notebook/get-draft-placement
 import { getDraftRowMarks } from "@/lib/laundromat/notebook/get-draft-row-marks";
 import { getEntryLineCount } from "@/lib/laundromat/notebook/get-entry-line-count";
 import { getEntrySpreads } from "@/lib/laundromat/notebook/get-entry-spreads";
+import { getRestingPlacedAt } from "@/lib/laundromat/notebook/get-resting-placed-at";
 import { getSpreadOfPage } from "@/lib/laundromat/notebook/get-spread-of-page";
 import { isRtlScript } from "@/lib/laundromat/notebook/is-rtl-script";
 import { keepTrailingSpace } from "@/lib/laundromat/notebook/keep-trailing-space";
@@ -31,6 +32,7 @@ import type { FittedEntry } from "@/lib/laundromat/notebook/layout-page-rows";
 import { layoutPageRows } from "@/lib/laundromat/notebook/layout-page-rows";
 import { wrapEntryLines } from "@/lib/laundromat/notebook/wrap-entry-lines";
 import { wrapEntryText } from "@/lib/laundromat/notebook/wrap-entry-text";
+import type { NotebookLock } from "@/lib/laundromat/realtime/notebook-lock";
 import type {
   RemoteDraft,
   RemoteEntry,
@@ -47,7 +49,6 @@ import {
   loadNotebook,
   reportNotebookEntry,
 } from "./notebook-actions";
-import type { NotebookLock } from "./notebook-lock";
 import type { PageContent, RemoteCaret, RowView } from "./notebook-page";
 import { NotebookPage } from "./notebook-page";
 import type { CurlTurn } from "./page-curl-canvas";
@@ -61,6 +62,8 @@ import { usePageDrag } from "./use-page-drag";
 import { useTextMeasurers } from "./use-text-measurers";
 
 const DRAFT_STORAGE_KEY = "laundromat:notebook-draft";
+const PLACED_AT_STORAGE_KEY = "laundromat:notebook-placed-at";
+const APPEND_ENTRY_INTERVAL_MS = 2 * 60_000;
 const DRAFT_ID = "draft";
 const FADE_MS = 220;
 const WRITING_IDLE_RELEASE_MS = 90_000;
@@ -115,6 +118,32 @@ function readStoredDraft() {
   }
 }
 
+function readStoredPlacedAt() {
+  try {
+    return getRestingPlacedAt({
+      stored: window.localStorage.getItem(PLACED_AT_STORAGE_KEY),
+      now: Date.now(),
+      intervalMs: APPEND_ENTRY_INTERVAL_MS,
+    });
+  } catch {
+    return undefined;
+  }
+}
+
+function writeStoredPlacedAt(placedAt: number) {
+  try {
+    window.localStorage.setItem(PLACED_AT_STORAGE_KEY, String(placedAt));
+  } catch {
+    return;
+  }
+}
+
+function storePlacedAtNow() {
+  const placedAt = Date.now();
+  writeStoredPlacedAt(placedAt);
+  return placedAt;
+}
+
 function writeStoredDraft(value: string) {
   try {
     window.localStorage.setItem(DRAFT_STORAGE_KEY, value);
@@ -130,7 +159,12 @@ export function NotebookBook(props: NotebookBookProps) {
   const details = config.details.notebook;
   const isWritable = props.bookNumber === undefined;
   const [isReloading, setIsReloading] = useState(true);
-  const canWrite = isWritable && props.lock.kind === "free" && !isReloading;
+  const [placedAt, setPlacedAt] = useState<number>();
+  const canWrite =
+    isWritable &&
+    props.lock.kind === "free" &&
+    !isReloading &&
+    placedAt === undefined;
 
   const [result, setResult] = useState<NotebookResult>();
   const [phase, setPhase] = useState<BookPhase>("closed");
@@ -463,7 +497,23 @@ export function NotebookBook(props: NotebookBookProps) {
     const restored = readStoredDraft();
     restoredDraftRef.current = restored;
     setDraft(restored);
+    setPlacedAt(readStoredPlacedAt());
+    function handleStorage(event: StorageEvent) {
+      if (event.key === PLACED_AT_STORAGE_KEY) {
+        setPlacedAt(readStoredPlacedAt());
+      }
+    }
+    window.addEventListener("storage", handleStorage);
+    return () => window.removeEventListener("storage", handleStorage);
   }, []);
+  useEffect(() => {
+    if (placedAt === undefined) return;
+    const timeout = window.setTimeout(
+      () => setPlacedAt(undefined),
+      placedAt + APPEND_ENTRY_INTERVAL_MS - Date.now()
+    );
+    return () => window.clearTimeout(timeout);
+  }, [placedAt]);
 
   const loadRequestRef = useRef(0);
   const pendingEntryPageRef = useRef<number>(undefined);
@@ -477,7 +527,7 @@ export function NotebookBook(props: NotebookBookProps) {
       );
       if (request !== loadRequestRef.current) return false;
       setIsReloading(false);
-      if (lockRef.current.kind === "free") setHandoffDraft(undefined);
+      if (lockRef.current.kind !== "taken") setHandoffDraft(undefined);
       if (next.kind === "offline") {
         pendingEntryPageRef.current = undefined;
         setResult((current) => (current?.kind === "online" ? current : next));
@@ -661,7 +711,7 @@ export function NotebookBook(props: NotebookBookProps) {
     if (isTaken) onWritingChange(false);
   }, [isTaken, onWritingChange]);
   useEffect(() => {
-    if (!canWrite || draft.trim() === "") return;
+    if (!canWrite) return;
     const timeout = window.setTimeout(
       () => onWritingChange(false),
       WRITING_IDLE_RELEASE_MS
@@ -708,7 +758,7 @@ export function NotebookBook(props: NotebookBookProps) {
     const nextSelection = readSelection(event.target);
     setFailure(undefined);
     writeStoredDraft(next);
-    props.onWritingChange(next.trim() !== "");
+    if (next.trim() !== "") props.onWritingChange(true);
     props.onDraftChange({
       text: next,
       script: detectScript(next),
@@ -766,6 +816,7 @@ export function NotebookBook(props: NotebookBookProps) {
     });
     setDraft("");
     writeStoredDraft("");
+    setPlacedAt(storePlacedAtNow());
     props.onWritingChange(false);
     props.onDraftChange({
       text: "",
@@ -943,6 +994,8 @@ export function NotebookBook(props: NotebookBookProps) {
         number: props.bookNumber ?? notebook.number,
       });
     if (!isWritable) return copy.notebook.full({ number: notebook.number });
+    if (placedAt !== undefined) return copy.notebook.comeBackToWrite;
+    if (props.lock.kind === "joining") return copy.notebook.opening;
     if (props.lock.kind === "taken") {
       return trimmedDraft === ""
         ? copy.notebook.someoneWritingInNotebook
@@ -1191,18 +1244,20 @@ export function NotebookBook(props: NotebookBookProps) {
                 />
               </label>
             ) : null}
-            {isWritable && props.lock.kind === "taken" && (
-              <button
-                type="button"
-                disabled={props.freeNoticeOn}
-                onClick={props.onRequestFreeNotice}
-                className="cursor-pointer rounded-md border border-[var(--lm-edge)] bg-[var(--lm-panel)] px-3 py-1.5 text-[var(--lm-ink-hi)] lowercase transition-opacity outline-none hover:border-[var(--lm-accent)] focus-visible:border-[var(--lm-accent)] disabled:cursor-default disabled:opacity-60"
-              >
-                {props.freeNoticeOn
-                  ? copy.notebook.notifyPending
-                  : copy.notebook.notifyWhenFree}
-              </button>
-            )}
+            {isWritable &&
+              props.lock.kind === "taken" &&
+              placedAt === undefined && (
+                <button
+                  type="button"
+                  disabled={props.freeNoticeOn}
+                  onClick={props.onRequestFreeNotice}
+                  className="cursor-pointer rounded-md border border-[var(--lm-edge)] bg-[var(--lm-panel)] px-3 py-1.5 text-[var(--lm-ink-hi)] lowercase transition-opacity outline-none hover:border-[var(--lm-accent)] focus-visible:border-[var(--lm-accent)] disabled:cursor-default disabled:opacity-60"
+                >
+                  {props.freeNoticeOn
+                    ? copy.notebook.notifyPending
+                    : copy.notebook.notifyWhenFree}
+                </button>
+              )}
             {canWrite && (
               <button
                 type="button"

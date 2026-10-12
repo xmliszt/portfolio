@@ -259,6 +259,7 @@ export const ptBR = {
     someoneWritingInNotebook:
       "alguém está escrevendo no caderno · espere sua vez",
     someoneWriting: "alguém está escrevendo agora · espere sua vez",
+    comeBackToWrite: "volte daqui a dois minutos para escrever outro",
     startsNext: (o: { number: number }) =>
       `este recado abre o caderno nº ${o.number}`,
     writePromptBeforeKeys: "escreva um recado para a próxima pessoa · ",
