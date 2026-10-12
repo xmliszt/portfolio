@@ -38,6 +38,7 @@ export function getTimeOfDay(options: { hour: number; config: SceneConfig }) {
     (hour - sky.sunriseHour) / (sky.sunsetHour - sky.sunriseHour);
   const sunElevation = isSunUp ? Math.sin(Math.PI * sunProgress) : 0;
   const isLampOn = daylight < light.lampOnDaylight;
+  const sunWhiteness = smoothstep(sunElevation / sky.goldenHourElevation);
   return {
     hour,
     ...getSky({ hour, sky }),
@@ -50,7 +51,7 @@ export function getTimeOfDay(options: { hour: number; config: SceneConfig }) {
           color: mixHexColors({
             from: sky.sunWarmColor,
             to: sky.sunColor,
-            amount: smoothstep(sunElevation * 2),
+            amount: sunWhiteness,
           }),
         }
       : undefined,
@@ -60,7 +61,7 @@ export function getTimeOfDay(options: { hour: number; config: SceneConfig }) {
     daylightPatchColor: mixHexColors({
       from: sky.sunWarmColor,
       to: light.daylightColor,
-      amount: smoothstep(sunElevation * 2.5),
+      amount: sunWhiteness,
     }),
   };
 }

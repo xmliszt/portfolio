@@ -7,6 +7,7 @@ import { en } from "@/lib/laundromat/i18n/copy/en";
 import { getLaundromatLocaleMetadata } from "@/lib/laundromat/i18n/get-laundromat-locale-metadata";
 import { DEFAULT_LAUNDROMAT_LOCALE } from "@/lib/laundromat/i18n/laundromat-locales";
 import { sceneConfig } from "@/lib/laundromat/scene-config";
+import { getDaylitTokenCss } from "@/lib/laundromat/get-daylit-token-css";
 import { toCssVariables } from "@/lib/laundromat/to-css-variables";
 import { cn } from "@/lib/utils";
 
@@ -66,7 +67,7 @@ export default function LaundromatLayout(props: LaundromatLayoutProps) {
         fontMono.variable
       )}
     >
-      <style>{`[data-laundromat-root] { ${toCssVariables(sceneConfig.tokens)} }\n${getCursorCss(sceneConfig.tokens)}`}</style>
+      <style>{`[data-laundromat-root] { ${toCssVariables(sceneConfig.tokens)} }\n${getDaylitTokenCss(sceneConfig)}\n${getCursorCss(sceneConfig.tokens)}`}</style>
       {props.children}
       <LaundromatCursor />
     </div>

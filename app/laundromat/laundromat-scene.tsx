@@ -28,6 +28,7 @@ import type { Camera, Viewport } from "@/lib/laundromat/compute-camera";
 import { computeCamera } from "@/lib/laundromat/compute-camera";
 import { describeSceneObject } from "@/lib/laundromat/describe-scene-object";
 import { getCameraMoveDurationMs } from "@/lib/laundromat/get-camera-move-duration-ms";
+import { getDaylitTokenStyle } from "@/lib/laundromat/get-daylit-token-style";
 import { getTimeOfDay } from "@/lib/laundromat/get-time-of-day";
 import { describeEntranceMat } from "@/lib/laundromat/laundry/describe-entrance-mat";
 import { describeLaundryBasket } from "@/lib/laundromat/laundry/describe-laundry-basket";
@@ -1047,6 +1048,8 @@ export function LaundromatScene(props: LaundromatSceneProps) {
     <div
       ref={rootRef}
       className="relative size-full overflow-hidden"
+      data-lm-daylit
+      style={getDaylitTokenStyle({ config, hour })}
       onClick={handleBackdropClick}
     >
       <motion.div

@@ -110,6 +110,7 @@ const lightDials = {
   daylightPatchStrength: [light.daylightPatchStrength, 0, 1, 0.01],
   lampColor: light.lampColor,
   daylightColor: light.daylightColor,
+  daylightFillOpacity: [light.daylightFillOpacity, 0, 0.3, 0.005],
 } satisfies DialConfig;
 
 const timeDials = {
@@ -123,6 +124,7 @@ const skyDials = {
   sunriseHour: [sky.sunriseHour, 3, 9, 0.05],
   sunsetHour: [sky.sunsetHour, 16, 22, 0.05],
   twilightHours: [sky.twilightHours, 0.25, 4, 0.05],
+  goldenHourElevation: [sky.goldenHourElevation, 0.05, 1, 0.01],
   sunColor: sky.sunColor,
   sunWarmColor: sky.sunWarmColor,
   moonColor: sky.moonColor,
@@ -355,6 +357,10 @@ export default function LaundromatLab() {
     id: "laundromat-lab-light",
     ...PANEL_OPTIONS,
   });
+  const dayTokens = useDialKit("Day tokens", light.dayTokens, {
+    id: "laundromat-lab-day-tokens",
+    ...PANEL_OPTIONS,
+  });
   const cameraValues = useDialKit("Camera", cameraDials, {
     id: "laundromat-lab-camera",
     ...PANEL_OPTIONS,
@@ -452,7 +458,7 @@ export default function LaundromatLab() {
         unfocusedDim: cameraValues.unfocusedDim,
         ease: [ease.x1, ease.y1, ease.x2, ease.y2],
       },
-      light: lightValues,
+      light: { ...lightValues, dayTokens },
       sky: {
         keys: sky.keys.map((key) => ({
           hour: key.hour,
@@ -461,6 +467,7 @@ export default function LaundromatLab() {
         sunriseHour: skyValues.sunriseHour,
         sunsetHour: skyValues.sunsetHour,
         twilightHours: skyValues.twilightHours,
+        goldenHourElevation: skyValues.goldenHourElevation,
         sunColor: skyValues.sunColor,
         sunWarmColor: skyValues.sunWarmColor,
         moonColor: skyValues.moonColor,
@@ -482,7 +489,15 @@ export default function LaundromatLab() {
         },
       },
     } satisfies SceneConfig;
-  }, [tokens, lightValues, cameraValues, placement, skyValues, objectValues]);
+  }, [
+    tokens,
+    lightValues,
+    dayTokens,
+    cameraValues,
+    placement,
+    skyValues,
+    objectValues,
+  ]);
 
   const bedroom = useMemo(() => {
     const { _collapsed, ...layout } = hamperRoom.layout;

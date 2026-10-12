@@ -108,6 +108,16 @@ test("warms the window light at sunrise and sunset and cools it at noon", () => 
   );
 });
 
+test("keeps the window light warm through the first hour after sunrise", () => {
+  const { sky, light } = sceneConfig;
+  const blue = (hex: string) => parseInt(hex.slice(5, 7), 16);
+  const halfway = (blue(sky.sunWarmColor) + blue(light.daylightColor)) / 2;
+  assert.ok(blue(at(sky.sunriseHour + 1).daylightPatchColor) < halfway);
+  assert.ok(blue(at(sky.sunsetHour - 1).daylightPatchColor) < halfway);
+  const sunHalfway = (blue(sky.sunWarmColor) + blue(sky.sunColor)) / 2;
+  assert.ok(blue(at(sky.sunriseHour + 1).sun?.color ?? "") < sunHalfway);
+});
+
 test("switches the lamp on once daylight drops below lampOnDaylight", () => {
   const { sunsetHour, twilightHours } = sceneConfig.sky;
   const hours = Array.from(

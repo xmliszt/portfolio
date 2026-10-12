@@ -47,6 +47,18 @@ export type NotebookPage = {
 
 export type SkyKey = { hour: number; top: string; horizon: string };
 
+export type DaylitToken =
+  | "edge"
+  | "face"
+  | "faceTop"
+  | "wall"
+  | "wall2"
+  | "shade1"
+  | "shade2"
+  | "recess"
+  | "line"
+  | "detail";
+
 export type SceneTokens = {
   bg: string;
   panel: string;
@@ -91,6 +103,8 @@ export type SceneConfig = {
     daylightPatchStrength: number;
     lampColor: string;
     daylightColor: string;
+    dayTokens: { [token in DaylitToken]: string };
+    daylightFillOpacity: number;
   };
   machines: {
     cycleMinutes: number[];
@@ -182,6 +196,7 @@ export type SceneConfig = {
     sunriseHour: number;
     sunsetHour: number;
     twilightHours: number;
+    goldenHourElevation: number;
     sunColor: string;
     sunWarmColor: string;
     moonColor: string;
@@ -294,7 +309,7 @@ export const sceneConfig: SceneConfig = {
     {
       id: "tube-display",
       kind: "tube-display",
-      position: { x: 4.05, y: 0, z: 6.55 },
+      position: { x: 4.9, y: 0, z: 6.55 },
       size: { w: 2.4, d: 0.45, h: 0.9 },
     },
     {
@@ -383,6 +398,19 @@ export const sceneConfig: SceneConfig = {
     daylightPatchStrength: 0.39,
     lampColor: "#ff9a2e",
     daylightColor: "#d6e4f0",
+    dayTokens: {
+      edge: "#323437",
+      face: "#26272a",
+      faceTop: "#2b2d30",
+      wall: "#202124",
+      wall2: "#1c1d20",
+      shade1: "#222326",
+      shade2: "#242528",
+      recess: "#18191b",
+      line: "#505458",
+      detail: "#3b3e41",
+    },
+    daylightFillOpacity: 0.08,
   },
   machines: {
     cycleMinutes: [5, 10, 15, 20, 25, 30, 45, 60],
@@ -528,6 +556,7 @@ export const sceneConfig: SceneConfig = {
     sunriseHour: 5.75,
     sunsetHour: 19.25,
     twilightHours: 1.5,
+    goldenHourElevation: 0.6,
     sunColor: "#fff3d6",
     sunWarmColor: "#ffa65c",
     moonColor: "#dfe3ea",

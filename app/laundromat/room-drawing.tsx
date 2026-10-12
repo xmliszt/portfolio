@@ -1,5 +1,12 @@
-import type { SceneLayout } from "@/lib/laundromat/build-scene-layout";
+import { Fragment } from "react";
+
+import type {
+  LaidOutObject,
+  SceneLayout,
+} from "@/lib/laundromat/build-scene-layout";
+import { getDaylitTokenStyle } from "@/lib/laundromat/get-daylit-token-style";
 import { getTimeOfDay } from "@/lib/laundromat/get-time-of-day";
+import { getWindowLight } from "@/lib/laundromat/get-window-light";
 import type { SceneConfig } from "@/lib/laundromat/scene-config";
 import { toSvgPoints } from "@/lib/laundromat/to-svg-points";
 
@@ -8,8 +15,10 @@ import { SceneObjectDrawing } from "./objects/scene-object-drawing";
 import type { SceneViews } from "./objects/scene-views";
 import type { LampSwitch } from "./sound/use-scene-sounds";
 import { FloorHalos } from "./floor-halos";
+import { RoomDaylightFill } from "./room-daylight-fill";
 import { RoomLampGlow } from "./room-lamp-glow";
 import { RoomLight } from "./room-light";
+import { WindowFaceLight } from "./window-face-light";
 
 type RoomDrawingProps = {
   layout: SceneLayout;
@@ -30,6 +39,13 @@ export function RoomDrawing(props: RoomDrawingProps) {
   const windowObject = layout.objects.find(
     ({ object }) => object.kind === "window"
   );
+  const windowLight =
+    timeOfDay === undefined || windowObject === undefined
+      ? undefined
+      : getWindowLight({ window: windowObject.object, timeOfDay, config });
+  const visibleObjects = layout.objects.filter(
+    ({ object }) => object.id !== props.hiddenObjectId
+  );
 
   const objectProps = {
     projection: layout.projection,
@@ -39,6 +55,17 @@ export function RoomDrawing(props: RoomDrawingProps) {
     timeOfDay,
     config,
   };
+  function renderFaceLight(laidOut: LaidOutObject) {
+    if (windowLight === undefined) return null;
+    return (
+      <WindowFaceLight
+        laidOut={laidOut}
+        light={windowLight}
+        projection={layout.projection}
+        glideMs={config.sky.timeJumpGlideMs}
+      />
+    );
+  }
   const focused = layout.objects.find(
     ({ object }) => object.id === props.focusedObjectId
   );
@@ -50,6 +77,8 @@ export function RoomDrawing(props: RoomDrawingProps) {
       viewBox={`0 0 ${layout.size.width} ${layout.size.height}`}
       className="pointer-events-none absolute top-0 left-0 overflow-visible"
       data-lm-lamp-switch={props.lampSwitch}
+      data-lm-daylit
+      style={getDaylitTokenStyle({ config, hour })}
     >
       <SceneKeyframes plant={config.details.plant} />
       <g
@@ -83,22 +112,29 @@ export function RoomDrawing(props: RoomDrawingProps) {
       </g>
       {timeOfDay !== undefined && (
         <RoomLight
-          window={windowObject}
+          windowLight={windowLight}
+          objects={visibleObjects}
           timeOfDay={timeOfDay}
           projection={layout.projection}
           config={config}
         />
       )}
       <FloorHalos layout={layout} />
-      {layout.objects
-        .filter(({ object }) => object.id !== props.hiddenObjectId)
-        .map((laidOut) => (
-          <SceneObjectDrawing
-            key={laidOut.object.id}
-            laidOut={laidOut}
-            {...objectProps}
-          />
-        ))}
+      {visibleObjects.map((laidOut) => (
+        <Fragment key={laidOut.object.id}>
+          <SceneObjectDrawing laidOut={laidOut} {...objectProps} />
+          {renderFaceLight(laidOut)}
+        </Fragment>
+      ))}
+      {timeOfDay !== undefined && windowObject !== undefined && (
+        <RoomDaylightFill
+          window={windowObject}
+          timeOfDay={timeOfDay}
+          projection={layout.projection}
+          size={layout.size}
+          config={config}
+        />
+      )}
       {timeOfDay !== undefined && (
         <RoomLampGlow
           timeOfDay={timeOfDay}
@@ -114,7 +150,10 @@ export function RoomDrawing(props: RoomDrawingProps) {
         opacity={focused === undefined ? 0 : props.dimAmount}
       />
       {focused !== undefined && focused.object.id !== props.hiddenObjectId && (
-        <SceneObjectDrawing laidOut={focused} {...objectProps} />
+        <>
+          <SceneObjectDrawing laidOut={focused} {...objectProps} />
+          {renderFaceLight(focused)}
+        </>
       )}
     </svg>
   );

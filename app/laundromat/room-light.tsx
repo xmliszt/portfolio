@@ -1,8 +1,9 @@
 import { useId } from "react";
 
 import type { LaidOutObject } from "@/lib/laundromat/build-scene-layout";
-import { getStreetLight } from "@/lib/laundromat/get-street-light";
+import { getObjectFloorShadow } from "@/lib/laundromat/get-object-floor-shadow";
 import type { TimeOfDay } from "@/lib/laundromat/get-time-of-day";
+import type { WindowLight } from "@/lib/laundromat/get-window-light";
 import { getWindowLightPatch } from "@/lib/laundromat/get-window-light-patch";
 import type { IsoProjection } from "@/lib/laundromat/project-iso-point";
 import { projectIsoPoint } from "@/lib/laundromat/project-iso-point";
@@ -14,10 +15,10 @@ import { DaylightPatch } from "./daylight-patch";
 const POOL_SEGMENTS = 48;
 const POOL_RADIUS_RATIO = 0.36;
 const POOL_PEAK_OPACITY = 0.14;
-const MOON_PATCH_OPACITY = 0.5;
 
 type RoomLightProps = {
-  window: LaidOutObject | undefined;
+  windowLight: WindowLight | undefined;
+  objects: LaidOutObject[];
   timeOfDay: TimeOfDay;
   projection: IsoProjection;
   config: SceneConfig;
@@ -42,20 +43,26 @@ export function RoomLight(props: RoomLightProps) {
     );
   });
 
-  const streetLight = getStreetLight({ timeOfDay, sky: config.sky });
-  const windowLight = (() => {
-    if (props.window === undefined) return undefined;
-    const { position, size } = props.window.object;
-    return getWindowLightPatch({
-      wallX: position.x,
-      fromY: position.y,
-      toY: position.y + size.d,
-      bottom: position.z,
-      top: position.z + size.h,
-      shadow: streetLight.shadow,
-      street: config.street,
-      floor: { width, depth },
-    })?.map((point) => onFloor(point.x, point.y));
+  const { windowLight } = props;
+  const windowPatch = (() => {
+    if (windowLight === undefined) return undefined;
+    const { shadow } = windowLight;
+    return {
+      points: getWindowLightPatch({
+        opening: windowLight.opening,
+        shadow,
+        floor: { width, depth },
+      }).map((point) => onFloor(point.x, point.y)),
+      shadows: props.objects.flatMap(
+        ({ object }) =>
+          getObjectFloorShadow({ object, shadow })?.map((polygon, index) => ({
+            key: `${object.id}-${index}`,
+            points: polygon.map((point) => onFloor(point.x, point.y)),
+          })) ?? []
+      ),
+      color: windowLight.color,
+      opacity: windowLight.opacity,
+    };
   })();
 
   return (
@@ -76,19 +83,12 @@ export function RoomLight(props: RoomLightProps) {
           }}
         />
       </g>
-      {windowLight !== undefined && (
+      {windowPatch !== undefined && (
         <DaylightPatch
-          points={windowLight}
-          color={
-            timeOfDay.sun === undefined
-              ? config.sky.moonColor
-              : timeOfDay.daylightPatchColor
-          }
-          opacity={
-            timeOfDay.sun === undefined
-              ? streetLight.strength * MOON_PATCH_OPACITY
-              : timeOfDay.daylightPatchOpacity
-          }
+          points={windowPatch.points}
+          shadows={windowPatch.shadows}
+          color={windowPatch.color}
+          opacity={windowPatch.opacity}
           glideMs={config.sky.timeJumpGlideMs}
         />
       )}

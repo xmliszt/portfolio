@@ -7,6 +7,7 @@ const BLUR_PX = 7;
 
 type DaylightPatchProps = {
   points: ScreenPoint[];
+  shadows?: { key: string; points: ScreenPoint[] }[];
   color: string;
   opacity: number;
   glideMs: number;
@@ -16,7 +17,7 @@ function midpoint(from: ScreenPoint, to: ScreenPoint) {
   return { x: (from.x + to.x) / 2, y: (from.y + to.y) / 2 };
 }
 
-/** Draw the window's light on the floor as a blurred quad from `points` (wall edge first) that fades out away from the wall. */
+/** Draw the window's light on the floor as a blurred quad from `points` (wall edge first) that fades out away from the wall, cut by the `shadows` polygons. */
 export function DaylightPatch(props: DaylightPatchProps) {
   const id = useId();
   const [wallStart, wallEnd, farEnd, farStart] = props.points;
@@ -47,16 +48,32 @@ export function DaylightPatch(props: DaylightPatchProps) {
         >
           <feGaussianBlur stdDeviation={BLUR_PX} />
         </filter>
+        {props.shadows !== undefined && (
+          <mask id={`${id}-shadows`}>
+            <polygon fill="white" points={toSvgPoints(props.points)} />
+            {props.shadows.map((shadow) => (
+              <polygon
+                key={shadow.key}
+                fill="black"
+                points={toSvgPoints(shadow.points)}
+              />
+            ))}
+          </mask>
+        )}
       </defs>
-      <polygon
-        fill={`url(#${id}-fade)`}
+      <g
         filter={`url(#${id}-soften)`}
-        points={toSvgPoints(props.points)}
         style={{
           opacity: props.opacity,
           transition: `opacity ${glide}`,
         }}
-      />
+      >
+        <polygon
+          fill={`url(#${id}-fade)`}
+          mask={props.shadows === undefined ? undefined : `url(#${id}-shadows)`}
+          points={toSvgPoints(props.points)}
+        />
+      </g>
     </g>
   );
 }
