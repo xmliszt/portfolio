@@ -39,6 +39,7 @@ import type { SceneConfig } from "@/lib/laundromat/scene-config";
 import type { NotebookScript } from "@/lib/laundromat/supabase/notebook-types";
 import { cn } from "@/lib/utils";
 
+import { getPageRadius } from "./get-page-radius";
 import { HANDWRITING_FONT_FAMILIES } from "./handwriting-fonts";
 import type { NotebookResult, NotebookView } from "./notebook-actions";
 import {
@@ -50,12 +51,13 @@ import type { NotebookLock } from "./notebook-lock";
 import type { PageContent, RemoteCaret, RowView } from "./notebook-page";
 import { NotebookPage } from "./notebook-page";
 import type { CurlTurn } from "./page-curl-canvas";
-import { PageCurlCanvas } from "./page-curl-canvas";
+import { CURL_REST_PROGRESS, PageCurlCanvas } from "./page-curl-canvas";
 import { PageLeaf } from "./page-leaf";
 import { PageScrubber } from "./page-scrubber";
 import type { PageSpec } from "./paint-page-texture";
 import { ShortcutKeys } from "./shortcut-keys";
 import { useBookTurns } from "./use-book-turns";
+import { usePageDrag } from "./use-page-drag";
 import { useTextMeasurers } from "./use-text-measurers";
 
 const DRAFT_STORAGE_KEY = "laundromat:notebook-draft";
@@ -146,6 +148,7 @@ export function NotebookBook(props: NotebookBookProps) {
   const [isContentReady, setIsContentReady] = useState(false);
   const [hasWaitedMax, setHasWaitedMax] = useState(false);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const bookRef = useRef<HTMLDivElement>(null);
   const { getMeasure, loadMeasure } = useTextMeasurers();
 
   const riffleMs =
@@ -164,7 +167,7 @@ export function NotebookBook(props: NotebookBookProps) {
   useEffect(() => {
     if (turn === undefined || turn.kind === "fade") return;
     if (turn.kind === "turn") {
-      sound?.play("page-flip");
+      if (turn.driver === "auto") sound?.play("page-flip");
       return;
     }
     const timers = Array.from({ length: details.riffleSheets }, (_, index) =>
@@ -175,6 +178,14 @@ export function NotebookBook(props: NotebookBookProps) {
     );
     return () => timers.forEach((timer) => window.clearTimeout(timer));
   }, [turn, sound, details.riffleSheets, details.riffleStaggerMs]);
+  const handleEdgePointerDown = usePageDrag({
+    bookRef,
+    restProgress: curlMode === "webgl" ? CURL_REST_PROGRESS : 0,
+    startDrag: turns.startDrag,
+    moveDrag: turns.moveDrag,
+    endDrag: turns.endDrag,
+    onFlip: () => sound?.play("page-flip"),
+  });
   const leafAngle = useTransform(turns.progress, (value) => value * -180);
 
   const notebook = useMemo(() => {
@@ -870,11 +881,12 @@ export function NotebookBook(props: NotebookBookProps) {
         }
       : undefined;
   const curlTurn: CurlTurn | undefined =
-    leafPages === undefined || curlMode === "css"
+    turn?.kind !== "turn" || leafPages === undefined || curlMode === "css"
       ? undefined
       : {
           front: getPageSpec(leafPages.front),
           back: getPageSpec(leafPages.back),
+          grab: turn.grab,
         };
 
   function renderPage(options: {
@@ -884,6 +896,12 @@ export function NotebookBook(props: NotebookBookProps) {
   }) {
     const spec = getPageSpec(options.page);
     const canTurn = options.isInteractive && isIdle;
+    const turnTarget = (() => {
+      if (!canTurn) return undefined;
+      if (options.side === "left" && spread > 0) return spread - 1;
+      if (options.side === "right" && spread < lastSpread) return spread + 1;
+      return undefined;
+    })();
     return (
       <NotebookPage
         content={spec.content}
@@ -896,13 +914,17 @@ export function NotebookBook(props: NotebookBookProps) {
           options.isInteractive
             ? {
                 ...pageControls,
-                onCorner: !canTurn
-                  ? undefined
-                  : options.side === "left" && spread > 0
-                    ? () => goToSpread(spread - 1)
-                    : options.side === "right" && spread < lastSpread
-                      ? () => goToSpread(spread + 1)
-                      : undefined,
+                edge:
+                  turnTarget === undefined
+                    ? undefined
+                    : {
+                        onClick: () => goToSpread(turnTarget),
+                        onPointerDown: (event) =>
+                          handleEdgePointerDown(event, {
+                            to: turnTarget,
+                            side: options.side,
+                          }),
+                      },
               }
             : undefined
         }
@@ -956,6 +978,7 @@ export function NotebookBook(props: NotebookBookProps) {
       style={{ width, height: height + config.notebook.statusBarPx }}
     >
       <div
+        ref={bookRef}
         data-lm-text={canWrite ? "" : undefined}
         className="relative z-10 [perspective:2600px]"
         style={{ width, height }}
@@ -1003,7 +1026,11 @@ export function NotebookBook(props: NotebookBookProps) {
           {!isOpen && (
             <div
               className="absolute top-0 h-full bg-[var(--lm-paper)]"
-              style={{ left: settings.width, width: settings.width }}
+              style={{
+                left: settings.width,
+                width: settings.width,
+                borderRadius: getPageRadius("right"),
+              }}
             >
               {renderPage({ page: 1, side: "right", isInteractive: false })}
             </div>
@@ -1035,6 +1062,7 @@ export function NotebookBook(props: NotebookBookProps) {
                 style={{
                   left: settings.width,
                   width: settings.width,
+                  borderRadius: getPageRadius("right"),
                   animation: `${turn.to > turn.from ? "lm-riffle-forward" : "lm-riffle-back"} ${details.riffleSheetMs}ms cubic-bezier(0.45, 0.05, 0.3, 1) ${index * details.riffleStaggerMs}ms both`,
                 }}
               />

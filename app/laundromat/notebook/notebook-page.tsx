@@ -1,5 +1,6 @@
 "use client";
 
+import type { PointerEvent as ReactPointerEvent } from "react";
 import { useState } from "react";
 
 import { useLaundromatCopy } from "@/app/laundromat/i18n/use-laundromat-copy";
@@ -8,6 +9,7 @@ import type { NotebookPage as NotebookPageSettings } from "@/lib/laundromat/scen
 import type { NotebookScript } from "@/lib/laundromat/supabase/notebook-types";
 import { cn } from "@/lib/utils";
 
+import { getPageRadius } from "./get-page-radius";
 import { InkedLine } from "./inked-line";
 import { NOTEBOOK_PAGE_METRICS } from "./notebook-page-metrics";
 
@@ -38,7 +40,12 @@ export type RemoteCaret = {
 
 type PageControls = {
   onNumber: (() => void) | undefined;
-  onCorner: (() => void) | undefined;
+  edge:
+    | {
+        onClick: () => void;
+        onPointerDown: (event: ReactPointerEvent<HTMLElement>) => void;
+      }
+    | undefined;
   onReport: (entryId: number) => void;
   reportedIds: number[];
   onInkComplete: (entryId: string) => void;
@@ -60,6 +67,7 @@ export function NotebookPage(props: NotebookPageProps) {
   const { settings, content, pitch } = props;
   const [hoveredEntryId, setHoveredEntryId] = useState<string>();
   const { spineShadow } = NOTEBOOK_PAGE_METRICS;
+  const borderRadius = getPageRadius(props.side);
   const shading = `inset ${props.side === "left" ? -spineShadow.offsetPx : spineShadow.offsetPx}px 0 ${spineShadow.blurPx}px ${spineShadow.spreadPx}px rgb(0 0 0 / ${spineShadow.alpha})`;
 
   if (content.kind === "cover") {
@@ -67,9 +75,10 @@ export function NotebookPage(props: NotebookPageProps) {
       <div
         className={cn(
           "absolute inset-0 flex flex-col items-center justify-center gap-y-3",
-          "rounded-[4px_14px_14px_4px] border border-[var(--lm-line)] bg-[var(--lm-face-top)]",
+          "border border-[var(--lm-line)] bg-[var(--lm-face-top)]",
           "shadow-[0_1px_2px_rgb(0_0_0/0.3),0_18px_40px_rgb(0_0_0/0.35)]"
         )}
+        style={{ borderRadius }}
       >
         <span className="h-px w-36 bg-[var(--lm-line)]" />
         <span className="font-[family-name:var(--lm-font-display)] text-[28px] text-[var(--lm-ink)]">
@@ -84,7 +93,7 @@ export function NotebookPage(props: NotebookPageProps) {
     return (
       <div
         className="absolute inset-0 flex flex-col items-center justify-center gap-y-2 bg-[var(--lm-paper-rule)] text-[var(--lm-ink-pen)]"
-        style={{ boxShadow: shading }}
+        style={{ borderRadius, boxShadow: shading }}
       >
         <span className="font-[family-name:var(--lm-font-display)] text-[22px] opacity-60">
           {copy.notebook.number({ number: content.number })}
@@ -100,8 +109,8 @@ export function NotebookPage(props: NotebookPageProps) {
 
   return (
     <div
-      className="absolute inset-0 bg-[var(--lm-paper)]"
-      style={{ boxShadow: shading }}
+      className="absolute inset-0 overflow-hidden bg-[var(--lm-paper)]"
+      style={{ borderRadius, boxShadow: shading }}
     >
       {Array.from({ length: ruleCount }, (_, index) => (
         <span
@@ -130,6 +139,41 @@ export function NotebookPage(props: NotebookPageProps) {
           }
         />
       ))}
+      {props.controls?.edge !== undefined && (
+        <button
+          type="button"
+          aria-label={
+            props.side === "left"
+              ? copy.notebook.previousPage
+              : copy.notebook.nextPage
+          }
+          onClick={props.controls.edge.onClick}
+          onPointerDown={props.controls.edge.onPointerDown}
+          onPointerMove={(event) =>
+            event.currentTarget.style.setProperty(
+              "--lm-grab-y",
+              `${event.nativeEvent.offsetY}px`
+            )
+          }
+          className={cn(
+            "group absolute inset-y-0 cursor-grab touch-none outline-none [--lm-grab-y:50%]",
+            props.side === "left" ? "left-0" : "right-0"
+          )}
+          style={{ width: NOTEBOOK_PAGE_METRICS.turnEdgePx }}
+        >
+          <span
+            aria-hidden
+            className={cn(
+              "absolute inset-y-0 w-0 opacity-0 transition-[width,opacity] duration-200 ease-out",
+              "group-hover:w-3 group-hover:opacity-100 group-focus-visible:w-3 group-focus-visible:opacity-100",
+              "[mask-image:linear-gradient(to_bottom,transparent_calc(var(--lm-grab-y)-96px),black_var(--lm-grab-y),transparent_calc(var(--lm-grab-y)+96px))]",
+              props.side === "left"
+                ? "left-0 bg-[linear-gradient(to_right,rgb(0_0_0/0.16),transparent)]"
+                : "right-0 bg-[linear-gradient(to_left,rgb(0_0_0/0.16),transparent)]"
+            )}
+          />
+        </button>
+      )}
       {props.remoteCaret !== undefined && (
         <span
           aria-hidden
@@ -165,32 +209,6 @@ export function NotebookPage(props: NotebookPageProps) {
           }}
         >
           {content.page}
-        </button>
-      )}
-      {props.controls?.onCorner !== undefined && (
-        <button
-          type="button"
-          aria-label={
-            props.side === "left"
-              ? copy.notebook.previousPage
-              : copy.notebook.nextPage
-          }
-          onClick={props.controls.onCorner}
-          className={cn(
-            "group absolute bottom-0 size-16 cursor-pointer outline-none",
-            props.side === "left" ? "left-0" : "right-0"
-          )}
-        >
-          <span
-            aria-hidden
-            className={cn(
-              "absolute bottom-0 size-0 transition-[width,height] duration-200 ease-out",
-              "group-hover:size-8 group-focus-visible:size-8",
-              props.side === "left"
-                ? "left-0 bg-[linear-gradient(225deg,var(--lm-paper-rule)_50%,var(--lm-bg)_50%)]"
-                : "right-0 bg-[linear-gradient(135deg,var(--lm-paper-rule)_50%,var(--lm-bg)_50%)]"
-            )}
-          />
         </button>
       )}
     </div>
@@ -247,10 +265,13 @@ function PageRowLine(props: PageRowLineProps) {
             disabled={isReported}
             onClick={() => props.controls?.onReport(reportEntryId)}
             className={cn(
-              "absolute -right-12 cursor-pointer px-1.5 py-1 opacity-0 transition-opacity duration-200 outline-none",
+              "absolute cursor-pointer px-1.5 py-1 opacity-0 transition-opacity duration-200 outline-none",
               "focus-visible:opacity-100 focus-visible:outline-1 focus-visible:outline-dashed",
               (isReported || props.entryHovered) && "opacity-100"
             )}
+            style={{
+              right: NOTEBOOK_PAGE_METRICS.turnEdgePx - settings.marginX,
+            }}
           >
             {isReported ? copy.notebook.reported : copy.notebook.report}
           </button>

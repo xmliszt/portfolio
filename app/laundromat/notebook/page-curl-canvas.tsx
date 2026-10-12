@@ -6,11 +6,13 @@ import { Mesh, Plane, Program, Renderer, Texture } from "ogl";
 
 import type { NotebookPage as NotebookPageSettings } from "@/lib/laundromat/scene-config";
 
+import { NOTEBOOK_PAGE_METRICS } from "./notebook-page-metrics";
 import type { PageSpec } from "./paint-page-texture";
 import { paintPageTexture } from "./paint-page-texture";
 import { readPagePalette } from "./read-page-palette";
 
 const PERSPECTIVE_PX = 2600;
+const FOLD_START_RATIO = 1.15;
 const LIFT_PADDING_RATIO = 0.08;
 const WIDTH_SEGMENTS = 64;
 const HEIGHT_SEGMENTS = 16;
@@ -22,19 +24,23 @@ uniform float uProgress;
 uniform float uWidth;
 uniform float uHeight;
 uniform float uCurl;
+uniform float uGrab;
 uniform float uPadding;
 uniform vec2 uCanvas;
 varying vec2 vUv;
+varying vec2 vPoint;
 varying float vShade;
 const float PI = 3.14159265;
 void main() {
   vUv = uv;
   float x = uv.x * uWidth;
   float y = (1.0 - uv.y) * uHeight;
+  vPoint = vec2(x, y);
   float bend = max(sin(uProgress * PI), 0.0);
   float radius = uWidth * 0.22 * uCurl * bend + 0.001;
   float tilt = uWidth * 0.3 * uCurl * bend;
-  float foldX = uWidth * 1.15 * (1.0 - uProgress) - tilt * (y / uHeight);
+  float lead = uGrab * (y / uHeight - 0.5) + 0.5 * abs(uGrab);
+  float foldX = uWidth * ${FOLD_START_RATIO.toFixed(2)} * (1.0 - uProgress) - tilt * lead;
   float d = x - foldX;
   float px = x;
   float pz = 0.0;
@@ -62,17 +68,30 @@ const FRAGMENT = /* glsl */ `
 precision highp float;
 uniform sampler2D tFront;
 uniform sampler2D tBack;
+uniform vec2 uPageSize;
+uniform float uPixel;
 varying vec2 vUv;
+varying vec2 vPoint;
 varying float vShade;
 void main() {
+  float radius = vUv.x < 0.5
+    ? ${NOTEBOOK_PAGE_METRICS.cornerRadiusPx.spine.toFixed(1)}
+    : ${NOTEBOOK_PAGE_METRICS.cornerRadiusPx.outer.toFixed(1)};
+  vec2 corner = clamp(vPoint, vec2(radius), uPageSize - radius);
+  float outside = length(vPoint - corner) - radius;
+  float alpha = clamp(0.5 - outside / uPixel, 0.0, 1.0);
+  if (alpha <= 0.0) discard;
   vec4 color = gl_FrontFacing
     ? texture2D(tFront, vUv)
     : texture2D(tBack, vec2(1.0 - vUv.x, vUv.y));
-  gl_FragColor = vec4(color.rgb * vShade, 1.0);
+  gl_FragColor = vec4(color.rgb * vShade, alpha);
 }
 `;
 
-export type CurlTurn = { front: PageSpec; back: PageSpec };
+export type CurlTurn = { front: PageSpec; back: PageSpec; grab: number };
+
+/** The progress at which the fold first reaches the leaf's outer edge. */
+export const CURL_REST_PROGRESS = 1 - 1 / FOLD_START_RATIO;
 
 type PageCurlCanvasProps = {
   turn: CurlTurn | undefined;
@@ -125,11 +144,17 @@ function createCurlScene(options: {
       vertex: VERTEX,
       fragment: FRAGMENT,
       cullFace: false,
+      transparent: true,
       uniforms: {
         uProgress: { value: 0 },
         uWidth: { value: options.width / 2 },
         uHeight: { value: options.height - options.padding * 2 },
         uCurl: { value: 0.5 },
+        uGrab: { value: 1 },
+        uPageSize: {
+          value: [options.width / 2, options.height - options.padding * 2],
+        },
+        uPixel: { value: 1 },
         uPadding: { value: options.padding },
         uCanvas: { value: [options.width, options.height] },
         tFront: { value: front },
@@ -219,6 +244,8 @@ export function PageCurlCanvas(props: PageCurlCanvasProps) {
     scene.front.needsUpdate = true;
     scene.back.needsUpdate = true;
     program.uniforms.uCurl.value = curlStrength;
+    program.uniforms.uGrab.value = turn.grab;
+    program.uniforms.uPixel.value = 1 / resolution;
 
     function draw(value: number) {
       program.uniforms.uProgress.value = value;

@@ -4,6 +4,8 @@ import type { ReactNode } from "react";
 import type { MotionValue } from "motion/react";
 import { motion, useTransform } from "motion/react";
 
+import { getPageRadius } from "./get-page-radius";
+
 type PageLeafProps = {
   angle: MotionValue<number>;
   curlStrength: number;
@@ -47,14 +49,20 @@ export function PageLeaf(props: PageLeafProps) {
         opacity: props.hidden ? 0 : 1,
       }}
     >
-      <div className={FACE_CLASS}>
+      <div
+        className={FACE_CLASS}
+        style={{ borderRadius: getPageRadius("right") }}
+      >
         {props.front}
         <motion.div
           className="pointer-events-none absolute inset-0"
           style={{ backgroundImage: sheen, opacity: shade }}
         />
       </div>
-      <div className={`${FACE_CLASS} [transform:rotateY(180deg)]`}>
+      <div
+        className={`${FACE_CLASS} [transform:rotateY(180deg)]`}
+        style={{ borderRadius: getPageRadius("left") }}
+      >
         {props.back}
         <motion.div
           className="pointer-events-none absolute inset-0"
