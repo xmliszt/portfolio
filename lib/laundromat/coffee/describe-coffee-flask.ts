@@ -1,4 +1,5 @@
 import type { LaundromatCopy } from "@/lib/laundromat/i18n/laundromat-copy";
+import { formatClockTime } from "@/lib/laundromat/laundry/format-clock-time";
 
 import type { CoffeeCup } from "./coffee-state";
 import type { CoffeePhase } from "./get-coffee-phase";
@@ -19,8 +20,17 @@ export function describeCoffeeFlask(options: {
       };
     case "brewing":
       return {
-        label: copy.brewingFlaskLabel,
-        tooltip: copy.brewingTooltip,
+        ...(options.phase.isSomeoneElse
+          ? {
+              label: copy.othersBrewingFlaskLabel,
+              tooltip: copy.othersBrewingTooltip({
+                time: formatClockTime({
+                  timestampMs: options.phase.doneAt,
+                  locale: options.copy.locale,
+                }),
+              }),
+            }
+          : { label: copy.brewingFlaskLabel, tooltip: copy.brewingTooltip }),
         enabled: false,
       };
     case "ready":

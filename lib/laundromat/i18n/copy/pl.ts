@@ -146,6 +146,11 @@ export const pl = {
     emptyFlaskLabel: "Dzbanek z kawą, pusty",
     emptyFlaskTooltip: "dzbanek jest pusty",
     brewingFlaskLabel: "Dzbanek z kawą, parzy",
+    othersBrewingMachineLabel: "Ekspres do kawy, ktoś parzy kawę",
+    othersBrewingSwitchLabel: "Włącznik ekspresu, ktoś parzy kawę",
+    othersBrewingFlaskLabel: "Dzbanek z kawą, ktoś parzy kawę",
+    othersBrewingTooltip: (o: { time: string }) =>
+      `ktoś parzy kawę · gotowe o ${o.time}`,
     pourLabel: "Dzbanek z kawą, nalej filiżankę",
     pourTooltip: "nalej filiżankę",
     cupFullFlaskLabel: "Dzbanek z kawą, najpierw dopij filiżankę",

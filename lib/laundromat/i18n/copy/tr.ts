@@ -130,6 +130,11 @@ export const tr = {
     emptyFlaskLabel: "Kahve sürahisi, boş",
     emptyFlaskTooltip: "sürahi boş",
     brewingFlaskLabel: "Kahve sürahisi, demleniyor",
+    othersBrewingMachineLabel: "Kahve makinesi, başkası demliyor",
+    othersBrewingSwitchLabel: "Kahve makinesi düğmesi, başkası demliyor",
+    othersBrewingFlaskLabel: "Kahve sürahisi, başkası demliyor",
+    othersBrewingTooltip: (o: { time: string }) =>
+      `başkası demliyor · bitiş ${o.time}`,
     pourLabel: "Kahve sürahisi, bir fincan doldur",
     pourTooltip: "bir fincan doldur",
     cupFullFlaskLabel: "Kahve sürahisi, önce fincanını bitir",

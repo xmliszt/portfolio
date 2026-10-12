@@ -159,6 +159,12 @@ export const fr = {
     emptyFlaskLabel: "Verseuse, vide",
     emptyFlaskTooltip: "la verseuse est vide",
     brewingFlaskLabel: "Verseuse, café en préparation",
+    othersBrewingMachineLabel: "Machine à café, quelqu'un fait du café",
+    othersBrewingSwitchLabel:
+      "Bouton de la machine à café, quelqu'un fait du café",
+    othersBrewingFlaskLabel: "Verseuse, quelqu'un fait du café",
+    othersBrewingTooltip: (o: { time: string }) =>
+      `quelqu'un fait du café · fini à ${o.time}`,
     pourLabel: "Verseuse, servir une tasse",
     pourTooltip: "servir une tasse",
     cupFullFlaskLabel: "Verseuse, finis ta tasse d'abord",

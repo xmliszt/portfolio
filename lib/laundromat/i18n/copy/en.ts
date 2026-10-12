@@ -162,6 +162,11 @@ export const en = {
     emptyFlaskLabel: "Coffee flask, empty",
     emptyFlaskTooltip: "flask is empty",
     brewingFlaskLabel: "Coffee flask, brewing",
+    othersBrewingMachineLabel: "Coffee machine, someone else is brewing",
+    othersBrewingSwitchLabel: "Coffee machine switch, someone else is brewing",
+    othersBrewingFlaskLabel: "Coffee flask, someone else is brewing",
+    othersBrewingTooltip: (o: { time: string }) =>
+      `someone else is brewing · done at ${o.time}`,
     pourLabel: "Coffee flask, pour a cup",
     pourTooltip: "pour a cup",
     cupFullFlaskLabel: "Coffee flask, finish your cup first",

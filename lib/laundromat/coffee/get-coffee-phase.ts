@@ -1,38 +1,42 @@
-import type { CoffeeState, CoffeeTiming } from "./coffee-state";
+import type { CoffeeFlask, CoffeeTiming } from "./coffee-state";
 import { settleCoffee } from "./settle-coffee";
 
 export type CoffeePhase =
   | { kind: "empty" }
-  | { kind: "brewing"; level: number }
+  | { kind: "brewing"; level: number; doneAt: number; isSomeoneElse: boolean }
   | { kind: "ready"; level: number; full: boolean; hot: boolean };
 
-/** Return whether the flask in `state` is empty, brewing or holding coffee at `now`, with its 0–1 fill `level`. */
+/** Return whether `flask` is empty, brewing or holding coffee at `now`, with its 0–1 fill `level`, and while brewing, when it is done and whether a visitor other than `ownVisitorId` started the brew. */
 export function getCoffeePhase(options: {
-  state: CoffeeState;
+  flask: CoffeeFlask;
   now: number;
   timing: CoffeeTiming;
+  ownVisitorId: string | undefined;
 }): CoffeePhase {
   const { now, timing } = options;
-  const state = settleCoffee(options);
+  const flask = settleCoffee(options);
   const { flaskPortions } = timing;
-  if (state.brewStartedAt !== undefined) {
+  if (flask.brewStartedAt !== undefined) {
     const brewMs =
-      ((flaskPortions - state.portions) / flaskPortions) * timing.brewMs;
-    const progress = Math.max(0, (now - state.brewStartedAt) / brewMs);
+      ((flaskPortions - flask.portions) / flaskPortions) * timing.brewMs;
+    const progress = Math.max(0, (now - flask.brewStartedAt) / brewMs);
     return {
       kind: "brewing",
+      doneAt: flask.brewStartedAt + brewMs,
+      isSomeoneElse:
+        flask.brewedBy !== undefined && flask.brewedBy !== options.ownVisitorId,
       level: Math.min(
         1,
-        (state.portions + (flaskPortions - state.portions) * progress) /
+        (flask.portions + (flaskPortions - flask.portions) * progress) /
           flaskPortions
       ),
     };
   }
-  if (state.portions === 0) return { kind: "empty" };
+  if (flask.portions === 0) return { kind: "empty" };
   return {
     kind: "ready",
-    level: Math.min(1, state.portions / flaskPortions),
-    full: state.portions >= flaskPortions,
-    hot: state.hotUntil !== undefined && now < state.hotUntil,
+    level: Math.min(1, flask.portions / flaskPortions),
+    full: flask.portions >= flaskPortions,
+    hot: flask.hotUntil !== undefined && now < flask.hotUntil,
   };
 }

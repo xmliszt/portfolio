@@ -145,6 +145,11 @@ export const uk = {
     emptyFlaskLabel: "Колба для кави, порожня",
     emptyFlaskTooltip: "колба порожня",
     brewingFlaskLabel: "Колба для кави, вариться",
+    othersBrewingMachineLabel: "Кавоварка, хтось варить каву",
+    othersBrewingSwitchLabel: "Кнопка кавоварки, хтось варить каву",
+    othersBrewingFlaskLabel: "Колба для кави, хтось варить каву",
+    othersBrewingTooltip: (o: { time: string }) =>
+      `хтось варить каву · готово о ${o.time}`,
     pourLabel: "Колба для кави, налити чашку",
     pourTooltip: "налити чашку",
     cupFullFlaskLabel: "Колба для кави, спершу допий чашку",

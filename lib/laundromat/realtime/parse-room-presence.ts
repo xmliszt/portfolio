@@ -1,10 +1,12 @@
 import { MAX_WRITING_MS } from "./max-writing-ms";
 import { parseRoomRegion } from "./parse-room-region";
-import type { RemoteLoad, RoomPresence } from "./room-presence";
+import type { RemoteFlask, RemoteLoad, RoomPresence } from "./room-presence";
 
 const MAX_CLOCK_SKEW_MS = 60_000;
 const MAX_CYCLE_MS = 2 * 60 * 60_000;
 const MAX_MACHINE_ID_LENGTH = 40;
+const MAX_FLASK_PORTIONS = 20;
+const MAX_ID_LENGTH = 64;
 
 function isObject(value: unknown): value is object {
   return typeof value === "object" && value !== null;
@@ -47,7 +49,50 @@ function parseLoad(value: unknown): RemoteLoad | undefined {
   };
 }
 
-/** Return the presence another tab tracked on the room channel, or `undefined` when it is not one; unknown or malformed fields are dropped, and so is a `writingSince` in the future or older than `MAX_WRITING_MS` by `now`. */
+function parseId(value: unknown) {
+  return typeof value === "string" && value.length <= MAX_ID_LENGTH
+    ? value
+    : undefined;
+}
+
+function parseFlask(options: {
+  value: unknown;
+  now: number;
+}): RemoteFlask | undefined {
+  const { value, now } = options;
+  if (
+    !isObject(value) ||
+    !("portions" in value && typeof value.portions === "number") ||
+    !Number.isInteger(value.portions) ||
+    value.portions < 0 ||
+    value.portions > MAX_FLASK_PORTIONS ||
+    !("changedAt" in value && typeof value.changedAt === "number") ||
+    value.changedAt > now + MAX_CLOCK_SKEW_MS
+  ) {
+    return undefined;
+  }
+  const brewStartedAt =
+    "brewStartedAt" in value && typeof value.brewStartedAt === "number"
+      ? value.brewStartedAt
+      : undefined;
+  if (brewStartedAt !== undefined && brewStartedAt > value.changedAt) {
+    return undefined;
+  }
+  const brewedBy = "brewedBy" in value ? parseId(value.brewedBy) : undefined;
+  const hotUntil =
+    "hotUntil" in value && typeof value.hotUntil === "number"
+      ? { hotUntil: value.hotUntil }
+      : {};
+  return {
+    portions: value.portions,
+    ...(brewStartedAt === undefined ? {} : { brewStartedAt }),
+    ...hotUntil,
+    ...(brewedBy === undefined ? {} : { brewedBy }),
+    changedAt: value.changedAt,
+  };
+}
+
+/** Return the presence another tab tracked on the room channel, or `undefined` when it is not one; unknown or malformed fields are dropped, and so is a `flask` changed more than `MAX_CLOCK_SKEW_MS` after `now` or brewing after it changed, and a `writingSince` in the future or older than `MAX_WRITING_MS` by `now`. */
 export function parseRoomPresence(options: {
   value: unknown;
   now: number;
@@ -61,6 +106,10 @@ export function parseRoomPresence(options: {
     return undefined;
   }
   const load = "load" in value ? parseLoad(value.load) : undefined;
+  const coffeeGroupId =
+    "coffeeGroupId" in value ? parseId(value.coffeeGroupId) : undefined;
+  const flask =
+    "flask" in value ? parseFlask({ value: value.flask, now }) : undefined;
   const region =
     "region" in value && isObject(value.region)
       ? parseRoomRegion({
@@ -80,6 +129,8 @@ export function parseRoomPresence(options: {
     visitorId: value.visitorId,
     ...(region === undefined ? {} : { region }),
     ...(load === undefined ? {} : { load }),
+    ...(coffeeGroupId === undefined ? {} : { coffeeGroupId }),
+    ...(flask === undefined ? {} : { flask }),
     ...(writingSince === undefined ? {} : { writingSince }),
   };
 }

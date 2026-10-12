@@ -12,6 +12,14 @@ export type RemoteLoad =
     }
   | { phase: "done"; kind: MachineKind; machineId?: string };
 
+export type RemoteFlask = {
+  portions: number;
+  brewStartedAt?: number;
+  hotUntil?: number;
+  brewedBy?: string;
+  changedAt: number;
+};
+
 export type RoomRegion = { latDeg: number; lonDeg: number };
 
 export type RoomPresence = {
@@ -19,6 +27,8 @@ export type RoomPresence = {
   visitorId: string;
   region?: RoomRegion;
   load?: RemoteLoad;
+  coffeeGroupId?: string;
+  flask?: RemoteFlask;
   writingSince?: number;
 };
 

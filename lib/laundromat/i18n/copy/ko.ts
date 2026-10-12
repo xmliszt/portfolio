@@ -158,6 +158,11 @@ export const ko = {
     emptyFlaskLabel: "커피 포트, 비어 있음",
     emptyFlaskTooltip: "포트가 비어 있음",
     brewingFlaskLabel: "커피 포트, 내리는 중",
+    othersBrewingMachineLabel: "커피 머신, 다른 사람이 내리는 중",
+    othersBrewingSwitchLabel: "커피 머신 스위치, 다른 사람이 내리는 중",
+    othersBrewingFlaskLabel: "커피 포트, 다른 사람이 내리는 중",
+    othersBrewingTooltip: (o: { time: string }) =>
+      `다른 사람이 내리는 중 · ${o.time} 완료`,
     pourLabel: "커피 포트, 한 잔 따르기",
     pourTooltip: "한 잔 따르기",
     cupFullFlaskLabel: "커피 포트, 잔을 먼저 비우기",

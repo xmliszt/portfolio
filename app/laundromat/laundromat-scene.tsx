@@ -48,6 +48,7 @@ import { getShelfBookPlacements } from "@/lib/laundromat/notebook/get-shelf-book
 import type { CameraFocus } from "@/lib/laundromat/parse-camera-focus";
 import { parseCameraFocus } from "@/lib/laundromat/parse-camera-focus";
 import { assignRemoteMachines } from "@/lib/laundromat/realtime/assign-remote-machines";
+import { chooseCoffeeGroup } from "@/lib/laundromat/realtime/choose-coffee-group";
 import { chooseNotebookWriter } from "@/lib/laundromat/realtime/choose-notebook-writer";
 import { getPeopleHere } from "@/lib/laundromat/realtime/get-people-here";
 import type {
@@ -164,7 +165,10 @@ export function LaundromatScene(props: LaundromatSceneProps) {
   const { copy } = useLaundromatCopy();
   const { muted: isSoundMuted } = useSoundMuted();
   const laundry = useLaundry();
-  const appliances = useRoomAppliances(config);
+  const appliances = useRoomAppliances({
+    config,
+    visitorId: laundry.visitorId,
+  });
   const [plantTouchCount, setPlantTouchCount] = useState(0);
   const [tubeRollCount, setTubeRollCount] = useState(0);
   const notebookShelf = useNotebookShelf();
@@ -221,9 +225,13 @@ export function LaundromatScene(props: LaundromatSceneProps) {
   });
 
   const [writingSince, setWritingSince] = useState<number>();
+  const [coffeeGroupId, setCoffeeGroupId] = useState<string>();
+  const ownFlask = appliances.flask;
   const ownLoad = laundry.state.load;
   const roomSource = useContext(RoomSourceContext);
-  const ownRegion = useVisitorRegion({ enabled: roomSource !== undefined });
+  const { region: ownRegion, isSettled: isOwnRegionSettled } = useVisitorRegion(
+    { enabled: roomSource !== undefined }
+  );
   const ownPresence = useMemo(() => {
     if (laundry.visitorId === undefined) return undefined;
     const load = ((): RemoteLoad | undefined => {
@@ -252,14 +260,92 @@ export function LaundromatScene(props: LaundromatSceneProps) {
         }
       }
     })();
+    const { portions, brewStartedAt, hotUntil, brewedBy, changedAt } = ownFlask;
+    const flask =
+      changedAt === undefined
+        ? undefined
+        : {
+            portions,
+            ...(brewStartedAt === undefined ? {} : { brewStartedAt }),
+            ...(hotUntil === undefined ? {} : { hotUntil }),
+            ...(brewedBy === undefined ? {} : { brewedBy }),
+            changedAt,
+          };
     return {
       visitorId: laundry.visitorId,
       ...(ownRegion === undefined ? {} : { region: ownRegion }),
       ...(load === undefined ? {} : { load }),
+      ...(coffeeGroupId === undefined ? {} : { coffeeGroupId }),
+      ...(flask === undefined ? {} : { flask }),
       ...(writingSince === undefined ? {} : { writingSince }),
     };
-  }, [laundry.visitorId, ownRegion, ownLoad, writingSince]);
+  }, [
+    laundry.visitorId,
+    ownRegion,
+    ownLoad,
+    coffeeGroupId,
+    ownFlask,
+    writingSince,
+  ]);
   const room = useRoom(ownPresence);
+  const isRoomSynced = room.isConnected && room.isSynced;
+  const coffeeGroupChoice = useMemo(
+    () =>
+      !isRoomSynced || !isOwnRegionSettled || laundry.visitorId === undefined
+        ? undefined
+        : chooseCoffeeGroup({
+            ownVisitorId: laundry.visitorId,
+            ownGroupId: coffeeGroupId,
+            ownRegion,
+            peers: room.peers,
+          }),
+    [
+      isRoomSynced,
+      isOwnRegionSettled,
+      laundry.visitorId,
+      coffeeGroupId,
+      ownRegion,
+      room.peers,
+    ]
+  );
+  const { resetFlask } = appliances;
+  useEffect(() => {
+    if (coffeeGroupChoice === undefined) return;
+    switch (coffeeGroupChoice.kind) {
+      case "stay":
+        return;
+      case "merge":
+        setCoffeeGroupId(coffeeGroupChoice.groupId);
+        return;
+      case "join":
+        if (coffeeGroupId !== undefined) resetFlask();
+        setCoffeeGroupId(coffeeGroupChoice.groupId);
+        return;
+      case "start":
+        if (coffeeGroupId !== undefined) resetFlask();
+        setCoffeeGroupId(crypto.randomUUID());
+        return;
+      default: {
+        const unhandled: never = coffeeGroupChoice;
+        return unhandled;
+      }
+    }
+  }, [coffeeGroupChoice, coffeeGroupId, resetFlask]);
+  const coffeeGroupFlasks = useMemo(
+    () =>
+      room.peers.flatMap(({ coffeeGroupId: peerGroupId, flask }) =>
+        flask === undefined ||
+        coffeeGroupId === undefined ||
+        peerGroupId !== coffeeGroupId
+          ? []
+          : [flask]
+      ),
+    [room.peers, coffeeGroupId]
+  );
+  const { adoptFlasks } = appliances;
+  useEffect(() => {
+    adoptFlasks(coffeeGroupFlasks);
+  }, [adoptFlasks, coffeeGroupFlasks]);
   const roomNow = useTickingNow(
     room.peers.some(
       ({ load, writingSince }) =>

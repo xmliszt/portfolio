@@ -152,6 +152,11 @@ export const zhHans = {
     emptyFlaskLabel: "咖啡壶，空的",
     emptyFlaskTooltip: "壶空了",
     brewingFlaskLabel: "咖啡壶，正在煮",
+    othersBrewingMachineLabel: "咖啡机，别人在煮咖啡",
+    othersBrewingSwitchLabel: "咖啡机开关，别人在煮咖啡",
+    othersBrewingFlaskLabel: "咖啡壶，别人在煮咖啡",
+    othersBrewingTooltip: (o: { time: string }) =>
+      `别人在煮咖啡 · ${o.time} 结束`,
     pourLabel: "咖啡壶，倒一杯",
     pourTooltip: "倒一杯",
     cupFullFlaskLabel: "咖啡壶，先喝完杯里的",

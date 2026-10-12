@@ -21,16 +21,23 @@ function apply(options: {
 }) {
   return options.events.reduce(
     (state, { event, at }) =>
-      transitionCoffee({ state, event, now: startedAt + at, timing }),
+      transitionCoffee({
+        state,
+        event,
+        now: startedAt + at,
+        timing,
+        visitorId: "me",
+      }),
     options.state
   );
 }
 
 function phaseAt(options: { state: CoffeeState; at: number }) {
   return getCoffeePhase({
-    state: options.state,
+    flask: options.state.flask,
     now: startedAt + options.at,
     timing,
+    ownVisitorId: "me",
   });
 }
 
@@ -48,6 +55,8 @@ test("is empty before any brew", () => {
 test("brews an empty flask to full, then keeps it hot for a while", () => {
   assert.deepEqual(phaseAt({ state: brewed, at: 10_000 }), {
     kind: "brewing",
+    doneAt: startedAt + 40_000,
+    isSomeoneElse: false,
     level: 0.25,
   });
   assert.deepEqual(phaseAt({ state: brewed, at: 40_000 }), {
@@ -69,13 +78,17 @@ test("pours one portion into an empty cup and drinks it", () => {
     state: brewed,
     events: [{ event: { type: "pour" }, at: 50_000 }],
   });
-  assert.equal(poured.portions, 3);
+  assert.equal(poured.flask.portions, 3);
   assert.equal(poured.cup.kind, "full");
   const pouredTwice = apply({
     state: poured,
     events: [{ event: { type: "pour" }, at: 51_000 }],
   });
-  assert.equal(pouredTwice.portions, 3, "a full cup takes no more coffee");
+  assert.equal(
+    pouredTwice.flask.portions,
+    3,
+    "a full cup takes no more coffee"
+  );
   const drunk = apply({
     state: poured,
     events: [
@@ -83,7 +96,7 @@ test("pours one portion into an empty cup and drinks it", () => {
       { event: { type: "pour" }, at: 53_000 },
     ],
   });
-  assert.equal(drunk.portions, 2);
+  assert.equal(drunk.flask.portions, 2);
   assert.equal(drunk.cup.kind, "full");
 });
 
@@ -95,7 +108,7 @@ test("runs the flask dry one cup at a time", () => {
     ]
   );
   const dry = apply({ state: brewed, events });
-  assert.equal(dry.portions, 0);
+  assert.equal(dry.flask.portions, 0);
   assert.deepEqual(phaseAt({ state: dry, at: 60_000 }), { kind: "empty" });
 });
 
@@ -111,6 +124,8 @@ test("tops up a part-full flask from its level in the remaining time", () => {
   });
   assert.deepEqual(phaseAt({ state: topped, at: 70_000 }), {
     kind: "brewing",
+    doneAt: startedAt + 80_000,
+    isSomeoneElse: false,
     level: 0.75,
   });
   assert.equal(phaseAt({ state: topped, at: 80_000 }).kind, "ready");
@@ -121,7 +136,7 @@ test("does not brew into a full flask", () => {
     state: brewed,
     events: [{ event: { type: "brew" }, at: 50_000 }],
   });
-  assert.equal(again.brewStartedAt, undefined);
+  assert.equal(again.flask.brewStartedAt, undefined);
   const phase = phaseAt({ state: again, at: 50_000 });
   assert.equal(describeCoffeeSwitch({ phase, copy: en }).enabled, false);
 });
@@ -132,8 +147,10 @@ test("enables the switch unless brewing or full, and the flask only when it can 
     true
   );
   assert.equal(
-    describeCoffeeSwitch({ phase: { kind: "brewing", level: 0.5 }, copy: en })
-      .enabled,
+    describeCoffeeSwitch({
+      phase: { kind: "brewing", level: 0.5, doneAt: 0, isSomeoneElse: false },
+      copy: en,
+    }).enabled,
     false
   );
   const partFull = {
@@ -175,8 +192,55 @@ test("gives the empty machine body no tooltip", () => {
     undefined
   );
   assert.equal(
-    describeCoffeeMachine({ phase: { kind: "brewing", level: 0 }, copy: en })
-      .tooltip,
+    describeCoffeeMachine({
+      phase: { kind: "brewing", level: 0, doneAt: 0, isSomeoneElse: false },
+      copy: en,
+    }).tooltip,
     "brewing…"
+  );
+});
+
+test("stamps the flask on a brew or pour, but not when it settles or on a drink", () => {
+  assert.equal(brewed.flask.changedAt, startedAt);
+  const settled = apply({
+    state: brewed,
+    events: [{ event: { type: "drink" }, at: 50_000 }],
+  });
+  assert.equal(settled.flask.changedAt, startedAt);
+  assert.equal(settled.flask.portions, 4);
+  const poured = apply({
+    state: brewed,
+    events: [{ event: { type: "pour" }, at: 50_000 }],
+  });
+  assert.equal(poured.flask.changedAt, startedAt + 50_000);
+});
+
+test("stamps an action after the flask it acted on when that flask's clock ran ahead", () => {
+  const ahead = {
+    ...brewed,
+    flask: { ...brewed.flask, changedAt: startedAt + 100_000 },
+  };
+  const poured = apply({
+    state: ahead,
+    events: [{ event: { type: "pour" }, at: 50_000 }],
+  });
+  assert.equal(poured.flask.changedAt, startedAt + 100_001);
+});
+
+test("says someone else is brewing when another visitor started the brew", () => {
+  const phase = getCoffeePhase({
+    flask: brewed.flask,
+    now: startedAt + 10_000,
+    timing,
+    ownVisitorId: "other",
+  });
+  assert.equal(phase.kind === "brewing" && phase.isSomeoneElse, true);
+  assert.equal(
+    describeCoffeeSwitch({ phase, copy: en }).label,
+    "Coffee machine switch, someone else is brewing"
+  );
+  assert.match(
+    describeCoffeeMachine({ phase, copy: en }).tooltip ?? "",
+    /^someone else is brewing · done at /
   );
 });

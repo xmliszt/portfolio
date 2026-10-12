@@ -163,6 +163,11 @@ export const vi = {
     emptyFlaskLabel: "Bình cà phê, trống",
     emptyFlaskTooltip: "bình đã hết",
     brewingFlaskLabel: "Bình cà phê, đang pha",
+    othersBrewingMachineLabel: "Máy pha cà phê, người khác đang pha",
+    othersBrewingSwitchLabel: "Công tắc máy pha cà phê, người khác đang pha",
+    othersBrewingFlaskLabel: "Bình cà phê, người khác đang pha",
+    othersBrewingTooltip: (o: { time: string }) =>
+      `người khác đang pha · xong lúc ${o.time}`,
     pourLabel: "Bình cà phê, rót một tách",
     pourTooltip: "rót một tách",
     cupFullFlaskLabel: "Bình cà phê, uống hết tách trước đã",

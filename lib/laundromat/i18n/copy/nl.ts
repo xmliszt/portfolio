@@ -133,6 +133,12 @@ export const nl = {
     emptyFlaskLabel: "Koffiekan, leeg",
     emptyFlaskTooltip: "kan is leeg",
     brewingFlaskLabel: "Koffiekan, bezig met zetten",
+    othersBrewingMachineLabel: "Koffiezetapparaat, iemand anders zet koffie",
+    othersBrewingSwitchLabel:
+      "Schakelaar van het koffiezetapparaat, iemand anders zet koffie",
+    othersBrewingFlaskLabel: "Koffiekan, iemand anders zet koffie",
+    othersBrewingTooltip: (o: { time: string }) =>
+      `iemand anders zet koffie · klaar om ${o.time}`,
     pourLabel: "Koffiekan, schenk een kop in",
     pourTooltip: "schenk een kop in",
     cupFullFlaskLabel: "Koffiekan, drink eerst je kop leeg",

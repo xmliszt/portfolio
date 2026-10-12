@@ -165,6 +165,11 @@ export const id = {
     emptyFlaskLabel: "Teko kopi, kosong",
     emptyFlaskTooltip: "teko kosong",
     brewingFlaskLabel: "Teko kopi, sedang menyeduh",
+    othersBrewingMachineLabel: "Mesin kopi, orang lain sedang menyeduh",
+    othersBrewingSwitchLabel: "Sakelar mesin kopi, orang lain sedang menyeduh",
+    othersBrewingFlaskLabel: "Teko kopi, orang lain sedang menyeduh",
+    othersBrewingTooltip: (o: { time: string }) =>
+      `orang lain sedang menyeduh · selesai pukul ${o.time}`,
     pourLabel: "Teko kopi, tuang secangkir",
     pourTooltip: "tuang secangkir",
     cupFullFlaskLabel: "Teko kopi, habiskan cangkirmu dulu",

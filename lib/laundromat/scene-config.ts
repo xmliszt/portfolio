@@ -449,7 +449,7 @@ export const sceneConfig: SceneConfig = {
       knobDegreesPerDetent: 39,
     },
     coffee: {
-      flaskPortions: 4,
+      flaskPortions: 5,
       brewSeconds: 40,
       hotMinutes: 6.5,
       streamFlowMs: 260,

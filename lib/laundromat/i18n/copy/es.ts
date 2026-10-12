@@ -160,6 +160,12 @@ export const es = {
     emptyFlaskLabel: "Jarra de café, vacía",
     emptyFlaskTooltip: "la jarra está vacía",
     brewingFlaskLabel: "Jarra de café, preparando café",
+    othersBrewingMachineLabel: "Cafetera, otra persona está preparando café",
+    othersBrewingSwitchLabel:
+      "Interruptor de la cafetera, otra persona está preparando café",
+    othersBrewingFlaskLabel: "Jarra de café, otra persona está preparando café",
+    othersBrewingTooltip: (o: { time: string }) =>
+      `otra persona está preparando café · termina a las ${o.time}`,
     pourLabel: "Jarra de café, servir una taza",
     pourTooltip: "servir una taza",
     cupFullFlaskLabel: "Jarra de café, termina tu taza primero",

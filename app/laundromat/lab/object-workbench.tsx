@@ -54,7 +54,7 @@ export function ObjectWorkbench(props: ObjectWorkbenchProps) {
     [machineId: string]: number;
   }>({});
   const [openedAt] = useState(() => Date.now());
-  const appliances = useRoomAppliances(config);
+  const appliances = useRoomAppliances({ config, visitorId: undefined });
   const [plantTouchCount, setPlantTouchCount] = useState(0);
   const [tubeRollCount, setTubeRollCount] = useState(0);
   const layout = useMemo(() => {

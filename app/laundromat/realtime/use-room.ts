@@ -85,6 +85,12 @@ export function useRoom(presence: OwnPresence | undefined) {
     presence?.load?.phase === "running" ? presence.load.startedAt : undefined;
   const loadDurationMs =
     presence?.load?.phase === "running" ? presence.load.durationMs : undefined;
+  const flaskPortions = presence?.flask?.portions;
+  const flaskBrewStartedAt = presence?.flask?.brewStartedAt;
+  const flaskHotUntil = presence?.flask?.hotUntil;
+  const flaskBrewedBy = presence?.flask?.brewedBy;
+  const coffeeGroupId = presence?.coffeeGroupId;
+  const flaskChangedAt = presence?.flask?.changedAt;
   const writingSince = presence?.writingSince;
   const regionLatDeg = presence?.region?.latDeg;
   const regionLonDeg = presence?.region?.lonDeg;
@@ -108,6 +114,18 @@ export function useRoom(presence: OwnPresence | undefined) {
         durationMs: loadDurationMs,
       };
     })();
+    const flask =
+      flaskPortions === undefined || flaskChangedAt === undefined
+        ? undefined
+        : {
+            portions: flaskPortions,
+            ...(flaskBrewStartedAt === undefined
+              ? {}
+              : { brewStartedAt: flaskBrewStartedAt }),
+            ...(flaskHotUntil === undefined ? {} : { hotUntil: flaskHotUntil }),
+            ...(flaskBrewedBy === undefined ? {} : { brewedBy: flaskBrewedBy }),
+            changedAt: flaskChangedAt,
+          };
     const region =
       regionLatDeg === undefined || regionLonDeg === undefined
         ? undefined
@@ -117,6 +135,8 @@ export function useRoom(presence: OwnPresence | undefined) {
       visitorId,
       ...(region === undefined ? {} : { region }),
       ...(load === undefined ? {} : { load }),
+      ...(coffeeGroupId === undefined ? {} : { coffeeGroupId }),
+      ...(flask === undefined ? {} : { flask }),
       ...(writingSince === undefined ? {} : { writingSince }),
     });
   }, [
@@ -128,6 +148,12 @@ export function useRoom(presence: OwnPresence | undefined) {
     loadMachineId,
     loadStartedAt,
     loadDurationMs,
+    flaskPortions,
+    flaskBrewStartedAt,
+    flaskHotUntil,
+    flaskBrewedBy,
+    flaskChangedAt,
+    coffeeGroupId,
     regionLatDeg,
     regionLonDeg,
     writingSince,

@@ -161,6 +161,12 @@ export const ptBR = {
     emptyFlaskLabel: "Jarra de café, vazia",
     emptyFlaskTooltip: "a jarra está vazia",
     brewingFlaskLabel: "Jarra de café, passando café",
+    othersBrewingMachineLabel: "Cafeteira, outra pessoa está passando café",
+    othersBrewingSwitchLabel:
+      "Botão da cafeteira, outra pessoa está passando café",
+    othersBrewingFlaskLabel: "Jarra de café, outra pessoa está passando café",
+    othersBrewingTooltip: (o: { time: string }) =>
+      `outra pessoa está passando café · termina às ${o.time}`,
     pourLabel: "Jarra de café, servir uma xícara",
     pourTooltip: "servir uma xícara",
     cupFullFlaskLabel: "Jarra de café, termine sua xícara antes",

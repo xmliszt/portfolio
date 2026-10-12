@@ -158,6 +158,11 @@ export const ja = {
     emptyFlaskLabel: "コーヒーポット、空",
     emptyFlaskTooltip: "ポットは空",
     brewingFlaskLabel: "コーヒーポット、抽出中",
+    othersBrewingMachineLabel: "コーヒーマシン、ほかの人が抽出中",
+    othersBrewingSwitchLabel: "コーヒーマシンのスイッチ、ほかの人が抽出中",
+    othersBrewingFlaskLabel: "コーヒーポット、ほかの人が抽出中",
+    othersBrewingTooltip: (o: { time: string }) =>
+      `ほかの人が抽出中 · ${o.time} に終わる`,
     pourLabel: "コーヒーポット、一杯注ぐ",
     pourTooltip: "一杯注ぐ",
     cupFullFlaskLabel: "コーヒーポット、先にカップを飲み終える",

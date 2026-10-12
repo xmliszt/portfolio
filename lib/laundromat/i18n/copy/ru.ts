@@ -145,6 +145,11 @@ export const ru = {
     emptyFlaskLabel: "Колба для кофе, пустая",
     emptyFlaskTooltip: "колба пустая",
     brewingFlaskLabel: "Колба для кофе, варится",
+    othersBrewingMachineLabel: "Кофемашина, кто-то варит кофе",
+    othersBrewingSwitchLabel: "Кнопка кофемашины, кто-то варит кофе",
+    othersBrewingFlaskLabel: "Колба для кофе, кто-то варит кофе",
+    othersBrewingTooltip: (o: { time: string }) =>
+      `кто-то варит кофе · готово в ${o.time}`,
     pourLabel: "Колба для кофе, налить чашку",
     pourTooltip: "налить чашку",
     cupFullFlaskLabel: "Колба для кофе, сначала допей чашку",

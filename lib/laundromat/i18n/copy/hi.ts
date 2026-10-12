@@ -164,6 +164,11 @@ export const hi = {
     emptyFlaskLabel: "कॉफ़ी जग, ख़ाली",
     emptyFlaskTooltip: "जग ख़ाली है",
     brewingFlaskLabel: "कॉफ़ी जग, कॉफ़ी बन रही है",
+    othersBrewingMachineLabel: "कॉफ़ी मशीन, कोई और कॉफ़ी बना रहा है",
+    othersBrewingSwitchLabel: "कॉफ़ी मशीन का स्विच, कोई और कॉफ़ी बना रहा है",
+    othersBrewingFlaskLabel: "कॉफ़ी जग, कोई और कॉफ़ी बना रहा है",
+    othersBrewingTooltip: (o: { time: string }) =>
+      `कोई और कॉफ़ी बना रहा है · ${o.time} पर खत्म`,
     pourLabel: "कॉफ़ी जग, एक कप डालो",
     pourTooltip: "एक कप डालो",
     cupFullFlaskLabel: "कॉफ़ी जग, पहले अपना कप ख़त्म करो",

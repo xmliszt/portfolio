@@ -162,6 +162,12 @@ export const de = {
     emptyFlaskLabel: "Kaffeekanne, leer",
     emptyFlaskTooltip: "Kanne ist leer",
     brewingFlaskLabel: "Kaffeekanne, Kaffee läuft durch",
+    othersBrewingMachineLabel: "Kaffeemaschine, jemand anderes kocht Kaffee",
+    othersBrewingSwitchLabel:
+      "Schalter der Kaffeemaschine, jemand anderes kocht Kaffee",
+    othersBrewingFlaskLabel: "Kaffeekanne, jemand anderes kocht Kaffee",
+    othersBrewingTooltip: (o: { time: string }) =>
+      `jemand anderes kocht Kaffee · fertig um ${o.time}`,
     pourLabel: "Kaffeekanne, eine Tasse einschenken",
     pourTooltip: "Tasse einschenken",
     cupFullFlaskLabel: "Kaffeekanne, erst die Tasse austrinken",

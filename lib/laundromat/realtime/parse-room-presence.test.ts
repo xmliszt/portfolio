@@ -100,3 +100,53 @@ test("reads the machine a load is in, and drops one that is not a short string",
   assert.deepEqual(read(7), { phase: "loaded", kind: "washer" });
   assert.deepEqual(read("x".repeat(41)), { phase: "loaded", kind: "washer" });
 });
+
+test("reads a coffee group and shared flask, and drops a flask changed too far ahead, brewing after it changed, or holding part of a cup", () => {
+  const flask = {
+    portions: 3,
+    brewStartedAt: now - 5000,
+    hotUntil: now + 60_000,
+    brewedBy: "b",
+    changedAt: now - 5000,
+  };
+  assert.deepEqual(
+    parseRoomPresence({
+      value: { sessionId: "s", visitorId: "v", coffeeGroupId: "g", flask },
+      now,
+    }),
+    { sessionId: "s", visitorId: "v", coffeeGroupId: "g", flask }
+  );
+  assert.deepEqual(
+    parseRoomPresence({
+      value: {
+        sessionId: "s",
+        visitorId: "v",
+        flask: { ...flask, brewStartedAt: now },
+      },
+      now,
+    }),
+    { sessionId: "s", visitorId: "v" }
+  );
+  assert.deepEqual(
+    parseRoomPresence({
+      value: {
+        sessionId: "s",
+        visitorId: "v",
+        flask: { ...flask, changedAt: now + 600_000 },
+      },
+      now,
+    }),
+    { sessionId: "s", visitorId: "v" }
+  );
+  assert.deepEqual(
+    parseRoomPresence({
+      value: {
+        sessionId: "s",
+        visitorId: "v",
+        flask: { ...flask, portions: 1.5 },
+      },
+      now,
+    }),
+    { sessionId: "s", visitorId: "v" }
+  );
+});

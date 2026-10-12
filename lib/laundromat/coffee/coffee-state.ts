@@ -1,9 +1,15 @@
 export type CoffeeCup = { kind: "empty" } | { kind: "full"; hotUntil: number };
 
-export type CoffeeState = {
+export type CoffeeFlask = {
   portions: number;
   brewStartedAt: number | undefined;
   hotUntil: number | undefined;
+  brewedBy: string | undefined;
+  changedAt: number | undefined;
+};
+
+export type CoffeeState = {
+  flask: CoffeeFlask;
   cup: CoffeeCup;
 };
 
@@ -19,8 +25,12 @@ export type CoffeeTiming = {
 };
 
 export const INITIAL_COFFEE_STATE: CoffeeState = {
-  portions: 0,
-  brewStartedAt: undefined,
-  hotUntil: undefined,
+  flask: {
+    portions: 0,
+    brewStartedAt: undefined,
+    hotUntil: undefined,
+    brewedBy: undefined,
+    changedAt: undefined,
+  },
   cup: { kind: "empty" },
 };

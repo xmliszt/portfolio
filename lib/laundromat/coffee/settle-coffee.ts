@@ -1,20 +1,20 @@
-import type { CoffeeState, CoffeeTiming } from "./coffee-state";
+import type { CoffeeFlask, CoffeeTiming } from "./coffee-state";
 
-/** Return `state` with a brew that has finished by `now` turned into a full, hot flask; any other state comes back unchanged. */
+/** Return `flask` with a brew that has finished by `now` turned into a full, hot flask, keeping its `changedAt`; any other flask comes back unchanged. */
 export function settleCoffee(options: {
-  state: CoffeeState;
+  flask: CoffeeFlask;
   now: number;
   timing: CoffeeTiming;
-}): CoffeeState {
-  const { state, now, timing } = options;
-  if (state.brewStartedAt === undefined) return state;
+}): CoffeeFlask {
+  const { flask, now, timing } = options;
+  if (flask.brewStartedAt === undefined) return flask;
   const doneAt =
-    state.brewStartedAt +
-    ((timing.flaskPortions - state.portions) / timing.flaskPortions) *
+    flask.brewStartedAt +
+    ((timing.flaskPortions - flask.portions) / timing.flaskPortions) *
       timing.brewMs;
-  if (now < doneAt) return state;
+  if (now < doneAt) return flask;
   return {
-    ...state,
+    ...flask,
     portions: timing.flaskPortions,
     brewStartedAt: undefined,
     hotUntil: doneAt + timing.hotMs,
