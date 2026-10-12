@@ -155,6 +155,10 @@ export type SceneConfig = {
       coverNumber: number;
       liftMs: number;
       coverOpenMs: number;
+      openWaitMaxMs: number;
+      coverCrackDeg: number;
+      coverBreathDeg: number;
+      coverBreathMs: number;
       riffleSheets: number;
       riffleStaggerMs: number;
       riffleSheetMs: number;
@@ -470,6 +474,10 @@ export const sceneConfig: SceneConfig = {
       coverNumber: 1,
       liftMs: 650,
       coverOpenMs: 950,
+      openWaitMaxMs: 2400,
+      coverCrackDeg: 8,
+      coverBreathDeg: 4,
+      coverBreathMs: 1400,
       riffleSheets: 4,
       riffleStaggerMs: 70,
       riffleSheetMs: 560,

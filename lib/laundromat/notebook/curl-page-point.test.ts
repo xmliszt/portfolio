@@ -18,7 +18,8 @@ test("leaves the page flat before the turn starts", () => {
 test("lays the page mirrored over the spine when the turn ends", () => {
   for (const x of [100, 250, 500]) {
     const point = curlPagePoint({ ...page, x, y: 420, progress: 1 });
-    assert.ok(Math.abs(point.x + x) < 2, `x ${x} landed at ${point.x}`);
+    assert.ok(Math.abs(point.x + x) < 0.01, `x ${x} landed at ${point.x}`);
+    assert.ok(point.z < 0.01, `x ${x} lifted to ${point.z}`);
   }
 });
 

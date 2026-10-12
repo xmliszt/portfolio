@@ -14,6 +14,7 @@ const PERSPECTIVE_PX = 2600;
 const LIFT_PADDING_RATIO = 0.08;
 const WIDTH_SEGMENTS = 64;
 const HEIGHT_SEGMENTS = 16;
+const MAX_RESOLUTION = 3;
 
 const VERTEX = /* glsl */ `
 attribute vec2 uv;
@@ -30,8 +31,8 @@ void main() {
   vUv = uv;
   float x = uv.x * uWidth;
   float y = (1.0 - uv.y) * uHeight;
-  float bend = sin(uProgress * PI);
-  float radius = uWidth * 0.22 * uCurl * bend + 0.5;
+  float bend = max(sin(uProgress * PI), 0.0);
+  float radius = uWidth * 0.22 * uCurl * bend + 0.001;
   float tilt = uWidth * 0.3 * uCurl * bend;
   float foldX = uWidth * 1.15 * (1.0 - uProgress) - tilt * (y / uHeight);
   float d = x - foldX;
@@ -184,22 +185,34 @@ export function PageCurlCanvas(props: PageCurlCanvasProps) {
       return;
     }
     const palette = readPagePalette(canvas);
-    const dpr = Math.min(window.devicePixelRatio, 2);
+    const { devicePixelRatio } = window;
+    const resolution = Math.min(
+      (devicePixelRatio * canvas.getBoundingClientRect().width) / width,
+      MAX_RESOLUTION
+    );
+    if (renderer.dpr !== resolution) {
+      renderer.dpr = resolution;
+      renderer.setSize(width, height);
+    }
     paintPageTexture({
       canvas: scene.frontCanvas,
       page: turn.front,
+      side: "right",
       settings,
       pitch,
       palette,
-      dpr,
+      devicePixelRatio,
+      resolution,
     });
     paintPageTexture({
       canvas: scene.backCanvas,
       page: turn.back,
+      side: "left",
       settings,
       pitch,
       palette,
-      dpr,
+      devicePixelRatio,
+      resolution,
     });
     scene.front.image = scene.frontCanvas;
     scene.back.image = scene.backCanvas;
@@ -217,7 +230,7 @@ export function PageCurlCanvas(props: PageCurlCanvasProps) {
       unsubscribe();
       renderer.gl.clear(renderer.gl.COLOR_BUFFER_BIT);
     };
-  }, [turn, progress, settings, pitch, curlStrength]);
+  }, [turn, progress, settings, pitch, curlStrength, width, height]);
 
   return (
     <canvas

@@ -142,6 +142,9 @@ export function NotebookBook(props: NotebookBookProps) {
   const [curlMode, setCurlMode] = useState<"webgl" | "css">("webgl");
   const [localEntries, setLocalEntries] = useState<NotebookView["entries"]>([]);
   const [handoffDraft, setHandoffDraft] = useState<RemoteDraft>();
+  const [isLifted, setIsLifted] = useState(false);
+  const [isContentReady, setIsContentReady] = useState(false);
+  const [hasWaitedMax, setHasWaitedMax] = useState(false);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const { getMeasure, loadMeasure } = useTextMeasurers();
 
@@ -493,23 +496,61 @@ export function NotebookBook(props: NotebookBookProps) {
   }, [props.bookNumber, reloadNotebook]);
 
   useEffect(() => {
+    if (result === undefined) return;
+    if (result.kind !== "online") {
+      setIsContentReady(true);
+      return;
+    }
+    const { entries } = result.notebook;
+    const state = { isCurrent: true };
+    void Promise.all(
+      uniq(entries.map((entry) => entry.script)).map((script) =>
+        loadMeasure({
+          ...getEntryStyle({ script, reportEntryId: undefined }),
+          text: entries
+            .filter((entry) => entry.script === script)
+            .map((entry) => entry.body)
+            .join(""),
+        })
+      )
+    ).then(() => {
+      if (state.isCurrent) setIsContentReady(true);
+    });
+    return () => {
+      state.isCurrent = false;
+    };
+  }, [result, getEntryStyle, loadMeasure]);
+
+  useEffect(() => {
+    const liftTimer = window.setTimeout(
+      () => setIsLifted(true),
+      props.reducedMotion ? 0 : details.liftMs
+    );
+    const waitTimer = window.setTimeout(
+      () => setHasWaitedMax(true),
+      details.openWaitMaxMs
+    );
+    return () => {
+      window.clearTimeout(liftTimer);
+      window.clearTimeout(waitTimer);
+    };
+  }, [props.reducedMotion, details.liftMs, details.openWaitMaxMs]);
+
+  const shouldOpen = isLifted && (isContentReady || hasWaitedMax);
+  const isWaiting = isLifted && !shouldOpen;
+  useEffect(() => {
+    if (!shouldOpen) return;
     if (props.reducedMotion) {
       setPhase("open");
       return;
     }
-    const openTimer = window.setTimeout(
-      () => setPhase("opening"),
-      details.liftMs
-    );
+    setPhase("opening");
     const doneTimer = window.setTimeout(
       () => setPhase("open"),
-      details.liftMs + details.coverOpenMs
+      details.coverOpenMs
     );
-    return () => {
-      window.clearTimeout(openTimer);
-      window.clearTimeout(doneTimer);
-    };
-  }, [props.reducedMotion, details.liftMs, details.coverOpenMs]);
+    return () => window.clearTimeout(doneTimer);
+  }, [shouldOpen, props.reducedMotion, details.coverOpenMs]);
 
   const hasArrivedRef = useRef(false);
   useEffect(() => {
@@ -863,7 +904,7 @@ export function NotebookBook(props: NotebookBookProps) {
 
   const statusText = (() => {
     if (failure !== undefined) return describeLeaveFailure({ failure, copy });
-    if (result === undefined) return copy.notebook.opening;
+    if (result === undefined || !isContentReady) return copy.notebook.opening;
     if (result.kind === "offline") {
       return copy.notebook.leaveFailures.offline;
     }
@@ -998,26 +1039,54 @@ export function NotebookBook(props: NotebookBookProps) {
             )}
             style={{ left: settings.width, width: settings.width }}
             initial={false}
-            animate={{ rotateY: isOpen ? -180 : 0 }}
+            animate={{
+              rotateY: isOpen
+                ? -180
+                : isWaiting && !props.reducedMotion
+                  ? -details.coverCrackDeg
+                  : 0,
+            }}
             transition={{
               duration: props.reducedMotion ? 0 : details.coverOpenMs / 1000,
               ease: details.turnEase,
             }}
           >
-            <div className="absolute inset-0 [backface-visibility:hidden]">
-              <NotebookPage
-                content={{ kind: "cover", number: notebook.number }}
-                side="right"
-                settings={settings}
-                pitch={pitch}
-                rows={[]}
-                remoteCaret={undefined}
-                controls={undefined}
-              />
-            </div>
-            <div className="absolute inset-0 [transform:rotateY(180deg)] [backface-visibility:hidden]">
-              {renderPage({ page: 0, side: "left", isInteractive: false })}
-            </div>
+            <motion.div
+              className="absolute inset-0 origin-left [transform-style:preserve-3d]"
+              initial={false}
+              animate={{
+                rotateY:
+                  isWaiting && !props.reducedMotion
+                    ? [0, -details.coverBreathDeg]
+                    : 0,
+              }}
+              transition={
+                isWaiting
+                  ? {
+                      duration: details.coverBreathMs / 1000,
+                      delay: details.coverOpenMs / 1000,
+                      repeat: Infinity,
+                      repeatType: "mirror",
+                      ease: "easeInOut",
+                    }
+                  : { duration: details.coverOpenMs / 1000, ease: "easeOut" }
+              }
+            >
+              <div className="absolute inset-0 [backface-visibility:hidden]">
+                <NotebookPage
+                  content={{ kind: "cover", number: notebook.number }}
+                  side="right"
+                  settings={settings}
+                  pitch={pitch}
+                  rows={[]}
+                  remoteCaret={undefined}
+                  controls={undefined}
+                />
+              </div>
+              <div className="absolute inset-0 [transform:rotateY(180deg)] [backface-visibility:hidden]">
+                {renderPage({ page: 0, side: "left", isInteractive: false })}
+              </div>
+            </motion.div>
           </motion.div>
           {curlMode === "webgl" && !props.reducedMotion && (
             <PageCurlCanvas
@@ -1053,18 +1122,27 @@ export function NotebookBook(props: NotebookBookProps) {
       <div
         className={cn(
           "absolute inset-x-0 bottom-0 flex flex-col justify-start gap-y-1 px-2 text-[12px] text-[var(--lm-ink)] transition-opacity duration-300",
-          phase === "open" ? "opacity-100" : "opacity-0"
+          phase === "open" || (isLifted && !isContentReady)
+            ? "opacity-100"
+            : "opacity-0"
         )}
         style={{ height: config.notebook.statusBarPx }}
       >
-        <PageScrubber
-          spread={spread}
-          spreadCount={lastSpread + 1}
-          pageCount={notebook.pageCount}
-          inkedSpreads={inkedSpreads}
-          disabled={phase !== "open"}
-          onSelect={goToSpread}
-        />
+        <div
+          className={cn(
+            "transition-opacity duration-300",
+            phase !== "open" && "opacity-0"
+          )}
+        >
+          <PageScrubber
+            spread={spread}
+            spreadCount={lastSpread + 1}
+            pageCount={notebook.pageCount}
+            inkedSpreads={inkedSpreads}
+            disabled={phase !== "open"}
+            onSelect={goToSpread}
+          />
+        </div>
         <div className="flex items-center justify-between gap-x-4">
           <p role="status" className="truncate lowercase opacity-70">
             {statusText}
