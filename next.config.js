@@ -30,11 +30,11 @@ const nextConfig = {
       },
       {
         protocol: "https",
-        hostname: "aikluwlsjdrayohixism.supabase.co",
+        hostname: "liyuxuan.dev",
       },
       {
         protocol: "https",
-        hostname: "liyuxuan.dev",
+        hostname: "joodle.liyuxuan.dev",
       },
     ],
   },

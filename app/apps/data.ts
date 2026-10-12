@@ -123,8 +123,8 @@ const apps: Record<string, AppData> = {
     ],
     icon: {
       light:
-        "https://aikluwlsjdrayohixism.supabase.co/storage/v1/object/public/joodle/Joodle%20Icon%20Light.jpg",
-      dark: "https://aikluwlsjdrayohixism.supabase.co/storage/v1/object/public/joodle/Joodle%20Icon%20Dark.jpg",
+        "https://joodle.liyuxuan.dev/socials/Joodle%20Icon%20Light.jpg",
+      dark: "https://joodle.liyuxuan.dev/socials/Joodle%20Icon%20Dark.jpg",
       alt: "Joodle App Icon",
     },
 
@@ -143,16 +143,15 @@ const apps: Record<string, AppData> = {
       "Joodle Pro: Unlock unlimited Joodles and reminders, all widget types, premium color themes, and watermark-free sharing.",
     ],
     screenshots: [
-      "https://aikluwlsjdrayohixism.supabase.co/storage/v1/object/public/joodle/For%20Official%20Reviews/SS1.jpeg",
-      "https://aikluwlsjdrayohixism.supabase.co/storage/v1/object/public/joodle/For%20Official%20Reviews/SS2.jpeg",
-      "https://aikluwlsjdrayohixism.supabase.co/storage/v1/object/public/joodle/For%20Official%20Reviews/SS3.jpeg",
-      "https://aikluwlsjdrayohixism.supabase.co/storage/v1/object/public/joodle/For%20Official%20Reviews/SS4.jpeg",
-      "https://aikluwlsjdrayohixism.supabase.co/storage/v1/object/public/joodle/For%20Official%20Reviews/SS5.jpeg",
-      "https://aikluwlsjdrayohixism.supabase.co/storage/v1/object/public/joodle/For%20Official%20Reviews/SS6.jpeg",
-      "https://aikluwlsjdrayohixism.supabase.co/storage/v1/object/public/joodle/For%20Official%20Reviews/SS7.jpeg",
-      "https://aikluwlsjdrayohixism.supabase.co/storage/v1/object/public/joodle/For%20Official%20Reviews/SS8.jpeg",
-      "https://aikluwlsjdrayohixism.supabase.co/storage/v1/object/public/joodle/For%20Official%20Reviews/SS9.jpeg",
-      "https://aikluwlsjdrayohixism.supabase.co/storage/v1/object/public/joodle/For%20Official%20Reviews/SS10.jpeg",
+      "https://joodle.liyuxuan.dev/store/ss1.jpg",
+      "https://joodle.liyuxuan.dev/store/ss2.jpg",
+      "https://joodle.liyuxuan.dev/store/ss3.jpg",
+      "https://joodle.liyuxuan.dev/store/ss4.jpg",
+      "https://joodle.liyuxuan.dev/store/ss5.jpg",
+      "https://joodle.liyuxuan.dev/store/ss6.jpg",
+      "https://joodle.liyuxuan.dev/store/ss7.jpg",
+      "https://joodle.liyuxuan.dev/store/ss8.jpg",
+      "https://joodle.liyuxuan.dev/store/ss9.jpg",
     ],
     links: {
       // testFlight: {
@@ -195,11 +194,11 @@ const apps: Record<string, AppData> = {
       ],
     },
     ogImages: [
-      "https://aikluwlsjdrayohixism.supabase.co/storage/v1/object/public/joodle/Joodle%20OG%20-%20Linkedin.jpg",
-      "https://aikluwlsjdrayohixism.supabase.co/storage/v1/object/public/joodle/Joodle%20OG.jpg",
+      "https://joodle.liyuxuan.dev/socials/Joodle%20OG%20-%20Linkedin.jpg",
+      "https://joodle.liyuxuan.dev/socials/Joodle%20OG.jpg",
     ],
     ogImagesTwitter: [
-      "https://aikluwlsjdrayohixism.supabase.co/storage/v1/object/public/joodle/Joodle%20OG%20-%20Twitter.jpg",
+      "https://joodle.liyuxuan.dev/socials/Joodle%20OG%20-%20Twitter.jpg",
     ],
     productHuntEmbed: `<a href="https://www.producthunt.com/products/joodle-journaling-with-doodle?embed=true&amp;utm_source=badge-top-post-badge&amp;utm_medium=badge&amp;utm_campaign=badge-joodle" target="_blank" rel="noopener noreferrer"><img alt="Joodle - Turn years of memories into personal doodles | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/top-post-badge.svg?post_id=1058014&amp;theme=light&amp;period=daily&amp;t=1767600498155"></a>`,
   },
