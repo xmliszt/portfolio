@@ -2,10 +2,10 @@ import type { Database } from "@/lib/laundromat/supabase/__generated__/types";
 
 export type LaundromatDatabase = Database;
 
-export type Notebook = Database["public"]["Tables"]["notebooks"]["Row"];
+export type Notebook = Database["laundro_cafe"]["Tables"]["notebooks"]["Row"];
 
 export type NotebookEntry =
-  Database["public"]["Tables"]["notebook_entries"]["Row"];
+  Database["laundro_cafe"]["Tables"]["notebook_entries"]["Row"];
 
 export const NOTEBOOK_SCRIPTS = [
   "latin",

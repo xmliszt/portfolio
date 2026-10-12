@@ -10,6 +10,7 @@ import { Database } from "./__generated__/types";
 export function createServiceRoleClient() {
   return createClient<Database>(
     process.env.SUPABASE_DB_URL!,
-    process.env.SUPABASE_SERVICE_ROLE_KEY!
+    process.env.SUPABASE_SERVICE_ROLE_KEY!,
+    { db: { schema: "portfolio" } }
   );
 }

@@ -4,12 +4,12 @@ import { Tables } from "@/lib/supabase/__generated__/types";
 import { createServiceRoleClient } from "@/lib/supabase/create-service-role-client";
 
 type HobbyItemGroup = Pick<
-  Tables<"hobby_item_groups">,
+  Tables<{ schema: "portfolio" }, "hobby_item_groups">,
   "id" | "title" | "item_kind" | "sort_order"
 >;
 
 type HobbyItem = Pick<
-  Tables<"hobby_items">,
+  Tables<{ schema: "portfolio" }, "hobby_items">,
   | "group_id"
   | "title"
   | "subtitle"
