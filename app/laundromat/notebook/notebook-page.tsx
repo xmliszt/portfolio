@@ -9,6 +9,7 @@ import type { NotebookScript } from "@/lib/laundromat/supabase/notebook-types";
 import { cn } from "@/lib/utils";
 
 import { InkedLine } from "./inked-line";
+import { NOTEBOOK_PAGE_METRICS } from "./notebook-page-metrics";
 
 export type PageContent =
   | { kind: "cover"; number: number }
@@ -58,10 +59,8 @@ export function NotebookPage(props: NotebookPageProps) {
   const { copy } = useLaundromatCopy();
   const { settings, content, pitch } = props;
   const [hoveredEntryId, setHoveredEntryId] = useState<string>();
-  const shading =
-    props.side === "left"
-      ? "inset -18px 0 24px -20px rgb(0 0 0 / 0.35)"
-      : "inset 18px 0 24px -20px rgb(0 0 0 / 0.35)";
+  const { spineShadow } = NOTEBOOK_PAGE_METRICS;
+  const shading = `inset ${props.side === "left" ? -spineShadow.offsetPx : spineShadow.offsetPx}px 0 ${spineShadow.blurPx}px ${spineShadow.spreadPx}px rgb(0 0 0 / ${spineShadow.alpha})`;
 
   if (content.kind === "cover") {
     return (
@@ -154,10 +153,16 @@ export function NotebookPage(props: NotebookPageProps) {
           disabled={props.controls?.onNumber === undefined}
           onClick={props.controls?.onNumber}
           className={cn(
-            "absolute bottom-4 left-1/2 -translate-x-1/2 px-3 py-2",
-            "font-[family-name:var(--lm-font-display)] text-[13px] text-[var(--lm-ink-pen)]/50 outline-none",
+            "absolute left-1/2 -translate-x-1/2 px-3",
+            "font-[family-name:var(--lm-font-display)] text-[var(--lm-ink-pen)]/50 outline-none",
             "underline-offset-4 focus-visible:outline-1 focus-visible:outline-dashed enabled:cursor-pointer enabled:hover:underline"
           )}
+          style={{
+            bottom: NOTEBOOK_PAGE_METRICS.pageNumber.bottomPx,
+            paddingBlock: NOTEBOOK_PAGE_METRICS.pageNumber.paddingYPx,
+            fontSize: NOTEBOOK_PAGE_METRICS.pageNumber.fontPx,
+            lineHeight: `${NOTEBOOK_PAGE_METRICS.pageNumber.lineHeightPx}px`,
+          }}
         >
           {content.page}
         </button>
@@ -224,10 +229,14 @@ function PageRowLine(props: PageRowLineProps) {
     return (
       <div
         className={cn(
-          "absolute flex items-center text-[11px] text-[var(--lm-ink-pen)] transition-opacity duration-300",
+          "absolute flex items-center text-[var(--lm-ink-pen)] transition-opacity duration-300",
           row.isRtl && "flex-row-reverse"
         )}
-        style={{ ...box, opacity: row.ink === "plain" ? 0.45 : 0 }}
+        style={{
+          ...box,
+          fontSize: NOTEBOOK_PAGE_METRICS.metaFontPx,
+          opacity: row.ink === "plain" ? 0.45 : 0,
+        }}
         onPointerEnter={() => props.onHoverChange(true)}
         onPointerLeave={() => props.onHoverChange(false)}
       >

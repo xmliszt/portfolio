@@ -495,31 +495,38 @@ export function NotebookBook(props: NotebookBookProps) {
     };
   }, [props.bookNumber, reloadNotebook]);
 
+  const arrivalSpread = isWritable ? writeSpread : 0;
   useEffect(() => {
-    if (result === undefined) return;
+    if (result === undefined || isContentReady) return;
     if (result.kind !== "online") {
       setIsContentReady(true);
       return;
     }
-    const { entries } = result.notebook;
+    const { linesPerPage } = result.notebook;
+    const entries = result.notebook.entries.filter((entry) =>
+      getEntrySpreads({ ...entry, linesPerPage }).includes(arrivalSpread)
+    );
     const state = { isCurrent: true };
     void Promise.all(
-      uniq(entries.map((entry) => entry.script)).map((script) =>
-        loadMeasure({
-          ...getEntryStyle({ script, reportEntryId: undefined }),
-          text: entries
-            .filter((entry) => entry.script === script)
-            .map((entry) => entry.body)
-            .join(""),
-        })
-      )
+      uniq(entries.map((entry) => entry.script)).map((script) => {
+        const style = getEntryStyle({ script, reportEntryId: undefined });
+        return document.fonts
+          .load(
+            `${style.fontSizePx}px ${style.fontFamily}`,
+            entries
+              .filter((entry) => entry.script === script)
+              .map((entry) => entry.body)
+              .join("")
+          )
+          .catch(() => []);
+      })
     ).then(() => {
       if (state.isCurrent) setIsContentReady(true);
     });
     return () => {
       state.isCurrent = false;
     };
-  }, [result, getEntryStyle, loadMeasure]);
+  }, [result, isContentReady, arrivalSpread, getEntryStyle]);
 
   useEffect(() => {
     const liftTimer = window.setTimeout(
@@ -537,7 +544,8 @@ export function NotebookBook(props: NotebookBookProps) {
   }, [props.reducedMotion, details.liftMs, details.openWaitMaxMs]);
 
   const shouldOpen = isLifted && (isContentReady || hasWaitedMax);
-  const isWaiting = isLifted && !shouldOpen;
+  const isCoverBreathing = isLifted && !shouldOpen && !props.reducedMotion;
+  const coverWaitDeg = isCoverBreathing ? -details.coverCrackDeg : 0;
   useEffect(() => {
     if (!shouldOpen) return;
     if (props.reducedMotion) {
@@ -1039,13 +1047,7 @@ export function NotebookBook(props: NotebookBookProps) {
             )}
             style={{ left: settings.width, width: settings.width }}
             initial={false}
-            animate={{
-              rotateY: isOpen
-                ? -180
-                : isWaiting && !props.reducedMotion
-                  ? -details.coverCrackDeg
-                  : 0,
-            }}
+            animate={{ rotateY: isOpen ? -180 : coverWaitDeg }}
             transition={{
               duration: props.reducedMotion ? 0 : details.coverOpenMs / 1000,
               ease: details.turnEase,
@@ -1055,13 +1057,10 @@ export function NotebookBook(props: NotebookBookProps) {
               className="absolute inset-0 origin-left [transform-style:preserve-3d]"
               initial={false}
               animate={{
-                rotateY:
-                  isWaiting && !props.reducedMotion
-                    ? [0, -details.coverBreathDeg]
-                    : 0,
+                rotateY: isCoverBreathing ? [0, -details.coverBreathDeg] : 0,
               }}
               transition={
-                isWaiting
+                isCoverBreathing
                   ? {
                       duration: details.coverBreathMs / 1000,
                       delay: details.coverOpenMs / 1000,
@@ -1122,9 +1121,7 @@ export function NotebookBook(props: NotebookBookProps) {
       <div
         className={cn(
           "absolute inset-x-0 bottom-0 flex flex-col justify-start gap-y-1 px-2 text-[12px] text-[var(--lm-ink)] transition-opacity duration-300",
-          phase === "open" || (isLifted && !isContentReady)
-            ? "opacity-100"
-            : "opacity-0"
+          isLifted ? "opacity-100" : "opacity-0"
         )}
         style={{ height: config.notebook.statusBarPx }}
       >

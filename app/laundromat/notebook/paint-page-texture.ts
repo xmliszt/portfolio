@@ -1,6 +1,7 @@
 import type { NotebookPage as NotebookPageSettings } from "@/lib/laundromat/scene-config";
 
 import type { PageContent, RowView } from "./notebook-page";
+import { NOTEBOOK_PAGE_METRICS } from "./notebook-page-metrics";
 
 export type PagePalette = {
   paper: string;
@@ -15,17 +16,20 @@ export type PagePalette = {
 
 export type PageSpec = { content: PageContent; rows: RowView[] };
 
-const META_FONT_PX = 11;
-const PAGE_NUMBER = { fontPx: 13, lineHeightPx: 19.5, bottomPx: 24 };
-// Alpha of `NotebookPage`'s inset spine shadow (18px offset, 24px blur, -20px spread, 0.35 alpha) by distance from the spine.
-const SPINE_SHADOW_STOPS = [
-  { offsetPx: 0, alpha: 0.152 },
-  { offsetPx: 4, alpha: 0.108 },
-  { offsetPx: 8, alpha: 0.071 },
-  { offsetPx: 12, alpha: 0.043 },
-  { offsetPx: 18, alpha: 0.017 },
-  { offsetPx: 26, alpha: 0 },
-];
+const SPINE_SHADOW_STEP_PX = 2;
+
+function getNormalTail(z: number) {
+  const u = Math.abs(z) / Math.SQRT2;
+  const t = 1 / (1 + 0.3275911 * u);
+  const erfc =
+    t *
+    (0.254829592 +
+      t *
+        (-0.284496736 +
+          t * (1.421413741 + t * (-1.453152027 + t * 1.061405429)))) *
+    Math.exp(-u * u);
+  return z >= 0 ? erfc / 2 : 1 - erfc / 2;
+}
 
 function snapToDevicePixel(options: {
   value: number;
@@ -39,13 +43,19 @@ function snapToDevicePixel(options: {
 
 function getBaselineY(options: {
   context: CanvasRenderingContext2D;
+  fontPx: number;
   top: number;
   lineHeightPx: number;
   devicePixelRatio: number;
 }) {
   const metrics = options.context.measureText("");
-  const ascent = Math.round(metrics.fontBoundingBoxAscent);
-  const descent = Math.round(metrics.fontBoundingBoxDescent);
+  // Firefox before 116 has no font bounding box metrics.
+  const ascent = Math.round(
+    metrics.fontBoundingBoxAscent ?? options.fontPx * 0.8
+  );
+  const descent = Math.round(
+    metrics.fontBoundingBoxDescent ?? options.fontPx * 0.2
+  );
   const y =
     options.top + (options.lineHeightPx - ascent - descent) / 2 + ascent;
   return snapToDevicePixel({
@@ -61,19 +71,19 @@ function paintSpineShadow(options: {
   height: number;
 }) {
   const { context, side, width, height } = options;
-  const spineX = side === "right" ? 0 : width;
-  const shadowWidth = SPINE_SHADOW_STOPS.at(-1)?.offsetPx ?? 0;
+  const { offsetPx, blurPx, spreadPx, alpha } =
+    NOTEBOOK_PAGE_METRICS.spineShadow;
+  const holeEdgePx = offsetPx + spreadPx;
+  const shadowWidth = blurPx + Math.max(0, holeEdgePx);
   const gradient = context.createLinearGradient(
-    spineX,
+    side === "right" ? 0 : width,
     0,
     side === "right" ? shadowWidth : width - shadowWidth,
     0
   );
-  for (const stop of SPINE_SHADOW_STOPS) {
-    gradient.addColorStop(
-      stop.offsetPx / shadowWidth,
-      `rgb(0 0 0 / ${stop.alpha})`
-    );
+  for (let x = 0; x <= shadowWidth; x += SPINE_SHADOW_STEP_PX) {
+    const stopAlpha = alpha * getNormalTail((x - holeEdgePx) / (blurPx / 2));
+    gradient.addColorStop(x / shadowWidth, `rgb(0 0 0 / ${stopAlpha})`);
   }
   context.fillStyle = gradient;
   context.fillRect(
@@ -150,6 +160,12 @@ export function paintPageTexture(options: PaintPageTextureOptions) {
 
   context.fillStyle = palette.paper;
   context.fillRect(0, 0, settings.width, settings.height);
+  paintSpineShadow({
+    context,
+    side,
+    width: settings.width,
+    height: settings.height,
+  });
   context.fillStyle = palette.paperRule;
   const bodyHeight =
     settings.height - settings.marginTop - settings.marginBottom;
@@ -169,19 +185,20 @@ export function paintPageTexture(options: PaintPageTextureOptions) {
   context.fillStyle = palette.inkPen;
   context.textBaseline = "alphabetic";
   for (const row of page.rows) {
+    const isInkHidden =
+      row.kind === "text" ? row.ink === "waiting" : row.ink !== "plain";
+    if (isInkHidden) continue;
     const drop = row.kind === "text" ? pitch * settings.textDropRatio : 0;
     context.direction = row.isRtl && row.kind === "text" ? "rtl" : "ltr";
     context.textAlign = row.isRtl ? "right" : "left";
     const x = row.isRtl ? settings.width - settings.marginX : settings.marginX;
-    if (row.kind === "meta") {
-      context.globalAlpha = 0.45;
-      context.font = `${META_FONT_PX}px ${palette.monoFont}`;
-    } else {
-      context.globalAlpha = 1;
-      context.font = `${row.fontSizePx}px ${row.fontFamily}`;
-    }
+    const fontPx =
+      row.kind === "meta" ? NOTEBOOK_PAGE_METRICS.metaFontPx : row.fontSizePx;
+    context.globalAlpha = row.kind === "meta" ? 0.45 : 1;
+    context.font = `${fontPx}px ${row.kind === "meta" ? palette.monoFont : row.fontFamily}`;
     const y = getBaselineY({
       context,
+      fontPx,
       top: settings.marginTop + row.row * pitch + drop,
       lineHeightPx: pitch,
       devicePixelRatio,
@@ -194,21 +211,20 @@ export function paintPageTexture(options: PaintPageTextureOptions) {
   if (content.kind === "paper") {
     context.globalAlpha = 0.5;
     context.textAlign = "center";
-    context.font = `${PAGE_NUMBER.fontPx}px ${palette.displayFont}`;
+    const { pageNumber } = NOTEBOOK_PAGE_METRICS;
+    context.font = `${pageNumber.fontPx}px ${palette.displayFont}`;
     const y = getBaselineY({
       context,
-      top: settings.height - PAGE_NUMBER.bottomPx - PAGE_NUMBER.lineHeightPx,
-      lineHeightPx: PAGE_NUMBER.lineHeightPx,
+      fontPx: pageNumber.fontPx,
+      top:
+        settings.height -
+        pageNumber.bottomPx -
+        pageNumber.paddingYPx -
+        pageNumber.lineHeightPx,
+      lineHeightPx: pageNumber.lineHeightPx,
       devicePixelRatio,
     });
     context.fillText(String(content.page), centerX, y);
     context.globalAlpha = 1;
   }
-
-  paintSpineShadow({
-    context,
-    side,
-    width: settings.width,
-    height: settings.height,
-  });
 }

@@ -207,7 +207,12 @@ const objectDials = {
     coverNumber: [details.notebook.coverNumber, 1, 99, 1],
     liftMs: [details.notebook.liftMs, 0, 1600, 10],
     coverOpenMs: [details.notebook.coverOpenMs, 0, 2000, 10],
-    openWaitMaxMs: [details.notebook.openWaitMaxMs, 0, 6000, 100],
+    openWaitMaxMs: [
+      details.notebook.openWaitMaxMs,
+      details.notebook.liftMs,
+      6000,
+      50,
+    ],
     coverCrackDeg: [details.notebook.coverCrackDeg, 0, 30, 1],
     coverBreathDeg: [details.notebook.coverBreathDeg, 0, 15, 0.5],
     coverBreathMs: [details.notebook.coverBreathMs, 200, 4000, 50],
