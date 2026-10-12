@@ -1,6 +1,6 @@
 # Laundromat isometric drawing
 
-Rules for drawing objects in the laundromat scene, adapted from the Anatomy skill (`.claude/skills/anatomy/`, MIT, https://github.com/wheresryan22/anatomy at `dbf697a`). Read its `SKILL.md` and `references/craft.md` for the full reasoning; this file says which rules apply to our code and how.
+Rules for drawing objects in the laundromat scene, adapted from the Anatomy skill (global skill at `~/agent-suite/skills/anatomy/`, MIT, https://github.com/wheresryan22/anatomy at `dbf697a`). Read its `SKILL.md` and `references/craft.md` for the full reasoning; this file says which rules apply to our code and how.
 
 Our world unit is about 1 m (`COLUMN_RADIUS = 0.06`), and Anatomy's is about 1 screen px. Anatomy's sizes below are given in screen px at our default camera; convert with `projection.unit`.
 
