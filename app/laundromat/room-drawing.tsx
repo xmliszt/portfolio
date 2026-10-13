@@ -14,7 +14,6 @@ import { SceneKeyframes } from "./objects/scene-keyframes";
 import { SceneObjectDrawing } from "./objects/scene-object-drawing";
 import type { SceneViews } from "./objects/scene-views";
 import type { LampSwitch } from "./sound/use-scene-sounds";
-import { FloorHalos } from "./floor-halos";
 import { RoomDarknessVeil } from "./room-darkness-veil";
 import { RoomDaylightFill } from "./room-daylight-fill";
 import { RoomLampGlow } from "./room-lamp-glow";
@@ -120,7 +119,6 @@ export function RoomDrawing(props: RoomDrawingProps) {
           config={config}
         />
       )}
-      <FloorHalos layout={layout} />
       {visibleObjects.map((laidOut) => (
         <Fragment key={laidOut.object.id}>
           <SceneObjectDrawing laidOut={laidOut} {...objectProps} />

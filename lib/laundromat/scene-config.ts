@@ -71,7 +71,6 @@ export type SceneTokens = {
   wall2: string;
   shade1: string;
   shade2: string;
-  halo: string;
   recess: string;
   line: string;
   detail: string;
@@ -225,7 +224,6 @@ export const sceneConfig: SceneConfig = {
     wall2: "#101112",
     shade1: "#141517",
     shade2: "#151618",
-    halo: "#050506",
     recess: "#0e0f10",
     line: "#3d4144",
     detail: "#2b2e30",
