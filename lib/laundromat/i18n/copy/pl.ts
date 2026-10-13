@@ -47,7 +47,7 @@ export const pl = {
     language: "Język",
     settings: "ustawienia",
     builtBy: "zrobione z ❤️ przez Li Yuxuan",
-    updateAvailable: "zaktualizowano · odśwież",
+    updateAvailable: "odśwież — pralnia zaktualizowana",
   },
   settings: {
     heading: "ustawienia",

@@ -34,7 +34,7 @@ export const fr = {
     language: "Langue",
     settings: "réglages",
     builtBy: "fait avec ❤️ par Li Yuxuan",
-    updateAvailable: "mis à jour · recharger",
+    updateAvailable: "recharge pour la laverie mise à jour",
   },
   settings: {
     heading: "réglages",

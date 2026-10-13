@@ -34,7 +34,7 @@ export const zhHans = {
     language: "语言",
     settings: "设置",
     builtBy: "李雨轩制作",
-    updateAvailable: "已更新 · 刷新",
+    updateAvailable: "刷新，进入更新后的自助洗衣店",
   },
   settings: {
     heading: "设置",

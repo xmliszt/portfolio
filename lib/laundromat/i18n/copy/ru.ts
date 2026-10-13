@@ -47,7 +47,7 @@ export const ru = {
     language: "Язык",
     settings: "настройки",
     builtBy: "сделано с ❤️ — Li Yuxuan",
-    updateAvailable: "обновлено · обновить страницу",
+    updateAvailable: "обнови — прачечная обновилась",
   },
   settings: {
     heading: "настройки",

@@ -33,7 +33,7 @@ export const tr = {
     language: "Dil",
     settings: "ayarlar",
     builtBy: "Li Yuxuan tarafından ❤️ ile yapıldı",
-    updateAvailable: "güncellendi · yenile",
+    updateAvailable: "güncel çamaşırhane için yenile",
   },
   settings: {
     heading: "ayarlar",

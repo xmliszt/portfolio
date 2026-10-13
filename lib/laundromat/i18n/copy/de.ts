@@ -34,7 +34,7 @@ export const de = {
     language: "Sprache",
     settings: "Einstellungen",
     builtBy: "mit ❤️ gebaut von Li Yuxuan",
-    updateAvailable: "aktualisiert · neu laden",
+    updateAvailable: "neu laden: Waschsalon aktualisiert",
   },
   settings: {
     heading: "Einstellungen",

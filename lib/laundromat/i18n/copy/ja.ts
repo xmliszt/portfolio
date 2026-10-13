@@ -34,7 +34,7 @@ export const ja = {
     language: "言語",
     settings: "設定",
     builtBy: "Li Yuxuan が ❤️ をこめて作りました",
-    updateAvailable: "更新あり · 再読み込み",
+    updateAvailable: "再読み込みで更新されたコインランドリーへ",
   },
   settings: {
     heading: "設定",

@@ -33,7 +33,7 @@ export const nl = {
     language: "Taal",
     settings: "instellingen",
     builtBy: "met ❤️ gemaakt door Li Yuxuan",
-    updateAvailable: "bijgewerkt · vernieuwen",
+    updateAvailable: "vernieuw voor de bijgewerkte wasserette",
   },
   settings: {
     heading: "instellingen",

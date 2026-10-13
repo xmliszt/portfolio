@@ -39,7 +39,7 @@ export const id = {
     language: "Bahasa",
     settings: "pengaturan",
     builtBy: "dibuat dengan ❤️ oleh Li Yuxuan",
-    updateAvailable: "diperbarui · muat ulang",
+    updateAvailable: "muat ulang untuk laundry terbaru",
   },
   settings: {
     heading: "pengaturan",

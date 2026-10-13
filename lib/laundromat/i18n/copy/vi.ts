@@ -39,7 +39,7 @@ export const vi = {
     language: "Ngôn ngữ",
     settings: "cài đặt",
     builtBy: "được làm với ❤️ bởi Li Yuxuan",
-    updateAvailable: "đã cập nhật · tải lại",
+    updateAvailable: "tải lại để vào tiệm giặt đã cập nhật",
   },
   settings: {
     heading: "cài đặt",

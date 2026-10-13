@@ -35,7 +35,7 @@ export const ptBR = {
     language: "Idioma",
     settings: "configurações",
     builtBy: "feito com ❤️ por Li Yuxuan",
-    updateAvailable: "atualizado · recarregar",
+    updateAvailable: "recarregue para a lavanderia atualizada",
   },
   settings: {
     heading: "configurações",

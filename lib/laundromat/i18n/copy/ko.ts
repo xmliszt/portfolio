@@ -34,7 +34,7 @@ export const ko = {
     language: "언어",
     settings: "설정",
     builtBy: "Li Yuxuan이 ❤️을 담아 만들었어요",
-    updateAvailable: "업데이트됨 · 새로고침",
+    updateAvailable: "새로고침하면 새로워진 빨래방이 열려요",
   },
   settings: {
     heading: "설정",

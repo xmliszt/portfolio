@@ -34,7 +34,7 @@ export const zhHant = {
     language: "語言",
     settings: "設定",
     builtBy: "李雨軒製作",
-    updateAvailable: "已更新 · 重新整理",
+    updateAvailable: "重新整理，進入更新後的自助洗衣店",
   },
   settings: {
     heading: "設定",

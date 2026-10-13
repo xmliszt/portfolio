@@ -43,7 +43,7 @@ export const en = {
     language: "Language",
     settings: "settings",
     builtBy: "built by Li Yuxuan with ❤️",
-    updateAvailable: "updated · refresh",
+    updateAvailable: "refresh for updated laundromat",
   },
   settings: {
     heading: "settings",

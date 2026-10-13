@@ -47,7 +47,7 @@ export const uk = {
     language: "Мова",
     settings: "налаштування",
     builtBy: "зроблено з ❤️ — Li Yuxuan",
-    updateAvailable: "оновлено · оновити сторінку",
+    updateAvailable: "онови — пральня оновилася",
   },
   settings: {
     heading: "налаштування",

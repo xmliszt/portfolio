@@ -39,7 +39,7 @@ export const hi = {
     language: "भाषा",
     settings: "सेटिंग्स",
     builtBy: "Li Yuxuan ने ❤️ से बनाया",
-    updateAvailable: "अपडेट हुआ · रीफ़्रेश करें",
+    updateAvailable: "अपडेट हुई लॉन्ड्री के लिए रीफ़्रेश करें",
   },
   settings: {
     heading: "सेटिंग्स",
