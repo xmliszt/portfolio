@@ -34,6 +34,7 @@ export const ptBR = {
       "Uma lavanderia tranquila no seu navegador. Coloque uma leva de roupa, deixe o timer rodar e leia os recados que as pessoas deixaram.",
     language: "Idioma",
     builtBy: "feito com ❤️ por Li Yuxuan",
+    updateAvailable: "atualizado · recarregar",
   },
   tabDone: "pronto",
   readoutDone: "fim",

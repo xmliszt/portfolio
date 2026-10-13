@@ -33,6 +33,7 @@ export const ja = {
       "ブラウザの中の静かなコインランドリー。洗濯物を入れて、タイマーを回して、誰かが残したメモを読もう。",
     language: "言語",
     builtBy: "Li Yuxuan が ❤️ をこめて作りました",
+    updateAvailable: "更新あり · 再読み込み",
   },
   tabDone: "完了",
   readoutDone: "完了",

@@ -33,6 +33,7 @@ export const fr = {
       "Une laverie tranquille dans ton navigateur. Lance une machine, laisse tourner le minuteur et lis les mots que les autres ont laissés.",
     language: "Langue",
     builtBy: "fait avec ❤️ par Li Yuxuan",
+    updateAvailable: "mis à jour · recharger",
   },
   tabDone: "fini",
   readoutDone: "fini",

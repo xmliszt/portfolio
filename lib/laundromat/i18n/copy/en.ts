@@ -42,6 +42,7 @@ export const en = {
       "A quiet laundromat in your browser. Put a load in, let the timer run, and read the notes people left behind.",
     language: "Language",
     builtBy: "built by Li Yuxuan with ❤️",
+    updateAvailable: "updated · refresh",
   },
   tabDone: "done",
   readoutDone: "done",

@@ -32,6 +32,7 @@ export const nl = {
       "Een rustige wasserette in je browser. Stop er een was in, laat de timer lopen en lees de berichtjes die mensen hebben achtergelaten.",
     language: "Taal",
     builtBy: "met ❤️ gemaakt door Li Yuxuan",
+    updateAvailable: "bijgewerkt · vernieuwen",
   },
   tabDone: "klaar",
   readoutDone: "klaar",

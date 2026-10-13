@@ -33,6 +33,7 @@ export const es = {
       "Una lavandería tranquila en tu navegador. Mete una carga, deja que corra el temporizador y lee las notas que ha dejado la gente.",
     language: "Idioma",
     builtBy: "hecho con ❤️ por Li Yuxuan",
+    updateAvailable: "actualizado · recargar",
   },
   tabDone: "listo",
   readoutDone: "listo",

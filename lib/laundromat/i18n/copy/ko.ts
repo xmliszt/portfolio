@@ -33,6 +33,7 @@ export const ko = {
       "브라우저 속 조용한 빨래방. 빨래를 넣고, 타이머를 돌리고, 사람들이 남긴 메모를 읽어 봐.",
     language: "언어",
     builtBy: "Li Yuxuan이 ❤️을 담아 만들었어요",
+    updateAvailable: "업데이트됨 · 새로고침",
   },
   tabDone: "완료",
   readoutDone: "완료",

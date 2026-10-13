@@ -33,6 +33,7 @@ export const de = {
       "Ein ruhiger Waschsalon in deinem Browser. Steck eine Ladung rein, lass den Timer laufen und lies die Notizen, die andere hinterlassen haben.",
     language: "Sprache",
     builtBy: "mit ❤️ gebaut von Li Yuxuan",
+    updateAvailable: "aktualisiert · neu laden",
   },
   tabDone: "fertig",
   readoutDone: "ende",
