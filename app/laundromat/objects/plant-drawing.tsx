@@ -1,3 +1,4 @@
+import { useRenderQuality } from "@/app/laundromat/settings/use-render-quality";
 import type { LaidOutObject } from "@/lib/laundromat/build-scene-layout";
 import { getIsoCylinder } from "@/lib/laundromat/get-iso-cylinder";
 import { getIsoEllipse } from "@/lib/laundromat/get-iso-ellipse";
@@ -204,6 +205,7 @@ type PlantDrawingProps = {
 export function PlantDrawing(props: PlantDrawingProps) {
   const { position: p, size } = props.laidOut.object;
   const { projection, details } = props;
+  const { quality } = useRenderQuality();
   const center = { x: p.x + size.w / 2, y: p.y + size.d / 2 };
   const pot = getIsoCylinder({
     center,
@@ -236,9 +238,12 @@ export function PlantDrawing(props: PlantDrawingProps) {
   };
   const bend = {
     "data-lm-motion": true,
-    style: {
-      animation: `lm-bend ${bendSeconds}s ease-in-out infinite alternate`,
-    },
+    style:
+      quality === "full"
+        ? {
+            animation: `lm-bend ${bendSeconds}s ease-in-out infinite alternate`,
+          }
+        : undefined,
   };
   function renderLeaves(layer: Leaf["layer"]) {
     return LEAVES.filter((leaf) => leaf.layer === layer).map((leaf) => {
@@ -260,9 +265,13 @@ export function PlantDrawing(props: PlantDrawingProps) {
           />
           <g
             data-lm-motion
-            style={{
-              animation: `lm-sway ${seconds}s ease-in-out ${-seconds * leaf.cycle * 2}s infinite alternate`,
-            }}
+            style={
+              quality === "full"
+                ? {
+                    animation: `lm-sway ${seconds}s ease-in-out ${-seconds * leaf.cycle * 2}s infinite alternate`,
+                  }
+                : undefined
+            }
           >
             <g transform={`rotate(${leaf.angleDeg}) scale(${leaf.squash} 1)`}>
               <path

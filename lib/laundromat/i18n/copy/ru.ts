@@ -45,8 +45,24 @@ export const ru = {
     shareText:
       "Тихая прачечная в браузере. Загрузи бельё, запусти таймер и почитай записки, которые оставили другие.",
     language: "Язык",
+    settings: "настройки",
     builtBy: "сделано с ❤️ — Li Yuxuan",
-    updateAvailable: "обновлено · обновить страницу",
+    updateAvailable: "обнови — прачечная обновилась",
+  },
+  settings: {
+    heading: "настройки",
+    rendering: "отрисовка",
+    renderingHint:
+      "lite убирает мягкий свет, покачивание растения и приближение к блокноту и доске. помогает на медленных устройствах или когда мало памяти.",
+    qualityAuto: "авто",
+    qualityAutoHint: (o: { quality: string }) =>
+      `на этом устройстве — ${o.quality}`,
+    qualityFull: "полная",
+    qualityFullHint: "весь свет и всё движение",
+    qualityLite: "lite",
+    qualityLiteHint: "бережнее к памяти и батарее",
+    close: "закрыть",
+    closeHint: "esc — закрыть",
   },
   tabDone: "готово",
   readoutDone: "готово",
@@ -339,7 +355,6 @@ export const ru = {
     leaveFailures: {
       offline: "блокнот сейчас недоступен · твоя записка останется здесь",
       rate_limited: "одна записка раз в две минуты · попробуй чуть позже",
-      daily_limit_reached: "на сегодня записок хватит · приходи завтра",
       contains_link: "в блокноте нельзя оставлять ссылки",
       too_long: "слишком длинно для блокнота · сократи немного",
       sign_off_too_long: "подпись слишком длинная",

@@ -29,13 +29,20 @@ function buildSource() {
     cancelled: boolean;
   }[] = [];
   const states: AudioState[] = [];
-  const captured: { events: YouTubePlayerEvents | undefined } = {
+  const captured: {
+    events: YouTubePlayerEvents | undefined;
+    releaseCount: number;
+  } = {
     events: undefined,
+    releaseCount: 0,
   };
   const source = createYouTubeAudioSource({
     stallMs: 8000,
     createPlayer: (events) => {
       captured.events = events;
+      return () => {
+        captured.releaseCount += 1;
+      };
     },
     schedule: (callback, delayMs) => {
       const timer = { callback, delayMs, cancelled: false };
@@ -55,7 +62,16 @@ function buildSource() {
       .filter((timer) => !timer.cancelled)
       .forEach((timer) => timer.callback());
   }
-  return { source, player, calls, states, timers, events, fireStall };
+  return {
+    source,
+    player,
+    calls,
+    states,
+    timers,
+    events,
+    fireStall,
+    captured,
+  };
 }
 
 test("replays station, volume and play sent before the player is ready", () => {
@@ -66,6 +82,39 @@ test("replays station, volume and play sent before the player is ready", () => {
   assert.deepEqual(calls, []);
   events().onReady(player);
   assert.deepEqual(calls, ["volume 40", "load abc"]);
+});
+
+test("buffers and starts the stall timer before the player is ready", () => {
+  const { source, states, timers } = buildSource();
+  source.setStation("abc");
+  source.play();
+  assert.deepEqual(states, ["buffering"]);
+  assert.equal(timers.filter((timer) => !timer.cancelled).length, 1);
+});
+
+test("reports an error when the player never becomes ready", () => {
+  const { source, states, fireStall } = buildSource();
+  source.setStation("abc");
+  source.play();
+  fireStall();
+  assert.deepEqual(states, ["buffering", "error"]);
+});
+
+test("keeps one stall timer from play through the player becoming ready", () => {
+  const { source, player, timers, events } = buildSource();
+  source.setStation("abc");
+  source.play();
+  events().onReady(player);
+  assert.equal(timers.filter((timer) => !timer.cancelled).length, 1);
+});
+
+test("restarts the stall timer when the station changes before the player is ready", () => {
+  const { source, states, timers } = buildSource();
+  source.setStation("abc");
+  source.play();
+  source.setStation("def");
+  assert.deepEqual(states, ["buffering"]);
+  assert.equal(timers.filter((timer) => !timer.cancelled).length, 1);
 });
 
 test("cues the station without playing it while paused", () => {
@@ -145,4 +194,19 @@ test("destroys a player that becomes ready after the source was destroyed", () =
   events().onError();
   assert.deepEqual(calls, ["destroy"]);
   assert.deepEqual(states, []);
+});
+
+test("releases the player when destroyed before it is ready", () => {
+  const { source, captured } = buildSource();
+  source.destroy();
+  assert.equal(captured.releaseCount, 1);
+});
+
+test("releases a ready player once when destroyed", () => {
+  const { source, player, calls, events, captured } = buildSource();
+  events().onReady(player);
+  source.destroy();
+  source.destroy();
+  assert.equal(captured.releaseCount, 1);
+  assert.equal(calls.includes("destroy"), false);
 });

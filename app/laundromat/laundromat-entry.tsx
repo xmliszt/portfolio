@@ -11,6 +11,7 @@ import { FirstVisit } from "./first-visit/first-visit";
 import { FirstVisitKeyframes } from "./first-visit/first-visit-keyframes";
 import { useArrivedFlag } from "./first-visit/use-arrived-flag";
 import { LanguagePicker } from "./i18n/language-picker";
+import { SettingsButton } from "./settings/settings-button";
 import { SoundToggle } from "./sound/sound-toggle";
 import { LaundromatScene } from "./laundromat-scene";
 import { PortfolioLink } from "./portfolio-link";
@@ -132,6 +133,7 @@ export function LaundromatEntry(props: LaundromatEntryProps) {
         <LanguagePicker />
         <SoundToggle />
         <ShareButton />
+        <SettingsButton />
         <PortfolioLink />
       </div>
       {isFirstVisit && (

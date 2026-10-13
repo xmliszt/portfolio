@@ -8,7 +8,6 @@ export type LeaveEntryFailure =
 export type LeaveEntryFailureReason =
   | "offline"
   | "rate_limited"
-  | "daily_limit_reached"
   | "contains_link"
   | "too_long"
   | "sign_off_too_long"
@@ -25,7 +24,6 @@ export function describeLeaveFailure(options: {
   if (failure.kind === "offline") return hints.offline;
   switch (failure.reason) {
     case "rate_limited":
-    case "daily_limit_reached":
     case "contains_link":
     case "sign_off_too_long":
     case "empty_body":

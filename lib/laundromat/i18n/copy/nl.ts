@@ -31,8 +31,24 @@ export const nl = {
     shareText:
       "Een rustige wasserette in je browser. Stop er een was in, laat de timer lopen en lees de berichtjes die mensen hebben achtergelaten.",
     language: "Taal",
+    settings: "instellingen",
     builtBy: "met ❤️ gemaakt door Li Yuxuan",
-    updateAvailable: "bijgewerkt · vernieuwen",
+    updateAvailable: "vernieuw voor de bijgewerkte wasserette",
+  },
+  settings: {
+    heading: "instellingen",
+    rendering: "weergave",
+    renderingHint:
+      "lite laat het zachte licht, het wiegen van de plant en het inzoomen op het notitieboek en het prikbord weg. handig op tragere apparaten of als het geheugen krap is.",
+    qualityAuto: "auto",
+    qualityAutoHint: (o: { quality: string }) =>
+      `gebruikt ${o.quality} op dit apparaat`,
+    qualityFull: "volledig",
+    qualityFullHint: "al het licht en alle beweging",
+    qualityLite: "lite",
+    qualityLiteHint: "lichter voor geheugen en batterij",
+    close: "sluiten",
+    closeHint: "esc om te sluiten",
   },
   tabDone: "klaar",
   readoutDone: "klaar",
@@ -329,7 +345,6 @@ export const nl = {
       offline:
         "het notitieboek is op dit moment offline · je berichtje blijft hier staan",
       rate_limited: "één berichtje per twee minuten · probeer het zo weer",
-      daily_limit_reached: "genoeg berichtjes voor vandaag · kom morgen terug",
       contains_link: "geen links in het notitieboek",
       too_long: "te lang voor het notitieboek · maak het iets korter",
       sign_off_too_long: "de ondertekening is te lang",

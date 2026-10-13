@@ -31,7 +31,13 @@ export function useTvAudio(options: {
   useEffect(() => () => sourceRef.current?.destroy(), []);
 
   useEffect(() => {
-    if (!tv.on || muted || videoId === undefined || container === null) {
+    if (!tv.on) {
+      sourceRef.current?.pause();
+      sourceRef.current?.destroy();
+      sourceRef.current = undefined;
+      return;
+    }
+    if (muted || videoId === undefined || container === null) {
       sourceRef.current?.pause();
       return;
     }

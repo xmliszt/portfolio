@@ -45,8 +45,24 @@ export const pl = {
     shareText:
       "Spokojna pralnia w przeglądarce. Wrzuć pranie, niech timer leci, i poczytaj liściki, które zostawili inni.",
     language: "Język",
+    settings: "ustawienia",
     builtBy: "zrobione z ❤️ przez Li Yuxuan",
-    updateAvailable: "zaktualizowano · odśwież",
+    updateAvailable: "odśwież — pralnia zaktualizowana",
+  },
+  settings: {
+    heading: "ustawienia",
+    rendering: "renderowanie",
+    renderingHint:
+      "lite wyłącza miękkie światło, kołysanie rośliny i przybliżenie do notesu i tablicy. pomaga na wolniejszych urządzeniach albo gdy brakuje pamięci.",
+    qualityAuto: "auto",
+    qualityAutoHint: (o: { quality: string }) =>
+      `na tym urządzeniu: ${o.quality}`,
+    qualityFull: "pełny",
+    qualityFullHint: "całe światło i ruch",
+    qualityLite: "lite",
+    qualityLiteHint: "lżejszy dla pamięci i baterii",
+    close: "zamknij",
+    closeHint: "esc, aby zamknąć",
   },
   tabDone: "gotowe",
   readoutDone: "gotowe",
@@ -340,7 +356,6 @@ export const pl = {
     leaveFailures: {
       offline: "notes jest chwilowo offline · twój liścik zostaje tutaj",
       rate_limited: "jeden liścik co dwie minuty · spróbuj za chwilę",
-      daily_limit_reached: "dość liścików na dziś · wróć jutro",
       contains_link: "żadnych linków w notesie",
       too_long: "za długie na notes · skróć trochę",
       sign_off_too_long: "podpis jest za długi",

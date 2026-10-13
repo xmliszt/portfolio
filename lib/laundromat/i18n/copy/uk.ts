@@ -45,8 +45,24 @@ export const uk = {
     shareText:
       "Тиха пральня у браузері. Завантаж білизну, запусти таймер і почитай записки, які залишили інші.",
     language: "Мова",
+    settings: "налаштування",
     builtBy: "зроблено з ❤️ — Li Yuxuan",
-    updateAvailable: "оновлено · оновити сторінку",
+    updateAvailable: "онови — пральня оновилася",
+  },
+  settings: {
+    heading: "налаштування",
+    rendering: "відображення",
+    renderingHint:
+      "lite прибирає м'яке світло, похитування рослини й наближення до нотатника та дошки. допомагає на повільніших пристроях або коли бракує пам'яті.",
+    qualityAuto: "авто",
+    qualityAutoHint: (o: { quality: string }) =>
+      `на цьому пристрої — ${o.quality}`,
+    qualityFull: "повна",
+    qualityFullHint: "усе світло й увесь рух",
+    qualityLite: "lite",
+    qualityLiteHint: "легше для пам'яті та батареї",
+    close: "закрити",
+    closeHint: "esc — закрити",
   },
   tabDone: "готово",
   readoutDone: "готово",
@@ -339,7 +355,6 @@ export const uk = {
     leaveFailures: {
       offline: "блокнот зараз недоступний · твоя записка залишиться тут",
       rate_limited: "одна записка раз на дві хвилини · спробуй трохи згодом",
-      daily_limit_reached: "на сьогодні записок досить · повертайся завтра",
       contains_link: "у блокноті не можна залишати посилання",
       too_long: "задовго для блокнота · скороти трохи",
       sign_off_too_long: "підпис задовгий",

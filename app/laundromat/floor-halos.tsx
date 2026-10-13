@@ -4,6 +4,8 @@ import type { SceneLayout } from "@/lib/laundromat/build-scene-layout";
 import { getFloorHalo } from "@/lib/laundromat/get-floor-halo";
 import { toSvgPoints } from "@/lib/laundromat/to-svg-points";
 
+import { useRenderQuality } from "./settings/use-render-quality";
+
 const BLUR_PER_UNIT = 0.2;
 const DROP_PER_UNIT = 0.08;
 
@@ -14,6 +16,7 @@ type FloorHalosProps = {
 /** Draw a soft shadow on the floor under every object that stands on it. */
 export function FloorHalos(props: FloorHalosProps) {
   const id = useId();
+  const { quality } = useRenderQuality();
   const { projection } = props.layout;
   const halos = props.layout.objects.flatMap(({ object }) => {
     const halo = getFloorHalo({ object, projection });
@@ -22,7 +25,7 @@ export function FloorHalos(props: FloorHalosProps) {
   return (
     <g
       className="pointer-events-none fill-[var(--lm-halo)] stroke-none"
-      filter={`url(#${id}-blur)`}
+      filter={quality === "full" ? `url(#${id}-blur)` : undefined}
       opacity={0.45}
       transform={`translate(0 ${DROP_PER_UNIT * projection.unit})`}
     >

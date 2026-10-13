@@ -2,6 +2,8 @@
 
 import { createContext, useContext, useEffect, useState } from "react";
 
+import { useIsLaundromatRoute } from "@/components/custom/site-chrome/use-is-laundromat-route";
+
 import { Bgm } from "./bgm";
 
 type BgmContextType = {
@@ -16,11 +18,13 @@ const BgmContext = createContext<BgmContextType>({
 
 export function BgmProvider({ children }: { children: React.ReactNode }) {
   const [bgm] = useState(() => new Bgm());
+  const isLaundromatRoute = useIsLaundromatRoute();
 
   useEffect(() => {
+    if (isLaundromatRoute) return;
     bgm.initializeBgms();
     return () => bgm.cleanup();
-  }, [bgm]);
+  }, [bgm, isLaundromatRoute]);
 
   return <BgmContext.Provider value={{ bgm }}>{children}</BgmContext.Provider>;
 }

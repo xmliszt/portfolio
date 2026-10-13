@@ -32,8 +32,24 @@ export const de = {
     shareText:
       "Ein ruhiger Waschsalon in deinem Browser. Steck eine Ladung rein, lass den Timer laufen und lies die Notizen, die andere hinterlassen haben.",
     language: "Sprache",
+    settings: "Einstellungen",
     builtBy: "mit ❤️ gebaut von Li Yuxuan",
-    updateAvailable: "aktualisiert · neu laden",
+    updateAvailable: "neu laden: Waschsalon aktualisiert",
+  },
+  settings: {
+    heading: "Einstellungen",
+    rendering: "Darstellung",
+    renderingHint:
+      "Lite verzichtet auf weiches Licht, das Wiegen der Pflanze und das Heranzoomen an Notizbuch und Aushang. Das hilft auf langsameren Geräten oder bei knappem Speicher.",
+    qualityAuto: "auto",
+    qualityAutoHint: (o: { quality: string }) =>
+      `auf diesem Gerät: ${o.quality}`,
+    qualityFull: "voll",
+    qualityFullHint: "alles Licht und jede Bewegung",
+    qualityLite: "lite",
+    qualityLiteHint: "schont Speicher und Akku",
+    close: "schließen",
+    closeHint: "esc zum Schließen",
   },
   tabDone: "fertig",
   readoutDone: "ende",
@@ -366,7 +382,6 @@ export const de = {
     leaveFailures: {
       offline: "das Notizbuch ist gerade offline · deine Notiz bleibt hier",
       rate_limited: "eine Notiz alle zwei Minuten · versuch es gleich noch mal",
-      daily_limit_reached: "genug Notizen für heute · komm morgen wieder",
       contains_link: "keine Links im Notizbuch",
       too_long: "zu lang für das Notizbuch · kürz sie ein bisschen",
       sign_off_too_long: "die Unterschrift ist zu lang",

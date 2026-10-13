@@ -6,6 +6,7 @@ import { sceneConfig } from "@/lib/laundromat/scene-config";
 
 import { LaundromatCopyProvider } from "./i18n/laundromat-copy-provider";
 import { SupabaseRoomProvider } from "./realtime/supabase-room-provider";
+import { RenderQualityProvider } from "./settings/render-quality-provider";
 import { SoundBoardProvider } from "./sound/sound-board-provider";
 import { LaundromatEntry } from "./laundromat-entry";
 import { LaundromatIntro } from "./laundromat-intro";
@@ -27,9 +28,11 @@ export function LaundromatHome(props: LaundromatHomeProps) {
       <LaundromatCopyProvider locale={props.locale}>
         <Suspense>
           <SoundBoardProvider>
-            <SupabaseRoomProvider>
-              <LaundromatEntry config={sceneConfig} />
-            </SupabaseRoomProvider>
+            <RenderQualityProvider>
+              <SupabaseRoomProvider>
+                <LaundromatEntry config={sceneConfig} />
+              </SupabaseRoomProvider>
+            </RenderQualityProvider>
           </SoundBoardProvider>
         </Suspense>
         <LaundromatIntro />
