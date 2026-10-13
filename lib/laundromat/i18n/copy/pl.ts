@@ -139,8 +139,12 @@ export const pl = {
     readyLabel: (o) =>
       `Wycieraczka, zabierz ${o.laundry === "folded" ? "suche" : "uprane"} pranie do domu`,
     readyTooltip: "do domu · zabierz pranie ze sobą",
-    waitingLabel: "Wycieraczka, droga do domu, gdy pranie będzie gotowe",
-    waitingTooltip: "droga do domu · najpierw skończ pranie",
+    awayLabel: "Wycieraczka, wróć do domu, gdy pranie trwa",
+    awayTooltip: "wróć do domu · pranie dalej trwa",
+    wetLabel: "Wycieraczka, wróć do domu z mokrym praniem",
+    wetTooltip: "wróć do domu · ubrania są jeszcze mokre",
+    dirtyLabel: "Wycieraczka, włóż ubrania do pralki przed powrotem do domu",
+    dirtyTooltip: "najpierw wypierz · włóż ubrania do pralki",
   },
   laundryBasket: {
     labels: {
@@ -212,6 +216,10 @@ export const pl = {
       board: "tablica",
     },
     updates: {
+      "home-mid-wash": {
+        title: "wróć do domu w trakcie prania",
+        body: "Stań na wycieraczce, żeby wrócić do domu, gdy pranie trwa. Mokre ubrania wracają w koszu, suche lądują na łóżku.",
+      },
       "bedroom-curtains": {
         title: "zasłony i nowa lampa w domu",
         body: "Kliknij zasłony albo lampę w swoim pokoju. Oba pomieszczenia jaśnieją i ciemnieją teraz razem ze słońcem, księżycem i lampami.",
@@ -394,6 +402,7 @@ export const pl = {
     basketPartial: (o) =>
       `${o.count} z ${o.total} w koszu · dorzuć więcej albo idź do drzwi`,
     basketFull: "wszystko w koszu · idź do drzwi",
+    basketWet: "ubrania są jeszcze mokre · wysusz je w pralni",
     lampOffTooltip: "zgaś lampę",
     lampOnTooltip: "zapal lampę",
     lampOffLabel: "Zgaś lampę",
@@ -404,6 +413,8 @@ export const pl = {
     curtainOpenLabel: "Odsuń zasłony",
     doorReadyTooltip: "zanieś do pralni",
     doorWaitingTooltip: "najpierw zbierz pranie",
+    doorAwayTooltip: "wróć do pralni · pranie jeszcze trwa",
+    doorAwayLabel: "Wróć do pralni, pranie jest jeszcze w maszynie",
     doorReadyLabel: "Zanieś kosz do pralni",
     doorWaitingLabel: "Drzwi do pralni, najpierw zbierz pranie",
     justListen: "po prostu posłuchaj →",

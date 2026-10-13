@@ -5,6 +5,7 @@ import { motion, useReducedMotion } from "motion/react";
 
 import type { BedroomConfig } from "@/lib/laundromat/first-visit/bedroom-config";
 import { bedroomConfig } from "@/lib/laundromat/first-visit/bedroom-config";
+import type { Homecoming } from "@/lib/laundromat/laundry/get-homecoming";
 import type { SceneConfig } from "@/lib/laundromat/scene-config";
 
 import { FirstVisit } from "./first-visit/first-visit";
@@ -38,7 +39,10 @@ export function LaundromatEntry(props: LaundromatEntryProps) {
   const { walkIn } = bedroom.motion;
   const arrivedFlag = useArrivedFlag();
   const [isBackHome, setIsBackHome] = useState(false);
-  const [hasCleanPile, setHasCleanPile] = useState(false);
+  const [home, setHome] = useState<Homecoming>({
+    kind: "fresh",
+    cleanPile: false,
+  });
   const [homeVeil, setHomeVeil] = useState<HomeVeil>();
   const hasArrived =
     props.ignoreArrivedFlag || isBackHome ? false : arrivedFlag.hasArrived;
@@ -102,10 +106,10 @@ export function LaundromatEntry(props: LaundromatEntryProps) {
     leaveBedroom();
   }
 
-  function handleHeadHome() {
+  function handleHeadHome(homecoming: Homecoming) {
     function goHome() {
       setIsBackHome(true);
-      setHasCleanPile(true);
+      setHome(homecoming);
       setIsBedroomGone(false);
       setArrival("hidden");
     }
@@ -142,7 +146,7 @@ export function LaundromatEntry(props: LaundromatEntryProps) {
             scene={props.config}
             bedroom={bedroom}
             hourOverride={props.hourOverride}
-            cleanPile={hasCleanPile}
+            home={home}
             onWalkIn={handleWalkIn}
             onListen={handleListen}
           />

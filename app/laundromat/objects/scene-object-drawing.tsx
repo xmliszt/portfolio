@@ -130,7 +130,7 @@ export function SceneObjectDrawing(props: SceneObjectDrawingProps) {
     case "basket":
       return <BasketDrawing {...shared} contents={views.basket} />;
     case "mat":
-      return <MatDrawing {...shared} ready={views.matReady} />;
+      return <MatDrawing {...shared} />;
     case "counter":
       return <CounterDrawing {...shared} />;
     case "board":

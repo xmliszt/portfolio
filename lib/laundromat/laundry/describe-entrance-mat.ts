@@ -1,30 +1,47 @@
 import type { LaundromatCopy } from "@/lib/laundromat/i18n/laundromat-copy";
 
-import type { BasketContents } from "./get-basket-contents";
+import type { Homecoming } from "./get-homecoming";
 
-/** Return the welcome mat's `label` and `tooltip`, and `ready` when the basket holds washed or dried laundry that can be taken home. */
+/** Return the welcome mat's `label` and `tooltip` for heading home to `homecoming`, and `canLeave` unless the basket still holds dirty laundry. */
 export function describeEntranceMat(options: {
-  basket: BasketContents;
+  homecoming: Homecoming;
   copy: LaundromatCopy;
 }) {
   const copy = options.copy.entranceMat;
-  switch (options.basket) {
-    case "wet":
-    case "folded":
+  const { homecoming } = options;
+  switch (homecoming.kind) {
+    case "fresh":
+      return homecoming.cleanPile
+        ? {
+            label: copy.readyLabel({ laundry: "folded" }),
+            tooltip: copy.readyTooltip,
+            canLeave: true,
+          }
+        : {
+            label: copy.awayLabel,
+            tooltip: copy.awayTooltip,
+            canLeave: true,
+          };
+    case "carrying":
+      return homecoming.laundry === "wet"
+        ? {
+            label: copy.wetLabel,
+            tooltip: copy.wetTooltip,
+            canLeave: true,
+          }
+        : {
+            label: copy.dirtyLabel,
+            tooltip: copy.dirtyTooltip,
+            canLeave: false,
+          };
+    case "away":
       return {
-        label: copy.readyLabel({ laundry: options.basket }),
-        tooltip: copy.readyTooltip,
-        ready: true,
-      };
-    case "dirty":
-    case "empty":
-      return {
-        label: copy.waitingLabel,
-        tooltip: copy.waitingTooltip,
-        ready: false,
+        label: copy.awayLabel,
+        tooltip: copy.awayTooltip,
+        canLeave: true,
       };
     default: {
-      const unhandled: never = options.basket;
+      const unhandled: never = homecoming;
       return unhandled;
     }
   }

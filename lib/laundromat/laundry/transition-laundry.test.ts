@@ -367,22 +367,23 @@ test("walks the whole wash, dry and wash-again loop", () => {
   );
 });
 
-test("collect takes washed or dried laundry home and leaves anything else alone", () => {
-  for (const load of [
-    { kind: "folded" },
-    { kind: "carrying", laundry: "wet" },
-  ] satisfies LaundryLoad[]) {
-    const next = transition({
-      state: buildState({ load }),
-      event: { type: "collect" },
-    });
-    assert.deepEqual(next.load, { kind: "carrying", laundry: "dirty" });
-  }
+test("heading home unloads dry laundry from the basket and starts a new dirty load", () => {
+  const next = transition({
+    state: buildState({ load: { kind: "folded" } }),
+    event: { type: "head-home" },
+  });
+  assert.deepEqual(next.load, { kind: "carrying", laundry: "dirty" });
+});
+
+test("heading home leaves wet laundry and laundry still in a machine alone", () => {
   for (const state of [
     buildState({ load: { kind: "carrying", laundry: "dirty" } }),
+    buildState({ load: { kind: "carrying", laundry: "wet" } }),
     buildState({ load: { kind: "loaded", machine: washer } }),
+    buildState({ load: { kind: "done", machine: washer } }),
+    buildState({ load: { kind: "done", machine: dryer } }),
     buildRunning({ machine: dryer }),
   ]) {
-    assert.equal(transition({ state, event: { type: "collect" } }), state);
+    assert.equal(transition({ state, event: { type: "head-home" } }), state);
   }
 });

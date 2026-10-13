@@ -156,9 +156,13 @@ export const de = {
     readyLabel: (o: { laundry: "wet" | "folded" }) =>
       `Fußmatte, nimm deine ${o.laundry === "folded" ? "trockene" : "gewaschene"} Wäsche mit nach Hause`,
     readyTooltip: "nach Hause · nimm deine Wäsche mit",
-    waitingLabel:
-      "Fußmatte, der Weg nach Hause, sobald deine Wäsche fertig ist",
-    waitingTooltip: "der Weg nach Hause · erst die Wäsche fertig machen",
+    awayLabel: "Fußmatte, geh nach Hause, während deine Wäsche läuft",
+    awayTooltip: "nach Hause gehen · deine Wäsche läuft weiter",
+    wetLabel: "Fußmatte, geh mit der nassen Wäsche nach Hause",
+    wetTooltip: "nach Hause gehen · die Wäsche ist noch nass",
+    dirtyLabel:
+      "Fußmatte, leg die Wäsche in eine Waschmaschine, bevor du nach Hause gehst",
+    dirtyTooltip: "erst waschen · leg die Wäsche in eine Waschmaschine",
   },
   laundryBasket: {
     labels: {
@@ -231,6 +235,10 @@ export const de = {
       board: "aushang",
     },
     updates: {
+      "home-mid-wash": {
+        title: "nach Hause, während es läuft",
+        body: "Tritt auf die Fußmatte, um nach Hause zu gehen, während deine Wäsche läuft. Nasse Wäsche kommt im Korb mit, trockene landet auf dem Bett.",
+      },
       "bedroom-curtains": {
         title: "Vorhänge und eine neue Lampe zu Hause",
         body: "Klick auf die Vorhänge oder die Lampe in deinem Zimmer. Beide Räume werden jetzt mit Sonne, Mond und Lampen heller und dunkler.",
@@ -422,6 +430,7 @@ export const de = {
     basketPartial: (o: { count: number; total: number }) =>
       `${o.count} von ${o.total} drin · leg mehr rein oder geh zur Tür`,
     basketFull: "alles drin · geh zur Tür",
+    basketWet: "die Wäsche ist noch nass · trockne sie im Waschsalon",
     lampOffTooltip: "Lampe ausschalten",
     lampOnTooltip: "Lampe einschalten",
     lampOffLabel: "Die Lampe ausschalten",
@@ -432,6 +441,9 @@ export const de = {
     curtainOpenLabel: "Die Vorhänge aufziehen",
     doorReadyTooltip: "zum Waschsalon tragen",
     doorWaitingTooltip: "heb zuerst deine Wäsche auf",
+    doorAwayTooltip: "zurück in den Waschsalon · deine Wäsche läuft noch",
+    doorAwayLabel:
+      "Zurück in den Waschsalon, deine Wäsche ist noch in der Maschine",
     doorReadyLabel: "Den Korb zum Waschsalon tragen",
     doorWaitingLabel: "Tür zum Waschsalon, heb zuerst deine Wäsche auf",
     justListen: "nur zuhören →",

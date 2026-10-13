@@ -160,8 +160,12 @@ export const id = {
     readyLabel: (o: { laundry: "wet" | "folded" }) =>
       `Keset, bawa pulang cucianmu yang ${o.laundry === "folded" ? "sudah kering" : "sudah dicuci"}`,
     readyTooltip: "pulang · bawa cucianmu",
-    waitingLabel: "Keset, jalan pulang setelah cucianmu selesai",
-    waitingTooltip: "jalan pulang · selesaikan cucianmu dulu",
+    awayLabel: "Keset, pulang selagi cucianmu berjalan",
+    awayTooltip: "pulang · cucianmu tetap berjalan",
+    wetLabel: "Keset, pulang dengan cucian basah",
+    wetTooltip: "pulang · pakaiannya masih basah",
+    dirtyLabel: "Keset, masukkan pakaian ke mesin cuci sebelum pulang",
+    dirtyTooltip: "cuci dulu · masukkan pakaian ke mesin cuci",
   },
   laundryBasket: {
     labels: {
@@ -233,6 +237,10 @@ export const id = {
       board: "papan",
     },
     updates: {
+      "home-mid-wash": {
+        title: "pulang selagi mencuci",
+        body: "Injak keset untuk pulang selagi cucianmu berjalan. Pakaian basah dibawa pulang di keranjang, yang kering mendarat di kasur.",
+      },
       "bedroom-curtains": {
         title: "gorden dan lampu baru di rumah",
         body: "Klik gorden atau lampu di kamarmu. Kedua ruangan kini jadi lebih terang dan gelap mengikuti matahari, bulan, dan lampu.",
@@ -423,6 +431,7 @@ export const id = {
     basketPartial: (o: { count: number; total: number }) =>
       `${o.count} dari ${o.total} masuk · tambah lagi, atau ke pintu`,
     basketFull: "semua masuk · ke pintu",
+    basketWet: "pakaiannya masih basah · keringkan di laundromat",
     lampOffTooltip: "matikan lampu",
     lampOnTooltip: "nyalakan lampu",
     lampOffLabel: "Matikan lampu",
@@ -433,6 +442,8 @@ export const id = {
     curtainOpenLabel: "Buka gorden",
     doorReadyTooltip: "bawa ke laundry",
     doorWaitingTooltip: "ambil cucianmu dulu",
+    doorAwayTooltip: "kembali ke laundromat · cucianmu masih berjalan",
+    doorAwayLabel: "Kembali ke laundromat, cucianmu masih di mesin",
     doorReadyLabel: "Bawa keranjang ke laundry",
     doorWaitingLabel: "Pintu ke laundry, ambil cucianmu dulu",
     justListen: "dengarkan saja →",

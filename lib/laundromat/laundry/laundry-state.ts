@@ -26,7 +26,7 @@ export type LaundryEvent =
   | { type: "start"; machine: MachineRef; now: number }
   | { type: "remind"; machine: MachineRef }
   | { type: "tick"; now: number }
-  | { type: "collect" };
+  | { type: "head-home" };
 
 export type MachineCycles = SceneConfig["machines"];
 

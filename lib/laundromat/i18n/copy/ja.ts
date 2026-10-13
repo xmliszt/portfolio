@@ -151,8 +151,12 @@ export const ja = {
     readyLabel: (o: { laundry: "wet" | "folded" }) =>
       `玄関マット、${o.laundry === "folded" ? "乾いた" : "洗った"}洗濯物を持って帰る`,
     readyTooltip: "家に帰る · 洗濯物を持って",
-    waitingLabel: "玄関マット、洗濯が終わったらここから帰る",
-    waitingTooltip: "帰り道 · 先に洗濯を終わらせて",
+    awayLabel: "玄関マット、洗濯中に家へ帰る",
+    awayTooltip: "家に帰る · 洗濯はそのまま続くよ",
+    wetLabel: "玄関マット、濡れた洗濯物を持って家へ帰る",
+    wetTooltip: "家に帰る · 服はまだ濡れてる",
+    dirtyLabel: "玄関マット、帰る前に服を洗濯機に入れよう",
+    dirtyTooltip: "まず洗濯から · 服を洗濯機に入れよう",
   },
   laundryBasket: {
     labels: {
@@ -224,6 +228,10 @@ export const ja = {
       board: "掲示板",
     },
     updates: {
+      "home-mid-wash": {
+        title: "洗濯中に家へ帰れる",
+        body: "玄関マットから、洗濯の途中でも家に帰れます。濡れた服はかごに入れて持ち帰り、乾いた服はベッドの上に。",
+      },
       "bedroom-curtains": {
         title: "家のカーテンと新しいランプ",
         body: "部屋のカーテンやランプをクリックしてみて。どちらの部屋も、太陽や月、ランプに合わせて明るくなったり暗くなったりします。",
@@ -410,6 +418,7 @@ export const ja = {
     basketPartial: (o: { count: number; total: number }) =>
       `${o.total} 枚中 ${o.count} 枚 · もっと入れるか、ドアへ`,
     basketFull: "全部入った · ドアへ",
+    basketWet: "服はまだ濡れてる · コインランドリーで乾かそう",
     lampOffTooltip: "ランプを消す",
     lampOnTooltip: "ランプをつける",
     lampOffLabel: "ランプを消す",
@@ -420,6 +429,8 @@ export const ja = {
     curtainOpenLabel: "カーテンを開ける",
     doorReadyTooltip: "コインランドリーへ持っていく",
     doorWaitingTooltip: "先に洗濯物を拾って",
+    doorAwayTooltip: "コインランドリーへ戻る · 洗濯はまだ続いてる",
+    doorAwayLabel: "コインランドリーへ戻る、洗濯物はまだ機械の中",
     doorReadyLabel: "かごをコインランドリーへ持っていく",
     doorWaitingLabel: "コインランドリーへのドア、先に洗濯物を拾って",
     justListen: "聴くだけ →",

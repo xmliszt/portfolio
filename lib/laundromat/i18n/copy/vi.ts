@@ -158,8 +158,12 @@ export const vi = {
     readyLabel: (o: { laundry: "wet" | "folded" }) =>
       `Thảm chào mừng, mang đồ ${o.laundry === "folded" ? "đã khô" : "đã giặt"} về nhà`,
     readyTooltip: "về nhà · mang đồ theo",
-    waitingLabel: "Thảm chào mừng, đường về nhà khi đồ đã xong",
-    waitingTooltip: "đường về nhà · giặt xong đồ đã",
+    awayLabel: "Thảm chùi chân, về nhà trong lúc máy đang giặt",
+    awayTooltip: "về nhà · máy vẫn tiếp tục chạy",
+    wetLabel: "Thảm chùi chân, về nhà với đồ còn ướt",
+    wetTooltip: "về nhà · quần áo vẫn còn ướt",
+    dirtyLabel: "Thảm chùi chân, cho quần áo vào máy giặt trước khi về nhà",
+    dirtyTooltip: "giặt trước đã · cho quần áo vào máy giặt",
   },
   laundryBasket: {
     labels: {
@@ -231,6 +235,10 @@ export const vi = {
       board: "bảng tin",
     },
     updates: {
+      "home-mid-wash": {
+        title: "về nhà khi máy đang chạy",
+        body: "Bước lên thảm chùi chân để về nhà trong lúc máy đang giặt. Đồ ướt về nhà trong giỏ, đồ khô nằm trên giường.",
+      },
       "bedroom-curtains": {
         title: "rèm và đèn mới ở nhà",
         body: "Bấm vào rèm hoặc đèn trong phòng. Giờ cả hai căn phòng sáng lên và tối đi theo mặt trời, mặt trăng và đèn.",
@@ -415,6 +423,7 @@ export const vi = {
     basketPartial: (o: { count: number; total: number }) =>
       `${o.count}/${o.total} đã vào giỏ · bỏ thêm, hoặc ra cửa`,
     basketFull: "đủ cả rồi · ra cửa thôi",
+    basketWet: "quần áo vẫn còn ướt · sấy ở tiệm giặt",
     lampOffTooltip: "tắt đèn",
     lampOnTooltip: "bật đèn",
     lampOffLabel: "Tắt đèn",
@@ -425,6 +434,8 @@ export const vi = {
     curtainOpenLabel: "Kéo rèm ra",
     doorReadyTooltip: "mang ra tiệm giặt",
     doorWaitingTooltip: "nhặt đồ trước đã",
+    doorAwayTooltip: "quay lại tiệm giặt · đồ vẫn đang giặt",
+    doorAwayLabel: "Quay lại tiệm giặt, đồ vẫn còn trong máy",
     doorReadyLabel: "Mang giỏ ra tiệm giặt",
     doorWaitingLabel: "Cửa ra tiệm giặt, nhặt đồ trước đã",
     justListen: "chỉ nghe thôi →",

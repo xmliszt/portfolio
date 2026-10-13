@@ -144,8 +144,12 @@ export const zhHant = {
     readyLabel: (o: { laundry: "wet" | "folded" }) =>
       `門墊，帶著${o.laundry === "folded" ? "烘乾的" : "洗好的"}衣服回家`,
     readyTooltip: "回家 · 帶上你的衣服",
-    waitingLabel: "門墊，衣服好了就從這裡回家",
-    waitingTooltip: "回家的路 · 先把衣服洗完",
+    awayLabel: "門墊，洗衣時先回家",
+    awayTooltip: "回家 · 衣服會繼續洗",
+    wetLabel: "門墊，帶著濕衣服回家",
+    wetTooltip: "回家 · 衣服還是濕的",
+    dirtyLabel: "門墊，回家前先把衣服放進洗衣機",
+    dirtyTooltip: "先洗一下 · 把衣服放進洗衣機",
   },
   laundryBasket: {
     labels: {
@@ -217,6 +221,10 @@ export const zhHant = {
       board: "告示板",
     },
     updates: {
+      "home-mid-wash": {
+        title: "洗衣時也能回家",
+        body: "踩上門墊，衣服還在洗時也能回家。濕衣服裝在籃子裡帶回，乾衣服放在床上。",
+      },
       "bedroom-curtains": {
         title: "家裡的窗簾和新檯燈",
         body: "點一下房間裡的窗簾或檯燈。現在兩個房間都會隨著太陽、月亮和燈光變亮或變暗。",
@@ -399,6 +407,7 @@ export const zhHant = {
     basketPartial: (o: { count: number; total: number }) =>
       `已放 ${o.count}/${o.total} 件 · 再放幾件，或走向門口`,
     basketFull: "都放好了 · 走向門口",
+    basketWet: "衣服還是濕的 · 去洗衣房烘乾",
     lampOffTooltip: "關燈",
     lampOnTooltip: "開燈",
     lampOffLabel: "關掉檯燈",
@@ -409,6 +418,8 @@ export const zhHant = {
     curtainOpenLabel: "拉開窗簾",
     doorReadyTooltip: "拿去洗衣店",
     doorWaitingTooltip: "先把衣服收好",
+    doorAwayTooltip: "回洗衣房 · 衣服還在洗",
+    doorAwayLabel: "回洗衣房，衣服還在機器裡",
     doorReadyLabel: "把籃子拿去洗衣店",
     doorWaitingLabel: "通往洗衣店的門，先把衣服收好",
     justListen: "只聽聽 →",

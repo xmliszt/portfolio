@@ -156,8 +156,13 @@ export const ptBR = {
     readyLabel: (o: { laundry: "wet" | "folded" }) =>
       `Capacho, leve sua roupa ${o.laundry === "folded" ? "seca" : "lavada"} para casa`,
     readyTooltip: "ir para casa · leve sua roupa",
-    waitingLabel: "Capacho, o caminho de casa quando sua roupa estiver pronta",
-    waitingTooltip: "o caminho de casa · termine sua roupa primeiro",
+    awayLabel: "Capacho, volte para casa enquanto a roupa lava",
+    awayTooltip: "voltar para casa · a roupa continua lavando",
+    wetLabel: "Capacho, volte para casa com a roupa molhada",
+    wetTooltip: "voltar para casa · a roupa ainda está molhada",
+    dirtyLabel:
+      "Capacho, coloque a roupa numa lavadora antes de voltar para casa",
+    dirtyTooltip: "lave primeiro · coloque a roupa numa lavadora",
   },
   laundryBasket: {
     labels: {
@@ -230,6 +235,10 @@ export const ptBR = {
       board: "mural",
     },
     updates: {
+      "home-mid-wash": {
+        title: "volte para casa enquanto lava",
+        body: "Pise no capacho para voltar para casa enquanto a roupa lava. A roupa molhada vai no cesto, a seca vai para a cama.",
+      },
       "bedroom-curtains": {
         title: "cortinas e uma luminária nova em casa",
         body: "Clique nas cortinas ou na luminária do seu quarto. Os dois ambientes agora clareiam e escurecem com o sol, a lua e as luminárias.",
@@ -420,6 +429,7 @@ export const ptBR = {
     basketPartial: (o: { count: number; total: number }) =>
       `${o.count} de ${o.total} dentro · coloque mais ou vá até a porta`,
     basketFull: "tudo dentro · vá até a porta",
+    basketWet: "a roupa ainda está molhada · seque na lavanderia",
     lampOffTooltip: "apagar a luminária",
     lampOnTooltip: "acender a luminária",
     lampOffLabel: "Apagar a luminária",
@@ -430,6 +440,8 @@ export const ptBR = {
     curtainOpenLabel: "Abrir as cortinas",
     doorReadyTooltip: "levar para a lavanderia",
     doorWaitingTooltip: "pegue sua roupa primeiro",
+    doorAwayTooltip: "voltar à lavanderia · sua roupa ainda está lavando",
+    doorAwayLabel: "Voltar à lavanderia, sua roupa ainda está na máquina",
     doorReadyLabel: "Levar o cesto para a lavanderia",
     doorWaitingLabel: "Porta para a lavanderia, pegue sua roupa primeiro",
     justListen: "só ouvir →",

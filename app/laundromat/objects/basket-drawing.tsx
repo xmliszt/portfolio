@@ -155,7 +155,7 @@ function getCreasePath(options: { lump: Lump; rx: number; ry: number }) {
 }
 
 type BasketDrawingProps = {
-  laidOut: LaidOutObject;
+  laidOut: Pick<LaidOutObject, "object">;
   projection: IsoProjection;
   highlighted: boolean;
   contents: BasketContents;

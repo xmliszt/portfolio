@@ -159,8 +159,12 @@ export const hi = {
     readyLabel: (o: { laundry: "wet" | "folded" }) =>
       `स्वागत मैट, अपने ${o.laundry === "folded" ? "सूखे" : "धुले"} कपड़े घर ले जाओ`,
     readyTooltip: "घर चलो · कपड़े साथ ले जाओ",
-    waitingLabel: "स्वागत मैट, कपड़े तैयार होने पर घर का रास्ता",
-    waitingTooltip: "घर का रास्ता · पहले अपनी धुलाई पूरी करो",
+    awayLabel: "डोरमैट, कपड़े धुलते समय घर लौटो",
+    awayTooltip: "घर लौटो · कपड़े धुलते रहेंगे",
+    wetLabel: "डोरमैट, गीले कपड़े लेकर घर लौटो",
+    wetTooltip: "घर लौटो · कपड़े अभी गीले हैं",
+    dirtyLabel: "डोरमैट, घर जाने से पहले कपड़े वॉशर में डालो",
+    dirtyTooltip: "पहले धो लो · कपड़े वॉशर में डालो",
   },
   laundryBasket: {
     labels: {
@@ -232,6 +236,10 @@ export const hi = {
       board: "बोर्ड",
     },
     updates: {
+      "home-mid-wash": {
+        title: "धुलाई के बीच घर जाओ",
+        body: "डोरमैट पर कदम रखो और कपड़े धुलते समय घर लौट जाओ। गीले कपड़े टोकरी में घर आते हैं, सूखे बिस्तर पर।",
+      },
       "bedroom-curtains": {
         title: "घर पर पर्दे और नया लैंप",
         body: "अपने कमरे के पर्दों या लैंप पर क्लिक करो। दोनों कमरे अब सूरज, चाँद और लैंप के साथ रोशन और अँधेरे होते हैं।",
@@ -419,6 +427,7 @@ export const hi = {
     basketPartial: (o: { count: number; total: number }) =>
       `${o.total} में से ${o.count} अंदर · और डालो, या दरवाज़े की ओर चलो`,
     basketFull: "सब अंदर · दरवाज़े की ओर चलो",
+    basketWet: "कपड़े अभी गीले हैं · लॉन्ड्रोमैट में सुखाओ",
     lampOffTooltip: "लैंप बंद करो",
     lampOnTooltip: "लैंप चालू करो",
     lampOffLabel: "लैंप बंद करो",
@@ -429,6 +438,8 @@ export const hi = {
     curtainOpenLabel: "पर्दे खोलो",
     doorReadyTooltip: "इसे लॉन्ड्री तक ले चलो",
     doorWaitingTooltip: "पहले अपने कपड़े उठाओ",
+    doorAwayTooltip: "लॉन्ड्रोमैट वापस जाओ · कपड़े अभी धुल रहे हैं",
+    doorAwayLabel: "लॉन्ड्रोमैट वापस जाओ, कपड़े अभी मशीन में हैं",
     doorReadyLabel: "टोकरी लॉन्ड्री तक ले चलो",
     doorWaitingLabel: "लॉन्ड्री का दरवाज़ा, पहले अपने कपड़े उठाओ",
     justListen: "बस सुनो →",

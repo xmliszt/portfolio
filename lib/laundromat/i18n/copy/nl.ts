@@ -125,8 +125,13 @@ export const nl = {
     readyLabel: (o) =>
       `Deurmat, neem je ${o.laundry === "folded" ? "droge" : "gewassen"} was mee naar huis`,
     readyTooltip: "naar huis · neem je was mee",
-    waitingLabel: "Deurmat, de weg naar huis als je was klaar is",
-    waitingTooltip: "de weg naar huis · maak eerst je was af",
+    awayLabel: "Deurmat, ga naar huis terwijl je was draait",
+    awayTooltip: "naar huis · je was draait verder",
+    wetLabel: "Deurmat, ga naar huis met de natte was",
+    wetTooltip: "naar huis · de kleren zijn nog nat",
+    dirtyLabel:
+      "Deurmat, doe de kleren in een wasmachine voor je naar huis gaat",
+    dirtyTooltip: "eerst wassen · doe de kleren in een wasmachine",
   },
   laundryBasket: {
     labels: {
@@ -200,6 +205,10 @@ export const nl = {
       board: "bord",
     },
     updates: {
+      "home-mid-wash": {
+        title: "naar huis terwijl het draait",
+        body: "Stap op de deurmat om naar huis te gaan terwijl je was draait. Natte kleren gaan mee in de mand, droge belanden op het bed.",
+      },
       "bedroom-curtains": {
         title: "gordijnen en een nieuwe lamp thuis",
         body: "Klik op de gordijnen of de lamp in je kamer. Beide ruimtes worden nu lichter en donkerder met de zon, de maan en de lampen.",
@@ -383,6 +392,7 @@ export const nl = {
     basketPartial: (o) =>
       `${o.count} van ${o.total} erin · doe er meer bij, of ga naar de deur`,
     basketFull: "alles erin · ga naar de deur",
+    basketWet: "de kleren zijn nog nat · droog ze in de wasserette",
     lampOffTooltip: "lamp uit",
     lampOnTooltip: "lamp aan",
     lampOffLabel: "Doe de lamp uit",
@@ -393,6 +403,8 @@ export const nl = {
     curtainOpenLabel: "Doe de gordijnen open",
     doorReadyTooltip: "breng het naar de wasserette",
     doorWaitingTooltip: "raap eerst je was op",
+    doorAwayTooltip: "terug naar de wasserette · je was draait nog",
+    doorAwayLabel: "Terug naar de wasserette, je was zit nog in de machine",
     doorReadyLabel: "Breng de mand naar de wasserette",
     doorWaitingLabel: "Deur naar de wasserette, raap eerst je was op",
     justListen: "gewoon luisteren →",

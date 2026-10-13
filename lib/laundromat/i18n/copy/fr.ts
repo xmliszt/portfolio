@@ -154,8 +154,12 @@ export const fr = {
     readyLabel: (o: { laundry: "wet" | "folded" }) =>
       `Paillasson, rentre chez toi avec ton linge ${o.laundry === "folded" ? "sec" : "lavé"}`,
     readyTooltip: "rentrer · emporte ton linge",
-    waitingLabel: "Paillasson, le chemin du retour une fois ton linge fini",
-    waitingTooltip: "le chemin du retour · finis d'abord ta lessive",
+    awayLabel: "Paillasson, rentre chez toi pendant que ton linge tourne",
+    awayTooltip: "rentrer chez toi · ton linge continue de tourner",
+    wetLabel: "Paillasson, rentre chez toi avec le linge mouillé",
+    wetTooltip: "rentrer chez toi · le linge est encore mouillé",
+    dirtyLabel: "Paillasson, mets le linge dans un lave-linge avant de rentrer",
+    dirtyTooltip: "lave-le d'abord · mets le linge dans un lave-linge",
   },
   laundryBasket: {
     labels: {
@@ -229,6 +233,10 @@ export const fr = {
       board: "panneau",
     },
     updates: {
+      "home-mid-wash": {
+        title: "rentre pendant que ça tourne",
+        body: "Passe sur le paillasson pour rentrer pendant que ton linge tourne. Le linge mouillé rentre dans le panier, le linge sec finit sur le lit.",
+      },
       "bedroom-curtains": {
         title: "des rideaux et une nouvelle lampe chez toi",
         body: "Clique sur les rideaux ou la lampe de ta chambre. Les deux pièces s'éclairent et s'assombrissent désormais avec le soleil, la lune et les lampes.",
@@ -420,6 +428,7 @@ export const fr = {
     basketPartial: (o: { count: number; total: number }) =>
       `${o.count} sur ${o.total} dedans · ajoute-en d'autres, ou va vers la porte`,
     basketFull: "tout est dedans · va vers la porte",
+    basketWet: "le linge est encore mouillé · sèche-le à la laverie",
     lampOffTooltip: "éteindre la lampe",
     lampOnTooltip: "allumer la lampe",
     lampOffLabel: "Éteindre la lampe",
@@ -430,6 +439,8 @@ export const fr = {
     curtainOpenLabel: "Ouvrir les rideaux",
     doorReadyTooltip: "l'emporter à la laverie",
     doorWaitingTooltip: "ramasse d'abord ton linge",
+    doorAwayTooltip: "retour à la laverie · ton linge tourne encore",
+    doorAwayLabel: "Retour à la laverie, ton linge est encore dans la machine",
     doorReadyLabel: "Emporter le panier à la laverie",
     doorWaitingLabel: "Porte vers la laverie, ramasse d'abord ton linge",
     justListen: "juste écouter →",

@@ -123,8 +123,12 @@ export const tr = {
     readyLabel: (o) =>
       `Paspas, ${o.laundry === "folded" ? "kuru" : "yıkanmış"} çamaşırını eve götür`,
     readyTooltip: "eve dön · çamaşırını da al",
-    waitingLabel: "Paspas, çamaşırın bitince eve dönüş yolu",
-    waitingTooltip: "eve dönüş yolu · önce çamaşırını bitir",
+    awayLabel: "Paspas, çamaşırın dönerken eve dön",
+    awayTooltip: "eve dön · çamaşırın dönmeye devam ediyor",
+    wetLabel: "Paspas, ıslak çamaşırla eve dön",
+    wetTooltip: "eve dön · kıyafetler hâlâ ıslak",
+    dirtyLabel: "Paspas, eve dönmeden önce kıyafetleri çamaşır makinesine koy",
+    dirtyTooltip: "önce yıka · kıyafetleri çamaşır makinesine koy",
   },
   laundryBasket: {
     labels: {
@@ -196,6 +200,10 @@ export const tr = {
       board: "pano",
     },
     updates: {
+      "home-mid-wash": {
+        title: "çamaşır dönerken eve dön",
+        body: "Çamaşırın dönerken eve gitmek için paspasa bas. Islak kıyafetler sepette eve gelir, kuru olanlar yatağa konur.",
+      },
       "bedroom-curtains": {
         title: "evde perdeler ve yeni bir lamba",
         body: "Odandaki perdelere ya da lambaya tıkla. İki oda da artık güneşle, ayla ve lambalarla aydınlanıp kararıyor.",
@@ -374,6 +382,7 @@ export const tr = {
     basketPartial: (o) =>
       `içeride: ${o.count}/${o.total} · daha ekle ya da kapıya git`,
     basketFull: "hepsi içeride · kapıya git",
+    basketWet: "kıyafetler hâlâ ıslak · çamaşırhanede kurut",
     lampOffTooltip: "lambayı kapat",
     lampOnTooltip: "lambayı aç",
     lampOffLabel: "Lambayı kapat",
@@ -384,6 +393,8 @@ export const tr = {
     curtainOpenLabel: "Perdeleri aç",
     doorReadyTooltip: "çamaşırhaneye götür",
     doorWaitingTooltip: "önce çamaşırını topla",
+    doorAwayTooltip: "çamaşırhaneye dön · çamaşırın hâlâ dönüyor",
+    doorAwayLabel: "Çamaşırhaneye dön, çamaşırın hâlâ makinede",
     doorReadyLabel: "Sepeti çamaşırhaneye götür",
     doorWaitingLabel: "Çamaşırhane kapısı, önce çamaşırını topla",
     justListen: "sadece dinle →",

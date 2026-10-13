@@ -14,7 +14,6 @@ import { describeCoffeeFlask } from "@/lib/laundromat/coffee/describe-coffee-fla
 import { describeCoffeeMachine } from "@/lib/laundromat/coffee/describe-coffee-machine";
 import { describeCoffeeSwitch } from "@/lib/laundromat/coffee/describe-coffee-switch";
 import { describeSceneObject } from "@/lib/laundromat/describe-scene-object";
-import { describeEntranceMat } from "@/lib/laundromat/laundry/describe-entrance-mat";
 import { describeLaundryBasket } from "@/lib/laundromat/laundry/describe-laundry-basket";
 import { describeMachine } from "@/lib/laundromat/laundry/describe-machine";
 import { describeMachineControl } from "@/lib/laundromat/laundry/describe-machine-control";
@@ -127,7 +126,6 @@ export function ObjectWorkbench(props: ObjectWorkbenchProps) {
     },
     plantTouchCount,
     basket: props.basket,
-    matReady: describeEntranceMat({ basket: props.basket, copy }).ready,
     shelfBookNumbers: WORKBENCH_SHELF_BOOKS,
     notebookNumber: config.details.notebook.coverNumber,
     peopleHere: 3,

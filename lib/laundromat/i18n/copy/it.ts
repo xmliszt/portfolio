@@ -156,8 +156,13 @@ export const it = {
     readyLabel: (o: { laundry: "wet" | "folded" }) =>
       `Zerbino, porta a casa il tuo bucato ${o.laundry === "folded" ? "asciutto" : "lavato"}`,
     readyTooltip: "torna a casa · porta con te il bucato",
-    waitingLabel: "Zerbino, la strada di casa quando il bucato è pronto",
-    waitingTooltip: "la strada di casa · prima finisci il bucato",
+    awayLabel: "Zerbino, torna a casa mentre il bucato va",
+    awayTooltip: "torna a casa · il bucato continua",
+    wetLabel: "Zerbino, torna a casa con il bucato bagnato",
+    wetTooltip: "torna a casa · i vestiti sono ancora bagnati",
+    dirtyLabel:
+      "Zerbino, metti i vestiti in una lavatrice prima di tornare a casa",
+    dirtyTooltip: "prima lavali · metti i vestiti in una lavatrice",
   },
   laundryBasket: {
     labels: {
@@ -235,6 +240,10 @@ export const it = {
       board: "bacheca",
     },
     updates: {
+      "home-mid-wash": {
+        title: "torna a casa mentre lava",
+        body: "Passa sullo zerbino per tornare a casa mentre il bucato va. I vestiti bagnati tornano nel cesto, quelli asciutti finiscono sul letto.",
+      },
       "bedroom-curtains": {
         title: "tende e una nuova lampada a casa",
         body: "Clicca sulle tende o sulla lampada della tua stanza. Ora entrambe le stanze si schiariscono e si scuriscono con il sole, la luna e le lampade.",
@@ -424,6 +433,7 @@ export const it = {
     basketPartial: (o: { count: number; total: number }) =>
       `${o.count} su ${o.total} dentro · aggiungine altri o vai alla porta`,
     basketFull: "tutto dentro · vai alla porta",
+    basketWet: "i vestiti sono ancora bagnati · asciugali in lavanderia",
     lampOffTooltip: "spegni la lampada",
     lampOnTooltip: "accendi la lampada",
     lampOffLabel: "Spegni la lampada",
@@ -434,6 +444,8 @@ export const it = {
     curtainOpenLabel: "Apri le tende",
     doorReadyTooltip: "portalo in lavanderia",
     doorWaitingTooltip: "prima raccogli il bucato",
+    doorAwayTooltip: "torna in lavanderia · il bucato è ancora in corso",
+    doorAwayLabel: "Torna in lavanderia, il bucato è ancora nella macchina",
     doorReadyLabel: "Porta il cesto in lavanderia",
     doorWaitingLabel: "Porta della lavanderia, prima raccogli il bucato",
     justListen: "ascolta e basta →",
