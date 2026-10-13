@@ -120,6 +120,17 @@ export const id = {
       `pengingat aktif · ${o.doneAt}`,
     idleStartLabel: (o: { name: string }) => `Tombol mulai ${o.name}`,
     loadFirstTooltip: "masukkan cucian dulu",
+    needsWashingTooltip: "cuci dulu",
+    alreadyWashedTooltip: "sudah dicuci · keringkan berikutnya",
+    alreadyDryTooltip: "sudah kering · bawa pulang",
+    elsewhereLoadedTooltip: (o: { name: string }) =>
+      `cucianmu menunggu di ${o.name}`,
+    elsewhereRunningTooltip: (o: { kind: MachineKind }) =>
+      o.kind === "washer"
+        ? "pakaianmu masih dicuci"
+        : "pakaianmu masih dikeringkan",
+    elsewhereDoneTooltip: (o: { name: string }) =>
+      `cucianmu sudah selesai · di ${o.name}`,
     runningDoorTooltip: (o: { kind: MachineKind; doneAt: string }) =>
       `${o.kind === "washer" ? "mencuci" : "mengeringkan"} · ${o.doneAt}`,
     doneDoorTooltip: "buka pintu · ambil cucian",
@@ -206,6 +217,10 @@ export const id = {
       board: "papan",
     },
     updates: {
+      "bedroom-curtains": {
+        title: "tarik gorden di rumah",
+        body: "Klik gorden di kamarmu untuk membuka atau menutupnya. Cahaya di kamar ikut berubah, matahari di siang hari dan bulan di malam hari.",
+      },
       "door-bell": {
         title: "lonceng di pintu",
         body: "Lonceng kecil berbunyi saat kamu masuk, dan setiap kali ada orang lain datang.",
@@ -393,6 +408,10 @@ export const id = {
     lampOnTooltip: "nyalakan lampu",
     lampOffLabel: "Matikan lampu",
     lampOnLabel: "Nyalakan lampu",
+    curtainCloseTooltip: "tutup gorden",
+    curtainOpenTooltip: "buka gorden",
+    curtainCloseLabel: "Tutup gorden",
+    curtainOpenLabel: "Buka gorden",
     doorReadyTooltip: "bawa ke laundry",
     doorWaitingTooltip: "ambil cucianmu dulu",
     doorReadyLabel: "Bawa keranjang ke laundry",

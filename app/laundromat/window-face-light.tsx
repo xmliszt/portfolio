@@ -3,7 +3,7 @@ import { useId } from "react";
 import type { LaidOutObject } from "@/lib/laundromat/build-scene-layout";
 import { getBoxFaces } from "@/lib/laundromat/get-box-faces";
 import { getWindowFrontLight } from "@/lib/laundromat/get-window-front-light";
-import type { WindowLight } from "@/lib/laundromat/get-window-light";
+import type { WindowLight } from "@/lib/laundromat/get-window-lights";
 import { hasFlatFront } from "@/lib/laundromat/has-flat-front";
 import type { IsoProjection } from "@/lib/laundromat/project-iso-point";
 import { projectIsoPoint } from "@/lib/laundromat/project-iso-point";

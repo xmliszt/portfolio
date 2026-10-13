@@ -48,6 +48,7 @@ test("reports which machines can take the laundry being carried", () => {
   );
   assert.deepEqual(getMachineStatus({ state: dirty, machine: dryer, now: 0 }), {
     kind: "unavailable",
+    reason: { kind: "needs-washing" },
   });
   const wet: LaundryState = {
     load: { kind: "carrying", laundry: "wet" },
@@ -55,6 +56,10 @@ test("reports which machines can take the laundry being carried", () => {
   };
   assert.deepEqual(getMachineStatus({ state: wet, machine: dryer, now: 0 }), {
     kind: "loadable",
+  });
+  assert.deepEqual(getMachineStatus({ state: wet, machine: washer, now: 0 }), {
+    kind: "unavailable",
+    reason: { kind: "already-washed" },
   });
 });
 
@@ -77,7 +82,43 @@ test("reports the remaining time of the running machine only", () => {
   });
   assert.deepEqual(
     getMachineStatus({ state, machine: { ...washer, id: "washer-1" }, now: 0 }),
-    { kind: "unavailable" }
+    {
+      kind: "unavailable",
+      reason: { kind: "elsewhere", machine: washer, phase: "running" },
+    }
+  );
+});
+
+test("start and door on another machine say where the laundry is", () => {
+  const status = {
+    kind: "unavailable",
+    reason: { kind: "elsewhere", machine: washer, phase: "running" },
+  } satisfies MachineStatus;
+  assert.deepEqual(
+    describeMachineControl({
+      control: "start",
+      machine: dryer,
+      status,
+      minutes: 30,
+      nextMinutes: 45,
+      copy: en,
+      notifications: "default",
+    }),
+    {
+      label: "Dryer 1 start",
+      tooltip: "your clothes are still being washed",
+      enabled: false,
+    }
+  );
+  assert.equal(
+    describe({
+      control: "door",
+      status: {
+        kind: "unavailable",
+        reason: { kind: "elsewhere", machine: dryer, phase: "done" },
+      },
+    }).tooltip,
+    "your laundry is done · in dryer 1"
   );
 });
 
@@ -115,6 +156,10 @@ test("start starts a loaded machine and asks to load an empty one", () => {
     describe({ control: "start", status: { kind: "loadable" } }).tooltip,
     "load laundry first"
   );
+  assert.equal(
+    describe({ control: "start", status: { kind: "done" } }).tooltip,
+    undefined
+  );
 });
 
 test("start offers a reminder while running, only when notifications can be asked for", () => {
@@ -145,7 +190,7 @@ test("the door says what opening it does in each status", () => {
       { kind: "loaded" },
       running,
       { kind: "done" },
-      { kind: "unavailable" },
+      { kind: "unavailable", reason: { kind: "needs-washing" } },
     ] satisfies MachineStatus[]
   ).map((status) => describe({ control: "door", status }));
   assert.deepEqual(
@@ -155,7 +200,7 @@ test("the door says what opening it does in each status", () => {
       ["open door · take laundry back out", true],
       ["washing · done at 1:24 a.m.", false],
       ["open door · take laundry out", true],
-      [undefined, false],
+      ["wash it first", false],
     ]
   );
   assert.equal(

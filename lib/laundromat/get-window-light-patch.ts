@@ -1,4 +1,4 @@
-import type { WindowLight } from "./get-window-light";
+import type { WindowLight } from "./get-window-lights";
 
 /** Return the floor corners (iso `x`, `y`) of the light falling through a left-wall window `opening` along `shadow` (the floor offset per unit of height), lit bottom edge first and clamped to the `floor`. */
 export function getWindowLightPatch(options: {

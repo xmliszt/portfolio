@@ -206,12 +206,28 @@ export function WindowDrawing(props: WindowDrawingProps) {
           />
         ) : (
           <g transform={glass.transform}>
+            <mask id={`${id}-behind-skyline`}>
+              <rect width={paneWidth} height={paneHeight} fill="white" />
+              {FAR_SKYLINE.map((building) =>
+                skylineBlock({
+                  building,
+                  tones: {
+                    front: "fill-black",
+                    side: "fill-black",
+                    top: "fill-black",
+                  },
+                })
+              )}
+            </mask>
             <rect
               width={paneWidth}
               height={paneHeight}
               fill={`url(#${id}-sky)`}
             />
-            <g style={{ opacity: nightOpacity, ...glide }}>
+            <g
+              mask={`url(#${id}-behind-skyline)`}
+              style={{ opacity: nightOpacity, ...glide }}
+            >
               {STARS.map((star) => {
                 const point = onPane(star);
                 return (
@@ -233,6 +249,7 @@ export function WindowDrawing(props: WindowDrawingProps) {
             </g>
             {sun !== undefined && (
               <circle
+                mask={`url(#${id}-behind-skyline)`}
                 cx={sun.center.x}
                 cy={sun.center.y}
                 r={SUN_RADIUS * unit}

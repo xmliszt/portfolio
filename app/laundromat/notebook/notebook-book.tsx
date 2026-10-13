@@ -748,9 +748,23 @@ export function NotebookBook(props: NotebookBookProps) {
   useEffect(() => {
     const didDraftChange = lastDraftRef.current !== pageDraft;
     lastDraftRef.current = pageDraft;
-    if (!didDraftChange || !hasArrivedRef.current || !isDraftVisible) return;
+    if (
+      !didDraftChange ||
+      !hasArrivedRef.current ||
+      !isDraftVisible ||
+      isRemoteDraft
+    ) {
+      return;
+    }
     if (writeSpread !== spread) goToSpread(writeSpread);
-  }, [pageDraft, writeSpread, spread, goToSpread, isDraftVisible]);
+  }, [
+    pageDraft,
+    writeSpread,
+    spread,
+    goToSpread,
+    isDraftVisible,
+    isRemoteDraft,
+  ]);
 
   function handleDraftChange(event: React.ChangeEvent<HTMLTextAreaElement>) {
     const next = event.target.value.slice(0, config.notebook.maxChars);

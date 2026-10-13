@@ -3,7 +3,7 @@ import { useId } from "react";
 import type { ScreenPoint } from "@/lib/laundromat/project-iso-point";
 import { toSvgPoints } from "@/lib/laundromat/to-svg-points";
 
-const BLUR_PX = 7;
+export const DAYLIGHT_PATCH_BLUR_PX = 7;
 
 type DaylightPatchProps = {
   points: ScreenPoint[];
@@ -46,7 +46,7 @@ export function DaylightPatch(props: DaylightPatchProps) {
           width="160%"
           height="160%"
         >
-          <feGaussianBlur stdDeviation={BLUR_PX} />
+          <feGaussianBlur stdDeviation={DAYLIGHT_PATCH_BLUR_PX} />
         </filter>
         {props.shadows !== undefined && (
           <mask id={`${id}-shadows`}>

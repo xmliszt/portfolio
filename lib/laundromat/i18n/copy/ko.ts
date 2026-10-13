@@ -113,6 +113,16 @@ export const ko = {
     reminderOnTooltip: (o: { doneAt: string }) => `알림 켜짐 · ${o.doneAt}`,
     idleStartLabel: (o: { name: string }) => `${o.name} 시작`,
     loadFirstTooltip: "먼저 빨래를 넣어 줘",
+    needsWashingTooltip: "먼저 빨래부터",
+    alreadyWashedTooltip: "이미 빨았어요 · 이제 건조",
+    alreadyDryTooltip: "이미 말랐어요 · 집에 가져가요",
+    elsewhereLoadedTooltip: (o: { name: string }) =>
+      `빨래가 ${o.name}에서 기다려요`,
+    elsewhereRunningTooltip: (o: { kind: MachineKind }) =>
+      o.kind === "washer"
+        ? "옷이 아직 세탁 중이에요"
+        : "옷이 아직 건조 중이에요",
+    elsewhereDoneTooltip: (o: { name: string }) => `빨래 끝 · ${o.name}`,
     runningDoorTooltip: (o: { kind: MachineKind; doneAt: string }) =>
       `${o.kind === "washer" ? "세탁 중" : "건조 중"} · ${o.doneAt}`,
     doneDoorTooltip: "문 열기 · 빨래 꺼내기",
@@ -199,6 +209,10 @@ export const ko = {
       board: "게시판",
     },
     updates: {
+      "bedroom-curtains": {
+        title: "집에서 커튼 치기",
+        body: "방의 커튼을 클릭하면 열고 닫을 수 있어요. 방 안의 빛도 함께 바뀌어요. 낮에는 햇빛, 밤에는 달빛.",
+      },
       "door-bell": {
         title: "문에 달린 종",
         body: "들어올 때, 그리고 다른 사람이 들어올 때마다 작은 종이 울려요.",
@@ -380,6 +394,10 @@ export const ko = {
     lampOnTooltip: "램프 켜기",
     lampOffLabel: "램프 끄기",
     lampOnLabel: "램프 켜기",
+    curtainCloseTooltip: "커튼 닫기",
+    curtainOpenTooltip: "커튼 열기",
+    curtainCloseLabel: "커튼 닫기",
+    curtainOpenLabel: "커튼 열기",
     doorReadyTooltip: "빨래방으로 가져가기",
     doorWaitingTooltip: "먼저 빨래를 챙겨 줘",
     doorReadyLabel: "바구니를 빨래방으로 가져가기",

@@ -107,6 +107,14 @@ export const zhHans = {
     reminderOnTooltip: (o: { doneAt: string }) => `已开启提醒 · ${o.doneAt}`,
     idleStartLabel: (o: { name: string }) => `${o.name} 启动`,
     loadFirstTooltip: "先放衣服",
+    needsWashingTooltip: "先洗一下",
+    alreadyWashedTooltip: "已经洗好了 · 接着烘干",
+    alreadyDryTooltip: "已经干了 · 带回家吧",
+    elsewhereLoadedTooltip: (o: { name: string }) =>
+      `你的衣服在${o.name}里等着`,
+    elsewhereRunningTooltip: (o: { kind: MachineKind }) =>
+      o.kind === "washer" ? "你的衣服还在洗" : "你的衣服还在烘",
+    elsewhereDoneTooltip: (o: { name: string }) => `你的衣服好了 · 在${o.name}`,
     runningDoorTooltip: (o: { kind: MachineKind; doneAt: string }) =>
       `${o.kind === "washer" ? "洗衣中" : "烘干中"} · ${o.doneAt}`,
     doneDoorTooltip: "开门 · 取出衣服",
@@ -193,6 +201,10 @@ export const zhHans = {
       board: "告示板",
     },
     updates: {
+      "bedroom-curtains": {
+        title: "在家拉窗帘",
+        body: "点一下房间里的窗帘就能拉开或拉上。房间的光线也会跟着变，白天是阳光，夜里是月光。",
+      },
       "door-bell": {
         title: "门上挂了铃铛",
         body: "你走进来时，或有其他人进门时，小铃铛都会响起。",
@@ -372,6 +384,10 @@ export const zhHans = {
     lampOnTooltip: "开灯",
     lampOffLabel: "关掉台灯",
     lampOnLabel: "打开台灯",
+    curtainCloseTooltip: "拉上窗帘",
+    curtainOpenTooltip: "拉开窗帘",
+    curtainCloseLabel: "拉上窗帘",
+    curtainOpenLabel: "拉开窗帘",
     doorReadyTooltip: "拿去洗衣店",
     doorWaitingTooltip: "先把衣服收拾好",
     doorReadyLabel: "把篮子拿去洗衣店",

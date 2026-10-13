@@ -114,6 +114,17 @@ export const fr = {
     reminderOnTooltip: (o: { doneAt: string }) => `rappel activé · ${o.doneAt}`,
     idleStartLabel: (o: { name: string }) => `${o.name}, démarrer`,
     loadFirstTooltip: "mets d'abord du linge",
+    needsWashingTooltip: "lave-le d'abord",
+    alreadyWashedTooltip: "déjà lavé · passe au séchage",
+    alreadyDryTooltip: "déjà sec · rapporte-le chez toi",
+    elsewhereLoadedTooltip: (o: { name: string }) =>
+      `ton linge t'attend dans ${o.name}`,
+    elsewhereRunningTooltip: (o: { kind: MachineKind }) =>
+      o.kind === "washer"
+        ? "ton linge est encore en train de laver"
+        : "ton linge est encore en train de sécher",
+    elsewhereDoneTooltip: (o: { name: string }) =>
+      `ton linge est prêt · dans ${o.name}`,
     runningDoorTooltip: (o: { kind: MachineKind; doneAt: string }) =>
       `${o.kind === "washer" ? "lavage" : "séchage"} en cours · ${o.doneAt}`,
     doneDoorTooltip: "ouvrir la porte · sortir le linge",
@@ -202,6 +213,10 @@ export const fr = {
       board: "panneau",
     },
     updates: {
+      "bedroom-curtains": {
+        title: "tire les rideaux chez toi",
+        body: "Clique sur les rideaux de ta chambre pour les ouvrir ou les fermer. La lumière de la pièce suit, le soleil le jour et la lune la nuit.",
+      },
       "door-bell": {
         title: "une clochette à la porte",
         body: "Une clochette tinte quand tu entres, et chaque fois que quelqu'un d'autre arrive.",
@@ -390,6 +405,10 @@ export const fr = {
     lampOnTooltip: "allumer la lampe",
     lampOffLabel: "Éteindre la lampe",
     lampOnLabel: "Allumer la lampe",
+    curtainCloseTooltip: "fermer les rideaux",
+    curtainOpenTooltip: "ouvrir les rideaux",
+    curtainCloseLabel: "Fermer les rideaux",
+    curtainOpenLabel: "Ouvrir les rideaux",
     doorReadyTooltip: "l'emporter à la laverie",
     doorWaitingTooltip: "ramasse d'abord ton linge",
     doorReadyLabel: "Emporter le panier à la laverie",

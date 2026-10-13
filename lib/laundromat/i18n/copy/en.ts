@@ -121,6 +121,17 @@ export const en = {
     reminderOnTooltip: (o: { doneAt: string }) => `reminder on · ${o.doneAt}`,
     idleStartLabel: (o: { name: string }) => `${o.name} start`,
     loadFirstTooltip: "load laundry first",
+    needsWashingTooltip: "wash it first",
+    alreadyWashedTooltip: "already washed · dry it next",
+    alreadyDryTooltip: "already dry · take it home",
+    elsewhereLoadedTooltip: (o: { name: string }) =>
+      `your laundry is waiting in ${o.name}`,
+    elsewhereRunningTooltip: (o: { kind: MachineKind }): string =>
+      o.kind === "washer"
+        ? "your clothes are still being washed"
+        : "your clothes are still drying",
+    elsewhereDoneTooltip: (o: { name: string }) =>
+      `your laundry is done · in ${o.name}`,
     runningDoorTooltip: (o: { kind: MachineKind; doneAt: string }) =>
       `${o.kind === "washer" ? "washing" : "drying"} · ${o.doneAt}`,
     doneDoorTooltip: "open door · take laundry out",
@@ -207,6 +218,10 @@ export const en = {
       board: "board",
     } satisfies { [tag in BoardTag]: string },
     updates: {
+      "bedroom-curtains": {
+        title: "draw the curtains at home",
+        body: "Click the curtains in your room to open or close them. The room follows the light, sun by day and moon by night.",
+      },
       "door-bell": {
         title: "a bell on the door",
         body: "A little bell rings when you walk in, and whenever someone else comes in.",
@@ -393,6 +408,10 @@ export const en = {
     lampOnTooltip: "turn the lamp on",
     lampOffLabel: "Turn the lamp off",
     lampOnLabel: "Turn the lamp on",
+    curtainCloseTooltip: "close the curtains",
+    curtainOpenTooltip: "open the curtains",
+    curtainCloseLabel: "Close the curtains",
+    curtainOpenLabel: "Open the curtains",
     doorReadyTooltip: "carry it to the laundromat",
     doorWaitingTooltip: "pick up your laundry first",
     doorReadyLabel: "Carry the basket to the laundromat",

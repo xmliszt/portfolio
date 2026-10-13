@@ -116,6 +116,17 @@ export const de = {
     reminderOnTooltip: (o: { doneAt: string }) => `Erinnerung an · ${o.doneAt}`,
     idleStartLabel: (o: { name: string }) => `${o.name}, starten`,
     loadFirstTooltip: "erst Wäsche einladen",
+    needsWashingTooltip: "erst waschen",
+    alreadyWashedTooltip: "schon gewaschen · jetzt trocknen",
+    alreadyDryTooltip: "schon trocken · nimm sie mit nach Hause",
+    elsewhereLoadedTooltip: (o: { name: string }) =>
+      `deine Wäsche wartet in ${o.name}`,
+    elsewhereRunningTooltip: (o: { kind: MachineKind }) =>
+      o.kind === "washer"
+        ? "deine Wäsche wird noch gewaschen"
+        : "deine Wäsche trocknet noch",
+    elsewhereDoneTooltip: (o: { name: string }) =>
+      `deine Wäsche ist fertig · in ${o.name}`,
     runningDoorTooltip: (o: { kind: MachineKind; doneAt: string }) =>
       `${o.kind === "washer" ? "wäscht" : "trocknet"} · ${o.doneAt}`,
     doneDoorTooltip: "Tür öffnen · Wäsche herausnehmen",
@@ -204,6 +215,10 @@ export const de = {
       board: "aushang",
     },
     updates: {
+      "bedroom-curtains": {
+        title: "zieh zu Hause die Vorhänge",
+        body: "Klick auf die Vorhänge in deinem Zimmer, um sie auf- oder zuzuziehen. Das Licht im Zimmer folgt, tagsüber die Sonne, nachts der Mond.",
+      },
       "door-bell": {
         title: "eine glocke an der tür",
         body: "Ein Glöckchen klingelt, wenn du hereinkommst, und wenn jemand anderes eintritt.",
@@ -392,6 +407,10 @@ export const de = {
     lampOnTooltip: "Lampe einschalten",
     lampOffLabel: "Die Lampe ausschalten",
     lampOnLabel: "Die Lampe einschalten",
+    curtainCloseTooltip: "die Vorhänge zuziehen",
+    curtainOpenTooltip: "die Vorhänge aufziehen",
+    curtainCloseLabel: "Die Vorhänge zuziehen",
+    curtainOpenLabel: "Die Vorhänge aufziehen",
     doorReadyTooltip: "zum Waschsalon tragen",
     doorWaitingTooltip: "heb zuerst deine Wäsche auf",
     doorReadyLabel: "Den Korb zum Waschsalon tragen",

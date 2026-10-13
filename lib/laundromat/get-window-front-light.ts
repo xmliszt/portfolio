@@ -1,4 +1,4 @@
-import type { WindowLight } from "./get-window-light";
+import type { WindowLight } from "./get-window-lights";
 
 /** Return the corners (iso points) of the light from a left-wall window `opening` on the plane `y = frontY`, lit bottom edge first, or `undefined` when the light along `shadow` moves away from that plane. */
 export function getWindowFrontLight(options: {

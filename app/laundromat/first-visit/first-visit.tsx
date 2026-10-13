@@ -12,9 +12,12 @@ import type {
   GarmentKind,
 } from "@/lib/laundromat/first-visit/bedroom-config";
 import { describeHamperBasket } from "@/lib/laundromat/first-visit/describe-hamper-basket";
+import { getBedroomWindowLight } from "@/lib/laundromat/first-visit/get-bedroom-window-light";
 import { getCoverScale } from "@/lib/laundromat/first-visit/get-cover-scale";
+import { getCurtainLayout } from "@/lib/laundromat/first-visit/get-curtain-layout";
 import { getGarmentFootprint } from "@/lib/laundromat/first-visit/get-garment-footprint";
 import { getHamperBasket } from "@/lib/laundromat/first-visit/get-hamper-basket";
+import { getTableLampShape } from "@/lib/laundromat/first-visit/get-table-lamp-shape";
 import { getTossFlight } from "@/lib/laundromat/first-visit/get-toss-flight";
 import { getFacePlane } from "@/lib/laundromat/get-face-plane";
 import { getTimeOfDay } from "@/lib/laundromat/get-time-of-day";
@@ -28,13 +31,14 @@ import { BedroomDrawing } from "./bedroom-drawing";
 import { CrumpledBall } from "./crumpled-ball";
 import { GarmentDrawing } from "./garment-drawing";
 import { HamperBasketDrawing } from "./hamper-basket-drawing";
+import { RoomDarkness } from "./room-darkness";
+import { useCurtainPose } from "./use-curtain-pose";
 import { useIdleNudge } from "./use-idle-nudge";
 
 const DRAG_THRESHOLD_PX = 4;
 const HIT_PADDING_PX = 4;
 const LAND_DELAY_MS = 90;
 const SETTLE_CLEAR_DELAY_MS = 40;
-const LAMP_HEIGHT = 0.82;
 const COS_30 = Math.cos(Math.PI / 6);
 const SIN_30 = Math.sin(Math.PI / 6);
 const PUSH_EASE: [number, number, number, number] = [0.65, 0, 0.35, 1];
@@ -56,7 +60,7 @@ type Drag = {
   moved: boolean;
 };
 
-type Hover = GarmentKind | "basket" | "door" | "lamp";
+type Hover = GarmentKind | "basket" | "door" | "lamp" | "curtain";
 
 type Phase = "room" | "opening" | "entering";
 
@@ -102,6 +106,7 @@ export function FirstVisit(props: FirstVisitProps) {
   const [lampSwitch, setLampSwitch] = useState<boolean>();
   const sound = useSoundBoard();
   const isLampOn = lampSwitch ?? (timeOfDay?.lampIntensity ?? 1) > 0.5;
+  const [isCurtainOpen, setIsCurtainOpen] = useState(true);
   const [isTouched, setIsTouched] = useState(false);
   const [phase, setPhase] = useState<Phase>("room");
   const [jiggles, setJiggles] = useState(0);
@@ -173,14 +178,47 @@ export function FirstVisit(props: FirstVisitProps) {
   const lampTableTop =
     bedroom.bedsideTable.position.z + bedroom.bedsideTable.size.h;
   const lampTop = projectIsoPoint({
-    point: { ...bedroom.lamp.center, z: lampTableTop + LAMP_HEIGHT },
+    point: {
+      ...bedroom.lamp.center,
+      z:
+        lampTableTop +
+        getTableLampShape({
+          center: bedroom.lamp.center,
+          tableTop: lampTableTop,
+          domeRadius: bedroom.lamp.shadeRadius,
+          projection,
+        }).height,
+    },
     projection,
   });
   const lampBottom = projectIsoPoint({
     point: { ...bedroom.lamp.center, z: lampTableTop },
     projection,
   });
-  const lampHitWidth = bedroom.lamp.shadeRadius * 2.6 * projection.unit;
+  const lampHitWidth = bedroom.lamp.shadeRadius * 2.4 * projection.unit;
+  const curtainLayout = getCurtainLayout({
+    window: bedroom.window,
+    curtain: bedroom.curtain,
+  });
+  const curtainPose = useCurtainPose({
+    open: isCurtainOpen,
+    layout: curtainLayout,
+    rings: bedroom.curtain.rings,
+    motion: bedroom.motion.curtain,
+    reducedMotion: prefersReducedMotion,
+  });
+  const windowLight =
+    timeOfDay === undefined
+      ? undefined
+      : getBedroomWindowLight({ timeOfDay, sky: scene.sky });
+  const curtainTopLeft = projectIsoPoint({
+    point: {
+      x: curtainLayout.rodX,
+      y: curtainLayout.opening.far + bedroom.curtain.stackOutset,
+      z: curtainLayout.top,
+    },
+    projection,
+  });
   const doorTopLeft = projectIsoPoint({
     point: { x: 0, y: door.fromY + door.width, z: door.height },
     projection,
@@ -359,6 +397,14 @@ export function FirstVisit(props: FirstVisitProps) {
     setLampSwitch(!isLampOn);
   }
 
+  function handleCurtainClick() {
+    setIsCurtainOpen(!isCurtainOpen);
+  }
+
+  function handleCurtainFocus(event: React.FocusEvent<HTMLButtonElement>) {
+    if (event.currentTarget.matches(":focus-visible")) setHover("curtain");
+  }
+
   function handleLampFocus(event: React.FocusEvent<HTMLButtonElement>) {
     if (event.currentTarget.matches(":focus-visible")) setHover("lamp");
   }
@@ -391,6 +437,21 @@ export function FirstVisit(props: FirstVisitProps) {
             ? copy.firstVisit.lampOffTooltip
             : copy.firstVisit.lampOnTooltip,
           at: { x: lampTop.x, y: lampTop.y - 4 },
+        };
+      }
+      if (hover === "curtain") {
+        return {
+          text: isCurtainOpen
+            ? copy.firstVisit.curtainCloseTooltip
+            : copy.firstVisit.curtainOpenTooltip,
+          at: projectIsoPoint({
+            point: {
+              x: curtainLayout.rodX,
+              y: (curtainLayout.opening.near + curtainLayout.opening.far) / 2,
+              z: curtainLayout.top + 0.2,
+            },
+            projection,
+          }),
         };
       }
       if (hover === "basket" && drag === undefined) {
@@ -595,6 +656,10 @@ export function FirstVisit(props: FirstVisitProps) {
                   scene={scene}
                   lampOn={isLampOn}
                   lampHighlighted={hover === "lamp"}
+                  curtainPose={curtainPose}
+                  curtainLayout={curtainLayout}
+                  windowLight={windowLight}
+                  curtainHighlighted={hover === "curtain"}
                   cleanPile={props.cleanPile}
                 />
                 <BedroomDoor
@@ -668,6 +733,15 @@ export function FirstVisit(props: FirstVisitProps) {
                   })}
                 </HamperBasketDrawing>
                 {onTop.map(renderGarment)}
+                <RoomDarkness
+                  pose={curtainPose}
+                  layout={curtainLayout}
+                  curtain={bedroom.curtain}
+                  room={room}
+                  projection={projection}
+                  light={windowLight}
+                  lampOn={isLampOn}
+                />
               </g>
             </svg>
 
@@ -738,6 +812,37 @@ export function FirstVisit(props: FirstVisitProps) {
               onFocus={handleLampFocus}
               onBlur={() => clearHover("lamp")}
             />
+            <div
+              className="absolute top-0 left-0 origin-top-left"
+              style={{
+                transform: `matrix(${COS_30}, ${-SIN_30}, 0, 1, ${curtainTopLeft.x}, ${curtainTopLeft.y})`,
+              }}
+            >
+              <button
+                type="button"
+                aria-label={
+                  isCurtainOpen
+                    ? copy.firstVisit.curtainCloseLabel
+                    : copy.firstVisit.curtainOpenLabel
+                }
+                aria-pressed={!isCurtainOpen}
+                className="absolute top-0 left-0 cursor-pointer rounded-md bg-transparent outline-none focus-visible:outline-1 focus-visible:outline-offset-2 focus-visible:outline-[var(--lm-ink)] focus-visible:outline-dashed"
+                style={{
+                  width:
+                    (curtainLayout.openingWidth +
+                      2 * bedroom.curtain.stackOutset) *
+                    projection.unit,
+                  height:
+                    (curtainLayout.top - curtainLayout.bottom) *
+                    projection.unit,
+                }}
+                onClick={handleCurtainClick}
+                onPointerEnter={() => handleHover("curtain")}
+                onPointerLeave={() => clearHover("curtain")}
+                onFocus={handleCurtainFocus}
+                onBlur={() => clearHover("curtain")}
+              />
+            </div>
             <div
               className="absolute top-0 left-0 origin-top-left"
               style={{

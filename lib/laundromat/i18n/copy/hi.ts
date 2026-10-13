@@ -119,6 +119,17 @@ export const hi = {
     reminderOnTooltip: (o: { doneAt: string }) => `रिमाइंडर चालू · ${o.doneAt}`,
     idleStartLabel: (o: { name: string }) => `${o.name} का स्टार्ट बटन`,
     loadFirstTooltip: "पहले कपड़े डालो",
+    needsWashingTooltip: "पहले धो लो",
+    alreadyWashedTooltip: "धुल चुके हैं · अब सुखाओ",
+    alreadyDryTooltip: "सूख चुके हैं · घर ले जाओ",
+    elsewhereLoadedTooltip: (o: { name: string }) =>
+      `तुम्हारे कपड़े ${o.name} में इंतज़ार कर रहे हैं`,
+    elsewhereRunningTooltip: (o: { kind: MachineKind }) =>
+      o.kind === "washer"
+        ? "तुम्हारे कपड़े अभी धुल रहे हैं"
+        : "तुम्हारे कपड़े अभी सूख रहे हैं",
+    elsewhereDoneTooltip: (o: { name: string }) =>
+      `तुम्हारे कपड़े तैयार हैं · ${o.name} में`,
     runningDoorTooltip: (o: { kind: MachineKind; doneAt: string }) =>
       `${o.kind === "washer" ? "धुलाई" : "सुखाई"} चल रही है · ${o.doneAt}`,
     doneDoorTooltip: "दरवाज़ा खोलो · कपड़े निकालो",
@@ -205,6 +216,10 @@ export const hi = {
       board: "बोर्ड",
     },
     updates: {
+      "bedroom-curtains": {
+        title: "घर पर पर्दे खींचो",
+        body: "अपने कमरे के पर्दों पर क्लिक करके उन्हें खोलो या बंद करो। कमरे की रोशनी भी बदलती है, दिन में धूप और रात में चाँदनी।",
+      },
       "door-bell": {
         title: "दरवाज़े पर एक घंटी",
         body: "जब आप अंदर आते हैं, और जब भी कोई और आता है, एक छोटी घंटी बजती है।",
@@ -389,6 +404,10 @@ export const hi = {
     lampOnTooltip: "लैंप चालू करो",
     lampOffLabel: "लैंप बंद करो",
     lampOnLabel: "लैंप चालू करो",
+    curtainCloseTooltip: "पर्दे बंद करो",
+    curtainOpenTooltip: "पर्दे खोलो",
+    curtainCloseLabel: "पर्दे बंद करो",
+    curtainOpenLabel: "पर्दे खोलो",
     doorReadyTooltip: "इसे लॉन्ड्री तक ले चलो",
     doorWaitingTooltip: "पहले अपने कपड़े उठाओ",
     doorReadyLabel: "टोकरी लॉन्ड्री तक ले चलो",

@@ -88,6 +88,15 @@ export const nl = {
     reminderOnTooltip: (o) => `herinnering aan · ${o.doneAt}`,
     idleStartLabel: (o) => `Start van ${o.name}`,
     loadFirstTooltip: "eerst de was erin",
+    needsWashingTooltip: "eerst wassen",
+    alreadyWashedTooltip: "al gewassen · nu drogen",
+    alreadyDryTooltip: "al droog · neem het mee naar huis",
+    elsewhereLoadedTooltip: (o) => `je was wacht in ${o.name}`,
+    elsewhereRunningTooltip: (o) =>
+      o.kind === "washer"
+        ? "je kleren worden nog gewassen"
+        : "je kleren zijn nog aan het drogen",
+    elsewhereDoneTooltip: (o) => `je was is klaar · in ${o.name}`,
     runningDoorTooltip: (o) =>
       `${o.kind === "washer" ? "aan het wassen" : "aan het drogen"} · ${o.doneAt}`,
     doneDoorTooltip: "deur open · was eruit halen",
@@ -175,6 +184,10 @@ export const nl = {
       board: "bord",
     },
     updates: {
+      "bedroom-curtains": {
+        title: "doe thuis de gordijnen dicht",
+        body: "Klik op de gordijnen in je kamer om ze open of dicht te doen. Het licht in de kamer gaat mee, overdag de zon en 's nachts de maan.",
+      },
       "door-bell": {
         title: "een belletje aan de deur",
         body: "Een belletje klinkt als je binnenkomt, en telkens als iemand anders binnenkomt.",
@@ -355,6 +368,10 @@ export const nl = {
     lampOnTooltip: "lamp aan",
     lampOffLabel: "Doe de lamp uit",
     lampOnLabel: "Doe de lamp aan",
+    curtainCloseTooltip: "doe de gordijnen dicht",
+    curtainOpenTooltip: "doe de gordijnen open",
+    curtainCloseLabel: "Doe de gordijnen dicht",
+    curtainOpenLabel: "Doe de gordijnen open",
     doorReadyTooltip: "breng het naar de wasserette",
     doorWaitingTooltip: "raap eerst je was op",
     doorReadyLabel: "Breng de mand naar de wasserette",

@@ -2,7 +2,8 @@ import { useId } from "react";
 
 import { getIsoCylinder } from "@/lib/laundromat/get-iso-cylinder";
 import { getIsoEllipse } from "@/lib/laundromat/get-iso-ellipse";
-import { getStreetLight } from "@/lib/laundromat/get-street-light";
+import type { StreetLight } from "@/lib/laundromat/get-street-lights";
+import { getStreetLights } from "@/lib/laundromat/get-street-lights";
 import type { TimeOfDay } from "@/lib/laundromat/get-time-of-day";
 import type { IsoProjection } from "@/lib/laundromat/project-iso-point";
 import { projectIsoPoint } from "@/lib/laundromat/project-iso-point";
@@ -134,28 +135,19 @@ export function StreetView(props: StreetViewProps) {
     topRadius: HYDRANT.radius * 0.4,
     projection,
   });
-  const light =
+  const lights =
     timeOfDay === undefined
-      ? undefined
-      : getStreetLight({ timeOfDay, sky: config.sky });
+      ? []
+      : getStreetLights({ timeOfDay, sky: config.sky });
   const lampOpacity = timeOfDay?.nightOpacity ?? 1;
-  const buildingShadowEdgeX =
-    light === undefined
-      ? undefined
-      : wallX -
-        config.street.oppositeDistance +
-        Math.min(
-          config.street.oppositeDistance,
-          light.shadow.x * config.street.oppositeHeight
-        );
   function shadowLine(options: {
+    light: StreetLight;
+    buildingShadowEdgeX: number;
     base: { x: number; y: number };
     height: number;
   }) {
-    if (light === undefined || buildingShadowEdgeX === undefined) {
-      return undefined;
-    }
-    if (options.base.x < buildingShadowEdgeX) return undefined;
+    const { light } = options;
+    if (options.base.x < options.buildingShadowEdgeX) return undefined;
     const length = Math.min(
       MAX_SHADOW_LENGTH,
       Math.hypot(light.shadow.x, light.shadow.y) * options.height
@@ -169,22 +161,35 @@ export function StreetView(props: StreetViewProps) {
     );
     return { x1: from.x, y1: from.y, x2: to.x, y2: to.y };
   }
-  const postShadow = shadowLine({ base: lampBase, height: LAMP.height });
-  const hydrantShadow = shadowLine({
-    base: hydrantBase,
-    height: HYDRANT.height,
+  const litStreet = lights.map((light) => {
+    const buildingShadowEdgeX =
+      wallX -
+      config.street.oppositeDistance +
+      Math.min(
+        config.street.oppositeDistance,
+        light.shadow.x * config.street.oppositeHeight
+      );
+    return {
+      light,
+      postShadow: shadowLine({
+        light,
+        buildingShadowEdgeX,
+        base: lampBase,
+        height: LAMP.height,
+      }),
+      hydrantShadow: shadowLine({
+        light,
+        buildingShadowEdgeX,
+        base: hydrantBase,
+        height: HYDRANT.height,
+      }),
+      buildingShadow: clipped({
+        from: wallX - config.street.oppositeDistance,
+        to: buildingShadowEdgeX,
+      }),
+      sunlit: clipped({ from: buildingShadowEdgeX, to: wallX }),
+    };
   });
-  const buildingShadow =
-    buildingShadowEdgeX === undefined
-      ? []
-      : clipped({
-          from: wallX - config.street.oppositeDistance,
-          to: buildingShadowEdgeX,
-        });
-  const sunlit =
-    buildingShadowEdgeX === undefined
-      ? []
-      : clipped({ from: buildingShadowEdgeX, to: wallX });
 
   return (
     <g data-street strokeLinejoin="round">
@@ -269,10 +274,10 @@ export function StreetView(props: StreetViewProps) {
             }}
           />
         ))}
-        {light !== undefined &&
+        {litStreet.flatMap(({ light, sunlit }) =>
           sunlit.map((ground) => (
             <polygon
-              key={ground.z}
+              key={`${light.key}-${ground.z}`}
               points={band(ground)}
               style={{
                 fill: light.color,
@@ -280,11 +285,12 @@ export function StreetView(props: StreetViewProps) {
                 transition: glide,
               }}
             />
-          ))}
-        {light !== undefined &&
+          ))
+        )}
+        {litStreet.flatMap(({ light, buildingShadow }) =>
           buildingShadow.map((ground) => (
             <polygon
-              key={ground.z}
+              key={`${light.key}-${ground.z}`}
               className="fill-black"
               points={band(ground)}
               style={{
@@ -292,15 +298,17 @@ export function StreetView(props: StreetViewProps) {
                 transition: glide,
               }}
             />
-          ))}
+          ))
+        )}
         <ellipse
           {...lampPool}
           fill={`url(#${id}-lamp)`}
           style={{ opacity: lampOpacity * 0.55, transition: glide }}
         />
       </g>
-      {light !== undefined && (
+      {litStreet.map(({ light, postShadow, hydrantShadow }) => (
         <g
+          key={light.key}
           className="stroke-black"
           strokeLinecap="round"
           style={{
@@ -315,7 +323,7 @@ export function StreetView(props: StreetViewProps) {
             <line {...hydrantShadow} strokeWidth={HYDRANT.radius * 2 * unit} />
           )}
         </g>
-      )}
+      ))}
       <g className="stroke-[var(--lm-line)]" strokeWidth={0.75}>
         <CylinderSides body={hydrant.body} facets={hydrant.facets} />
         <ellipse {...hydrant.top} className="fill-[var(--lm-face-top)]" />

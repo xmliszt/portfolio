@@ -20,6 +20,16 @@ export type BedroomConfig = {
   projection: { unit: number; origin: { x: number; y: number } };
   room: { width: number; depth: number; wallHeight: number };
   window: { position: IsoPoint; size: IsoSize };
+  curtain: {
+    rings: number;
+    sillClearance: number;
+    rodRise: number;
+    drop: number;
+    stackOutset: number;
+    openReach: number;
+    closedOverlap: number;
+    fabricPerGap: number;
+  };
   door: { fromY: number; width: number; height: number; thickness: number };
   clock: { center: IsoPoint; radius: number; depth: number };
   bedsideTable: { position: IsoPoint; size: IsoSize };
@@ -77,6 +87,11 @@ export type BedroomConfig = {
       arriveBlurPx: number;
       reducedFadeMs: number;
     };
+    curtain: {
+      pullMs: number;
+      hemPeriodMs: number;
+      hemDampingRatio: number;
+    };
   };
 };
 
@@ -88,13 +103,23 @@ export const bedroomConfig: BedroomConfig = {
     position: { x: 0, y: 0.55, z: 1.5 },
     size: { w: 0.28, d: 2, h: 2 },
   },
-  door: { fromY: 3, width: 1.1, height: 2.5, thickness: 0.06 },
+  curtain: {
+    rings: 6,
+    sillClearance: 0.08,
+    rodRise: 0.3,
+    drop: 0.3,
+    stackOutset: 0.36,
+    openReach: 0.3,
+    closedOverlap: 0.04,
+    fabricPerGap: 0.28,
+  },
+  door: { fromY: 3.3, width: 1.1, height: 2.5, thickness: 0.06 },
   clock: { center: { x: 3.3, y: 0.1, z: 3 }, radius: 0.27, depth: 0.07 },
   bedsideTable: {
     position: { x: 3.7, y: 0.08, z: 0 },
     size: { w: 0.62, d: 0.55, h: 0.62 },
   },
-  lamp: { center: { x: 4, y: 0.36 }, shadeRadius: 0.21 },
+  lamp: { center: { x: 4, y: 0.36 }, shadeRadius: 0.25 },
   bed: {
     headboard: {
       position: { x: 4.4, y: 0, z: 0 },
@@ -117,19 +142,19 @@ export const bedroomConfig: BedroomConfig = {
       size: { w: 2.4, d: 1.7, h: 0.28 },
     },
   },
-  rug: { at: { x: 1.8, y: 2.6 }, width: 3.4, depth: 2.5 },
-  lightPool: { at: { x: 3.4, y: 1.2 }, radiusX: 1.7, radiusY: 1.3 },
+  rug: { at: { x: 0.5, y: 2.5 }, width: 3.5, depth: 2.5 },
+  lightPool: { at: { x: 3.6, y: 1.1 }, radiusX: 1.3, radiusY: 1.4 },
   basket: {
-    center: { x: 3.2, y: 1.8 },
-    radius: 0.5,
-    baseRadius: 0.42,
-    height: 0.66,
+    center: { x: 6.1, y: 4.5 },
+    radius: 0.49,
+    baseRadius: 0.43,
+    height: 0.69,
   },
   garments: [
     {
       kind: "tee",
-      at: { x: 2.3, y: 3 },
-      rotateDeg: 18,
+      at: { x: 0.9, y: 2.7 },
+      rotateDeg: 54,
       scale: { x: 1, y: 0.95 },
     },
     {
@@ -140,13 +165,13 @@ export const bedroomConfig: BedroomConfig = {
     },
     {
       kind: "sweater",
-      at: { x: 3.1, y: 4.8 },
-      rotateDeg: -8,
-      scale: { x: 1.3, y: 0.95 },
+      at: { x: 2.7, y: 4.2 },
+      rotateDeg: -17,
+      scale: { x: 1, y: 0.95 },
     },
     {
       kind: "towel",
-      at: { x: 5.8, y: 3.8 },
+      at: { x: 0.9, y: 4 },
       rotateDeg: 32,
       scale: { x: 0.95, y: 0.58 },
     },
@@ -158,9 +183,9 @@ export const bedroomConfig: BedroomConfig = {
     },
     {
       kind: "shirt",
-      at: { x: 5.2, y: 5 },
-      rotateDeg: 12,
-      scale: { x: 1.1, y: 1 },
+      at: { x: 2.4, y: 2.6 },
+      rotateDeg: 0,
+      scale: { x: 0.9, y: 1 },
     },
   ],
   motion: {
@@ -188,7 +213,7 @@ export const bedroomConfig: BedroomConfig = {
       openDeg: 84,
       springOmega: 7,
       pushStartMs: 520,
-      pushCoverMargin: 1.15,
+      pushCoverMargin: 1.1,
       pushBlurPx: 10,
       pushBlurDelayMs: 300,
       pushBlurMs: 850,
@@ -199,6 +224,11 @@ export const bedroomConfig: BedroomConfig = {
       arriveFromScale: 1.1,
       arriveBlurPx: 14,
       reducedFadeMs: 400,
+    },
+    curtain: {
+      pullMs: 1500,
+      hemPeriodMs: 1000,
+      hemDampingRatio: 0.4,
     },
   },
 };

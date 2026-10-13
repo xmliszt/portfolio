@@ -115,6 +115,17 @@ export const es = {
       `aviso activado · ${o.doneAt}`,
     idleStartLabel: (o: { name: string }) => `${o.name}, iniciar`,
     loadFirstTooltip: "primero mete la ropa",
+    needsWashingTooltip: "lávala primero",
+    alreadyWashedTooltip: "ya está lavada · ahora a secar",
+    alreadyDryTooltip: "ya está seca · llévatela a casa",
+    elsewhereLoadedTooltip: (o: { name: string }) =>
+      `tu ropa te espera en ${o.name}`,
+    elsewhereRunningTooltip: (o: { kind: MachineKind }) =>
+      o.kind === "washer"
+        ? "tu ropa todavía se está lavando"
+        : "tu ropa todavía se está secando",
+    elsewhereDoneTooltip: (o: { name: string }) =>
+      `tu ropa está lista · en ${o.name}`,
     runningDoorTooltip: (o: { kind: MachineKind; doneAt: string }) =>
       `${o.kind === "washer" ? "lavando" : "secando"} · ${o.doneAt}`,
     doneDoorTooltip: "abrir la puerta · sacar la ropa",
@@ -202,6 +213,10 @@ export const es = {
       board: "tablón",
     },
     updates: {
+      "bedroom-curtains": {
+        title: "corre las cortinas en casa",
+        body: "Haz clic en las cortinas de tu cuarto para abrirlas o cerrarlas. La luz del cuarto cambia con ellas, sol de día y luna de noche.",
+      },
       "door-bell": {
         title: "una campanilla en la puerta",
         body: "Una campanilla suena cuando entras, y cada vez que entra alguien más.",
@@ -391,6 +406,10 @@ export const es = {
     lampOnTooltip: "encender la lámpara",
     lampOffLabel: "Apagar la lámpara",
     lampOnLabel: "Encender la lámpara",
+    curtainCloseTooltip: "cerrar las cortinas",
+    curtainOpenTooltip: "abrir las cortinas",
+    curtainCloseLabel: "Cerrar las cortinas",
+    curtainOpenLabel: "Abrir las cortinas",
     doorReadyTooltip: "llevarlo a la lavandería",
     doorWaitingTooltip: "primero recoge tu ropa",
     doorReadyLabel: "Llevar el cesto a la lavandería",

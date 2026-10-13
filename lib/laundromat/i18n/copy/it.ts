@@ -116,6 +116,17 @@ export const it = {
       `promemoria attivo · ${o.doneAt}`,
     idleStartLabel: (o: { name: string }) => `${o.name}, avvia`,
     loadFirstTooltip: "prima carica il bucato",
+    needsWashingTooltip: "prima lavalo",
+    alreadyWashedTooltip: "già lavato · ora asciugalo",
+    alreadyDryTooltip: "già asciutto · portalo a casa",
+    elsewhereLoadedTooltip: (o: { name: string }) =>
+      `il tuo bucato ti aspetta in ${o.name}`,
+    elsewhereRunningTooltip: (o: { kind: MachineKind }) =>
+      o.kind === "washer"
+        ? "i tuoi vestiti si stanno ancora lavando"
+        : "i tuoi vestiti si stanno ancora asciugando",
+    elsewhereDoneTooltip: (o: { name: string }) =>
+      `il tuo bucato è pronto · in ${o.name}`,
     runningDoorTooltip: (o: { kind: MachineKind; doneAt: string }) =>
       `${o.kind === "washer" ? "in lavaggio" : "in asciugatura"} · ${o.doneAt}`,
     doneDoorTooltip: "apri l'oblò · tira fuori il bucato",
@@ -208,6 +219,10 @@ export const it = {
       board: "bacheca",
     },
     updates: {
+      "bedroom-curtains": {
+        title: "tira le tende a casa",
+        body: "Clicca sulle tende della tua stanza per aprirle o chiuderle. La luce della stanza le segue, il sole di giorno e la luna di notte.",
+      },
       "door-bell": {
         title: "un campanello sulla porta",
         body: "Un campanellino suona quando entri, e ogni volta che arriva qualcun altro.",
@@ -394,6 +409,10 @@ export const it = {
     lampOnTooltip: "accendi la lampada",
     lampOffLabel: "Spegni la lampada",
     lampOnLabel: "Accendi la lampada",
+    curtainCloseTooltip: "chiudi le tende",
+    curtainOpenTooltip: "apri le tende",
+    curtainCloseLabel: "Chiudi le tende",
+    curtainOpenLabel: "Apri le tende",
     doorReadyTooltip: "portalo in lavanderia",
     doorWaitingTooltip: "prima raccogli il bucato",
     doorReadyLabel: "Porta il cesto in lavanderia",

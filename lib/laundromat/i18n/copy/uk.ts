@@ -101,6 +101,13 @@ export const uk = {
     reminderOnTooltip: (o) => `нагадування увімкнено · ${o.doneAt}`,
     idleStartLabel: (o) => `${o.name}, запуск`,
     loadFirstTooltip: "спершу завантаж білизну",
+    needsWashingTooltip: "спершу випери",
+    alreadyWashedTooltip: "вже випрано · тепер сушити",
+    alreadyDryTooltip: "вже сухе · забирай додому",
+    elsewhereLoadedTooltip: (o) => `твоя білизна чекає: ${o.name}`,
+    elsewhereRunningTooltip: (o) =>
+      o.kind === "washer" ? "твій одяг ще переться" : "твій одяг ще сохне",
+    elsewhereDoneTooltip: (o) => `твоя білизна готова · ${o.name}`,
     runningDoorTooltip: (o) =>
       `${o.kind === "washer" ? "прання" : "сушіння"} · ${o.doneAt}`,
     doneDoorTooltip: "відчинити дверцята · забрати білизну",
@@ -186,6 +193,10 @@ export const uk = {
       board: "стенд",
     },
     updates: {
+      "bedroom-curtains": {
+        title: "засунь штори вдома",
+        body: "Натисни на штори у своїй кімнаті, щоб відкрити чи закрити їх. Світло в кімнаті змінюється разом із ними: вдень сонце, вночі місяць.",
+      },
       "door-bell": {
         title: "дзвіночок на дверях",
         body: "Дзвіночок дзеленчить, коли ви заходите і коли заходить хтось інший.",
@@ -365,6 +376,10 @@ export const uk = {
     lampOnTooltip: "увімкнути лампу",
     lampOffLabel: "Вимкнути лампу",
     lampOnLabel: "Увімкнути лампу",
+    curtainCloseTooltip: "засунути штори",
+    curtainOpenTooltip: "розсунути штори",
+    curtainCloseLabel: "Засунути штори",
+    curtainOpenLabel: "Розсунути штори",
     doorReadyTooltip: "віднести в пральню",
     doorWaitingTooltip: "спершу збери білизну",
     doorReadyLabel: "Віднести кошик у пральню",

@@ -113,6 +113,15 @@ export const ja = {
     reminderOnTooltip: (o: { doneAt: string }) => `通知オン · ${o.doneAt}`,
     idleStartLabel: (o: { name: string }) => `${o.name}のスタート`,
     loadFirstTooltip: "先に洗濯物を入れて",
+    needsWashingTooltip: "まず洗濯から",
+    alreadyWashedTooltip: "洗濯ずみ · 次は乾燥",
+    alreadyDryTooltip: "もう乾いてる · 家に持ち帰ろう",
+    elsewhereLoadedTooltip: (o: { name: string }) =>
+      `洗濯物は${o.name}で待ってるよ`,
+    elsewhereRunningTooltip: (o: { kind: MachineKind }) =>
+      o.kind === "washer" ? "まだ洗濯中" : "まだ乾燥中",
+    elsewhereDoneTooltip: (o: { name: string }) =>
+      `洗濯物ができあがり · ${o.name}`,
     runningDoorTooltip: (o: { kind: MachineKind; doneAt: string }) =>
       `${o.kind === "washer" ? "洗濯中" : "乾燥中"} · ${o.doneAt}`,
     doneDoorTooltip: "ドアを開ける · 洗濯物を取り出す",
@@ -199,6 +208,10 @@ export const ja = {
       board: "掲示板",
     },
     updates: {
+      "bedroom-curtains": {
+        title: "家のカーテンを開け閉め",
+        body: "部屋のカーテンをクリックすると開け閉めできます。部屋の明るさも変わります。昼は日差し、夜は月明かり。",
+      },
       "door-bell": {
         title: "ドアにベルを設置",
         body: "入店するとき、そして誰かが入ってくるたびに、小さなベルが鳴ります。",
@@ -382,6 +395,10 @@ export const ja = {
     lampOnTooltip: "ランプをつける",
     lampOffLabel: "ランプを消す",
     lampOnLabel: "ランプをつける",
+    curtainCloseTooltip: "カーテンを閉める",
+    curtainOpenTooltip: "カーテンを開ける",
+    curtainCloseLabel: "カーテンを閉める",
+    curtainOpenLabel: "カーテンを開ける",
     doorReadyTooltip: "コインランドリーへ持っていく",
     doorWaitingTooltip: "先に洗濯物を拾って",
     doorReadyLabel: "かごをコインランドリーへ持っていく",

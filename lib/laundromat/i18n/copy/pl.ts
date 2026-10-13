@@ -102,6 +102,15 @@ export const pl = {
     reminderOnTooltip: (o) => `przypomnienie włączone · ${o.doneAt}`,
     idleStartLabel: (o) => `${o.name}, start`,
     loadFirstTooltip: "najpierw włóż pranie",
+    needsWashingTooltip: "najpierw wypierz",
+    alreadyWashedTooltip: "już wyprane · teraz suszenie",
+    alreadyDryTooltip: "już suche · zabierz do domu",
+    elsewhereLoadedTooltip: (o) => `twoje pranie czeka w: ${o.name}`,
+    elsewhereRunningTooltip: (o) =>
+      o.kind === "washer"
+        ? "twoje ubrania wciąż się piorą"
+        : "twoje ubrania wciąż schną",
+    elsewhereDoneTooltip: (o) => `twoje pranie gotowe · ${o.name}`,
     runningDoorTooltip: (o) =>
       `${o.kind === "washer" ? "pranie" : "suszenie"} · ${o.doneAt}`,
     doneDoorTooltip: "otwórz drzwiczki · wyjmij pranie",
@@ -187,6 +196,10 @@ export const pl = {
       board: "tablica",
     },
     updates: {
+      "bedroom-curtains": {
+        title: "zasuń zasłony w domu",
+        body: "Kliknij zasłony w swoim pokoju, żeby je odsunąć albo zasunąć. Światło w pokoju się zmienia, w dzień słońce, w nocy księżyc.",
+      },
       "door-bell": {
         title: "dzwonek przy drzwiach",
         body: "Mały dzwonek dzwoni, gdy wchodzisz, i za każdym razem, gdy wchodzi ktoś inny.",
@@ -366,6 +379,10 @@ export const pl = {
     lampOnTooltip: "zapal lampę",
     lampOffLabel: "Zgaś lampę",
     lampOnLabel: "Zapal lampę",
+    curtainCloseTooltip: "zasuń zasłony",
+    curtainOpenTooltip: "odsuń zasłony",
+    curtainCloseLabel: "Zasuń zasłony",
+    curtainOpenLabel: "Odsuń zasłony",
     doorReadyTooltip: "zanieś do pralni",
     doorWaitingTooltip: "najpierw zbierz pranie",
     doorReadyLabel: "Zanieś kosz do pralni",

@@ -118,6 +118,17 @@ export const vi = {
     reminderOnTooltip: (o: { doneAt: string }) => `đã bật nhắc · ${o.doneAt}`,
     idleStartLabel: (o: { name: string }) => `Nút bắt đầu ${o.name}`,
     loadFirstTooltip: "bỏ đồ vào trước đã",
+    needsWashingTooltip: "giặt trước đã",
+    alreadyWashedTooltip: "đã giặt rồi · giờ sấy",
+    alreadyDryTooltip: "đã khô rồi · mang về nhà",
+    elsewhereLoadedTooltip: (o: { name: string }) =>
+      `đồ của bạn đang chờ ở ${o.name}`,
+    elsewhereRunningTooltip: (o: { kind: MachineKind }) =>
+      o.kind === "washer"
+        ? "quần áo của bạn vẫn đang giặt"
+        : "quần áo của bạn vẫn đang sấy",
+    elsewhereDoneTooltip: (o: { name: string }) =>
+      `đồ của bạn xong rồi · ở ${o.name}`,
     runningDoorTooltip: (o: { kind: MachineKind; doneAt: string }) =>
       `đang ${o.kind === "washer" ? "giặt" : "sấy"} · ${o.doneAt}`,
     doneDoorTooltip: "mở cửa · lấy đồ ra",
@@ -204,6 +215,10 @@ export const vi = {
       board: "bảng tin",
     },
     updates: {
+      "bedroom-curtains": {
+        title: "kéo rèm ở nhà",
+        body: "Bấm vào rèm trong phòng để mở hoặc đóng. Ánh sáng trong phòng đổi theo, nắng ban ngày và trăng ban đêm.",
+      },
       "door-bell": {
         title: "chuông trên cửa",
         body: "Một chiếc chuông nhỏ reo khi bạn bước vào, và mỗi khi có người khác đến.",
@@ -385,6 +400,10 @@ export const vi = {
     lampOnTooltip: "bật đèn",
     lampOffLabel: "Tắt đèn",
     lampOnLabel: "Bật đèn",
+    curtainCloseTooltip: "kéo rèm lại",
+    curtainOpenTooltip: "kéo rèm ra",
+    curtainCloseLabel: "Kéo rèm lại",
+    curtainOpenLabel: "Kéo rèm ra",
     doorReadyTooltip: "mang ra tiệm giặt",
     doorWaitingTooltip: "nhặt đồ trước đã",
     doorReadyLabel: "Mang giỏ ra tiệm giặt",

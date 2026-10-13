@@ -86,6 +86,15 @@ export const tr = {
     reminderOnTooltip: (o) => `hatırlatıcı açık · ${o.doneAt}`,
     idleStartLabel: (o) => `${o.name} başlat`,
     loadFirstTooltip: "önce çamaşırı koy",
+    needsWashingTooltip: "önce yıka",
+    alreadyWashedTooltip: "zaten yıkandı · sırada kurutma",
+    alreadyDryTooltip: "zaten kuru · eve götür",
+    elsewhereLoadedTooltip: (o) => `çamaşırın ${o.name} içinde bekliyor`,
+    elsewhereRunningTooltip: (o) =>
+      o.kind === "washer"
+        ? "kıyafetlerin hâlâ yıkanıyor"
+        : "kıyafetlerin hâlâ kuruyor",
+    elsewhereDoneTooltip: (o) => `çamaşırın hazır · ${o.name}`,
     runningDoorTooltip: (o) =>
       `${o.kind === "washer" ? "yıkanıyor" : "kuruyor"} · ${o.doneAt}`,
     doneDoorTooltip: "kapağı aç · çamaşırı çıkar",
@@ -171,6 +180,10 @@ export const tr = {
       board: "pano",
     },
     updates: {
+      "bedroom-curtains": {
+        title: "evde perdeleri çek",
+        body: "Odandaki perdelere tıklayarak aç ya da kapat. Odadaki ışık da değişir, gündüz güneş, gece ay.",
+      },
       "door-bell": {
         title: "kapıda bir çan",
         body: "İçeri girdiğinde ve başka biri geldiğinde küçük bir çan çalar.",
@@ -346,6 +359,10 @@ export const tr = {
     lampOnTooltip: "lambayı aç",
     lampOffLabel: "Lambayı kapat",
     lampOnLabel: "Lambayı aç",
+    curtainCloseTooltip: "perdeleri kapat",
+    curtainOpenTooltip: "perdeleri aç",
+    curtainCloseLabel: "Perdeleri kapat",
+    curtainOpenLabel: "Perdeleri aç",
     doorReadyTooltip: "çamaşırhaneye götür",
     doorWaitingTooltip: "önce çamaşırını topla",
     doorReadyLabel: "Sepeti çamaşırhaneye götür",
