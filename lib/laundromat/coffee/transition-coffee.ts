@@ -1,16 +1,17 @@
 import type { CoffeeEvent, CoffeeState, CoffeeTiming } from "./coffee-state";
 import { settleCoffee } from "./settle-coffee";
 
-/** Return the coffee state after `event` at `now`: a brew by `visitorId` tops the flask up from its current level unless it is full or brewing, a pour moves one portion into the empty cup, and a drink empties the cup; a brew or pour stamps the flask's `changedAt` with `now`, or just after the flask's own `changedAt` when that is later. */
+/** Return the coffee state after `event` at local `now`, settling the flask at `flaskNow` (the same moment on the clock of whoever brewed it): a brew by `visitorId` tops the flask up from its current level unless it is full or brewing, a pour moves one portion into the empty cup with its `hotUntil` on the local clock, and a drink empties the cup; a brew or pour stamps the flask's `changedAt` with `now`, or just after the flask's own `changedAt` when that is later. */
 export function transitionCoffee(options: {
   state: CoffeeState;
   event: CoffeeEvent;
   now: number;
+  flaskNow: number;
   timing: CoffeeTiming;
   visitorId: string | undefined;
 }): CoffeeState {
-  const { state, event, now, timing } = options;
-  const flask = settleCoffee({ flask: state.flask, now, timing });
+  const { state, event, now, flaskNow, timing } = options;
+  const flask = settleCoffee({ flask: state.flask, now: flaskNow, timing });
   const settled = { ...state, flask };
   const isBrewing = flask.brewStartedAt !== undefined;
   // Another tab's clock may run ahead, so an action must still outrank the flask it acted on.
@@ -33,7 +34,10 @@ export function transitionCoffee(options: {
         ? settled
         : {
             flask: { ...flask, portions: flask.portions - 1, changedAt },
-            cup: { kind: "full", hotUntil: flask.hotUntil ?? now },
+            cup: {
+              kind: "full",
+              hotUntil: (flask.hotUntil ?? flaskNow) + (now - flaskNow),
+            },
           };
     case "drink":
       return { ...settled, cup: { kind: "empty" } };

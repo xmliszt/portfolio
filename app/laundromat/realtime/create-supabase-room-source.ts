@@ -1,6 +1,7 @@
 import { createClient } from "@supabase/supabase-js";
 
 import { createPresenceTracker } from "@/lib/laundromat/realtime/create-presence-tracker";
+import { parseRemoteClock } from "@/lib/laundromat/realtime/parse-remote-clock";
 import { parseRemoteDraft } from "@/lib/laundromat/realtime/parse-remote-draft";
 import { parseRemoteEntry } from "@/lib/laundromat/realtime/parse-remote-entry";
 import { parseRoomPresence } from "@/lib/laundromat/realtime/parse-room-presence";
@@ -13,7 +14,7 @@ const SUPABASE_CLIENT_PRESENCE_LIMIT = 5;
 const TRACK_LIMIT_WITH_SPARE = SUPABASE_CLIENT_PRESENCE_LIMIT - 1;
 const TRACK_WINDOW_MS = 30_000;
 
-/** Return a room source on a Supabase Realtime channel: presence for which tabs are here and what they are doing, sent through a presence tracker limited to `TRACK_LIMIT_WITH_SPARE` per `TRACK_WINDOW_MS` with one kept for a change to `writingSince`, and broadcast for live notebook drafts and just-saved entries cut to `maxDraftChars`. */
+/** Return a room source on a Supabase Realtime channel: presence for which tabs are here and what they are doing, sent through a presence tracker limited to `TRACK_LIMIT_WITH_SPARE` per `TRACK_WINDOW_MS` with one kept for a change to `writingSince`, and broadcast for live notebook drafts and just-saved entries cut to `maxDraftChars`, and for clock readings stamped with when they arrived. */
 export function createSupabaseRoomSource(options: {
   url: string;
   anonKey: string;
@@ -29,6 +30,7 @@ export function createSupabaseRoomSource(options: {
       onPeers,
       onDraft,
       onEntry,
+      onClock,
       onConnectedChange,
       onUrgentReadyChange,
     }) {
@@ -89,6 +91,13 @@ export function createSupabaseRoomSource(options: {
             onEntry(entry);
           }
         })
+        .on("broadcast", { event: "clock" }, ({ payload }) => {
+          const receivedAt = Date.now();
+          const clock = parseRemoteClock(payload);
+          if (clock !== undefined && clock.sessionId !== sessionId) {
+            onClock({ clock, receivedAt });
+          }
+        })
         .subscribe((status) => {
           state.isSubscribed = status === "SUBSCRIBED";
           onConnectedChange(state.isSubscribed);
@@ -110,6 +119,14 @@ export function createSupabaseRoomSource(options: {
             type: "broadcast",
             event: "entry",
             payload: entry,
+          });
+        },
+        sendClock(clock) {
+          if (!state.isSubscribed) return;
+          void channel.send({
+            type: "broadcast",
+            event: "clock",
+            payload: clock,
           });
         },
         leave() {

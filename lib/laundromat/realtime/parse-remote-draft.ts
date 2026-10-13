@@ -1,3 +1,4 @@
+import { maskProfanity } from "@/lib/laundromat/notebook/mask-profanity";
 import {
   NOTEBOOK_SCRIPTS,
   type NotebookScript,
@@ -29,7 +30,7 @@ function parseSelection(options: {
   return { start: Math.min(start, end), end: Math.max(start, end) };
 }
 
-/** Return the draft another tab broadcast with its text cut to `maxChars` and its selection clamped to that text, or `undefined` when the payload is not one; a missing or malformed selection is dropped. */
+/** Return the draft another tab broadcast with its text cut to `maxChars` with swear words masked, and its selection clamped to that text, or `undefined` when the payload is not one; a missing or malformed selection is dropped. */
 export function parseRemoteDraft(options: {
   value: unknown;
   maxChars: number;
@@ -44,7 +45,7 @@ export function parseRemoteDraft(options: {
   ) {
     return undefined;
   }
-  const text = value.text.slice(0, options.maxChars);
+  const text = maskProfanity(value.text.slice(0, options.maxChars));
   const selection =
     "selection" in value
       ? parseSelection({ value: value.selection, textLength: text.length })

@@ -1,3 +1,4 @@
+import { maskProfanity } from "@/lib/laundromat/notebook/mask-profanity";
 import {
   NOTEBOOK_SCRIPTS,
   type NotebookScript,
@@ -13,7 +14,7 @@ function isPositiveInteger(value: unknown): value is number {
   return Number.isInteger(value) && Number(value) > 0;
 }
 
-/** Return the entry another tab broadcast right after saving it, with its body cut to `maxChars`, or `undefined` when the payload is not one. */
+/** Return the entry another tab broadcast right after saving it, with its body cut to `maxChars` and swear words masked in its body and sign-off, or `undefined` when the payload is not one. */
 export function parseRemoteEntry(options: {
   value: unknown;
   maxChars: number;
@@ -55,8 +56,8 @@ export function parseRemoteEntry(options: {
       page: entry.page,
       lineStart: entry.lineStart,
       lineCount: entry.lineCount,
-      body: entry.body.slice(0, options.maxChars),
-      signOff: entry.signOff,
+      body: maskProfanity(entry.body.slice(0, options.maxChars)),
+      signOff: entry.signOff === null ? null : maskProfanity(entry.signOff),
       script: entry.script,
       createdAt: entry.createdAt,
     },

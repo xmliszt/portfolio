@@ -1,3 +1,7 @@
+import type {
+  BoardTag,
+  BoardUpdateId,
+} from "@/lib/laundromat/board/board-updates";
 import type { GarmentKind } from "@/lib/laundromat/first-visit/bedroom-config";
 import type { LaundromatLocale } from "@/lib/laundromat/i18n/laundromat-locales";
 import type { LeaveEntryFailureReason } from "@/lib/laundromat/notebook/describe-leave-failure";
@@ -38,6 +42,7 @@ export const en = {
       "A quiet laundromat in your browser. Put a load in, let the timer run, and read the notes people left behind.",
     language: "Language",
     builtBy: "built by Li Yuxuan with ❤️",
+    updateAvailable: "updated · refresh",
   },
   tabDone: "done",
   readoutDone: "done",
@@ -180,6 +185,82 @@ export const en = {
     label: "Plant, touch grass",
     tooltip: "touch grass",
   },
+  board: {
+    label: "Notice board, what's new at the laundromat",
+    tooltip: "what's new",
+    eyebrow: "notice board",
+    heading: "what's new",
+    subtitle: "Small changes around the laundromat, newest first.",
+    updated: (o: { date: string }) => `updated ${o.date}`,
+    footer: "always open, 24/7",
+    close: "close",
+    closeHint: "esc to close",
+    tags: {
+      opening: "opening",
+      tv: "tv",
+      notebook: "notebook",
+      languages: "languages",
+      room: "room",
+      coffee: "coffee",
+      window: "window",
+      light: "light",
+      board: "board",
+    } satisfies { [tag in BoardTag]: string },
+    updates: {
+      "whats-new-board": {
+        title: "a board for what's new",
+        body: "This stand lists what's new. It rests like paper by day and lights up after dark.",
+      },
+      "twelve-stations": {
+        title: "twelve stations on the tv",
+        body: "Seven new lofi radios fill the tuner dial, from study hall to deep space.",
+      },
+      "page-drag": {
+        title: "turn pages by dragging",
+        body: "Drag anywhere along a page's outer edge to turn it.",
+      },
+      "window-light": {
+        title: "sunlight through the window",
+        body: "Daylight reaches the machines and the floor, and turns warm at sunrise and sunset.",
+      },
+      "shared-coffee": {
+        title: "share a pot of coffee",
+        body: "Up to seven of you can pour from the same flask.",
+      },
+      "street-view": {
+        title: "the street outside",
+        body: "The window looks out on the street, lit by the sun or the moon.",
+      },
+      "tube-counter": {
+        title: "a counter of who's here",
+        body: "The tubes on the back wall count everyone in the laundromat, you included.",
+      },
+      "coffee-counter": {
+        title: "coffee on the counter",
+        body: "Brew a pot, pour a cup, and drink it while your laundry spins.",
+      },
+      "shared-machines": {
+        title: "others doing laundry",
+        body: "See which machines other visitors are using. Their laundry stays put when you load yours.",
+      },
+      "eighteen-languages": {
+        title: "open in 18 languages",
+        body: "The whole laundromat speaks your language. Switch it from the globe in the corner.",
+      },
+      "shared-notebook": {
+        title: "a notebook for strangers",
+        body: "Leave a note for whoever comes in next. Full notebooks go on the shelf for anyone to read.",
+      },
+      "lofi-tv": {
+        title: "lofi on the tv",
+        body: "Turn on the TV for lo-fi radio, with a tuner and a volume knob.",
+      },
+      opening: {
+        title: "laundro.cafe opens",
+        body: "A quiet laundromat in your browser: wash, dry, and focus for 5 to 60 minutes.",
+      },
+    } satisfies { [id in BoardUpdateId]: { title: string; body: string } },
+  },
   tubeDisplay: {
     label: (o: { count: number }) =>
       `Tube counter, ${o.count === 1 ? "just you here" : `${o.count} people here`}`,
@@ -195,6 +276,13 @@ export const en = {
       "late-wash": "late wash",
       "tape-hiss": "tape hiss",
       "city-at-3am": "city at 3 a.m.",
+      "study-hall": "study hall",
+      "smoky-jazz": "smoky jazz",
+      fireplace: "fireplace",
+      "neon-tokyo": "neon tokyo",
+      "string-quartet": "string quartet",
+      "porch-guitar": "porch guitar",
+      "deep-space": "deep space",
     } satisfies { [id in TvStationId]: string },
     station: (o: { channel: string; name: string }) =>
       `ch ${o.channel} · ${o.name}`,

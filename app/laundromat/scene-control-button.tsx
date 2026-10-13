@@ -12,6 +12,7 @@ type SceneControlButtonProps = {
   onPointerShowTooltip: () => void;
   onKeyboardShowTooltip: () => void;
   onHideTooltip: () => void;
+  onTouchLeave: () => void;
 };
 
 const KNOB_FORWARD_KEYS = ["ArrowUp", "ArrowRight"];
@@ -49,6 +50,11 @@ export function SceneControlButton(props: SceneControlButtonProps) {
     press(!isForward);
   }
 
+  function handlePointerLeave(event: React.PointerEvent<HTMLButtonElement>) {
+    if (props.knob && event.pointerType === "touch") props.onTouchLeave();
+    else props.onHideTooltip();
+  }
+
   function handleFocus(event: React.FocusEvent<HTMLButtonElement>) {
     if (event.currentTarget.matches(":focus-visible")) {
       props.onKeyboardShowTooltip();
@@ -77,7 +83,7 @@ export function SceneControlButton(props: SceneControlButtonProps) {
       onWheel={handleWheel}
       onKeyDown={handleKeyDown}
       onPointerEnter={props.onPointerShowTooltip}
-      onPointerLeave={props.onHideTooltip}
+      onPointerLeave={handlePointerLeave}
       onFocus={handleFocus}
       onBlur={props.onHideTooltip}
     />

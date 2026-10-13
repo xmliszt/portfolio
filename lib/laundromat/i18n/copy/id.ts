@@ -38,6 +38,7 @@ export const id = {
       "Laundry yang tenang di browser kamu. Masukkan cucian, biarkan timer berjalan, dan baca catatan yang ditinggalkan orang-orang.",
     language: "Bahasa",
     builtBy: "dibuat dengan ❤️ oleh Li Yuxuan",
+    updateAvailable: "diperbarui · muat ulang",
   },
   tabDone: "selesai",
   readoutDone: "beres",
@@ -183,6 +184,82 @@ export const id = {
     label: "Tanaman, sentuh rumput",
     tooltip: "sentuh rumput",
   },
+  board: {
+    label: "Papan pengumuman, apa yang baru di laundromat",
+    tooltip: "apa yang baru",
+    eyebrow: "papan pengumuman",
+    heading: "apa yang baru",
+    subtitle: "Perubahan kecil di laundromat, yang terbaru lebih dulu.",
+    updated: (o: { date: string }) => `diperbarui ${o.date}`,
+    footer: "selalu buka, 24/7",
+    close: "tutup",
+    closeHint: "esc untuk menutup",
+    tags: {
+      opening: "pembukaan",
+      tv: "tv",
+      notebook: "buku catatan",
+      languages: "bahasa",
+      room: "ruangan",
+      coffee: "kopi",
+      window: "jendela",
+      light: "cahaya",
+      board: "papan",
+    },
+    updates: {
+      "whats-new-board": {
+        title: "papan untuk kabar baru",
+        body: "Papan ini menampilkan yang baru. Siang hari seperti kertas, malam hari menyala.",
+      },
+      "twelve-stations": {
+        title: "dua belas saluran di tv",
+        body: "Tujuh radio lofi baru mengisi tombol tuner, dari ruang belajar sampai luar angkasa.",
+      },
+      "page-drag": {
+        title: "balik halaman dengan menyeret",
+        body: "Seret di mana saja sepanjang tepi luar halaman untuk membaliknya.",
+      },
+      "window-light": {
+        title: "sinar matahari dari jendela",
+        body: "Cahaya siang sampai ke mesin dan lantai, dan menghangat saat matahari terbit dan terbenam.",
+      },
+      "shared-coffee": {
+        title: "berbagi seteko kopi",
+        body: "Hingga tujuh orang bisa menuang dari teko yang sama.",
+      },
+      "street-view": {
+        title: "jalanan di luar",
+        body: "Jendela menghadap ke jalan, diterangi matahari atau bulan.",
+      },
+      "tube-counter": {
+        title: "siapa yang ada di sini",
+        body: "Tabung di dinding belakang menghitung semua orang di laundromat, termasuk kamu.",
+      },
+      "coffee-counter": {
+        title: "kopi di meja",
+        body: "Seduh seteko, tuang secangkir, dan minum selagi cucianmu berputar.",
+      },
+      "shared-machines": {
+        title: "orang lain mencuci",
+        body: "Lihat mesin mana yang dipakai pengunjung lain. Cucian mereka tetap di tempat saat kamu memasukkan cucianmu.",
+      },
+      "eighteen-languages": {
+        title: "buka dalam 18 bahasa",
+        body: "Seluruh laundromat berbicara dalam bahasamu. Ganti lewat globe di pojok.",
+      },
+      "shared-notebook": {
+        title: "buku catatan untuk orang asing",
+        body: "Tinggalkan catatan untuk orang berikutnya. Buku yang penuh disimpan di rak.",
+      },
+      "lofi-tv": {
+        title: "lofi di tv",
+        body: "Nyalakan TV untuk radio lofi, dengan kenop tuner dan volume.",
+      },
+      opening: {
+        title: "laundro.cafe dibuka",
+        body: "Laundromat yang tenang di browsermu: cuci, keringkan, fokus 5 sampai 60 menit.",
+      },
+    },
+  },
   tubeDisplay: {
     label: (o: { count: number }) =>
       `Penghitung tabung, ${o.count === 1 ? "cuma kamu di sini" : `${o.count} orang di sini`}`,
@@ -198,6 +275,13 @@ export const id = {
       "late-wash": "cucian larut malam",
       "tape-hiss": "desis kaset",
       "city-at-3am": "kota jam 3 pagi",
+      "study-hall": "ruang belajar",
+      "smoky-jazz": "jazz berasap",
+      fireplace: "perapian",
+      "neon-tokyo": "tokyo neon",
+      "string-quartet": "kuartet gesek",
+      "porch-guitar": "gitar di teras",
+      "deep-space": "luar angkasa",
     } satisfies { [id in TvStationId]: string },
     station: (o: { channel: string; name: string }) =>
       `ch ${o.channel} · ${o.name}`,

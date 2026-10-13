@@ -32,6 +32,12 @@ export type RoomPresence = {
   writingSince?: number;
 };
 
+export type RemoteClock = {
+  sessionId: string;
+  visitorId: string;
+  sentAt: number;
+};
+
 export type DraftSelection = { start: number; end: number };
 
 export type RemoteDraft = {

@@ -23,7 +23,8 @@ export type FurnitureKind =
   | "plant"
   | "basket"
   | "mug"
-  | "mat";
+  | "mat"
+  | "board";
 
 export type SceneObject =
   | (Placement & { kind: MachineKind; number: number })
@@ -32,6 +33,7 @@ export type SceneObject =
 type FocusTargets = {
   shelf: { objectId: string };
   notebook: { objectId: string };
+  board: { objectId: string };
 };
 
 export type FocusTarget = keyof FocusTargets;
@@ -137,7 +139,6 @@ export type SceneConfig = {
       powerMs: number;
       screenGlow: number;
       reflection: number;
-      knobDegreesPerDetent: number;
     };
     coffee: {
       flaskPortions: number;
@@ -160,6 +161,13 @@ export type SceneConfig = {
     };
     shelf: { bookLean: number; spineGlow: number; bookLift: number };
     window: { litWindowOpacity: number };
+    board: {
+      leanDeg: number;
+      dayShade: number;
+      frontlight: number;
+      floorSpill: number;
+      visibleUpdates: number;
+    };
     tubeDisplay: {
       digitGlow: number;
       ghostOpacity: number;
@@ -373,6 +381,12 @@ export const sceneConfig: SceneConfig = {
       size: { w: 2.2, d: 1.4, h: 0.05 },
     },
     {
+      id: "board",
+      kind: "board",
+      position: { x: 12.15, y: 5.15, z: 0 },
+      size: { w: 1.5, d: 1.5, h: 3.4 },
+    },
+    {
       id: "basket",
       kind: "basket",
       position: { x: 1.4, y: 3.5, z: 0 },
@@ -383,6 +397,7 @@ export const sceneConfig: SceneConfig = {
     focusTargets: {
       shelf: { objectId: "shelf" },
       notebook: { objectId: "notebook" },
+      board: { objectId: "board" },
     },
     nearDurationMs: 500,
     farDurationMs: 800,
@@ -459,6 +474,48 @@ export const sceneConfig: SceneConfig = {
           channel: "Nostalgic Synthwave",
           placeholder: false,
         },
+        {
+          id: "study-hall",
+          videoId: "rFZHOHl-L8A",
+          channel: "Lofi Girl",
+          placeholder: false,
+        },
+        {
+          id: "smoky-jazz",
+          videoId: "E2vONfzoyRI",
+          channel: "Lofi Girl",
+          placeholder: false,
+        },
+        {
+          id: "fireplace",
+          videoId: "q_4KI-ChIIs",
+          channel: "Lofi Girl",
+          placeholder: false,
+        },
+        {
+          id: "neon-tokyo",
+          videoId: "1Tl2FtV06qo",
+          channel: "Lofi Girl",
+          placeholder: false,
+        },
+        {
+          id: "string-quartet",
+          videoId: "jXAEIWcGXwE",
+          channel: "Lofi Girl",
+          placeholder: false,
+        },
+        {
+          id: "porch-guitar",
+          videoId: "E_XmwjgRLz8",
+          channel: "Lofi Girl",
+          placeholder: false,
+        },
+        {
+          id: "deep-space",
+          videoId: "GSfT7H87zq4",
+          channel: "Lofi Girl",
+          placeholder: false,
+        },
       ],
       stallSeconds: 12,
       noSignalMs: 1200,
@@ -474,7 +531,6 @@ export const sceneConfig: SceneConfig = {
       powerMs: 360,
       screenGlow: 1,
       reflection: 0.12,
-      knobDegreesPerDetent: 39,
     },
     coffee: {
       flaskPortions: 5,
@@ -493,6 +549,13 @@ export const sceneConfig: SceneConfig = {
     },
     shelf: { bookLean: 0.14, spineGlow: 0.69, bookLift: 0.19 },
     window: { litWindowOpacity: 0.7 },
+    board: {
+      leanDeg: 8,
+      dayShade: 0.3,
+      frontlight: 0.12,
+      floorSpill: 0.14,
+      visibleUpdates: 3,
+    },
     tubeDisplay: {
       digitGlow: 1,
       ghostOpacity: 0.12,

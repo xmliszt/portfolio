@@ -2,6 +2,7 @@
 
 import { cookies } from "next/headers";
 
+import { maskProfanity } from "@/lib/laundromat/notebook/mask-profanity";
 import { appendEntry } from "@/lib/laundromat/supabase/append-entry";
 import { countNotebookEntries } from "@/lib/laundromat/supabase/count-notebook-entries";
 import { createLaundromatServiceClient } from "@/lib/laundromat/supabase/create-laundromat-service-client";
@@ -87,8 +88,11 @@ function toEntryView(entry: NotebookEntry): NotebookEntryView {
     page: entry.page,
     lineStart: entry.line_start,
     lineCount: entry.line_count,
-    body: isHidden ? "" : entry.body,
-    signOff: isHidden ? null : entry.sign_off,
+    body: isHidden ? "" : maskProfanity(entry.body),
+    signOff:
+      isHidden || entry.sign_off === null
+        ? null
+        : maskProfanity(entry.sign_off),
     script: toNotebookScript(entry.script),
     createdAt: entry.created_at,
   };

@@ -32,6 +32,7 @@ export function getFloorHalo(options: {
     case "stool":
     case "plant":
     case "basket":
+    case "board":
       return {
         kind: "ellipse" as const,
         ...getIsoEllipse({

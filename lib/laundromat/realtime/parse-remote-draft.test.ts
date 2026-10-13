@@ -51,3 +51,23 @@ test("keeps the selection clamped to the cut text and drops a malformed one", ()
     { sessionId: "s", text: "hi", script: "latin" }
   );
 });
+
+test("masks swear words in a draft and keeps its selection", () => {
+  assert.deepEqual(
+    parseRemoteDraft({
+      value: {
+        sessionId: "s",
+        text: "what the fuck",
+        script: "latin",
+        selection: { start: 13, end: 13 },
+      },
+      maxChars: 100,
+    }),
+    {
+      sessionId: "s",
+      text: "what the ****",
+      script: "latin",
+      selection: { start: 13, end: 13 },
+    }
+  );
+});

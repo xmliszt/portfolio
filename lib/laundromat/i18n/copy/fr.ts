@@ -33,6 +33,7 @@ export const fr = {
       "Une laverie tranquille dans ton navigateur. Lance une machine, laisse tourner le minuteur et lis les mots que les autres ont laissés.",
     language: "Langue",
     builtBy: "fait avec ❤️ par Li Yuxuan",
+    updateAvailable: "mis à jour · recharger",
   },
   tabDone: "fini",
   readoutDone: "fini",
@@ -178,6 +179,83 @@ export const fr = {
     label: "Plante, toucher de l'herbe",
     tooltip: "toucher de l'herbe",
   },
+  board: {
+    label: "Panneau, les nouveautés de la laverie",
+    tooltip: "quoi de neuf",
+    eyebrow: "panneau d'affichage",
+    heading: "quoi de neuf",
+    subtitle:
+      "Petits changements dans la laverie, les plus récents en premier.",
+    updated: (o: { date: string }) => `mis à jour le ${o.date}`,
+    footer: "toujours ouvert, 24 h/24",
+    close: "fermer",
+    closeHint: "échap pour fermer",
+    tags: {
+      opening: "ouverture",
+      tv: "télé",
+      notebook: "carnet",
+      languages: "langues",
+      room: "salle",
+      coffee: "café",
+      window: "fenêtre",
+      light: "lumière",
+      board: "panneau",
+    },
+    updates: {
+      "whats-new-board": {
+        title: "un panneau des nouveautés",
+        body: "Ce présentoir montre ce qui est nouveau. Mat comme du papier le jour, il s'éclaire la nuit.",
+      },
+      "twelve-stations": {
+        title: "douze chaînes à la télé",
+        body: "Sept nouvelles radios lofi remplissent le cadran, de la salle d'étude à l'espace lointain.",
+      },
+      "page-drag": {
+        title: "tourner les pages en glissant",
+        body: "Fais glisser n'importe où le long du bord extérieur d'une page pour la tourner.",
+      },
+      "window-light": {
+        title: "le soleil par la fenêtre",
+        body: "La lumière du jour atteint les machines et le sol, et se réchauffe au lever et au coucher du soleil.",
+      },
+      "shared-coffee": {
+        title: "partager une cafetière",
+        body: "Jusqu'à sept personnes se servent dans la même verseuse.",
+      },
+      "street-view": {
+        title: "la rue dehors",
+        body: "La fenêtre donne sur la rue, éclairée par le soleil ou la lune.",
+      },
+      "tube-counter": {
+        title: "qui est là",
+        body: "Les tubes du mur du fond comptent tout le monde dans la laverie, toi compris.",
+      },
+      "coffee-counter": {
+        title: "du café sur le comptoir",
+        body: "Prépare une cafetière, sers-toi une tasse et bois-la pendant que le linge tourne.",
+      },
+      "shared-machines": {
+        title: "les autres font leur lessive",
+        body: "Vois quelles machines les autres utilisent. Leur linge reste en place quand tu charges le tien.",
+      },
+      "eighteen-languages": {
+        title: "ouvert en 18 langues",
+        body: "Toute la laverie parle ta langue. Change-la depuis le globe dans le coin.",
+      },
+      "shared-notebook": {
+        title: "un carnet pour les inconnus",
+        body: "Laisse un mot à la prochaine personne. Les carnets pleins vont sur l'étagère.",
+      },
+      "lofi-tv": {
+        title: "du lofi à la télé",
+        body: "Allume la télé pour la radio lofi, avec un bouton de chaînes et un de volume.",
+      },
+      opening: {
+        title: "laundro.cafe ouvre",
+        body: "Une laverie calme dans ton navigateur : laver, sécher, se concentrer de 5 à 60 minutes.",
+      },
+    },
+  },
   tubeDisplay: {
     label: (o: { count: number }) =>
       `Compteur à tubes, ${o.count === 1 ? "rien que toi ici" : `${o.count} personnes ici`}`,
@@ -193,6 +271,13 @@ export const fr = {
       "late-wash": "lessive tardive",
       "tape-hiss": "souffle de cassette",
       "city-at-3am": "la ville à 3 h",
+      "study-hall": "salle d'étude",
+      "smoky-jazz": "jazz enfumé",
+      fireplace: "coin du feu",
+      "neon-tokyo": "tokyo néon",
+      "string-quartet": "quatuor à cordes",
+      "porch-guitar": "guitare sous le porche",
+      "deep-space": "espace lointain",
     },
     station: (o: { channel: string; name: string }) =>
       `ch ${o.channel} · ${o.name}`,

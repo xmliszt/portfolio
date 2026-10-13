@@ -33,6 +33,7 @@ export const zhHans = {
       "浏览器里一间安静的自助洗衣店。放一桶衣服进去，让计时器走着，读读别人留下的话。",
     language: "语言",
     builtBy: "李雨轩制作",
+    updateAvailable: "已更新 · 刷新",
   },
   tabDone: "好了",
   readoutDone: "好了",
@@ -170,6 +171,82 @@ export const zhHans = {
     label: "盆栽，摸摸草",
     tooltip: "摸摸草",
   },
+  board: {
+    label: "告示板，洗衣房的新鲜事",
+    tooltip: "新鲜事",
+    eyebrow: "告示板",
+    heading: "新鲜事",
+    subtitle: "洗衣房里的小变化，最新的在最前。",
+    updated: (o: { date: string }) => `${o.date} 更新`,
+    footer: "全年无休，24 小时营业",
+    close: "关闭",
+    closeHint: "按 esc 关闭",
+    tags: {
+      opening: "开业",
+      tv: "电视",
+      notebook: "笔记本",
+      languages: "语言",
+      room: "店内",
+      coffee: "咖啡",
+      window: "窗户",
+      light: "光线",
+      board: "告示板",
+    },
+    updates: {
+      "whats-new-board": {
+        title: "新添一块告示板",
+        body: "这块立牌告诉你有什么新鲜事。白天像纸一样安静，入夜后亮起灯来。",
+      },
+      "twelve-stations": {
+        title: "电视有了十二个频道",
+        body: "从自习室到深空，七个新的 lofi 电台填满了调台旋钮。",
+      },
+      "page-drag": {
+        title: "拖动翻页",
+        body: "沿着页面外侧边缘任意位置拖动，就能翻页。",
+      },
+      "window-light": {
+        title: "阳光照进窗户",
+        body: "白天的光线会照到机器和地板上，日出日落时变得温暖。",
+      },
+      "shared-coffee": {
+        title: "一壶咖啡大家分",
+        body: "最多七个人可以从同一个壶里倒咖啡。",
+      },
+      "street-view": {
+        title: "窗外的街道",
+        body: "窗外是一条街，被阳光或月光照亮。",
+      },
+      "tube-counter": {
+        title: "谁在这里",
+        body: "后墙上的辉光管会数出洗衣房里的每个人，也包括你。",
+      },
+      "coffee-counter": {
+        title: "柜台上的咖啡",
+        body: "煮一壶，倒一杯，边等衣服转边喝。",
+      },
+      "shared-machines": {
+        title: "别人也在洗衣服",
+        body: "看看其他人在用哪台机器。你放衣服时，别人的衣服不会动。",
+      },
+      "eighteen-languages": {
+        title: "18 种语言营业",
+        body: "整个洗衣房都说你的语言。在角落的地球图标切换。",
+      },
+      "shared-notebook": {
+        title: "写给陌生人的笔记本",
+        body: "给下一个进来的人留一句话。写满的本子会放上书架。",
+      },
+      "lofi-tv": {
+        title: "电视里的 lofi",
+        body: "打开电视听 lofi 电台，有调台和音量旋钮。",
+      },
+      opening: {
+        title: "laundro.cafe 开业",
+        body: "浏览器里一家安静的洗衣房：洗衣、烘干，专注 5 到 60 分钟。",
+      },
+    },
+  },
   tubeDisplay: {
     label: (o: { count: number }) =>
       `辉光管计数器，${o.count === 1 ? "只有你在这里" : `这里有 ${o.count} 个人`}`,
@@ -185,6 +262,13 @@ export const zhHans = {
       "late-wash": "深夜洗衣",
       "tape-hiss": "磁带沙沙",
       "city-at-3am": "凌晨三点的城市",
+      "study-hall": "自习室",
+      "smoky-jazz": "烟雾爵士",
+      fireplace: "壁炉",
+      "neon-tokyo": "霓虹东京",
+      "string-quartet": "弦乐四重奏",
+      "porch-guitar": "门廊吉他",
+      "deep-space": "深空",
     },
     station: (o: { channel: string; name: string }) =>
       `${o.channel} 台 · ${o.name}`,

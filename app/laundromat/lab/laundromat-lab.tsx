@@ -155,7 +155,6 @@ const objectDials = {
     powerMs: [details.tv.powerMs, 0, 1200, 10],
     screenGlow: [details.tv.screenGlow, 0, 1, 0.01],
     reflection: [details.tv.reflection, 0, 0.5, 0.01],
-    knobDegreesPerDetent: [details.tv.knobDegreesPerDetent, 5, 90, 1],
     stallSeconds: [details.tv.stallSeconds, 2, 60, 1],
     noSignalMs: [details.tv.noSignalMs, 0, 5000, 50],
     osdSeconds: [details.tv.osdSeconds, 0.5, 6, 0.1],
@@ -197,6 +196,14 @@ const objectDials = {
   },
   window: {
     litWindowOpacity: [details.window.litWindowOpacity, 0, 1, 0.01],
+    _collapsed: true,
+  },
+  board: {
+    leanDeg: [details.board.leanDeg, 0, 20, 0.5],
+    dayShade: [details.board.dayShade, 0, 0.8, 0.01],
+    frontlight: [details.board.frontlight, 0, 0.5, 0.01],
+    floorSpill: [details.board.floorSpill, 0, 0.6, 0.01],
+    visibleUpdates: [details.board.visibleUpdates, 1, 3, 1],
     _collapsed: true,
   },
   tubeDisplay: {
@@ -482,6 +489,7 @@ export default function LaundromatLab() {
         plant: objectValues.plant,
         shelf: objectValues.shelf,
         window: objectValues.window,
+        board: objectValues.board,
         tubeDisplay: objectValues.tubeDisplay,
         notebook: {
           ...objectValues.notebook,

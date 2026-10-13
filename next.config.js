@@ -11,10 +11,17 @@ const withPWA = require("next-pwa")({
   register: true,
   skipWaiting: true,
   disable: isDevelopment,
+  runtimeCaching: [
+    { urlPattern: /\/laundromat\/version$/, handler: "NetworkOnly" },
+    ...require("next-pwa/cache"),
+  ],
 });
 
 const nextConfig = {
   reactStrictMode: true,
+  env: {
+    LAUNDROMAT_BUILD_ID: process.env.VERCEL_GIT_COMMIT_SHA || "development",
+  },
   pageExtensions: isDevelopment
     ? ["tsx", "ts", "jsx", "js", "dev.tsx"]
     : ["tsx", "ts", "jsx", "js"],

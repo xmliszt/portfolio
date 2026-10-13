@@ -7,7 +7,12 @@ as $$
 begin
   if tg_op = 'INSERT' then
     update laundro_cafe.notebook_entries
-    set report_count = report_count + 1
+    set
+      report_count = report_count + 1,
+      hidden_at = case
+        when hidden_at is null and report_count + 1 >= 3 then now()
+        else hidden_at
+      end
     where id = new.entry_id;
     return new;
   end if;

@@ -33,6 +33,7 @@ export const es = {
       "Una lavandería tranquila en tu navegador. Mete una carga, deja que corra el temporizador y lee las notas que ha dejado la gente.",
     language: "Idioma",
     builtBy: "hecho con ❤️ por Li Yuxuan",
+    updateAvailable: "actualizado · recargar",
   },
   tabDone: "listo",
   readoutDone: "listo",
@@ -179,6 +180,82 @@ export const es = {
     label: "Planta, tocar pasto",
     tooltip: "tocar pasto",
   },
+  board: {
+    label: "Tablón, novedades de la lavandería",
+    tooltip: "novedades",
+    eyebrow: "tablón de anuncios",
+    heading: "novedades",
+    subtitle: "Pequeños cambios en la lavandería, los más recientes primero.",
+    updated: (o: { date: string }) => `actualizado el ${o.date}`,
+    footer: "siempre abierto, 24/7",
+    close: "cerrar",
+    closeHint: "esc para cerrar",
+    tags: {
+      opening: "apertura",
+      tv: "tv",
+      notebook: "cuaderno",
+      languages: "idiomas",
+      room: "sala",
+      coffee: "café",
+      window: "ventana",
+      light: "luz",
+      board: "tablón",
+    },
+    updates: {
+      "whats-new-board": {
+        title: "un tablón de novedades",
+        body: "Este soporte muestra lo nuevo. De día descansa como papel y de noche se ilumina.",
+      },
+      "twelve-stations": {
+        title: "doce canales en la tele",
+        body: "Siete radios lofi nuevas llenan el dial, de la sala de estudio al espacio profundo.",
+      },
+      "page-drag": {
+        title: "pasa páginas arrastrando",
+        body: "Arrastra desde cualquier punto del borde exterior de una página para pasarla.",
+      },
+      "window-light": {
+        title: "sol por la ventana",
+        body: "La luz del día llega a las máquinas y al suelo, y se vuelve cálida al amanecer y al atardecer.",
+      },
+      "shared-coffee": {
+        title: "comparte una cafetera",
+        body: "Hasta siete personas pueden servirse de la misma jarra.",
+      },
+      "street-view": {
+        title: "la calle de afuera",
+        body: "La ventana da a la calle, iluminada por el sol o la luna.",
+      },
+      "tube-counter": {
+        title: "quién está aquí",
+        body: "Los tubos de la pared del fondo cuentan a todos en la lavandería, tú incluido.",
+      },
+      "coffee-counter": {
+        title: "café en el mostrador",
+        body: "Prepara una cafetera, sírvete una taza y tómala mientras gira la ropa.",
+      },
+      "shared-machines": {
+        title: "otros lavando",
+        body: "Mira qué máquinas usan los demás. Su ropa se queda en su sitio cuando cargas la tuya.",
+      },
+      "eighteen-languages": {
+        title: "abierto en 18 idiomas",
+        body: "Toda la lavandería habla tu idioma. Cámbialo desde el globo de la esquina.",
+      },
+      "shared-notebook": {
+        title: "un cuaderno para desconocidos",
+        body: "Deja una nota para quien llegue después. Los cuadernos llenos van a la estantería.",
+      },
+      "lofi-tv": {
+        title: "lofi en la tele",
+        body: "Enciende la tele para escuchar radio lofi, con dial y perilla de volumen.",
+      },
+      opening: {
+        title: "abre laundro.cafe",
+        body: "Una lavandería tranquila en tu navegador: lava, seca y concéntrate de 5 a 60 minutos.",
+      },
+    },
+  },
   tubeDisplay: {
     label: (o: { count: number }) =>
       `Contador de tubos, ${o.count === 1 ? "solo tú aquí" : `${o.count} personas aquí`}`,
@@ -194,6 +271,13 @@ export const es = {
       "late-wash": "colada tardía",
       "tape-hiss": "siseo de cinta",
       "city-at-3am": "la ciudad a las 3 a. m.",
+      "study-hall": "sala de estudio",
+      "smoky-jazz": "jazz humeante",
+      fireplace: "chimenea",
+      "neon-tokyo": "tokio de neón",
+      "string-quartet": "cuarteto de cuerda",
+      "porch-guitar": "guitarra en el porche",
+      "deep-space": "espacio profundo",
     },
     station: (o: { channel: string; name: string }) =>
       `c. ${o.channel} · ${o.name}`,

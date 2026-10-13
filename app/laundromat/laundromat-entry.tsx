@@ -15,6 +15,7 @@ import { SoundToggle } from "./sound/sound-toggle";
 import { LaundromatScene } from "./laundromat-scene";
 import { PortfolioLink } from "./portfolio-link";
 import { ShareButton } from "./share-button";
+import { UpdateNotice } from "./update-notice";
 
 const HEAD_HOME_DIM_MS = 700;
 const HEAD_HOME_REVEAL_MS = 1400;
@@ -127,6 +128,7 @@ export function LaundromatEntry(props: LaundromatEntryProps) {
     <div className="relative size-full">
       <FirstVisitKeyframes motion={bedroom.motion} />
       <div className="absolute top-5 right-5 z-10 flex flex-col items-end gap-y-1">
+        <UpdateNotice />
         <LanguagePicker />
         <SoundToggle />
         <ShareButton />
