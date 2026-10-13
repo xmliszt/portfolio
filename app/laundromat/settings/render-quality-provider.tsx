@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useLayoutEffect, useState } from "react";
 
 import { detectRenderQuality } from "@/lib/laundromat/render-quality/detect-render-quality";
 import type {
@@ -45,7 +45,7 @@ export function RenderQualityProvider(props: RenderQualityProviderProps) {
   const [preference, setPreferenceState] =
     useState<RenderQualityPreference>("auto");
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     setDetected(detectDeviceQuality());
     setPreferenceState(readStoredPreference());
   }, []);

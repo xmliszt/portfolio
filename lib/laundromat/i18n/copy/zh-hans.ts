@@ -42,7 +42,8 @@ export const zhHans = {
     renderingHint:
       "轻量模式会去掉柔光、植物的摆动，以及拉近笔记本和告示板的镜头。适合较慢的设备或内存紧张的时候。",
     qualityAuto: "自动",
-    qualityAutoHint: (o: { quality: string }) => `这台设备使用${o.quality}`,
+    qualityAutoHint: (o: { quality: string }) =>
+      `本设备使用「${o.quality}」模式`,
     qualityFull: "完整",
     qualityFullHint: "所有光影与动态",
     qualityLite: "轻量",

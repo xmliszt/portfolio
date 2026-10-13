@@ -40,7 +40,7 @@ export const ko = {
     heading: "설정",
     rendering: "화면 표현",
     renderingHint:
-      "라이트는 부드러운 빛, 화분의 흔들림, 노트와 게시판으로의 확대를 끕니다. 느린 기기나 메모리가 부족할 때 도움이 돼요.",
+      "라이트는 부드러운 빛, 화분의 흔들림, 노트와 게시판으로의 확대를 꺼요. 느린 기기나 메모리가 부족할 때 도움이 돼요.",
     qualityAuto: "자동",
     qualityAutoHint: (o: { quality: string }) =>
       `이 기기에서는 ${o.quality} 사용`,

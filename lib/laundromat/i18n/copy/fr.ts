@@ -40,10 +40,10 @@ export const fr = {
     heading: "réglages",
     rendering: "rendu",
     renderingHint:
-      "lite retire la lumière douce, le balancement de la plante et le zoom vers le carnet et le tableau. utile sur les appareils plus lents ou quand la mémoire manque.",
+      "lite retire la lumière douce, le balancement de la plante et le zoom vers le carnet et le panneau. utile sur les appareils plus lents ou quand la mémoire manque.",
     qualityAuto: "auto",
     qualityAutoHint: (o: { quality: string }) =>
-      `utilise ${o.quality} sur cet appareil`,
+      `sur cet appareil : ${o.quality}`,
     qualityFull: "complet",
     qualityFullHint: "toute la lumière et le mouvement",
     qualityLite: "lite",

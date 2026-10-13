@@ -41,7 +41,7 @@ export const ptBR = {
     heading: "configurações",
     rendering: "renderização",
     renderingHint:
-      "o lite tira a luz suave, o balanço da planta e o zoom no caderno e no quadro. ajuda em aparelhos mais lentos ou quando falta memória.",
+      "o lite tira a luz suave, o balanço da planta e o zoom no caderno e no mural. ajuda em aparelhos mais lentos ou quando falta memória.",
     qualityAuto: "auto",
     qualityAutoHint: (o: { quality: string }) =>
       `usa ${o.quality} neste aparelho`,

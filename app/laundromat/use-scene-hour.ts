@@ -14,11 +14,19 @@ function subscribeToVisibleTicks(options: {
   tickMs: number;
   onChange: () => void;
 }) {
-  let intervalId: number | undefined;
+  let timeoutId: number | undefined;
+  function scheduleNextTick() {
+    timeoutId = window.setTimeout(
+      () => {
+        options.onChange();
+        scheduleNextTick();
+      },
+      options.tickMs - (Date.now() % options.tickMs)
+    );
+  }
   function restartWhileVisible() {
-    window.clearInterval(intervalId);
-    if (document.visibilityState !== "visible") return;
-    intervalId = window.setInterval(options.onChange, options.tickMs);
+    window.clearTimeout(timeoutId);
+    if (document.visibilityState === "visible") scheduleNextTick();
   }
   function handleVisibilityChange() {
     restartWhileVisible();
@@ -27,7 +35,7 @@ function subscribeToVisibleTicks(options: {
   restartWhileVisible();
   document.addEventListener("visibilitychange", handleVisibilityChange);
   return () => {
-    window.clearInterval(intervalId);
+    window.clearTimeout(timeoutId);
     document.removeEventListener("visibilitychange", handleVisibilityChange);
   };
 }
@@ -49,7 +57,7 @@ function getEpochSeconds() {
 }
 
 function getEpochMinutesInSeconds() {
-  return Math.floor(Date.now() / TICK_MS.lite) * 60;
+  return Math.floor(Date.now() / TICK_MS.lite) * (TICK_MS.lite / 1000);
 }
 
 function getServerEpochSeconds() {

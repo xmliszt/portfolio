@@ -38,12 +38,12 @@ export const es = {
   },
   settings: {
     heading: "ajustes",
-    rendering: "representación",
+    rendering: "gráficos",
     renderingHint:
       "lite quita la luz suave, el vaivén de la planta y el zoom hacia el cuaderno y el tablón. ayuda en dispositivos más lentos o con poca memoria.",
     qualityAuto: "auto",
     qualityAutoHint: (o: { quality: string }) =>
-      `usa ${o.quality} en este dispositivo`,
+      `en este dispositivo: ${o.quality}`,
     qualityFull: "completo",
     qualityFullHint: "toda la luz y el movimiento",
     qualityLite: "lite",

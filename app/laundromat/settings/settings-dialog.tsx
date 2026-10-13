@@ -20,6 +20,7 @@ export function SettingsDialog(props: SettingsDialogProps) {
   const { copy } = useLaundromatCopy();
   const { preference, detected, setPreference } = useRenderQuality();
   const selectedRef = useRef<HTMLInputElement>(null);
+  const dialogRef = useRef<HTMLDivElement>(null);
   const qualityLabels = {
     full: copy.settings.qualityFull,
     lite: copy.settings.qualityLite,
@@ -41,37 +42,43 @@ export function SettingsDialog(props: SettingsDialogProps) {
     selectedRef.current?.focus({ preventScroll: true });
   }, []);
 
-  function handleKeyDown(event: React.KeyboardEvent<HTMLDivElement>) {
-    if (event.key === "Escape") {
+  const { onClose } = props;
+  useEffect(() => {
+    function handleKeyDown(event: KeyboardEvent) {
+      if (event.key === "Escape") {
+        event.preventDefault();
+        event.stopPropagation();
+        onClose();
+        return;
+      }
+      const dialog = dialogRef.current;
+      if (event.key !== "Tab" || dialog === null) return;
+      const focusable = [
+        ...dialog.querySelectorAll<HTMLElement>("input:checked, button"),
+      ];
+      const first = focusable.at(0);
+      const last = focusable.at(-1);
+      const isInside = dialog.contains(document.activeElement);
+      const wrapTo = event.shiftKey
+        ? (!isInside || document.activeElement === first) && last
+        : (!isInside || document.activeElement === last) && first;
+      if (!wrapTo) return;
       event.preventDefault();
-      event.stopPropagation();
-      props.onClose();
-      return;
+      wrapTo.focus();
     }
-    if (event.key !== "Tab") return;
-    const focusable = [
-      ...event.currentTarget.querySelectorAll<HTMLElement>(
-        "input:checked, button"
-      ),
-    ];
-    const first = focusable.at(0);
-    const last = focusable.at(-1);
-    const wrapTo = event.shiftKey
-      ? document.activeElement === first && last
-      : document.activeElement === last && first;
-    if (!wrapTo) return;
-    event.preventDefault();
-    wrapTo.focus();
-  }
+    document.addEventListener("keydown", handleKeyDown, { capture: true });
+    return () =>
+      document.removeEventListener("keydown", handleKeyDown, { capture: true });
+  }, [onClose]);
 
   return (
     <div
+      ref={dialogRef}
       data-settings-dialog
       role="dialog"
       aria-modal
       aria-labelledby="settings-dialog-heading"
       className="flex w-[min(360px,calc(100vw-32px))] flex-col gap-y-3 rounded-[22px] bg-[var(--lm-panel)] p-3.5 shadow-[0_1px_0_rgb(255_255_255/0.04)_inset,0_1px_2px_rgb(0_0_0/0.5),0_24px_64px_rgb(0_0_0/0.55)]"
-      onKeyDown={handleKeyDown}
     >
       <div className="flex flex-col gap-y-5 rounded-lg px-5 pt-5 pb-4 text-[var(--lm-ink)] shadow-[0_0_0_1px_var(--lm-edge)]">
         <h2

@@ -42,7 +42,8 @@ export const zhHant = {
     renderingHint:
       "輕量模式會拿掉柔光、植物的擺動，以及拉近筆記本和告示板的鏡頭。適合較慢的裝置或記憶體吃緊的時候。",
     qualityAuto: "自動",
-    qualityAutoHint: (o: { quality: string }) => `這台裝置使用${o.quality}`,
+    qualityAutoHint: (o: { quality: string }) =>
+      `本裝置使用「${o.quality}」模式`,
     qualityFull: "完整",
     qualityFullHint: "所有光影與動態",
     qualityLite: "輕量",

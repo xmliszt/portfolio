@@ -39,7 +39,7 @@ export const nl = {
     heading: "instellingen",
     rendering: "weergave",
     renderingHint:
-      "lite laat het zachte licht, het wiegen van de plant en het inzoomen op het notitieboek en het bord weg. handig op tragere apparaten of als het geheugen krap is.",
+      "lite laat het zachte licht, het wiegen van de plant en het inzoomen op het notitieboek en het prikbord weg. handig op tragere apparaten of als het geheugen krap is.",
     qualityAuto: "auto",
     qualityAutoHint: (o: { quality: string }) =>
       `gebruikt ${o.quality} op dit apparaat`,
