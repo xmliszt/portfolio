@@ -32,8 +32,24 @@ export const es = {
     shareText:
       "Una lavandería tranquila en tu navegador. Mete una carga, deja que corra el temporizador y lee las notas que ha dejado la gente.",
     language: "Idioma",
+    settings: "ajustes",
     builtBy: "hecho con ❤️ por Li Yuxuan",
     updateAvailable: "actualizado · recargar",
+  },
+  settings: {
+    heading: "ajustes",
+    rendering: "representación",
+    renderingHint:
+      "lite quita la luz suave, el vaivén de la planta y el zoom hacia el cuaderno y el tablón. ayuda en dispositivos más lentos o con poca memoria.",
+    qualityAuto: "auto",
+    qualityAutoHint: (o: { quality: string }) =>
+      `usa ${o.quality} en este dispositivo`,
+    qualityFull: "completo",
+    qualityFullHint: "toda la luz y el movimiento",
+    qualityLite: "lite",
+    qualityLiteHint: "más ligero para la memoria y la batería",
+    close: "cerrar",
+    closeHint: "esc para cerrar",
   },
   tabDone: "listo",
   readoutDone: "listo",

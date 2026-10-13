@@ -31,8 +31,24 @@ export const tr = {
     shareText:
       "Tarayıcında sakin bir çamaşırhane. Makineye çamaşırını at, zamanlayıcı işlesin ve insanların bıraktığı notları oku.",
     language: "Dil",
+    settings: "ayarlar",
     builtBy: "Li Yuxuan tarafından ❤️ ile yapıldı",
     updateAvailable: "güncellendi · yenile",
+  },
+  settings: {
+    heading: "ayarlar",
+    rendering: "görüntü",
+    renderingHint:
+      "lite yumuşak ışığı, bitkinin salınmasını ve deftere ve panoya yakınlaşmayı kapatır. daha yavaş cihazlarda ya da bellek azaldığında işe yarar.",
+    qualityAuto: "otomatik",
+    qualityAutoHint: (o: { quality: string }) =>
+      `bu cihazda ${o.quality} kullanır`,
+    qualityFull: "tam",
+    qualityFullHint: "tüm ışık ve hareket",
+    qualityLite: "lite",
+    qualityLiteHint: "bellek ve pil için daha hafif",
+    close: "kapat",
+    closeHint: "kapatmak için esc",
   },
   tabDone: "bitti",
   readoutDone: "bitti",

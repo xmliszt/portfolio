@@ -37,8 +37,24 @@ export const id = {
     shareText:
       "Laundry yang tenang di browser kamu. Masukkan cucian, biarkan timer berjalan, dan baca catatan yang ditinggalkan orang-orang.",
     language: "Bahasa",
+    settings: "pengaturan",
     builtBy: "dibuat dengan ❤️ oleh Li Yuxuan",
     updateAvailable: "diperbarui · muat ulang",
+  },
+  settings: {
+    heading: "pengaturan",
+    rendering: "tampilan",
+    renderingHint:
+      "lite mematikan cahaya lembut, goyangan tanaman, dan zoom ke buku catatan dan papan. membantu di perangkat yang lebih lambat atau saat memori menipis.",
+    qualityAuto: "otomatis",
+    qualityAutoHint: (o: { quality: string }) =>
+      `memakai ${o.quality} di perangkat ini`,
+    qualityFull: "penuh",
+    qualityFullHint: "semua cahaya dan gerakan",
+    qualityLite: "lite",
+    qualityLiteHint: "lebih ringan untuk memori dan baterai",
+    close: "tutup",
+    closeHint: "esc untuk menutup",
   },
   tabDone: "selesai",
   readoutDone: "beres",

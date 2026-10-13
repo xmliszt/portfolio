@@ -32,8 +32,23 @@ export const zhHant = {
     shareText:
       "瀏覽器裡一間安靜的自助洗衣店。丟一籃衣服進去，讓計時器跑著，讀讀別人留下的話。",
     language: "語言",
+    settings: "設定",
     builtBy: "李雨軒製作",
     updateAvailable: "已更新 · 重新整理",
+  },
+  settings: {
+    heading: "設定",
+    rendering: "畫面",
+    renderingHint:
+      "輕量模式會拿掉柔光、植物的擺動，以及拉近筆記本和告示板的鏡頭。適合較慢的裝置或記憶體吃緊的時候。",
+    qualityAuto: "自動",
+    qualityAutoHint: (o: { quality: string }) => `這台裝置使用${o.quality}`,
+    qualityFull: "完整",
+    qualityFullHint: "所有光影與動態",
+    qualityLite: "輕量",
+    qualityLiteHint: "更省記憶體和電量",
+    close: "關閉",
+    closeHint: "按 esc 關閉",
   },
   tabDone: "好了",
   readoutDone: "好了",

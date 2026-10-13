@@ -9,6 +9,8 @@ import type { IsoProjection } from "@/lib/laundromat/project-iso-point";
 import { projectIsoPoint } from "@/lib/laundromat/project-iso-point";
 import { toSvgPoints } from "@/lib/laundromat/to-svg-points";
 
+import { useRenderQuality } from "./settings/use-render-quality";
+
 const BLUR_PX = 2;
 const FACE_OPACITY = 0.6;
 
@@ -22,6 +24,7 @@ type WindowFaceLightProps = {
 /** Draw the window's light where it lands on the front face of a washer, dryer or counter, clipped to that face. */
 export function WindowFaceLight(props: WindowFaceLightProps) {
   const id = useId();
+  const { quality } = useRenderQuality();
   const { position, size } = props.laidOut.object;
   const corners = hasFlatFront(props.laidOut.object.kind)
     ? getWindowFrontLight({
@@ -58,7 +61,7 @@ export function WindowFaceLight(props: WindowFaceLightProps) {
       <g clipPath={`url(#${id}-face)`}>
         <polygon
           fill={props.light.color}
-          filter={`url(#${id}-soften)`}
+          filter={quality === "full" ? `url(#${id}-soften)` : undefined}
           points={toSvgPoints(points)}
           style={{
             opacity: props.light.opacity * FACE_OPACITY,

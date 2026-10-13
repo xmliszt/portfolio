@@ -45,8 +45,24 @@ export const pl = {
     shareText:
       "Spokojna pralnia w przeglądarce. Wrzuć pranie, niech timer leci, i poczytaj liściki, które zostawili inni.",
     language: "Język",
+    settings: "ustawienia",
     builtBy: "zrobione z ❤️ przez Li Yuxuan",
     updateAvailable: "zaktualizowano · odśwież",
+  },
+  settings: {
+    heading: "ustawienia",
+    rendering: "renderowanie",
+    renderingHint:
+      "lite wyłącza miękkie światło, kołysanie rośliny i przybliżenie do notesu i tablicy. pomaga na wolniejszych urządzeniach albo gdy brakuje pamięci.",
+    qualityAuto: "auto",
+    qualityAutoHint: (o: { quality: string }) =>
+      `na tym urządzeniu: ${o.quality}`,
+    qualityFull: "pełny",
+    qualityFullHint: "całe światło i ruch",
+    qualityLite: "lite",
+    qualityLiteHint: "lżejszy dla pamięci i baterii",
+    close: "zamknij",
+    closeHint: "esc, aby zamknąć",
   },
   tabDone: "gotowe",
   readoutDone: "gotowe",

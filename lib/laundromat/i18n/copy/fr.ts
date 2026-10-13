@@ -32,8 +32,24 @@ export const fr = {
     shareText:
       "Une laverie tranquille dans ton navigateur. Lance une machine, laisse tourner le minuteur et lis les mots que les autres ont laissés.",
     language: "Langue",
+    settings: "réglages",
     builtBy: "fait avec ❤️ par Li Yuxuan",
     updateAvailable: "mis à jour · recharger",
+  },
+  settings: {
+    heading: "réglages",
+    rendering: "rendu",
+    renderingHint:
+      "lite retire la lumière douce, le balancement de la plante et le zoom vers le carnet et le tableau. utile sur les appareils plus lents ou quand la mémoire manque.",
+    qualityAuto: "auto",
+    qualityAutoHint: (o: { quality: string }) =>
+      `utilise ${o.quality} sur cet appareil`,
+    qualityFull: "complet",
+    qualityFullHint: "toute la lumière et le mouvement",
+    qualityLite: "lite",
+    qualityLiteHint: "plus léger pour la mémoire et la batterie",
+    close: "fermer",
+    closeHint: "échap pour fermer",
   },
   tabDone: "fini",
   readoutDone: "fini",

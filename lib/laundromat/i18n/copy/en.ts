@@ -41,8 +41,24 @@ export const en = {
     shareText:
       "A quiet laundromat in your browser. Put a load in, let the timer run, and read the notes people left behind.",
     language: "Language",
+    settings: "settings",
     builtBy: "built by Li Yuxuan with ❤️",
     updateAvailable: "updated · refresh",
+  },
+  settings: {
+    heading: "settings",
+    rendering: "rendering",
+    renderingHint:
+      "lite drops the soft lighting, the plant's sway and the zoom into the notebook and board. it helps on slower devices or when memory runs low.",
+    qualityAuto: "auto",
+    qualityAutoHint: (o: { quality: string }) =>
+      `uses ${o.quality} on this device`,
+    qualityFull: "full",
+    qualityFullHint: "every light and motion",
+    qualityLite: "lite",
+    qualityLiteHint: "lighter on memory and battery",
+    close: "close",
+    closeHint: "esc to close",
   },
   tabDone: "done",
   readoutDone: "done",

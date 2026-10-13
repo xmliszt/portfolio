@@ -84,6 +84,7 @@ type NotebookBookProps = {
   bookNumber: number | undefined;
   coverNumber: number;
   reducedMotion: boolean;
+  pageCurl: boolean;
   onPlaced: () => void;
   onClose: () => void;
   lock: NotebookLock;
@@ -175,7 +176,8 @@ export function NotebookBook(props: NotebookBookProps) {
   const [ink, setInk] = useState<{ entryId: string; line: number }>();
   const [reportedIds, setReportedIds] = useState<number[]>([]);
   const [isJumping, setIsJumping] = useState(false);
-  const [curlMode, setCurlMode] = useState<"webgl" | "css">("webgl");
+  const [isCurlUnsupported, setIsCurlUnsupported] = useState(false);
+  const curlMode = props.pageCurl && !isCurlUnsupported ? "webgl" : "css";
   const [localEntries, setLocalEntries] = useState<NotebookView["entries"]>([]);
   const [handoffDraft, setHandoffDraft] = useState<RemoteDraft>();
   const [isLifted, setIsLifted] = useState(false);
@@ -902,7 +904,10 @@ export function NotebookBook(props: NotebookBookProps) {
     if (canWrite) textareaRef.current?.focus({ preventScroll: true });
   }
 
-  const handleCurlUnsupported = useCallback(() => setCurlMode("css"), []);
+  const handleCurlUnsupported = useCallback(
+    () => setIsCurlUnsupported(true),
+    []
+  );
 
   const isOpen = phase !== "closed";
   const isIdle = phase === "open" && turn === undefined;

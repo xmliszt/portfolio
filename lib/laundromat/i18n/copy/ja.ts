@@ -32,8 +32,24 @@ export const ja = {
     shareText:
       "ブラウザの中の静かなコインランドリー。洗濯物を入れて、タイマーを回して、誰かが残したメモを読もう。",
     language: "言語",
+    settings: "設定",
     builtBy: "Li Yuxuan が ❤️ をこめて作りました",
     updateAvailable: "更新あり · 再読み込み",
+  },
+  settings: {
+    heading: "設定",
+    rendering: "描画",
+    renderingHint:
+      "ライトでは、やわらかな光、植物の揺れ、ノートと掲示板へのズームを省きます。遅めの端末やメモリが少ないときに役立ちます。",
+    qualityAuto: "自動",
+    qualityAutoHint: (o: { quality: string }) =>
+      `この端末では${o.quality}を使用`,
+    qualityFull: "フル",
+    qualityFullHint: "すべての光と動き",
+    qualityLite: "ライト",
+    qualityLiteHint: "メモリとバッテリーにやさしい",
+    close: "閉じる",
+    closeHint: "esc で閉じる",
   },
   tabDone: "完了",
   readoutDone: "完了",

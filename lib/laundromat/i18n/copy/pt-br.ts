@@ -33,8 +33,24 @@ export const ptBR = {
     shareText:
       "Uma lavanderia tranquila no seu navegador. Coloque uma leva de roupa, deixe o timer rodar e leia os recados que as pessoas deixaram.",
     language: "Idioma",
+    settings: "configurações",
     builtBy: "feito com ❤️ por Li Yuxuan",
     updateAvailable: "atualizado · recarregar",
+  },
+  settings: {
+    heading: "configurações",
+    rendering: "renderização",
+    renderingHint:
+      "o lite tira a luz suave, o balanço da planta e o zoom no caderno e no quadro. ajuda em aparelhos mais lentos ou quando falta memória.",
+    qualityAuto: "auto",
+    qualityAutoHint: (o: { quality: string }) =>
+      `usa ${o.quality} neste aparelho`,
+    qualityFull: "completo",
+    qualityFullHint: "toda a luz e o movimento",
+    qualityLite: "lite",
+    qualityLiteHint: "mais leve para a memória e a bateria",
+    close: "fechar",
+    closeHint: "esc para fechar",
   },
   tabDone: "pronto",
   readoutDone: "fim",

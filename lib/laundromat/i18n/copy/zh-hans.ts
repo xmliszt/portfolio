@@ -32,8 +32,23 @@ export const zhHans = {
     shareText:
       "浏览器里一间安静的自助洗衣店。放一桶衣服进去，让计时器走着，读读别人留下的话。",
     language: "语言",
+    settings: "设置",
     builtBy: "李雨轩制作",
     updateAvailable: "已更新 · 刷新",
+  },
+  settings: {
+    heading: "设置",
+    rendering: "画面",
+    renderingHint:
+      "轻量模式会去掉柔光、植物的摆动，以及拉近笔记本和告示板的镜头。适合较慢的设备或内存紧张的时候。",
+    qualityAuto: "自动",
+    qualityAutoHint: (o: { quality: string }) => `这台设备使用${o.quality}`,
+    qualityFull: "完整",
+    qualityFullHint: "所有光影与动态",
+    qualityLite: "轻量",
+    qualityLiteHint: "更省内存和电量",
+    close: "关闭",
+    closeHint: "按 esc 关闭",
   },
   tabDone: "好了",
   readoutDone: "好了",

@@ -37,8 +37,24 @@ export const hi = {
     shareText:
       "तुम्हारे ब्राउज़र में एक शांत लॉन्ड्री। कपड़े डालो, टाइमर चलने दो, और लोगों के छोड़े हुए नोट पढ़ो।",
     language: "भाषा",
+    settings: "सेटिंग्स",
     builtBy: "Li Yuxuan ने ❤️ से बनाया",
     updateAvailable: "अपडेट हुआ · रीफ़्रेश करें",
+  },
+  settings: {
+    heading: "सेटिंग्स",
+    rendering: "रेंडरिंग",
+    renderingHint:
+      "लाइट में नरम रोशनी, पौधे का हिलना और नोटबुक व बोर्ड पर ज़ूम बंद हो जाते हैं। धीमे डिवाइस पर या कम मेमोरी में यह मदद करता है।",
+    qualityAuto: "ऑटो",
+    qualityAutoHint: (o: { quality: string }) =>
+      `इस डिवाइस पर ${o.quality} चुनता है`,
+    qualityFull: "पूरा",
+    qualityFullHint: "सारी रोशनी और हलचल",
+    qualityLite: "लाइट",
+    qualityLiteHint: "मेमोरी और बैटरी पर हल्का",
+    close: "बंद करें",
+    closeHint: "बंद करने के लिए esc",
   },
   tabDone: "हो गया",
   readoutDone: "पूरा",

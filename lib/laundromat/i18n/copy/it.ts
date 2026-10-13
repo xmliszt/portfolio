@@ -32,8 +32,24 @@ export const it = {
     shareText:
       "Una lavanderia tranquilla nel tuo browser. Carica un bucato, lascia andare il timer e leggi i biglietti che hanno lasciato gli altri.",
     language: "Lingua",
+    settings: "impostazioni",
     builtBy: "fatto con ❤️ da Li Yuxuan",
     updateAvailable: "aggiornato · ricarica",
+  },
+  settings: {
+    heading: "impostazioni",
+    rendering: "resa grafica",
+    renderingHint:
+      "lite toglie la luce morbida, l'ondeggiare della pianta e lo zoom sul quaderno e sulla bacheca. aiuta sui dispositivi più lenti o con poca memoria.",
+    qualityAuto: "auto",
+    qualityAutoHint: (o: { quality: string }) =>
+      `usa ${o.quality} su questo dispositivo`,
+    qualityFull: "completa",
+    qualityFullHint: "tutta la luce e il movimento",
+    qualityLite: "lite",
+    qualityLiteHint: "più leggera per memoria e batteria",
+    close: "chiudi",
+    closeHint: "esc per chiudere",
   },
   tabDone: "finito",
   readoutDone: "fine",

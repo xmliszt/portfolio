@@ -32,8 +32,24 @@ export const ko = {
     shareText:
       "브라우저 속 조용한 빨래방. 빨래를 넣고, 타이머를 돌리고, 사람들이 남긴 메모를 읽어 봐.",
     language: "언어",
+    settings: "설정",
     builtBy: "Li Yuxuan이 ❤️을 담아 만들었어요",
     updateAvailable: "업데이트됨 · 새로고침",
+  },
+  settings: {
+    heading: "설정",
+    rendering: "화면 표현",
+    renderingHint:
+      "라이트는 부드러운 빛, 화분의 흔들림, 노트와 게시판으로의 확대를 끕니다. 느린 기기나 메모리가 부족할 때 도움이 돼요.",
+    qualityAuto: "자동",
+    qualityAutoHint: (o: { quality: string }) =>
+      `이 기기에서는 ${o.quality} 사용`,
+    qualityFull: "전체",
+    qualityFullHint: "모든 빛과 움직임",
+    qualityLite: "라이트",
+    qualityLiteHint: "메모리와 배터리에 가벼움",
+    close: "닫기",
+    closeHint: "esc로 닫기",
   },
   tabDone: "완료",
   readoutDone: "완료",

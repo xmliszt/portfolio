@@ -32,8 +32,24 @@ export const de = {
     shareText:
       "Ein ruhiger Waschsalon in deinem Browser. Steck eine Ladung rein, lass den Timer laufen und lies die Notizen, die andere hinterlassen haben.",
     language: "Sprache",
+    settings: "Einstellungen",
     builtBy: "mit ❤️ gebaut von Li Yuxuan",
     updateAvailable: "aktualisiert · neu laden",
+  },
+  settings: {
+    heading: "Einstellungen",
+    rendering: "Darstellung",
+    renderingHint:
+      "Lite verzichtet auf weiches Licht, das Wiegen der Pflanze und das Heranzoomen an Notizbuch und Tafel. Das hilft auf langsameren Geräten oder bei knappem Speicher.",
+    qualityAuto: "auto",
+    qualityAutoHint: (o: { quality: string }) =>
+      `nutzt ${o.quality} auf diesem Gerät`,
+    qualityFull: "voll",
+    qualityFullHint: "alles Licht und jede Bewegung",
+    qualityLite: "lite",
+    qualityLiteHint: "schont Speicher und Akku",
+    close: "schließen",
+    closeHint: "esc zum schließen",
   },
   tabDone: "fertig",
   readoutDone: "ende",

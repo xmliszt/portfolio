@@ -77,6 +77,7 @@ import type { SceneViews } from "./objects/scene-views";
 import { RoomSourceContext } from "./realtime/room-source-context";
 import { useRoom } from "./realtime/use-room";
 import { useVisitorRegion } from "./realtime/use-visitor-region";
+import { useRenderQuality } from "./settings/use-render-quality";
 import { useSceneSounds } from "./sound/use-scene-sounds";
 import { useSoundBoard } from "./sound/use-sound-board";
 import { useSoundMuted } from "./sound/use-sound-muted";
@@ -147,6 +148,10 @@ export function LaundromatScene(props: LaundromatSceneProps) {
       ? parseBookNumber(searchParams.get("book"))
       : undefined;
   const prefersReducedMotion = useReducedMotion() ?? false;
+  const { quality } = useRenderQuality();
+  const isLite = quality === "lite";
+  const cameraFocus =
+    isLite && (focus === "notebook" || focus === "board") ? "room" : focus;
   const sceneHour = useSceneHour();
   const hour = props.hourOverride ?? sceneHour;
 
@@ -691,9 +696,14 @@ export function LaundromatScene(props: LaundromatSceneProps) {
 
   useEffect(() => {
     if (viewport === undefined) return;
-    const camera = computeCamera({ focus, viewport, layout, config });
+    const camera = computeCamera({
+      focus: cameraFocus,
+      viewport,
+      layout,
+      config,
+    });
     const previous = previousCameraRef.current;
-    previousCameraRef.current = { camera, focus };
+    previousCameraRef.current = { camera, focus: cameraFocus };
 
     function jumpTo(target: Camera) {
       cameraX.set(target.x);
@@ -708,15 +718,15 @@ export function LaundromatScene(props: LaundromatSceneProps) {
       jumpTo(from);
       setIsReady(true);
     }
-    const isResize = previous?.focus === focus;
-    if (isResize || (previous === undefined && focus === "room")) {
+    const isResize = previous?.focus === cameraFocus;
+    if (isResize || (previous === undefined && cameraFocus === "room")) {
       jumpTo(camera);
-      setSettledFocus(focus);
+      setSettledFocus(cameraFocus);
       return;
     }
     if (prefersReducedMotion) {
       jumpTo(camera);
-      setSettledFocus(focus);
+      setSettledFocus(cameraFocus);
       const fade = animate(sceneOpacity, [0.5, 1], { duration: 0.25 });
       return () => fade.stop();
     }
@@ -738,7 +748,7 @@ export function LaundromatScene(props: LaundromatSceneProps) {
     ];
     const move = { isCurrent: true };
     void Promise.all(moves.map(({ finished }) => finished)).then(() => {
-      if (move.isCurrent) setSettledFocus(focus);
+      if (move.isCurrent) setSettledFocus(cameraFocus);
     });
     return () => {
       move.isCurrent = false;
@@ -746,7 +756,7 @@ export function LaundromatScene(props: LaundromatSceneProps) {
     };
   }, [
     viewport,
-    focus,
+    cameraFocus,
     layout,
     config,
     prefersReducedMotion,
@@ -1073,7 +1083,7 @@ export function LaundromatScene(props: LaundromatSceneProps) {
     const notebookObject = layout.objects.find(
       ({ object }) => object.id === notebookObjectId
     );
-    if (notebookObject === undefined || prefersReducedMotion) {
+    if (notebookObject === undefined || prefersReducedMotion || isLite) {
       return { from: { ...to, opacity: 0 }, to };
     }
     const camera = computeCamera({
@@ -1108,7 +1118,7 @@ export function LaundromatScene(props: LaundromatSceneProps) {
     const boardObject = layout.objects.find(
       ({ object }) => object.id === config.camera.focusTargets.board.objectId
     );
-    if (boardObject === undefined || prefersReducedMotion) {
+    if (boardObject === undefined || prefersReducedMotion || isLite) {
       return { from: { ...to, opacity: 0 }, to };
     }
     const camera = computeCamera({ focus: "board", viewport, layout, config });
@@ -1262,9 +1272,10 @@ export function LaundromatScene(props: LaundromatSceneProps) {
               animate={bookLift.to}
               exit={{ ...bookLift.from, transition: { duration: 0.32 } }}
               transition={{
-                duration: prefersReducedMotion
-                  ? 0.2
-                  : config.details.notebook.liftMs / 1000,
+                duration:
+                  prefersReducedMotion || isLite
+                    ? 0.2
+                    : config.details.notebook.liftMs / 1000,
                 ease: config.camera.ease,
               }}
             >
@@ -1274,6 +1285,7 @@ export function LaundromatScene(props: LaundromatSceneProps) {
                 bookNumber={bookNumber}
                 coverNumber={coverNumber}
                 reducedMotion={prefersReducedMotion}
+                pageCurl={!isLite}
                 onPlaced={handleNotebookPlaced}
                 onClose={() => setFocus("room")}
                 lock={notebookLock}
@@ -1300,9 +1312,10 @@ export function LaundromatScene(props: LaundromatSceneProps) {
               animate={boardLift.to}
               exit={{ ...boardLift.from, transition: { duration: 0.32 } }}
               transition={{
-                duration: prefersReducedMotion
-                  ? 0.2
-                  : config.details.notebook.liftMs / 1000,
+                duration:
+                  prefersReducedMotion || isLite
+                    ? 0.2
+                    : config.details.notebook.liftMs / 1000,
                 ease: config.camera.ease,
               }}
             >

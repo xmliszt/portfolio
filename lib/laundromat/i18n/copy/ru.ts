@@ -45,8 +45,24 @@ export const ru = {
     shareText:
       "Тихая прачечная в браузере. Загрузи бельё, запусти таймер и почитай записки, которые оставили другие.",
     language: "Язык",
+    settings: "настройки",
     builtBy: "сделано с ❤️ — Li Yuxuan",
     updateAvailable: "обновлено · обновить страницу",
+  },
+  settings: {
+    heading: "настройки",
+    rendering: "отрисовка",
+    renderingHint:
+      "lite убирает мягкий свет, покачивание растения и приближение к блокноту и доске. помогает на медленных устройствах или когда мало памяти.",
+    qualityAuto: "авто",
+    qualityAutoHint: (o: { quality: string }) =>
+      `на этом устройстве — ${o.quality}`,
+    qualityFull: "полная",
+    qualityFullHint: "весь свет и всё движение",
+    qualityLite: "lite",
+    qualityLiteHint: "бережнее к памяти и батарее",
+    close: "закрыть",
+    closeHint: "esc — закрыть",
   },
   tabDone: "готово",
   readoutDone: "готово",

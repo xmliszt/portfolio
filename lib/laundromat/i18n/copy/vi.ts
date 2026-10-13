@@ -37,8 +37,24 @@ export const vi = {
     shareText:
       "Một tiệm giặt yên tĩnh trong trình duyệt của bạn. Bỏ đồ vào máy, để đồng hồ chạy, và đọc những lời nhắn người khác để lại.",
     language: "Ngôn ngữ",
+    settings: "cài đặt",
     builtBy: "được làm với ❤️ bởi Li Yuxuan",
     updateAvailable: "đã cập nhật · tải lại",
+  },
+  settings: {
+    heading: "cài đặt",
+    rendering: "hiển thị",
+    renderingHint:
+      "bản nhẹ bỏ ánh sáng dịu, cây đung đưa và hiệu ứng phóng to vào sổ tay và bảng tin. hữu ích trên máy chậm hoặc khi bộ nhớ sắp đầy.",
+    qualityAuto: "tự động",
+    qualityAutoHint: (o: { quality: string }) =>
+      `dùng ${o.quality} trên máy này`,
+    qualityFull: "đầy đủ",
+    qualityFullHint: "mọi ánh sáng và chuyển động",
+    qualityLite: "nhẹ",
+    qualityLiteHint: "nhẹ hơn cho bộ nhớ và pin",
+    close: "đóng",
+    closeHint: "esc để đóng",
   },
   tabDone: "xong",
   readoutDone: "xong",
