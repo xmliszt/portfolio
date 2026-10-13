@@ -202,6 +202,10 @@ export const fr = {
       board: "panneau",
     },
     updates: {
+      "door-bell": {
+        title: "une clochette à la porte",
+        body: "Une clochette tinte quand tu entres, et chaque fois que quelqu'un d'autre arrive.",
+      },
       "whats-new-board": {
         title: "un panneau des nouveautés",
         body: "Ce présentoir montre ce qui est nouveau. Mat comme du papier le jour, il s'éclaire la nuit.",

@@ -204,6 +204,10 @@ export const vi = {
       board: "bảng tin",
     },
     updates: {
+      "door-bell": {
+        title: "chuông trên cửa",
+        body: "Một chiếc chuông nhỏ reo khi bạn bước vào, và mỗi khi có người khác đến.",
+      },
       "whats-new-board": {
         title: "bảng tin cho điều mới",
         body: "Tấm bảng này cho biết có gì mới. Ban ngày lặng như giấy, ban đêm sáng đèn.",

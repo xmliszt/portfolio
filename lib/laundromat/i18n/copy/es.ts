@@ -202,6 +202,10 @@ export const es = {
       board: "tablón",
     },
     updates: {
+      "door-bell": {
+        title: "una campanilla en la puerta",
+        body: "Una campanilla suena cuando entras, y cada vez que entra alguien más.",
+      },
       "whats-new-board": {
         title: "un tablón de novedades",
         body: "Este soporte muestra lo nuevo. De día descansa como papel y de noche se ilumina.",

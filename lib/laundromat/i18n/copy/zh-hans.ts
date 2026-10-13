@@ -193,6 +193,10 @@ export const zhHans = {
       board: "告示板",
     },
     updates: {
+      "door-bell": {
+        title: "门上挂了铃铛",
+        body: "你走进来时，或有其他人进门时，小铃铛都会响起。",
+      },
       "whats-new-board": {
         title: "新添一块告示板",
         body: "这块立牌告诉你有什么新鲜事。白天像纸一样安静，入夜后亮起灯来。",

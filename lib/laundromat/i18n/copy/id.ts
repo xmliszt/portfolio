@@ -206,6 +206,10 @@ export const id = {
       board: "papan",
     },
     updates: {
+      "door-bell": {
+        title: "lonceng di pintu",
+        body: "Lonceng kecil berbunyi saat kamu masuk, dan setiap kali ada orang lain datang.",
+      },
       "whats-new-board": {
         title: "papan untuk kabar baru",
         body: "Papan ini menampilkan yang baru. Siang hari seperti kertas, malam hari menyala.",

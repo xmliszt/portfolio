@@ -157,6 +157,14 @@ export const SOUND_SAMPLES = {
     promptInfluence: 0.6,
     gain: 0.7,
   },
+  "shop-bell": {
+    kind: "generated",
+    prompt:
+      "Small brass shop bell hanging on a wooden shop door, jingling a few bright ding-a-ling rings as the door swings open, then ringing out, close-up, no voices, no footsteps",
+    durationSeconds: 2,
+    promptInfluence: 0.6,
+    gain: 0.7,
+  },
   "washer-running": {
     kind: "generated",
     prompt:

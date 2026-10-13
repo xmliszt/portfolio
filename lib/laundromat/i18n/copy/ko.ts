@@ -199,6 +199,10 @@ export const ko = {
       board: "게시판",
     },
     updates: {
+      "door-bell": {
+        title: "문에 달린 종",
+        body: "들어올 때, 그리고 다른 사람이 들어올 때마다 작은 종이 울려요.",
+      },
       "whats-new-board": {
         title: "새 소식 게시판",
         body: "이 스탠드가 새 소식을 알려 줘요. 낮에는 종이처럼, 밤에는 불이 켜져요.",

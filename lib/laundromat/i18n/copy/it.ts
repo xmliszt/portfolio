@@ -208,6 +208,10 @@ export const it = {
       board: "bacheca",
     },
     updates: {
+      "door-bell": {
+        title: "un campanello sulla porta",
+        body: "Un campanellino suona quando entri, e ogni volta che arriva qualcun altro.",
+      },
       "whats-new-board": {
         title: "una bacheca delle novità",
         body: "Questo espositore mostra le novità. Di giorno è come carta, di notte si illumina.",

@@ -203,6 +203,10 @@ export const ptBR = {
       board: "mural",
     },
     updates: {
+      "door-bell": {
+        title: "um sininho na porta",
+        body: "Um sininho toca quando você entra, e sempre que outra pessoa chega.",
+      },
       "whats-new-board": {
         title: "um mural de novidades",
         body: "Este painel mostra o que há de novo. De dia repousa como papel, à noite se acende.",
