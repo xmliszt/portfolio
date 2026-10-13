@@ -135,6 +135,17 @@ export const hi = {
     reminderOnTooltip: (o: { doneAt: string }) => `रिमाइंडर चालू · ${o.doneAt}`,
     idleStartLabel: (o: { name: string }) => `${o.name} का स्टार्ट बटन`,
     loadFirstTooltip: "पहले कपड़े डालो",
+    needsWashingTooltip: "पहले धो लो",
+    alreadyWashedTooltip: "धुल चुके हैं · अब सुखाओ",
+    alreadyDryTooltip: "सूख चुके हैं · घर ले जाओ",
+    elsewhereLoadedTooltip: (o: { name: string }) =>
+      `तुम्हारे कपड़े ${o.name} में इंतज़ार कर रहे हैं`,
+    elsewhereRunningTooltip: (o: { kind: MachineKind }) =>
+      o.kind === "washer"
+        ? "तुम्हारे कपड़े अभी धुल रहे हैं"
+        : "तुम्हारे कपड़े अभी सूख रहे हैं",
+    elsewhereDoneTooltip: (o: { name: string }) =>
+      `तुम्हारे कपड़े तैयार हैं · ${o.name} में`,
     runningDoorTooltip: (o: { kind: MachineKind; doneAt: string }) =>
       `${o.kind === "washer" ? "धुलाई" : "सुखाई"} चल रही है · ${o.doneAt}`,
     doneDoorTooltip: "दरवाज़ा खोलो · कपड़े निकालो",
@@ -147,9 +158,13 @@ export const hi = {
   entranceMat: {
     readyLabel: (o: { laundry: "wet" | "folded" }) =>
       `स्वागत मैट, अपने ${o.laundry === "folded" ? "सूखे" : "धुले"} कपड़े घर ले जाओ`,
-    readyTooltip: "घर चलो · कपड़े साथ ले जाओ",
-    waitingLabel: "स्वागत मैट, कपड़े तैयार होने पर घर का रास्ता",
-    waitingTooltip: "घर का रास्ता · पहले अपनी धुलाई पूरी करो",
+    readyTooltip: "घर लौटो · साफ़ कपड़े साथ ले जाओ",
+    awayLabel: "डोरमैट, कपड़े मशीन में छोड़कर घर लौटो",
+    awayTooltip: "घर लौटो · कपड़े मशीन में ही रहेंगे",
+    wetLabel: "डोरमैट, गीले कपड़े लेकर घर लौटो",
+    wetTooltip: "घर लौटो · कपड़े अभी गीले हैं",
+    dirtyLabel: "डोरमैट, घर जाने से पहले कपड़े वॉशर में डालो",
+    dirtyTooltip: "पहले धो लो · कपड़े वॉशर में डालो",
   },
   laundryBasket: {
     labels: {
@@ -221,6 +236,18 @@ export const hi = {
       board: "बोर्ड",
     },
     updates: {
+      "home-mid-wash": {
+        title: "धुलाई के बीच घर जाओ",
+        body: "डोरमैट पर कदम रखो और कपड़े धुलते समय घर लौट जाओ। गीले कपड़े टोकरी में घर आते हैं, सूखे बिस्तर पर।",
+      },
+      "bedroom-curtains": {
+        title: "घर पर पर्दे और नया लैंप",
+        body: "अपने कमरे के पर्दों या लैंप पर क्लिक करो। दोनों कमरे अब सूरज, चाँद और लैंप के साथ रोशन और अँधेरे होते हैं।",
+      },
+      "settings-lite": {
+        title: "सेटिंग्स और लाइट मोड",
+        body: "टूलबार का गियर सेटिंग्स खोलता है। धीमे डिवाइस पर लाइट चुनो, इससे मेमोरी और बैटरी बचती है।",
+      },
       "door-bell": {
         title: "दरवाज़े पर एक घंटी",
         body: "जब आप अंदर आते हैं, और जब भी कोई और आता है, एक छोटी घंटी बजती है।",
@@ -400,12 +427,19 @@ export const hi = {
     basketPartial: (o: { count: number; total: number }) =>
       `${o.total} में से ${o.count} अंदर · और डालो, या दरवाज़े की ओर चलो`,
     basketFull: "सब अंदर · दरवाज़े की ओर चलो",
+    basketWet: "कपड़े अभी गीले हैं · लॉन्ड्रोमैट में सुखाओ",
     lampOffTooltip: "लैंप बंद करो",
     lampOnTooltip: "लैंप चालू करो",
     lampOffLabel: "लैंप बंद करो",
     lampOnLabel: "लैंप चालू करो",
+    curtainCloseTooltip: "पर्दे बंद करो",
+    curtainOpenTooltip: "पर्दे खोलो",
+    curtainCloseLabel: "पर्दे बंद करो",
+    curtainOpenLabel: "पर्दे खोलो",
     doorReadyTooltip: "इसे लॉन्ड्री तक ले चलो",
     doorWaitingTooltip: "पहले अपने कपड़े उठाओ",
+    doorAwayTooltip: "लॉन्ड्रोमैट वापस जाओ · कपड़े मशीन में हैं",
+    doorAwayLabel: "लॉन्ड्रोमैट वापस जाओ, कपड़े अभी मशीन में हैं",
     doorReadyLabel: "टोकरी लॉन्ड्री तक ले चलो",
     doorWaitingLabel: "लॉन्ड्री का दरवाज़ा, पहले अपने कपड़े उठाओ",
     justListen: "बस सुनो →",

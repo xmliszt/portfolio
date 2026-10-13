@@ -132,6 +132,17 @@ export const it = {
       `promemoria attivo · ${o.doneAt}`,
     idleStartLabel: (o: { name: string }) => `${o.name}, avvia`,
     loadFirstTooltip: "prima carica il bucato",
+    needsWashingTooltip: "prima lavalo",
+    alreadyWashedTooltip: "già lavato · ora asciugalo",
+    alreadyDryTooltip: "già asciutto · portalo a casa",
+    elsewhereLoadedTooltip: (o: { name: string }) =>
+      `il tuo bucato ti aspetta in ${o.name}`,
+    elsewhereRunningTooltip: (o: { kind: MachineKind }) =>
+      o.kind === "washer"
+        ? "i tuoi vestiti si stanno ancora lavando"
+        : "i tuoi vestiti si stanno ancora asciugando",
+    elsewhereDoneTooltip: (o: { name: string }) =>
+      `il tuo bucato è pronto · in ${o.name}`,
     runningDoorTooltip: (o: { kind: MachineKind; doneAt: string }) =>
       `${o.kind === "washer" ? "in lavaggio" : "in asciugatura"} · ${o.doneAt}`,
     doneDoorTooltip: "apri l'oblò · tira fuori il bucato",
@@ -144,9 +155,14 @@ export const it = {
   entranceMat: {
     readyLabel: (o: { laundry: "wet" | "folded" }) =>
       `Zerbino, porta a casa il tuo bucato ${o.laundry === "folded" ? "asciutto" : "lavato"}`,
-    readyTooltip: "torna a casa · porta con te il bucato",
-    waitingLabel: "Zerbino, la strada di casa quando il bucato è pronto",
-    waitingTooltip: "la strada di casa · prima finisci il bucato",
+    readyTooltip: "torna a casa · porta con te il bucato pulito",
+    awayLabel: "Zerbino, torna a casa e lascia il bucato nella macchina",
+    awayTooltip: "torna a casa · il bucato resta nella macchina",
+    wetLabel: "Zerbino, torna a casa con il bucato bagnato",
+    wetTooltip: "torna a casa · i vestiti sono ancora bagnati",
+    dirtyLabel:
+      "Zerbino, metti i vestiti in una lavatrice prima di tornare a casa",
+    dirtyTooltip: "prima lavali · metti i vestiti in una lavatrice",
   },
   laundryBasket: {
     labels: {
@@ -224,6 +240,18 @@ export const it = {
       board: "bacheca",
     },
     updates: {
+      "home-mid-wash": {
+        title: "torna a casa mentre lava",
+        body: "Passa sullo zerbino per tornare a casa mentre il bucato va. I vestiti bagnati tornano nel cesto, quelli asciutti finiscono sul letto.",
+      },
+      "bedroom-curtains": {
+        title: "tende e una nuova lampada a casa",
+        body: "Clicca sulle tende o sulla lampada della tua stanza. Ora entrambe le stanze si schiariscono e si scuriscono con il sole, la luna e le lampade.",
+      },
+      "settings-lite": {
+        title: "impostazioni e una modalità leggera",
+        body: "L'ingranaggio nella barra apre le impostazioni. Passa alla modalità leggera sui dispositivi lenti per risparmiare memoria e batteria.",
+      },
       "door-bell": {
         title: "un campanello sulla porta",
         body: "Un campanellino suona quando entri, e ogni volta che arriva qualcun altro.",
@@ -405,12 +433,19 @@ export const it = {
     basketPartial: (o: { count: number; total: number }) =>
       `${o.count} su ${o.total} dentro · aggiungine altri o vai alla porta`,
     basketFull: "tutto dentro · vai alla porta",
+    basketWet: "i vestiti sono ancora bagnati · asciugali in lavanderia",
     lampOffTooltip: "spegni la lampada",
     lampOnTooltip: "accendi la lampada",
     lampOffLabel: "Spegni la lampada",
     lampOnLabel: "Accendi la lampada",
+    curtainCloseTooltip: "chiudi le tende",
+    curtainOpenTooltip: "apri le tende",
+    curtainCloseLabel: "Chiudi le tende",
+    curtainOpenLabel: "Apri le tende",
     doorReadyTooltip: "portalo in lavanderia",
     doorWaitingTooltip: "prima raccogli il bucato",
+    doorAwayTooltip: "torna in lavanderia · il bucato è nella macchina",
+    doorAwayLabel: "Torna in lavanderia, il bucato è ancora nella macchina",
     doorReadyLabel: "Porta il cesto in lavanderia",
     doorWaitingLabel: "Porta della lavanderia, prima raccogli il bucato",
     justListen: "ascolta e basta →",

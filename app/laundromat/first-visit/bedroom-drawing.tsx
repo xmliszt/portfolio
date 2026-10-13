@@ -1,41 +1,37 @@
 import { useId } from "react";
+import type { MotionValue } from "motion/react";
 
-import { DaylightPatch } from "@/app/laundromat/daylight-patch";
 import { IsoBox } from "@/app/laundromat/objects/iso-box";
 import { WindowDrawing } from "@/app/laundromat/objects/window-drawing";
+import { useRenderQuality } from "@/app/laundromat/settings/use-render-quality";
 import { WallClock } from "@/app/laundromat/wall-clock";
 import type { BedroomConfig } from "@/lib/laundromat/first-visit/bedroom-config";
-import { getDaylightPatch } from "@/lib/laundromat/get-daylight-patch";
+import type { BedroomWindowLight } from "@/lib/laundromat/first-visit/get-bedroom-window-light";
+import type { getCurtainLayout } from "@/lib/laundromat/first-visit/get-curtain-layout";
+import { getTableLampShape } from "@/lib/laundromat/first-visit/get-table-lamp-shape";
 import { getFacePlane } from "@/lib/laundromat/get-face-plane";
-import { getIsoCylinder } from "@/lib/laundromat/get-iso-cylinder";
 import type { TimeOfDay } from "@/lib/laundromat/get-time-of-day";
 import type { IsoProjection } from "@/lib/laundromat/project-iso-point";
 import { projectIsoPoint } from "@/lib/laundromat/project-iso-point";
 import type { IsoPoint, SceneConfig } from "@/lib/laundromat/scene-config";
 import { toSvgPoints } from "@/lib/laundromat/to-svg-points";
-import { cn } from "@/lib/utils";
 
 import { BedLaundryPile } from "./bed-laundry-pile";
+import { CurtainDaylight } from "./curtain-daylight";
+import { CurtainDrawing } from "./curtain-drawing";
+import { CurtainRoomFill } from "./curtain-room-fill";
 import { RugCredit } from "./rug-credit";
+import { TableLampDrawing } from "./table-lamp-drawing";
+import type { CurtainPose } from "./use-curtain-pose";
 
 const PLANK_WIDTH = 0.42;
 const PLANK_JOINT_STEP = 1.9;
 const SKIRTING_HEIGHT = 0.12;
-const CURTAIN_DROP = 0.3;
-const CURTAIN_FOLDS = 7;
-const PLEAT_DEPTH = 0.08;
-const SILL_CLEARANCE = 0.26;
-const ROD = {
-  y: -0.22,
-  overhang: 0.44,
-  bracket: 0.06,
-  finial: 0.045,
-};
 const LAMP_GLOW_OPACITY = 0.14;
+const LAMP_FILL = { opacity: 0.2, reach: 5 };
 const POOL_PEAK_OPACITY = 0.2;
 const BED_LIGHT_PEAK_OPACITY = 0.6;
 const BED_LIGHT_REACH = 2.2;
-const DAYLIGHT_PATCH_REACH = 2.3;
 
 type BedroomDrawingProps = {
   bedroom: BedroomConfig;
@@ -45,6 +41,10 @@ type BedroomDrawingProps = {
   scene: SceneConfig;
   lampOn: boolean;
   lampHighlighted: boolean;
+  curtainPose: MotionValue<CurtainPose>;
+  curtainLayout: ReturnType<typeof getCurtainLayout>;
+  windowLight: BedroomWindowLight | undefined;
+  curtainHighlighted: boolean;
   cleanPile: boolean;
 };
 
@@ -74,44 +74,16 @@ export function BedroomDrawing(props: BedroomDrawingProps) {
       .map((x) => ({ x, from: rowY - PLANK_WIDTH, to: rowY }));
   });
 
-  const { window } = bedroom;
-  const opening = {
-    near: window.position.y + 0.16,
-    far: window.position.y + window.size.d - 0.16,
-    top: window.position.z + window.size.h - 0.16,
-  };
-  const openingWidth = opening.far - opening.near;
-  const rodX = window.size.w + SILL_CLEARANCE;
-  const curtainPlane = getFacePlane({
-    plane: "side",
-    origin: { x: rodX, y: opening.far, z: opening.top },
-    projection,
-  });
-  const curtainTop = opening.top - ROD.y;
-  const curtainBottom = opening.top - (window.size.h - 0.32 + CURTAIN_DROP);
-  const rodEnds = [
-    { faceX: -ROD.overhang, outward: -1 },
-    { faceX: openingWidth + ROD.overhang, outward: 1 },
-  ] as const;
-  const curtainPanels = [
-    { from: -0.36, to: 0.3 },
-    { from: openingWidth + 0.36, to: openingWidth - 0.3 },
-  ].map((panel) => ({
-    folds: Array.from({ length: CURTAIN_FOLDS + 1 }, (_, fold) => ({
-      faceX: panel.from + ((panel.to - panel.from) * fold) / CURTAIN_FOLDS,
-      x: fold % 2 === 0 ? rodX : rodX - PLEAT_DEPTH,
-      y:
-        opening.far -
-        (panel.from + ((panel.to - panel.from) * fold) / CURTAIN_FOLDS),
-    })),
-  }));
-  const daylightPatch = getDaylightPatch({
-    wallX: window.size.w,
-    fromY: opening.near,
-    toY: opening.far,
-    reach: DAYLIGHT_PATCH_REACH,
-    sun: timeOfDay?.sun,
-  }).map((point) => at(point.x, point.y, 0));
+  const { quality: renderTier } = useRenderQuality();
+  const { curtainPose, curtainLayout, windowLight } = props;
+  const shell = [
+    at(0, depth, 0),
+    at(0, depth, wallHeight),
+    at(0, 0, wallHeight),
+    at(width, 0, wallHeight),
+    at(width, 0, 0),
+    at(width, depth, 0),
+  ];
 
   const { bedsideTable, lamp, bed, rug } = bedroom;
   const tableFront = getFacePlane({
@@ -124,24 +96,14 @@ export function BedroomDrawing(props: BedroomDrawingProps) {
     projection,
   });
   const tableTop = bedsideTable.position.z + bedsideTable.size.h;
-  const lampBase = getIsoCylinder({
+  const lampShape = getTableLampShape({
     center: lamp.center,
-    bottom: tableTop,
-    top: tableTop + 0.08,
-    radius: 0.18,
+    tableTop,
+    domeRadius: lamp.shadeRadius,
     projection,
   });
-  const shadeBottom = tableTop + 0.36;
-  const shade = getIsoCylinder({
-    center: lamp.center,
-    bottom: shadeBottom,
-    top: shadeBottom + 0.38,
-    radius: lamp.shadeRadius + 0.05,
-    topRadius: lamp.shadeRadius - 0.08,
-    projection,
-  });
-  const stemTop = at(lamp.center.x, lamp.center.y, shadeBottom + 0.06);
-  const lampGlow = at(lamp.center.x, lamp.center.y, shadeBottom + 0.1);
+  const shadeBottom = lampShape.rimZ;
+  const lampGlow = at(lamp.center.x, lamp.center.y, shadeBottom - 0.04);
   const headboardFront = getFacePlane({
     plane: "front",
     origin: {
@@ -186,6 +148,21 @@ export function BedroomDrawing(props: BedroomDrawingProps) {
             offset={0}
             stopColor={scene.light.lampColor}
             stopOpacity={0.8}
+          />
+          <stop offset={1} stopColor={scene.light.lampColor} stopOpacity={0} />
+        </radialGradient>
+        <radialGradient
+          id={`${id}-lamp-fill`}
+          gradientUnits="userSpaceOnUse"
+          cx={lampGlow.x}
+          cy={lampGlow.y}
+          r={LAMP_FILL.reach * unit}
+        >
+          <stop offset={0} stopColor={scene.light.lampColor} />
+          <stop
+            offset={0.3}
+            stopColor={scene.light.lampColor}
+            stopOpacity={0.45}
           />
           <stop offset={1} stopColor={scene.light.lampColor} stopOpacity={0} />
         </radialGradient>
@@ -252,9 +229,26 @@ export function BedroomDrawing(props: BedroomDrawingProps) {
         />
       </g>
 
+      {windowLight !== undefined && (
+        <CurtainRoomFill
+          pose={curtainPose}
+          layout={curtainLayout}
+          curtain={bedroom.curtain}
+          room={bedroom.room}
+          stage={bedroom.stage}
+          projection={projection}
+          light={windowLight}
+        />
+      )}
+      <polygon
+        className="pointer-events-none"
+        fill={`url(#${id}-lamp-fill)`}
+        points={toSvgPoints(shell)}
+        style={{ opacity: lampIntensity * LAMP_FILL.opacity, ...glide }}
+      />
       <WindowDrawing
         laidOut={{
-          object: { id: "bedroom-window", kind: "window", ...window },
+          object: { id: "bedroom-window", kind: "window", ...bedroom.window },
         }}
         projection={projection}
         highlighted={false}
@@ -262,105 +256,15 @@ export function BedroomDrawing(props: BedroomDrawingProps) {
         config={scene}
         view="skyline"
       />
-      {rodEnds.map((end) => (
-        <IsoBox
-          key={end.faceX}
-          position={{
-            x: 0,
-            y: opening.far - end.faceX - ROD.bracket / 2,
-            z: opening.top - ROD.y - ROD.bracket / 2,
-          }}
-          size={{ w: rodX, d: ROD.bracket, h: ROD.bracket }}
-          projection={projection}
-        />
-      ))}
-      <g className="stroke-[var(--lm-line)]" strokeLinejoin="round">
-        {curtainPanels.map((panel, side) => (
-          <g key={side}>
-            {panel.folds.slice(1).map((to, fold) => {
-              const from = panel.folds[fold]!;
-              const facesFront = (to.x - from.x) * (from.y - to.y) > 0;
-              return (
-                <polygon
-                  key={to.faceX}
-                  className={cn(
-                    "stroke-none",
-                    facesFront
-                      ? "fill-[var(--lm-shade-2)]"
-                      : "fill-[var(--lm-wall)]"
-                  )}
-                  points={toSvgPoints([
-                    at(from.x, from.y, curtainTop),
-                    at(to.x, to.y, curtainTop),
-                    at(to.x, to.y, curtainBottom),
-                    at(from.x, from.y, curtainBottom),
-                  ])}
-                />
-              );
-            })}
-            <g className="stroke-[var(--lm-detail)]">
-              {panel.folds.slice(1, -1).map((fold) => {
-                const top = at(fold.x, fold.y, curtainTop);
-                const bottom = at(fold.x, fold.y, curtainBottom);
-                return (
-                  <line
-                    key={fold.faceX}
-                    x1={top.x}
-                    y1={top.y}
-                    x2={bottom.x}
-                    y2={bottom.y}
-                  />
-                );
-              })}
-            </g>
-            <polygon
-              className="fill-none"
-              points={toSvgPoints([
-                ...panel.folds.map((fold) => at(fold.x, fold.y, curtainTop)),
-                ...panel.folds
-                  .map((fold) => at(fold.x, fold.y, curtainBottom))
-                  .toReversed(),
-              ])}
-            />
-          </g>
-        ))}
-      </g>
-      <g
-        transform={`${curtainPlane.transform} scale(${unit})`}
-        className="stroke-[var(--lm-line)]"
-        strokeLinejoin="round"
-      >
-        <line
-          className="stroke-[var(--lm-ink)]"
-          strokeWidth={1.4}
-          x1={rodEnds[0].faceX}
-          y1={ROD.y}
-          x2={rodEnds[1].faceX}
-          y2={ROD.y}
-        />
-        {curtainPanels.flatMap((panel) =>
-          panel.folds
-            .filter((_, fold) => fold % 2 === 0)
-            .map((fold) => (
-              <circle
-                key={fold.faceX}
-                className="fill-none stroke-[var(--lm-ink)]"
-                cx={fold.faceX}
-                cy={ROD.y}
-                r={0.035}
-              />
-            ))
-        )}
-        {rodEnds.map((end) => (
-          <circle
-            key={end.faceX}
-            className="fill-[var(--lm-ink)] stroke-none"
-            cx={end.faceX + end.outward * ROD.finial}
-            cy={ROD.y}
-            r={ROD.finial}
-          />
-        ))}
-      </g>
+      <CurtainDrawing
+        pose={curtainPose}
+        layout={curtainLayout}
+        curtain={bedroom.curtain}
+        projection={projection}
+        light={windowLight}
+        tier={renderTier}
+        highlighted={props.curtainHighlighted}
+      />
 
       {props.hour !== undefined && (
         <WallClock
@@ -374,12 +278,18 @@ export function BedroomDrawing(props: BedroomDrawingProps) {
         />
       )}
 
-      <DaylightPatch
-        points={daylightPatch}
-        color={timeOfDay?.daylightPatchColor ?? scene.light.daylightColor}
-        opacity={timeOfDay?.daylightPatchOpacity ?? 0}
-        glideMs={scene.sky.timeJumpGlideMs}
-      />
+      {windowLight?.sources.map((source) => (
+        <CurtainDaylight
+          key={source.key}
+          pose={curtainPose}
+          layout={curtainLayout}
+          curtain={bedroom.curtain}
+          projection={projection}
+          source={source}
+          scene={scene}
+          tier={renderTier}
+        />
+      ))}
       <g
         transform={floorPlane}
         className="pointer-events-none"
@@ -462,53 +372,17 @@ export function BedroomDrawing(props: BedroomDrawingProps) {
           r={60}
           style={{ opacity: lampIntensity * LAMP_GLOW_OPACITY, ...glide }}
         />
-        <path className="fill-[var(--lm-face)]" d={lampBase.body} />
-        <ellipse {...lampBase.top} className="fill-[var(--lm-face-top)]" />
-        <line
-          strokeWidth={1.4}
-          x1={lampBase.top.cx}
-          y1={lampBase.top.cy}
-          x2={stemTop.x}
-          y2={stemTop.y}
+        <TableLampDrawing
+          shape={lampShape}
+          center={lamp.center}
+          table={bedsideTable}
+          domeRadius={lamp.shadeRadius}
+          projection={projection}
+          lampOn={props.lampOn}
+          lampColor={scene.light.lampColor}
+          highlighted={props.lampHighlighted}
+          glideMs={scene.sky.timeJumpGlideMs}
         />
-        <g
-          className={cn(
-            "[&_*]:transition-[stroke,fill,opacity] [&_*]:duration-300",
-            props.lampHighlighted && "stroke-[var(--lm-ink-hi)]"
-          )}
-        >
-          <ellipse
-            className={
-              props.lampOn
-                ? "fill-[var(--lm-accent-hi)]"
-                : "fill-[var(--lm-face-top)]"
-            }
-            cx={shade.base.cx}
-            cy={shade.base.cy}
-            rx={shade.base.rx * 0.8}
-            ry={shade.base.ry * 0.8}
-            opacity={props.lampOn ? 0.85 : 1}
-          />
-          <path
-            className={cn(
-              "fill-[var(--lm-face)]",
-              props.lampOn && "stroke-[var(--lm-accent)]"
-            )}
-            d={shade.body}
-          />
-          <path
-            className="fill-[var(--lm-accent)] stroke-none"
-            d={shade.body}
-            opacity={props.lampOn ? 0.16 : 0}
-          />
-          <ellipse
-            {...shade.top}
-            className={cn(
-              "fill-[var(--lm-recess)]",
-              props.lampOn && "stroke-[var(--lm-accent)]"
-            )}
-          />
-        </g>
 
         {box(bed.headboard)}
         <g

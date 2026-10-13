@@ -5,13 +5,23 @@ import { en } from "@/lib/laundromat/i18n/copy/en";
 
 import { describeEntranceMat } from "./describe-entrance-mat";
 
-test("the mat leads home only with washed or dried laundry", () => {
-  assert.equal(describeEntranceMat({ basket: "folded", copy: en }).ready, true);
-  assert.equal(describeEntranceMat({ basket: "wet", copy: en }).ready, true);
-  assert.equal(describeEntranceMat({ basket: "dirty", copy: en }).ready, false);
-  assert.equal(describeEntranceMat({ basket: "empty", copy: en }).ready, false);
-  assert.equal(
-    describeEntranceMat({ basket: "dirty", copy: en }).tooltip,
-    "the way home · finish your laundry first"
-  );
+test("the mat leads home with dry, wet or machine-held laundry", () => {
+  for (const homecoming of [
+    { kind: "fresh" },
+    { kind: "away" },
+    { kind: "carrying", laundry: "wet" },
+  ] as const) {
+    const mat = describeEntranceMat({ homecoming, copy: en });
+    assert.equal(mat.canLeave, true);
+    assert.ok(mat.tooltip.startsWith("go back home"), mat.tooltip);
+  }
+});
+
+test("the mat keeps the visitor in until dirty laundry is in a washer", () => {
+  const mat = describeEntranceMat({
+    homecoming: { kind: "carrying", laundry: "dirty" },
+    copy: en,
+  });
+  assert.equal(mat.canLeave, false);
+  assert.equal(mat.tooltip, "wash it first · put the clothes in a washer");
 });

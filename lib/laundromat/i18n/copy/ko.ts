@@ -129,6 +129,16 @@ export const ko = {
     reminderOnTooltip: (o: { doneAt: string }) => `알림 켜짐 · ${o.doneAt}`,
     idleStartLabel: (o: { name: string }) => `${o.name} 시작`,
     loadFirstTooltip: "먼저 빨래를 넣어 줘",
+    needsWashingTooltip: "먼저 빨래부터",
+    alreadyWashedTooltip: "이미 빨았어요 · 이제 건조",
+    alreadyDryTooltip: "이미 말랐어요 · 집에 가져가요",
+    elsewhereLoadedTooltip: (o: { name: string }) =>
+      `빨래가 ${o.name}에서 기다려요`,
+    elsewhereRunningTooltip: (o: { kind: MachineKind }) =>
+      o.kind === "washer"
+        ? "옷이 아직 세탁 중이에요"
+        : "옷이 아직 건조 중이에요",
+    elsewhereDoneTooltip: (o: { name: string }) => `빨래 끝 · ${o.name}`,
     runningDoorTooltip: (o: { kind: MachineKind; doneAt: string }) =>
       `${o.kind === "washer" ? "세탁 중" : "건조 중"} · ${o.doneAt}`,
     doneDoorTooltip: "문 열기 · 빨래 꺼내기",
@@ -141,9 +151,13 @@ export const ko = {
   entranceMat: {
     readyLabel: (o: { laundry: "wet" | "folded" }) =>
       `현관 매트, ${o.laundry === "folded" ? "건조한" : "세탁한"} 빨래를 들고 집에 가기`,
-    readyTooltip: "집으로 · 빨래 챙겨서",
-    waitingLabel: "현관 매트, 빨래가 끝나면 여기로 집에 가",
-    waitingTooltip: "집에 가는 길 · 빨래부터 끝내자",
+    readyTooltip: "집에 가기 · 깨끗한 빨래를 챙겨 가요",
+    awayLabel: "현관 매트, 빨래는 기계에 두고 집에 가기",
+    awayTooltip: "집에 가기 · 빨래는 기계에 그대로 있어요",
+    wetLabel: "현관 매트, 젖은 빨래를 들고 집에 가기",
+    wetTooltip: "집에 가기 · 옷이 아직 젖어 있어요",
+    dirtyLabel: "현관 매트, 집에 가기 전에 옷을 세탁기에 넣어요",
+    dirtyTooltip: "먼저 빨래부터 · 옷을 세탁기에 넣어요",
   },
   laundryBasket: {
     labels: {
@@ -215,6 +229,18 @@ export const ko = {
       board: "게시판",
     },
     updates: {
+      "home-mid-wash": {
+        title: "빨래 중에 집에 가기",
+        body: "현관 매트를 밟으면 빨래가 도는 동안 집에 갈 수 있어요. 젖은 옷은 바구니에 담아 오고, 마른 옷은 침대 위에 놓여요.",
+      },
+      "bedroom-curtains": {
+        title: "집의 커튼과 새 램프",
+        body: "방의 커튼이나 램프를 클릭해 보세요. 이제 두 공간 모두 해와 달, 램프에 따라 밝아지고 어두워져요.",
+      },
+      "settings-lite": {
+        title: "설정과 라이트 모드",
+        body: "툴바의 톱니바퀴를 누르면 설정이 열려요. 느린 기기에서는 라이트로 바꾸면 메모리와 배터리를 아낄 수 있어요.",
+      },
       "door-bell": {
         title: "문에 달린 종",
         body: "들어올 때, 그리고 다른 사람이 들어올 때마다 작은 종이 울려요.",
@@ -391,12 +417,19 @@ export const ko = {
     basketPartial: (o: { count: number; total: number }) =>
       `${o.total}개 중 ${o.count}개 넣음 · 더 넣거나 문으로 가기`,
     basketFull: "다 넣었어 · 문으로 가자",
+    basketWet: "옷이 아직 젖어 있어요 · 빨래방에서 말려요",
     lampOffTooltip: "램프 끄기",
     lampOnTooltip: "램프 켜기",
     lampOffLabel: "램프 끄기",
     lampOnLabel: "램프 켜기",
+    curtainCloseTooltip: "커튼 닫기",
+    curtainOpenTooltip: "커튼 열기",
+    curtainCloseLabel: "커튼 닫기",
+    curtainOpenLabel: "커튼 열기",
     doorReadyTooltip: "빨래방으로 가져가기",
     doorWaitingTooltip: "먼저 빨래를 챙겨 줘",
+    doorAwayTooltip: "빨래방으로 돌아가기 · 빨래가 기계 안에 있어요",
+    doorAwayLabel: "빨래방으로 돌아가기, 빨래가 아직 기계 안에 있어요",
     doorReadyLabel: "바구니를 빨래방으로 가져가기",
     doorWaitingLabel: "빨래방으로 가는 문, 먼저 빨래를 챙겨 줘",
     justListen: "그냥 듣기 →",

@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { motion, useReducedMotion } from "motion/react";
 
 import { useLaundromatCopy } from "@/app/laundromat/i18n/use-laundromat-copy";
+import { BasketDrawing } from "@/app/laundromat/objects/basket-drawing";
 import { SceneTooltip } from "@/app/laundromat/scene-tooltip";
 import { useSoundBoard } from "@/app/laundromat/sound/use-sound-board";
 import { useSceneHour } from "@/app/laundromat/use-scene-hour";
@@ -12,15 +13,20 @@ import type {
   GarmentKind,
 } from "@/lib/laundromat/first-visit/bedroom-config";
 import { describeHamperBasket } from "@/lib/laundromat/first-visit/describe-hamper-basket";
+import { getBedroomWindowLight } from "@/lib/laundromat/first-visit/get-bedroom-window-light";
 import { getCoverScale } from "@/lib/laundromat/first-visit/get-cover-scale";
+import { getCurtainLayout } from "@/lib/laundromat/first-visit/get-curtain-layout";
 import { getGarmentFootprint } from "@/lib/laundromat/first-visit/get-garment-footprint";
+import { getBedroomMode } from "@/lib/laundromat/first-visit/get-bedroom-mode";
 import { getHamperBasket } from "@/lib/laundromat/first-visit/get-hamper-basket";
+import { getTableLampShape } from "@/lib/laundromat/first-visit/get-table-lamp-shape";
 import { getTossFlight } from "@/lib/laundromat/first-visit/get-toss-flight";
 import { getFacePlane } from "@/lib/laundromat/get-face-plane";
 import { getTimeOfDay } from "@/lib/laundromat/get-time-of-day";
+import type { Homecoming } from "@/lib/laundromat/laundry/get-homecoming";
 import type { ScreenPoint } from "@/lib/laundromat/project-iso-point";
 import { projectIsoPoint } from "@/lib/laundromat/project-iso-point";
-import type { SceneConfig } from "@/lib/laundromat/scene-config";
+import type { SceneConfig, SceneObject } from "@/lib/laundromat/scene-config";
 import { cn } from "@/lib/utils";
 
 import { BedroomDoor } from "./bedroom-door";
@@ -28,13 +34,14 @@ import { BedroomDrawing } from "./bedroom-drawing";
 import { CrumpledBall } from "./crumpled-ball";
 import { GarmentDrawing } from "./garment-drawing";
 import { HamperBasketDrawing } from "./hamper-basket-drawing";
+import { RoomDarkness } from "./room-darkness";
+import { useCurtainPose } from "./use-curtain-pose";
 import { useIdleNudge } from "./use-idle-nudge";
 
 const DRAG_THRESHOLD_PX = 4;
 const HIT_PADDING_PX = 4;
 const LAND_DELAY_MS = 90;
 const SETTLE_CLEAR_DELAY_MS = 40;
-const LAMP_HEIGHT = 0.82;
 const COS_30 = Math.cos(Math.PI / 6);
 const SIN_30 = Math.sin(Math.PI / 6);
 const PUSH_EASE: [number, number, number, number] = [0.65, 0, 0.35, 1];
@@ -56,7 +63,7 @@ type Drag = {
   moved: boolean;
 };
 
-type Hover = GarmentKind | "basket" | "door" | "lamp";
+type Hover = GarmentKind | "basket" | "door" | "lamp" | "curtain";
 
 type Phase = "room" | "opening" | "entering";
 
@@ -72,6 +79,7 @@ type FirstVisitProps = {
   scene: SceneConfig;
   bedroom: BedroomConfig;
   hourOverride?: number;
+  home: Homecoming;
   cleanPile: boolean;
   onWalkIn: () => void;
   onListen: () => void;
@@ -102,12 +110,17 @@ export function FirstVisit(props: FirstVisitProps) {
   const [lampSwitch, setLampSwitch] = useState<boolean>();
   const sound = useSoundBoard();
   const isLampOn = lampSwitch ?? (timeOfDay?.lampIntensity ?? 1) > 0.5;
+  const [isCurtainOpen, setIsCurtainOpen] = useState(true);
   const [isTouched, setIsTouched] = useState(false);
   const [phase, setPhase] = useState<Phase>("room");
   const [jiggles, setJiggles] = useState(0);
   const [bumps, setBumps] = useState(0);
 
-  const kinds = bedroom.garments.map((garment) => garment.kind);
+  const mode = getBedroomMode({ home: props.home });
+  const { basket: roomBasket } = mode;
+  const kinds = mode.hasFloorClothes
+    ? bedroom.garments.map((garment) => garment.kind)
+    : [];
   const unavailable = [
     ...inBasket.map((item) => item.kind),
     ...flights.map((flight) => flight.kind),
@@ -116,7 +129,7 @@ export function FirstVisit(props: FirstVisitProps) {
     kinds,
     unavailable,
     isPaused: drag !== undefined || hover !== undefined,
-    isStopped: isTouched || phase !== "room",
+    isStopped: isTouched || phase !== "room" || !mode.hasFloorClothes,
     config: bedroom.motion.nudge,
   });
 
@@ -164,6 +177,46 @@ export function FirstVisit(props: FirstVisitProps) {
 
   const floorPlane = `${getFacePlane({ plane: "top", origin: { x: 0, y: 0, z: 0 }, projection }).transform} scale(${projection.unit})`;
   const basket = getHamperBasket({ basket: bedroom.basket, projection });
+  const carriedBasket = {
+    id: "carried-basket",
+    kind: "basket",
+    position: {
+      x: bedroom.basket.center.x - bedroom.basket.radius,
+      y: bedroom.basket.center.y - bedroom.basket.radius,
+      z: 0,
+    },
+    size: {
+      w: bedroom.basket.radius * 2,
+      d: bedroom.basket.radius * 2,
+      h: bedroom.basket.height,
+    },
+  } satisfies SceneObject;
+  const basketBounds = (() => {
+    if (roomBasket.kind !== "carried") return basket.bounds;
+    const { position, size } = carriedBasket;
+    const corners = [0, size.w].flatMap((dx) =>
+      [0, size.d].flatMap((dy) =>
+        [0, size.h].map((dz) =>
+          projectIsoPoint({
+            point: {
+              x: position.x + dx,
+              y: position.y + dy,
+              z: position.z + dz,
+            },
+            projection,
+          })
+        )
+      )
+    );
+    const xs = corners.map((corner) => corner.x);
+    const ys = corners.map((corner) => corner.y);
+    return {
+      x: Math.min(...xs),
+      y: Math.min(...ys),
+      width: Math.max(...xs) - Math.min(...xs),
+      height: Math.max(...ys) - Math.min(...ys),
+    };
+  })();
   const footprints = Object.fromEntries(
     bedroom.garments.map((garment) => [
       garment.kind,
@@ -173,14 +226,47 @@ export function FirstVisit(props: FirstVisitProps) {
   const lampTableTop =
     bedroom.bedsideTable.position.z + bedroom.bedsideTable.size.h;
   const lampTop = projectIsoPoint({
-    point: { ...bedroom.lamp.center, z: lampTableTop + LAMP_HEIGHT },
+    point: {
+      ...bedroom.lamp.center,
+      z:
+        lampTableTop +
+        getTableLampShape({
+          center: bedroom.lamp.center,
+          tableTop: lampTableTop,
+          domeRadius: bedroom.lamp.shadeRadius,
+          projection,
+        }).height,
+    },
     projection,
   });
   const lampBottom = projectIsoPoint({
     point: { ...bedroom.lamp.center, z: lampTableTop },
     projection,
   });
-  const lampHitWidth = bedroom.lamp.shadeRadius * 2.6 * projection.unit;
+  const lampHitWidth = bedroom.lamp.shadeRadius * 2.4 * projection.unit;
+  const curtainLayout = getCurtainLayout({
+    window: bedroom.window,
+    curtain: bedroom.curtain,
+  });
+  const curtainPose = useCurtainPose({
+    open: isCurtainOpen,
+    layout: curtainLayout,
+    rings: bedroom.curtain.rings,
+    motion: bedroom.motion.curtain,
+    reducedMotion: prefersReducedMotion,
+  });
+  const windowLight =
+    timeOfDay === undefined
+      ? undefined
+      : getBedroomWindowLight({ timeOfDay, sky: scene.sky });
+  const curtainTopLeft = projectIsoPoint({
+    point: {
+      x: curtainLayout.rodX,
+      y: curtainLayout.opening.far + bedroom.curtain.stackOutset,
+      z: curtainLayout.top,
+    },
+    projection,
+  });
   const doorTopLeft = projectIsoPoint({
     point: { x: 0, y: door.fromY + door.width, z: door.height },
     projection,
@@ -197,7 +283,7 @@ export function FirstVisit(props: FirstVisitProps) {
   ].map((corner) =>
     projectIsoPoint({ point: { x: 0, ...corner }, projection })
   );
-  const isReady = inBasket.length > 0;
+  const isReady = mode.isDoorOpen || inBasket.length > 0;
   const isInRoom = phase === "room";
 
   function isOverBasket(point: ScreenPoint) {
@@ -359,6 +445,14 @@ export function FirstVisit(props: FirstVisitProps) {
     setLampSwitch(!isLampOn);
   }
 
+  function handleCurtainClick() {
+    setIsCurtainOpen(!isCurtainOpen);
+  }
+
+  function handleCurtainFocus(event: React.FocusEvent<HTMLButtonElement>) {
+    if (event.currentTarget.matches(":focus-visible")) setHover("curtain");
+  }
+
   function handleLampFocus(event: React.FocusEvent<HTMLButtonElement>) {
     if (event.currentTarget.matches(":focus-visible")) setHover("lamp");
   }
@@ -372,9 +466,14 @@ export function FirstVisit(props: FirstVisitProps) {
     const target = (() => {
       if (hover === "door") {
         return {
-          text: isReady
-            ? copy.firstVisit.doorReadyTooltip
-            : copy.firstVisit.doorWaitingTooltip,
+          text: (() => {
+            if (props.home.kind === "away") {
+              return copy.firstVisit.doorAwayTooltip;
+            }
+            return isReady
+              ? copy.firstVisit.doorReadyTooltip
+              : copy.firstVisit.doorWaitingTooltip;
+          })(),
           at: projectIsoPoint({
             point: {
               x: 0,
@@ -393,14 +492,44 @@ export function FirstVisit(props: FirstVisitProps) {
           at: { x: lampTop.x, y: lampTop.y - 4 },
         };
       }
+      if (hover === "curtain") {
+        return {
+          text: isCurtainOpen
+            ? copy.firstVisit.curtainCloseTooltip
+            : copy.firstVisit.curtainOpenTooltip,
+          at: projectIsoPoint({
+            point: {
+              x: curtainLayout.rodX,
+              y: (curtainLayout.opening.near + curtainLayout.opening.far) / 2,
+              z: curtainLayout.top + 0.2,
+            },
+            projection,
+          }),
+        };
+      }
       if (hover === "basket" && drag === undefined) {
         return {
-          text: describeHamperBasket({
-            count: inBasket.length,
-            total: kinds.length,
-            copy,
-          }),
-          at: { x: basket.mouth.x, y: basket.bounds.y - 4 },
+          text: (() => {
+            switch (roomBasket.kind) {
+              case "hamper":
+                return describeHamperBasket({
+                  count: inBasket.length,
+                  total: kinds.length,
+                  copy,
+                });
+              case "carried":
+                return roomBasket.laundry === "wet"
+                  ? copy.firstVisit.basketWet
+                  : copy.firstVisit.basketFull;
+              case "none":
+                return undefined;
+              default: {
+                const unhandled: never = roomBasket;
+                return unhandled;
+              }
+            }
+          })(),
+          at: { x: basket.mouth.x, y: basketBounds.y - 4 },
         };
       }
       return undefined;
@@ -595,6 +724,10 @@ export function FirstVisit(props: FirstVisitProps) {
                   scene={scene}
                   lampOn={isLampOn}
                   lampHighlighted={hover === "lamp"}
+                  curtainPose={curtainPose}
+                  curtainLayout={curtainLayout}
+                  windowLight={windowLight}
+                  curtainHighlighted={hover === "curtain"}
                   cleanPile={props.cleanPile}
                 />
                 <BedroomDoor
@@ -611,78 +744,111 @@ export function FirstVisit(props: FirstVisitProps) {
                 {onFloor
                   .filter((kind) => !onTop.includes(kind))
                   .map(renderGarment)}
-                <HamperBasketDrawing
-                  basket={basket}
-                  pile={inBasket}
-                  bumps={bumps}
-                  highlighted={hover === "basket"}
-                  accepting={isAccepting}
-                  glowFilter="url(#lm-fv-glow)"
-                >
-                  {flights.map((flight) => {
-                    const durationS = flight.path.durationMs / 1000;
-                    return (
-                      <g
-                        key={flight.kind}
-                        transform={`translate(${flight.from.x} ${flight.from.y})`}
-                      >
-                        <motion.g
-                          initial={{ x: 0 }}
-                          animate={{ x: flight.path.dx }}
-                          transition={{
-                            duration: durationS,
-                            ease: [0.33, 0.66, 0.45, 1],
-                          }}
+                {(() => {
+                  switch (roomBasket.kind) {
+                    case "hamper":
+                      return (
+                        <HamperBasketDrawing
+                          basket={basket}
+                          pile={inBasket}
+                          bumps={bumps}
+                          highlighted={hover === "basket"}
+                          accepting={isAccepting}
+                          glowFilter="url(#lm-fv-glow)"
                         >
-                          <motion.g
-                            initial={{ y: 0 }}
-                            animate={{
-                              y: [0, flight.path.peak, flight.path.dy],
-                            }}
-                            transition={{
-                              duration: durationS,
-                              times: [0, 0.42, 1],
-                              ease: [
-                                [0.2, 0.65, 0.4, 1],
-                                [0.6, 0, 0.85, 0.45],
-                              ],
-                            }}
-                          >
-                            <motion.g
-                              initial={{ rotate: 0, scale: 1.08 }}
-                              animate={{
-                                rotate: flight.path.spinDeg,
-                                scale: 0.94,
-                              }}
-                              transition={{
-                                duration: durationS,
-                                ease: [0.3, 0.6, 0.45, 1],
-                              }}
-                            >
-                              <CrumpledBall />
-                            </motion.g>
-                          </motion.g>
-                        </motion.g>
-                      </g>
-                    );
-                  })}
-                </HamperBasketDrawing>
+                          {flights.map((flight) => {
+                            const durationS = flight.path.durationMs / 1000;
+                            return (
+                              <g
+                                key={flight.kind}
+                                transform={`translate(${flight.from.x} ${flight.from.y})`}
+                              >
+                                <motion.g
+                                  initial={{ x: 0 }}
+                                  animate={{ x: flight.path.dx }}
+                                  transition={{
+                                    duration: durationS,
+                                    ease: [0.33, 0.66, 0.45, 1],
+                                  }}
+                                >
+                                  <motion.g
+                                    initial={{ y: 0 }}
+                                    animate={{
+                                      y: [0, flight.path.peak, flight.path.dy],
+                                    }}
+                                    transition={{
+                                      duration: durationS,
+                                      times: [0, 0.42, 1],
+                                      ease: [
+                                        [0.2, 0.65, 0.4, 1],
+                                        [0.6, 0, 0.85, 0.45],
+                                      ],
+                                    }}
+                                  >
+                                    <motion.g
+                                      initial={{ rotate: 0, scale: 1.08 }}
+                                      animate={{
+                                        rotate: flight.path.spinDeg,
+                                        scale: 0.94,
+                                      }}
+                                      transition={{
+                                        duration: durationS,
+                                        ease: [0.3, 0.6, 0.45, 1],
+                                      }}
+                                    >
+                                      <CrumpledBall />
+                                    </motion.g>
+                                  </motion.g>
+                                </motion.g>
+                              </g>
+                            );
+                          })}
+                        </HamperBasketDrawing>
+                      );
+                    case "carried":
+                      return (
+                        <BasketDrawing
+                          laidOut={{ object: carriedBasket }}
+                          projection={projection}
+                          highlighted={hover === "basket"}
+                          contents={roomBasket.laundry}
+                        />
+                      );
+                    case "none":
+                      return null;
+                    default: {
+                      const unhandled: never = roomBasket;
+                      return unhandled;
+                    }
+                  }
+                })()}
                 {onTop.map(renderGarment)}
+                <RoomDarkness
+                  pose={curtainPose}
+                  layout={curtainLayout}
+                  curtain={bedroom.curtain}
+                  room={room}
+                  projection={projection}
+                  light={windowLight}
+                  lampOn={isLampOn}
+                />
               </g>
             </svg>
 
-            <div
-              aria-hidden
-              className="absolute"
-              style={{
-                left: basket.bounds.x,
-                top: basket.bounds.y,
-                width: basket.bounds.width,
-                height: basket.bounds.height,
-              }}
-              onPointerEnter={() => handleHover("basket")}
-              onPointerLeave={() => clearHover("basket")}
-            />
+            {roomBasket.kind !== "none" && (
+              <div
+                aria-hidden
+                className="absolute"
+                style={{
+                  left: basketBounds.x,
+                  top: basketBounds.y,
+                  width: basketBounds.width,
+                  height: basketBounds.height,
+                }}
+                onPointerEnter={() => handleHover("basket")}
+                onPointerLeave={() => clearHover("basket")}
+              />
+            )}
             {onFloor
               .filter((kind) => !flights.some((flight) => flight.kind === kind))
               .map((kind) => {
@@ -741,17 +907,51 @@ export function FirstVisit(props: FirstVisitProps) {
             <div
               className="absolute top-0 left-0 origin-top-left"
               style={{
+                transform: `matrix(${COS_30}, ${-SIN_30}, 0, 1, ${curtainTopLeft.x}, ${curtainTopLeft.y})`,
+              }}
+            >
+              <button
+                type="button"
+                aria-label={
+                  isCurtainOpen
+                    ? copy.firstVisit.curtainCloseLabel
+                    : copy.firstVisit.curtainOpenLabel
+                }
+                aria-pressed={!isCurtainOpen}
+                className="absolute top-0 left-0 cursor-pointer rounded-md bg-transparent outline-none focus-visible:outline-1 focus-visible:outline-offset-2 focus-visible:outline-[var(--lm-ink)] focus-visible:outline-dashed"
+                style={{
+                  width:
+                    (curtainLayout.openingWidth +
+                      2 * bedroom.curtain.stackOutset) *
+                    projection.unit,
+                  height:
+                    (curtainLayout.top - curtainLayout.bottom) *
+                    projection.unit,
+                }}
+                onClick={handleCurtainClick}
+                onPointerEnter={() => handleHover("curtain")}
+                onPointerLeave={() => clearHover("curtain")}
+                onFocus={handleCurtainFocus}
+                onBlur={() => clearHover("curtain")}
+              />
+            </div>
+            <div
+              className="absolute top-0 left-0 origin-top-left"
+              style={{
                 transform: `matrix(${COS_30}, ${-SIN_30}, 0, 1, ${doorTopLeft.x}, ${doorTopLeft.y})`,
               }}
             >
               <button
                 type="button"
                 data-bedroom-door-target
-                aria-label={
-                  isReady
+                aria-label={(() => {
+                  if (props.home.kind === "away") {
+                    return copy.firstVisit.doorAwayLabel;
+                  }
+                  return isReady
                     ? copy.firstVisit.doorReadyLabel
-                    : copy.firstVisit.doorWaitingLabel
-                }
+                    : copy.firstVisit.doorWaitingLabel;
+                })()}
                 className="absolute top-0 left-0 cursor-pointer rounded-md bg-transparent outline-none focus-visible:outline-1 focus-visible:outline-offset-2 focus-visible:outline-[var(--lm-ink)] focus-visible:outline-dashed"
                 style={{
                   width: door.width * projection.unit,

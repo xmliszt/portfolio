@@ -3,8 +3,8 @@ import { useId } from "react";
 import type { LaidOutObject } from "@/lib/laundromat/build-scene-layout";
 import { getObjectFloorShadow } from "@/lib/laundromat/get-object-floor-shadow";
 import type { TimeOfDay } from "@/lib/laundromat/get-time-of-day";
-import type { WindowLight } from "@/lib/laundromat/get-window-light";
 import { getWindowLightPatch } from "@/lib/laundromat/get-window-light-patch";
+import type { WindowLight } from "@/lib/laundromat/get-window-lights";
 import type { IsoProjection } from "@/lib/laundromat/project-iso-point";
 import { projectIsoPoint } from "@/lib/laundromat/project-iso-point";
 import type { SceneConfig } from "@/lib/laundromat/scene-config";
@@ -17,7 +17,7 @@ const POOL_RADIUS_RATIO = 0.36;
 const POOL_PEAK_OPACITY = 0.14;
 
 type RoomLightProps = {
-  windowLight: WindowLight | undefined;
+  windowLights: WindowLight[];
   objects: LaidOutObject[];
   timeOfDay: TimeOfDay;
   projection: IsoProjection;
@@ -43,11 +43,10 @@ export function RoomLight(props: RoomLightProps) {
     );
   });
 
-  const { windowLight } = props;
-  const windowPatch = (() => {
-    if (windowLight === undefined) return undefined;
+  const windowPatches = props.windowLights.map((windowLight) => {
     const { shadow } = windowLight;
     return {
+      key: windowLight.key,
       points: getWindowLightPatch({
         opening: windowLight.opening,
         shadow,
@@ -63,7 +62,7 @@ export function RoomLight(props: RoomLightProps) {
       color: windowLight.color,
       opacity: windowLight.opacity,
     };
-  })();
+  });
 
   return (
     <g data-room-light className="pointer-events-none">
@@ -83,15 +82,16 @@ export function RoomLight(props: RoomLightProps) {
           }}
         />
       </g>
-      {windowPatch !== undefined && (
+      {windowPatches.map((windowPatch) => (
         <DaylightPatch
+          key={windowPatch.key}
           points={windowPatch.points}
           shadows={windowPatch.shadows}
           color={windowPatch.color}
           opacity={windowPatch.opacity}
           glideMs={config.sky.timeJumpGlideMs}
         />
-      )}
+      ))}
     </g>
   );
 }

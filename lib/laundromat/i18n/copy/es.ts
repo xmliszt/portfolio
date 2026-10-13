@@ -131,6 +131,17 @@ export const es = {
       `aviso activado · ${o.doneAt}`,
     idleStartLabel: (o: { name: string }) => `${o.name}, iniciar`,
     loadFirstTooltip: "primero mete la ropa",
+    needsWashingTooltip: "lávala primero",
+    alreadyWashedTooltip: "ya está lavada · ahora a secar",
+    alreadyDryTooltip: "ya está seca · llévatela a casa",
+    elsewhereLoadedTooltip: (o: { name: string }) =>
+      `tu ropa te espera en ${o.name}`,
+    elsewhereRunningTooltip: (o: { kind: MachineKind }) =>
+      o.kind === "washer"
+        ? "tu ropa todavía se está lavando"
+        : "tu ropa todavía se está secando",
+    elsewhereDoneTooltip: (o: { name: string }) =>
+      `tu ropa está lista · en ${o.name}`,
     runningDoorTooltip: (o: { kind: MachineKind; doneAt: string }) =>
       `${o.kind === "washer" ? "lavando" : "secando"} · ${o.doneAt}`,
     doneDoorTooltip: "abrir la puerta · sacar la ropa",
@@ -143,9 +154,13 @@ export const es = {
   entranceMat: {
     readyLabel: (o: { laundry: "wet" | "folded" }) =>
       `Felpudo, llévate tu ropa ${o.laundry === "folded" ? "seca" : "lavada"} a casa`,
-    readyTooltip: "volver a casa · llévate tu ropa",
-    waitingLabel: "Felpudo, el camino a casa cuando tu ropa esté lista",
-    waitingTooltip: "el camino a casa · termina primero tu colada",
+    readyTooltip: "volver a casa · llévate la ropa limpia",
+    awayLabel: "Felpudo, vuelve a casa y deja la ropa en la máquina",
+    awayTooltip: "volver a casa · tu ropa se queda en la máquina",
+    wetLabel: "Felpudo, vuelve a casa con la ropa mojada",
+    wetTooltip: "volver a casa · la ropa sigue mojada",
+    dirtyLabel: "Felpudo, mete la ropa en una lavadora antes de volver a casa",
+    dirtyTooltip: "lávala primero · mete la ropa en una lavadora",
   },
   laundryBasket: {
     labels: {
@@ -218,6 +233,18 @@ export const es = {
       board: "tablón",
     },
     updates: {
+      "home-mid-wash": {
+        title: "vuelve a casa mientras lava",
+        body: "Pisa el felpudo para volver a casa mientras se lava tu ropa. La ropa mojada viaja en el cesto y la seca acaba en la cama.",
+      },
+      "bedroom-curtains": {
+        title: "cortinas y una lámpara nueva en casa",
+        body: "Haz clic en las cortinas o en la lámpara de tu cuarto. Las dos habitaciones ahora se iluminan y oscurecen con el sol, la luna y las lámparas.",
+      },
+      "settings-lite": {
+        title: "ajustes y un modo ligero",
+        body: "El engranaje de la barra abre los ajustes. Cambia a ligero en dispositivos lentos para ahorrar memoria y batería.",
+      },
       "door-bell": {
         title: "una campanilla en la puerta",
         body: "Una campanilla suena cuando entras, y cada vez que entra alguien más.",
@@ -402,12 +429,19 @@ export const es = {
     basketPartial: (o: { count: number; total: number }) =>
       `${o.count} de ${o.total} dentro · añade más o ve a la puerta`,
     basketFull: "todo dentro · ve a la puerta",
+    basketWet: "la ropa sigue mojada · sécala en la lavandería",
     lampOffTooltip: "apagar la lámpara",
     lampOnTooltip: "encender la lámpara",
     lampOffLabel: "Apagar la lámpara",
     lampOnLabel: "Encender la lámpara",
+    curtainCloseTooltip: "cerrar las cortinas",
+    curtainOpenTooltip: "abrir las cortinas",
+    curtainCloseLabel: "Cerrar las cortinas",
+    curtainOpenLabel: "Abrir las cortinas",
     doorReadyTooltip: "llevarlo a la lavandería",
     doorWaitingTooltip: "primero recoge tu ropa",
+    doorAwayTooltip: "volver a la lavandería · tu ropa está en la máquina",
+    doorAwayLabel: "Volver a la lavandería, tu ropa sigue en la máquina",
     doorReadyLabel: "Llevar el cesto a la lavandería",
     doorWaitingLabel: "Puerta a la lavandería, primero recoge tu ropa",
     justListen: "solo escuchar →",

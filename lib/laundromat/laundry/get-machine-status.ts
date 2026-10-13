@@ -1,7 +1,17 @@
 import type { LaundryState, MachineRef } from "./laundry-state";
 
+export type UnavailableReason =
+  | { kind: "needs-washing" }
+  | { kind: "already-washed" }
+  | { kind: "already-dry" }
+  | {
+      kind: "elsewhere";
+      machine: MachineRef;
+      phase: "loaded" | "running" | "done";
+    };
+
 export type MachineStatus =
-  | { kind: "unavailable" }
+  | { kind: "unavailable"; reason: UnavailableReason }
   | { kind: "loadable" }
   | { kind: "loaded" }
   | { kind: "running"; endsAt: number; remainingMs: number; remind: boolean }
@@ -10,7 +20,7 @@ export type MachineStatus =
   | { kind: "occupied"; phase: "running"; endsAt: number; remainingMs: number }
   | { kind: "occupied"; phase: "done" };
 
-/** Return what `machine` can do right now for this visitor's laundry. */
+/** Return what `machine` can do right now for this visitor's laundry, and why it can't take it when `unavailable`. */
 export function getMachineStatus(options: {
   state: LaundryState;
   machine: MachineRef;
@@ -23,15 +33,35 @@ export function getMachineStatus(options: {
     case "folded": {
       const isWet = load.kind === "carrying" && load.laundry === "wet";
       const fits = machine.kind === "washer" ? !isWet : isWet;
-      return { kind: fits ? "loadable" : "unavailable" };
+      if (fits) return { kind: "loadable" };
+      if (machine.kind === "washer") {
+        return { kind: "unavailable", reason: { kind: "already-washed" } };
+      }
+      return {
+        kind: "unavailable",
+        reason: {
+          kind: load.kind === "folded" ? "already-dry" : "needs-washing",
+        },
+      };
     }
     case "loaded":
     case "done":
+      if (load.machine.id === machine.id) return { kind: load.kind };
       return {
-        kind: load.machine.id === machine.id ? load.kind : "unavailable",
+        kind: "unavailable",
+        reason: { kind: "elsewhere", machine: load.machine, phase: load.kind },
       };
     case "running": {
-      if (load.machine.id !== machine.id) return { kind: "unavailable" };
+      if (load.machine.id !== machine.id) {
+        return {
+          kind: "unavailable",
+          reason: {
+            kind: "elsewhere",
+            machine: load.machine,
+            phase: "running",
+          },
+        };
+      }
       const endsAt = load.startedAt + load.durationMs;
       return {
         kind: "running",

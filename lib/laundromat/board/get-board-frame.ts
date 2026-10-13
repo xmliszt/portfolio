@@ -15,10 +15,11 @@ const STRETCHER_Z = 0.42;
 const REAR_BRACE_Z = 0.95;
 const HINGE_LENGTH = 0.2;
 const BEZEL = { side: 0.08, top: 0.08, chin: 0.24 };
+const FLOOR_LIGHT = { reach: 1.1, spread: 0.35 };
 
 type Segment = { from: IsoPoint; to: IsoPoint };
 
-/** Return the scene-pixel parts of an A-frame poster stand in the box `position` + `size`: the panel leans back by `leanDeg` with its front facing +y, the rear leg splays back to the box's far edge, and `face` maps face pixels on the panel front to scene pixels. */
+/** Return the scene-pixel parts of an A-frame poster stand in the box `position` + `size`: the panel leans back by `leanDeg` with its front facing +y, the rear leg splays back to the box's far edge, `floorLight` is the floor quad (board edge first) that the lit panel lights in front of it, and `face` maps face pixels on the panel front to scene pixels. */
 export function getBoardFrame(options: {
   position: IsoPoint;
   size: IsoSize;
@@ -163,10 +164,12 @@ export function getBoardFrame(options: {
       bend: at({ x: x1 - 0.32, y: (frontFootY + rearFootY) / 2, z: footZ }),
       to: at({ x: x1 - 0.1, y: rearFootY - 0.5, z: p.z }),
     },
-    floorSpill: {
-      center: { x: (x0 + x1) / 2, y: frontFootY + 0.35, z: p.z },
-      radius: size.w * 0.6,
-    },
+    floorLight: [
+      { x: x0, y: frontFootY },
+      { x: x1, y: frontFootY },
+      { x: x1 + FLOOR_LIGHT.spread, y: frontFootY + FLOOR_LIGHT.reach },
+      { x: x0 - FLOOR_LIGHT.spread, y: frontFootY + FLOOR_LIGHT.reach },
+    ].map((corner) => at({ ...corner, z: p.z })),
     face: {
       transform: `matrix(${across.x} ${across.y} ${down.x} ${down.y} ${origin.x} ${origin.y})`,
       rects,

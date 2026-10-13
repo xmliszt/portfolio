@@ -102,6 +102,15 @@ export const tr = {
     reminderOnTooltip: (o) => `hatırlatıcı açık · ${o.doneAt}`,
     idleStartLabel: (o) => `${o.name} başlat`,
     loadFirstTooltip: "önce çamaşırı koy",
+    needsWashingTooltip: "önce yıka",
+    alreadyWashedTooltip: "zaten yıkandı · sırada kurutma",
+    alreadyDryTooltip: "zaten kuru · eve götür",
+    elsewhereLoadedTooltip: (o) => `çamaşırın ${o.name} içinde bekliyor`,
+    elsewhereRunningTooltip: (o) =>
+      o.kind === "washer"
+        ? "kıyafetlerin hâlâ yıkanıyor"
+        : "kıyafetlerin hâlâ kuruyor",
+    elsewhereDoneTooltip: (o) => `çamaşırın hazır · ${o.name}`,
     runningDoorTooltip: (o) =>
       `${o.kind === "washer" ? "yıkanıyor" : "kuruyor"} · ${o.doneAt}`,
     doneDoorTooltip: "kapağı aç · çamaşırı çıkar",
@@ -113,9 +122,13 @@ export const tr = {
   entranceMat: {
     readyLabel: (o) =>
       `Paspas, ${o.laundry === "folded" ? "kuru" : "yıkanmış"} çamaşırını eve götür`,
-    readyTooltip: "eve dön · çamaşırını da al",
-    waitingLabel: "Paspas, çamaşırın bitince eve dönüş yolu",
-    waitingTooltip: "eve dönüş yolu · önce çamaşırını bitir",
+    readyTooltip: "eve dön · temiz çamaşırını yanına al",
+    awayLabel: "Paspas, eve dön ve çamaşırı makinede bırak",
+    awayTooltip: "eve dön · çamaşırın makinede kalır",
+    wetLabel: "Paspas, ıslak çamaşırla eve dön",
+    wetTooltip: "eve dön · kıyafetler hâlâ ıslak",
+    dirtyLabel: "Paspas, eve dönmeden önce kıyafetleri çamaşır makinesine koy",
+    dirtyTooltip: "önce yıka · kıyafetleri çamaşır makinesine koy",
   },
   laundryBasket: {
     labels: {
@@ -187,6 +200,18 @@ export const tr = {
       board: "pano",
     },
     updates: {
+      "home-mid-wash": {
+        title: "çamaşır dönerken eve dön",
+        body: "Çamaşırın dönerken eve gitmek için paspasa bas. Islak kıyafetler sepette eve gelir, kuru olanlar yatağa konur.",
+      },
+      "bedroom-curtains": {
+        title: "evde perdeler ve yeni bir lamba",
+        body: "Odandaki perdelere ya da lambaya tıkla. İki oda da artık güneşle, ayla ve lambalarla aydınlanıp kararıyor.",
+      },
+      "settings-lite": {
+        title: "ayarlar ve hafif mod",
+        body: "Araç çubuğundaki dişli ayarları açar. Yavaş cihazlarda bellek ve pilden tasarruf için hafif moda geç.",
+      },
       "door-bell": {
         title: "kapıda bir çan",
         body: "İçeri girdiğinde ve başka biri geldiğinde küçük bir çan çalar.",
@@ -357,12 +382,19 @@ export const tr = {
     basketPartial: (o) =>
       `içeride: ${o.count}/${o.total} · daha ekle ya da kapıya git`,
     basketFull: "hepsi içeride · kapıya git",
+    basketWet: "kıyafetler hâlâ ıslak · çamaşırhanede kurut",
     lampOffTooltip: "lambayı kapat",
     lampOnTooltip: "lambayı aç",
     lampOffLabel: "Lambayı kapat",
     lampOnLabel: "Lambayı aç",
+    curtainCloseTooltip: "perdeleri kapat",
+    curtainOpenTooltip: "perdeleri aç",
+    curtainCloseLabel: "Perdeleri kapat",
+    curtainOpenLabel: "Perdeleri aç",
     doorReadyTooltip: "çamaşırhaneye götür",
     doorWaitingTooltip: "önce çamaşırını topla",
+    doorAwayTooltip: "çamaşırhaneye dön · çamaşırın makinede",
+    doorAwayLabel: "Çamaşırhaneye dön, çamaşırın hâlâ makinede",
     doorReadyLabel: "Sepeti çamaşırhaneye götür",
     doorWaitingLabel: "Çamaşırhane kapısı, önce çamaşırını topla",
     justListen: "sadece dinle →",

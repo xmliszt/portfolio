@@ -104,6 +104,15 @@ export const nl = {
     reminderOnTooltip: (o) => `herinnering aan · ${o.doneAt}`,
     idleStartLabel: (o) => `Start van ${o.name}`,
     loadFirstTooltip: "eerst de was erin",
+    needsWashingTooltip: "eerst wassen",
+    alreadyWashedTooltip: "al gewassen · nu drogen",
+    alreadyDryTooltip: "al droog · neem het mee naar huis",
+    elsewhereLoadedTooltip: (o) => `je was wacht in ${o.name}`,
+    elsewhereRunningTooltip: (o) =>
+      o.kind === "washer"
+        ? "je kleren worden nog gewassen"
+        : "je kleren zijn nog aan het drogen",
+    elsewhereDoneTooltip: (o) => `je was is klaar · in ${o.name}`,
     runningDoorTooltip: (o) =>
       `${o.kind === "washer" ? "aan het wassen" : "aan het drogen"} · ${o.doneAt}`,
     doneDoorTooltip: "deur open · was eruit halen",
@@ -115,9 +124,14 @@ export const nl = {
   entranceMat: {
     readyLabel: (o) =>
       `Deurmat, neem je ${o.laundry === "folded" ? "droge" : "gewassen"} was mee naar huis`,
-    readyTooltip: "naar huis · neem je was mee",
-    waitingLabel: "Deurmat, de weg naar huis als je was klaar is",
-    waitingTooltip: "de weg naar huis · maak eerst je was af",
+    readyTooltip: "naar huis · neem je schone was mee",
+    awayLabel: "Deurmat, ga naar huis en laat je was in de machine",
+    awayTooltip: "naar huis · je was blijft in de machine",
+    wetLabel: "Deurmat, ga naar huis met de natte was",
+    wetTooltip: "naar huis · de kleren zijn nog nat",
+    dirtyLabel:
+      "Deurmat, doe de kleren in een wasmachine voor je naar huis gaat",
+    dirtyTooltip: "eerst wassen · doe de kleren in een wasmachine",
   },
   laundryBasket: {
     labels: {
@@ -191,6 +205,18 @@ export const nl = {
       board: "bord",
     },
     updates: {
+      "home-mid-wash": {
+        title: "naar huis terwijl het draait",
+        body: "Stap op de deurmat om naar huis te gaan terwijl je was draait. Natte kleren gaan mee in de mand, droge belanden op het bed.",
+      },
+      "bedroom-curtains": {
+        title: "gordijnen en een nieuwe lamp thuis",
+        body: "Klik op de gordijnen of de lamp in je kamer. Beide ruimtes worden nu lichter en donkerder met de zon, de maan en de lampen.",
+      },
+      "settings-lite": {
+        title: "instellingen en een lichte modus",
+        body: "Het tandwiel in de balk opent de instellingen. Kies licht op tragere apparaten om geheugen en batterij te sparen.",
+      },
       "door-bell": {
         title: "een belletje aan de deur",
         body: "Een belletje klinkt als je binnenkomt, en telkens als iemand anders binnenkomt.",
@@ -366,12 +392,19 @@ export const nl = {
     basketPartial: (o) =>
       `${o.count} van ${o.total} erin · doe er meer bij, of ga naar de deur`,
     basketFull: "alles erin · ga naar de deur",
+    basketWet: "de kleren zijn nog nat · droog ze in de wasserette",
     lampOffTooltip: "lamp uit",
     lampOnTooltip: "lamp aan",
     lampOffLabel: "Doe de lamp uit",
     lampOnLabel: "Doe de lamp aan",
+    curtainCloseTooltip: "doe de gordijnen dicht",
+    curtainOpenTooltip: "doe de gordijnen open",
+    curtainCloseLabel: "Doe de gordijnen dicht",
+    curtainOpenLabel: "Doe de gordijnen open",
     doorReadyTooltip: "breng het naar de wasserette",
     doorWaitingTooltip: "raap eerst je was op",
+    doorAwayTooltip: "terug naar de wasserette · je was zit in de machine",
+    doorAwayLabel: "Terug naar de wasserette, je was zit nog in de machine",
     doorReadyLabel: "Breng de mand naar de wasserette",
     doorWaitingLabel: "Deur naar de wasserette, raap eerst je was op",
     justListen: "gewoon luisteren →",

@@ -136,6 +136,17 @@ export const id = {
       `pengingat aktif · ${o.doneAt}`,
     idleStartLabel: (o: { name: string }) => `Tombol mulai ${o.name}`,
     loadFirstTooltip: "masukkan cucian dulu",
+    needsWashingTooltip: "cuci dulu",
+    alreadyWashedTooltip: "sudah dicuci · keringkan berikutnya",
+    alreadyDryTooltip: "sudah kering · bawa pulang",
+    elsewhereLoadedTooltip: (o: { name: string }) =>
+      `cucianmu menunggu di ${o.name}`,
+    elsewhereRunningTooltip: (o: { kind: MachineKind }) =>
+      o.kind === "washer"
+        ? "pakaianmu masih dicuci"
+        : "pakaianmu masih dikeringkan",
+    elsewhereDoneTooltip: (o: { name: string }) =>
+      `cucianmu sudah selesai · di ${o.name}`,
     runningDoorTooltip: (o: { kind: MachineKind; doneAt: string }) =>
       `${o.kind === "washer" ? "mencuci" : "mengeringkan"} · ${o.doneAt}`,
     doneDoorTooltip: "buka pintu · ambil cucian",
@@ -148,9 +159,13 @@ export const id = {
   entranceMat: {
     readyLabel: (o: { laundry: "wet" | "folded" }) =>
       `Keset, bawa pulang cucianmu yang ${o.laundry === "folded" ? "sudah kering" : "sudah dicuci"}`,
-    readyTooltip: "pulang · bawa cucianmu",
-    waitingLabel: "Keset, jalan pulang setelah cucianmu selesai",
-    waitingTooltip: "jalan pulang · selesaikan cucianmu dulu",
+    readyTooltip: "pulang · bawa cucian bersihmu",
+    awayLabel: "Keset, pulang dan tinggalkan cucian di mesin",
+    awayTooltip: "pulang · cucianmu tetap di mesin",
+    wetLabel: "Keset, pulang dengan cucian basah",
+    wetTooltip: "pulang · pakaiannya masih basah",
+    dirtyLabel: "Keset, masukkan pakaian ke mesin cuci sebelum pulang",
+    dirtyTooltip: "cuci dulu · masukkan pakaian ke mesin cuci",
   },
   laundryBasket: {
     labels: {
@@ -222,6 +237,18 @@ export const id = {
       board: "papan",
     },
     updates: {
+      "home-mid-wash": {
+        title: "pulang selagi mencuci",
+        body: "Injak keset untuk pulang selagi cucianmu berjalan. Pakaian basah dibawa pulang di keranjang, yang kering mendarat di kasur.",
+      },
+      "bedroom-curtains": {
+        title: "gorden dan lampu baru di rumah",
+        body: "Klik gorden atau lampu di kamarmu. Kedua ruangan kini jadi lebih terang dan gelap mengikuti matahari, bulan, dan lampu.",
+      },
+      "settings-lite": {
+        title: "pengaturan dan mode ringan",
+        body: "Ikon roda gigi di toolbar membuka pengaturan. Pilih mode ringan di perangkat yang lambat untuk menghemat memori dan baterai.",
+      },
       "door-bell": {
         title: "lonceng di pintu",
         body: "Lonceng kecil berbunyi saat kamu masuk, dan setiap kali ada orang lain datang.",
@@ -404,12 +431,19 @@ export const id = {
     basketPartial: (o: { count: number; total: number }) =>
       `${o.count} dari ${o.total} masuk · tambah lagi, atau ke pintu`,
     basketFull: "semua masuk · ke pintu",
+    basketWet: "pakaiannya masih basah · keringkan di laundromat",
     lampOffTooltip: "matikan lampu",
     lampOnTooltip: "nyalakan lampu",
     lampOffLabel: "Matikan lampu",
     lampOnLabel: "Nyalakan lampu",
+    curtainCloseTooltip: "tutup gorden",
+    curtainOpenTooltip: "buka gorden",
+    curtainCloseLabel: "Tutup gorden",
+    curtainOpenLabel: "Buka gorden",
     doorReadyTooltip: "bawa ke laundry",
     doorWaitingTooltip: "ambil cucianmu dulu",
+    doorAwayTooltip: "kembali ke laundromat · cucianmu ada di mesin",
+    doorAwayLabel: "Kembali ke laundromat, cucianmu masih di mesin",
     doorReadyLabel: "Bawa keranjang ke laundry",
     doorWaitingLabel: "Pintu ke laundry, ambil cucianmu dulu",
     justListen: "dengarkan saja →",

@@ -4,7 +4,6 @@ import { getBoxFaces } from "@/lib/laundromat/get-box-faces";
 import { getFacePlane } from "@/lib/laundromat/get-face-plane";
 import type { IsoProjection } from "@/lib/laundromat/project-iso-point";
 import { toSvgPoints } from "@/lib/laundromat/to-svg-points";
-import { cn } from "@/lib/utils";
 
 import { partStroke } from "./part-stroke";
 
@@ -18,10 +17,9 @@ type MatDrawingProps = {
   laidOut: LaidOutObject;
   projection: IsoProjection;
   highlighted: boolean;
-  ready: boolean;
 };
 
-/** Draw the coir welcome mat at the entrance, its border lit while `ready` to take laundry home. */
+/** Draw the coir welcome mat at the entrance. */
 export function MatDrawing(props: MatDrawingProps) {
   const { copy } = useLaundromatCopy();
   const { position: p, size } = props.laidOut.object;
@@ -57,11 +55,7 @@ export function MatDrawing(props: MatDrawingProps) {
     (_, index) => inner.x + FIBER_GAP_PX * (index + 0.5)
   );
   return (
-    <g
-      data-mat={props.ready ? "ready" : "idle"}
-      className={partStroke(props.highlighted)}
-      strokeLinejoin="round"
-    >
+    <g className={partStroke(props.highlighted)} strokeLinejoin="round">
       <polygon
         className="fill-[var(--lm-wall)]"
         points={toSvgPoints(faces.front)}
@@ -78,18 +72,8 @@ export function MatDrawing(props: MatDrawingProps) {
         <rect
           {...inner}
           rx={2}
-          className={cn(
-            "fill-[var(--lm-face-top)] transition-[stroke] duration-500",
-            props.ready
-              ? "stroke-[var(--lm-accent)]"
-              : "stroke-[var(--lm-detail)]"
-          )}
+          className="fill-[var(--lm-face-top)] stroke-[var(--lm-detail)]"
           strokeWidth={0.75}
-          style={
-            props.ready
-              ? { animation: "lm-pulse 3.2s ease-in-out infinite" }
-              : undefined
-          }
         />
         <g className="stroke-[var(--lm-detail)]" strokeWidth={0.5}>
           {fibers.map((x) => (
@@ -110,10 +94,7 @@ export function MatDrawing(props: MatDrawingProps) {
           dominantBaseline="central"
           fontSize={Math.min(11, inner.height * 0.42, fittedFontSize)}
           letterSpacing={MAT_LETTER_SPACING_PX}
-          className={cn(
-            "stroke-none font-[family-name:var(--lm-font-display)] lowercase transition-[fill] duration-500",
-            props.ready ? "fill-[var(--lm-accent-hi)]" : "fill-[var(--lm-ink)]"
-          )}
+          className="fill-[var(--lm-ink)] stroke-none font-[family-name:var(--lm-font-display)] lowercase"
         >
           {copy.matWelcome}
         </text>

@@ -129,6 +129,15 @@ export const ja = {
     reminderOnTooltip: (o: { doneAt: string }) => `通知オン · ${o.doneAt}`,
     idleStartLabel: (o: { name: string }) => `${o.name}のスタート`,
     loadFirstTooltip: "先に洗濯物を入れて",
+    needsWashingTooltip: "まず洗濯から",
+    alreadyWashedTooltip: "洗濯ずみ · 次は乾燥",
+    alreadyDryTooltip: "もう乾いてる · 家に持ち帰ろう",
+    elsewhereLoadedTooltip: (o: { name: string }) =>
+      `洗濯物は${o.name}で待ってるよ`,
+    elsewhereRunningTooltip: (o: { kind: MachineKind }) =>
+      o.kind === "washer" ? "まだ洗濯中" : "まだ乾燥中",
+    elsewhereDoneTooltip: (o: { name: string }) =>
+      `洗濯物ができあがり · ${o.name}`,
     runningDoorTooltip: (o: { kind: MachineKind; doneAt: string }) =>
       `${o.kind === "washer" ? "洗濯中" : "乾燥中"} · ${o.doneAt}`,
     doneDoorTooltip: "ドアを開ける · 洗濯物を取り出す",
@@ -141,9 +150,13 @@ export const ja = {
   entranceMat: {
     readyLabel: (o: { laundry: "wet" | "folded" }) =>
       `玄関マット、${o.laundry === "folded" ? "乾いた" : "洗った"}洗濯物を持って帰る`,
-    readyTooltip: "家に帰る · 洗濯物を持って",
-    waitingLabel: "玄関マット、洗濯が終わったらここから帰る",
-    waitingTooltip: "帰り道 · 先に洗濯を終わらせて",
+    readyTooltip: "家に帰る · きれいな洗濯物を持って帰ろう",
+    awayLabel: "玄関マット、洗濯物を機械に残して家へ帰る",
+    awayTooltip: "家に帰る · 洗濯物は機械の中に残るよ",
+    wetLabel: "玄関マット、濡れた洗濯物を持って家へ帰る",
+    wetTooltip: "家に帰る · 服はまだ濡れてる",
+    dirtyLabel: "玄関マット、帰る前に服を洗濯機に入れよう",
+    dirtyTooltip: "まず洗濯から · 服を洗濯機に入れよう",
   },
   laundryBasket: {
     labels: {
@@ -215,6 +228,18 @@ export const ja = {
       board: "掲示板",
     },
     updates: {
+      "home-mid-wash": {
+        title: "洗濯中に家へ帰れる",
+        body: "玄関マットから、洗濯の途中でも家に帰れます。濡れた服はかごに入れて持ち帰り、乾いた服はベッドの上に。",
+      },
+      "bedroom-curtains": {
+        title: "家のカーテンと新しいランプ",
+        body: "部屋のカーテンやランプをクリックしてみて。どちらの部屋も、太陽や月、ランプに合わせて明るくなったり暗くなったりします。",
+      },
+      "settings-lite": {
+        title: "設定とライトモード",
+        body: "ツールバーの歯車から設定を開けます。動作の重い端末ではライトにすると、メモリとバッテリーを節約できます。",
+      },
       "door-bell": {
         title: "ドアにベルを設置",
         body: "入店するとき、そして誰かが入ってくるたびに、小さなベルが鳴ります。",
@@ -393,12 +418,19 @@ export const ja = {
     basketPartial: (o: { count: number; total: number }) =>
       `${o.total} 枚中 ${o.count} 枚 · もっと入れるか、ドアへ`,
     basketFull: "全部入った · ドアへ",
+    basketWet: "服はまだ濡れてる · コインランドリーで乾かそう",
     lampOffTooltip: "ランプを消す",
     lampOnTooltip: "ランプをつける",
     lampOffLabel: "ランプを消す",
     lampOnLabel: "ランプをつける",
+    curtainCloseTooltip: "カーテンを閉める",
+    curtainOpenTooltip: "カーテンを開ける",
+    curtainCloseLabel: "カーテンを閉める",
+    curtainOpenLabel: "カーテンを開ける",
     doorReadyTooltip: "コインランドリーへ持っていく",
     doorWaitingTooltip: "先に洗濯物を拾って",
+    doorAwayTooltip: "コインランドリーへ戻る · 洗濯物は機械の中",
+    doorAwayLabel: "コインランドリーへ戻る、洗濯物はまだ機械の中",
     doorReadyLabel: "かごをコインランドリーへ持っていく",
     doorWaitingLabel: "コインランドリーへのドア、先に洗濯物を拾って",
     justListen: "聴くだけ →",

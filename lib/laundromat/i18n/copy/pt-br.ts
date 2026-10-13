@@ -132,6 +132,17 @@ export const ptBR = {
       `lembrete ativado · ${o.doneAt}`,
     idleStartLabel: (o: { name: string }) => `${o.name}, iniciar`,
     loadFirstTooltip: "coloque a roupa primeiro",
+    needsWashingTooltip: "lave primeiro",
+    alreadyWashedTooltip: "já lavada · agora é secar",
+    alreadyDryTooltip: "já está seca · leve para casa",
+    elsewhereLoadedTooltip: (o: { name: string }) =>
+      `sua roupa está esperando na ${o.name}`,
+    elsewhereRunningTooltip: (o: { kind: MachineKind }) =>
+      o.kind === "washer"
+        ? "suas roupas ainda estão lavando"
+        : "suas roupas ainda estão secando",
+    elsewhereDoneTooltip: (o: { name: string }) =>
+      `sua roupa está pronta · na ${o.name}`,
     runningDoorTooltip: (o: { kind: MachineKind; doneAt: string }) =>
       `${o.kind === "washer" ? "lavando" : "secando"} · ${o.doneAt}`,
     doneDoorTooltip: "abrir a porta · tirar a roupa",
@@ -144,9 +155,14 @@ export const ptBR = {
   entranceMat: {
     readyLabel: (o: { laundry: "wet" | "folded" }) =>
       `Capacho, leve sua roupa ${o.laundry === "folded" ? "seca" : "lavada"} para casa`,
-    readyTooltip: "ir para casa · leve sua roupa",
-    waitingLabel: "Capacho, o caminho de casa quando sua roupa estiver pronta",
-    waitingTooltip: "o caminho de casa · termine sua roupa primeiro",
+    readyTooltip: "voltar para casa · leve a roupa limpa",
+    awayLabel: "Capacho, volte para casa e deixe a roupa na máquina",
+    awayTooltip: "voltar para casa · a roupa fica na máquina",
+    wetLabel: "Capacho, volte para casa com a roupa molhada",
+    wetTooltip: "voltar para casa · a roupa ainda está molhada",
+    dirtyLabel:
+      "Capacho, coloque a roupa numa lavadora antes de voltar para casa",
+    dirtyTooltip: "lave primeiro · coloque a roupa numa lavadora",
   },
   laundryBasket: {
     labels: {
@@ -219,6 +235,18 @@ export const ptBR = {
       board: "mural",
     },
     updates: {
+      "home-mid-wash": {
+        title: "volte para casa enquanto lava",
+        body: "Pise no capacho para voltar para casa enquanto a roupa lava. A roupa molhada vai no cesto, a seca vai para a cama.",
+      },
+      "bedroom-curtains": {
+        title: "cortinas e uma luminária nova em casa",
+        body: "Clique nas cortinas ou na luminária do seu quarto. Os dois ambientes agora clareiam e escurecem com o sol, a lua e as luminárias.",
+      },
+      "settings-lite": {
+        title: "ajustes e um modo leve",
+        body: "A engrenagem na barra abre os ajustes. Mude para o modo leve em aparelhos mais lentos para poupar memória e bateria.",
+      },
       "door-bell": {
         title: "um sininho na porta",
         body: "Um sininho toca quando você entra, e sempre que outra pessoa chega.",
@@ -401,12 +429,19 @@ export const ptBR = {
     basketPartial: (o: { count: number; total: number }) =>
       `${o.count} de ${o.total} dentro · coloque mais ou vá até a porta`,
     basketFull: "tudo dentro · vá até a porta",
+    basketWet: "a roupa ainda está molhada · seque na lavanderia",
     lampOffTooltip: "apagar a luminária",
     lampOnTooltip: "acender a luminária",
     lampOffLabel: "Apagar a luminária",
     lampOnLabel: "Acender a luminária",
+    curtainCloseTooltip: "fechar as cortinas",
+    curtainOpenTooltip: "abrir as cortinas",
+    curtainCloseLabel: "Fechar as cortinas",
+    curtainOpenLabel: "Abrir as cortinas",
     doorReadyTooltip: "levar para a lavanderia",
     doorWaitingTooltip: "pegue sua roupa primeiro",
+    doorAwayTooltip: "voltar à lavanderia · sua roupa está na máquina",
+    doorAwayLabel: "Voltar à lavanderia, sua roupa ainda está na máquina",
     doorReadyLabel: "Levar o cesto para a lavanderia",
     doorWaitingLabel: "Porta para a lavanderia, pegue sua roupa primeiro",
     justListen: "só ouvir →",

@@ -118,6 +118,15 @@ export const pl = {
     reminderOnTooltip: (o) => `przypomnienie włączone · ${o.doneAt}`,
     idleStartLabel: (o) => `${o.name}, start`,
     loadFirstTooltip: "najpierw włóż pranie",
+    needsWashingTooltip: "najpierw wypierz",
+    alreadyWashedTooltip: "już wyprane · teraz suszenie",
+    alreadyDryTooltip: "już suche · zabierz do domu",
+    elsewhereLoadedTooltip: (o) => `twoje pranie czeka w: ${o.name}`,
+    elsewhereRunningTooltip: (o) =>
+      o.kind === "washer"
+        ? "twoje ubrania wciąż się piorą"
+        : "twoje ubrania wciąż schną",
+    elsewhereDoneTooltip: (o) => `twoje pranie gotowe · ${o.name}`,
     runningDoorTooltip: (o) =>
       `${o.kind === "washer" ? "pranie" : "suszenie"} · ${o.doneAt}`,
     doneDoorTooltip: "otwórz drzwiczki · wyjmij pranie",
@@ -129,9 +138,13 @@ export const pl = {
   entranceMat: {
     readyLabel: (o) =>
       `Wycieraczka, zabierz ${o.laundry === "folded" ? "suche" : "uprane"} pranie do domu`,
-    readyTooltip: "do domu · zabierz pranie ze sobą",
-    waitingLabel: "Wycieraczka, droga do domu, gdy pranie będzie gotowe",
-    waitingTooltip: "droga do domu · najpierw skończ pranie",
+    readyTooltip: "wróć do domu · weź czyste pranie ze sobą",
+    awayLabel: "Wycieraczka, wróć do domu i zostaw pranie w maszynie",
+    awayTooltip: "wróć do domu · pranie zostaje w maszynie",
+    wetLabel: "Wycieraczka, wróć do domu z mokrym praniem",
+    wetTooltip: "wróć do domu · ubrania są jeszcze mokre",
+    dirtyLabel: "Wycieraczka, włóż ubrania do pralki przed powrotem do domu",
+    dirtyTooltip: "najpierw wypierz · włóż ubrania do pralki",
   },
   laundryBasket: {
     labels: {
@@ -203,6 +216,18 @@ export const pl = {
       board: "tablica",
     },
     updates: {
+      "home-mid-wash": {
+        title: "wróć do domu w trakcie prania",
+        body: "Stań na wycieraczce, żeby wrócić do domu, gdy pranie trwa. Mokre ubrania wracają w koszu, suche lądują na łóżku.",
+      },
+      "bedroom-curtains": {
+        title: "zasłony i nowa lampa w domu",
+        body: "Kliknij zasłony albo lampę w swoim pokoju. Oba pomieszczenia jaśnieją i ciemnieją teraz razem ze słońcem, księżycem i lampami.",
+      },
+      "settings-lite": {
+        title: "ustawienia i tryb lekki",
+        body: "Zębatka na pasku otwiera ustawienia. Na wolniejszych urządzeniach wybierz tryb lekki, żeby oszczędzać pamięć i baterię.",
+      },
       "door-bell": {
         title: "dzwonek przy drzwiach",
         body: "Mały dzwonek dzwoni, gdy wchodzisz, i za każdym razem, gdy wchodzi ktoś inny.",
@@ -377,12 +402,19 @@ export const pl = {
     basketPartial: (o) =>
       `${o.count} z ${o.total} w koszu · dorzuć więcej albo idź do drzwi`,
     basketFull: "wszystko w koszu · idź do drzwi",
+    basketWet: "ubrania są jeszcze mokre · wysusz je w pralni",
     lampOffTooltip: "zgaś lampę",
     lampOnTooltip: "zapal lampę",
     lampOffLabel: "Zgaś lampę",
     lampOnLabel: "Zapal lampę",
+    curtainCloseTooltip: "zasuń zasłony",
+    curtainOpenTooltip: "odsuń zasłony",
+    curtainCloseLabel: "Zasuń zasłony",
+    curtainOpenLabel: "Odsuń zasłony",
     doorReadyTooltip: "zanieś do pralni",
     doorWaitingTooltip: "najpierw zbierz pranie",
+    doorAwayTooltip: "wróć do pralni · pranie jest w maszynie",
+    doorAwayLabel: "Wróć do pralni, pranie jest jeszcze w maszynie",
     doorReadyLabel: "Zanieś kosz do pralni",
     doorWaitingLabel: "Drzwi do pralni, najpierw zbierz pranie",
     justListen: "po prostu posłuchaj →",

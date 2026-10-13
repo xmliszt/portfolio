@@ -117,6 +117,15 @@ export const ru = {
     reminderOnTooltip: (o) => `напоминание включено · ${o.doneAt}`,
     idleStartLabel: (o) => `${o.name}, запуск`,
     loadFirstTooltip: "сначала загрузи бельё",
+    needsWashingTooltip: "сначала постирай",
+    alreadyWashedTooltip: "уже постирано · теперь сушить",
+    alreadyDryTooltip: "уже сухое · забирай домой",
+    elsewhereLoadedTooltip: (o) => `твоё бельё ждёт: ${o.name}`,
+    elsewhereRunningTooltip: (o) =>
+      o.kind === "washer"
+        ? "твоя одежда ещё стирается"
+        : "твоя одежда ещё сохнет",
+    elsewhereDoneTooltip: (o) => `твоё бельё готово · ${o.name}`,
     runningDoorTooltip: (o) =>
       `${o.kind === "washer" ? "стирка" : "сушка"} · ${o.doneAt}`,
     doneDoorTooltip: "открыть дверцу · забрать бельё",
@@ -128,9 +137,14 @@ export const ru = {
   entranceMat: {
     readyLabel: (o) =>
       `Коврик у входа, забери ${o.laundry === "folded" ? "сухое" : "постиранное"} бельё домой`,
-    readyTooltip: "домой · забери бельё с собой",
-    waitingLabel: "Коврик у входа, дорога домой, когда бельё будет готово",
-    waitingTooltip: "дорога домой · сначала закончи со стиркой",
+    readyTooltip: "вернуться домой · забери чистое бельё",
+    awayLabel: "Коврик, вернуться домой и оставить бельё в машине",
+    awayTooltip: "вернуться домой · бельё останется в машине",
+    wetLabel: "Коврик, вернуться домой с мокрым бельём",
+    wetTooltip: "вернуться домой · бельё ещё мокрое",
+    dirtyLabel:
+      "Коврик, положи одежду в стиральную машину, прежде чем идти домой",
+    dirtyTooltip: "сначала постирай · положи одежду в стиральную машину",
   },
   laundryBasket: {
     labels: {
@@ -202,6 +216,18 @@ export const ru = {
       board: "стенд",
     },
     updates: {
+      "home-mid-wash": {
+        title: "домой во время стирки",
+        body: "Встань на коврик, чтобы уйти домой, пока идёт стирка. Мокрое бельё едет домой в корзине, сухое ложится на кровать.",
+      },
+      "bedroom-curtains": {
+        title: "шторы и новая лампа дома",
+        body: "Нажми на шторы или лампу в своей комнате. Теперь обе комнаты светлеют и темнеют вместе с солнцем, луной и лампами.",
+      },
+      "settings-lite": {
+        title: "настройки и лёгкий режим",
+        body: "Шестерёнка на панели открывает настройки. На медленных устройствах включи лёгкий режим, чтобы сберечь память и батарею.",
+      },
       "door-bell": {
         title: "колокольчик на двери",
         body: "Колокольчик звенит, когда вы входите и когда заходит кто-то ещё.",
@@ -376,12 +402,19 @@ export const ru = {
     basketPartial: (o) =>
       `${o.count} из ${o.total} в корзине · добавь ещё или иди к двери`,
     basketFull: "всё в корзине · иди к двери",
+    basketWet: "бельё ещё мокрое · высуши его в прачечной",
     lampOffTooltip: "выключить лампу",
     lampOnTooltip: "включить лампу",
     lampOffLabel: "Выключить лампу",
     lampOnLabel: "Включить лампу",
+    curtainCloseTooltip: "задёрнуть шторы",
+    curtainOpenTooltip: "раздвинуть шторы",
+    curtainCloseLabel: "Задёрнуть шторы",
+    curtainOpenLabel: "Раздвинуть шторы",
     doorReadyTooltip: "отнести в прачечную",
     doorWaitingTooltip: "сначала собери бельё",
+    doorAwayTooltip: "вернуться в прачечную · бельё в машине",
+    doorAwayLabel: "Вернуться в прачечную, бельё ещё в машине",
     doorReadyLabel: "Отнести корзину в прачечную",
     doorWaitingLabel: "Дверь в прачечную, сначала собери бельё",
     justListen: "просто послушать →",

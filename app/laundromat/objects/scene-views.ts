@@ -21,7 +21,6 @@ export type SceneViews = {
   cup: CupView;
   plantTouchCount: number;
   basket: BasketContents;
-  matReady: boolean;
   shelfBookNumbers: number[];
   notebookNumber: number;
   peopleHere: number | undefined;

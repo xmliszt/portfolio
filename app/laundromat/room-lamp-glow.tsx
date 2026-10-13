@@ -8,7 +8,7 @@ import { toSvgPoints } from "@/lib/laundromat/to-svg-points";
 
 const GLOW_CENTER_HEIGHT_RATIO = 0.3;
 const GLOW_RADIUS_RATIO = 0.55;
-const GLOW_PEAK_OPACITY = 0.09;
+const GLOW_PEAK_OPACITY = 0.14;
 const FALLOFF_PEAK_OPACITY = 0.3;
 
 type RoomLampGlowProps = {

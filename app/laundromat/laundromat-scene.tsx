@@ -40,6 +40,8 @@ import { formatRemainingTime } from "@/lib/laundromat/laundry/format-remaining-t
 import { getBasketContents } from "@/lib/laundromat/laundry/get-basket-contents";
 import { getCycleMinutes } from "@/lib/laundromat/laundry/get-cycle-minutes";
 import { getDialAngleDeg } from "@/lib/laundromat/laundry/get-dial-angle-deg";
+import type { Homecoming } from "@/lib/laundromat/laundry/get-homecoming";
+import { getHomecoming } from "@/lib/laundromat/laundry/get-homecoming";
 import type { MachineStatus } from "@/lib/laundromat/laundry/get-machine-status";
 import { getMachineStatus } from "@/lib/laundromat/laundry/get-machine-status";
 import { describeShelf } from "@/lib/laundromat/notebook/describe-shelf";
@@ -125,7 +127,7 @@ function findFocusTarget(options: { objectId: string; config: SceneConfig }) {
 type LaundromatSceneProps = {
   config: SceneConfig;
   hourOverride?: number;
-  onHeadHome?: () => void;
+  onHeadHome?: (homecoming: Homecoming) => void;
   hidden?: boolean;
 };
 
@@ -149,6 +151,10 @@ export function LaundromatScene(props: LaundromatSceneProps) {
       : undefined;
   const prefersReducedMotion = useReducedMotion() ?? false;
   const isHidden = props.hidden === true;
+  const isLeavingRef = useRef(false);
+  useEffect(() => {
+    if (!isHidden) isLeavingRef.current = false;
+  }, [isHidden]);
   const { quality } = useRenderQuality();
   const isLite = quality === "lite";
   const cameraFocus =
@@ -547,7 +553,8 @@ export function LaundromatScene(props: LaundromatSceneProps) {
   );
   type MachineView = (typeof machineViews)[string];
   const basket = getBasketContents(laundry.state.load);
-  const entranceMat = describeEntranceMat({ basket, copy });
+  const homecoming = getHomecoming({ load: laundry.state.load });
+  const entranceMat = describeEntranceMat({ homecoming, copy });
   const shelfDescription = describeShelf({
     shelf:
       shelf === undefined
@@ -576,7 +583,6 @@ export function LaundromatScene(props: LaundromatSceneProps) {
     },
     plantTouchCount,
     basket,
-    matReady: entranceMat.ready,
     shelfBookNumbers: filledBooks.map(({ number }) => number),
     notebookNumber: coverNumber,
     peopleHere,
@@ -862,10 +868,15 @@ export function LaundromatScene(props: LaundromatSceneProps) {
     );
     if (isMat) {
       if (focus !== "room") setFocus("room");
-      if (!entranceMat.ready) return;
+      if (isLeavingRef.current) return;
+      if (!entranceMat.canLeave) {
+        sound?.play("door-locked");
+        return;
+      }
+      isLeavingRef.current = true;
       sound?.play("sliding-door");
-      laundry.dispatch({ type: "collect" });
-      props.onHeadHome?.();
+      laundry.dispatch({ type: "head-home" });
+      props.onHeadHome?.(homecoming);
       return;
     }
     const kind = layout.objects.find(({ object }) => object.id === objectId)

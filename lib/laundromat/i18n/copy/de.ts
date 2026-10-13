@@ -132,6 +132,17 @@ export const de = {
     reminderOnTooltip: (o: { doneAt: string }) => `Erinnerung an · ${o.doneAt}`,
     idleStartLabel: (o: { name: string }) => `${o.name}, starten`,
     loadFirstTooltip: "erst Wäsche einladen",
+    needsWashingTooltip: "erst waschen",
+    alreadyWashedTooltip: "schon gewaschen · jetzt trocknen",
+    alreadyDryTooltip: "schon trocken · nimm sie mit nach Hause",
+    elsewhereLoadedTooltip: (o: { name: string }) =>
+      `deine Wäsche wartet in ${o.name}`,
+    elsewhereRunningTooltip: (o: { kind: MachineKind }) =>
+      o.kind === "washer"
+        ? "deine Wäsche wird noch gewaschen"
+        : "deine Wäsche trocknet noch",
+    elsewhereDoneTooltip: (o: { name: string }) =>
+      `deine Wäsche ist fertig · in ${o.name}`,
     runningDoorTooltip: (o: { kind: MachineKind; doneAt: string }) =>
       `${o.kind === "washer" ? "wäscht" : "trocknet"} · ${o.doneAt}`,
     doneDoorTooltip: "Tür öffnen · Wäsche herausnehmen",
@@ -144,10 +155,14 @@ export const de = {
   entranceMat: {
     readyLabel: (o: { laundry: "wet" | "folded" }) =>
       `Fußmatte, nimm deine ${o.laundry === "folded" ? "trockene" : "gewaschene"} Wäsche mit nach Hause`,
-    readyTooltip: "nach Hause · nimm deine Wäsche mit",
-    waitingLabel:
-      "Fußmatte, der Weg nach Hause, sobald deine Wäsche fertig ist",
-    waitingTooltip: "der Weg nach Hause · erst die Wäsche fertig machen",
+    readyTooltip: "nach Hause gehen · nimm deine saubere Wäsche mit",
+    awayLabel: "Fußmatte, geh nach Hause und lass deine Wäsche in der Maschine",
+    awayTooltip: "nach Hause gehen · deine Wäsche bleibt in der Maschine",
+    wetLabel: "Fußmatte, geh mit der nassen Wäsche nach Hause",
+    wetTooltip: "nach Hause gehen · die Wäsche ist noch nass",
+    dirtyLabel:
+      "Fußmatte, leg die Wäsche in eine Waschmaschine, bevor du nach Hause gehst",
+    dirtyTooltip: "erst waschen · leg die Wäsche in eine Waschmaschine",
   },
   laundryBasket: {
     labels: {
@@ -220,6 +235,18 @@ export const de = {
       board: "aushang",
     },
     updates: {
+      "home-mid-wash": {
+        title: "nach Hause, während es läuft",
+        body: "Tritt auf die Fußmatte, um nach Hause zu gehen, während deine Wäsche läuft. Nasse Wäsche kommt im Korb mit, trockene landet auf dem Bett.",
+      },
+      "bedroom-curtains": {
+        title: "Vorhänge und eine neue Lampe zu Hause",
+        body: "Klick auf die Vorhänge oder die Lampe in deinem Zimmer. Beide Räume werden jetzt mit Sonne, Mond und Lampen heller und dunkler.",
+      },
+      "settings-lite": {
+        title: "Einstellungen und ein Lite-Modus",
+        body: "Das Zahnrad in der Leiste öffnet die Einstellungen. Wechsle auf langsamen Geräten zu Lite, um Speicher und Akku zu sparen.",
+      },
       "door-bell": {
         title: "eine glocke an der tür",
         body: "Ein Glöckchen klingelt, wenn du hereinkommst, und wenn jemand anderes eintritt.",
@@ -403,12 +430,21 @@ export const de = {
     basketPartial: (o: { count: number; total: number }) =>
       `${o.count} von ${o.total} drin · leg mehr rein oder geh zur Tür`,
     basketFull: "alles drin · geh zur Tür",
+    basketWet: "die Wäsche ist noch nass · trockne sie im Waschsalon",
     lampOffTooltip: "Lampe ausschalten",
     lampOnTooltip: "Lampe einschalten",
     lampOffLabel: "Die Lampe ausschalten",
     lampOnLabel: "Die Lampe einschalten",
+    curtainCloseTooltip: "die Vorhänge zuziehen",
+    curtainOpenTooltip: "die Vorhänge aufziehen",
+    curtainCloseLabel: "Die Vorhänge zuziehen",
+    curtainOpenLabel: "Die Vorhänge aufziehen",
     doorReadyTooltip: "zum Waschsalon tragen",
     doorWaitingTooltip: "heb zuerst deine Wäsche auf",
+    doorAwayTooltip:
+      "zurück in den Waschsalon · deine Wäsche ist in der Maschine",
+    doorAwayLabel:
+      "Zurück in den Waschsalon, deine Wäsche ist noch in der Maschine",
     doorReadyLabel: "Den Korb zum Waschsalon tragen",
     doorWaitingLabel: "Tür zum Waschsalon, heb zuerst deine Wäsche auf",
     justListen: "nur zuhören →",

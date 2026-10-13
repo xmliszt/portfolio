@@ -2,11 +2,11 @@ import {
   BOARD_POSTER_SIZE,
   BoardPoster,
 } from "@/app/laundromat/board/board-poster";
+import { DaylightPatch } from "@/app/laundromat/daylight-patch";
 import { useLaundromatCopy } from "@/app/laundromat/i18n/use-laundromat-copy";
 import { getBoardEntries } from "@/lib/laundromat/board/get-board-entries";
 import { getBoardFrame } from "@/lib/laundromat/board/get-board-frame";
 import type { LaidOutObject } from "@/lib/laundromat/build-scene-layout";
-import { getIsoEllipse } from "@/lib/laundromat/get-iso-ellipse";
 import type {
   IsoProjection,
   ScreenPoint,
@@ -16,6 +16,8 @@ import { toSvgPoints } from "@/lib/laundromat/to-svg-points";
 import { cn } from "@/lib/utils";
 
 import { partStroke } from "./part-stroke";
+
+const BACKLIGHT_FADE_MS = 700;
 
 type Segment = { from: ScreenPoint; to: ScreenPoint };
 
@@ -49,13 +51,7 @@ export function BoardDrawing(props: BoardDrawingProps) {
     poster.height / BOARD_POSTER_SIZE.height
   );
   const entries = getBoardEntries({ copy, count: details.visibleUpdates });
-  const spill = getIsoEllipse({
-    center: frame.floorSpill.center,
-    radius: frame.floorSpill.radius,
-    projection,
-  });
   const posterClipId = `${object.id}-poster`;
-  const spillId = `${object.id}-spill`;
   const cableFadeId = `${object.id}-cable`;
   const screwCorners = [
     { x: body.x + 2, y: body.y + 2 },
@@ -123,10 +119,6 @@ export function BoardDrawing(props: BoardDrawingProps) {
   return (
     <g data-board strokeLinejoin="round">
       <defs>
-        <radialGradient id={spillId}>
-          <stop offset="0%" stopColor="var(--lm-accent)" stopOpacity={1} />
-          <stop offset="100%" stopColor="var(--lm-accent)" stopOpacity={0} />
-        </radialGradient>
         <linearGradient
           id={cableFadeId}
           gradientUnits="userSpaceOnUse"
@@ -142,11 +134,11 @@ export function BoardDrawing(props: BoardDrawingProps) {
           <rect {...poster} rx={1} />
         </clipPath>
       </defs>
-      <ellipse
-        {...spill}
-        fill={`url(#${spillId})`}
-        className="transition-opacity duration-700"
+      <DaylightPatch
+        points={frame.floorLight}
+        color="var(--lm-paper)"
         opacity={props.backlit ? details.floorSpill : 0}
+        glideMs={BACKLIGHT_FADE_MS}
       />
       {footBar(frame.footBars.rear)}
       {frame.rearRails.map((segment) =>

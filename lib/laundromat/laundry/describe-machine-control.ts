@@ -1,7 +1,7 @@
 import type { LaundromatCopy } from "@/lib/laundromat/i18n/laundromat-copy";
 
 import { formatClockTime } from "./format-clock-time";
-import type { MachineStatus } from "./get-machine-status";
+import type { MachineStatus, UnavailableReason } from "./get-machine-status";
 import type { MachineRef } from "./laundry-state";
 
 export type MachineControl = "dial" | "start" | "door";
@@ -17,6 +17,43 @@ type ControlDescription = {
   tooltip: string | undefined;
   enabled: boolean;
 };
+
+function describeUnavailableReason(options: {
+  reason: UnavailableReason;
+  copy: LaundromatCopy;
+}) {
+  const copy = options.copy.machineControl;
+  const { reason } = options;
+  switch (reason.kind) {
+    case "needs-washing":
+      return copy.needsWashingTooltip;
+    case "already-washed":
+      return copy.alreadyWashedTooltip;
+    case "already-dry":
+      return copy.alreadyDryTooltip;
+    case "elsewhere": {
+      const name = options.copy.machine
+        .name(reason.machine)
+        .toLocaleLowerCase(options.copy.locale);
+      switch (reason.phase) {
+        case "loaded":
+          return copy.elsewhereLoadedTooltip({ name });
+        case "running":
+          return copy.elsewhereRunningTooltip({ kind: reason.machine.kind });
+        case "done":
+          return copy.elsewhereDoneTooltip({ name });
+        default: {
+          const unhandled: never = reason.phase;
+          return unhandled;
+        }
+      }
+    }
+    default: {
+      const unhandled: never = reason;
+      return unhandled;
+    }
+  }
+}
 
 /** Return the `label`, `tooltip` and whether pressing `control` on `machine` does anything in `status`. */
 export function describeMachineControl(options: {
@@ -114,7 +151,23 @@ export function describeMachineControl(options: {
       }
       return {
         label: copy.idleStartLabel({ name }),
-        tooltip: status.kind === "loadable" ? copy.loadFirstTooltip : undefined,
+        tooltip: (() => {
+          switch (status.kind) {
+            case "loadable":
+              return copy.loadFirstTooltip;
+            case "done":
+              return undefined;
+            case "unavailable":
+              return describeUnavailableReason({
+                reason: status.reason,
+                copy: options.copy,
+              });
+            default: {
+              const unhandled: never = status;
+              return unhandled;
+            }
+          }
+        })(),
         enabled: false,
       };
     }
@@ -130,7 +183,10 @@ export function describeMachineControl(options: {
           case "loadable":
             return copy.loadableDoorTooltip;
           case "unavailable":
-            return undefined;
+            return describeUnavailableReason({
+              reason: status.reason,
+              copy: options.copy,
+            });
           default: {
             const unhandled: never = status;
             return unhandled;

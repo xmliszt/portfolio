@@ -137,6 +137,17 @@ export const en = {
     reminderOnTooltip: (o: { doneAt: string }) => `reminder on · ${o.doneAt}`,
     idleStartLabel: (o: { name: string }) => `${o.name} start`,
     loadFirstTooltip: "load laundry first",
+    needsWashingTooltip: "wash it first",
+    alreadyWashedTooltip: "already washed · dry it next",
+    alreadyDryTooltip: "already dry · take it home",
+    elsewhereLoadedTooltip: (o: { name: string }) =>
+      `your laundry is waiting in ${o.name}`,
+    elsewhereRunningTooltip: (o: { kind: MachineKind }): string =>
+      o.kind === "washer"
+        ? "your clothes are still being washed"
+        : "your clothes are still drying",
+    elsewhereDoneTooltip: (o: { name: string }) =>
+      `your laundry is done · in ${o.name}`,
     runningDoorTooltip: (o: { kind: MachineKind; doneAt: string }) =>
       `${o.kind === "washer" ? "washing" : "drying"} · ${o.doneAt}`,
     doneDoorTooltip: "open door · take laundry out",
@@ -149,9 +160,14 @@ export const en = {
   entranceMat: {
     readyLabel: (o: { laundry: "wet" | "folded" }) =>
       `Welcome mat, take your ${o.laundry === "folded" ? "dry" : "washed"} laundry home`,
-    readyTooltip: "head home · take your laundry with you",
-    waitingLabel: "Welcome mat, the way home once your laundry is done",
-    waitingTooltip: "the way home · finish your laundry first",
+    readyTooltip: "go back home · take your clean laundry with you",
+    awayLabel:
+      "Welcome mat, go back home and leave your laundry in the machine",
+    awayTooltip: "go back home · your laundry stays in the machine",
+    wetLabel: "Welcome mat, go back home with the wet laundry",
+    wetTooltip: "go back home · the clothes are still wet",
+    dirtyLabel: "Welcome mat, put the clothes in a washer before going home",
+    dirtyTooltip: "wash it first · put the clothes in a washer",
   },
   laundryBasket: {
     labels: {
@@ -223,6 +239,18 @@ export const en = {
       board: "board",
     } satisfies { [tag in BoardTag]: string },
     updates: {
+      "home-mid-wash": {
+        title: "go home while it runs",
+        body: "Step on the welcome mat to go home while your laundry runs. Wet clothes come home in the basket, dry ones land on the bed.",
+      },
+      "bedroom-curtains": {
+        title: "curtains and a new lamp at home",
+        body: "Click the curtains or the lamp in your room. Both rooms now grow lighter and darker with the sun, the moon and the lamps.",
+      },
+      "settings-lite": {
+        title: "settings and a lite mode",
+        body: "The gear in the toolbar opens settings. Switch to lite on slower devices to save memory and battery.",
+      },
       "door-bell": {
         title: "a bell on the door",
         body: "A little bell rings when you walk in, and whenever someone else comes in.",
@@ -404,12 +432,20 @@ export const en = {
     basketPartial: (o: { count: number; total: number }) =>
       `${o.count} of ${o.total} in · add more, or head to the door`,
     basketFull: "all in · head to the door",
+    basketWet: "the clothes are still wet · dry them at the laundromat",
     lampOffTooltip: "turn the lamp off",
     lampOnTooltip: "turn the lamp on",
     lampOffLabel: "Turn the lamp off",
     lampOnLabel: "Turn the lamp on",
+    curtainCloseTooltip: "close the curtains",
+    curtainOpenTooltip: "open the curtains",
+    curtainCloseLabel: "Close the curtains",
+    curtainOpenLabel: "Open the curtains",
     doorReadyTooltip: "carry it to the laundromat",
     doorWaitingTooltip: "pick up your laundry first",
+    doorAwayTooltip: "back to the laundromat · your laundry is in the machine",
+    doorAwayLabel:
+      "Back to the laundromat, your laundry is still in the machine",
     doorReadyLabel: "Carry the basket to the laundromat",
     doorWaitingLabel: "Door to the laundromat, pick up your laundry first",
     justListen: "just listen →",

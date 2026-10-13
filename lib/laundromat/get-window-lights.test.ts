@@ -1,9 +1,9 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
 
-import { getStreetLight } from "./get-street-light";
+import { getStreetLights } from "./get-street-lights";
 import { getTimeOfDay } from "./get-time-of-day";
-import { getWindowLight } from "./get-window-light";
+import { getWindowLights } from "./get-window-lights";
 import type { SceneObject } from "./scene-config";
 import { sceneConfig } from "./scene-config";
 
@@ -19,12 +19,13 @@ function lightAt(options: { hour: number; config?: typeof sceneConfig }) {
   const timeOfDay = getTimeOfDay({ hour: options.hour, config });
   return {
     timeOfDay,
-    light: getWindowLight({ window, timeOfDay, config }),
+    lights: getWindowLights({ window, timeOfDay, config }),
   };
 }
 
 test("uses the daylight patch colour and opacity by day", () => {
-  const { timeOfDay, light } = lightAt({ hour: 12 });
+  const { timeOfDay, lights } = lightAt({ hour: 12 });
+  const light = lights.find(({ key }) => key === "sun");
   assert.equal(light?.color, timeOfDay.daylightPatchColor);
   assert.equal(light?.opacity, timeOfDay.daylightPatchOpacity);
   assert.deepEqual(light?.opening, {
@@ -37,19 +38,25 @@ test("uses the daylight patch colour and opacity by day", () => {
 });
 
 test("uses the moon colour at half the street light's strength by night", () => {
-  const { timeOfDay, light } = lightAt({ hour: 1 });
-  const street = getStreetLight({ timeOfDay, sky: sceneConfig.sky });
+  const { timeOfDay, lights } = lightAt({ hour: 1 });
+  const moon = getStreetLights({ timeOfDay, sky: sceneConfig.sky }).find(
+    ({ key }) => key === "moon"
+  );
+  const light = lights.find(({ key }) => key === "moon");
   assert.equal(light?.color, sceneConfig.sky.moonColor);
-  assert.equal(light?.opacity, street.strength * 0.5);
+  assert.equal(light?.opacity, (moon?.strength ?? 0) * 0.5);
 });
 
 test("returns nothing when the building across the street shades the whole window", () => {
-  const { light } = lightAt({
+  const { lights } = lightAt({
     hour: 12,
     config: {
       ...sceneConfig,
       street: { oppositeDistance: 1, oppositeHeight: 50 },
     },
   });
-  assert.equal(light, undefined);
+  assert.equal(
+    lights.find(({ key }) => key === "sun"),
+    undefined
+  );
 });

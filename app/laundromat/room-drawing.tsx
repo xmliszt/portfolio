@@ -6,7 +6,7 @@ import type {
 } from "@/lib/laundromat/build-scene-layout";
 import { getDaylitTokenStyle } from "@/lib/laundromat/get-daylit-token-style";
 import { getTimeOfDay } from "@/lib/laundromat/get-time-of-day";
-import { getWindowLight } from "@/lib/laundromat/get-window-light";
+import { getWindowLights } from "@/lib/laundromat/get-window-lights";
 import type { SceneConfig } from "@/lib/laundromat/scene-config";
 import { toSvgPoints } from "@/lib/laundromat/to-svg-points";
 
@@ -14,7 +14,7 @@ import { SceneKeyframes } from "./objects/scene-keyframes";
 import { SceneObjectDrawing } from "./objects/scene-object-drawing";
 import type { SceneViews } from "./objects/scene-views";
 import type { LampSwitch } from "./sound/use-scene-sounds";
-import { FloorHalos } from "./floor-halos";
+import { RoomDarknessVeil } from "./room-darkness-veil";
 import { RoomDaylightFill } from "./room-daylight-fill";
 import { RoomLampGlow } from "./room-lamp-glow";
 import { RoomLight } from "./room-light";
@@ -39,10 +39,10 @@ export function RoomDrawing(props: RoomDrawingProps) {
   const windowObject = layout.objects.find(
     ({ object }) => object.kind === "window"
   );
-  const windowLight =
+  const windowLights =
     timeOfDay === undefined || windowObject === undefined
-      ? undefined
-      : getWindowLight({ window: windowObject.object, timeOfDay, config });
+      ? []
+      : getWindowLights({ window: windowObject.object, timeOfDay, config });
   const visibleObjects = layout.objects.filter(
     ({ object }) => object.id !== props.hiddenObjectId
   );
@@ -56,15 +56,15 @@ export function RoomDrawing(props: RoomDrawingProps) {
     config,
   };
   function renderFaceLight(laidOut: LaidOutObject) {
-    if (windowLight === undefined) return null;
-    return (
+    return windowLights.map((windowLight) => (
       <WindowFaceLight
+        key={windowLight.key}
         laidOut={laidOut}
         light={windowLight}
         projection={layout.projection}
         glideMs={config.sky.timeJumpGlideMs}
       />
-    );
+    ));
   }
   const focused = layout.objects.find(
     ({ object }) => object.id === props.focusedObjectId
@@ -112,14 +112,13 @@ export function RoomDrawing(props: RoomDrawingProps) {
       </g>
       {timeOfDay !== undefined && (
         <RoomLight
-          windowLight={windowLight}
+          windowLights={windowLights}
           objects={visibleObjects}
           timeOfDay={timeOfDay}
           projection={layout.projection}
           config={config}
         />
       )}
-      <FloorHalos layout={layout} />
       {visibleObjects.map((laidOut) => (
         <Fragment key={laidOut.object.id}>
           <SceneObjectDrawing laidOut={laidOut} {...objectProps} />
@@ -140,6 +139,13 @@ export function RoomDrawing(props: RoomDrawingProps) {
           timeOfDay={timeOfDay}
           projection={layout.projection}
           size={layout.size}
+          config={config}
+        />
+      )}
+      {timeOfDay !== undefined && (
+        <RoomDarknessVeil
+          timeOfDay={timeOfDay}
+          projection={layout.projection}
           config={config}
         />
       )}

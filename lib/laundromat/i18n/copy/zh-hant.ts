@@ -123,6 +123,14 @@ export const zhHant = {
     reminderOnTooltip: (o: { doneAt: string }) => `已開啟提醒 · ${o.doneAt}`,
     idleStartLabel: (o: { name: string }) => `${o.name} 啟動`,
     loadFirstTooltip: "先放衣服",
+    needsWashingTooltip: "先洗一下",
+    alreadyWashedTooltip: "已經洗好了 · 接著烘乾",
+    alreadyDryTooltip: "已經乾了 · 帶回家吧",
+    elsewhereLoadedTooltip: (o: { name: string }) =>
+      `你的衣服在${o.name}裡等著`,
+    elsewhereRunningTooltip: (o: { kind: MachineKind }) =>
+      o.kind === "washer" ? "你的衣服還在洗" : "你的衣服還在烘",
+    elsewhereDoneTooltip: (o: { name: string }) => `你的衣服好了 · 在${o.name}`,
     runningDoorTooltip: (o: { kind: MachineKind; doneAt: string }) =>
       `${o.kind === "washer" ? "洗衣中" : "烘衣中"} · ${o.doneAt}`,
     doneDoorTooltip: "開門 · 拿出衣服",
@@ -135,9 +143,13 @@ export const zhHant = {
   entranceMat: {
     readyLabel: (o: { laundry: "wet" | "folded" }) =>
       `門墊，帶著${o.laundry === "folded" ? "烘乾的" : "洗好的"}衣服回家`,
-    readyTooltip: "回家 · 帶上你的衣服",
-    waitingLabel: "門墊，衣服好了就從這裡回家",
-    waitingTooltip: "回家的路 · 先把衣服洗完",
+    readyTooltip: "回家 · 帶上乾淨的衣服",
+    awayLabel: "門墊，把衣服留在機器裡先回家",
+    awayTooltip: "回家 · 衣服留在機器裡",
+    wetLabel: "門墊，帶著濕衣服回家",
+    wetTooltip: "回家 · 衣服還是濕的",
+    dirtyLabel: "門墊，回家前先把衣服放進洗衣機",
+    dirtyTooltip: "先洗一下 · 把衣服放進洗衣機",
   },
   laundryBasket: {
     labels: {
@@ -209,6 +221,18 @@ export const zhHant = {
       board: "告示板",
     },
     updates: {
+      "home-mid-wash": {
+        title: "洗衣時也能回家",
+        body: "踩上門墊，衣服還在洗時也能回家。濕衣服裝在籃子裡帶回，乾衣服放在床上。",
+      },
+      "bedroom-curtains": {
+        title: "家裡的窗簾和新檯燈",
+        body: "點一下房間裡的窗簾或檯燈。現在兩個房間都會隨著太陽、月亮和燈光變亮或變暗。",
+      },
+      "settings-lite": {
+        title: "設定和輕量模式",
+        body: "點工具列裡的齒輪打開設定。在較慢的裝置上切換到輕量模式，可以節省記憶體和電量。",
+      },
       "door-bell": {
         title: "門上掛了鈴鐺",
         body: "你走進來時，或有其他人進門時，小鈴鐺都會響起。",
@@ -383,12 +407,19 @@ export const zhHant = {
     basketPartial: (o: { count: number; total: number }) =>
       `已放 ${o.count}/${o.total} 件 · 再放幾件，或走向門口`,
     basketFull: "都放好了 · 走向門口",
+    basketWet: "衣服還是濕的 · 去洗衣房烘乾",
     lampOffTooltip: "關燈",
     lampOnTooltip: "開燈",
     lampOffLabel: "關掉檯燈",
     lampOnLabel: "打開檯燈",
+    curtainCloseTooltip: "拉上窗簾",
+    curtainOpenTooltip: "拉開窗簾",
+    curtainCloseLabel: "拉上窗簾",
+    curtainOpenLabel: "拉開窗簾",
     doorReadyTooltip: "拿去洗衣店",
     doorWaitingTooltip: "先把衣服收好",
+    doorAwayTooltip: "回洗衣房 · 衣服在機器裡",
+    doorAwayLabel: "回洗衣房，衣服還在機器裡",
     doorReadyLabel: "把籃子拿去洗衣店",
     doorWaitingLabel: "通往洗衣店的門，先把衣服收好",
     justListen: "只聽聽 →",
