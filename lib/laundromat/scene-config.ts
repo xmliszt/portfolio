@@ -551,7 +551,7 @@ export const sceneConfig: SceneConfig = {
       leanDeg: 8,
       dayShade: 0.3,
       frontlight: 0.12,
-      floorSpill: 0.14,
+      floorSpill: 0.1,
       visibleUpdates: 3,
     },
     tubeDisplay: {
