@@ -130,10 +130,10 @@ export function LaundromatEntry(props: LaundromatEntryProps) {
       <FirstVisitKeyframes motion={bedroom.motion} />
       <div className="absolute top-5 right-5 z-10 flex flex-col items-end gap-y-1">
         <UpdateNotice />
-        <SettingsButton />
         <LanguagePicker />
         <SoundToggle />
         <ShareButton />
+        <SettingsButton />
         <PortfolioLink />
       </div>
       {isFirstVisit && (
