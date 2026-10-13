@@ -2,26 +2,50 @@ import { useSyncExternalStore } from "react";
 import { useSearchParams } from "next/navigation";
 
 import { parseHourOverride } from "@/lib/laundromat/parse-hour-override";
+import type { RenderQuality } from "@/lib/laundromat/render-quality/render-quality";
 
-const TICK_MS = 1000;
+import { useRenderQuality } from "./settings/use-render-quality";
 
-function subscribeToVisibleSeconds(onChange: () => void) {
-  let intervalId: number | undefined;
+const TICK_MS = { full: 1000, lite: 60_000 } satisfies {
+  [quality in RenderQuality]: number;
+};
+
+function subscribeToVisibleTicks(options: {
+  tickMs: number;
+  onChange: () => void;
+}) {
+  let timeoutId: number | undefined;
+  function scheduleNextTick() {
+    timeoutId = window.setTimeout(
+      () => {
+        options.onChange();
+        scheduleNextTick();
+      },
+      options.tickMs - (Date.now() % options.tickMs)
+    );
+  }
   function restartWhileVisible() {
-    window.clearInterval(intervalId);
-    if (document.visibilityState !== "visible") return;
-    intervalId = window.setInterval(onChange, TICK_MS);
+    window.clearTimeout(timeoutId);
+    if (document.visibilityState === "visible") scheduleNextTick();
   }
   function handleVisibilityChange() {
     restartWhileVisible();
-    onChange();
+    options.onChange();
   }
   restartWhileVisible();
   document.addEventListener("visibilitychange", handleVisibilityChange);
   return () => {
-    window.clearInterval(intervalId);
+    window.clearTimeout(timeoutId);
     document.removeEventListener("visibilitychange", handleVisibilityChange);
   };
+}
+
+function subscribeToVisibleSeconds(onChange: () => void) {
+  return subscribeToVisibleTicks({ tickMs: TICK_MS.full, onChange });
+}
+
+function subscribeToVisibleMinutes(onChange: () => void) {
+  return subscribeToVisibleTicks({ tickMs: TICK_MS.lite, onChange });
 }
 
 function subscribeToNothing() {
@@ -30,6 +54,10 @@ function subscribeToNothing() {
 
 function getEpochSeconds() {
   return Math.floor(Date.now() / 1000);
+}
+
+function getEpochMinutesInSeconds() {
+  return Math.floor(Date.now() / TICK_MS.lite) * (TICK_MS.lite / 1000);
 }
 
 function getServerEpochSeconds() {
@@ -41,16 +69,21 @@ function toLocalHour(epochSeconds: number) {
   return date.getHours() + date.getMinutes() / 60 + date.getSeconds() / 3600;
 }
 
-/** Return the fractional local hour, ticking once a second while the tab is visible, or the dev-only `?hour=` override; `undefined` during server rendering. */
+/** Return the fractional local hour, ticking once a second while the tab is visible (once a minute at `lite` quality), or the dev-only `?hour=` override; `undefined` during server rendering. */
 export function useSceneHour() {
   const searchParams = useSearchParams();
   const override =
     process.env.NODE_ENV === "development"
       ? parseHourOverride(searchParams.get("hour"))
       : undefined;
+  const { quality } = useRenderQuality();
+  const isLite = quality === "lite";
+  const subscribe = isLite
+    ? subscribeToVisibleMinutes
+    : subscribeToVisibleSeconds;
   const epochSeconds = useSyncExternalStore(
-    override === undefined ? subscribeToVisibleSeconds : subscribeToNothing,
-    getEpochSeconds,
+    override === undefined ? subscribe : subscribeToNothing,
+    isLite ? getEpochMinutesInSeconds : getEpochSeconds,
     getServerEpochSeconds
   );
   if (override !== undefined) return override;

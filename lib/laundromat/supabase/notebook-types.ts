@@ -29,7 +29,6 @@ export const APPEND_ENTRY_REJECTIONS = [
   "contains_link",
   "invalid_line_count",
   "rate_limited",
-  "daily_limit_reached",
 ] as const;
 
 export type AppendEntryRejection = (typeof APPEND_ENTRY_REJECTIONS)[number];

@@ -3,7 +3,6 @@ import type { MotionValue } from "motion/react";
 import { useMotionValueEvent } from "motion/react";
 
 import { IsoBox } from "@/app/laundromat/objects/iso-box";
-import type { RenderTier } from "@/app/laundromat/use-render-tier";
 import type { BedroomConfig } from "@/lib/laundromat/first-visit/bedroom-config";
 import type { BedroomWindowLight } from "@/lib/laundromat/first-visit/get-bedroom-window-light";
 import { getCurtainFolds } from "@/lib/laundromat/first-visit/get-curtain-folds";
@@ -11,6 +10,7 @@ import type { getCurtainLayout } from "@/lib/laundromat/first-visit/get-curtain-
 import { getFacePlane } from "@/lib/laundromat/get-face-plane";
 import type { IsoProjection } from "@/lib/laundromat/project-iso-point";
 import { projectIsoPoint } from "@/lib/laundromat/project-iso-point";
+import type { RenderQuality } from "@/lib/laundromat/render-quality/render-quality";
 import type { IsoPoint } from "@/lib/laundromat/scene-config";
 import { toSvgPoints } from "@/lib/laundromat/to-svg-points";
 import { cn } from "@/lib/utils";
@@ -38,7 +38,7 @@ type CurtainDrawingProps = {
   curtain: BedroomConfig["curtain"];
   projection: IsoProjection;
   light: BedroomWindowLight | undefined;
-  tier: RenderTier;
+  tier: RenderQuality;
   highlighted: boolean;
 };
 

@@ -3,6 +3,8 @@ import { useId } from "react";
 import type { ScreenPoint } from "@/lib/laundromat/project-iso-point";
 import { toSvgPoints } from "@/lib/laundromat/to-svg-points";
 
+import { useRenderQuality } from "./settings/use-render-quality";
+
 export const DAYLIGHT_PATCH_BLUR_PX = 7;
 
 type DaylightPatchProps = {
@@ -20,6 +22,7 @@ function midpoint(from: ScreenPoint, to: ScreenPoint) {
 /** Draw the window's light on the floor as a blurred quad from `points` (wall edge first) that fades out away from the wall, cut by the `shadows` polygons. */
 export function DaylightPatch(props: DaylightPatchProps) {
   const id = useId();
+  const { quality } = useRenderQuality();
   const [wallStart, wallEnd, farEnd, farStart] = props.points;
   const from = midpoint(wallStart, wallEnd);
   const to = midpoint(farStart, farEnd);
@@ -62,7 +65,7 @@ export function DaylightPatch(props: DaylightPatchProps) {
         )}
       </defs>
       <g
-        filter={`url(#${id}-soften)`}
+        filter={quality === "full" ? `url(#${id}-soften)` : undefined}
         style={{
           opacity: props.opacity,
           transition: `opacity ${glide}`,

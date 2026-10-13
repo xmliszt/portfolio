@@ -1,7 +1,7 @@
 "use client";
 
 import { useContext, useEffect, useRef, useState } from "react";
-import { omit } from "lodash";
+import { isEqual, omit } from "lodash";
 
 import { mergeClockOffset } from "@/lib/laundromat/realtime/merge-clock-offset";
 import type {
@@ -51,9 +51,10 @@ export function useRoom(presence: OwnPresence | undefined) {
       sessionId,
       onPeers: (next) => {
         if (!join.isCurrent) return;
+        setIsSynced(true);
+        if (isEqual(peersRef.current, next)) return;
         peersRef.current = next;
         setPeers(next);
-        setIsSynced(true);
       },
       onClock: ({ clock, receivedAt }) => {
         if (!join.isCurrent) return;

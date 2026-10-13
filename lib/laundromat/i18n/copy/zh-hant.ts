@@ -32,8 +32,24 @@ export const zhHant = {
     shareText:
       "瀏覽器裡一間安靜的自助洗衣店。丟一籃衣服進去，讓計時器跑著，讀讀別人留下的話。",
     language: "語言",
+    settings: "設定",
     builtBy: "李雨軒製作",
-    updateAvailable: "已更新 · 重新整理",
+    updateAvailable: "重新整理，進入更新後的自助洗衣店",
+  },
+  settings: {
+    heading: "設定",
+    rendering: "畫面",
+    renderingHint:
+      "輕量模式會拿掉柔光、植物的擺動，以及拉近筆記本和告示板的鏡頭。適合較慢的裝置或記憶體吃緊的時候。",
+    qualityAuto: "自動",
+    qualityAutoHint: (o: { quality: string }) =>
+      `本裝置使用「${o.quality}」模式`,
+    qualityFull: "完整",
+    qualityFullHint: "所有光影與動態",
+    qualityLite: "輕量",
+    qualityLiteHint: "更省記憶體和電量",
+    close: "關閉",
+    closeHint: "按 esc 關閉",
   },
   tabDone: "好了",
   readoutDone: "好了",
@@ -205,6 +221,10 @@ export const zhHant = {
         title: "家裡的窗簾和新檯燈",
         body: "點一下房間裡的窗簾或檯燈。現在兩個房間都會隨著太陽、月亮和燈光變亮或變暗。",
       },
+      "settings-lite": {
+        title: "設定和輕量模式",
+        body: "點工具列裡的齒輪打開設定。在較慢的裝置上切換到輕量模式，可以節省記憶體和電量。",
+      },
       "door-bell": {
         title: "門上掛了鈴鐺",
         body: "你走進來時，或有其他人進門時，小鈴鐺都會響起。",
@@ -358,7 +378,6 @@ export const zhHant = {
     leaveFailures: {
       offline: "筆記本暫時離線 · 你寫的內容還留在這裡",
       rate_limited: "每兩分鐘只能留一則 · 等等再試",
-      daily_limit_reached: "今天留得夠多了 · 明天再來",
       contains_link: "筆記本裡不能放連結",
       too_long: "太長了，寫不下 · 再短一點",
       sign_off_too_long: "署名太長了",

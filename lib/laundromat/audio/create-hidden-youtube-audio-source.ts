@@ -16,10 +16,17 @@ export function createHiddenYouTubeAudioSource(options: {
       return () => window.clearTimeout(timeout);
     },
     createPlayer: (events) => {
+      const mounted: {
+        isReleased: boolean;
+        mount?: HTMLDivElement;
+        player?: YouTubePlayer;
+      } = { isReleased: false };
       loadYouTubeIframeApi()
         .then((api) => {
+          if (mounted.isReleased) return;
           const mount = document.createElement("div");
           options.container.append(mount);
+          mounted.mount = mount;
           const player: YouTubePlayer = new api.Player(mount, {
             width: PLAYER_SIZE_PX,
             height: PLAYER_SIZE_PX,
@@ -30,8 +37,14 @@ export function createHiddenYouTubeAudioSource(options: {
               onError: events.onError,
             },
           });
+          mounted.player = player;
         })
         .catch(events.onError);
+      return () => {
+        mounted.isReleased = true;
+        mounted.player?.destroy();
+        mounted.mount?.remove();
+      };
     },
   });
 }

@@ -3,7 +3,7 @@ import type { MotionValue } from "motion/react";
 
 import { IsoBox } from "@/app/laundromat/objects/iso-box";
 import { WindowDrawing } from "@/app/laundromat/objects/window-drawing";
-import { useRenderTier } from "@/app/laundromat/use-render-tier";
+import { useRenderQuality } from "@/app/laundromat/settings/use-render-quality";
 import { WallClock } from "@/app/laundromat/wall-clock";
 import type { BedroomConfig } from "@/lib/laundromat/first-visit/bedroom-config";
 import type { BedroomWindowLight } from "@/lib/laundromat/first-visit/get-bedroom-window-light";
@@ -74,7 +74,7 @@ export function BedroomDrawing(props: BedroomDrawingProps) {
       .map((x) => ({ x, from: rowY - PLANK_WIDTH, to: rowY }));
   });
 
-  const renderTier = useRenderTier();
+  const { quality: renderTier } = useRenderQuality();
   const { curtainPose, curtainLayout, windowLight } = props;
   const shell = [
     at(0, depth, 0),

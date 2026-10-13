@@ -37,8 +37,24 @@ export const vi = {
     shareText:
       "Một tiệm giặt yên tĩnh trong trình duyệt của bạn. Bỏ đồ vào máy, để đồng hồ chạy, và đọc những lời nhắn người khác để lại.",
     language: "Ngôn ngữ",
+    settings: "cài đặt",
     builtBy: "được làm với ❤️ bởi Li Yuxuan",
-    updateAvailable: "đã cập nhật · tải lại",
+    updateAvailable: "tải lại để vào tiệm giặt đã cập nhật",
+  },
+  settings: {
+    heading: "cài đặt",
+    rendering: "hiển thị",
+    renderingHint:
+      "bản nhẹ bỏ ánh sáng dịu, cây đung đưa và hiệu ứng phóng to vào sổ tay và bảng tin. hữu ích trên máy chậm hoặc khi bộ nhớ sắp đầy.",
+    qualityAuto: "tự động",
+    qualityAutoHint: (o: { quality: string }) =>
+      `dùng ${o.quality} trên máy này`,
+    qualityFull: "đầy đủ",
+    qualityFullHint: "mọi ánh sáng và chuyển động",
+    qualityLite: "nhẹ",
+    qualityLiteHint: "nhẹ hơn cho bộ nhớ và pin",
+    close: "đóng",
+    closeHint: "esc để đóng",
   },
   tabDone: "xong",
   readoutDone: "xong",
@@ -219,6 +235,10 @@ export const vi = {
         title: "rèm và đèn mới ở nhà",
         body: "Bấm vào rèm hoặc đèn trong phòng. Giờ cả hai căn phòng sáng lên và tối đi theo mặt trời, mặt trăng và đèn.",
       },
+      "settings-lite": {
+        title: "cài đặt và chế độ nhẹ",
+        body: "Bánh răng trên thanh công cụ mở phần cài đặt. Chọn chế độ nhẹ trên máy chậm để tiết kiệm bộ nhớ và pin.",
+      },
       "door-bell": {
         title: "chuông trên cửa",
         body: "Một chiếc chuông nhỏ reo khi bạn bước vào, và mỗi khi có người khác đến.",
@@ -374,7 +394,6 @@ export const vi = {
     leaveFailures: {
       offline: "sổ hiện đang ngoại tuyến · lời nhắn của bạn vẫn ở đây",
       rate_limited: "mỗi hai phút một lời nhắn · lát nữa thử lại nhé",
-      daily_limit_reached: "hôm nay vậy là đủ rồi · mai quay lại nhé",
       contains_link: "không được để liên kết trong sổ",
       too_long: "dài quá so với cuốn sổ · rút gọn một chút",
       sign_off_too_long: "phần ký tên dài quá",

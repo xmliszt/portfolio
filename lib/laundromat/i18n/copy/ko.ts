@@ -32,8 +32,24 @@ export const ko = {
     shareText:
       "브라우저 속 조용한 빨래방. 빨래를 넣고, 타이머를 돌리고, 사람들이 남긴 메모를 읽어 봐.",
     language: "언어",
+    settings: "설정",
     builtBy: "Li Yuxuan이 ❤️을 담아 만들었어요",
-    updateAvailable: "업데이트됨 · 새로고침",
+    updateAvailable: "새로고침하면 새로워진 빨래방이 열려요",
+  },
+  settings: {
+    heading: "설정",
+    rendering: "화면 표현",
+    renderingHint:
+      "라이트는 부드러운 빛, 화분의 흔들림, 노트와 게시판으로의 확대를 꺼요. 느린 기기나 메모리가 부족할 때 도움이 돼요.",
+    qualityAuto: "자동",
+    qualityAutoHint: (o: { quality: string }) =>
+      `이 기기에서는 ${o.quality} 사용`,
+    qualityFull: "전체",
+    qualityFullHint: "모든 빛과 움직임",
+    qualityLite: "라이트",
+    qualityLiteHint: "메모리와 배터리에 가벼움",
+    close: "닫기",
+    closeHint: "esc로 닫기",
   },
   tabDone: "완료",
   readoutDone: "완료",
@@ -213,6 +229,10 @@ export const ko = {
         title: "집의 커튼과 새 램프",
         body: "방의 커튼이나 램프를 클릭해 보세요. 이제 두 공간 모두 해와 달, 램프에 따라 밝아지고 어두워져요.",
       },
+      "settings-lite": {
+        title: "설정과 라이트 모드",
+        body: "툴바의 톱니바퀴를 누르면 설정이 열려요. 느린 기기에서는 라이트로 바꾸면 메모리와 배터리를 아낄 수 있어요.",
+      },
       "door-bell": {
         title: "문에 달린 종",
         body: "들어올 때, 그리고 다른 사람이 들어올 때마다 작은 종이 울려요.",
@@ -368,7 +388,6 @@ export const ko = {
     leaveFailures: {
       offline: "노트가 지금 오프라인이야 · 메모는 여기 그대로 있어",
       rate_limited: "메모는 2분에 한 번 · 조금 뒤에 다시 해 봐",
-      daily_limit_reached: "오늘은 충분히 남겼어 · 내일 또 와",
       contains_link: "노트에는 링크를 남길 수 없어",
       too_long: "노트에 쓰기엔 너무 길어 · 조금만 줄여 줘",
       sign_off_too_long: "서명이 너무 길어",

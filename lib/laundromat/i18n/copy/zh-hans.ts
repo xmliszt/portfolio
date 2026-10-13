@@ -32,8 +32,24 @@ export const zhHans = {
     shareText:
       "浏览器里一间安静的自助洗衣店。放一桶衣服进去，让计时器走着，读读别人留下的话。",
     language: "语言",
+    settings: "设置",
     builtBy: "李雨轩制作",
-    updateAvailable: "已更新 · 刷新",
+    updateAvailable: "刷新，进入更新后的自助洗衣店",
+  },
+  settings: {
+    heading: "设置",
+    rendering: "画面",
+    renderingHint:
+      "轻量模式会去掉柔光、植物的摆动，以及拉近笔记本和告示板的镜头。适合较慢的设备或内存紧张的时候。",
+    qualityAuto: "自动",
+    qualityAutoHint: (o: { quality: string }) =>
+      `本设备使用「${o.quality}」模式`,
+    qualityFull: "完整",
+    qualityFullHint: "所有光影与动态",
+    qualityLite: "轻量",
+    qualityLiteHint: "更省内存和电量",
+    close: "关闭",
+    closeHint: "按 esc 关闭",
   },
   tabDone: "好了",
   readoutDone: "好了",
@@ -205,6 +221,10 @@ export const zhHans = {
         title: "家里的窗帘和新台灯",
         body: "点一下房间里的窗帘或台灯。现在两个房间都会随着太阳、月亮和灯光变亮或变暗。",
       },
+      "settings-lite": {
+        title: "设置和轻量模式",
+        body: "点工具栏里的齿轮打开设置。在较慢的设备上切换到轻量模式，可以节省内存和电量。",
+      },
       "door-bell": {
         title: "门上挂了铃铛",
         body: "你走进来时，或有其他人进门时，小铃铛都会响起。",
@@ -358,7 +378,6 @@ export const zhHans = {
     leaveFailures: {
       offline: "笔记本暂时离线 · 你写的内容还留在这里",
       rate_limited: "每两分钟只能留一条 · 稍后再试",
-      daily_limit_reached: "今天留得够多了 · 明天再来",
       contains_link: "笔记本里不能放链接",
       too_long: "太长了，写不下 · 再短一点",
       sign_off_too_long: "署名太长了",

@@ -32,8 +32,24 @@ export const es = {
     shareText:
       "Una lavandería tranquila en tu navegador. Mete una carga, deja que corra el temporizador y lee las notas que ha dejado la gente.",
     language: "Idioma",
+    settings: "ajustes",
     builtBy: "hecho con ❤️ por Li Yuxuan",
-    updateAvailable: "actualizado · recargar",
+    updateAvailable: "recarga para la lavandería actualizada",
+  },
+  settings: {
+    heading: "ajustes",
+    rendering: "gráficos",
+    renderingHint:
+      "lite quita la luz suave, el vaivén de la planta y el zoom hacia el cuaderno y el tablón. ayuda en dispositivos más lentos o con poca memoria.",
+    qualityAuto: "auto",
+    qualityAutoHint: (o: { quality: string }) =>
+      `en este dispositivo: ${o.quality}`,
+    qualityFull: "completo",
+    qualityFullHint: "toda la luz y el movimiento",
+    qualityLite: "lite",
+    qualityLiteHint: "más ligero para la memoria y la batería",
+    close: "cerrar",
+    closeHint: "esc para cerrar",
   },
   tabDone: "listo",
   readoutDone: "listo",
@@ -217,6 +233,10 @@ export const es = {
         title: "cortinas y una lámpara nueva en casa",
         body: "Haz clic en las cortinas o en la lámpara de tu cuarto. Las dos habitaciones ahora se iluminan y oscurecen con el sol, la luna y las lámparas.",
       },
+      "settings-lite": {
+        title: "ajustes y un modo ligero",
+        body: "El engranaje de la barra abre los ajustes. Cambia a ligero en dispositivos lentos para ahorrar memoria y batería.",
+      },
       "door-bell": {
         title: "una campanilla en la puerta",
         body: "Una campanilla suena cuando entras, y cada vez que entra alguien más.",
@@ -380,7 +400,6 @@ export const es = {
       offline:
         "el cuaderno está sin conexión por ahora · tu nota se queda aquí",
       rate_limited: "una nota cada dos minutos · vuelve a intentarlo pronto",
-      daily_limit_reached: "ya hay bastantes notas por hoy · vuelve mañana",
       contains_link: "nada de enlaces en el cuaderno",
       too_long: "demasiado larga para el cuaderno · acórtala un poco",
       sign_off_too_long: "la firma es demasiado larga",

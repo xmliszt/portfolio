@@ -32,8 +32,24 @@ export const it = {
     shareText:
       "Una lavanderia tranquilla nel tuo browser. Carica un bucato, lascia andare il timer e leggi i biglietti che hanno lasciato gli altri.",
     language: "Lingua",
+    settings: "impostazioni",
     builtBy: "fatto con ❤️ da Li Yuxuan",
-    updateAvailable: "aggiornato · ricarica",
+    updateAvailable: "ricarica per la lavanderia aggiornata",
+  },
+  settings: {
+    heading: "impostazioni",
+    rendering: "resa grafica",
+    renderingHint:
+      "lite toglie la luce morbida, l'ondeggiare della pianta e lo zoom sul quaderno e sulla bacheca. aiuta sui dispositivi più lenti o con poca memoria.",
+    qualityAuto: "auto",
+    qualityAutoHint: (o: { quality: string }) =>
+      `usa ${o.quality} su questo dispositivo`,
+    qualityFull: "completa",
+    qualityFullHint: "tutta la luce e il movimento",
+    qualityLite: "lite",
+    qualityLiteHint: "più leggera per memoria e batteria",
+    close: "chiudi",
+    closeHint: "esc per chiudere",
   },
   tabDone: "finito",
   readoutDone: "fine",
@@ -223,6 +239,10 @@ export const it = {
         title: "tende e una nuova lampada a casa",
         body: "Clicca sulle tende o sulla lampada della tua stanza. Ora entrambe le stanze si schiariscono e si scuriscono con il sole, la luna e le lampade.",
       },
+      "settings-lite": {
+        title: "impostazioni e una modalità leggera",
+        body: "L'ingranaggio nella barra apre le impostazioni. Passa alla modalità leggera sui dispositivi lenti per risparmiare memoria e batteria.",
+      },
       "door-bell": {
         title: "un campanello sulla porta",
         body: "Un campanellino suona quando entri, e ogni volta che arriva qualcun altro.",
@@ -383,7 +403,6 @@ export const it = {
     leaveFailures: {
       offline: "il quaderno è offline al momento · il tuo biglietto resta qui",
       rate_limited: "un biglietto ogni due minuti · riprova tra poco",
-      daily_limit_reached: "basta biglietti per oggi · torna domani",
       contains_link: "niente link nel quaderno",
       too_long: "troppo lungo per il quaderno · accorcialo un po'",
       sign_off_too_long: "la firma è troppo lunga",

@@ -33,8 +33,24 @@ export const ptBR = {
     shareText:
       "Uma lavanderia tranquila no seu navegador. Coloque uma leva de roupa, deixe o timer rodar e leia os recados que as pessoas deixaram.",
     language: "Idioma",
+    settings: "configurações",
     builtBy: "feito com ❤️ por Li Yuxuan",
-    updateAvailable: "atualizado · recarregar",
+    updateAvailable: "recarregue para a lavanderia atualizada",
+  },
+  settings: {
+    heading: "configurações",
+    rendering: "renderização",
+    renderingHint:
+      "o lite tira a luz suave, o balanço da planta e o zoom no caderno e no mural. ajuda em aparelhos mais lentos ou quando falta memória.",
+    qualityAuto: "auto",
+    qualityAutoHint: (o: { quality: string }) =>
+      `usa ${o.quality} neste aparelho`,
+    qualityFull: "completo",
+    qualityFullHint: "toda a luz e o movimento",
+    qualityLite: "lite",
+    qualityLiteHint: "mais leve para a memória e a bateria",
+    close: "fechar",
+    closeHint: "esc para fechar",
   },
   tabDone: "pronto",
   readoutDone: "fim",
@@ -218,6 +234,10 @@ export const ptBR = {
         title: "cortinas e uma luminária nova em casa",
         body: "Clique nas cortinas ou na luminária do seu quarto. Os dois ambientes agora clareiam e escurecem com o sol, a lua e as luminárias.",
       },
+      "settings-lite": {
+        title: "ajustes e um modo leve",
+        body: "A engrenagem na barra abre os ajustes. Mude para o modo leve em aparelhos mais lentos para poupar memória e bateria.",
+      },
       "door-bell": {
         title: "um sininho na porta",
         body: "Um sininho toca quando você entra, e sempre que outra pessoa chega.",
@@ -379,7 +399,6 @@ export const ptBR = {
       offline: "o caderno está offline no momento · seu recado fica aqui",
       rate_limited:
         "um recado a cada dois minutos · tente de novo daqui a pouco",
-      daily_limit_reached: "já deu de recados por hoje · volte amanhã",
       contains_link: "nada de links no caderno",
       too_long: "longo demais para o caderno · encurte um pouco",
       sign_off_too_long: "a assinatura está longa demais",

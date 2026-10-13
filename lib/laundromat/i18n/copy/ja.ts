@@ -32,8 +32,24 @@ export const ja = {
     shareText:
       "ブラウザの中の静かなコインランドリー。洗濯物を入れて、タイマーを回して、誰かが残したメモを読もう。",
     language: "言語",
+    settings: "設定",
     builtBy: "Li Yuxuan が ❤️ をこめて作りました",
-    updateAvailable: "更新あり · 再読み込み",
+    updateAvailable: "再読み込みで更新されたコインランドリーへ",
+  },
+  settings: {
+    heading: "設定",
+    rendering: "描画",
+    renderingHint:
+      "ライトでは、やわらかな光、植物の揺れ、ノートと掲示板へのズームを省きます。遅めの端末やメモリが少ないときに役立ちます。",
+    qualityAuto: "自動",
+    qualityAutoHint: (o: { quality: string }) =>
+      `この端末では${o.quality}を使用`,
+    qualityFull: "フル",
+    qualityFullHint: "すべての光と動き",
+    qualityLite: "ライト",
+    qualityLiteHint: "メモリとバッテリーにやさしい",
+    close: "閉じる",
+    closeHint: "esc で閉じる",
   },
   tabDone: "完了",
   readoutDone: "完了",
@@ -212,6 +228,10 @@ export const ja = {
         title: "家のカーテンと新しいランプ",
         body: "部屋のカーテンやランプをクリックしてみて。どちらの部屋も、太陽や月、ランプに合わせて明るくなったり暗くなったりします。",
       },
+      "settings-lite": {
+        title: "設定とライトモード",
+        body: "ツールバーの歯車から設定を開けます。動作の重い端末ではライトにすると、メモリとバッテリーを節約できます。",
+      },
       "door-bell": {
         title: "ドアにベルを設置",
         body: "入店するとき、そして誰かが入ってくるたびに、小さなベルが鳴ります。",
@@ -369,7 +389,6 @@ export const ja = {
     leaveFailures: {
       offline: "ノートはいまオフライン · メモはここに残っている",
       rate_limited: "メモは2分に1回まで · 少し待ってもう一度",
-      daily_limit_reached: "今日はもう十分書いた · また明日",
       contains_link: "ノートにリンクは書けない",
       too_long: "ノートには長すぎる · 少し短くして",
       sign_off_too_long: "署名が長すぎる",

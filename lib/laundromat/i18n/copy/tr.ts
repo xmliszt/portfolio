@@ -31,8 +31,24 @@ export const tr = {
     shareText:
       "Tarayıcında sakin bir çamaşırhane. Makineye çamaşırını at, zamanlayıcı işlesin ve insanların bıraktığı notları oku.",
     language: "Dil",
+    settings: "ayarlar",
     builtBy: "Li Yuxuan tarafından ❤️ ile yapıldı",
-    updateAvailable: "güncellendi · yenile",
+    updateAvailable: "güncel çamaşırhane için yenile",
+  },
+  settings: {
+    heading: "ayarlar",
+    rendering: "görüntü",
+    renderingHint:
+      "lite yumuşak ışığı, bitkinin salınmasını ve deftere ve panoya yakınlaşmayı kapatır. daha yavaş cihazlarda ya da bellek azaldığında işe yarar.",
+    qualityAuto: "otomatik",
+    qualityAutoHint: (o: { quality: string }) =>
+      `bu cihazda ${o.quality} kullanır`,
+    qualityFull: "tam",
+    qualityFullHint: "tüm ışık ve hareket",
+    qualityLite: "lite",
+    qualityLiteHint: "bellek ve pil için daha hafif",
+    close: "kapat",
+    closeHint: "kapatmak için esc",
   },
   tabDone: "bitti",
   readoutDone: "bitti",
@@ -184,6 +200,10 @@ export const tr = {
         title: "evde perdeler ve yeni bir lamba",
         body: "Odandaki perdelere ya da lambaya tıkla. İki oda da artık güneşle, ayla ve lambalarla aydınlanıp kararıyor.",
       },
+      "settings-lite": {
+        title: "ayarlar ve hafif mod",
+        body: "Araç çubuğundaki dişli ayarları açar. Yavaş cihazlarda bellek ve pilden tasarruf için hafif moda geç.",
+      },
       "door-bell": {
         title: "kapıda bir çan",
         body: "İçeri girdiğinde ve başka biri geldiğinde küçük bir çan çalar.",
@@ -333,7 +353,6 @@ export const tr = {
     leaveFailures: {
       offline: "defter şu an çevrimdışı · notun burada kalıyor",
       rate_limited: "iki dakikada bir not · birazdan tekrar dene",
-      daily_limit_reached: "bugünlük bu kadar not yeter · yarın yine gel",
       contains_link: "deftere bağlantı yazılmaz",
       too_long: "defter için çok uzun · biraz kısalt",
       sign_off_too_long: "imza çok uzun",

@@ -24,9 +24,9 @@ const YOUTUBE_STATE = {
   cued: 5,
 };
 
-/** Return an `AudioSource` that drives the YouTube player from `createPlayer`, replaying commands sent before it is ready and reporting `error` when a stream fails, ends, or buffers longer than `stallMs`. */
+/** Return an `AudioSource` that drives the YouTube player from `createPlayer`, replaying commands sent before it is ready, buffering from the moment it is asked to play even before the player is ready, reporting `error` when a stream fails, ends, or buffers longer than `stallMs`, and releasing the player through the function `createPlayer` returns when destroyed, whether or not it is ready. */
 export function createYouTubeAudioSource(options: {
-  createPlayer: (events: YouTubePlayerEvents) => void;
+  createPlayer: (events: YouTubePlayerEvents) => () => void;
   stallMs: number;
   schedule: (callback: () => void, delayMs: number) => () => void;
 }): AudioSource {
@@ -97,7 +97,7 @@ export function createYouTubeAudioSource(options: {
     }
   }
 
-  options.createPlayer({
+  const releasePlayer = options.createPlayer({
     onReady(ready) {
       if (isDestroyed) {
         ready.destroy();
@@ -121,8 +121,8 @@ export function createYouTubeAudioSource(options: {
     play() {
       if (desired.isPlaying) return;
       desired.isPlaying = true;
-      if (player === undefined || desired.videoId === undefined) return;
-      player.playVideo();
+      if (desired.videoId === undefined) return;
+      player?.playVideo();
       enterBuffering();
     },
     pause() {
@@ -140,16 +140,18 @@ export function createYouTubeAudioSource(options: {
       desired.videoId = videoId;
       stopStallTimer();
       if (player !== undefined) loadDesiredVideo(player);
+      else if (desired.isPlaying) enterBuffering();
     },
     onStateChange(listener) {
       listeners.add(listener);
       return () => listeners.delete(listener);
     },
     destroy() {
+      if (isDestroyed) return;
       isDestroyed = true;
       stopStallTimer();
       listeners.clear();
-      player?.destroy();
+      releasePlayer();
       player = undefined;
     },
   };

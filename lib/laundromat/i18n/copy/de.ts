@@ -32,8 +32,24 @@ export const de = {
     shareText:
       "Ein ruhiger Waschsalon in deinem Browser. Steck eine Ladung rein, lass den Timer laufen und lies die Notizen, die andere hinterlassen haben.",
     language: "Sprache",
+    settings: "Einstellungen",
     builtBy: "mit ❤️ gebaut von Li Yuxuan",
-    updateAvailable: "aktualisiert · neu laden",
+    updateAvailable: "neu laden: Waschsalon aktualisiert",
+  },
+  settings: {
+    heading: "Einstellungen",
+    rendering: "Darstellung",
+    renderingHint:
+      "Lite verzichtet auf weiches Licht, das Wiegen der Pflanze und das Heranzoomen an Notizbuch und Aushang. Das hilft auf langsameren Geräten oder bei knappem Speicher.",
+    qualityAuto: "auto",
+    qualityAutoHint: (o: { quality: string }) =>
+      `auf diesem Gerät: ${o.quality}`,
+    qualityFull: "voll",
+    qualityFullHint: "alles Licht und jede Bewegung",
+    qualityLite: "lite",
+    qualityLiteHint: "schont Speicher und Akku",
+    close: "schließen",
+    closeHint: "esc zum Schließen",
   },
   tabDone: "fertig",
   readoutDone: "ende",
@@ -219,6 +235,10 @@ export const de = {
         title: "Vorhänge und eine neue Lampe zu Hause",
         body: "Klick auf die Vorhänge oder die Lampe in deinem Zimmer. Beide Räume werden jetzt mit Sonne, Mond und Lampen heller und dunkler.",
       },
+      "settings-lite": {
+        title: "Einstellungen und ein Lite-Modus",
+        body: "Das Zahnrad in der Leiste öffnet die Einstellungen. Wechsle auf langsamen Geräten zu Lite, um Speicher und Akku zu sparen.",
+      },
       "door-bell": {
         title: "eine glocke an der tür",
         body: "Ein Glöckchen klingelt, wenn du hereinkommst, und wenn jemand anderes eintritt.",
@@ -381,7 +401,6 @@ export const de = {
     leaveFailures: {
       offline: "das Notizbuch ist gerade offline · deine Notiz bleibt hier",
       rate_limited: "eine Notiz alle zwei Minuten · versuch es gleich noch mal",
-      daily_limit_reached: "genug Notizen für heute · komm morgen wieder",
       contains_link: "keine Links im Notizbuch",
       too_long: "zu lang für das Notizbuch · kürz sie ein bisschen",
       sign_off_too_long: "die Unterschrift ist zu lang",

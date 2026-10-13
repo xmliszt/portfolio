@@ -6,7 +6,6 @@ import {
   DAYLIGHT_PATCH_BLUR_PX,
   DaylightPatch,
 } from "@/app/laundromat/daylight-patch";
-import type { RenderTier } from "@/app/laundromat/use-render-tier";
 import type { BedroomConfig } from "@/lib/laundromat/first-visit/bedroom-config";
 import type { WindowLightSource } from "@/lib/laundromat/first-visit/get-bedroom-window-light";
 import { getCurtainGap } from "@/lib/laundromat/first-visit/get-curtain-gap";
@@ -14,6 +13,7 @@ import type { getCurtainLayout } from "@/lib/laundromat/first-visit/get-curtain-
 import { getDaylightPatch } from "@/lib/laundromat/get-daylight-patch";
 import type { IsoProjection } from "@/lib/laundromat/project-iso-point";
 import { projectIsoPoint } from "@/lib/laundromat/project-iso-point";
+import type { RenderQuality } from "@/lib/laundromat/render-quality/render-quality";
 import type { SceneConfig } from "@/lib/laundromat/scene-config";
 import { toSvgPoints } from "@/lib/laundromat/to-svg-points";
 
@@ -31,7 +31,7 @@ type CurtainDaylightProps = {
   projection: IsoProjection;
   source: WindowLightSource;
   scene: SceneConfig;
-  tier: RenderTier;
+  tier: RenderQuality;
 };
 
 /** Draw one light `source` (the sun or the moon) on the floor through the window, full where the curtains leave the glass bare and `THROUGH_CLOTH` of it where they cover it, with the edges of the bare stretch blurred on the `"full"` tier. */

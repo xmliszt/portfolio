@@ -37,8 +37,24 @@ export const id = {
     shareText:
       "Laundry yang tenang di browser kamu. Masukkan cucian, biarkan timer berjalan, dan baca catatan yang ditinggalkan orang-orang.",
     language: "Bahasa",
+    settings: "pengaturan",
     builtBy: "dibuat dengan ❤️ oleh Li Yuxuan",
-    updateAvailable: "diperbarui · muat ulang",
+    updateAvailable: "muat ulang untuk laundry terbaru",
+  },
+  settings: {
+    heading: "pengaturan",
+    rendering: "tampilan",
+    renderingHint:
+      "lite mematikan cahaya lembut, goyangan tanaman, dan zoom ke buku catatan dan papan. membantu di perangkat yang lebih lambat atau saat memori menipis.",
+    qualityAuto: "otomatis",
+    qualityAutoHint: (o: { quality: string }) =>
+      `memakai ${o.quality} di perangkat ini`,
+    qualityFull: "penuh",
+    qualityFullHint: "semua cahaya dan gerakan",
+    qualityLite: "lite",
+    qualityLiteHint: "lebih ringan untuk memori dan baterai",
+    close: "tutup",
+    closeHint: "esc untuk menutup",
   },
   tabDone: "selesai",
   readoutDone: "beres",
@@ -221,6 +237,10 @@ export const id = {
         title: "gorden dan lampu baru di rumah",
         body: "Klik gorden atau lampu di kamarmu. Kedua ruangan kini jadi lebih terang dan gelap mengikuti matahari, bulan, dan lampu.",
       },
+      "settings-lite": {
+        title: "pengaturan dan mode ringan",
+        body: "Ikon roda gigi di toolbar membuka pengaturan. Pilih mode ringan di perangkat yang lambat untuk menghemat memori dan baterai.",
+      },
       "door-bell": {
         title: "lonceng di pintu",
         body: "Lonceng kecil berbunyi saat kamu masuk, dan setiap kali ada orang lain datang.",
@@ -381,7 +401,6 @@ export const id = {
     leaveFailures: {
       offline: "buku catatan sedang offline · catatanmu tetap di sini",
       rate_limited: "satu catatan tiap dua menit · coba lagi sebentar lagi",
-      daily_limit_reached: "cukup sekian catatan hari ini · kembali lagi besok",
       contains_link: "tidak boleh ada tautan di buku catatan",
       too_long: "terlalu panjang untuk buku catatan · persingkat sedikit",
       sign_off_too_long: "salam penutupnya terlalu panjang",

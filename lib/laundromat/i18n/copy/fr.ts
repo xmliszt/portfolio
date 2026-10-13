@@ -32,8 +32,24 @@ export const fr = {
     shareText:
       "Une laverie tranquille dans ton navigateur. Lance une machine, laisse tourner le minuteur et lis les mots que les autres ont laissés.",
     language: "Langue",
+    settings: "réglages",
     builtBy: "fait avec ❤️ par Li Yuxuan",
-    updateAvailable: "mis à jour · recharger",
+    updateAvailable: "recharge pour la laverie mise à jour",
+  },
+  settings: {
+    heading: "réglages",
+    rendering: "rendu",
+    renderingHint:
+      "lite retire la lumière douce, le balancement de la plante et le zoom vers le carnet et le panneau. utile sur les appareils plus lents ou quand la mémoire manque.",
+    qualityAuto: "auto",
+    qualityAutoHint: (o: { quality: string }) =>
+      `sur cet appareil : ${o.quality}`,
+    qualityFull: "complet",
+    qualityFullHint: "toute la lumière et le mouvement",
+    qualityLite: "lite",
+    qualityLiteHint: "plus léger pour la mémoire et la batterie",
+    close: "fermer",
+    closeHint: "échap pour fermer",
   },
   tabDone: "fini",
   readoutDone: "fini",
@@ -217,6 +233,10 @@ export const fr = {
         title: "des rideaux et une nouvelle lampe chez toi",
         body: "Clique sur les rideaux ou la lampe de ta chambre. Les deux pièces s'éclairent et s'assombrissent désormais avec le soleil, la lune et les lampes.",
       },
+      "settings-lite": {
+        title: "des réglages et un mode léger",
+        body: "L'engrenage de la barre ouvre les réglages. Passe en mode léger sur les appareils lents pour économiser mémoire et batterie.",
+      },
       "door-bell": {
         title: "une clochette à la porte",
         body: "Une clochette tinte quand tu entres, et chaque fois que quelqu'un d'autre arrive.",
@@ -378,7 +398,6 @@ export const fr = {
     leaveFailures: {
       offline: "le carnet est hors ligne pour le moment · ton mot reste ici",
       rate_limited: "un mot toutes les deux minutes · réessaie bientôt",
-      daily_limit_reached: "assez de mots pour aujourd'hui · reviens demain",
       contains_link: "pas de liens dans le carnet",
       too_long: "trop long pour le carnet · raccourcis un peu",
       sign_off_too_long: "la signature est trop longue",
