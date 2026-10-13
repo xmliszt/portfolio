@@ -24,7 +24,7 @@ const YOUTUBE_STATE = {
   cued: 5,
 };
 
-/** Return an `AudioSource` that drives the YouTube player from `createPlayer`, replaying commands sent before it is ready, reporting `error` when a stream fails, ends, or buffers longer than `stallMs`, and releasing the player through the function `createPlayer` returns when destroyed, whether or not it is ready. */
+/** Return an `AudioSource` that drives the YouTube player from `createPlayer`, replaying commands sent before it is ready, buffering from the moment it is asked to play even before the player is ready, reporting `error` when a stream fails, ends, or buffers longer than `stallMs`, and releasing the player through the function `createPlayer` returns when destroyed, whether or not it is ready. */
 export function createYouTubeAudioSource(options: {
   createPlayer: (events: YouTubePlayerEvents) => () => void;
   stallMs: number;
@@ -121,8 +121,8 @@ export function createYouTubeAudioSource(options: {
     play() {
       if (desired.isPlaying) return;
       desired.isPlaying = true;
-      if (player === undefined || desired.videoId === undefined) return;
-      player.playVideo();
+      if (desired.videoId === undefined) return;
+      player?.playVideo();
       enterBuffering();
     },
     pause() {
@@ -140,6 +140,7 @@ export function createYouTubeAudioSource(options: {
       desired.videoId = videoId;
       stopStallTimer();
       if (player !== undefined) loadDesiredVideo(player);
+      else if (desired.isPlaying) enterBuffering();
     },
     onStateChange(listener) {
       listeners.add(listener);

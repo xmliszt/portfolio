@@ -84,6 +84,39 @@ test("replays station, volume and play sent before the player is ready", () => {
   assert.deepEqual(calls, ["volume 40", "load abc"]);
 });
 
+test("buffers and starts the stall timer before the player is ready", () => {
+  const { source, states, timers } = buildSource();
+  source.setStation("abc");
+  source.play();
+  assert.deepEqual(states, ["buffering"]);
+  assert.equal(timers.filter((timer) => !timer.cancelled).length, 1);
+});
+
+test("reports an error when the player never becomes ready", () => {
+  const { source, states, fireStall } = buildSource();
+  source.setStation("abc");
+  source.play();
+  fireStall();
+  assert.deepEqual(states, ["buffering", "error"]);
+});
+
+test("keeps one stall timer from play through the player becoming ready", () => {
+  const { source, player, timers, events } = buildSource();
+  source.setStation("abc");
+  source.play();
+  events().onReady(player);
+  assert.equal(timers.filter((timer) => !timer.cancelled).length, 1);
+});
+
+test("restarts the stall timer when the station changes before the player is ready", () => {
+  const { source, states, timers } = buildSource();
+  source.setStation("abc");
+  source.play();
+  source.setStation("def");
+  assert.deepEqual(states, ["buffering"]);
+  assert.equal(timers.filter((timer) => !timer.cancelled).length, 1);
+});
+
 test("cues the station without playing it while paused", () => {
   const { source, player, calls, events } = buildSource();
   events().onReady(player);
