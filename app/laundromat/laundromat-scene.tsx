@@ -153,6 +153,7 @@ export function LaundromatScene(props: LaundromatSceneProps) {
   const rootRef = useRef<HTMLDivElement>(null);
   const [viewport, setViewport] = useState<Viewport>();
   const [isReady, setIsReady] = useState(false);
+  const [settledFocus, setSettledFocus] = useState<CameraFocus>();
   const [highlightedId, setHighlightedId] = useState<string>();
   const [tooltipId, setTooltipId] = useState<string>();
   const [openDoorId, setOpenDoorId] = useState<string>();
@@ -710,10 +711,12 @@ export function LaundromatScene(props: LaundromatSceneProps) {
     const isResize = previous?.focus === focus;
     if (isResize || (previous === undefined && focus === "room")) {
       jumpTo(camera);
+      setSettledFocus(focus);
       return;
     }
     if (prefersReducedMotion) {
       jumpTo(camera);
+      setSettledFocus(focus);
       const fade = animate(sceneOpacity, [0.5, 1], { duration: 0.25 });
       return () => fade.stop();
     }
@@ -727,12 +730,20 @@ export function LaundromatScene(props: LaundromatSceneProps) {
         }) / 1000,
       ease: config.camera.ease,
     };
+    setSettledFocus(undefined);
     const moves = [
       animate(cameraX, camera.x, transition),
       animate(cameraY, camera.y, transition),
       animate(cameraScale, camera.scale, transition),
     ];
-    return () => moves.forEach((move) => move.stop());
+    const move = { isCurrent: true };
+    void Promise.all(moves.map(({ finished }) => finished)).then(() => {
+      if (move.isCurrent) setSettledFocus(focus);
+    });
+    return () => {
+      move.isCurrent = false;
+      moves.forEach((cameraMove) => cameraMove.stop());
+    };
   }, [
     viewport,
     focus,
@@ -1136,7 +1147,11 @@ export function LaundromatScene(props: LaundromatSceneProps) {
       <motion.div
         className={cn(
           "absolute top-0 left-0 origin-top-left",
-          !isReady && "invisible"
+          !isReady && "invisible",
+          // The open book covers every animated object, and each frame of one would re-rasterize the zoomed-in room.
+          focus === "notebook" &&
+            settledFocus === "notebook" &&
+            "[&_*]:![animation-play-state:paused]"
         )}
         style={{
           x: cameraX,
