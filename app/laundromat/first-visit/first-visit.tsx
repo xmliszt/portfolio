@@ -81,6 +81,10 @@ type FirstVisitProps = {
   hourOverride?: number;
   home: Homecoming;
   cleanPile: boolean;
+  lampSwitch: boolean | undefined;
+  curtainOpen: boolean;
+  onLampSwitch: (on: boolean) => void;
+  onCurtainOpenChange: (open: boolean) => void;
   onWalkIn: () => void;
   onListen: () => void;
 };
@@ -107,10 +111,9 @@ export function FirstVisit(props: FirstVisitProps) {
   const [drag, setDrag] = useState<Drag>();
   const [settling, setSettling] = useState<GarmentKind>();
   const [hover, setHover] = useState<Hover>();
-  const [lampSwitch, setLampSwitch] = useState<boolean>();
   const sound = useSoundBoard();
-  const isLampOn = lampSwitch ?? (timeOfDay?.lampIntensity ?? 1) > 0.5;
-  const [isCurtainOpen, setIsCurtainOpen] = useState(true);
+  const isLampOn = props.lampSwitch ?? (timeOfDay?.lampIntensity ?? 1) > 0.5;
+  const isCurtainOpen = props.curtainOpen;
   const [isTouched, setIsTouched] = useState(false);
   const [phase, setPhase] = useState<Phase>("room");
   const [jiggles, setJiggles] = useState(0);
@@ -442,11 +445,11 @@ export function FirstVisit(props: FirstVisitProps) {
 
   function handleLampClick() {
     sound?.play("coffee-switch", { volume: 0.7 });
-    setLampSwitch(!isLampOn);
+    props.onLampSwitch(!isLampOn);
   }
 
   function handleCurtainClick() {
-    setIsCurtainOpen(!isCurtainOpen);
+    props.onCurtainOpenChange(!isCurtainOpen);
   }
 
   function handleCurtainFocus(event: React.FocusEvent<HTMLButtonElement>) {

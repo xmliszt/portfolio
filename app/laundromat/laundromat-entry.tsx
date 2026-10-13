@@ -41,6 +41,8 @@ export function LaundromatEntry(props: LaundromatEntryProps) {
   const [isBackHome, setIsBackHome] = useState(false);
   const [home, setHome] = useState<Homecoming>({ kind: "fresh" });
   const [hasCleanPile, setHasCleanPile] = useState(false);
+  const [lampSwitch, setLampSwitch] = useState<boolean>();
+  const [isCurtainOpen, setIsCurtainOpen] = useState(true);
   const [homeVeil, setHomeVeil] = useState<HomeVeil>();
   const hasArrived =
     props.ignoreArrivedFlag || isBackHome ? false : arrivedFlag.hasArrived;
@@ -147,6 +149,10 @@ export function LaundromatEntry(props: LaundromatEntryProps) {
             hourOverride={props.hourOverride}
             home={home}
             cleanPile={hasCleanPile}
+            lampSwitch={lampSwitch}
+            curtainOpen={isCurtainOpen}
+            onLampSwitch={setLampSwitch}
+            onCurtainOpenChange={setIsCurtainOpen}
             onWalkIn={handleWalkIn}
             onListen={handleListen}
           />

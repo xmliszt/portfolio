@@ -30,10 +30,20 @@ export function useCurtainPose(options: {
     { length: options.rings },
     (_, index) => index * minGap
   );
-  const pose = useMotionValue<CurtainPose>({ rings: stacked, hem: stacked });
-  const leader = useMotionValue(openLeader);
-  const velocityRef = useRef(stacked.map(() => 0));
   const { open, reducedMotion } = options;
+  const startLeader = open ? openLeader : closedLeader;
+  const startRings = stepCurtainRings({
+    rings: stacked,
+    leader: startLeader,
+    minGap,
+    maxGap,
+  });
+  const pose = useMotionValue<CurtainPose>({
+    rings: startRings,
+    hem: startRings,
+  });
+  const leader = useMotionValue(startLeader);
+  const velocityRef = useRef(stacked.map(() => 0));
 
   useEffect(() => {
     const target = open ? openLeader : closedLeader;
