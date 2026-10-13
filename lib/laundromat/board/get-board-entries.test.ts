@@ -27,5 +27,5 @@ test("formats the day for the copy's locale and keeps the ISO date", () => {
   assert.equal(english?.date, "Oct 13");
   assert.equal(japanese?.date, "10月13日");
   assert.equal(english?.isoDate, "2026-10-13");
-  assert.equal(english?.tag, "board");
+  assert.equal(english?.tag, "room");
 });

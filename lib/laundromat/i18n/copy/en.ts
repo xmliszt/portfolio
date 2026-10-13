@@ -207,6 +207,10 @@ export const en = {
       board: "board",
     } satisfies { [tag in BoardTag]: string },
     updates: {
+      "door-bell": {
+        title: "a bell on the door",
+        body: "A little bell rings when you walk in, and whenever someone else comes in.",
+      },
       "whats-new-board": {
         title: "a board for what's new",
         body: "This stand lists what's new. It rests like paper by day and lights up after dark.",

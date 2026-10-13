@@ -5,6 +5,9 @@ import { useEffect, useRef, useState } from "react";
 import type { LoopName } from "@/lib/laundromat/audio/sound-names";
 import type { CoffeePhase } from "@/lib/laundromat/coffee/get-coffee-phase";
 import { LAMP_FLICKER_MS } from "@/lib/laundromat/lamp-flicker-steps";
+import { getArrivedVisitorIds } from "@/lib/laundromat/realtime/get-arrived-visitor-ids";
+import { getUnloadedVisitorIds } from "@/lib/laundromat/realtime/get-unloaded-visitor-ids";
+import type { RoomPresence } from "@/lib/laundromat/realtime/room-presence";
 
 import type { SoundBoard } from "./sound-board-context";
 
@@ -43,7 +46,7 @@ function useOnChange<T>(options: {
   }, [value]);
 }
 
-/** Play the room's loops and one-shots as its machines, coffee, tv, lamp, laundry and focus change, and return the lamp switch moment (`on` while it flickers on, `off` as it snaps off) or `undefined`. */
+/** Play the room's loops and one-shots as its machines, coffee, tv, lamp, laundry, focus and other visitors' arrivals and laundry change, ring the shop bell as the visitor walks in, and return the lamp switch moment (`on` while it flickers on, `off` as it snaps off) or `undefined`. */
 export function useSceneSounds(options: {
   sound: SoundBoard | undefined;
   isWasherRunning: boolean;
@@ -52,9 +55,13 @@ export function useSceneSounds(options: {
   isTvHissing: boolean;
   isLampOn: boolean | undefined;
   loadKind: string;
+  peers: RoomPresence[] | undefined;
+  ownVisitorId: string | undefined;
+  isInside: boolean;
   focus: string;
 }) {
-  const { sound, coffeeKind, isLampOn, loadKind, focus } = options;
+  const { sound, coffeeKind, isLampOn, loadKind, peers, isInside, focus } =
+    options;
   useLoop({ sound, name: "washer-running", playing: options.isWasherRunning });
   useLoop({ sound, name: "dryer-running", playing: options.isDryerRunning });
   useLoop({ sound, name: "coffee-brewing", playing: coffeeKind === "brewing" });
@@ -75,6 +82,28 @@ export function useSceneSounds(options: {
       if (previous === "running" && current === "done") {
         sound?.play("done-ding");
       }
+    },
+  });
+
+  useOnChange({
+    value: peers,
+    onChange: ({ previous, current }) => {
+      if (previous === undefined || current === undefined) return;
+      const changes = { previous, current, ownVisitorId: options.ownVisitorId };
+      if (isInside && getArrivedVisitorIds(changes).length > 0) {
+        sound?.play("shop-bell", { volume: 0.5 });
+      }
+      if (getUnloadedVisitorIds(changes).length > 0) {
+        sound?.play("door-latch-open");
+        sound?.play("collect-laundry", { volume: 0.5 });
+      }
+    },
+  });
+
+  useOnChange({
+    value: isInside,
+    onChange: ({ current }) => {
+      if (current) sound?.play("shop-bell");
     },
   });
 

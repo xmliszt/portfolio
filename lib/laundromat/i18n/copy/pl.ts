@@ -187,6 +187,10 @@ export const pl = {
       board: "tablica",
     },
     updates: {
+      "door-bell": {
+        title: "dzwonek przy drzwiach",
+        body: "Mały dzwonek dzwoni, gdy wchodzisz, i za każdym razem, gdy wchodzi ktoś inny.",
+      },
       "whats-new-board": {
         title: "tablica z nowościami",
         body: "Ten stojak pokazuje, co nowego. W dzień spokojny jak papier, nocą świeci.",

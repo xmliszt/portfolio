@@ -669,6 +669,9 @@ export function LaundromatScene(props: LaundromatSceneProps) {
     isLampOn:
       hour === undefined ? undefined : getTimeOfDay({ hour, config }).isLampOn,
     loadKind: laundry.state.load.kind,
+    peers: isRoomSynced ? room.peers : undefined,
+    ownVisitorId: laundry.visitorId,
+    isInside: props.hidden !== true,
     focus,
   });
 

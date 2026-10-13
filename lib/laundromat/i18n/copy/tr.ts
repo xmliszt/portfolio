@@ -171,6 +171,10 @@ export const tr = {
       board: "pano",
     },
     updates: {
+      "door-bell": {
+        title: "kapıda bir çan",
+        body: "İçeri girdiğinde ve başka biri geldiğinde küçük bir çan çalar.",
+      },
       "whats-new-board": {
         title: "yenilikler için bir pano",
         body: "Bu stant yenilikleri gösterir. Gündüz kâğıt gibi durur, gece ışıldar.",

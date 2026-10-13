@@ -175,6 +175,10 @@ export const nl = {
       board: "bord",
     },
     updates: {
+      "door-bell": {
+        title: "een belletje aan de deur",
+        body: "Een belletje klinkt als je binnenkomt, en telkens als iemand anders binnenkomt.",
+      },
       "whats-new-board": {
         title: "een bord voor nieuwtjes",
         body: "Dit standaard toont wat nieuw is. Overdag rustig als papier, 's nachts verlicht.",

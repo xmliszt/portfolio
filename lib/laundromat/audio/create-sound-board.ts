@@ -17,6 +17,7 @@ import { playNotebookOpen } from "./sounds/play-notebook-open";
 import { playPageFlip } from "./sounds/play-page-flip";
 import { playRoomDoorOpen } from "./sounds/play-room-door-open";
 import { playSample } from "./sounds/play-sample";
+import { playShopBell } from "./sounds/play-shop-bell";
 import { playSlidingDoor } from "./sounds/play-sliding-door";
 import { playStartButton } from "./sounds/play-start-button";
 import { playTouchGrass } from "./sounds/play-touch-grass";
@@ -60,6 +61,7 @@ const ONE_SHOTS = {
   "coffee-pour": playCoffeePour,
   "coffee-sip": playCoffeeSip,
   "touch-grass": playTouchGrass,
+  "shop-bell": playShopBell,
 } satisfies { [name in SoundName]: (options: VoiceOptions) => void };
 
 const LOOPS = {

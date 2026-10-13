@@ -204,6 +204,10 @@ export const de = {
       board: "aushang",
     },
     updates: {
+      "door-bell": {
+        title: "eine glocke an der tür",
+        body: "Ein Glöckchen klingelt, wenn du hereinkommst, und wenn jemand anderes eintritt.",
+      },
       "whats-new-board": {
         title: "ein aushang für neuigkeiten",
         body: "Dieser Ständer zeigt, was neu ist. Tagsüber ruht er wie Papier, nachts leuchtet er.",
