@@ -42,7 +42,7 @@ export function UpdateNotice() {
         )}
         onClick={handleReload}
       >
-        <span aria-hidden className="relative size-1.5 shrink-0 translate-y-px">
+        <span aria-hidden className="relative size-1.5 shrink-0">
           <span className="absolute -inset-1 animate-[lm-update-halo_2.8s_ease-in-out_infinite] rounded-full bg-[var(--lm-accent)] blur-[3px] motion-reduce:animate-none motion-reduce:opacity-20" />
           <span className="absolute inset-0 rounded-full bg-[var(--lm-accent)]" />
         </span>

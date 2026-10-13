@@ -20,7 +20,10 @@ export function ToolbarLabel(props: ToolbarLabelProps) {
       )}
     >
       <span className="min-w-0 overflow-hidden whitespace-nowrap">
-        <span role={props.role} className="block pl-2 select-text">
+        <span
+          role={props.role}
+          className="block -translate-y-px pl-2 select-text"
+        >
           {props.children}
         </span>
       </span>
