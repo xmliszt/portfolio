@@ -15,6 +15,7 @@ import {
   NavigationBar,
   NavigationBarItem,
 } from "@/components/custom/navigation-bar";
+import { SiteChrome } from "@/components/custom/site-chrome/site-chrome";
 import { ThemeSwitch } from "@/components/custom/theme-switch";
 import { FloatingTOCDrawer } from "@/components/custom/toc/floating-toc-drawer";
 import { FloatingTOCDrawerHeader } from "@/components/custom/toc/floating-toc-drawer-header";
@@ -123,9 +124,9 @@ export default function RootLayout({
           <TooltipProvider delayDuration={800}>
             <BgmProvider>
               <TOCProvider>
-                <div data-site-chrome className="contents">
+                <SiteChrome>
                   <GradientBlur placement="top" position="fixed" />
-                </div>
+                </SiteChrome>
                 <main className="h-screen max-h-screen w-screen overflow-hidden">
                   <ScrollAreaWithTOCTracker>
                     <div
@@ -138,13 +139,18 @@ export default function RootLayout({
                       )}
                     >
                       {/* Show when in desktop view port */}
-                      <NavigationBar>
-                        {ROUTES.map((route) => (
-                          <NavigationBarItem key={route.path} href={route.path}>
-                            {route.name}
-                          </NavigationBarItem>
-                        ))}
-                      </NavigationBar>
+                      <SiteChrome>
+                        <NavigationBar>
+                          {ROUTES.map((route) => (
+                            <NavigationBarItem
+                              key={route.path}
+                              href={route.path}
+                            >
+                              {route.name}
+                            </NavigationBarItem>
+                          ))}
+                        </NavigationBar>
+                      </SiteChrome>
                       {/* Main content area */}
                       {children}
                       {/* Right side floating TOC tree */}
@@ -152,7 +158,7 @@ export default function RootLayout({
                     </div>
                   </ScrollAreaWithTOCTracker>
                 </main>
-                <div data-site-chrome className="contents">
+                <SiteChrome>
                   <GradientBlur placement="bottom" position="fixed" />
                   {/* Right side floating TOC drawer: show when in mobile view port */}
                   <FloatingTOCDrawer>
@@ -165,9 +171,9 @@ export default function RootLayout({
                       <ThemeSwitch showRing={false} />
                     </FloatingTOCDrawerHeader>
                   </FloatingTOCDrawer>
-                </div>
+                </SiteChrome>
               </TOCProvider>
-              <div data-site-chrome className="contents">
+              <SiteChrome>
                 {/* Show when in mobile view port */}
                 <FloatingNavigationProvider>
                   <FloatingNavigationBar>
@@ -202,16 +208,16 @@ export default function RootLayout({
                   <BGMInfo />
                   <BGMPlayer />
                 </div>
-              </div>
+              </SiteChrome>
             </BgmProvider>
           </TooltipProvider>
 
           <Analytics />
 
           {/* Copyright */}
-          <div data-site-chrome className="contents">
+          <SiteChrome>
             <Copyright />
-          </div>
+          </SiteChrome>
         </ThemeProvider>
       </body>
     </html>
