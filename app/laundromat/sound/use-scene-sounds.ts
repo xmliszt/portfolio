@@ -46,7 +46,7 @@ function useOnChange<T>(options: {
   }, [value]);
 }
 
-/** Play the room's loops and one-shots as its machines, coffee, tv, lamp, laundry, focus and other visitors' arrivals and laundry change, ring the shop bell as the visitor walks in, and return the lamp switch moment (`on` while it flickers on, `off` as it snaps off) or `undefined`. */
+/** Play the room's loops and one-shots as its machines, coffee, tv, lamp, laundry, focus and other visitors' arrivals and laundry change, ring the shop bell as the visitor walks in, stay silent while the visitor is not `isInside`, and return the lamp switch moment (`on` while it flickers on, `off` as it snaps off) or `undefined`. */
 export function useSceneSounds(options: {
   sound: SoundBoard | undefined;
   isWasherRunning: boolean;
@@ -60,8 +60,8 @@ export function useSceneSounds(options: {
   isInside: boolean;
   focus: string;
 }) {
-  const { sound, coffeeKind, isLampOn, loadKind, peers, isInside, focus } =
-    options;
+  const { coffeeKind, isLampOn, loadKind, peers, isInside, focus } = options;
+  const sound = isInside ? options.sound : undefined;
   useLoop({ sound, name: "washer-running", playing: options.isWasherRunning });
   useLoop({ sound, name: "dryer-running", playing: options.isDryerRunning });
   useLoop({ sound, name: "coffee-brewing", playing: coffeeKind === "brewing" });

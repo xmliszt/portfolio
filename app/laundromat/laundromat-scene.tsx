@@ -148,6 +148,7 @@ export function LaundromatScene(props: LaundromatSceneProps) {
       ? parseBookNumber(searchParams.get("book"))
       : undefined;
   const prefersReducedMotion = useReducedMotion() ?? false;
+  const isHidden = props.hidden === true;
   const { quality } = useRenderQuality();
   const isLite = quality === "lite";
   const cameraFocus =
@@ -235,7 +236,7 @@ export function LaundromatScene(props: LaundromatSceneProps) {
   } = useTvAudio({
     tv: appliances.tv,
     details: tvSettings,
-    muted: isSoundMuted || props.hidden === true,
+    muted: isSoundMuted || isHidden,
     onSkipStation: () => appliances.dispatchTv({ type: "tune", step: 1 }),
   });
 
@@ -424,7 +425,7 @@ export function LaundromatScene(props: LaundromatSceneProps) {
       return;
     }
     setWantsFreeNotice(false);
-    sound?.play("notebook-free");
+    if (!isHidden) sound?.play("notebook-free");
     showNotification({
       title: copy.notebook.freeNotificationTitle,
       body: copy.notebook.freeNotificationBody,
@@ -435,6 +436,7 @@ export function LaundromatScene(props: LaundromatSceneProps) {
     isNotebookFree,
     wantsFreeNotice,
     sound,
+    isHidden,
     room.isConnected,
     copy,
   ]);
@@ -671,13 +673,13 @@ export function LaundromatScene(props: LaundromatSceneProps) {
     isWasherRunning,
     isDryerRunning,
     coffeeKind: appliances.coffee.kind,
-    isTvHissing: isTvHissing && props.hidden !== true,
+    isTvHissing,
     isLampOn:
       hour === undefined ? undefined : getTimeOfDay({ hour, config }).isLampOn,
     loadKind: laundry.state.load.kind,
     peers: isRoomSynced ? room.peers : undefined,
     ownVisitorId: laundry.visitorId,
-    isInside: props.hidden !== true,
+    isInside: !isHidden,
     focus,
   });
 
