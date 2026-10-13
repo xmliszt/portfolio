@@ -158,9 +158,9 @@ export const hi = {
   entranceMat: {
     readyLabel: (o: { laundry: "wet" | "folded" }) =>
       `स्वागत मैट, अपने ${o.laundry === "folded" ? "सूखे" : "धुले"} कपड़े घर ले जाओ`,
-    readyTooltip: "घर चलो · कपड़े साथ ले जाओ",
-    awayLabel: "डोरमैट, कपड़े धुलते समय घर लौटो",
-    awayTooltip: "घर लौटो · कपड़े धुलते रहेंगे",
+    readyTooltip: "घर लौटो · साफ़ कपड़े साथ ले जाओ",
+    awayLabel: "डोरमैट, कपड़े मशीन में छोड़कर घर लौटो",
+    awayTooltip: "घर लौटो · कपड़े मशीन में ही रहेंगे",
     wetLabel: "डोरमैट, गीले कपड़े लेकर घर लौटो",
     wetTooltip: "घर लौटो · कपड़े अभी गीले हैं",
     dirtyLabel: "डोरमैट, घर जाने से पहले कपड़े वॉशर में डालो",
@@ -438,7 +438,7 @@ export const hi = {
     curtainOpenLabel: "पर्दे खोलो",
     doorReadyTooltip: "इसे लॉन्ड्री तक ले चलो",
     doorWaitingTooltip: "पहले अपने कपड़े उठाओ",
-    doorAwayTooltip: "लॉन्ड्रोमैट वापस जाओ · कपड़े अभी धुल रहे हैं",
+    doorAwayTooltip: "लॉन्ड्रोमैट वापस जाओ · कपड़े मशीन में हैं",
     doorAwayLabel: "लॉन्ड्रोमैट वापस जाओ, कपड़े अभी मशीन में हैं",
     doorReadyLabel: "टोकरी लॉन्ड्री तक ले चलो",
     doorWaitingLabel: "लॉन्ड्री का दरवाज़ा, पहले अपने कपड़े उठाओ",

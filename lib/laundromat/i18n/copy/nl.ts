@@ -124,9 +124,9 @@ export const nl = {
   entranceMat: {
     readyLabel: (o) =>
       `Deurmat, neem je ${o.laundry === "folded" ? "droge" : "gewassen"} was mee naar huis`,
-    readyTooltip: "naar huis · neem je was mee",
-    awayLabel: "Deurmat, ga naar huis terwijl je was draait",
-    awayTooltip: "naar huis · je was draait verder",
+    readyTooltip: "naar huis · neem je schone was mee",
+    awayLabel: "Deurmat, ga naar huis en laat je was in de machine",
+    awayTooltip: "naar huis · je was blijft in de machine",
     wetLabel: "Deurmat, ga naar huis met de natte was",
     wetTooltip: "naar huis · de kleren zijn nog nat",
     dirtyLabel:
@@ -403,7 +403,7 @@ export const nl = {
     curtainOpenLabel: "Doe de gordijnen open",
     doorReadyTooltip: "breng het naar de wasserette",
     doorWaitingTooltip: "raap eerst je was op",
-    doorAwayTooltip: "terug naar de wasserette · je was draait nog",
+    doorAwayTooltip: "terug naar de wasserette · je was zit in de machine",
     doorAwayLabel: "Terug naar de wasserette, je was zit nog in de machine",
     doorReadyLabel: "Breng de mand naar de wasserette",
     doorWaitingLabel: "Deur naar de wasserette, raap eerst je was op",

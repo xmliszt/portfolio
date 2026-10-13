@@ -38,8 +38,8 @@ export function describeSceneObject(options: {
       };
     case "mat":
       return {
-        label: copy.entranceMat.dirtyLabel,
-        tooltip: copy.entranceMat.dirtyTooltip,
+        label: copy.entranceMat.awayLabel,
+        tooltip: copy.entranceMat.awayTooltip,
       };
     case "mug":
       return {

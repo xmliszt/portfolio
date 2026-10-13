@@ -143,9 +143,9 @@ export const zhHant = {
   entranceMat: {
     readyLabel: (o: { laundry: "wet" | "folded" }) =>
       `門墊，帶著${o.laundry === "folded" ? "烘乾的" : "洗好的"}衣服回家`,
-    readyTooltip: "回家 · 帶上你的衣服",
-    awayLabel: "門墊，洗衣時先回家",
-    awayTooltip: "回家 · 衣服會繼續洗",
+    readyTooltip: "回家 · 帶上乾淨的衣服",
+    awayLabel: "門墊，把衣服留在機器裡先回家",
+    awayTooltip: "回家 · 衣服留在機器裡",
     wetLabel: "門墊，帶著濕衣服回家",
     wetTooltip: "回家 · 衣服還是濕的",
     dirtyLabel: "門墊，回家前先把衣服放進洗衣機",
@@ -418,7 +418,7 @@ export const zhHant = {
     curtainOpenLabel: "拉開窗簾",
     doorReadyTooltip: "拿去洗衣店",
     doorWaitingTooltip: "先把衣服收好",
-    doorAwayTooltip: "回洗衣房 · 衣服還在洗",
+    doorAwayTooltip: "回洗衣房 · 衣服在機器裡",
     doorAwayLabel: "回洗衣房，衣服還在機器裡",
     doorReadyLabel: "把籃子拿去洗衣店",
     doorWaitingLabel: "通往洗衣店的門，先把衣服收好",

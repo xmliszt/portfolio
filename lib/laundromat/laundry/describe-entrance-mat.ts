@@ -11,17 +11,11 @@ export function describeEntranceMat(options: {
   const { homecoming } = options;
   switch (homecoming.kind) {
     case "fresh":
-      return homecoming.cleanPile
-        ? {
-            label: copy.readyLabel({ laundry: "folded" }),
-            tooltip: copy.readyTooltip,
-            canLeave: true,
-          }
-        : {
-            label: copy.awayLabel,
-            tooltip: copy.awayTooltip,
-            canLeave: true,
-          };
+      return {
+        label: copy.readyLabel({ laundry: "folded" }),
+        tooltip: copy.readyTooltip,
+        canLeave: true,
+      };
     case "carrying":
       return homecoming.laundry === "wet"
         ? {

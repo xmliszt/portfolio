@@ -155,9 +155,9 @@ export const it = {
   entranceMat: {
     readyLabel: (o: { laundry: "wet" | "folded" }) =>
       `Zerbino, porta a casa il tuo bucato ${o.laundry === "folded" ? "asciutto" : "lavato"}`,
-    readyTooltip: "torna a casa · porta con te il bucato",
-    awayLabel: "Zerbino, torna a casa mentre il bucato va",
-    awayTooltip: "torna a casa · il bucato continua",
+    readyTooltip: "torna a casa · porta con te il bucato pulito",
+    awayLabel: "Zerbino, torna a casa e lascia il bucato nella macchina",
+    awayTooltip: "torna a casa · il bucato resta nella macchina",
     wetLabel: "Zerbino, torna a casa con il bucato bagnato",
     wetTooltip: "torna a casa · i vestiti sono ancora bagnati",
     dirtyLabel:
@@ -444,7 +444,7 @@ export const it = {
     curtainOpenLabel: "Apri le tende",
     doorReadyTooltip: "portalo in lavanderia",
     doorWaitingTooltip: "prima raccogli il bucato",
-    doorAwayTooltip: "torna in lavanderia · il bucato è ancora in corso",
+    doorAwayTooltip: "torna in lavanderia · il bucato è nella macchina",
     doorAwayLabel: "Torna in lavanderia, il bucato è ancora nella macchina",
     doorReadyLabel: "Porta il cesto in lavanderia",
     doorWaitingLabel: "Porta della lavanderia, prima raccogli il bucato",

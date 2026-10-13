@@ -153,9 +153,10 @@ export const fr = {
   entranceMat: {
     readyLabel: (o: { laundry: "wet" | "folded" }) =>
       `Paillasson, rentre chez toi avec ton linge ${o.laundry === "folded" ? "sec" : "lavé"}`,
-    readyTooltip: "rentrer · emporte ton linge",
-    awayLabel: "Paillasson, rentre chez toi pendant que ton linge tourne",
-    awayTooltip: "rentrer chez toi · ton linge continue de tourner",
+    readyTooltip: "rentrer chez toi · emporte ton linge propre",
+    awayLabel:
+      "Paillasson, rentre chez toi et laisse ton linge dans la machine",
+    awayTooltip: "rentrer chez toi · ton linge reste dans la machine",
     wetLabel: "Paillasson, rentre chez toi avec le linge mouillé",
     wetTooltip: "rentrer chez toi · le linge est encore mouillé",
     dirtyLabel: "Paillasson, mets le linge dans un lave-linge avant de rentrer",
@@ -439,7 +440,7 @@ export const fr = {
     curtainOpenLabel: "Ouvrir les rideaux",
     doorReadyTooltip: "l'emporter à la laverie",
     doorWaitingTooltip: "ramasse d'abord ton linge",
-    doorAwayTooltip: "retour à la laverie · ton linge tourne encore",
+    doorAwayTooltip: "retour à la laverie · ton linge est dans la machine",
     doorAwayLabel: "Retour à la laverie, ton linge est encore dans la machine",
     doorReadyLabel: "Emporter le panier à la laverie",
     doorWaitingLabel: "Porte vers la laverie, ramasse d'abord ton linge",

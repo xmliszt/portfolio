@@ -122,9 +122,9 @@ export const tr = {
   entranceMat: {
     readyLabel: (o) =>
       `Paspas, ${o.laundry === "folded" ? "kuru" : "yıkanmış"} çamaşırını eve götür`,
-    readyTooltip: "eve dön · çamaşırını da al",
-    awayLabel: "Paspas, çamaşırın dönerken eve dön",
-    awayTooltip: "eve dön · çamaşırın dönmeye devam ediyor",
+    readyTooltip: "eve dön · temiz çamaşırını yanına al",
+    awayLabel: "Paspas, eve dön ve çamaşırı makinede bırak",
+    awayTooltip: "eve dön · çamaşırın makinede kalır",
     wetLabel: "Paspas, ıslak çamaşırla eve dön",
     wetTooltip: "eve dön · kıyafetler hâlâ ıslak",
     dirtyLabel: "Paspas, eve dönmeden önce kıyafetleri çamaşır makinesine koy",
@@ -393,7 +393,7 @@ export const tr = {
     curtainOpenLabel: "Perdeleri aç",
     doorReadyTooltip: "çamaşırhaneye götür",
     doorWaitingTooltip: "önce çamaşırını topla",
-    doorAwayTooltip: "çamaşırhaneye dön · çamaşırın hâlâ dönüyor",
+    doorAwayTooltip: "çamaşırhaneye dön · çamaşırın makinede",
     doorAwayLabel: "Çamaşırhaneye dön, çamaşırın hâlâ makinede",
     doorReadyLabel: "Sepeti çamaşırhaneye götür",
     doorWaitingLabel: "Çamaşırhane kapısı, önce çamaşırını topla",

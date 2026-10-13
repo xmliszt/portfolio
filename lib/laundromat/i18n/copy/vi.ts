@@ -157,9 +157,9 @@ export const vi = {
   entranceMat: {
     readyLabel: (o: { laundry: "wet" | "folded" }) =>
       `Thảm chào mừng, mang đồ ${o.laundry === "folded" ? "đã khô" : "đã giặt"} về nhà`,
-    readyTooltip: "về nhà · mang đồ theo",
-    awayLabel: "Thảm chùi chân, về nhà trong lúc máy đang giặt",
-    awayTooltip: "về nhà · máy vẫn tiếp tục chạy",
+    readyTooltip: "về nhà · mang đồ sạch theo",
+    awayLabel: "Thảm chùi chân, về nhà và để đồ lại trong máy",
+    awayTooltip: "về nhà · đồ vẫn ở trong máy",
     wetLabel: "Thảm chùi chân, về nhà với đồ còn ướt",
     wetTooltip: "về nhà · quần áo vẫn còn ướt",
     dirtyLabel: "Thảm chùi chân, cho quần áo vào máy giặt trước khi về nhà",
@@ -434,7 +434,7 @@ export const vi = {
     curtainOpenLabel: "Kéo rèm ra",
     doorReadyTooltip: "mang ra tiệm giặt",
     doorWaitingTooltip: "nhặt đồ trước đã",
-    doorAwayTooltip: "quay lại tiệm giặt · đồ vẫn đang giặt",
+    doorAwayTooltip: "quay lại tiệm giặt · đồ đang ở trong máy",
     doorAwayLabel: "Quay lại tiệm giặt, đồ vẫn còn trong máy",
     doorReadyLabel: "Mang giỏ ra tiệm giặt",
     doorWaitingLabel: "Cửa ra tiệm giặt, nhặt đồ trước đã",

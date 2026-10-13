@@ -150,9 +150,9 @@ export const ja = {
   entranceMat: {
     readyLabel: (o: { laundry: "wet" | "folded" }) =>
       `玄関マット、${o.laundry === "folded" ? "乾いた" : "洗った"}洗濯物を持って帰る`,
-    readyTooltip: "家に帰る · 洗濯物を持って",
-    awayLabel: "玄関マット、洗濯中に家へ帰る",
-    awayTooltip: "家に帰る · 洗濯はそのまま続くよ",
+    readyTooltip: "家に帰る · きれいな洗濯物を持って帰ろう",
+    awayLabel: "玄関マット、洗濯物を機械に残して家へ帰る",
+    awayTooltip: "家に帰る · 洗濯物は機械の中に残るよ",
     wetLabel: "玄関マット、濡れた洗濯物を持って家へ帰る",
     wetTooltip: "家に帰る · 服はまだ濡れてる",
     dirtyLabel: "玄関マット、帰る前に服を洗濯機に入れよう",
@@ -429,7 +429,7 @@ export const ja = {
     curtainOpenLabel: "カーテンを開ける",
     doorReadyTooltip: "コインランドリーへ持っていく",
     doorWaitingTooltip: "先に洗濯物を拾って",
-    doorAwayTooltip: "コインランドリーへ戻る · 洗濯はまだ続いてる",
+    doorAwayTooltip: "コインランドリーへ戻る · 洗濯物は機械の中",
     doorAwayLabel: "コインランドリーへ戻る、洗濯物はまだ機械の中",
     doorReadyLabel: "かごをコインランドリーへ持っていく",
     doorWaitingLabel: "コインランドリーへのドア、先に洗濯物を拾って",

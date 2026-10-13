@@ -161,8 +161,9 @@ export const en = {
     readyLabel: (o: { laundry: "wet" | "folded" }) =>
       `Welcome mat, take your ${o.laundry === "folded" ? "dry" : "washed"} laundry home`,
     readyTooltip: "go back home · take your clean laundry with you",
-    awayLabel: "Welcome mat, go back home while your laundry runs",
-    awayTooltip: "go back home · your laundry keeps running",
+    awayLabel:
+      "Welcome mat, go back home and leave your laundry in the machine",
+    awayTooltip: "go back home · your laundry stays in the machine",
     wetLabel: "Welcome mat, go back home with the wet laundry",
     wetTooltip: "go back home · the clothes are still wet",
     dirtyLabel: "Welcome mat, put the clothes in a washer before going home",
@@ -442,7 +443,7 @@ export const en = {
     curtainOpenLabel: "Open the curtains",
     doorReadyTooltip: "carry it to the laundromat",
     doorWaitingTooltip: "pick up your laundry first",
-    doorAwayTooltip: "back to the laundromat · your laundry is still going",
+    doorAwayTooltip: "back to the laundromat · your laundry is in the machine",
     doorAwayLabel:
       "Back to the laundromat, your laundry is still in the machine",
     doorReadyLabel: "Carry the basket to the laundromat",

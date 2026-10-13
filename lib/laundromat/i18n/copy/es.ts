@@ -154,9 +154,9 @@ export const es = {
   entranceMat: {
     readyLabel: (o: { laundry: "wet" | "folded" }) =>
       `Felpudo, llévate tu ropa ${o.laundry === "folded" ? "seca" : "lavada"} a casa`,
-    readyTooltip: "volver a casa · llévate tu ropa",
-    awayLabel: "Felpudo, vuelve a casa mientras se lava tu ropa",
-    awayTooltip: "volver a casa · tu ropa sigue en marcha",
+    readyTooltip: "volver a casa · llévate la ropa limpia",
+    awayLabel: "Felpudo, vuelve a casa y deja la ropa en la máquina",
+    awayTooltip: "volver a casa · tu ropa se queda en la máquina",
     wetLabel: "Felpudo, vuelve a casa con la ropa mojada",
     wetTooltip: "volver a casa · la ropa sigue mojada",
     dirtyLabel: "Felpudo, mete la ropa en una lavadora antes de volver a casa",
@@ -440,7 +440,7 @@ export const es = {
     curtainOpenLabel: "Abrir las cortinas",
     doorReadyTooltip: "llevarlo a la lavandería",
     doorWaitingTooltip: "primero recoge tu ropa",
-    doorAwayTooltip: "volver a la lavandería · tu ropa sigue en marcha",
+    doorAwayTooltip: "volver a la lavandería · tu ropa está en la máquina",
     doorAwayLabel: "Volver a la lavandería, tu ropa sigue en la máquina",
     doorReadyLabel: "Llevar el cesto a la lavandería",
     doorWaitingLabel: "Puerta a la lavandería, primero recoge tu ropa",

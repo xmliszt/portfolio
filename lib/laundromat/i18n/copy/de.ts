@@ -155,9 +155,9 @@ export const de = {
   entranceMat: {
     readyLabel: (o: { laundry: "wet" | "folded" }) =>
       `Fußmatte, nimm deine ${o.laundry === "folded" ? "trockene" : "gewaschene"} Wäsche mit nach Hause`,
-    readyTooltip: "nach Hause · nimm deine Wäsche mit",
-    awayLabel: "Fußmatte, geh nach Hause, während deine Wäsche läuft",
-    awayTooltip: "nach Hause gehen · deine Wäsche läuft weiter",
+    readyTooltip: "nach Hause gehen · nimm deine saubere Wäsche mit",
+    awayLabel: "Fußmatte, geh nach Hause und lass deine Wäsche in der Maschine",
+    awayTooltip: "nach Hause gehen · deine Wäsche bleibt in der Maschine",
     wetLabel: "Fußmatte, geh mit der nassen Wäsche nach Hause",
     wetTooltip: "nach Hause gehen · die Wäsche ist noch nass",
     dirtyLabel:
@@ -441,7 +441,8 @@ export const de = {
     curtainOpenLabel: "Die Vorhänge aufziehen",
     doorReadyTooltip: "zum Waschsalon tragen",
     doorWaitingTooltip: "heb zuerst deine Wäsche auf",
-    doorAwayTooltip: "zurück in den Waschsalon · deine Wäsche läuft noch",
+    doorAwayTooltip:
+      "zurück in den Waschsalon · deine Wäsche ist in der Maschine",
     doorAwayLabel:
       "Zurück in den Waschsalon, deine Wäsche ist noch in der Maschine",
     doorReadyLabel: "Den Korb zum Waschsalon tragen",

@@ -10,7 +10,6 @@ const dryer: MachineRef = { id: "dryer-1", kind: "dryer", number: 1 };
 test("brings dry laundry from the basket home as a clean pile", () => {
   assert.deepEqual(getHomecoming({ load: { kind: "folded" } }), {
     kind: "fresh",
-    cleanPile: true,
   });
 });
 

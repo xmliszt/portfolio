@@ -7,7 +7,7 @@ import { describeEntranceMat } from "./describe-entrance-mat";
 
 test("the mat leads home with dry, wet or machine-held laundry", () => {
   for (const homecoming of [
-    { kind: "fresh", cleanPile: true },
+    { kind: "fresh" },
     { kind: "away" },
     { kind: "carrying", laundry: "wet" },
   ] as const) {

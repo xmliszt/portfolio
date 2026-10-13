@@ -151,6 +151,10 @@ export function LaundromatScene(props: LaundromatSceneProps) {
       : undefined;
   const prefersReducedMotion = useReducedMotion() ?? false;
   const isHidden = props.hidden === true;
+  const isLeavingRef = useRef(false);
+  useEffect(() => {
+    if (!isHidden) isLeavingRef.current = false;
+  }, [isHidden]);
   const { quality } = useRenderQuality();
   const isLite = quality === "lite";
   const cameraFocus =
@@ -864,10 +868,12 @@ export function LaundromatScene(props: LaundromatSceneProps) {
     );
     if (isMat) {
       if (focus !== "room") setFocus("room");
+      if (isLeavingRef.current) return;
       if (!entranceMat.canLeave) {
         sound?.play("door-locked");
         return;
       }
+      isLeavingRef.current = true;
       sound?.play("sliding-door");
       laundry.dispatch({ type: "head-home" });
       props.onHeadHome?.(homecoming);

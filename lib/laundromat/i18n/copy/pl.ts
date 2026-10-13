@@ -138,9 +138,9 @@ export const pl = {
   entranceMat: {
     readyLabel: (o) =>
       `Wycieraczka, zabierz ${o.laundry === "folded" ? "suche" : "uprane"} pranie do domu`,
-    readyTooltip: "do domu · zabierz pranie ze sobą",
-    awayLabel: "Wycieraczka, wróć do domu, gdy pranie trwa",
-    awayTooltip: "wróć do domu · pranie dalej trwa",
+    readyTooltip: "wróć do domu · weź czyste pranie ze sobą",
+    awayLabel: "Wycieraczka, wróć do domu i zostaw pranie w maszynie",
+    awayTooltip: "wróć do domu · pranie zostaje w maszynie",
     wetLabel: "Wycieraczka, wróć do domu z mokrym praniem",
     wetTooltip: "wróć do domu · ubrania są jeszcze mokre",
     dirtyLabel: "Wycieraczka, włóż ubrania do pralki przed powrotem do domu",
@@ -413,7 +413,7 @@ export const pl = {
     curtainOpenLabel: "Odsuń zasłony",
     doorReadyTooltip: "zanieś do pralni",
     doorWaitingTooltip: "najpierw zbierz pranie",
-    doorAwayTooltip: "wróć do pralni · pranie jeszcze trwa",
+    doorAwayTooltip: "wróć do pralni · pranie jest w maszynie",
     doorAwayLabel: "Wróć do pralni, pranie jest jeszcze w maszynie",
     doorReadyLabel: "Zanieś kosz do pralni",
     doorWaitingLabel: "Drzwi do pralni, najpierw zbierz pranie",

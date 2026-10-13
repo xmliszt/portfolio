@@ -159,9 +159,9 @@ export const id = {
   entranceMat: {
     readyLabel: (o: { laundry: "wet" | "folded" }) =>
       `Keset, bawa pulang cucianmu yang ${o.laundry === "folded" ? "sudah kering" : "sudah dicuci"}`,
-    readyTooltip: "pulang · bawa cucianmu",
-    awayLabel: "Keset, pulang selagi cucianmu berjalan",
-    awayTooltip: "pulang · cucianmu tetap berjalan",
+    readyTooltip: "pulang · bawa cucian bersihmu",
+    awayLabel: "Keset, pulang dan tinggalkan cucian di mesin",
+    awayTooltip: "pulang · cucianmu tetap di mesin",
     wetLabel: "Keset, pulang dengan cucian basah",
     wetTooltip: "pulang · pakaiannya masih basah",
     dirtyLabel: "Keset, masukkan pakaian ke mesin cuci sebelum pulang",
@@ -442,7 +442,7 @@ export const id = {
     curtainOpenLabel: "Buka gorden",
     doorReadyTooltip: "bawa ke laundry",
     doorWaitingTooltip: "ambil cucianmu dulu",
-    doorAwayTooltip: "kembali ke laundromat · cucianmu masih berjalan",
+    doorAwayTooltip: "kembali ke laundromat · cucianmu ada di mesin",
     doorAwayLabel: "Kembali ke laundromat, cucianmu masih di mesin",
     doorReadyLabel: "Bawa keranjang ke laundry",
     doorWaitingLabel: "Pintu ke laundry, ambil cucianmu dulu",

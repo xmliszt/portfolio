@@ -17,6 +17,7 @@ import { getBedroomWindowLight } from "@/lib/laundromat/first-visit/get-bedroom-
 import { getCoverScale } from "@/lib/laundromat/first-visit/get-cover-scale";
 import { getCurtainLayout } from "@/lib/laundromat/first-visit/get-curtain-layout";
 import { getGarmentFootprint } from "@/lib/laundromat/first-visit/get-garment-footprint";
+import { getBedroomMode } from "@/lib/laundromat/first-visit/get-bedroom-mode";
 import { getHamperBasket } from "@/lib/laundromat/first-visit/get-hamper-basket";
 import { getTableLampShape } from "@/lib/laundromat/first-visit/get-table-lamp-shape";
 import { getTossFlight } from "@/lib/laundromat/first-visit/get-toss-flight";
@@ -79,6 +80,7 @@ type FirstVisitProps = {
   bedroom: BedroomConfig;
   hourOverride?: number;
   home: Homecoming;
+  cleanPile: boolean;
   onWalkIn: () => void;
   onListen: () => void;
 };
@@ -114,8 +116,11 @@ export function FirstVisit(props: FirstVisitProps) {
   const [jiggles, setJiggles] = useState(0);
   const [bumps, setBumps] = useState(0);
 
-  const isFresh = props.home.kind === "fresh";
-  const kinds = isFresh ? bedroom.garments.map((garment) => garment.kind) : [];
+  const mode = getBedroomMode({ home: props.home });
+  const { basket: roomBasket } = mode;
+  const kinds = mode.hasFloorClothes
+    ? bedroom.garments.map((garment) => garment.kind)
+    : [];
   const unavailable = [
     ...inBasket.map((item) => item.kind),
     ...flights.map((flight) => flight.kind),
@@ -124,7 +129,7 @@ export function FirstVisit(props: FirstVisitProps) {
     kinds,
     unavailable,
     isPaused: drag !== undefined || hover !== undefined,
-    isStopped: isTouched || phase !== "room" || !isFresh,
+    isStopped: isTouched || phase !== "room" || !mode.hasFloorClothes,
     config: bedroom.motion.nudge,
   });
 
@@ -186,6 +191,32 @@ export function FirstVisit(props: FirstVisitProps) {
       h: bedroom.basket.height,
     },
   } satisfies SceneObject;
+  const basketBounds = (() => {
+    if (roomBasket.kind !== "carried") return basket.bounds;
+    const { position, size } = carriedBasket;
+    const corners = [0, size.w].flatMap((dx) =>
+      [0, size.d].flatMap((dy) =>
+        [0, size.h].map((dz) =>
+          projectIsoPoint({
+            point: {
+              x: position.x + dx,
+              y: position.y + dy,
+              z: position.z + dz,
+            },
+            projection,
+          })
+        )
+      )
+    );
+    const xs = corners.map((corner) => corner.x);
+    const ys = corners.map((corner) => corner.y);
+    return {
+      x: Math.min(...xs),
+      y: Math.min(...ys),
+      width: Math.max(...xs) - Math.min(...xs),
+      height: Math.max(...ys) - Math.min(...ys),
+    };
+  })();
   const footprints = Object.fromEntries(
     bedroom.garments.map((garment) => [
       garment.kind,
@@ -252,7 +283,7 @@ export function FirstVisit(props: FirstVisitProps) {
   ].map((corner) =>
     projectIsoPoint({ point: { x: 0, ...corner }, projection })
   );
-  const isReady = !isFresh || inBasket.length > 0;
+  const isReady = mode.isDoorOpen || inBasket.length > 0;
   const isInRoom = phase === "room";
 
   function isOverBasket(point: ScreenPoint) {
@@ -479,26 +510,26 @@ export function FirstVisit(props: FirstVisitProps) {
       if (hover === "basket" && drag === undefined) {
         return {
           text: (() => {
-            switch (props.home.kind) {
-              case "fresh":
+            switch (roomBasket.kind) {
+              case "hamper":
                 return describeHamperBasket({
                   count: inBasket.length,
                   total: kinds.length,
                   copy,
                 });
-              case "carrying":
-                return props.home.laundry === "wet"
+              case "carried":
+                return roomBasket.laundry === "wet"
                   ? copy.firstVisit.basketWet
                   : copy.firstVisit.basketFull;
-              case "away":
+              case "none":
                 return undefined;
               default: {
-                const unhandled: never = props.home;
+                const unhandled: never = roomBasket;
                 return unhandled;
               }
             }
           })(),
-          at: { x: basket.mouth.x, y: basket.bounds.y - 4 },
+          at: { x: basket.mouth.x, y: basketBounds.y - 4 },
         };
       }
       return undefined;
@@ -697,9 +728,7 @@ export function FirstVisit(props: FirstVisitProps) {
                   curtainLayout={curtainLayout}
                   windowLight={windowLight}
                   curtainHighlighted={hover === "curtain"}
-                  cleanPile={
-                    props.home.kind === "fresh" && props.home.cleanPile
-                  }
+                  cleanPile={props.cleanPile}
                 />
                 <BedroomDoor
                   door={door}
@@ -716,8 +745,8 @@ export function FirstVisit(props: FirstVisitProps) {
                   .filter((kind) => !onTop.includes(kind))
                   .map(renderGarment)}
                 {(() => {
-                  switch (props.home.kind) {
-                    case "fresh":
+                  switch (roomBasket.kind) {
+                    case "hamper":
                       return (
                         <HamperBasketDrawing
                           basket={basket}
@@ -776,19 +805,19 @@ export function FirstVisit(props: FirstVisitProps) {
                           })}
                         </HamperBasketDrawing>
                       );
-                    case "carrying":
+                    case "carried":
                       return (
                         <BasketDrawing
                           laidOut={{ object: carriedBasket }}
                           projection={projection}
                           highlighted={hover === "basket"}
-                          contents={props.home.laundry}
+                          contents={roomBasket.laundry}
                         />
                       );
-                    case "away":
+                    case "none":
                       return null;
                     default: {
-                      const unhandled: never = props.home;
+                      const unhandled: never = roomBasket;
                       return unhandled;
                     }
                   }
@@ -806,15 +835,15 @@ export function FirstVisit(props: FirstVisitProps) {
               </g>
             </svg>
 
-            {props.home.kind !== "away" && (
+            {roomBasket.kind !== "none" && (
               <div
                 aria-hidden
                 className="absolute"
                 style={{
-                  left: basket.bounds.x,
-                  top: basket.bounds.y,
-                  width: basket.bounds.width,
-                  height: basket.bounds.height,
+                  left: basketBounds.x,
+                  top: basketBounds.y,
+                  width: basketBounds.width,
+                  height: basketBounds.height,
                 }}
                 onPointerEnter={() => handleHover("basket")}
                 onPointerLeave={() => clearHover("basket")}

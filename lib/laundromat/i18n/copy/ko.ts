@@ -151,9 +151,9 @@ export const ko = {
   entranceMat: {
     readyLabel: (o: { laundry: "wet" | "folded" }) =>
       `현관 매트, ${o.laundry === "folded" ? "건조한" : "세탁한"} 빨래를 들고 집에 가기`,
-    readyTooltip: "집으로 · 빨래 챙겨서",
-    awayLabel: "현관 매트, 빨래가 도는 동안 집에 가기",
-    awayTooltip: "집에 가기 · 빨래는 계속 돌아가요",
+    readyTooltip: "집에 가기 · 깨끗한 빨래를 챙겨 가요",
+    awayLabel: "현관 매트, 빨래는 기계에 두고 집에 가기",
+    awayTooltip: "집에 가기 · 빨래는 기계에 그대로 있어요",
     wetLabel: "현관 매트, 젖은 빨래를 들고 집에 가기",
     wetTooltip: "집에 가기 · 옷이 아직 젖어 있어요",
     dirtyLabel: "현관 매트, 집에 가기 전에 옷을 세탁기에 넣어요",
@@ -428,7 +428,7 @@ export const ko = {
     curtainOpenLabel: "커튼 열기",
     doorReadyTooltip: "빨래방으로 가져가기",
     doorWaitingTooltip: "먼저 빨래를 챙겨 줘",
-    doorAwayTooltip: "빨래방으로 돌아가기 · 빨래가 아직 돌아가요",
+    doorAwayTooltip: "빨래방으로 돌아가기 · 빨래가 기계 안에 있어요",
     doorAwayLabel: "빨래방으로 돌아가기, 빨래가 아직 기계 안에 있어요",
     doorReadyLabel: "바구니를 빨래방으로 가져가기",
     doorWaitingLabel: "빨래방으로 가는 문, 먼저 빨래를 챙겨 줘",
