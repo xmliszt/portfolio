@@ -56,3 +56,14 @@ test("rejects an entry with a bad field", () => {
     );
   }
 });
+
+test("masks swear words in the body and sign-off another tab sent", () => {
+  const parsed = parseRemoteEntry({
+    value: buildPayload({
+      entry: { body: "what the fuck", signOff: "shit happens" },
+    }),
+    maxChars: 100,
+  });
+  assert.equal(parsed?.entry.body, "what the ****");
+  assert.equal(parsed?.entry.signOff, "**** happens");
+});

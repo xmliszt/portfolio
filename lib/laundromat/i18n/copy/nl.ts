@@ -152,6 +152,82 @@ export const nl = {
     label: "Plant, gras aanraken",
     tooltip: "gras aanraken",
   },
+  board: {
+    label: "Prikbord, wat er nieuw is in de wasserette",
+    tooltip: "wat is er nieuw",
+    eyebrow: "prikbord",
+    heading: "wat is er nieuw",
+    subtitle: "Kleine veranderingen in de wasserette, nieuwste eerst.",
+    updated: (o: { date: string }) => `bijgewerkt op ${o.date}`,
+    footer: "altijd open, 24/7",
+    close: "sluiten",
+    closeHint: "esc om te sluiten",
+    tags: {
+      opening: "opening",
+      tv: "tv",
+      notebook: "notitieboek",
+      languages: "talen",
+      room: "ruimte",
+      coffee: "koffie",
+      window: "raam",
+      light: "licht",
+      board: "bord",
+    },
+    updates: {
+      "whats-new-board": {
+        title: "een bord voor nieuwtjes",
+        body: "Dit standaard toont wat nieuw is. Overdag rustig als papier, 's nachts verlicht.",
+      },
+      "twelve-stations": {
+        title: "twaalf zenders op de tv",
+        body: "Zeven nieuwe lofi-radio's vullen de afstemknop, van studiezaal tot diepe ruimte.",
+      },
+      "page-drag": {
+        title: "bladeren door te slepen",
+        body: "Sleep ergens langs de buitenrand van een pagina om hem om te slaan.",
+      },
+      "window-light": {
+        title: "zonlicht door het raam",
+        body: "Daglicht valt op de machines en de vloer, en wordt warm bij zonsopgang en zonsondergang.",
+      },
+      "shared-coffee": {
+        title: "een pot koffie delen",
+        body: "Tot zeven mensen schenken uit dezelfde kan.",
+      },
+      "street-view": {
+        title: "de straat buiten",
+        body: "Het raam kijkt uit op de straat, beschenen door zon of maan.",
+      },
+      "tube-counter": {
+        title: "wie er is",
+        body: "De buizen op de achterwand tellen iedereen in de wasserette, jij ook.",
+      },
+      "coffee-counter": {
+        title: "koffie op de toonbank",
+        body: "Zet een pot, schenk een kop in en drink hem terwijl je was draait.",
+      },
+      "shared-machines": {
+        title: "anderen aan de was",
+        body: "Zie welke machines anderen gebruiken. Hun was blijft liggen als jij de jouwe inlaadt.",
+      },
+      "eighteen-languages": {
+        title: "open in 18 talen",
+        body: "De hele wasserette spreekt jouw taal. Wissel via de wereldbol in de hoek.",
+      },
+      "shared-notebook": {
+        title: "een notitieboek voor vreemden",
+        body: "Laat een briefje achter voor wie na je komt. Volle boeken gaan op de plank.",
+      },
+      "lofi-tv": {
+        title: "lofi op de tv",
+        body: "Zet de tv aan voor lofi-radio, met een zenderknop en een volumeknop.",
+      },
+      opening: {
+        title: "laundro.cafe gaat open",
+        body: "Een stille wasserette in je browser: wassen, drogen, 5 tot 60 minuten focussen.",
+      },
+    },
+  },
   tubeDisplay: {
     label: (o: { count: number }) =>
       `Buizenteller, ${o.count === 1 ? "alleen jij hier" : `${o.count} mensen hier`}`,
@@ -167,6 +243,13 @@ export const nl = {
       "late-wash": "late was",
       "tape-hiss": "bandruis",
       "city-at-3am": "de stad om 3 uur 's nachts",
+      "study-hall": "studiezaal",
+      "smoky-jazz": "rokerige jazz",
+      fireplace: "open haard",
+      "neon-tokyo": "neon-tokio",
+      "string-quartet": "strijkkwartet",
+      "porch-guitar": "gitaar op de veranda",
+      "deep-space": "diepe ruimte",
     },
     station: (o) => `kan. ${o.channel} · ${o.name}`,
     offLabel: "Tv, uit",

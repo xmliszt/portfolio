@@ -164,6 +164,82 @@ export const pl = {
     label: "Roślina, dotknij trawy",
     tooltip: "dotknij trawy",
   },
+  board: {
+    label: "Tablica, co nowego w pralni",
+    tooltip: "co nowego",
+    eyebrow: "tablica ogłoszeń",
+    heading: "co nowego",
+    subtitle: "Drobne zmiany w pralni, od najnowszych.",
+    updated: (o: { date: string }) => `zaktualizowano ${o.date}`,
+    footer: "zawsze otwarte, 24/7",
+    close: "zamknij",
+    closeHint: "esc, aby zamknąć",
+    tags: {
+      opening: "otwarcie",
+      tv: "tv",
+      notebook: "notes",
+      languages: "języki",
+      room: "sala",
+      coffee: "kawa",
+      window: "okno",
+      light: "światło",
+      board: "tablica",
+    },
+    updates: {
+      "whats-new-board": {
+        title: "tablica z nowościami",
+        body: "Ten stojak pokazuje, co nowego. W dzień spokojny jak papier, nocą świeci.",
+      },
+      "twelve-stations": {
+        title: "dwanaście stacji w telewizorze",
+        body: "Siedem nowych radiów lofi wypełnia pokrętło, od czytelni po głęboki kosmos.",
+      },
+      "page-drag": {
+        title: "przewracanie stron przeciąganiem",
+        body: "Przeciągnij w dowolnym miejscu zewnętrznej krawędzi strony, aby ją przewrócić.",
+      },
+      "window-light": {
+        title: "słońce przez okno",
+        body: "Światło dnia sięga maszyn i podłogi, a o wschodzie i zachodzie robi się ciepłe.",
+      },
+      "shared-coffee": {
+        title: "wspólny dzbanek kawy",
+        body: "Do siedmiu osób może nalewać z tego samego dzbanka.",
+      },
+      "street-view": {
+        title: "ulica za oknem",
+        body: "Okno wychodzi na ulicę oświetloną słońcem albo księżycem.",
+      },
+      "tube-counter": {
+        title: "kto tu jest",
+        body: "Lampy na tylnej ścianie liczą wszystkich w pralni, razem z tobą.",
+      },
+      "coffee-counter": {
+        title: "kawa na ladzie",
+        body: "Zaparz dzbanek, nalej filiżankę i pij, gdy pranie się kręci.",
+      },
+      "shared-machines": {
+        title: "inni też piorą",
+        body: "Zobacz, których maszyn używają inni. Ich pranie zostaje na miejscu, gdy wkładasz swoje.",
+      },
+      "eighteen-languages": {
+        title: "otwarte w 18 językach",
+        body: "Cała pralnia mówi twoim językiem. Zmienisz go globusem w rogu.",
+      },
+      "shared-notebook": {
+        title: "notes dla nieznajomych",
+        body: "Zostaw notkę dla kolejnej osoby. Zapełnione notesy trafiają na półkę.",
+      },
+      "lofi-tv": {
+        title: "lofi w telewizorze",
+        body: "Włącz telewizor, by słuchać radia lofi, z pokrętłem stacji i głośności.",
+      },
+      opening: {
+        title: "laundro.cafe otwarte",
+        body: "Cicha pralnia w przeglądarce: pierz, susz i skup się na 5 do 60 minut.",
+      },
+    },
+  },
   tubeDisplay: {
     label: (o: { count: number }) =>
       `Licznik lampowy, ${o.count === 1 ? "tylko ty tutaj" : `${o.count} ${pluralize({ count: o.count, one: "osoba", few: "osoby", many: "osób" })} tutaj`}`,
@@ -181,6 +257,13 @@ export const pl = {
       "late-wash": "późne pranie",
       "tape-hiss": "szum taśmy",
       "city-at-3am": "miasto o trzeciej w nocy",
+      "study-hall": "czytelnia",
+      "smoky-jazz": "zadymiony jazz",
+      fireplace: "kominek",
+      "neon-tokyo": "neonowe tokio",
+      "string-quartet": "kwartet smyczkowy",
+      "porch-guitar": "gitara na ganku",
+      "deep-space": "głęboki kosmos",
     },
     station: (o) => `kan. ${o.channel} · ${o.name}`,
     offLabel: "Telewizor, wyłączony",

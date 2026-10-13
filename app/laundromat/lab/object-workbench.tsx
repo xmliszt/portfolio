@@ -310,6 +310,7 @@ export function ObjectWorkbench(props: ObjectWorkbenchProps) {
                 onPointerShowTooltip={() => setHoveredId(control.id)}
                 onKeyboardShowTooltip={() => setHoveredId(control.id)}
                 onHideTooltip={() => setHoveredId(undefined)}
+                onTouchLeave={() => setHoveredId(undefined)}
               />
             );
           })}

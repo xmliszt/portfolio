@@ -176,6 +176,82 @@ export const ko = {
     label: "화분, 풀 만지기",
     tooltip: "풀 만지기",
   },
+  board: {
+    label: "게시판, 빨래방의 새 소식",
+    tooltip: "새 소식",
+    eyebrow: "게시판",
+    heading: "새 소식",
+    subtitle: "빨래방의 작은 변화들, 최신 순으로.",
+    updated: (o: { date: string }) => `${o.date} 업데이트`,
+    footer: "연중무휴, 24시간",
+    close: "닫기",
+    closeHint: "esc로 닫기",
+    tags: {
+      opening: "오픈",
+      tv: "tv",
+      notebook: "노트",
+      languages: "언어",
+      room: "실내",
+      coffee: "커피",
+      window: "창문",
+      light: "빛",
+      board: "게시판",
+    },
+    updates: {
+      "whats-new-board": {
+        title: "새 소식 게시판",
+        body: "이 스탠드가 새 소식을 알려 줘요. 낮에는 종이처럼, 밤에는 불이 켜져요.",
+      },
+      "twelve-stations": {
+        title: "tv 채널 12개",
+        body: "독서실부터 깊은 우주까지, 새 로파이 라디오 7개가 다이얼을 채웠어요.",
+      },
+      "page-drag": {
+        title: "드래그로 페이지 넘기기",
+        body: "페이지 바깥 가장자리 어디서든 드래그해서 넘길 수 있어요.",
+      },
+      "window-light": {
+        title: "창문으로 드는 햇살",
+        body: "햇빛이 기계와 바닥까지 닿고, 해 뜰 녘과 해 질 녘엔 따뜻해져요.",
+      },
+      "shared-coffee": {
+        title: "커피 한 주전자를 함께",
+        body: "최대 7명이 같은 주전자에서 따를 수 있어요.",
+      },
+      "street-view": {
+        title: "바깥 거리",
+        body: "창문 너머로 해나 달이 비추는 거리가 보여요.",
+      },
+      "tube-counter": {
+        title: "지금 있는 사람 수",
+        body: "뒷벽의 닉시관이 당신을 포함해 빨래방에 있는 모두를 세어요.",
+      },
+      "coffee-counter": {
+        title: "카운터의 커피",
+        body: "한 주전자 내리고 한 잔 따라, 빨래가 도는 동안 마셔요.",
+      },
+      "shared-machines": {
+        title: "함께 빨래하는 사람들",
+        body: "다른 사람이 쓰는 기계가 보여요. 내 빨래를 넣어도 그들의 빨래는 그대로예요.",
+      },
+      "eighteen-languages": {
+        title: "18개 언어로 영업",
+        body: "빨래방 전체가 당신의 언어로. 구석의 지구본에서 바꿀 수 있어요.",
+      },
+      "shared-notebook": {
+        title: "낯선 이를 위한 노트",
+        body: "다음에 올 사람에게 메모를 남겨요. 다 쓴 노트는 선반에 꽂혀요.",
+      },
+      "lofi-tv": {
+        title: "tv로 듣는 로파이",
+        body: "tv를 켜고 로파이 라디오를 들어요. 채널과 볼륨 손잡이가 있어요.",
+      },
+      opening: {
+        title: "laundro.cafe 오픈",
+        body: "브라우저 속 조용한 빨래방. 빨고, 말리고, 5~60분 집중해요.",
+      },
+    },
+  },
   tubeDisplay: {
     label: (o: { count: number }) =>
       `닉시관 카운터, ${o.count === 1 ? "혼자 있어요" : `지금 ${o.count}명`}`,
@@ -191,6 +267,13 @@ export const ko = {
       "late-wash": "늦은 빨래",
       "tape-hiss": "테이프 잡음",
       "city-at-3am": "새벽 3시의 도시",
+      "study-hall": "독서실",
+      "smoky-jazz": "자욱한 재즈",
+      fireplace: "벽난로",
+      "neon-tokyo": "네온 도쿄",
+      "string-quartet": "현악 사중주",
+      "porch-guitar": "현관의 기타",
+      "deep-space": "깊은 우주",
     },
     station: (o: { channel: string; name: string }) =>
       `ch ${o.channel} · ${o.name}`,

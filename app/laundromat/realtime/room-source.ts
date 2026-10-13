@@ -1,4 +1,5 @@
 import type {
+  RemoteClock,
   RemoteDraft,
   RemoteEntry,
   RoomPresence,
@@ -8,6 +9,7 @@ export type RoomConnection = {
   update: (presence: RoomPresence) => void;
   sendDraft: (draft: RemoteDraft) => void;
   sendEntry: (entry: RemoteEntry) => void;
+  sendClock: (clock: RemoteClock) => void;
   leave: () => void;
 };
 
@@ -17,6 +19,7 @@ export type RoomSource = {
     onPeers: (peers: RoomPresence[]) => void;
     onDraft: (draft: RemoteDraft) => void;
     onEntry: (entry: RemoteEntry) => void;
+    onClock: (options: { clock: RemoteClock; receivedAt: number }) => void;
     onConnectedChange: (isConnected: boolean) => void;
     onUrgentReadyChange: (isReady: boolean) => void;
   }) => RoomConnection;

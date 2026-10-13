@@ -18,6 +18,7 @@ import {
 } from "motion/react";
 import { useSearchParams } from "next/navigation";
 
+import { getBoardFrame } from "@/lib/laundromat/board/get-board-frame";
 import type { LaidOutControl } from "@/lib/laundromat/build-scene-layout";
 import { buildSceneLayout } from "@/lib/laundromat/build-scene-layout";
 import { describeCoffeeCup } from "@/lib/laundromat/coffee/describe-coffee-cup";
@@ -51,6 +52,7 @@ import { parseCameraFocus } from "@/lib/laundromat/parse-camera-focus";
 import { assignRemoteMachines } from "@/lib/laundromat/realtime/assign-remote-machines";
 import { chooseCoffeeGroup } from "@/lib/laundromat/realtime/choose-coffee-group";
 import { chooseNotebookWriter } from "@/lib/laundromat/realtime/choose-notebook-writer";
+import { getClockOffsetMs } from "@/lib/laundromat/realtime/get-clock-offset-ms";
 import { getNotebookLock } from "@/lib/laundromat/realtime/get-notebook-lock";
 import { getPeopleHere } from "@/lib/laundromat/realtime/get-people-here";
 import type {
@@ -58,6 +60,7 @@ import type {
   RemoteEntry,
   RemoteLoad,
 } from "@/lib/laundromat/realtime/room-presence";
+import { shiftRemoteLoad } from "@/lib/laundromat/realtime/shift-remote-load";
 import type { FocusTarget, SceneConfig } from "@/lib/laundromat/scene-config";
 import { describeTv } from "@/lib/laundromat/tv/describe-tv";
 import type { TvControl } from "@/lib/laundromat/tv/describe-tv-control";
@@ -65,6 +68,7 @@ import { describeTvControl } from "@/lib/laundromat/tv/describe-tv-control";
 import { getYouTubeWatchUrl } from "@/lib/laundromat/tv/get-youtube-watch-url";
 import { cn } from "@/lib/utils";
 
+import { BOARD_DIALOG_SIZE_PX, BoardDialog } from "./board/board-dialog";
 import { useLaundromatCopy } from "./i18n/use-laundromat-copy";
 import { NotebookBook } from "./notebook/notebook-book";
 import { ShelfBookButton } from "./notebook/shelf-book-button";
@@ -89,9 +93,12 @@ import { useTvAudio } from "./use-tv-audio";
 
 const SCENE_UNIT_PX = 40;
 const TOOLTIP_DELAY_MS = 300;
-const FOCUS_TARGETS = ["shelf", "notebook"] satisfies FocusTarget[];
+const TOUCH_TOOLTIP_HOLD_MS = 1500;
+const FOCUS_TARGETS = ["shelf", "notebook", "board"] satisfies FocusTarget[];
 const KNOB_CONTROLS: LaidOutControl["control"][] = ["dial", "tuner", "volume"];
 const DOOR_HOLD_OPEN_MS = 700;
+const BOARD_DIALOG_FILL = 0.9;
+const BOARD_DIALOG_MAX_SCALE = 1.15;
 
 function getFocusedObjectId(options: {
   focus: CameraFocus;
@@ -151,6 +158,7 @@ export function LaundromatScene(props: LaundromatSceneProps) {
   const [openDoorId, setOpenDoorId] = useState<string>();
   const doorTimerRef = useRef<number>(undefined);
   const tooltipTimerRef = useRef<number>(undefined);
+  const touchHoldTimerRef = useRef<number>(undefined);
   const tooltipCooldownTimerRef = useRef<number>(undefined);
   const isTooltipWarmRef = useRef(false);
 
@@ -347,12 +355,16 @@ export function LaundromatScene(props: LaundromatSceneProps) {
   useEffect(() => {
     adoptFlasks(coffeeGroupFlasks);
   }, [adoptFlasks, coffeeGroupFlasks]);
-  const roomNow = useTickingNow(
-    room.peers.some(
+  const { setClockOffsetsMs } = appliances;
+  useEffect(() => {
+    setClockOffsetsMs(room.clockOffsetsMs);
+  }, [setClockOffsetsMs, room.clockOffsetsMs]);
+  const roomNow = useTickingNow({
+    active: room.peers.some(
       ({ load, writingSince }) =>
         load !== undefined || writingSince !== undefined
-    )
-  );
+    ),
+  });
   const now = Math.max(laundry.now, roomNow);
   const peopleHere = getPeopleHere({
     isSynced: room.isConnected && room.isSynced,
@@ -369,11 +381,12 @@ export function LaundromatScene(props: LaundromatSceneProps) {
       ownLoad.kind === "carrying" || ownLoad.kind === "folded"
         ? undefined
         : ownLoad.machine.id,
-    others: room.peers.flatMap(({ visitorId, region, load }) =>
-      load === undefined || visitorId === laundry.visitorId
-        ? []
-        : [{ visitorId, region, load }]
-    ),
+    others: room.peers.flatMap(({ visitorId, region, load }) => {
+      if (load === undefined || visitorId === laundry.visitorId) return [];
+      const offsetMs =
+        getClockOffsetMs({ offsetsMs: room.clockOffsetsMs, visitorId }) ?? 0;
+      return [{ visitorId, region, load: shiftRemoteLoad({ load, offsetMs }) }];
+    }),
     ownRegion,
     now,
   });
@@ -734,11 +747,12 @@ export function LaundromatScene(props: LaundromatSceneProps) {
     previousFocusRef.current = focus;
     if (previousFocus === focus) return;
     window.clearTimeout(tooltipTimerRef.current);
+    window.clearTimeout(touchHoldTimerRef.current);
     setTooltipId(undefined);
     setHighlightedId(undefined);
     const objectId =
       focusedObjectId ?? getFocusedObjectId({ focus: previousFocus, config });
-    if (objectId !== undefined) {
+    if (focus !== "board" && objectId !== undefined) {
       rootRef.current
         ?.querySelector<HTMLButtonElement>(`[data-hit-target="${objectId}"]`)
         ?.focus({ preventScroll: true });
@@ -748,6 +762,7 @@ export function LaundromatScene(props: LaundromatSceneProps) {
   useEffect(
     () => () => {
       window.clearTimeout(tooltipTimerRef.current);
+      window.clearTimeout(touchHoldTimerRef.current);
       window.clearTimeout(tooltipCooldownTimerRef.current);
       window.clearTimeout(doorTimerRef.current);
     },
@@ -780,6 +795,7 @@ export function LaundromatScene(props: LaundromatSceneProps) {
     source: "pointer" | "keyboard";
   }) {
     window.clearTimeout(tooltipTimerRef.current);
+    window.clearTimeout(touchHoldTimerRef.current);
     setHighlightedId(options.objectId);
     const isMovingBetweenTargets =
       tooltipId !== undefined || isTooltipWarmRef.current;
@@ -804,6 +820,14 @@ export function LaundromatScene(props: LaundromatSceneProps) {
     }
     setTooltipId(undefined);
     setHighlightedId((current) => (current === objectId ? undefined : current));
+  }
+
+  function holdTooltip(objectId: string) {
+    window.clearTimeout(touchHoldTimerRef.current);
+    touchHoldTimerRef.current = window.setTimeout(
+      () => hideTooltip(objectId),
+      TOUCH_TOOLTIP_HOLD_MS
+    );
   }
 
   function handleActivate(objectId: string) {
@@ -862,7 +886,12 @@ export function LaundromatScene(props: LaundromatSceneProps) {
       setFocus("room");
       return;
     }
-    if (KNOB_CONTROLS.includes(control.control)) sound?.play("knob-click");
+    if (KNOB_CONTROLS.includes(control.control)) {
+      sound?.play("knob-click");
+      window.clearTimeout(tooltipTimerRef.current);
+      setTooltipId(control.id);
+      setHighlightedId(control.id);
+    }
     switch (control.target) {
       case "machine": {
         const view = machineViews[options.objectId];
@@ -973,13 +1002,15 @@ export function LaundromatScene(props: LaundromatSceneProps) {
     if (focus === "room") return;
     const isOnHitTarget =
       event.target instanceof Element &&
-      event.target.closest("[data-hit-target], [data-notebook]") !== null;
+      event.target.closest(
+        "[data-hit-target], [data-notebook], [data-board-dialog]"
+      ) !== null;
     if (!isOnHitTarget) setFocus("room");
   }
 
   const tooltip = (() => {
     if (tooltipId === undefined || viewport === undefined) return undefined;
-    if (focus === "notebook") return undefined;
+    if (focus === "notebook" || focus === "board") return undefined;
     const target = layout.objects
       .flatMap((laidOut) => [
         {
@@ -1045,6 +1076,46 @@ export function LaundromatScene(props: LaundromatSceneProps) {
         x: centerX - viewport.width / 2,
         y: centerY - viewport.height / 2,
         scale: (bounds.width * camera.scale) / page.width,
+        opacity: 0,
+      },
+      to,
+    };
+  })();
+
+  const boardLift = (() => {
+    if (viewport === undefined) return undefined;
+    const { width: dialogWidth, height: dialogHeight } = BOARD_DIALOG_SIZE_PX;
+    const scale = Math.min(
+      BOARD_DIALOG_MAX_SCALE,
+      (viewport.width * BOARD_DIALOG_FILL) / dialogWidth,
+      (viewport.height * BOARD_DIALOG_FILL) / dialogHeight
+    );
+    const to = { x: 0, y: 0, scale, opacity: 1 };
+    const boardObject = layout.objects.find(
+      ({ object }) => object.id === config.camera.focusTargets.board.objectId
+    );
+    if (boardObject === undefined || prefersReducedMotion) {
+      return { from: { ...to, opacity: 0 }, to };
+    }
+    const camera = computeCamera({ focus: "board", viewport, layout, config });
+    const panel = getBoardFrame({
+      position: boardObject.object.position,
+      size: boardObject.object.size,
+      leanDeg: config.details.board.leanDeg,
+      projection: layout.projection,
+    }).panel.front;
+    const xs = panel.map((point) => point.x);
+    const ys = panel.map((point) => point.y);
+    const centerX =
+      ((Math.min(...xs) + Math.max(...xs)) / 2) * camera.scale + camera.x;
+    const centerY =
+      ((Math.min(...ys) + Math.max(...ys)) / 2) * camera.scale + camera.y;
+    return {
+      from: {
+        x: centerX - viewport.width / 2,
+        y: centerY - viewport.height / 2,
+        scale:
+          ((Math.max(...xs) - Math.min(...xs)) * camera.scale) / dialogWidth,
         opacity: 0,
       },
       to,
@@ -1135,6 +1206,7 @@ export function LaundromatScene(props: LaundromatSceneProps) {
                       })
                     }
                     onHideTooltip={() => hideTooltip(control.id)}
+                    onTouchLeave={() => holdTooltip(control.id)}
                   />
                 );
               })}
@@ -1193,6 +1265,37 @@ export function LaundromatScene(props: LaundromatSceneProps) {
                 remoteEntry={room.lastEntry}
                 onEntryPlaced={handleEntryPlaced}
                 onRequestFreeNotice={handleRequestFreeNotice}
+              />
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+      <AnimatePresence>
+        {focus === "board" && boardLift !== undefined && (
+          <motion.div
+            key="board"
+            className="pointer-events-none absolute inset-0 flex items-center justify-center"
+          >
+            <motion.div
+              className="pointer-events-auto origin-center"
+              initial={boardLift.from}
+              animate={boardLift.to}
+              exit={{ ...boardLift.from, transition: { duration: 0.32 } }}
+              transition={{
+                duration: prefersReducedMotion
+                  ? 0.2
+                  : config.details.notebook.liftMs / 1000,
+                ease: config.camera.ease,
+              }}
+            >
+              <BoardDialog
+                backlit={
+                  hour === undefined
+                    ? false
+                    : getTimeOfDay({ hour, config }).isLampOn
+                }
+                details={config.details.board}
+                onClose={() => setFocus("room")}
               />
             </motion.div>
           </motion.div>

@@ -7,12 +7,13 @@ import { describeSceneObject } from "./describe-scene-object";
 import { isInteractiveSceneObject } from "./is-interactive-scene-object";
 import { sceneConfig } from "./scene-config";
 
-test("gives every machine, both focus targets, the mat, the mug, the plant, the basket and the tube display a label and tooltip", () => {
+test("gives every machine, every focus target, the mat, the mug, the plant, the basket and the tube display a label and tooltip", () => {
   const interactiveIds = sceneConfig.objects
     .filter((object) => describeSceneObject({ object, copy: en }) !== undefined)
     .map((object) => object.id);
   assert.deepEqual(interactiveIds.toSorted(), [
     "basket",
+    "board",
     "coffee-machine",
     "dryer-1",
     "dryer-2",

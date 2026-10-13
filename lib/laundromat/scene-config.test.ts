@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
 
+import { TUNER_DETENTS } from "./tv/tv-state";
 import { sceneConfig } from "./scene-config";
 
 test("has four washers and four dryers numbered 1 to 4", () => {
@@ -31,6 +32,7 @@ test("points each camera focus target at an existing object", () => {
   assert.deepEqual(sceneConfig.camera.focusTargets, {
     shelf: { objectId: "shelf" },
     notebook: { objectId: "notebook" },
+    board: { objectId: "board" },
   });
   for (const { objectId } of Object.values(sceneConfig.camera.focusTargets)) {
     assert.ok(ids.has(objectId), objectId);
@@ -67,4 +69,8 @@ test("uses six-digit hex for every token and sky colour", () => {
 test("keeps the amber accent and ground from the guidebook", () => {
   assert.equal(sceneConfig.tokens.bg, "#0c0d0e");
   assert.equal(sceneConfig.tokens.accent, "#ff9a2e");
+});
+
+test("puts one TV station on every tuner detent", () => {
+  assert.equal(sceneConfig.details.tv.stations.length, TUNER_DETENTS);
 });

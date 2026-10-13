@@ -25,6 +25,7 @@ function apply(options: {
         state,
         event,
         now: startedAt + at,
+        flaskNow: startedAt + at,
         timing,
         visitorId: "me",
       }),
@@ -243,4 +244,28 @@ test("says someone else is brewing when another visitor started the brew", () =>
     describeCoffeeMachine({ phase, copy: en }).tooltip ?? "",
     /^someone else is brewing · done at /
   );
+});
+
+test("keeps a poured cup hot until the brewer's hot time on the local clock", () => {
+  const theirs = transitionCoffee({
+    state: INITIAL_COFFEE_STATE,
+    event: { type: "brew" },
+    now: startedAt,
+    flaskNow: startedAt,
+    timing,
+    visitorId: "them",
+  });
+  const offsetMs = 30_000;
+  const poured = transitionCoffee({
+    state: theirs,
+    event: { type: "pour" },
+    now: startedAt + 60_000 + offsetMs,
+    flaskNow: startedAt + 60_000,
+    timing,
+    visitorId: "me",
+  });
+  assert.deepEqual(poured.cup, {
+    kind: "full",
+    hotUntil: startedAt + 40_000 + timing.hotMs + offsetMs,
+  });
 });

@@ -5,6 +5,7 @@ import type { IsoProjection } from "@/lib/laundromat/project-iso-point";
 import type { SceneConfig } from "@/lib/laundromat/scene-config";
 
 import { BasketDrawing } from "./basket-drawing";
+import { BoardDrawing } from "./board-drawing";
 import { ClockDrawing } from "./clock-drawing";
 import { CoffeeMachineDrawing } from "./coffee-machine-drawing";
 import { CounterDrawing } from "./counter-drawing";
@@ -132,6 +133,14 @@ export function SceneObjectDrawing(props: SceneObjectDrawingProps) {
       return <MatDrawing {...shared} ready={views.matReady} />;
     case "counter":
       return <CounterDrawing {...shared} />;
+    case "board":
+      return (
+        <BoardDrawing
+          {...shared}
+          backlit={props.timeOfDay?.isLampOn ?? false}
+          details={details.board}
+        />
+      );
     case "tube-display":
       return (
         <TubeDisplayDrawing

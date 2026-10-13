@@ -9,6 +9,7 @@ export function parseCameraFocus(
   switch (value) {
     case "shelf":
     case "notebook":
+    case "board":
       return value;
     default:
       return "room";

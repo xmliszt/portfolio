@@ -1,7 +1,9 @@
+import { BOARD_PANEL_BOTTOM_RATIO } from "./board/get-board-frame";
 import type { SceneObject } from "./scene-config";
 
 const TABLE_TOP_THICKNESS = 0.1;
 const STOOL_SEAT_THICKNESS = 0.16;
+const BOARD_PANEL = { front: 0.55, depth: 0.4 };
 const FOOTPRINT_EDGES = [
   [
     { u: 0, v: 0 },
@@ -50,6 +52,19 @@ function getBlocker(object: SceneObject) {
     case "plant":
     case "basket":
       return { position, size };
+    case "board":
+      return {
+        position: {
+          ...position,
+          y: position.y + size.d * BOARD_PANEL.front,
+          z: position.z + size.h * BOARD_PANEL_BOTTOM_RATIO,
+        },
+        size: {
+          ...size,
+          d: size.d * BOARD_PANEL.depth,
+          h: size.h * (1 - BOARD_PANEL_BOTTOM_RATIO),
+        },
+      };
     default: {
       const unknown: never = object;
       return unknown;

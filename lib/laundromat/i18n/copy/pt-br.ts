@@ -180,6 +180,82 @@ export const ptBR = {
     label: "Planta, tocar na grama",
     tooltip: "tocar na grama",
   },
+  board: {
+    label: "Mural, novidades da lavanderia",
+    tooltip: "novidades",
+    eyebrow: "mural de avisos",
+    heading: "novidades",
+    subtitle: "Pequenas mudanças na lavanderia, as mais recentes primeiro.",
+    updated: (o: { date: string }) => `atualizado em ${o.date}`,
+    footer: "sempre aberto, 24/7",
+    close: "fechar",
+    closeHint: "esc para fechar",
+    tags: {
+      opening: "inauguração",
+      tv: "tv",
+      notebook: "caderno",
+      languages: "idiomas",
+      room: "salão",
+      coffee: "café",
+      window: "janela",
+      light: "luz",
+      board: "mural",
+    },
+    updates: {
+      "whats-new-board": {
+        title: "um mural de novidades",
+        body: "Este painel mostra o que há de novo. De dia repousa como papel, à noite se acende.",
+      },
+      "twelve-stations": {
+        title: "doze canais na tv",
+        body: "Sete novas rádios lofi preenchem o dial, da sala de estudos ao espaço profundo.",
+      },
+      "page-drag": {
+        title: "vire páginas arrastando",
+        body: "Arraste em qualquer ponto da borda externa de uma página para virá-la.",
+      },
+      "window-light": {
+        title: "sol pela janela",
+        body: "A luz do dia chega às máquinas e ao chão, e fica quente no nascer e no pôr do sol.",
+      },
+      "shared-coffee": {
+        title: "um bule de café para todos",
+        body: "Até sete pessoas se servem da mesma garrafa.",
+      },
+      "street-view": {
+        title: "a rua lá fora",
+        body: "A janela dá para a rua, iluminada pelo sol ou pela lua.",
+      },
+      "tube-counter": {
+        title: "quem está aqui",
+        body: "Os tubos da parede do fundo contam todos na lavanderia, incluindo você.",
+      },
+      "coffee-counter": {
+        title: "café no balcão",
+        body: "Passe um bule, sirva uma xícara e beba enquanto a roupa gira.",
+      },
+      "shared-machines": {
+        title: "outros lavando roupa",
+        body: "Veja quais máquinas os outros estão usando. A roupa deles fica no lugar quando você coloca a sua.",
+      },
+      "eighteen-languages": {
+        title: "aberto em 18 idiomas",
+        body: "A lavanderia inteira fala o seu idioma. Troque pelo globo no canto.",
+      },
+      "shared-notebook": {
+        title: "um caderno para desconhecidos",
+        body: "Deixe um bilhete para quem chegar depois. Cadernos cheios vão para a estante.",
+      },
+      "lofi-tv": {
+        title: "lofi na tv",
+        body: "Ligue a tv para ouvir rádio lofi, com botões de sintonia e volume.",
+      },
+      opening: {
+        title: "laundro.cafe abre",
+        body: "Uma lavanderia tranquila no navegador: lave, seque e foque de 5 a 60 minutos.",
+      },
+    },
+  },
   tubeDisplay: {
     label: (o: { count: number }) =>
       `Contador de válvulas, ${o.count === 1 ? "só você aqui" : `${o.count} pessoas aqui`}`,
@@ -195,6 +271,13 @@ export const ptBR = {
       "late-wash": "lavagem tardia",
       "tape-hiss": "chiado de fita",
       "city-at-3am": "a cidade às 3 da manhã",
+      "study-hall": "sala de estudos",
+      "smoky-jazz": "jazz enfumaçado",
+      fireplace: "lareira",
+      "neon-tokyo": "tóquio neon",
+      "string-quartet": "quarteto de cordas",
+      "porch-guitar": "violão na varanda",
+      "deep-space": "espaço profundo",
     },
     station: (o: { channel: string; name: string }) =>
       `can. ${o.channel} · ${o.name}`,

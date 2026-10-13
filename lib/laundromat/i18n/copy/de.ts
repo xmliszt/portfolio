@@ -181,6 +181,82 @@ export const de = {
     label: "Pflanze, Gras anfassen",
     tooltip: "Gras anfassen",
   },
+  board: {
+    label: "Aushang, was es Neues im Waschsalon gibt",
+    tooltip: "was gibt's neues",
+    eyebrow: "aushang",
+    heading: "was gibt's neues",
+    subtitle: "Kleine Änderungen im Waschsalon, die neuesten zuerst.",
+    updated: (o: { date: string }) => `aktualisiert am ${o.date}`,
+    footer: "immer geöffnet, 24/7",
+    close: "schließen",
+    closeHint: "esc zum schließen",
+    tags: {
+      opening: "eröffnung",
+      tv: "tv",
+      notebook: "notizbuch",
+      languages: "sprachen",
+      room: "raum",
+      coffee: "kaffee",
+      window: "fenster",
+      light: "licht",
+      board: "aushang",
+    },
+    updates: {
+      "whats-new-board": {
+        title: "ein aushang für neuigkeiten",
+        body: "Dieser Ständer zeigt, was neu ist. Tagsüber ruht er wie Papier, nachts leuchtet er.",
+      },
+      "twelve-stations": {
+        title: "zwölf sender im fernseher",
+        body: "Sieben neue Lofi-Radios füllen die Senderskala, vom Lernsaal bis zum tiefen Weltraum.",
+      },
+      "page-drag": {
+        title: "seiten durch ziehen umblättern",
+        body: "Zieh irgendwo am äußeren Rand einer Seite, um sie umzublättern.",
+      },
+      "window-light": {
+        title: "sonnenlicht durchs fenster",
+        body: "Tageslicht fällt auf Maschinen und Boden und wird bei Sonnenauf- und -untergang warm.",
+      },
+      "shared-coffee": {
+        title: "eine kanne kaffee teilen",
+        body: "Bis zu sieben von euch schenken aus derselben Kanne ein.",
+      },
+      "street-view": {
+        title: "die straße draußen",
+        body: "Das Fenster blickt auf die Straße, beschienen von Sonne oder Mond.",
+      },
+      "tube-counter": {
+        title: "ein zähler, wer da ist",
+        body: "Die Röhren an der Rückwand zählen alle im Waschsalon, dich eingeschlossen.",
+      },
+      "coffee-counter": {
+        title: "kaffee auf der theke",
+        body: "Brüh eine Kanne, schenk dir ein und trink, während die Wäsche läuft.",
+      },
+      "shared-machines": {
+        title: "andere beim waschen",
+        body: "Sieh, welche Maschinen andere benutzen. Ihre Wäsche bleibt liegen, wenn du deine einlegst.",
+      },
+      "eighteen-languages": {
+        title: "in 18 sprachen geöffnet",
+        body: "Der ganze Waschsalon spricht deine Sprache. Wechsle sie über den Globus in der Ecke.",
+      },
+      "shared-notebook": {
+        title: "ein notizbuch für fremde",
+        body: "Hinterlass eine Notiz für die nächste Person. Volle Notizbücher kommen ins Regal.",
+      },
+      "lofi-tv": {
+        title: "lofi im fernseher",
+        body: "Schalte den Fernseher für Lofi-Radio ein, mit Senderknopf und Lautstärkeregler.",
+      },
+      opening: {
+        title: "laundro.cafe öffnet",
+        body: "Ein stiller Waschsalon im Browser: waschen, trocknen, 5 bis 60 Minuten konzentrieren.",
+      },
+    },
+  },
   tubeDisplay: {
     label: (o: { count: number }) =>
       `Röhrenzähler, ${o.count === 1 ? "nur du hier" : `${o.count} Leute hier`}`,
@@ -196,6 +272,13 @@ export const de = {
       "late-wash": "späte wäsche",
       "tape-hiss": "bandrauschen",
       "city-at-3am": "stadt um 3 uhr nachts",
+      "study-hall": "lernsaal",
+      "smoky-jazz": "rauchiger jazz",
+      fireplace: "kaminfeuer",
+      "neon-tokyo": "neon-tokio",
+      "string-quartet": "streichquartett",
+      "porch-guitar": "gitarre auf der veranda",
+      "deep-space": "tiefer weltraum",
     },
     station: (o: { channel: string; name: string }) =>
       `K ${o.channel} · ${o.name}`,

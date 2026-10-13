@@ -48,6 +48,8 @@ export function describeSceneObject(options: {
       };
     case "plant":
       return { label: copy.plant.label, tooltip: copy.plant.tooltip };
+    case "board":
+      return { label: copy.board.label, tooltip: copy.board.tooltip };
     case "basket":
       return {
         label: copy.laundryBasket.labels.empty,

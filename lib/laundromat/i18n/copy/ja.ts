@@ -176,6 +176,82 @@ export const ja = {
     label: "観葉植物、草に触れる",
     tooltip: "草に触れる",
   },
+  board: {
+    label: "掲示板、コインランドリーのお知らせ",
+    tooltip: "お知らせ",
+    eyebrow: "掲示板",
+    heading: "お知らせ",
+    subtitle: "コインランドリーの小さな変化を、新しい順に。",
+    updated: (o: { date: string }) => `${o.date} 更新`,
+    footer: "年中無休・24時間営業",
+    close: "閉じる",
+    closeHint: "esc で閉じる",
+    tags: {
+      opening: "オープン",
+      tv: "テレビ",
+      notebook: "ノート",
+      languages: "言語",
+      room: "店内",
+      coffee: "コーヒー",
+      window: "窓",
+      light: "光",
+      board: "掲示板",
+    },
+    updates: {
+      "whats-new-board": {
+        title: "お知らせボードを設置",
+        body: "このスタンドで新しいことをお知らせします。昼は紙のように、夜は明かりが灯ります。",
+      },
+      "twelve-stations": {
+        title: "テレビが12チャンネルに",
+        body: "自習室から深宇宙まで、新しい lofi ラジオが7局加わりました。",
+      },
+      "page-drag": {
+        title: "ドラッグでページをめくる",
+        body: "ページの外側の端ならどこからでも、ドラッグしてめくれます。",
+      },
+      "window-light": {
+        title: "窓から差し込む日差し",
+        body: "昼の光が洗濯機や床まで届き、朝夕にはあたたかな色に変わります。",
+      },
+      "shared-coffee": {
+        title: "コーヒーをみんなで",
+        body: "同じポットから最大7人まで注げます。",
+      },
+      "street-view": {
+        title: "窓の外の通り",
+        body: "窓から通りが見えます。昼は日差し、夜は月明かりに照らされて。",
+      },
+      "tube-counter": {
+        title: "いまいる人のカウンター",
+        body: "奥の壁のニキシー管が、あなたも含めて店内の人数を数えます。",
+      },
+      "coffee-counter": {
+        title: "カウンターのコーヒー",
+        body: "ポットで淹れて一杯注ぎ、洗濯が回るあいだに飲めます。",
+      },
+      "shared-machines": {
+        title: "ほかの人の洗濯",
+        body: "ほかの人が使っている洗濯機が見えます。自分の洗濯物を入れても、ほかの人のものはそのまま。",
+      },
+      "eighteen-languages": {
+        title: "18の言語で営業",
+        body: "店内すべてがあなたの言語に。隅の地球儀から切り替えられます。",
+      },
+      "shared-notebook": {
+        title: "見知らぬ誰かへのノート",
+        body: "次に来る人へメモを残せます。いっぱいになったノートは棚へ。",
+      },
+      "lofi-tv": {
+        title: "テレビで lofi",
+        body: "テレビをつけて lofi ラジオを。選局つまみと音量つまみ付き。",
+      },
+      opening: {
+        title: "laundro.cafe オープン",
+        body: "ブラウザの中の静かなコインランドリー。洗って、乾かして、5〜60分集中。",
+      },
+    },
+  },
   tubeDisplay: {
     label: (o: { count: number }) =>
       `ニキシー管カウンター、${o.count === 1 ? "いるのはあなただけ" : `いま${o.count}人`}`,
@@ -191,6 +267,13 @@ export const ja = {
       "late-wash": "夜更けの洗濯",
       "tape-hiss": "テープのノイズ",
       "city-at-3am": "午前3時の街",
+      "study-hall": "自習室",
+      "smoky-jazz": "けむたいジャズ",
+      fireplace: "暖炉",
+      "neon-tokyo": "ネオンの東京",
+      "string-quartet": "弦楽四重奏",
+      "porch-guitar": "縁側のギター",
+      "deep-space": "深宇宙",
     },
     station: (o: { channel: string; name: string }) =>
       `ch ${o.channel} · ${o.name}`,

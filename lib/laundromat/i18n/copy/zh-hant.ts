@@ -170,6 +170,82 @@ export const zhHant = {
     label: "盆栽，摸摸草",
     tooltip: "摸摸草",
   },
+  board: {
+    label: "告示板，洗衣店的新鮮事",
+    tooltip: "新鮮事",
+    eyebrow: "告示板",
+    heading: "新鮮事",
+    subtitle: "洗衣店裡的小變化，最新的在最前。",
+    updated: (o: { date: string }) => `${o.date} 更新`,
+    footer: "全年無休，24 小時營業",
+    close: "關閉",
+    closeHint: "按 esc 關閉",
+    tags: {
+      opening: "開幕",
+      tv: "電視",
+      notebook: "筆記本",
+      languages: "語言",
+      room: "店內",
+      coffee: "咖啡",
+      window: "窗戶",
+      light: "光線",
+      board: "告示板",
+    },
+    updates: {
+      "whats-new-board": {
+        title: "新添一塊告示板",
+        body: "這塊立牌告訴你有什麼新鮮事。白天像紙一樣安靜，入夜後亮起燈來。",
+      },
+      "twelve-stations": {
+        title: "電視有了十二個頻道",
+        body: "從自習室到深空，七個新的 lofi 電台填滿了調台旋鈕。",
+      },
+      "page-drag": {
+        title: "拖曳翻頁",
+        body: "沿著頁面外側邊緣任意位置拖曳，就能翻頁。",
+      },
+      "window-light": {
+        title: "陽光照進窗戶",
+        body: "白天的光線會照到機器和地板上，日出日落時變得溫暖。",
+      },
+      "shared-coffee": {
+        title: "一壺咖啡大家分",
+        body: "最多七個人可以從同一個壺裡倒咖啡。",
+      },
+      "street-view": {
+        title: "窗外的街道",
+        body: "窗外是一條街，被陽光或月光照亮。",
+      },
+      "tube-counter": {
+        title: "誰在這裡",
+        body: "後牆上的輝光管會數出洗衣店裡的每個人，也包括你。",
+      },
+      "coffee-counter": {
+        title: "櫃檯上的咖啡",
+        body: "煮一壺，倒一杯，邊等衣服轉邊喝。",
+      },
+      "shared-machines": {
+        title: "別人也在洗衣服",
+        body: "看看其他人在用哪台機器。你放衣服時，別人的衣服不會動。",
+      },
+      "eighteen-languages": {
+        title: "18 種語言營業",
+        body: "整間洗衣店都說你的語言。在角落的地球圖示切換。",
+      },
+      "shared-notebook": {
+        title: "寫給陌生人的筆記本",
+        body: "給下一個進來的人留一句話。寫滿的本子會放上書架。",
+      },
+      "lofi-tv": {
+        title: "電視裡的 lofi",
+        body: "打開電視聽 lofi 電台，有調台和音量旋鈕。",
+      },
+      opening: {
+        title: "laundro.cafe 開幕",
+        body: "瀏覽器裡一間安靜的洗衣店：洗衣、烘乾，專注 5 到 60 分鐘。",
+      },
+    },
+  },
   tubeDisplay: {
     label: (o: { count: number }) =>
       `輝光管計數器，${o.count === 1 ? "只有你在這裡" : `這裡有 ${o.count} 個人`}`,
@@ -185,6 +261,13 @@ export const zhHant = {
       "late-wash": "深夜洗衣",
       "tape-hiss": "錄音帶沙沙",
       "city-at-3am": "凌晨三點的城市",
+      "study-hall": "自習室",
+      "smoky-jazz": "煙霧爵士",
+      fireplace: "壁爐",
+      "neon-tokyo": "霓虹東京",
+      "string-quartet": "弦樂四重奏",
+      "porch-guitar": "門廊吉他",
+      "deep-space": "深空",
     },
     station: (o: { channel: string; name: string }) =>
       `${o.channel} 台 · ${o.name}`,

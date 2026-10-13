@@ -7,6 +7,7 @@ import type { SceneConfig } from "@/lib/laundromat/scene-config";
 import { toSvgPoints } from "@/lib/laundromat/to-svg-points";
 import { fitCaptionFontSize } from "@/lib/laundromat/tv/fit-caption-font-size";
 import { formatStation } from "@/lib/laundromat/tv/format-station";
+import { TUNER_DETENTS } from "@/lib/laundromat/tv/tv-state";
 import { cn } from "@/lib/utils";
 
 import { BoxBevel } from "./box-bevel";
@@ -14,7 +15,6 @@ import { IsoBox } from "./iso-box";
 import { partStroke } from "./part-stroke";
 import type { TvView } from "./scene-views";
 
-const TUNER_DETENTS = 12;
 const SCANLINE_GAP = 2.5;
 const GRILLE_GAP = 3;
 const CAPTION_INSET = 6;
@@ -467,7 +467,7 @@ export function TvDrawing(props: TvDrawingProps) {
           <g
             data-lm-motion
             style={{
-              transform: `rotate(${tv.station * details.knobDegreesPerDetent}deg)`,
+              transform: `rotate(${tv.station * (360 / TUNER_DETENTS)}deg)`,
               transition: "transform 180ms cubic-bezier(0.2, 0.9, 0.3, 1.15)",
             }}
           >

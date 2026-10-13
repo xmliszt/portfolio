@@ -1,3 +1,4 @@
+import { useTickingNow } from "@/app/laundromat/use-ticking-now";
 import type { LaidOutObject } from "@/lib/laundromat/build-scene-layout";
 import type { CoffeePhase } from "@/lib/laundromat/coffee/get-coffee-phase";
 import {
@@ -33,6 +34,8 @@ const GAUGE_TICKS = [-1, -0.67, -0.33, 0, 0.33, 0.67, 1];
 const VENT_SLOTS = [0.24, 0.29, 0.34];
 const STREAM_DASH = "6 0.8";
 
+const BREW_FRAME_MS = 100;
+
 type CoffeeMachineDrawingProps = {
   laidOut: LaidOutObject;
   projection: IsoProjection;
@@ -42,6 +45,10 @@ type CoffeeMachineDrawingProps = {
 };
 
 export function CoffeeMachineDrawing(props: CoffeeMachineDrawingProps) {
+  const drawNow = useTickingNow({
+    active: props.phase.kind === "brewing",
+    intervalMs: BREW_FRAME_MS,
+  });
   const { object, face } = props.laidOut;
   if (face?.target !== "coffee") return null;
   const { projection, phase, details } = props;
@@ -52,7 +59,23 @@ export function CoffeeMachineDrawing(props: CoffeeMachineDrawingProps) {
   const isFlaskHighlighted = props.highlightedId === `${object.id}-flask`;
   const isLive =
     phase.kind === "brewing" || (phase.kind === "ready" && phase.hot);
-  const fill = phase.kind === "empty" ? 0 : phase.level;
+  const fill = (() => {
+    switch (phase.kind) {
+      case "empty":
+        return 0;
+      case "ready":
+        return phase.level;
+      case "brewing": {
+        const brewMs = details.brewSeconds * 1000;
+        const levelNow = 1 - (phase.doneAt - drawNow) / brewMs;
+        return Math.min(1, Math.max(phase.level, levelNow));
+      }
+      default: {
+        const unhandled: never = phase;
+        return unhandled;
+      }
+    }
+  })();
   const baseTop = p.z + face.baseHeight;
   const top = p.z + size.h;
   const headBottom = top - HEAD_HEIGHT;

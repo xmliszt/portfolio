@@ -185,6 +185,82 @@ export const it = {
     label: "Pianta, tocca l'erba",
     tooltip: "tocca l'erba",
   },
+  board: {
+    label: "Bacheca, le novità della lavanderia",
+    tooltip: "novità",
+    eyebrow: "bacheca",
+    heading: "novità",
+    subtitle: "Piccoli cambiamenti in lavanderia, i più recenti per primi.",
+    updated: (o: { date: string }) => `aggiornato il ${o.date}`,
+    footer: "sempre aperto, 24/7",
+    close: "chiudi",
+    closeHint: "esc per chiudere",
+    tags: {
+      opening: "apertura",
+      tv: "tv",
+      notebook: "quaderno",
+      languages: "lingue",
+      room: "sala",
+      coffee: "caffè",
+      window: "finestra",
+      light: "luce",
+      board: "bacheca",
+    },
+    updates: {
+      "whats-new-board": {
+        title: "una bacheca delle novità",
+        body: "Questo espositore mostra le novità. Di giorno è come carta, di notte si illumina.",
+      },
+      "twelve-stations": {
+        title: "dodici canali in tv",
+        body: "Sette nuove radio lofi riempiono la manopola, dall'aula studio allo spazio profondo.",
+      },
+      "page-drag": {
+        title: "sfoglia trascinando",
+        body: "Trascina in qualsiasi punto del bordo esterno di una pagina per girarla.",
+      },
+      "window-light": {
+        title: "il sole dalla finestra",
+        body: "La luce del giorno arriva alle macchine e al pavimento, e si scalda all'alba e al tramonto.",
+      },
+      "shared-coffee": {
+        title: "una caffettiera per tutti",
+        body: "Fino a sette persone si servono dalla stessa caraffa.",
+      },
+      "street-view": {
+        title: "la strada fuori",
+        body: "La finestra dà sulla strada, illuminata dal sole o dalla luna.",
+      },
+      "tube-counter": {
+        title: "chi c'è",
+        body: "I tubi sulla parete di fondo contano tutti quelli in lavanderia, te compreso.",
+      },
+      "coffee-counter": {
+        title: "caffè sul bancone",
+        body: "Prepara una caffettiera, versati una tazza e bevila mentre il bucato gira.",
+      },
+      "shared-machines": {
+        title: "altri fanno il bucato",
+        body: "Guarda quali macchine usano gli altri. Il loro bucato resta al suo posto quando carichi il tuo.",
+      },
+      "eighteen-languages": {
+        title: "aperto in 18 lingue",
+        body: "Tutta la lavanderia parla la tua lingua. Cambiala dal globo nell'angolo.",
+      },
+      "shared-notebook": {
+        title: "un quaderno per sconosciuti",
+        body: "Lascia un biglietto a chi arriva dopo. I quaderni pieni vanno sullo scaffale.",
+      },
+      "lofi-tv": {
+        title: "lofi in tv",
+        body: "Accendi la tv per la radio lofi, con manopola dei canali e del volume.",
+      },
+      opening: {
+        title: "apre laundro.cafe",
+        body: "Una lavanderia tranquilla nel browser: lava, asciuga, concentrati da 5 a 60 minuti.",
+      },
+    },
+  },
   tubeDisplay: {
     label: (o: { count: number }) =>
       `Contatore a valvole, ${o.count === 1 ? "solo tu qui" : `${o.count} persone qui`}`,
@@ -200,6 +276,13 @@ export const it = {
       "late-wash": "bucato a tarda ora",
       "tape-hiss": "fruscio di nastro",
       "city-at-3am": "la città alle 3 di notte",
+      "study-hall": "aula studio",
+      "smoky-jazz": "jazz fumoso",
+      fireplace: "caminetto",
+      "neon-tokyo": "tokyo al neon",
+      "string-quartet": "quartetto d'archi",
+      "porch-guitar": "chitarra in veranda",
+      "deep-space": "spazio profondo",
     },
     station: (o: { channel: string; name: string }) =>
       `can. ${o.channel} · ${o.name}`,

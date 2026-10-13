@@ -148,6 +148,82 @@ export const tr = {
     label: "Bitki, çimlere dokun",
     tooltip: "çimlere dokun",
   },
+  board: {
+    label: "İlan panosu, çamaşırhanede neler yeni",
+    tooltip: "neler yeni",
+    eyebrow: "ilan panosu",
+    heading: "neler yeni",
+    subtitle: "Çamaşırhanedeki küçük değişiklikler, en yenisi önce.",
+    updated: (o: { date: string }) => `${o.date} güncellendi`,
+    footer: "her zaman açık, 7/24",
+    close: "kapat",
+    closeHint: "kapatmak için esc",
+    tags: {
+      opening: "açılış",
+      tv: "tv",
+      notebook: "defter",
+      languages: "diller",
+      room: "salon",
+      coffee: "kahve",
+      window: "pencere",
+      light: "ışık",
+      board: "pano",
+    },
+    updates: {
+      "whats-new-board": {
+        title: "yenilikler için bir pano",
+        body: "Bu stant yenilikleri gösterir. Gündüz kâğıt gibi durur, gece ışıldar.",
+      },
+      "twelve-stations": {
+        title: "televizyonda on iki kanal",
+        body: "Etüt salonundan derin uzaya, yedi yeni lofi radyo ayar düğmesini dolduruyor.",
+      },
+      "page-drag": {
+        title: "sürükleyerek sayfa çevir",
+        body: "Sayfayı çevirmek için dış kenarının herhangi bir yerinden sürükle.",
+      },
+      "window-light": {
+        title: "pencereden gelen güneş",
+        body: "Gün ışığı makinelere ve zemine ulaşır, gün doğumu ve batımında ısınır.",
+      },
+      "shared-coffee": {
+        title: "bir demlik kahve paylaş",
+        body: "Yedi kişiye kadar aynı termostan doldurabilir.",
+      },
+      "street-view": {
+        title: "dışarıdaki sokak",
+        body: "Pencere, güneş ya da ayla aydınlanan sokağa bakar.",
+      },
+      "tube-counter": {
+        title: "burada kim var",
+        body: "Arka duvardaki tüpler, sen dahil çamaşırhanedeki herkesi sayar.",
+      },
+      "coffee-counter": {
+        title: "tezgâhta kahve",
+        body: "Bir demlik demle, bir fincan doldur, çamaşırın dönerken iç.",
+      },
+      "shared-machines": {
+        title: "çamaşır yıkayan diğerleri",
+        body: "Diğer ziyaretçilerin hangi makineleri kullandığını gör. Sen yüklerken onların çamaşırı yerinde kalır.",
+      },
+      "eighteen-languages": {
+        title: "18 dilde açık",
+        body: "Bütün çamaşırhane senin dilini konuşur. Köşedeki küreden değiştir.",
+      },
+      "shared-notebook": {
+        title: "yabancılar için bir defter",
+        body: "Sonra gelecek kişiye bir not bırak. Dolan defterler rafa kaldırılır.",
+      },
+      "lofi-tv": {
+        title: "televizyonda lofi",
+        body: "Lofi radyo için televizyonu aç, kanal ve ses düğmeleriyle.",
+      },
+      opening: {
+        title: "laundro.cafe açıldı",
+        body: "Tarayıcında sessiz bir çamaşırhane: yıka, kurut, 5 ila 60 dakika odaklan.",
+      },
+    },
+  },
   tubeDisplay: {
     label: (o: { count: number }) =>
       `Tüplü sayaç, ${o.count === 1 ? "burada sadece sen varsın" : `burada ${o.count} kişi`}`,
@@ -163,6 +239,13 @@ export const tr = {
       "late-wash": "gece yıkaması",
       "tape-hiss": "kaset hışırtısı",
       "city-at-3am": "gece 3'te şehir",
+      "study-hall": "etüt salonu",
+      "smoky-jazz": "dumanlı caz",
+      fireplace: "şömine",
+      "neon-tokyo": "neon tokyo",
+      "string-quartet": "yaylı dörtlüsü",
+      "porch-guitar": "verandada gitar",
+      "deep-space": "derin uzay",
     },
     station: (o) => `kanal ${o.channel} · ${o.name}`,
     offLabel: "Televizyon, kapalı",

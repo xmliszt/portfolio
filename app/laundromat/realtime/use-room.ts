@@ -3,6 +3,7 @@
 import { useContext, useEffect, useRef, useState } from "react";
 import { omit } from "lodash";
 
+import { mergeClockOffset } from "@/lib/laundromat/realtime/merge-clock-offset";
 import type {
   RemoteDraft,
   RemoteEntry,
@@ -18,7 +19,7 @@ const DOWN_AFTER_MS = 15_000;
 
 type OwnPresence = Omit<RoomPresence, "sessionId">;
 
-/** Join the laundromat room as this tab while `presence` is set, keeping it tracked, and return this tab's `sessionId`, whether the room is connected, `isConnecting` until the first connection succeeds or fails, whether presence has synced since it connected, `isUrgentReady` when a change to `writingSince` would reach the room now, `isDown` once a lost connection has stayed lost for `DOWN_AFTER_MS`, the other tabs last seen here, the latest draft of each, the last entry another tab saved, `sendDraft`, throttled and sent again whenever someone new arrives, and `sendEntry`. */
+/** Join the laundromat room as this tab while `presence` is set, keeping it tracked, and return this tab's `sessionId`, whether the room is connected, `isConnecting` until the first connection succeeds or fails, whether presence has synced since it connected, `isUrgentReady` when a change to `writingSince` would reach the room now, `isDown` once a lost connection has stayed lost for `DOWN_AFTER_MS`, the other tabs last seen here, the latest draft of each, the last entry another tab saved, `clockOffsetsMs` (local time minus each other visitor's time, from the clock readings tracked peers broadcast, kept after they leave; this tab broadcasts its own on connect and whenever the peers change), `sendDraft`, throttled and sent again whenever someone new arrives, and `sendEntry`. */
 export function useRoom(presence: OwnPresence | undefined) {
   const source = useContext(RoomSourceContext);
   const [sessionId] = useState(() => crypto.randomUUID());
@@ -33,6 +34,9 @@ export function useRoom(presence: OwnPresence | undefined) {
     {}
   );
   const [lastEntry, setLastEntry] = useState<RemoteEntry>();
+  const [clockOffsetsMs, setClockOffsetsMs] = useState<{
+    [visitorId: string]: number;
+  }>({});
   const connectionRef = useRef<RoomConnection>(undefined);
   const latestDraftRef = useRef<RemoteDraft>(undefined);
   const draftTimerRef = useRef<number>(undefined);
@@ -51,10 +55,27 @@ export function useRoom(presence: OwnPresence | undefined) {
         setPeers(next);
         setIsSynced(true);
       },
+      onClock: ({ clock, receivedAt }) => {
+        if (!join.isCurrent) return;
+        const isTrackedPeer = peersRef.current.some(
+          (peer) =>
+            peer.sessionId === clock.sessionId &&
+            peer.visitorId === clock.visitorId
+        );
+        if (!isTrackedPeer) return;
+        setClockOffsetsMs((current) =>
+          mergeClockOffset({ offsetsMs: current, clock, receivedAt })
+        );
+      },
       onConnectedChange: (connected) => {
         if (!join.isCurrent) return;
         setIsConnected(connected);
         if (connected) {
+          connectionRef.current?.sendClock({
+            sessionId,
+            visitorId,
+            sentAt: Date.now(),
+          });
           window.clearTimeout(join.downTimer);
           join.downTimer = undefined;
           setIsDown(false);
@@ -190,6 +211,13 @@ export function useRoom(presence: OwnPresence | undefined) {
 
   const peerIds = peers.map((peer) => peer.sessionId).join(",");
   useEffect(() => {
+    if (visitorId !== undefined) {
+      connectionRef.current?.sendClock({
+        sessionId,
+        visitorId,
+        sentAt: Date.now(),
+      });
+    }
     const present = peerIds.split(",");
     setDrafts((current) =>
       Object.fromEntries(
@@ -200,7 +228,7 @@ export function useRoom(presence: OwnPresence | undefined) {
     if (latest !== undefined && latest.text !== "") {
       connectionRef.current?.sendDraft(latest);
     }
-  }, [peerIds]);
+  }, [peerIds, sessionId, visitorId]);
 
   function sendDraft(draft: Omit<RemoteDraft, "sessionId">) {
     latestDraftRef.current = { sessionId, ...draft };
@@ -226,6 +254,7 @@ export function useRoom(presence: OwnPresence | undefined) {
     peers,
     drafts,
     lastEntry,
+    clockOffsetsMs,
     sendDraft,
     sendEntry,
   };

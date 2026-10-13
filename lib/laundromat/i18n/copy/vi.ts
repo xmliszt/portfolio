@@ -181,6 +181,82 @@ export const vi = {
     label: "Chậu cây, chạm vào cỏ",
     tooltip: "chạm vào cỏ",
   },
+  board: {
+    label: "Bảng tin, có gì mới ở tiệm giặt",
+    tooltip: "có gì mới",
+    eyebrow: "bảng tin",
+    heading: "có gì mới",
+    subtitle: "Những thay đổi nhỏ ở tiệm giặt, mới nhất ở trên.",
+    updated: (o: { date: string }) => `cập nhật ${o.date}`,
+    footer: "luôn mở cửa, 24/7",
+    close: "đóng",
+    closeHint: "esc để đóng",
+    tags: {
+      opening: "khai trương",
+      tv: "tv",
+      notebook: "sổ tay",
+      languages: "ngôn ngữ",
+      room: "tiệm",
+      coffee: "cà phê",
+      window: "cửa sổ",
+      light: "ánh sáng",
+      board: "bảng tin",
+    },
+    updates: {
+      "whats-new-board": {
+        title: "bảng tin cho điều mới",
+        body: "Tấm bảng này cho biết có gì mới. Ban ngày lặng như giấy, ban đêm sáng đèn.",
+      },
+      "twelve-stations": {
+        title: "mười hai kênh trên tv",
+        body: "Bảy đài lofi mới lấp đầy nút dò kênh, từ phòng tự học đến vũ trụ sâu thẳm.",
+      },
+      "page-drag": {
+        title: "kéo để lật trang",
+        body: "Kéo ở bất kỳ đâu dọc mép ngoài của trang để lật.",
+      },
+      "window-light": {
+        title: "nắng qua khung cửa sổ",
+        body: "Ánh nắng chạm tới máy giặt và sàn nhà, và ấm lên lúc bình minh và hoàng hôn.",
+      },
+      "shared-coffee": {
+        title: "chung một ấm cà phê",
+        body: "Tối đa bảy người có thể rót từ cùng một bình.",
+      },
+      "street-view": {
+        title: "con phố bên ngoài",
+        body: "Cửa sổ nhìn ra phố, dưới nắng hay ánh trăng.",
+      },
+      "tube-counter": {
+        title: "ai đang ở đây",
+        body: "Các ống đèn trên tường sau đếm mọi người trong tiệm, kể cả bạn.",
+      },
+      "coffee-counter": {
+        title: "cà phê trên quầy",
+        body: "Pha một ấm, rót một tách và nhâm nhi khi đồ đang quay.",
+      },
+      "shared-machines": {
+        title: "người khác cũng đang giặt",
+        body: "Xem người khác đang dùng máy nào. Đồ của họ vẫn ở nguyên chỗ khi bạn cho đồ vào.",
+      },
+      "eighteen-languages": {
+        title: "mở cửa bằng 18 ngôn ngữ",
+        body: "Cả tiệm giặt nói ngôn ngữ của bạn. Đổi từ quả địa cầu ở góc.",
+      },
+      "shared-notebook": {
+        title: "sổ tay cho người lạ",
+        body: "Để lại lời nhắn cho người đến sau. Sổ đầy sẽ lên kệ.",
+      },
+      "lofi-tv": {
+        title: "lofi trên tv",
+        body: "Bật tv để nghe radio lofi, có núm dò kênh và âm lượng.",
+      },
+      opening: {
+        title: "laundro.cafe khai trương",
+        body: "Một tiệm giặt yên tĩnh trong trình duyệt: giặt, sấy, tập trung 5 đến 60 phút.",
+      },
+    },
+  },
   tubeDisplay: {
     label: (o: { count: number }) =>
       `Bộ đếm đèn ống, ${o.count === 1 ? "chỉ có bạn ở đây" : `${o.count} người ở đây`}`,
@@ -196,6 +272,13 @@ export const vi = {
       "late-wash": "mẻ giặt khuya",
       "tape-hiss": "tiếng rè băng",
       "city-at-3am": "phố lúc 3 giờ sáng",
+      "study-hall": "phòng tự học",
+      "smoky-jazz": "jazz khói",
+      fireplace: "lò sưởi",
+      "neon-tokyo": "tokyo đèn neon",
+      "string-quartet": "tứ tấu đàn dây",
+      "porch-guitar": "guitar hiên nhà",
+      "deep-space": "vũ trụ sâu thẳm",
     } satisfies { [id in TvStationId]: string },
     station: (o: { channel: string; name: string }) =>
       `kênh ${o.channel} · ${o.name}`,
