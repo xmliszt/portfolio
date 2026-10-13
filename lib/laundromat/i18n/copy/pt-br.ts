@@ -215,8 +215,8 @@ export const ptBR = {
     },
     updates: {
       "bedroom-curtains": {
-        title: "feche as cortinas em casa",
-        body: "Clique nas cortinas do seu quarto para abrir ou fechar. A luz do quarto acompanha, sol de dia e lua à noite.",
+        title: "cortinas e uma luminária nova em casa",
+        body: "Clique nas cortinas ou na luminária do seu quarto. Os dois ambientes agora clareiam e escurecem com o sol, a lua e as luminárias.",
       },
       "door-bell": {
         title: "um sininho na porta",

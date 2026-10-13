@@ -185,8 +185,8 @@ export const nl = {
     },
     updates: {
       "bedroom-curtains": {
-        title: "doe thuis de gordijnen dicht",
-        body: "Klik op de gordijnen in je kamer om ze open of dicht te doen. Het licht in de kamer gaat mee, overdag de zon en 's nachts de maan.",
+        title: "gordijnen en een nieuwe lamp thuis",
+        body: "Klik op de gordijnen of de lamp in je kamer. Beide ruimtes worden nu lichter en donkerder met de zon, de maan en de lampen.",
       },
       "door-bell": {
         title: "een belletje aan de deur",

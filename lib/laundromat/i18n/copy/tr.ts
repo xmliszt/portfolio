@@ -181,8 +181,8 @@ export const tr = {
     },
     updates: {
       "bedroom-curtains": {
-        title: "evde perdeleri çek",
-        body: "Odandaki perdelere tıklayarak aç ya da kapat. Odadaki ışık da değişir, gündüz güneş, gece ay.",
+        title: "evde perdeler ve yeni bir lamba",
+        body: "Odandaki perdelere ya da lambaya tıkla. İki oda da artık güneşle, ayla ve lambalarla aydınlanıp kararıyor.",
       },
       "door-bell": {
         title: "kapıda bir çan",

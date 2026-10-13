@@ -218,8 +218,8 @@ export const id = {
     },
     updates: {
       "bedroom-curtains": {
-        title: "tarik gorden di rumah",
-        body: "Klik gorden di kamarmu untuk membuka atau menutupnya. Cahaya di kamar ikut berubah, matahari di siang hari dan bulan di malam hari.",
+        title: "gorden dan lampu baru di rumah",
+        body: "Klik gorden atau lampu di kamarmu. Kedua ruangan kini jadi lebih terang dan gelap mengikuti matahari, bulan, dan lampu.",
       },
       "door-bell": {
         title: "lonceng di pintu",

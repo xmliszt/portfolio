@@ -197,8 +197,8 @@ export const pl = {
     },
     updates: {
       "bedroom-curtains": {
-        title: "zasuń zasłony w domu",
-        body: "Kliknij zasłony w swoim pokoju, żeby je odsunąć albo zasunąć. Światło w pokoju się zmienia, w dzień słońce, w nocy księżyc.",
+        title: "zasłony i nowa lampa w domu",
+        body: "Kliknij zasłony albo lampę w swoim pokoju. Oba pomieszczenia jaśnieją i ciemnieją teraz razem ze słońcem, księżycem i lampami.",
       },
       "door-bell": {
         title: "dzwonek przy drzwiach",

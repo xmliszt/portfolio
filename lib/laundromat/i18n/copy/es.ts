@@ -214,8 +214,8 @@ export const es = {
     },
     updates: {
       "bedroom-curtains": {
-        title: "corre las cortinas en casa",
-        body: "Haz clic en las cortinas de tu cuarto para abrirlas o cerrarlas. La luz del cuarto cambia con ellas, sol de día y luna de noche.",
+        title: "cortinas y una lámpara nueva en casa",
+        body: "Haz clic en las cortinas o en la lámpara de tu cuarto. Las dos habitaciones ahora se iluminan y oscurecen con el sol, la luna y las lámparas.",
       },
       "door-bell": {
         title: "una campanilla en la puerta",

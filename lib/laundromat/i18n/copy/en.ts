@@ -219,8 +219,8 @@ export const en = {
     } satisfies { [tag in BoardTag]: string },
     updates: {
       "bedroom-curtains": {
-        title: "draw the curtains at home",
-        body: "Click the curtains in your room to open or close them. The room follows the light, sun by day and moon by night.",
+        title: "curtains and a new lamp at home",
+        body: "Click the curtains or the lamp in your room. Both rooms now grow lighter and darker with the sun, the moon and the lamps.",
       },
       "door-bell": {
         title: "a bell on the door",

@@ -220,8 +220,8 @@ export const it = {
     },
     updates: {
       "bedroom-curtains": {
-        title: "tira le tende a casa",
-        body: "Clicca sulle tende della tua stanza per aprirle o chiuderle. La luce della stanza le segue, il sole di giorno e la luna di notte.",
+        title: "tende e una nuova lampada a casa",
+        body: "Clicca sulle tende o sulla lampada della tua stanza. Ora entrambe le stanze si schiariscono e si scuriscono con il sole, la luna e le lampade.",
       },
       "door-bell": {
         title: "un campanello sulla porta",

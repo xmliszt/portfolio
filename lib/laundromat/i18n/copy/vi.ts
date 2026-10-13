@@ -216,8 +216,8 @@ export const vi = {
     },
     updates: {
       "bedroom-curtains": {
-        title: "kéo rèm ở nhà",
-        body: "Bấm vào rèm trong phòng để mở hoặc đóng. Ánh sáng trong phòng đổi theo, nắng ban ngày và trăng ban đêm.",
+        title: "rèm và đèn mới ở nhà",
+        body: "Bấm vào rèm hoặc đèn trong phòng. Giờ cả hai căn phòng sáng lên và tối đi theo mặt trời, mặt trăng và đèn.",
       },
       "door-bell": {
         title: "chuông trên cửa",

@@ -202,8 +202,8 @@ export const zhHant = {
     },
     updates: {
       "bedroom-curtains": {
-        title: "在家拉窗簾",
-        body: "點一下房間裡的窗簾就能拉開或拉上。房間的光線也會跟著變，白天是陽光，夜裡是月光。",
+        title: "家裡的窗簾和新檯燈",
+        body: "點一下房間裡的窗簾或檯燈。現在兩個房間都會隨著太陽、月亮和燈光變亮或變暗。",
       },
       "door-bell": {
         title: "門上掛了鈴鐺",

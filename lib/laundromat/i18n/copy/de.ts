@@ -216,8 +216,8 @@ export const de = {
     },
     updates: {
       "bedroom-curtains": {
-        title: "zieh zu Hause die Vorhänge",
-        body: "Klick auf die Vorhänge in deinem Zimmer, um sie auf- oder zuzuziehen. Das Licht im Zimmer folgt, tagsüber die Sonne, nachts der Mond.",
+        title: "Vorhänge und eine neue Lampe zu Hause",
+        body: "Klick auf die Vorhänge oder die Lampe in deinem Zimmer. Beide Räume werden jetzt mit Sonne, Mond und Lampen heller und dunkler.",
       },
       "door-bell": {
         title: "eine glocke an der tür",

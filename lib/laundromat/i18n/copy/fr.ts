@@ -214,8 +214,8 @@ export const fr = {
     },
     updates: {
       "bedroom-curtains": {
-        title: "tire les rideaux chez toi",
-        body: "Clique sur les rideaux de ta chambre pour les ouvrir ou les fermer. La lumière de la pièce suit, le soleil le jour et la lune la nuit.",
+        title: "des rideaux et une nouvelle lampe chez toi",
+        body: "Clique sur les rideaux ou la lampe de ta chambre. Les deux pièces s'éclairent et s'assombrissent désormais avec le soleil, la lune et les lampes.",
       },
       "door-bell": {
         title: "une clochette à la porte",
