@@ -346,7 +346,6 @@ export const zhHant = {
     leaveFailures: {
       offline: "筆記本暫時離線 · 你寫的內容還留在這裡",
       rate_limited: "每兩分鐘只能留一則 · 等等再試",
-      daily_limit_reached: "今天留得夠多了 · 明天再來",
       contains_link: "筆記本裡不能放連結",
       too_long: "太長了，寫不下 · 再短一點",
       sign_off_too_long: "署名太長了",

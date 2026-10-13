@@ -359,7 +359,6 @@ export const vi = {
     leaveFailures: {
       offline: "sổ hiện đang ngoại tuyến · lời nhắn của bạn vẫn ở đây",
       rate_limited: "mỗi hai phút một lời nhắn · lát nữa thử lại nhé",
-      daily_limit_reached: "hôm nay vậy là đủ rồi · mai quay lại nhé",
       contains_link: "không được để liên kết trong sổ",
       too_long: "dài quá so với cuốn sổ · rút gọn một chút",
       sign_off_too_long: "phần ký tên dài quá",

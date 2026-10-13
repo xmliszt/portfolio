@@ -329,7 +329,6 @@ export const nl = {
       offline:
         "het notitieboek is op dit moment offline · je berichtje blijft hier staan",
       rate_limited: "één berichtje per twee minuten · probeer het zo weer",
-      daily_limit_reached: "genoeg berichtjes voor vandaag · kom morgen terug",
       contains_link: "geen links in het notitieboek",
       too_long: "te lang voor het notitieboek · maak het iets korter",
       sign_off_too_long: "de ondertekening is te lang",

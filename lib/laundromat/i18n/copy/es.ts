@@ -365,7 +365,6 @@ export const es = {
       offline:
         "el cuaderno está sin conexión por ahora · tu nota se queda aquí",
       rate_limited: "una nota cada dos minutos · vuelve a intentarlo pronto",
-      daily_limit_reached: "ya hay bastantes notas por hoy · vuelve mañana",
       contains_link: "nada de enlaces en el cuaderno",
       too_long: "demasiado larga para el cuaderno · acórtala un poco",
       sign_off_too_long: "la firma es demasiado larga",

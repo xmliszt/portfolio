@@ -364,7 +364,6 @@ export const ptBR = {
       offline: "o caderno está offline no momento · seu recado fica aqui",
       rate_limited:
         "um recado a cada dois minutos · tente de novo daqui a pouco",
-      daily_limit_reached: "já deu de recados por hoje · volte amanhã",
       contains_link: "nada de links no caderno",
       too_long: "longo demais para o caderno · encurte um pouco",
       sign_off_too_long: "a assinatura está longa demais",

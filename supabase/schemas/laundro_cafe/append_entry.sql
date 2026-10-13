@@ -67,15 +67,6 @@ begin
     raise exception 'rate_limited' using errcode = 'P0001';
   end if;
 
-  if (
-    select count(*)
-    from laundro_cafe.notebook_entry_authors
-    where visitor_id = p_visitor_id
-      and created_at > now() - interval '1 day'
-  ) >= 10 then
-    raise exception 'daily_limit_reached' using errcode = 'P0001';
-  end if;
-
   v_capacity := v_notebook.page_count * v_notebook.lines_per_page;
 
   if v_notebook.lines_used + p_line_count > v_capacity then

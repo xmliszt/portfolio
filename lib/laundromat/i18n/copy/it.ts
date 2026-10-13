@@ -368,7 +368,6 @@ export const it = {
     leaveFailures: {
       offline: "il quaderno è offline al momento · il tuo biglietto resta qui",
       rate_limited: "un biglietto ogni due minuti · riprova tra poco",
-      daily_limit_reached: "basta biglietti per oggi · torna domani",
       contains_link: "niente link nel quaderno",
       too_long: "troppo lungo per il quaderno · accorcialo un po'",
       sign_off_too_long: "la firma è troppo lunga",

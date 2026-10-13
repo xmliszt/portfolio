@@ -363,7 +363,6 @@ export const fr = {
     leaveFailures: {
       offline: "le carnet est hors ligne pour le moment · ton mot reste ici",
       rate_limited: "un mot toutes les deux minutes · réessaie bientôt",
-      daily_limit_reached: "assez de mots pour aujourd'hui · reviens demain",
       contains_link: "pas de liens dans le carnet",
       too_long: "trop long pour le carnet · raccourcis un peu",
       sign_off_too_long: "la signature est trop longue",

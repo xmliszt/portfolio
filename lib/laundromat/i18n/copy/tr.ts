@@ -320,7 +320,6 @@ export const tr = {
     leaveFailures: {
       offline: "defter şu an çevrimdışı · notun burada kalıyor",
       rate_limited: "iki dakikada bir not · birazdan tekrar dene",
-      daily_limit_reached: "bugünlük bu kadar not yeter · yarın yine gel",
       contains_link: "deftere bağlantı yazılmaz",
       too_long: "defter için çok uzun · biraz kısalt",
       sign_off_too_long: "imza çok uzun",

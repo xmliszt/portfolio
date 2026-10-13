@@ -366,7 +366,6 @@ export const de = {
     leaveFailures: {
       offline: "das Notizbuch ist gerade offline · deine Notiz bleibt hier",
       rate_limited: "eine Notiz alle zwei Minuten · versuch es gleich noch mal",
-      daily_limit_reached: "genug Notizen für heute · komm morgen wieder",
       contains_link: "keine Links im Notizbuch",
       too_long: "zu lang für das Notizbuch · kürz sie ein bisschen",
       sign_off_too_long: "die Unterschrift ist zu lang",

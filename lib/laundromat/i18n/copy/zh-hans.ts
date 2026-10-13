@@ -346,7 +346,6 @@ export const zhHans = {
     leaveFailures: {
       offline: "笔记本暂时离线 · 你写的内容还留在这里",
       rate_limited: "每两分钟只能留一条 · 稍后再试",
-      daily_limit_reached: "今天留得够多了 · 明天再来",
       contains_link: "笔记本里不能放链接",
       too_long: "太长了，写不下 · 再短一点",
       sign_off_too_long: "署名太长了",

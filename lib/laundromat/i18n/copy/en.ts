@@ -366,7 +366,6 @@ export const en = {
     leaveFailures: {
       offline: "notebook is offline at the moment · your note stays here",
       rate_limited: "one note every two minutes · try again soon",
-      daily_limit_reached: "that's enough notes for today · come back tomorrow",
       contains_link: "no links in the notebook",
       too_long: "too long for the notebook · shorten it a little",
       sign_off_too_long: "the sign-off is too long",

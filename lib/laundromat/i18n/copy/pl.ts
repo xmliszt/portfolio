@@ -340,7 +340,6 @@ export const pl = {
     leaveFailures: {
       offline: "notes jest chwilowo offline · twój liścik zostaje tutaj",
       rate_limited: "jeden liścik co dwie minuty · spróbuj za chwilę",
-      daily_limit_reached: "dość liścików na dziś · wróć jutro",
       contains_link: "żadnych linków w notesie",
       too_long: "za długie na notes · skróć trochę",
       sign_off_too_long: "podpis jest za długi",

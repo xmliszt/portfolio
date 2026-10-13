@@ -356,7 +356,6 @@ export const ja = {
     leaveFailures: {
       offline: "ノートはいまオフライン · メモはここに残っている",
       rate_limited: "メモは2分に1回まで · 少し待ってもう一度",
-      daily_limit_reached: "今日はもう十分書いた · また明日",
       contains_link: "ノートにリンクは書けない",
       too_long: "ノートには長すぎる · 少し短くして",
       sign_off_too_long: "署名が長すぎる",

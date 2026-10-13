@@ -354,7 +354,6 @@ export const ko = {
     leaveFailures: {
       offline: "노트가 지금 오프라인이야 · 메모는 여기 그대로 있어",
       rate_limited: "메모는 2분에 한 번 · 조금 뒤에 다시 해 봐",
-      daily_limit_reached: "오늘은 충분히 남겼어 · 내일 또 와",
       contains_link: "노트에는 링크를 남길 수 없어",
       too_long: "노트에 쓰기엔 너무 길어 · 조금만 줄여 줘",
       sign_off_too_long: "서명이 너무 길어",
