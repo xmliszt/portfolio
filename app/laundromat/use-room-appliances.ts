@@ -1,4 +1,10 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import {
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState,
+} from "react";
 
 import { adoptNewerFlask } from "@/lib/laundromat/coffee/adopt-newer-flask";
 import type { CoffeeEvent } from "@/lib/laundromat/coffee/coffee-state";
@@ -8,11 +14,26 @@ import { getSharedCoffeePhase } from "@/lib/laundromat/coffee/get-shared-coffee-
 import { transitionCoffee } from "@/lib/laundromat/coffee/transition-coffee";
 import type { RemoteFlask } from "@/lib/laundromat/realtime/room-presence";
 import type { SceneConfig } from "@/lib/laundromat/scene-config";
+import { parseStoredTv } from "@/lib/laundromat/tv/parse-stored-tv";
 import { transitionTv } from "@/lib/laundromat/tv/transition-tv";
-import type { TvEvent, TvState } from "@/lib/laundromat/tv/tv-state";
+import type { TvEvent, TvState, TvStation } from "@/lib/laundromat/tv/tv-state";
 
 const TICK_MS = 1000;
 const MS_PER_MINUTE = 60_000;
+const TV_STATION_STORAGE_KEY = "laundromat:tv-station";
+const TV_VOLUME_STORAGE_KEY = "laundromat:tv-volume";
+
+function readStoredTv(stations: TvStation[]) {
+  try {
+    return parseStoredTv({
+      stations,
+      storedStation: window.localStorage.getItem(TV_STATION_STORAGE_KEY),
+      storedVolume: window.localStorage.getItem(TV_VOLUME_STORAGE_KEY),
+    });
+  } catch {
+    return { station: undefined, volumePercent: undefined };
+  }
+}
 
 export function useRoomAppliances(options: {
   config: SceneConfig;
@@ -24,6 +45,7 @@ export function useRoomAppliances(options: {
     station: 0,
     volumePercent: tvDetails.defaultVolumePercent,
   });
+  const [isTvTouched, setIsTvTouched] = useState(false);
   const [coffeeState, setCoffeeState] = useState(INITIAL_COFFEE_STATE);
   const [now, setNow] = useState(() => Date.now());
   const [clockOffsetsMs, setClockOffsetsMs] = useState<{
@@ -55,7 +77,38 @@ export function useRoomAppliances(options: {
     return () => window.clearInterval(interval);
   }, [isCoffeeChanging]);
 
+  const { stations } = tvDetails;
+  useLayoutEffect(() => {
+    const stored = readStoredTv(stations);
+    setTv((current) => ({
+      ...current,
+      station: stored.station ?? current.station,
+      volumePercent: stored.volumePercent ?? current.volumePercent,
+    }));
+  }, [stations]);
+
+  const stationId = stations[tv.station]?.id;
+  useEffect(() => {
+    if (!isTvTouched || stationId === undefined) return;
+    try {
+      window.localStorage.setItem(TV_STATION_STORAGE_KEY, stationId);
+    } catch {
+      return;
+    }
+  }, [isTvTouched, stationId]);
+
+  const { volumePercent } = tv;
+  useEffect(() => {
+    if (!isTvTouched) return;
+    try {
+      window.localStorage.setItem(TV_VOLUME_STORAGE_KEY, String(volumePercent));
+    } catch {
+      return;
+    }
+  }, [isTvTouched, volumePercent]);
+
   function dispatchTv(event: TvEvent) {
+    if (event.type !== "power") setIsTvTouched(true);
     setTv((current) =>
       transitionTv({ state: current, event, settings: tvDetails })
     );
