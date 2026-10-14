@@ -1,3 +1,4 @@
+import type { RoomSoundGroup } from "@/lib/laundromat/audio/room-sound-groups";
 import type { GarmentKind } from "@/lib/laundromat/first-visit/bedroom-config";
 import type { LaundromatCopy } from "@/lib/laundromat/i18n/laundromat-copy";
 import type { LeaveEntryFailureReason } from "@/lib/laundromat/notebook/describe-leave-failure";
@@ -55,6 +56,30 @@ export const hi = {
     qualityLiteHint: "मेमोरी और बैटरी पर हल्का",
     close: "बंद करें",
     closeHint: "बंद करने के लिए esc",
+    roomSounds: "कमरे की आवाज़ें",
+    roomSoundsHint:
+      "सिर्फ़ वही बदलता है जो आप सुनते हैं। बाकी सबके लिए कमरा वैसे ही गूँजता रहता है।",
+    roomSoundsAllOn: "सब चालू",
+    roomSoundsAllOff: "सब बंद",
+    roomSoundOn: "चालू",
+    roomSoundOff: "बंद",
+    roomSound: {
+      machines: { label: "मशीनें", hint: "चलती हुई वॉशिंग मशीनें और ड्रायर" },
+      "shop-bell": {
+        label: "दरवाज़े की घंटी",
+        hint: "किसी के अंदर आने पर बजती है",
+      },
+      unloading: {
+        label: "कपड़े निकालना",
+        hint: "कोई कपड़े निकाले तो दरवाज़े की कुंडी",
+      },
+      coffee: {
+        label: "कॉफ़ी",
+        hint: "बनती कॉफ़ी की गुड़गुड़ और तैयार होने की बीप",
+      },
+      tv: { label: "टीवी की खरखर", hint: "बिना सिग्नल वाले टीवी की सरसराहट" },
+      lamp: { label: "लैंप", hint: "लैंप का टिमटिमाकर जलना और क्लिक से बुझना" },
+    } satisfies { [group in RoomSoundGroup]: { label: string; hint: string } },
   },
   tabDone: "हो गया",
   readoutDone: "पूरा",
@@ -236,6 +261,10 @@ export const hi = {
       board: "बोर्ड",
     },
     updates: {
+      "room-sound-dials": {
+        title: "चुनें कि आप क्या सुनें",
+        body: "सेटिंग्स में अब कमरे की हर आवाज़ के लिए एक डायल है, मशीनों से लेकर दरवाज़े की घंटी तक। जो न सुनना चाहें उसे बंद कर दें। बाकी सबके लिए कमरा वैसा ही रहता है।",
+      },
       "home-mid-wash": {
         title: "धुलाई के बीच घर जाओ",
         body: "डोरमैट पर कदम रखो और कपड़े धुलते समय घर लौट जाओ। गीले कपड़े टोकरी में घर आते हैं, सूखे बिस्तर पर।",

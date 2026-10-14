@@ -1,3 +1,4 @@
+import type { RoomSoundGroup } from "@/lib/laundromat/audio/room-sound-groups";
 import type {
   BoardTag,
   BoardUpdateId,
@@ -59,6 +60,24 @@ export const en = {
     qualityLiteHint: "lighter on memory and battery",
     close: "close",
     closeHint: "esc to close",
+    roomSounds: "room sounds",
+    roomSoundsHint:
+      "only changes what you hear. the room keeps humming for everyone else.",
+    roomSoundsAllOn: "all on",
+    roomSoundsAllOff: "all off",
+    roomSoundOn: "on",
+    roomSoundOff: "off",
+    roomSound: {
+      machines: { label: "machines", hint: "washers and dryers spinning" },
+      "shop-bell": { label: "shop bell", hint: "rings when someone walks in" },
+      unloading: {
+        label: "unloading",
+        hint: "a door latch when someone takes their laundry",
+      },
+      coffee: { label: "coffee", hint: "the brew gurgle and the ready beep" },
+      tv: { label: "tv static", hint: "hiss from the tv with no signal" },
+      lamp: { label: "lamp", hint: "the lamp flickering on and clicking off" },
+    } satisfies { [group in RoomSoundGroup]: { label: string; hint: string } },
   },
   tabDone: "done",
   readoutDone: "done",
@@ -239,6 +258,10 @@ export const en = {
       board: "board",
     } satisfies { [tag in BoardTag]: string },
     updates: {
+      "room-sound-dials": {
+        title: "choose the sounds you hear",
+        body: "Settings now have a dial for each room sound, from the machines to the shop bell. Turn off any you would rather not hear, and the room stays the same for everyone else.",
+      },
       "home-mid-wash": {
         title: "go home while it runs",
         body: "Step on the welcome mat to go home while your laundry runs. Wet clothes come home in the basket, dry ones land on the bed.",

@@ -7,10 +7,9 @@ import type { RenderQualityPreference } from "@/lib/laundromat/render-quality/re
 import { RENDER_QUALITY_PREFERENCES } from "@/lib/laundromat/render-quality/render-quality";
 import { cn } from "@/lib/utils";
 
+import { RoomSoundsFieldset } from "./room-sounds-fieldset";
+import { SETTINGS_META_CLASS } from "./settings-meta-class";
 import { useRenderQuality } from "./use-render-quality";
-
-const META_CLASS =
-  "font-[family-name:var(--lm-font-mono)] text-[11px] leading-4 lowercase";
 
 type SettingsDialogProps = {
   onClose: () => void;
@@ -78,9 +77,9 @@ export function SettingsDialog(props: SettingsDialogProps) {
       role="dialog"
       aria-modal
       aria-labelledby="settings-dialog-heading"
-      className="flex w-[min(360px,calc(100vw-32px))] flex-col gap-y-3 rounded-[22px] bg-[var(--lm-panel)] p-3.5 shadow-[0_1px_0_rgb(255_255_255/0.04)_inset,0_1px_2px_rgb(0_0_0/0.5),0_24px_64px_rgb(0_0_0/0.55)]"
+      className="flex max-h-[calc(100dvh-32px)] w-[min(360px,calc(100vw-32px))] flex-col gap-y-3 rounded-[22px] bg-[var(--lm-panel)] p-3.5 shadow-[0_1px_0_rgb(255_255_255/0.04)_inset,0_1px_2px_rgb(0_0_0/0.5),0_24px_64px_rgb(0_0_0/0.55)]"
     >
-      <div className="flex flex-col gap-y-5 rounded-lg px-5 pt-5 pb-4 text-[var(--lm-ink)] shadow-[0_0_0_1px_var(--lm-edge)]">
+      <div className="flex min-h-0 flex-col gap-y-5 overflow-y-auto overscroll-contain rounded-lg px-5 pt-5 pb-4 text-[var(--lm-ink)] shadow-[0_0_0_1px_var(--lm-edge)] [scrollbar-color:var(--lm-line)_transparent] [scrollbar-width:thin]">
         <h2
           id="settings-dialog-heading"
           className="m-0 font-[family-name:var(--lm-font-display)] text-[24px] leading-[1.1] font-normal lowercase"
@@ -88,7 +87,7 @@ export function SettingsDialog(props: SettingsDialogProps) {
           {copy.settings.heading}
         </h2>
         <fieldset className="m-0 flex flex-col gap-y-3 border-0 p-0">
-          <legend className={cn(META_CLASS, "p-0 opacity-60")}>
+          <legend className={cn(SETTINGS_META_CLASS, "p-0 opacity-60")}>
             {copy.settings.rendering}
           </legend>
           <div className="flex flex-col gap-y-1">
@@ -110,7 +109,7 @@ export function SettingsDialog(props: SettingsDialogProps) {
                   <span className="text-[13px] leading-5 lowercase">
                     {options[option].label}
                   </span>
-                  <span className={cn(META_CLASS, "opacity-60")}>
+                  <span className={cn(SETTINGS_META_CLASS, "opacity-60")}>
                     {options[option].hint}
                   </span>
                 </span>
@@ -121,6 +120,7 @@ export function SettingsDialog(props: SettingsDialogProps) {
             {copy.settings.renderingHint}
           </p>
         </fieldset>
+        <RoomSoundsFieldset />
       </div>
       <div className="flex justify-end px-2">
         <button

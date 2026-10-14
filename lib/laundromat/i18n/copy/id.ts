@@ -1,3 +1,4 @@
+import type { RoomSoundGroup } from "@/lib/laundromat/audio/room-sound-groups";
 import type { GarmentKind } from "@/lib/laundromat/first-visit/bedroom-config";
 import type { LaundromatCopy } from "@/lib/laundromat/i18n/laundromat-copy";
 import type { LeaveEntryFailureReason } from "@/lib/laundromat/notebook/describe-leave-failure";
@@ -55,6 +56,33 @@ export const id = {
     qualityLiteHint: "lebih ringan untuk memori dan baterai",
     close: "tutup",
     closeHint: "esc untuk menutup",
+    roomSounds: "suara ruangan",
+    roomSoundsHint:
+      "hanya mengubah apa yang kamu dengar. ruangan tetap berdengung untuk yang lain.",
+    roomSoundsAllOn: "nyalakan semua",
+    roomSoundsAllOff: "matikan semua",
+    roomSoundOn: "nyala",
+    roomSoundOff: "mati",
+    roomSound: {
+      machines: {
+        label: "mesin",
+        hint: "mesin cuci dan pengering yang berputar",
+      },
+      "shop-bell": { label: "bel toko", hint: "berbunyi saat seseorang masuk" },
+      unloading: {
+        label: "mengambil cucian",
+        hint: "bunyi kait pintu saat seseorang mengambil cuciannya",
+      },
+      coffee: {
+        label: "kopi",
+        hint: "bunyi gelegak seduhan dan bip saat siap",
+      },
+      tv: { label: "semut tv", hint: "desis dari tv tanpa sinyal" },
+      lamp: {
+        label: "lampu",
+        hint: "lampu berkedip saat menyala dan berbunyi klik saat mati",
+      },
+    } satisfies { [group in RoomSoundGroup]: { label: string; hint: string } },
   },
   tabDone: "selesai",
   readoutDone: "beres",
@@ -237,6 +265,10 @@ export const id = {
       board: "papan",
     },
     updates: {
+      "room-sound-dials": {
+        title: "pilih suara yang kamu dengar",
+        body: "Pengaturan sekarang punya kenop untuk tiap suara ruangan, dari mesin sampai bel toko. Matikan yang tidak ingin kamu dengar. Untuk yang lain, ruangan tetap sama.",
+      },
       "home-mid-wash": {
         title: "pulang selagi mencuci",
         body: "Injak keset untuk pulang selagi cucianmu berjalan. Pakaian basah dibawa pulang di keranjang, yang kering mendarat di kasur.",

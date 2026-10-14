@@ -1,3 +1,4 @@
+import type { RoomSoundGroup } from "@/lib/laundromat/audio/room-sound-groups";
 import type { GarmentKind } from "@/lib/laundromat/first-visit/bedroom-config";
 import type { LaundromatCopy } from "@/lib/laundromat/i18n/laundromat-copy";
 import type { LeaveEntryFailureReason } from "@/lib/laundromat/notebook/describe-leave-failure";
@@ -55,6 +56,27 @@ export const vi = {
     qualityLiteHint: "nhẹ hơn cho bộ nhớ và pin",
     close: "đóng",
     closeHint: "esc để đóng",
+    roomSounds: "âm thanh trong tiệm",
+    roomSoundsHint:
+      "chỉ đổi những gì bạn nghe. với mọi người khác, tiệm vẫn rì rầm như cũ.",
+    roomSoundsAllOn: "bật hết",
+    roomSoundsAllOff: "tắt hết",
+    roomSoundOn: "bật",
+    roomSoundOff: "tắt",
+    roomSound: {
+      machines: { label: "máy móc", hint: "máy giặt và máy sấy đang quay" },
+      "shop-bell": { label: "chuông cửa", hint: "reo khi có người bước vào" },
+      unloading: {
+        label: "lấy đồ",
+        hint: "tiếng chốt cửa khi ai đó lấy đồ giặt",
+      },
+      coffee: {
+        label: "cà phê",
+        hint: "tiếng sôi lục bục khi pha và tiếng bíp khi xong",
+      },
+      tv: { label: "nhiễu tv", hint: "tiếng rè của tv không có tín hiệu" },
+      lamp: { label: "đèn", hint: "đèn chập chờn khi bật và kêu tách khi tắt" },
+    } satisfies { [group in RoomSoundGroup]: { label: string; hint: string } },
   },
   tabDone: "xong",
   readoutDone: "xong",
@@ -235,6 +257,10 @@ export const vi = {
       board: "bảng tin",
     },
     updates: {
+      "room-sound-dials": {
+        title: "chọn âm thanh bạn nghe",
+        body: "Phần cài đặt giờ có một núm vặn cho từng âm thanh trong tiệm, từ máy giặt đến chuông cửa. Tắt những âm bạn không muốn nghe. Với người khác, tiệm vẫn như cũ.",
+      },
       "home-mid-wash": {
         title: "về nhà khi máy đang chạy",
         body: "Bước lên thảm chùi chân để về nhà trong lúc máy đang giặt. Đồ ướt về nhà trong giỏ, đồ khô nằm trên giường.",

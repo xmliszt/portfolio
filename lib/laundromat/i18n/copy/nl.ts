@@ -1,3 +1,4 @@
+import type { RoomSoundGroup } from "@/lib/laundromat/audio/room-sound-groups";
 import type { LaundromatCopy } from "@/lib/laundromat/i18n/laundromat-copy";
 
 export const nl = {
@@ -49,6 +50,33 @@ export const nl = {
     qualityLiteHint: "lichter voor geheugen en batterij",
     close: "sluiten",
     closeHint: "esc om te sluiten",
+    roomSounds: "geluiden in de zaak",
+    roomSoundsHint:
+      "verandert alleen wat jij hoort. voor de rest blijft de zaak zoemen.",
+    roomSoundsAllOn: "alles aan",
+    roomSoundsAllOff: "alles uit",
+    roomSoundOn: "aan",
+    roomSoundOff: "uit",
+    roomSound: {
+      machines: { label: "machines", hint: "draaiende wasmachines en drogers" },
+      "shop-bell": {
+        label: "winkelbel",
+        hint: "klinkt als er iemand binnenkomt",
+      },
+      unloading: {
+        label: "uitladen",
+        hint: "een deurklink als iemand zijn was ophaalt",
+      },
+      coffee: {
+        label: "koffie",
+        hint: "het pruttelen tijdens het zetten en de piep als het klaar is",
+      },
+      tv: { label: "tv-ruis", hint: "geruis van de tv zonder signaal" },
+      lamp: {
+        label: "lamp",
+        hint: "de lamp die flikkerend aangaat en met een klik uitgaat",
+      },
+    } satisfies { [group in RoomSoundGroup]: { label: string; hint: string } },
   },
   tabDone: "klaar",
   readoutDone: "klaar",
@@ -205,6 +233,10 @@ export const nl = {
       board: "bord",
     },
     updates: {
+      "room-sound-dials": {
+        title: "kies welke geluiden je hoort",
+        body: "In de instellingen staat nu een draaiknop voor elk geluid in de zaak, van de machines tot de winkelbel. Zet uit wat je liever niet hoort. Voor anderen blijft de zaak hetzelfde.",
+      },
       "home-mid-wash": {
         title: "naar huis terwijl het draait",
         body: "Stap op de deurmat om naar huis te gaan terwijl je was draait. Natte kleren gaan mee in de mand, droge belanden op het bed.",

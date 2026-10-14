@@ -1,3 +1,4 @@
+import type { RoomSoundGroup } from "@/lib/laundromat/audio/room-sound-groups";
 import type { LaundromatCopy } from "@/lib/laundromat/i18n/laundromat-copy";
 import type { MachineKind } from "@/lib/laundromat/scene-config";
 
@@ -50,6 +51,30 @@ export const ja = {
     qualityLiteHint: "メモリとバッテリーにやさしい",
     close: "閉じる",
     closeHint: "esc で閉じる",
+    roomSounds: "店内の音",
+    roomSoundsHint:
+      "あなたに聞こえる音だけが変わります。ほかの人には今までどおり聞こえます。",
+    roomSoundsAllOn: "すべてオン",
+    roomSoundsAllOff: "すべてオフ",
+    roomSoundOn: "オン",
+    roomSoundOff: "オフ",
+    roomSound: {
+      machines: { label: "マシン", hint: "回っている洗濯機と乾燥機" },
+      "shop-bell": { label: "ドアベル", hint: "誰かが入ってくると鳴ります" },
+      unloading: {
+        label: "取り出し",
+        hint: "誰かが洗濯物を取り出すときのドアの音",
+      },
+      coffee: {
+        label: "コーヒー",
+        hint: "抽出のこぽこぽ音とできあがりのビープ",
+      },
+      tv: { label: "テレビの砂嵐", hint: "信号のないテレビのザーッという音" },
+      lamp: {
+        label: "ランプ",
+        hint: "ランプがちらついて点き、カチッと消える音",
+      },
+    } satisfies { [group in RoomSoundGroup]: { label: string; hint: string } },
   },
   tabDone: "完了",
   readoutDone: "完了",
@@ -228,6 +253,10 @@ export const ja = {
       board: "掲示板",
     },
     updates: {
+      "room-sound-dials": {
+        title: "聞こえる音を選べるように",
+        body: "設定に、マシンからドアベルまで、店内の音ごとのダイヤルができました。聞きたくない音はオフにできます。ほかの人の店内はそのままです。",
+      },
       "home-mid-wash": {
         title: "洗濯中に家へ帰れる",
         body: "玄関マットから、洗濯の途中でも家に帰れます。濡れた服はかごに入れて持ち帰り、乾いた服はベッドの上に。",

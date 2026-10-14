@@ -1,3 +1,4 @@
+import type { RoomSoundGroup } from "@/lib/laundromat/audio/room-sound-groups";
 import type { LaundromatCopy } from "@/lib/laundromat/i18n/laundromat-copy";
 import type { MachineKind } from "@/lib/laundromat/scene-config";
 
@@ -50,6 +51,36 @@ export const fr = {
     qualityLiteHint: "plus léger pour la mémoire et la batterie",
     close: "fermer",
     closeHint: "échap pour fermer",
+    roomSounds: "sons de la salle",
+    roomSoundsHint:
+      "ne change que ce que tu entends. la salle continue de ronronner pour les autres.",
+    roomSoundsAllOn: "tout activer",
+    roomSoundsAllOff: "tout couper",
+    roomSoundOn: "act.",
+    roomSoundOff: "coupé",
+    roomSound: {
+      machines: {
+        label: "machines",
+        hint: "lave-linge et sèche-linge qui tournent",
+      },
+      "shop-bell": { label: "clochette", hint: "sonne quand quelqu'un entre" },
+      unloading: {
+        label: "déchargement",
+        hint: "un loquet quand quelqu'un récupère son linge",
+      },
+      coffee: {
+        label: "café",
+        hint: "le glouglou de l'infusion et le bip quand c'est prêt",
+      },
+      tv: {
+        label: "neige de la télé",
+        hint: "le souffle de la télé sans signal",
+      },
+      lamp: {
+        label: "lampe",
+        hint: "la lampe qui grésille en s'allumant et claque en s'éteignant",
+      },
+    } satisfies { [group in RoomSoundGroup]: { label: string; hint: string } },
   },
   tabDone: "fini",
   readoutDone: "fini",
@@ -234,6 +265,10 @@ export const fr = {
       board: "panneau",
     },
     updates: {
+      "room-sound-dials": {
+        title: "choisis les sons que tu entends",
+        body: "Les réglages ont maintenant un bouton rotatif pour chaque son de la salle, des machines à la clochette. Coupe ceux que tu préfères ne pas entendre. Pour les autres, la salle reste la même.",
+      },
       "home-mid-wash": {
         title: "rentre pendant que ça tourne",
         body: "Passe sur le paillasson pour rentrer pendant que ton linge tourne. Le linge mouillé rentre dans le panier, le linge sec finit sur le lit.",

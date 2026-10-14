@@ -1,3 +1,4 @@
+import type { RoomSoundGroup } from "@/lib/laundromat/audio/room-sound-groups";
 import type { LaundromatCopy } from "@/lib/laundromat/i18n/laundromat-copy";
 import type { MachineKind } from "@/lib/laundromat/scene-config";
 
@@ -50,6 +51,27 @@ export const ko = {
     qualityLiteHint: "메모리와 배터리에 가벼움",
     close: "닫기",
     closeHint: "esc로 닫기",
+    roomSounds: "가게 소리",
+    roomSoundsHint:
+      "내게 들리는 소리만 바뀌어요. 다른 사람에게는 그대로 들려요.",
+    roomSoundsAllOn: "모두 켜기",
+    roomSoundsAllOff: "모두 끄기",
+    roomSoundOn: "켬",
+    roomSoundOff: "끔",
+    roomSound: {
+      machines: { label: "기계", hint: "돌아가는 세탁기와 건조기" },
+      "shop-bell": { label: "문 종", hint: "누군가 들어오면 울려요" },
+      unloading: {
+        label: "빨래 꺼내기",
+        hint: "누군가 빨래를 꺼낼 때 문 걸쇠 소리",
+      },
+      coffee: {
+        label: "커피",
+        hint: "커피 내리는 보글보글 소리와 완성 알림음",
+      },
+      tv: { label: "TV 잡음", hint: "신호 없는 TV의 지지직 소리" },
+      lamp: { label: "램프", hint: "램프가 깜빡이며 켜지고 딸깍 꺼지는 소리" },
+    } satisfies { [group in RoomSoundGroup]: { label: string; hint: string } },
   },
   tabDone: "완료",
   readoutDone: "완료",
@@ -229,6 +251,10 @@ export const ko = {
       board: "게시판",
     },
     updates: {
+      "room-sound-dials": {
+        title: "들을 소리를 골라요",
+        body: "이제 설정에서 기계부터 문 종까지 가게 소리마다 다이얼로 켜고 끌 수 있어요. 듣고 싶지 않은 소리는 꺼 두세요. 다른 사람에게는 가게가 그대로예요.",
+      },
       "home-mid-wash": {
         title: "빨래 중에 집에 가기",
         body: "현관 매트를 밟으면 빨래가 도는 동안 집에 갈 수 있어요. 젖은 옷은 바구니에 담아 오고, 마른 옷은 침대 위에 놓여요.",
