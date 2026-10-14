@@ -16,6 +16,7 @@ import { projectIsoPoint } from "@/lib/laundromat/project-iso-point";
 import type { IsoPoint, SceneConfig } from "@/lib/laundromat/scene-config";
 import { toSvgPoints } from "@/lib/laundromat/to-svg-points";
 
+import { BedDrawing } from "./bed-drawing";
 import { BedLaundryPile } from "./bed-laundry-pile";
 import { CurtainDaylight } from "./curtain-daylight";
 import { CurtainDrawing } from "./curtain-drawing";
@@ -45,6 +46,7 @@ type BedroomDrawingProps = {
   curtainLayout: ReturnType<typeof getCurtainLayout>;
   windowLight: BedroomWindowLight | undefined;
   curtainHighlighted: boolean;
+  bedHighlighted: boolean;
   cleanPile: boolean;
 };
 
@@ -113,15 +115,6 @@ export function BedroomDrawing(props: BedroomDrawingProps) {
     },
     projection,
   });
-  const blanketTop = bed.blanket.position.z + bed.blanket.size.h;
-  const blanketFold = [
-    at(bed.blanket.position.x, bed.blanket.position.y + 0.18, blanketTop),
-    at(
-      bed.blanket.position.x + bed.blanket.size.w,
-      bed.blanket.position.y + 0.18,
-      blanketTop
-    ),
-  ];
   const fringe = Array.from(
     { length: Math.floor(rug.width / 0.21) },
     (_, index) => 0.12 + index * 0.21
@@ -384,91 +377,81 @@ export function BedroomDrawing(props: BedroomDrawingProps) {
           glideMs={scene.sky.timeJumpGlideMs}
         />
 
-        {box(bed.headboard)}
-        <g
-          transform={headboardFront.transform}
-          className="fill-none stroke-[var(--lm-detail)]"
+        <BedDrawing
+          bed={bed}
+          projection={projection}
+          highlighted={props.bedHighlighted}
+          lampLight={{
+            center: lamp.center,
+            reach: BED_LIGHT_REACH,
+            fill: `url(#${id}-pool)`,
+            style: {
+              opacity: lampIntensity * BED_LIGHT_PEAK_OPACITY,
+              ...glide,
+            },
+          }}
+          headboardLight={
+            <g
+              transform={headboardFront.transform}
+              className="pointer-events-none stroke-none"
+              style={{
+                opacity: lampIntensity * BED_LIGHT_PEAK_OPACITY,
+                ...glide,
+              }}
+            >
+              <radialGradient
+                id={`${id}-headboard-light`}
+                gradientUnits="userSpaceOnUse"
+                cx={(lamp.center.x - bed.headboard.position.x) * unit}
+                cy={(bed.headboard.size.h - shadeBottom) * unit}
+                r={BED_LIGHT_REACH * unit}
+              >
+                <stop
+                  offset={0}
+                  stopColor={scene.light.lampColor}
+                  stopOpacity={0.8}
+                />
+                <stop
+                  offset={1}
+                  stopColor={scene.light.lampColor}
+                  stopOpacity={0}
+                />
+              </radialGradient>
+              <rect
+                fill={`url(#${id}-headboard-light)`}
+                width={bed.headboard.size.w * unit}
+                height={bed.headboard.size.h * unit}
+              />
+            </g>
+          }
         >
-          <rect
-            x={0.12 * unit}
-            y={0.12 * unit}
-            width={(bed.headboard.size.w - 0.24) * unit}
-            height={(bed.headboard.size.h - 0.5) * unit}
-          />
-        </g>
-        <g
-          transform={headboardFront.transform}
-          className="pointer-events-none stroke-none"
-          style={{ opacity: lampIntensity * BED_LIGHT_PEAK_OPACITY, ...glide }}
-        >
-          <radialGradient
-            id={`${id}-headboard-light`}
-            gradientUnits="userSpaceOnUse"
-            cx={(lamp.center.x - bed.headboard.position.x) * unit}
-            cy={(bed.headboard.size.h - shadeBottom) * unit}
-            r={BED_LIGHT_REACH * unit}
-          >
-            <stop
-              offset={0}
-              stopColor={scene.light.lampColor}
-              stopOpacity={0.8}
-            />
-            <stop
-              offset={1}
-              stopColor={scene.light.lampColor}
-              stopOpacity={0}
-            />
-          </radialGradient>
-          <rect
-            fill={`url(#${id}-headboard-light)`}
-            width={bed.headboard.size.w * unit}
-            height={bed.headboard.size.h * unit}
-          />
-        </g>
-        {box(bed.frame)}
-        {box(bed.mattress)}
-        {box(bed.pillow)}
-        {box(bed.blanket)}
-        <polyline
-          className="fill-none stroke-[var(--lm-detail)]"
-          points={toSvgPoints(blanketFold)}
-        />
-        {props.cleanPile && (
-          <BedLaundryPile bed={bed} projection={projection} />
-        )}
+          {props.cleanPile && (
+            <BedLaundryPile bed={bed} projection={projection} />
+          )}
+        </BedDrawing>
       </g>
-      {[
-        { key: "bed-top", z: blanketTop, face: bed.mattress },
-        {
-          key: "headboard-top",
-          z: bed.headboard.position.z + bed.headboard.size.h,
-          face: bed.headboard,
-        },
-      ].map((top) => (
-        <g
-          key={top.key}
-          transform={`translate(0 ${-top.z * unit}) ${floorPlane}`}
-          className="pointer-events-none"
-          style={{ opacity: lampIntensity * BED_LIGHT_PEAK_OPACITY, ...glide }}
-        >
-          <clipPath id={`${id}-${top.key}`}>
-            <rect
-              x={top.face.position.x}
-              y={top.face.position.y}
-              width={top.face.size.w}
-              height={top.face.size.d}
-            />
-          </clipPath>
-          <ellipse
-            fill={`url(#${id}-pool)`}
-            clipPath={`url(#${id}-${top.key})`}
-            cx={lamp.center.x}
-            cy={lamp.center.y}
-            rx={BED_LIGHT_REACH}
-            ry={BED_LIGHT_REACH}
+      <g
+        transform={`translate(0 ${-(bed.headboard.position.z + bed.headboard.size.h) * unit}) ${floorPlane}`}
+        className="pointer-events-none"
+        style={{ opacity: lampIntensity * BED_LIGHT_PEAK_OPACITY, ...glide }}
+      >
+        <clipPath id={`${id}-headboard-top`}>
+          <rect
+            x={bed.headboard.position.x}
+            y={bed.headboard.position.y}
+            width={bed.headboard.size.w}
+            height={bed.headboard.size.d}
           />
-        </g>
-      ))}
+        </clipPath>
+        <ellipse
+          fill={`url(#${id}-pool)`}
+          clipPath={`url(#${id}-headboard-top)`}
+          cx={lamp.center.x}
+          cy={lamp.center.y}
+          rx={BED_LIGHT_REACH}
+          ry={BED_LIGHT_REACH}
+        />
+      </g>
     </g>
   );
 }

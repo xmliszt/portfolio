@@ -13,16 +13,19 @@ import type {
   GarmentKind,
 } from "@/lib/laundromat/first-visit/bedroom-config";
 import { describeHamperBasket } from "@/lib/laundromat/first-visit/describe-hamper-basket";
+import { getBedroomMode } from "@/lib/laundromat/first-visit/get-bedroom-mode";
 import { getBedroomWindowLight } from "@/lib/laundromat/first-visit/get-bedroom-window-light";
 import { getCoverScale } from "@/lib/laundromat/first-visit/get-cover-scale";
 import { getCurtainLayout } from "@/lib/laundromat/first-visit/get-curtain-layout";
 import { getGarmentFootprint } from "@/lib/laundromat/first-visit/get-garment-footprint";
-import { getBedroomMode } from "@/lib/laundromat/first-visit/get-bedroom-mode";
 import { getHamperBasket } from "@/lib/laundromat/first-visit/get-hamper-basket";
 import { getTableLampShape } from "@/lib/laundromat/first-visit/get-table-lamp-shape";
 import { getTossFlight } from "@/lib/laundromat/first-visit/get-toss-flight";
+import { isBedtime } from "@/lib/laundromat/first-visit/is-bedtime";
+import { getBoxFaces } from "@/lib/laundromat/get-box-faces";
 import { getFacePlane } from "@/lib/laundromat/get-face-plane";
 import { getTimeOfDay } from "@/lib/laundromat/get-time-of-day";
+import { GOOD_NIGHT_MUSIC } from "@/lib/laundromat/good-night-music";
 import type { Homecoming } from "@/lib/laundromat/laundry/get-homecoming";
 import type { ScreenPoint } from "@/lib/laundromat/project-iso-point";
 import { projectIsoPoint } from "@/lib/laundromat/project-iso-point";
@@ -33,6 +36,7 @@ import { BedroomDoor } from "./bedroom-door";
 import { BedroomDrawing } from "./bedroom-drawing";
 import { CrumpledBall } from "./crumpled-ball";
 import { GarmentDrawing } from "./garment-drawing";
+import { GoodNightDrop } from "./good-night-drop";
 import { HamperBasketDrawing } from "./hamper-basket-drawing";
 import { RoomDarkness } from "./room-darkness";
 import { useCurtainPose } from "./use-curtain-pose";
@@ -63,7 +67,7 @@ type Drag = {
   moved: boolean;
 };
 
-type Hover = GarmentKind | "basket" | "door" | "lamp" | "curtain";
+type Hover = GarmentKind | "basket" | "door" | "lamp" | "curtain" | "bed";
 
 type Phase = "room" | "opening" | "entering";
 
@@ -118,6 +122,11 @@ export function FirstVisit(props: FirstVisitProps) {
   const [phase, setPhase] = useState<Phase>("room");
   const [jiggles, setJiggles] = useState(0);
   const [bumps, setBumps] = useState(0);
+  const [bedtime, setBedtime] = useState<{
+    audio: HTMLAudioElement;
+    playback: Promise<void>;
+  }>();
+  const musicRef = useRef<HTMLAudioElement>(undefined);
 
   const mode = getBedroomMode({ home: props.home });
   const { basket: roomBasket } = mode;
@@ -288,6 +297,31 @@ export function FirstVisit(props: FirstVisitProps) {
   );
   const isReady = mode.isDoorOpen || inBasket.length > 0;
   const isInRoom = phase === "room";
+  const canSleep =
+    isInRoom &&
+    bedtime === undefined &&
+    isBedtime({ timeOfDay, isLampOn, isCurtainOpen });
+  const { bed } = bedroom;
+  const bedOutline = getBoxFaces({
+    position: bed.headboard.position,
+    size: {
+      w: bed.frame.position.x + bed.frame.size.w - bed.headboard.position.x,
+      d:
+        bed.mattress.position.y +
+        bed.mattress.size.d +
+        bed.overhang -
+        bed.headboard.position.y,
+      h: bed.headboard.size.h,
+    },
+    projection,
+  }).outline;
+  const bedBounds = (() => {
+    const xs = bedOutline.map((point) => point.x);
+    const ys = bedOutline.map((point) => point.y);
+    const x = Math.min(...xs);
+    const y = Math.min(...ys);
+    return { x, y, width: Math.max(...xs) - x, height: Math.max(...ys) - y };
+  })();
 
   function isOverBasket(point: ScreenPoint) {
     const zone = basket.dropZone;
@@ -452,6 +486,29 @@ export function FirstVisit(props: FirstVisitProps) {
     props.onCurtainOpenChange(!isCurtainOpen);
   }
 
+  function loadMusic() {
+    musicRef.current ??= new Audio(GOOD_NIGHT_MUSIC.src);
+    return musicRef.current;
+  }
+
+  function handleBedHover() {
+    loadMusic();
+    handleHover("bed");
+  }
+
+  function handleBedClick() {
+    if (!canSleep) return;
+    const audio = loadMusic();
+    audio.volume = bedroom.motion.goodNight.volume;
+    setHover(undefined);
+    setBedtime({ audio, playback: audio.play() });
+  }
+
+  function handleBedFocus(event: React.FocusEvent<HTMLButtonElement>) {
+    loadMusic();
+    if (event.currentTarget.matches(":focus-visible")) setHover("bed");
+  }
+
   function handleCurtainFocus(event: React.FocusEvent<HTMLButtonElement>) {
     if (event.currentTarget.matches(":focus-visible")) setHover("curtain");
   }
@@ -505,6 +562,19 @@ export function FirstVisit(props: FirstVisitProps) {
               x: curtainLayout.rodX,
               y: (curtainLayout.opening.near + curtainLayout.opening.far) / 2,
               z: curtainLayout.top + 0.2,
+            },
+            projection,
+          }),
+        };
+      }
+      if (hover === "bed" && canSleep) {
+        return {
+          text: copy.firstVisit.bedTooltip,
+          at: projectIsoPoint({
+            point: {
+              x: bed.headboard.position.x + bed.headboard.size.w / 2,
+              y: bed.headboard.position.y,
+              z: bed.headboard.size.h + 0.2,
             },
             projection,
           }),
@@ -731,6 +801,7 @@ export function FirstVisit(props: FirstVisitProps) {
                   curtainLayout={curtainLayout}
                   windowLight={windowLight}
                   curtainHighlighted={hover === "curtain"}
+                  bedHighlighted={hover === "bed" && canSleep}
                   cleanPile={props.cleanPile}
                 />
                 <BedroomDoor
@@ -886,6 +957,30 @@ export function FirstVisit(props: FirstVisitProps) {
                   />
                 );
               })}
+            {canSleep && (
+              <button
+                type="button"
+                aria-label={copy.firstVisit.bedLabel}
+                className="absolute top-0 left-0 cursor-pointer bg-transparent outline-none focus-visible:outline-1 focus-visible:outline-offset-2 focus-visible:outline-[var(--lm-ink)] focus-visible:outline-dashed"
+                style={{
+                  left: bedBounds.x,
+                  top: bedBounds.y,
+                  width: bedBounds.width,
+                  height: bedBounds.height,
+                  clipPath: `polygon(${bedOutline
+                    .map(
+                      (point) =>
+                        `${point.x - bedBounds.x}px ${point.y - bedBounds.y}px`
+                    )
+                    .join(", ")})`,
+                }}
+                onClick={handleBedClick}
+                onPointerEnter={handleBedHover}
+                onPointerLeave={() => clearHover("bed")}
+                onFocus={handleBedFocus}
+                onBlur={() => clearHover("bed")}
+              />
+            )}
             <button
               type="button"
               aria-label={
@@ -971,13 +1066,22 @@ export function FirstVisit(props: FirstVisitProps) {
         </div>
       )}
       <SceneTooltip text={tooltip?.text} position={tooltip?.position} />
-      <button
-        type="button"
-        className="absolute right-9 bottom-7 cursor-pointer bg-transparent px-1.5 py-3 text-[11px] text-[var(--lm-line)] lowercase transition-colors duration-200 outline-none hover:text-[var(--lm-ink)] focus-visible:outline-1 focus-visible:outline-[var(--lm-line)] focus-visible:outline-dashed"
-        onClick={props.onListen}
-      >
-        {copy.firstVisit.justListen}
-      </button>
+      {bedtime !== undefined && (
+        <GoodNightDrop
+          audio={bedtime.audio}
+          playback={bedtime.playback}
+          timing={bedroom.motion.goodNight}
+        />
+      )}
+      {bedtime === undefined && (
+        <button
+          type="button"
+          className="absolute right-9 bottom-7 cursor-pointer bg-transparent px-1.5 py-3 text-[11px] text-[var(--lm-line)] lowercase transition-colors duration-200 outline-none hover:text-[var(--lm-ink)] focus-visible:outline-1 focus-visible:outline-[var(--lm-line)] focus-visible:outline-dashed"
+          onClick={props.onListen}
+        >
+          {copy.firstVisit.justListen}
+        </button>
+      )}
     </div>
   );
 }
