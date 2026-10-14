@@ -220,9 +220,11 @@ export function GoodNightDrop(props: GoodNightDropProps) {
           className="absolute inset-0 overflow-hidden"
           style={{ background: FABRIC }}
         >
-          {CLOUDS.map((cloud) => (
-            <Cloud key={cloud.x} {...cloud} />
-          ))}
+          <div className="absolute inset-0 origin-bottom-left max-sm:scale-[1.6]">
+            {CLOUDS.map((cloud) => (
+              <Cloud key={cloud.x} {...cloud} />
+            ))}
+          </div>
           {STARS.map((star, index) => (
             <svg
               key={`${star.x},${star.y}`}
@@ -293,7 +295,7 @@ export function GoodNightDrop(props: GoodNightDropProps) {
           >
             {copy.firstVisit.goodNight}
           </motion.p>
-          <p className="absolute bottom-16 left-4 text-[11px] text-[#3b3f8a]/75 sm:bottom-7 sm:left-9">
+          <p className="absolute bottom-0 left-4 text-[11px] text-[#3b3f8a]/75 sm:bottom-7 sm:left-9">
             {[
               {
                 href: GOOD_NIGHT_MUSIC.url,
@@ -323,7 +325,7 @@ export function GoodNightDrop(props: GoodNightDropProps) {
       </motion.div>
       <button
         type="button"
-        className="absolute right-4 bottom-7 cursor-pointer rounded-full bg-[#1b2457]/75 px-3 py-1.5 text-[11px] text-white/75 lowercase transition-colors duration-200 outline-none hover:text-white focus-visible:outline-1 focus-visible:outline-white/60 focus-visible:outline-dashed sm:right-9"
+        className="absolute right-4 bottom-12 cursor-pointer rounded-full bg-[#1b2457]/75 px-3 py-1.5 text-[11px] text-white/75 lowercase transition-colors duration-200 outline-none hover:text-white focus-visible:outline-1 focus-visible:outline-white/60 focus-visible:outline-dashed sm:right-9 sm:bottom-7"
         onClick={handleWakeUp}
       >
         {copy.firstVisit.notSleepy}
