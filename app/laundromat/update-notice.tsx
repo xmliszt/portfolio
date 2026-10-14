@@ -3,9 +3,9 @@
 import { cn } from "@/lib/utils";
 
 import { useLaundromatCopy } from "./i18n/use-laundromat-copy";
+import { useLaundromatUpdate } from "./update/use-laundromat-update";
 import { TOOLBAR_BUTTON_CLASS } from "./toolbar-button-class";
 import { ToolbarLabel } from "./toolbar-label";
-import { useIsUpdateAvailable } from "./use-is-update-available";
 
 const WAVE_STEP_S = 0.07;
 
@@ -23,13 +23,13 @@ const KEYFRAMES = `
 /** Show a toolbar button in the accent colour, with a glow that breathes across the dot and then each character, that reloads the page once a newer laundromat build is deployed, and nothing before that. */
 export function UpdateNotice() {
   const { copy } = useLaundromatCopy();
-  const isUpdateAvailable = useIsUpdateAvailable();
+  const update = useLaundromatUpdate();
 
   function handleReload() {
     window.location.reload();
   }
 
-  if (!isUpdateAvailable) return null;
+  if (update.kind === "current") return null;
   const label = copy.toolbar.updateAvailable;
   return (
     <>

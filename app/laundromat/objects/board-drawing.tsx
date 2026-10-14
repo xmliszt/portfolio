@@ -4,6 +4,8 @@ import {
 } from "@/app/laundromat/board/board-poster";
 import { DaylightPatch } from "@/app/laundromat/daylight-patch";
 import { useLaundromatCopy } from "@/app/laundromat/i18n/use-laundromat-copy";
+import { useRenderQuality } from "@/app/laundromat/settings/use-render-quality";
+import { useLaundromatUpdate } from "@/app/laundromat/update/use-laundromat-update";
 import { getBoardEntries } from "@/lib/laundromat/board/get-board-entries";
 import { getBoardFrame } from "@/lib/laundromat/board/get-board-frame";
 import type { LaidOutObject } from "@/lib/laundromat/build-scene-layout";
@@ -18,6 +20,11 @@ import { cn } from "@/lib/utils";
 import { partStroke } from "./part-stroke";
 
 const BACKLIGHT_FADE_MS = 700;
+const UPDATE_GLOW_RINGS = [
+  { inset: 0.4, widthPx: 0.8, opacity: 0.9 },
+  { inset: -0.8, widthPx: 1.6, opacity: 0.35 },
+  { inset: -2.2, widthPx: 2.4, opacity: 0.12 },
+];
 
 type Segment = { from: ScreenPoint; to: ScreenPoint };
 
@@ -31,7 +38,11 @@ type BoardDrawingProps = {
 
 export function BoardDrawing(props: BoardDrawingProps) {
   const { copy } = useLaundromatCopy();
+  const { quality } = useRenderQuality();
+  const update = useLaundromatUpdate();
   const { projection, details } = props;
+  const hasNewEntries = update.kind === "ready" && update.hasNewEntries;
+  const lit = props.backlit || hasNewEntries;
   const { object } = props.laidOut;
   const frame = getBoardFrame({
     position: object.position,
@@ -50,7 +61,10 @@ export function BoardDrawing(props: BoardDrawingProps) {
     poster.width / BOARD_POSTER_SIZE.width,
     poster.height / BOARD_POSTER_SIZE.height
   );
-  const entries = getBoardEntries({ copy, count: details.visibleUpdates });
+  const entries =
+    update.kind === "ready"
+      ? update.entries.slice(0, details.visibleUpdates)
+      : getBoardEntries({ copy, count: details.visibleUpdates });
   const posterClipId = `${object.id}-poster`;
   const cableFadeId = `${object.id}-cable`;
   const screwCorners = [
@@ -137,7 +151,7 @@ export function BoardDrawing(props: BoardDrawingProps) {
       <DaylightPatch
         points={frame.floorLight}
         color="var(--lm-paper)"
-        opacity={props.backlit ? details.floorSpill : 0}
+        opacity={lit ? details.floorSpill : 0}
         glideMs={BACKLIGHT_FADE_MS}
       />
       {footBar(frame.footBars.rear)}
@@ -270,14 +284,41 @@ export function BoardDrawing(props: BoardDrawingProps) {
           <rect
             {...poster}
             className="fill-[var(--lm-recess)] transition-opacity duration-700"
-            opacity={props.backlit ? 0 : details.dayShade}
+            opacity={lit ? 0 : details.dayShade}
           />
           <rect
             {...poster}
             className="fill-[var(--lm-accent-hi)] transition-opacity duration-700"
-            opacity={props.backlit ? details.frontlight : 0}
+            opacity={lit ? details.frontlight : 0}
           />
         </g>
+        {hasNewEntries && (
+          <g
+            data-board-update-glow
+            data-lm-motion
+            className={cn(
+              "pointer-events-none fill-none stroke-[var(--lm-accent)]",
+              quality === "full" &&
+                "animate-[lm-pulse_2.8s_ease-in-out_infinite]"
+            )}
+          >
+            {(quality === "full"
+              ? UPDATE_GLOW_RINGS
+              : UPDATE_GLOW_RINGS.slice(0, 1)
+            ).map((ring) => (
+              <rect
+                key={ring.inset}
+                x={screen.x + ring.inset}
+                y={screen.y + ring.inset}
+                width={screen.width - 2 * ring.inset}
+                height={screen.height - 2 * ring.inset}
+                rx={1 - ring.inset}
+                strokeWidth={ring.widthPx}
+                opacity={ring.opacity}
+              />
+            ))}
+          </g>
+        )}
         <text
           x={chin.x + chin.width / 2}
           y={chin.y + chin.height / 2 + 0.9}
@@ -292,9 +333,7 @@ export function BoardDrawing(props: BoardDrawingProps) {
           cy={chin.y + chin.height / 2}
           r={0.7}
           className={
-            props.backlit
-              ? "fill-[var(--lm-accent)]"
-              : "fill-[var(--lm-detail)]"
+            lit ? "fill-[var(--lm-accent)]" : "fill-[var(--lm-detail)]"
           }
         />
         <circle

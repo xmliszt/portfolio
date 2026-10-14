@@ -2,7 +2,7 @@
 
 The notice board in the laundromat lists what changed, newest first. The stand shows the three newest entries; pressing it opens every entry since opening day. Visitors read it, so an entry is for them, not for developers.
 
-The "updated · refresh" button in the toolbar is separate. It appears on its own after every deploy and needs no entry.
+The "refresh for updated laundromat" button in the toolbar is separate. It appears on its own after every deploy and needs no entry. The board shows the deployed build's entries (served by `/version?locale=`). It lights up with an accent frame only when the deploy has an entry this tab has not seen; that entry gets an accent dot and the same refresh button.
 
 ## When a change gets an entry
 

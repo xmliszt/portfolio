@@ -2,7 +2,9 @@ import { useEffect, useRef } from "react";
 import { groupBy } from "lodash";
 
 import { useLaundromatCopy } from "@/app/laundromat/i18n/use-laundromat-copy";
+import { useLaundromatUpdate } from "@/app/laundromat/update/use-laundromat-update";
 import { getBoardEntries } from "@/lib/laundromat/board/get-board-entries";
+import { isNewBoardEntry } from "@/lib/laundromat/board/is-new-board-entry";
 import type { SceneConfig } from "@/lib/laundromat/scene-config";
 import { cn } from "@/lib/utils";
 
@@ -22,11 +24,19 @@ type BoardDialogProps = {
 export function BoardDialog(props: BoardDialogProps) {
   const { copy } = useLaundromatCopy();
   const closeRef = useRef<HTMLButtonElement>(null);
-  const entries = getBoardEntries({ copy });
+  const update = useLaundromatUpdate();
+  const entries =
+    update.kind === "ready" ? update.entries : getBoardEntries({ copy });
+  const lit =
+    props.backlit || (update.kind === "ready" && update.hasNewEntries);
+  const refreshEntryId =
+    update.kind === "ready"
+      ? entries.find((entry) => isNewBoardEntry(entry.id))?.id
+      : undefined;
   const days = Object.values(groupBy(entries, (entry) => entry.isoDate));
   const latestDate = entries.at(0)?.date;
   const pageStyle: React.CSSProperties = {
-    backgroundColor: props.backlit
+    backgroundColor: lit
       ? `color-mix(in oklab, var(--lm-paper), var(--lm-accent-hi) ${props.details.frontlight * 100}%)`
       : "var(--lm-paper)",
   };
@@ -34,6 +44,10 @@ export function BoardDialog(props: BoardDialogProps) {
   useEffect(() => {
     closeRef.current?.focus({ preventScroll: true });
   }, []);
+
+  function handleReload() {
+    window.location.reload();
+  }
 
   return (
     <div
@@ -93,28 +107,58 @@ export function BoardDialog(props: BoardDialogProps) {
                   {dayEntries[0].date}
                 </time>
                 <ul className="flex flex-col gap-y-5">
-                  {dayEntries.map((entry) => (
-                    <li
-                      key={entry.id}
-                      data-board-update={entry.id}
-                      className="flex flex-col items-start gap-y-1.5"
-                    >
-                      <span
-                        className={cn(
-                          META_CLASS,
-                          "rounded-full px-2 text-[10px] whitespace-nowrap shadow-[inset_0_0_0_1px_color-mix(in_oklab,var(--lm-ink-pen)_35%,transparent)]"
-                        )}
+                  {dayEntries.map((entry) => {
+                    const isNew =
+                      update.kind === "ready" && isNewBoardEntry(entry.id);
+                    return (
+                      <li
+                        key={entry.id}
+                        data-board-update={entry.id}
+                        data-board-update-new={isNew || undefined}
+                        className="flex flex-col items-start gap-y-1.5"
                       >
-                        {entry.tag}
-                      </span>
-                      <h3 className="m-0 font-[family-name:var(--lm-font-display)] text-[18px] leading-6 font-normal text-balance lowercase">
-                        {entry.title}
-                      </h3>
-                      <p className="font-[family-name:var(--lm-font-display)] text-[14.5px] leading-[1.6] text-pretty opacity-75">
-                        {entry.body}
-                      </p>
-                    </li>
-                  ))}
+                        <span
+                          className={cn(
+                            META_CLASS,
+                            "flex items-center gap-x-1.5 rounded-full px-2 text-[10px] whitespace-nowrap",
+                            isNew
+                              ? "shadow-[inset_0_0_0_1px_var(--lm-accent)]"
+                              : "shadow-[inset_0_0_0_1px_color-mix(in_oklab,var(--lm-ink-pen)_35%,transparent)]"
+                          )}
+                        >
+                          {isNew && (
+                            <span
+                              aria-hidden
+                              className="size-1 rounded-full bg-[var(--lm-accent)]"
+                            />
+                          )}
+                          {entry.tag}
+                        </span>
+                        <h3 className="m-0 font-[family-name:var(--lm-font-display)] text-[18px] leading-6 font-normal text-balance lowercase">
+                          {entry.title}
+                        </h3>
+                        <p className="font-[family-name:var(--lm-font-display)] text-[14.5px] leading-[1.6] text-pretty opacity-75">
+                          {entry.body}
+                        </p>
+                        {entry.id === refreshEntryId && (
+                          <button
+                            type="button"
+                            onClick={handleReload}
+                            className={cn(
+                              META_CLASS,
+                              "mt-1 flex h-6 cursor-pointer items-center gap-x-1.5 rounded-full px-2.5 shadow-[inset_0_0_0_1px_var(--lm-accent)] outline-none hover:bg-[color-mix(in_oklab,var(--lm-accent)_14%,transparent)] focus-visible:ring-2 focus-visible:ring-[var(--lm-accent)]"
+                            )}
+                          >
+                            <span
+                              aria-hidden
+                              className="size-1.5 rounded-full bg-[var(--lm-accent)]"
+                            />
+                            {copy.toolbar.updateAvailable}
+                          </button>
+                        )}
+                      </li>
+                    );
+                  })}
                 </ul>
               </li>
             ))}
@@ -135,7 +179,7 @@ export function BoardDialog(props: BoardDialogProps) {
             aria-hidden
             className={cn(
               "size-1.5 rounded-full transition-colors duration-700",
-              props.backlit ? "bg-[var(--lm-accent)]" : "bg-[var(--lm-detail)]"
+              lit ? "bg-[var(--lm-accent)]" : "bg-[var(--lm-detail)]"
             )}
           />
           <span className="font-[family-name:var(--lm-font-mono)] text-[11px] lowercase opacity-60">
