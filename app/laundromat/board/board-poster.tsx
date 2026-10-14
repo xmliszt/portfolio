@@ -1,4 +1,4 @@
-import type { getBoardEntries } from "@/lib/laundromat/board/get-board-entries";
+import type { BoardEntry } from "@/lib/laundromat/board/parse-board-entries";
 import type { LaundromatCopy } from "@/lib/laundromat/i18n/laundromat-copy";
 import { fitCaptionFontSize } from "@/lib/laundromat/tv/fit-caption-font-size";
 
@@ -17,7 +17,7 @@ const SERIF = `${INK} font-[family-name:var(--lm-font-display)] lowercase`;
 
 type BoardPosterProps = {
   copy: LaundromatCopy;
-  entries: ReturnType<typeof getBoardEntries>;
+  entries: BoardEntry[];
 };
 
 /** Draw the board's page in a `BOARD_POSTER_SIZE` box: eyebrow, heading, latest `updated` date, one row per entry with date, tag and title, and the footer. */
