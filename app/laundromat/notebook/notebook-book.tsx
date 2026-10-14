@@ -91,6 +91,7 @@ type NotebookBookProps = {
   freeNoticeOn: boolean;
   onWritingChange: (isWriting: boolean) => void;
   onDraftChange: (draft: Omit<RemoteDraft, "sessionId">) => void;
+  onUnsavedChange: (hasUnsavedNote: boolean) => void;
   remoteEntry: RemoteEntry | undefined;
   onEntryPlaced: (entry: Omit<RemoteEntry, "sessionId">) => void;
   onRequestFreeNotice: () => void;
@@ -730,8 +731,6 @@ export function NotebookBook(props: NotebookBookProps) {
   });
   useEffect(() => {
     if (isPresent || !isWritable) return;
-    setDraft("");
-    writeStoredDraft("");
     onWritingChange(false);
     onDraftChangeRef.current({ text: "", script: "latin" });
   }, [isPresent, isWritable, onWritingChange]);
@@ -745,6 +744,13 @@ export function NotebookBook(props: NotebookBookProps) {
       script: detectScript(restored),
     });
   }, [canWrite, onWritingChange]);
+
+  const hasUnsavedNote = canWrite && draft.trim() !== "";
+  const { onUnsavedChange } = props;
+  useEffect(() => {
+    onUnsavedChange(hasUnsavedNote);
+  }, [hasUnsavedNote, onUnsavedChange]);
+  useEffect(() => () => onUnsavedChange(false), [onUnsavedChange]);
 
   const lastDraftRef = useRef(pageDraft);
   useEffect(() => {
@@ -1284,7 +1290,16 @@ export function NotebookBook(props: NotebookBookProps) {
                 onClick={() => void handleLeave()}
                 className="cursor-pointer rounded-md border border-[var(--lm-edge)] bg-[var(--lm-panel)] px-3 py-1.5 text-[var(--lm-ink-hi)] lowercase transition-opacity outline-none hover:border-[var(--lm-accent)] focus-visible:border-[var(--lm-accent)] disabled:cursor-default disabled:opacity-40"
               >
-                {isLeaving ? copy.notebook.savingNote : copy.notebook.saveNote}
+                {isLeaving ? (
+                  copy.notebook.savingNote
+                ) : (
+                  <span className="flex items-center gap-x-2">
+                    {copy.notebook.saveNote}
+                    <span className="contents [@media(pointer:coarse)]:hidden">
+                      <ShortcutKeys />
+                    </span>
+                  </span>
+                )}
               </button>
             )}
             <button
