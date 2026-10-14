@@ -62,7 +62,7 @@ export const en = {
     closeHint: "esc to close",
     roomSounds: "room sounds",
     roomSoundsHint:
-      "only changes what you hear. the room keeps humming for everyone else.",
+      "sounds from the room and the people in it. turning one off only mutes it for you.",
     roomSoundsAllOn: "all on",
     roomSoundsAllOff: "all off",
     roomSoundOn: "on",

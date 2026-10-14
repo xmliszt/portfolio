@@ -52,7 +52,7 @@ export const tr = {
     closeHint: "kapatmak için esc",
     roomSounds: "dükkân sesleri",
     roomSoundsHint:
-      "yalnızca senin duyduklarını değiştirir. dükkân herkes için uğuldamaya devam eder.",
+      "dükkânın ve içindeki insanların sesleri. birini kapatmak onu yalnızca senin için susturur.",
     roomSoundsAllOn: "hepsi açık",
     roomSoundsAllOff: "hepsi kapalı",
     roomSoundOn: "açık",

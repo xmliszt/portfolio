@@ -53,7 +53,7 @@ export const it = {
     closeHint: "esc per chiudere",
     roomSounds: "suoni della sala",
     roomSoundsHint:
-      "cambia solo quello che senti tu. per gli altri la sala continua a ronzare.",
+      "i suoni della sala e delle persone che ci sono. spegnerne uno lo silenzia solo per te.",
     roomSoundsAllOn: "tutti accesi",
     roomSoundsAllOff: "tutti spenti",
     roomSoundOn: "on",

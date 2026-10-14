@@ -53,7 +53,7 @@ export const ko = {
     closeHint: "esc로 닫기",
     roomSounds: "가게 소리",
     roomSoundsHint:
-      "내게 들리는 소리만 바뀌어요. 다른 사람에게는 그대로 들려요.",
+      "가게와 그 안에 있는 사람들이 내는 소리예요. 끄면 나에게만 들리지 않아요.",
     roomSoundsAllOn: "모두 켜기",
     roomSoundsAllOff: "모두 끄기",
     roomSoundOn: "켬",

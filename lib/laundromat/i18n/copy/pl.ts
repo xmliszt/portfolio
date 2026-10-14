@@ -66,7 +66,7 @@ export const pl = {
     closeHint: "esc, aby zamknąć",
     roomSounds: "dźwięki w pralni",
     roomSoundsHint:
-      "zmienia tylko to, co słyszysz ty. dla innych pralnia dalej szumi.",
+      "dźwięki pralni i ludzi, którzy w niej są. wyłączenie dźwięku wycisza go tylko dla ciebie.",
     roomSoundsAllOn: "włącz wszystkie",
     roomSoundsAllOff: "wyłącz wszystkie",
     roomSoundOn: "wł.",

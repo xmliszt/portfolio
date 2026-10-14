@@ -66,7 +66,7 @@ export const uk = {
     closeHint: "esc — закрити",
     roomSounds: "звуки пральні",
     roomSoundsHint:
-      "змінює лише те, що чуєте ви. для інших пральня гуде як раніше.",
+      "звуки пральні та людей у ній. якщо вимкнути звук, він стихне лише для вас.",
     roomSoundsAllOn: "увімкнути всі",
     roomSoundsAllOff: "вимкнути всі",
     roomSoundOn: "увімк",

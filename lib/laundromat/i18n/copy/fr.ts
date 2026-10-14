@@ -53,7 +53,7 @@ export const fr = {
     closeHint: "échap pour fermer",
     roomSounds: "sons de la salle",
     roomSoundsHint:
-      "ne change que ce que tu entends. la salle continue de ronronner pour les autres.",
+      "les sons de la salle et des gens qui s'y trouvent. en couper un ne le coupe que pour toi.",
     roomSoundsAllOn: "tout activer",
     roomSoundsAllOff: "tout couper",
     roomSoundOn: "act.",

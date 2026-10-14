@@ -53,7 +53,7 @@ export const ja = {
     closeHint: "esc で閉じる",
     roomSounds: "店内の音",
     roomSoundsHint:
-      "あなたに聞こえる音だけが変わります。ほかの人には今までどおり聞こえます。",
+      "店内とそこにいる人たちの音です。オフにしても、消えるのはあなたにだけです。",
     roomSoundsAllOn: "すべてオン",
     roomSoundsAllOff: "すべてオフ",
     roomSoundOn: "オン",

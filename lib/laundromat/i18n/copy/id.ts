@@ -58,7 +58,7 @@ export const id = {
     closeHint: "esc untuk menutup",
     roomSounds: "suara ruangan",
     roomSoundsHint:
-      "hanya mengubah apa yang kamu dengar. ruangan tetap berdengung untuk yang lain.",
+      "suara dari ruangan dan orang-orang di dalamnya. mematikan satu suara hanya membisukannya untukmu.",
     roomSoundsAllOn: "nyalakan semua",
     roomSoundsAllOff: "matikan semua",
     roomSoundOn: "nyala",

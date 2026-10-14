@@ -52,7 +52,8 @@ export const zhHant = {
     close: "關閉",
     closeHint: "按 esc 關閉",
     roomSounds: "店內聲音",
-    roomSoundsHint: "只改變你聽到的聲音。其他人那邊照舊。",
+    roomSoundsHint:
+      "來自店內和店裡其他人的聲音。關掉某個聲音，只對你自己靜音。",
     roomSoundsAllOn: "全部開啟",
     roomSoundsAllOff: "全部關閉",
     roomSoundOn: "開",

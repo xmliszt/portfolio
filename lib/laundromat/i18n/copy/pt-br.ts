@@ -54,7 +54,7 @@ export const ptBR = {
     closeHint: "esc para fechar",
     roomSounds: "sons da lavanderia",
     roomSoundsHint:
-      "só muda o que você ouve. para os outros, a lavanderia continua zumbindo.",
+      "sons da lavanderia e das pessoas nela. desligar um só silencia para você.",
     roomSoundsAllOn: "ligar todos",
     roomSoundsAllOff: "desligar todos",
     roomSoundOn: "lig.",

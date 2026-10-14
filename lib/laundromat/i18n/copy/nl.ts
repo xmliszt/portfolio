@@ -52,7 +52,7 @@ export const nl = {
     closeHint: "esc om te sluiten",
     roomSounds: "geluiden in de zaak",
     roomSoundsHint:
-      "verandert alleen wat jij hoort. voor de rest blijft de zaak zoemen.",
+      "geluiden van de zaak en de mensen erin. iets uitzetten dempt het alleen voor jou.",
     roomSoundsAllOn: "alles aan",
     roomSoundsAllOff: "alles uit",
     roomSoundOn: "aan",

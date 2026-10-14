@@ -52,7 +52,8 @@ export const zhHans = {
     close: "关闭",
     closeHint: "按 esc 关闭",
     roomSounds: "店内声音",
-    roomSoundsHint: "只改变你听到的声音。其他人那边照旧。",
+    roomSoundsHint:
+      "来自店内和店里其他人的声音。关掉某个声音，只对你自己静音。",
     roomSoundsAllOn: "全部打开",
     roomSoundsAllOff: "全部关闭",
     roomSoundOn: "开",

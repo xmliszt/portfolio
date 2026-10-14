@@ -58,7 +58,7 @@ export const vi = {
     closeHint: "esc để đóng",
     roomSounds: "âm thanh trong tiệm",
     roomSoundsHint:
-      "chỉ đổi những gì bạn nghe. với mọi người khác, tiệm vẫn rì rầm như cũ.",
+      "âm thanh từ tiệm và những người trong đó. tắt một âm chỉ tắt cho riêng bạn.",
     roomSoundsAllOn: "bật hết",
     roomSoundsAllOff: "tắt hết",
     roomSoundOn: "bật",
