@@ -36,10 +36,26 @@ export type BedroomConfig = {
   lamp: { center: { x: number; y: number }; shadeRadius: number };
   bed: {
     headboard: { position: IsoPoint; size: IsoSize };
+    cushions: {
+      left: { from: number; to: number };
+      right: { from: number; to: number };
+    };
+    cushionDepth: number;
+    cushionBottom: number;
+    plinth: { position: IsoPoint; size: IsoSize };
     frame: { position: IsoPoint; size: IsoSize };
     mattress: { position: IsoPoint; size: IsoSize };
-    pillow: { position: IsoPoint; size: IsoSize };
-    blanket: { position: IsoPoint; size: IsoSize };
+    pillows: {
+      left: { position: IsoPoint; size: IsoSize };
+      right: { position: IsoPoint; size: IsoSize };
+    };
+    pillowPuff: number;
+    duvet: { position: IsoPoint; size: IsoSize };
+    cuffDepth: number;
+    overhang: number;
+    hemZ: number;
+    channelGap: number;
+    throw: { y: number; d: number; h: number; hemZ: number };
   };
   rug: { at: { x: number; y: number }; width: number; depth: number };
   lightPool: { at: { x: number; y: number }; radiusX: number; radiusY: number };
@@ -92,6 +108,12 @@ export type BedroomConfig = {
       hemPeriodMs: number;
       hemDampingRatio: number;
     };
+    goodNight: {
+      trackMs: number;
+      landShare: number;
+      textMs: number;
+      volume: number;
+    };
   };
 };
 
@@ -123,24 +145,46 @@ export const bedroomConfig: BedroomConfig = {
   bed: {
     headboard: {
       position: { x: 4.4, y: 0, z: 0 },
-      size: { w: 2.6, d: 0.14, h: 1.2 },
+      size: { w: 2.6, d: 0.16, h: 1.36 },
+    },
+    cushions: {
+      left: { from: 4.5, to: 5.66 },
+      right: { from: 5.74, to: 6.9 },
+    },
+    cushionDepth: 0.08,
+    cushionBottom: 0.5,
+    plinth: {
+      position: { x: 4.62, y: 0.3, z: 0 },
+      size: { w: 2.26, d: 2.26, h: 0.1 },
     },
     frame: {
-      position: { x: 4.5, y: 0.14, z: 0 },
-      size: { w: 2.5, d: 2.6, h: 0.32 },
+      position: { x: 4.48, y: 0.16, z: 0.1 },
+      size: { w: 2.52, d: 2.56, h: 0.26 },
     },
     mattress: {
-      position: { x: 4.5, y: 0.18, z: 0.32 },
-      size: { w: 2.4, d: 2.5, h: 0.26 },
+      position: { x: 4.54, y: 0.24, z: 0.36 },
+      size: { w: 2.4, d: 2.44, h: 0.24 },
     },
-    pillow: {
-      position: { x: 4.8, y: 0.3, z: 0.58 },
-      size: { w: 1.9, d: 0.55, h: 0.16 },
+    pillows: {
+      left: {
+        position: { x: 4.66, y: 0.36, z: 0.6 },
+        size: { w: 1.04, d: 0.54, h: 0.26 },
+      },
+      right: {
+        position: { x: 5.8, y: 0.36, z: 0.6 },
+        size: { w: 1.04, d: 0.54, h: 0.26 },
+      },
     },
-    blanket: {
-      position: { x: 4.5, y: 1, z: 0.34 },
-      size: { w: 2.4, d: 1.7, h: 0.28 },
+    pillowPuff: 0.04,
+    duvet: {
+      position: { x: 4.54, y: 1.02, z: 0.6 },
+      size: { w: 2.4, d: 1.66, h: 0.08 },
     },
+    cuffDepth: 0.34,
+    overhang: 0.05,
+    hemZ: 0.22,
+    channelGap: 0.3,
+    throw: { y: 2.14, d: 0.44, h: 0.06, hemZ: 0.3 },
   },
   rug: { at: { x: 0.5, y: 2.5 }, width: 3.5, depth: 2.5 },
   lightPool: { at: { x: 3.6, y: 1.1 }, radiusX: 1.3, radiusY: 1.4 },
@@ -229,6 +273,12 @@ export const bedroomConfig: BedroomConfig = {
       pullMs: 1500,
       hemPeriodMs: 1000,
       hemDampingRatio: 0.4,
+    },
+    goodNight: {
+      trackMs: 86300,
+      landShare: 0.92,
+      textMs: 3800,
+      volume: 0.6,
     },
   },
 };

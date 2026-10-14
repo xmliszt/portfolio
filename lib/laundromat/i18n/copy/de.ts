@@ -439,6 +439,10 @@ export const de = {
     curtainOpenTooltip: "die Vorhänge aufziehen",
     curtainCloseLabel: "Die Vorhänge zuziehen",
     curtainOpenLabel: "Die Vorhänge aufziehen",
+    bedTooltip: "schlafen gehen",
+    bedLabel: "Schlafen gehen",
+    goodNight: "Gute Nacht",
+    notSleepy: "will doch nicht schlafen",
     doorReadyTooltip: "zum Waschsalon tragen",
     doorWaitingTooltip: "heb zuerst deine Wäsche auf",
     doorAwayTooltip:

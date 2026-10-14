@@ -17,13 +17,13 @@ type BedLaundryPileProps = {
   projection: IsoProjection;
 };
 
-/** Draw a neat stack of folded clean laundry resting on the foot of the bed's blanket. */
+/** Draw a neat stack of folded clean laundry resting on the bed's duvet, behind the throw. */
 export function BedLaundryPile(props: BedLaundryPileProps) {
-  const { blanket } = props.bed;
-  const top = blanket.position.z + blanket.size.h;
+  const { duvet } = props.bed;
+  const top = duvet.position.z + duvet.size.h;
   const corner = {
-    x: blanket.position.x + blanket.size.w * 0.42,
-    y: blanket.position.y + blanket.size.d * 0.45,
+    x: duvet.position.x + duvet.size.w * 0.42,
+    y: props.bed.throw.y - PILE_SIZE.d - 0.08,
   };
   return (
     <g data-bed-laundry-pile className="stroke-[var(--lm-line)]">
