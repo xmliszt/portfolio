@@ -1,3 +1,4 @@
+import type { RoomSoundGroup } from "@/lib/laundromat/audio/room-sound-groups";
 import type { LaundromatCopy } from "@/lib/laundromat/i18n/laundromat-copy";
 
 function pluralize(o: {
@@ -63,6 +64,33 @@ export const uk = {
     qualityLiteHint: "легше для пам'яті та батареї",
     close: "закрити",
     closeHint: "esc — закрити",
+    roomSounds: "звуки пральні",
+    roomSoundsHint:
+      "звуки пральні та людей у ній. якщо вимкнути звук, він стихне лише для вас.",
+    roomSoundsAllOn: "увімкнути всі",
+    roomSoundsAllOff: "вимкнути всі",
+    roomSoundOn: "увімк",
+    roomSoundOff: "вимк",
+    roomSound: {
+      machines: {
+        label: "машини",
+        hint: "крутяться пральні й сушильні машини",
+      },
+      "shop-bell": { label: "дзвоник", hint: "дзвенить, коли хтось заходить" },
+      unloading: {
+        label: "вивантаження",
+        hint: "клацання дверцят, коли хтось забирає білизну",
+      },
+      coffee: {
+        label: "кава",
+        hint: "булькання під час заварювання і сигнал готовності",
+      },
+      tv: { label: "шум тб", hint: "шипіння телевізора без сигналу" },
+      lamp: {
+        label: "лампа",
+        hint: "лампа мерехтить, вмикаючись, і клацає, вимикаючись",
+      },
+    } satisfies { [group in RoomSoundGroup]: { label: string; hint: string } },
   },
   tabDone: "готово",
   readoutDone: "готово",
@@ -213,6 +241,10 @@ export const uk = {
       board: "стенд",
     },
     updates: {
+      "room-sound-dials": {
+        title: "обирайте, що чути",
+        body: "У налаштуваннях тепер є ручка для кожного звуку пральні, від машин до дзвоника. Вимкніть те, чого не хочете чути. Для інших усе лишиться як було.",
+      },
       "home-mid-wash": {
         title: "додому під час прання",
         body: "Стань на килимок, щоб піти додому, поки триває прання. Мокрий одяг їде додому в кошику, сухий лягає на ліжко.",

@@ -1,3 +1,4 @@
+import type { RoomSoundGroup } from "@/lib/laundromat/audio/room-sound-groups";
 import type { LaundromatCopy } from "@/lib/laundromat/i18n/laundromat-copy";
 
 export const tr = {
@@ -49,6 +50,30 @@ export const tr = {
     qualityLiteHint: "bellek ve pil için daha hafif",
     close: "kapat",
     closeHint: "kapatmak için esc",
+    roomSounds: "dükkân sesleri",
+    roomSoundsHint:
+      "dükkânın ve içindeki insanların sesleri. birini kapatmak onu yalnızca senin için susturur.",
+    roomSoundsAllOn: "hepsi açık",
+    roomSoundsAllOff: "hepsi kapalı",
+    roomSoundOn: "açık",
+    roomSoundOff: "kapalı",
+    roomSound: {
+      machines: {
+        label: "makineler",
+        hint: "dönen çamaşır ve kurutma makineleri",
+      },
+      "shop-bell": { label: "kapı zili", hint: "biri içeri girince çalar" },
+      unloading: {
+        label: "boşaltma",
+        hint: "biri çamaşırını alırken kapak mandalı",
+      },
+      coffee: { label: "kahve", hint: "demlenirken fokurtu ve hazır bip sesi" },
+      tv: { label: "tv karıncası", hint: "sinyalsiz televizyonun cızırtısı" },
+      lamp: {
+        label: "lamba",
+        hint: "lambanın titreyerek yanması ve tıkla sönmesi",
+      },
+    } satisfies { [group in RoomSoundGroup]: { label: string; hint: string } },
   },
   tabDone: "bitti",
   readoutDone: "bitti",
@@ -200,6 +225,10 @@ export const tr = {
       board: "pano",
     },
     updates: {
+      "room-sound-dials": {
+        title: "duyacağın sesleri seç",
+        body: "Ayarlarda artık makinelerden kapı ziline kadar her dükkân sesi için bir düğme var. Duymak istemediklerini kapat. Diğerleri için dükkân aynı kalır.",
+      },
       "home-mid-wash": {
         title: "çamaşır dönerken eve dön",
         body: "Çamaşırın dönerken eve gitmek için paspasa bas. Islak kıyafetler sepette eve gelir, kuru olanlar yatağa konur.",

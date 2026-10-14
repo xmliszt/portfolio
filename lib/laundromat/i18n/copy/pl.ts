@@ -1,3 +1,4 @@
+import type { RoomSoundGroup } from "@/lib/laundromat/audio/room-sound-groups";
 import type { LaundromatCopy } from "@/lib/laundromat/i18n/laundromat-copy";
 
 function pluralize(o: {
@@ -63,6 +64,30 @@ export const pl = {
     qualityLiteHint: "lżejszy dla pamięci i baterii",
     close: "zamknij",
     closeHint: "esc, aby zamknąć",
+    roomSounds: "dźwięki w pralni",
+    roomSoundsHint:
+      "dźwięki pralni i ludzi, którzy w niej są. wyłączenie dźwięku wycisza go tylko dla ciebie.",
+    roomSoundsAllOn: "włącz wszystkie",
+    roomSoundsAllOff: "wyłącz wszystkie",
+    roomSoundOn: "wł.",
+    roomSoundOff: "wył.",
+    roomSound: {
+      machines: { label: "maszyny", hint: "kręcące się pralki i suszarki" },
+      "shop-bell": { label: "dzwonek", hint: "dzwoni, gdy ktoś wchodzi" },
+      unloading: {
+        label: "wyjmowanie",
+        hint: "zatrzask drzwiczek, gdy ktoś odbiera pranie",
+      },
+      coffee: {
+        label: "kawa",
+        hint: "bulgotanie przy parzeniu i piknięcie, gdy gotowa",
+      },
+      tv: { label: "szum telewizora", hint: "szum telewizora bez sygnału" },
+      lamp: {
+        label: "lampa",
+        hint: "lampa migocze przy włączaniu i klika przy wyłączaniu",
+      },
+    } satisfies { [group in RoomSoundGroup]: { label: string; hint: string } },
   },
   tabDone: "gotowe",
   readoutDone: "gotowe",
@@ -216,6 +241,10 @@ export const pl = {
       board: "tablica",
     },
     updates: {
+      "room-sound-dials": {
+        title: "wybierz, co słyszysz",
+        body: "W ustawieniach jest teraz pokrętło dla każdego dźwięku w pralni, od maszyn po dzwonek. Wyłącz te, których wolisz nie słyszeć. Dla innych pralnia zostaje taka sama.",
+      },
       "home-mid-wash": {
         title: "wróć do domu w trakcie prania",
         body: "Stań na wycieraczce, żeby wrócić do domu, gdy pranie trwa. Mokre ubrania wracają w koszu, suche lądują na łóżku.",

@@ -1,3 +1,4 @@
+import type { RoomSoundGroup } from "@/lib/laundromat/audio/room-sound-groups";
 import type { LaundromatCopy } from "@/lib/laundromat/i18n/laundromat-copy";
 import type { MachineKind } from "@/lib/laundromat/scene-config";
 
@@ -50,6 +51,33 @@ export const es = {
     qualityLiteHint: "más ligero para la memoria y la batería",
     close: "cerrar",
     closeHint: "esc para cerrar",
+    roomSounds: "sonidos de la sala",
+    roomSoundsHint:
+      "sonidos de la sala y de la gente que hay en ella. si apagas uno, solo se silencia para ti.",
+    roomSoundsAllOn: "todo encendido",
+    roomSoundsAllOff: "todo apagado",
+    roomSoundOn: "enc.",
+    roomSoundOff: "apag.",
+    roomSound: {
+      machines: { label: "máquinas", hint: "lavadoras y secadoras girando" },
+      "shop-bell": { label: "campanilla", hint: "suena cuando entra alguien" },
+      unloading: {
+        label: "recogida",
+        hint: "un pestillo cuando alguien saca su ropa",
+      },
+      coffee: {
+        label: "café",
+        hint: "el borboteo al hacer café y el pitido de listo",
+      },
+      tv: {
+        label: "estática de la tele",
+        hint: "el siseo de la tele sin señal",
+      },
+      lamp: {
+        label: "lámpara",
+        hint: "la lámpara parpadea al encenderse y hace clic al apagarse",
+      },
+    } satisfies { [group in RoomSoundGroup]: { label: string; hint: string } },
   },
   tabDone: "listo",
   readoutDone: "listo",
@@ -233,6 +261,10 @@ export const es = {
       board: "tablón",
     },
     updates: {
+      "room-sound-dials": {
+        title: "elige qué sonidos oyes",
+        body: "Los ajustes tienen ahora un dial para cada sonido de la sala, desde las máquinas hasta la campanilla. Apaga los que no quieras oír. Para los demás, la sala sigue igual.",
+      },
       "home-mid-wash": {
         title: "vuelve a casa mientras lava",
         body: "Pisa el felpudo para volver a casa mientras se lava tu ropa. La ropa mojada viaja en el cesto y la seca acaba en la cama.",

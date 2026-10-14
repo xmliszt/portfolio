@@ -10,6 +10,7 @@ import { getUnloadedVisitorIds } from "@/lib/laundromat/realtime/get-unloaded-vi
 import type { RoomPresence } from "@/lib/laundromat/realtime/room-presence";
 
 import type { SoundBoard } from "./sound-board-context";
+import { useRoomSounds } from "./use-room-sounds";
 
 const LAMP_OFF_MS = 200;
 
@@ -46,7 +47,7 @@ function useOnChange<T>(options: {
   }, [value]);
 }
 
-/** Play the room's loops and one-shots as its machines, coffee, tv, lamp, laundry, focus and other visitors' arrivals and laundry change, ring the shop bell as the visitor walks in, stay silent while the visitor is not `isInside`, and return the lamp switch moment (`on` while it flickers on, `off` as it snaps off) or `undefined`. */
+/** Play the room's loops and one-shots as its machines, coffee, tv, lamp, laundry, focus and other visitors' arrivals and laundry change, ring the shop bell as the visitor walks in, skip each room sound group the visitor turned off, stay silent while the visitor is not `isInside`, and return the lamp switch moment (`on` while it flickers on, `off` as it snaps off) or `undefined`. */
 export function useSceneSounds(options: {
   sound: SoundBoard | undefined;
   isWasherRunning: boolean;
@@ -62,15 +63,32 @@ export function useSceneSounds(options: {
 }) {
   const { coffeeKind, isLampOn, loadKind, peers, isInside, focus } = options;
   const sound = isInside ? options.sound : undefined;
-  useLoop({ sound, name: "washer-running", playing: options.isWasherRunning });
-  useLoop({ sound, name: "dryer-running", playing: options.isDryerRunning });
-  useLoop({ sound, name: "coffee-brewing", playing: coffeeKind === "brewing" });
-  useLoop({ sound, name: "tv-no-signal", playing: options.isTvHissing });
+  const { switches } = useRoomSounds();
+  useLoop({
+    sound,
+    name: "washer-running",
+    playing: switches.machines && options.isWasherRunning,
+  });
+  useLoop({
+    sound,
+    name: "dryer-running",
+    playing: switches.machines && options.isDryerRunning,
+  });
+  useLoop({
+    sound,
+    name: "coffee-brewing",
+    playing: switches.coffee && coffeeKind === "brewing",
+  });
+  useLoop({
+    sound,
+    name: "tv-no-signal",
+    playing: switches.tv && options.isTvHissing,
+  });
 
   useOnChange({
     value: coffeeKind,
     onChange: ({ previous, current }) => {
-      if (previous === "brewing" && current === "ready") {
+      if (switches.coffee && previous === "brewing" && current === "ready") {
         sound?.play("coffee-brew-done");
       }
     },
@@ -90,10 +108,14 @@ export function useSceneSounds(options: {
     onChange: ({ previous, current }) => {
       if (previous === undefined || current === undefined) return;
       const changes = { previous, current, ownVisitorId: options.ownVisitorId };
-      if (isInside && getArrivedVisitorIds(changes).length > 0) {
+      if (
+        switches["shop-bell"] &&
+        isInside &&
+        getArrivedVisitorIds(changes).length > 0
+      ) {
         sound?.play("shop-bell", { volume: 0.5 });
       }
-      if (getUnloadedVisitorIds(changes).length > 0) {
+      if (switches.unloading && getUnloadedVisitorIds(changes).length > 0) {
         sound?.play("door-latch-open");
         sound?.play("collect-laundry", { volume: 0.5 });
       }
@@ -103,7 +125,7 @@ export function useSceneSounds(options: {
   useOnChange({
     value: isInside,
     onChange: ({ current }) => {
-      if (current) sound?.play("shop-bell");
+      if (current && switches["shop-bell"]) sound?.play("shop-bell");
     },
   });
 
@@ -119,7 +141,7 @@ export function useSceneSounds(options: {
     value: isLampOn,
     onChange: ({ previous, current }) => {
       if (previous === undefined || current === undefined) return;
-      sound?.play(current ? "lamp-flicker" : "lamp-off");
+      if (switches.lamp) sound?.play(current ? "lamp-flicker" : "lamp-off");
       setLampSwitch(current ? "on" : "off");
       const timer = window.setTimeout(
         () => setLampSwitch(undefined),

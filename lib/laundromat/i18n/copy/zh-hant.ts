@@ -1,3 +1,4 @@
+import type { RoomSoundGroup } from "@/lib/laundromat/audio/room-sound-groups";
 import type { LaundromatCopy } from "@/lib/laundromat/i18n/laundromat-copy";
 import type { MachineKind } from "@/lib/laundromat/scene-config";
 
@@ -50,6 +51,21 @@ export const zhHant = {
     qualityLiteHint: "更省記憶體和電量",
     close: "關閉",
     closeHint: "按 esc 關閉",
+    roomSounds: "店內聲音",
+    roomSoundsHint:
+      "來自店內和店裡其他人的聲音。關掉某個聲音，只對你自己靜音。",
+    roomSoundsAllOn: "全部開啟",
+    roomSoundsAllOff: "全部關閉",
+    roomSoundOn: "開",
+    roomSoundOff: "關",
+    roomSound: {
+      machines: { label: "機器", hint: "洗衣機和烘乾機轉動的聲音" },
+      "shop-bell": { label: "門鈴", hint: "有人進門時響起" },
+      unloading: { label: "取衣服", hint: "有人取衣服時的門扣聲" },
+      coffee: { label: "咖啡", hint: "煮咖啡的咕嘟聲和煮好的提示音" },
+      tv: { label: "電視雜訊", hint: "沒有訊號的電視沙沙聲" },
+      lamp: { label: "檯燈", hint: "檯燈閃爍亮起和喀噠熄滅的聲音" },
+    } satisfies { [group in RoomSoundGroup]: { label: string; hint: string } },
   },
   tabDone: "好了",
   readoutDone: "好了",
@@ -221,6 +237,10 @@ export const zhHant = {
       board: "告示板",
     },
     updates: {
+      "room-sound-dials": {
+        title: "選擇你想聽的聲音",
+        body: "設定裡現在有店內每種聲音的旋鈕，從機器到門鈴。不想聽的就關掉。其他人那邊的店內照舊。",
+      },
       "home-mid-wash": {
         title: "洗衣時也能回家",
         body: "踩上門墊，衣服還在洗時也能回家。濕衣服裝在籃子裡帶回，乾衣服放在床上。",

@@ -420,6 +420,7 @@ export function LaundromatScene(props: LaundromatSceneProps) {
   });
 
   const [wantsFreeNotice, setWantsFreeNotice] = useState(false);
+  const [hasUnsavedNote, setHasUnsavedNote] = useState(false);
   const isNotebookTaken = notebookLock.kind === "taken";
   const isNotebookFree = notebookLock.kind === "free";
   const wasNotebookTakenRef = useRef(isNotebookTaken);
@@ -1037,6 +1038,7 @@ export function LaundromatScene(props: LaundromatSceneProps) {
 
   function handleBackdropClick(event: React.MouseEvent<HTMLDivElement>) {
     if (focus === "room") return;
+    if (focus === "notebook" && hasUnsavedNote) return;
     const isOnHitTarget =
       event.target instanceof Element &&
       event.target.closest(
@@ -1305,6 +1307,7 @@ export function LaundromatScene(props: LaundromatSceneProps) {
                 freeNoticeOn={wantsFreeNotice}
                 onWritingChange={handleWritingChange}
                 onDraftChange={handleDraftChange}
+                onUnsavedChange={setHasUnsavedNote}
                 remoteEntry={room.lastEntry}
                 onEntryPlaced={handleEntryPlaced}
                 onRequestFreeNotice={handleRequestFreeNotice}

@@ -1,3 +1,4 @@
+import type { RoomSoundGroup } from "@/lib/laundromat/audio/room-sound-groups";
 import type { LaundromatCopy } from "@/lib/laundromat/i18n/laundromat-copy";
 import type { MachineKind } from "@/lib/laundromat/scene-config";
 
@@ -50,6 +51,33 @@ export const it = {
     qualityLiteHint: "più leggera per memoria e batteria",
     close: "chiudi",
     closeHint: "esc per chiudere",
+    roomSounds: "suoni della sala",
+    roomSoundsHint:
+      "i suoni della sala e delle persone che ci sono. spegnerne uno lo silenzia solo per te.",
+    roomSoundsAllOn: "tutti accesi",
+    roomSoundsAllOff: "tutti spenti",
+    roomSoundOn: "on",
+    roomSoundOff: "off",
+    roomSound: {
+      machines: {
+        label: "macchine",
+        hint: "lavatrici e asciugatrici che girano",
+      },
+      "shop-bell": { label: "campanello", hint: "suona quando entra qualcuno" },
+      unloading: {
+        label: "svuotamento",
+        hint: "un chiavistello quando qualcuno ritira il bucato",
+      },
+      coffee: {
+        label: "caffè",
+        hint: "il gorgoglio dell'infusione e il bip quando è pronto",
+      },
+      tv: { label: "fruscio tv", hint: "il fruscio della tv senza segnale" },
+      lamp: {
+        label: "lampada",
+        hint: "la lampada che sfarfalla accendendosi e scatta spegnendosi",
+      },
+    } satisfies { [group in RoomSoundGroup]: { label: string; hint: string } },
   },
   tabDone: "finito",
   readoutDone: "fine",
@@ -240,6 +268,10 @@ export const it = {
       board: "bacheca",
     },
     updates: {
+      "room-sound-dials": {
+        title: "scegli quali suoni sentire",
+        body: "Nelle impostazioni ora c'è una manopola per ogni suono della sala, dalle macchine al campanello. Spegni quelli che preferisci non sentire. Per gli altri la sala resta uguale.",
+      },
       "home-mid-wash": {
         title: "torna a casa mentre lava",
         body: "Passa sullo zerbino per tornare a casa mentre il bucato va. I vestiti bagnati tornano nel cesto, quelli asciutti finiscono sul letto.",

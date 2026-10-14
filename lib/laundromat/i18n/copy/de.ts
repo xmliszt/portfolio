@@ -1,3 +1,4 @@
+import type { RoomSoundGroup } from "@/lib/laundromat/audio/room-sound-groups";
 import type { LaundromatCopy } from "@/lib/laundromat/i18n/laundromat-copy";
 import type { MachineKind } from "@/lib/laundromat/scene-config";
 
@@ -50,6 +51,33 @@ export const de = {
     qualityLiteHint: "schont Speicher und Akku",
     close: "schließen",
     closeHint: "esc zum Schließen",
+    roomSounds: "Raumgeräusche",
+    roomSoundsHint:
+      "Geräusche aus dem Raum und von den Leuten darin. Was du ausschaltest, ist nur für dich stumm.",
+    roomSoundsAllOn: "alle an",
+    roomSoundsAllOff: "alle aus",
+    roomSoundOn: "an",
+    roomSoundOff: "aus",
+    roomSound: {
+      machines: {
+        label: "Maschinen",
+        hint: "Waschmaschinen und Trockner, die laufen",
+      },
+      "shop-bell": {
+        label: "Türglocke",
+        hint: "klingelt, wenn jemand hereinkommt",
+      },
+      unloading: {
+        label: "Ausräumen",
+        hint: "ein Türriegel, wenn jemand Wäsche holt",
+      },
+      coffee: {
+        label: "Kaffee",
+        hint: "das Blubbern beim Brühen und der Fertig-Piep",
+      },
+      tv: { label: "TV-Rauschen", hint: "Rauschen vom Fernseher ohne Signal" },
+      lamp: { label: "Lampe", hint: "die Lampe flackert an und klickt aus" },
+    } satisfies { [group in RoomSoundGroup]: { label: string; hint: string } },
   },
   tabDone: "fertig",
   readoutDone: "ende",
@@ -235,6 +263,10 @@ export const de = {
       board: "aushang",
     },
     updates: {
+      "room-sound-dials": {
+        title: "wähle, was du hörst",
+        body: "In den Einstellungen gibt es jetzt für jedes Raumgeräusch einen Drehknopf, von den Maschinen bis zur Türglocke. Schalte aus, was du nicht hören willst. Für alle anderen bleibt der Raum gleich.",
+      },
       "home-mid-wash": {
         title: "nach Hause, während es läuft",
         body: "Tritt auf die Fußmatte, um nach Hause zu gehen, während deine Wäsche läuft. Nasse Wäsche kommt im Korb mit, trockene landet auf dem Bett.",

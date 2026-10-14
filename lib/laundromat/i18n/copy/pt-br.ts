@@ -1,3 +1,4 @@
+import type { RoomSoundGroup } from "@/lib/laundromat/audio/room-sound-groups";
 import type { LaundromatCopy } from "@/lib/laundromat/i18n/laundromat-copy";
 import type { MachineKind } from "@/lib/laundromat/scene-config";
 
@@ -51,6 +52,30 @@ export const ptBR = {
     qualityLiteHint: "mais leve para a memória e a bateria",
     close: "fechar",
     closeHint: "esc para fechar",
+    roomSounds: "sons da lavanderia",
+    roomSoundsHint:
+      "sons da lavanderia e das pessoas nela. desligar um só silencia para você.",
+    roomSoundsAllOn: "ligar todos",
+    roomSoundsAllOff: "desligar todos",
+    roomSoundOn: "lig.",
+    roomSoundOff: "desl.",
+    roomSound: {
+      machines: { label: "máquinas", hint: "lavadoras e secadoras girando" },
+      "shop-bell": { label: "sininho", hint: "toca quando alguém entra" },
+      unloading: {
+        label: "retirada",
+        hint: "a trava da porta quando alguém tira a roupa",
+      },
+      coffee: {
+        label: "café",
+        hint: "o borbulhar do preparo e o bipe de pronto",
+      },
+      tv: { label: "chiado da tv", hint: "o chiado da tv sem sinal" },
+      lamp: {
+        label: "luminária",
+        hint: "a luminária piscando ao acender e estalando ao apagar",
+      },
+    } satisfies { [group in RoomSoundGroup]: { label: string; hint: string } },
   },
   tabDone: "pronto",
   readoutDone: "fim",
@@ -235,6 +260,10 @@ export const ptBR = {
       board: "mural",
     },
     updates: {
+      "room-sound-dials": {
+        title: "escolha os sons que você ouve",
+        body: "As configurações agora têm um botão giratório para cada som da lavanderia, das máquinas ao sininho. Desligue os que você prefere não ouvir. Para os outros, a lavanderia continua igual.",
+      },
       "home-mid-wash": {
         title: "volte para casa enquanto lava",
         body: "Pise no capacho para voltar para casa enquanto a roupa lava. A roupa molhada vai no cesto, a seca vai para a cama.",
