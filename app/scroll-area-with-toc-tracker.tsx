@@ -75,7 +75,7 @@ export function ScrollAreaWithTOCTracker(props: ScrollAreaWithTOCTrackerProps) {
   return (
     <ScrollArea
       ref={scrollerRef}
-      className="h-screen w-screen"
+      className="h-dvh w-screen"
       onScroll={(event) => {
         const now = performance.now();
         const anchors: HTMLElement[] = Array.from(

@@ -40,7 +40,7 @@ export function Modal({ station_id, children }: ModalProps) {
   }, [router]);
 
   return (
-    <div className="fixed inset-0 z-[9999] h-screen w-screen p-4">
+    <div className="fixed inset-0 z-[9999] h-dvh w-screen p-4">
       {/* Backdrop */}
       <motion.div
         className="absolute inset-0 bg-black/50 dark:bg-neutral-700/50"
@@ -49,7 +49,10 @@ export function Modal({ station_id, children }: ModalProps) {
         exit={{ opacity: 0, backdropFilter: "blur(0px)" }}
       />
       {/* Modal content container */}
-      <div ref={modalRef} className="absolute inset-4 sm:inset-8">
+      <div
+        ref={modalRef}
+        className="absolute inset-[max(1rem,env(safe-area-inset-top))_max(1rem,env(safe-area-inset-right))_max(1rem,env(safe-area-inset-bottom))_max(1rem,env(safe-area-inset-left))] sm:inset-[max(2rem,env(safe-area-inset-top))_max(2rem,env(safe-area-inset-right))_max(2rem,env(safe-area-inset-bottom))_max(2rem,env(safe-area-inset-left))]"
+      >
         <motion.div
           layoutId={`craft_station.container.${station_id}`}
           className="bg-background h-full w-full overflow-auto rounded-lg border p-4 shadow-lg"

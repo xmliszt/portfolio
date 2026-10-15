@@ -102,7 +102,7 @@ export function FloatingTOCDrawer(props: FloatingTOCDrawerProps) {
           <DrawerTrigger
             asChild
             className={cn(
-              "fixed right-4 bottom-10 z-50 md:left-10",
+              "fixed right-[max(1rem,env(safe-area-inset-right))] bottom-[max(2.5rem,env(safe-area-inset-bottom))] z-50 md:left-10",
               "block md:hidden"
             )}
           >
@@ -123,7 +123,7 @@ export function FloatingTOCDrawer(props: FloatingTOCDrawerProps) {
       </Tooltip>
       <DrawerContent
         className={cn(
-          "flex flex-col gap-12 rounded-none rounded-t-lg text-sm focus-visible:outline-hidden",
+          "flex flex-col gap-12 rounded-none rounded-t-lg pb-[env(safe-area-inset-bottom)] text-sm focus-visible:outline-hidden",
           // hide the drawer handle
           "[&>*:first-child]:hidden"
         )}

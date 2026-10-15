@@ -295,7 +295,7 @@ export function GoodNightDrop(props: GoodNightDropProps) {
           >
             {copy.firstVisit.goodNight}
           </motion.p>
-          <p className="absolute bottom-0 left-4 text-[11px] text-[#3b3f8a]/75 sm:bottom-7 sm:left-9">
+          <p className="absolute bottom-[env(safe-area-inset-bottom)] left-[max(1rem,env(safe-area-inset-left))] text-[11px] text-[#3b3f8a]/75 sm:bottom-[max(1.75rem,env(safe-area-inset-bottom))] sm:left-[max(2.25rem,env(safe-area-inset-left))]">
             {[
               {
                 href: GOOD_NIGHT_MUSIC.url,
@@ -325,7 +325,7 @@ export function GoodNightDrop(props: GoodNightDropProps) {
       </motion.div>
       <button
         type="button"
-        className="absolute right-4 bottom-12 cursor-pointer rounded-full bg-[#1b2457]/75 px-3 py-1.5 text-[11px] text-white/75 lowercase transition-colors duration-200 outline-none hover:text-white focus-visible:outline-1 focus-visible:outline-white/60 focus-visible:outline-dashed sm:right-9 sm:bottom-7"
+        className="absolute right-[max(1rem,env(safe-area-inset-right))] bottom-[max(3rem,env(safe-area-inset-bottom))] cursor-pointer rounded-full bg-[#1b2457]/75 px-3 py-1.5 text-[11px] text-white/75 lowercase transition-colors duration-200 outline-none hover:text-white focus-visible:outline-1 focus-visible:outline-white/60 focus-visible:outline-dashed sm:right-[max(2.25rem,env(safe-area-inset-right))] sm:bottom-[max(1.75rem,env(safe-area-inset-bottom))]"
         onClick={handleWakeUp}
       >
         {copy.firstVisit.notSleepy}
