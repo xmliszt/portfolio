@@ -67,6 +67,9 @@ export const pl = {
     qualityLiteHint: "lżejszy dla pamięci i baterii",
     close: "zamknij",
     closeHint: "esc, aby zamknąć",
+    temperature: "temperatura",
+    temperatureHint:
+      "panel pogody zaczyna od jednostki zwykłej tam, gdzie jesteś.",
     roomSounds: "dźwięki w pralni",
     roomSoundsHint:
       "dźwięki pralni i ludzi, którzy w niej są. wyłączenie dźwięku wycisza go tylko dla ciebie.",
@@ -90,6 +93,7 @@ export const pl = {
         label: "lampa",
         hint: "lampa migocze przy włączaniu i klika przy wyłączaniu",
       },
+      weather: { label: "pogoda", hint: "deszcz i grzmoty za oknem" },
     } satisfies { [group in RoomSoundGroup]: { label: string; hint: string } },
   },
   tabDone: "gotowe",
@@ -244,6 +248,10 @@ export const pl = {
       board: "tablica",
     },
     updates: {
+      "weather-panel": {
+        title: "pogoda w środku i na zewnątrz",
+        body: "Panel nad oknem pokazuje pogodę tam, gdzie jesteś, z dzisiejszą najwyższą i najniższą temperaturą oraz jakością powietrza. Okna też ją pokazują, deszcz, śnieg, mgłę albo burzę, z pasującym dźwiękiem. Twoje miasto to przybliżone zgadywanie na podstawie połączenia. Gdy powietrze robi się szkodliwe, w kącie włącza się oczyszczacz.",
+      },
       "room-sound-dials": {
         title: "wybierz, co słyszysz",
         body: "W ustawieniach jest teraz pokrętło dla każdego dźwięku w pralni, od maszyn po dzwonek. Wyłącz te, których wolisz nie słyszeć. Dla innych pralnia zostaje taka sama.",
@@ -327,6 +335,45 @@ export const pl = {
         : `${o.count} ${pluralize({ count: o.count, one: "osoba", few: "osoby", many: "osób" })} tutaj`,
     offLabel: "Licznik lampowy, wyłączony",
     offTooltip: "wyłączony",
+  },
+  airPurifier: {
+    label: (o: { aqi: number }) =>
+      `Oczyszczacz powietrza, włączony, AQI ${o.aqi}`,
+    tooltip: "oczyszczacz powietrza · oczyszcza powietrze",
+    offLabel: "Oczyszczacz powietrza, wyłączony",
+    offTooltip: "wyłączony",
+  },
+  weatherPanel: {
+    conditions: {
+      sunny: "słonecznie",
+      clear: "bezchmurnie",
+      cloudy: "pochmurno",
+      fog: "mgła",
+      rain: "deszcz",
+      snow: "śnieg",
+      thunder: "burza",
+    },
+    outside: "na zewnątrz",
+    high: "maks",
+    low: "min",
+    label: (o: { temperature: string; condition: string; place: string }) =>
+      `Panel pogody, ${o.temperature} ${o.condition}, ${o.place}`,
+    tooltip: (o: { temperature: string; condition: string; place: string }) =>
+      `${o.temperature} · ${o.condition} · ${o.place}`,
+    aqi: "AQI",
+    aqiBands: {
+      good: "dobra",
+      moderate: "umiarkowana",
+      sensitive: "szkodliwa dla wrażliwych",
+      unhealthy: "szkodliwa",
+      veryUnhealthy: "bardzo szkodliwa",
+      hazardous: "niebezpieczna",
+    },
+    airLabel: (o: { aqi: number; band: string }) =>
+      `jakość powietrza: ${o.band}, AQI ${o.aqi}`,
+    airTooltip: (o: { aqi: number; band: string }) => `powietrze: ${o.band}`,
+    offLabel: "Panel pogody, brak odczytu",
+    offTooltip: "jeszcze brak odczytu",
   },
   tv: {
     stations: {

@@ -54,6 +54,8 @@ export const zhHans = {
     qualityLiteHint: "更省内存和电量",
     close: "关闭",
     closeHint: "按 esc 关闭",
+    temperature: "温度",
+    temperatureHint: "天气面板默认使用你所在地区常用的单位。",
     roomSounds: "店内声音",
     roomSoundsHint:
       "来自店内和店里其他人的声音。关掉某个声音，只对你自己静音。",
@@ -68,6 +70,7 @@ export const zhHans = {
       coffee: { label: "咖啡", hint: "煮咖啡的咕嘟声和煮好的提示音" },
       tv: { label: "电视雪花", hint: "没有信号的电视沙沙声" },
       lamp: { label: "台灯", hint: "台灯闪烁亮起和咔哒熄灭的声音" },
+      weather: { label: "天气", hint: "窗外的雨声和雷声" },
     } satisfies { [group in RoomSoundGroup]: { label: string; hint: string } },
   },
   tabDone: "好了",
@@ -240,6 +243,10 @@ export const zhHans = {
       board: "告示板",
     },
     updates: {
+      "weather-panel": {
+        title: "屋里屋外的天气",
+        body: "窗户上方的面板会显示你所在地的天气，以及今天的最高和最低气温和空气质量。窗外也会下雨、下雪、起雾或打雷，还有相应的声音。城市是根据你的网络连接大致推测的。空气变差时，角落里的空气净化器会自动开启。",
+      },
       "room-sound-dials": {
         title: "选择你想听的声音",
         body: "设置里现在有店内每种声音的旋钮，从机器到门铃。不想听的就关掉。其他人那边的店内照旧。",
@@ -321,6 +328,44 @@ export const zhHans = {
       o.count === 1 ? "只有你在这里" : `这里有 ${o.count} 个人`,
     offLabel: "辉光管计数器，关闭",
     offTooltip: "关闭",
+  },
+  airPurifier: {
+    label: (o: { aqi: number }) => `空气净化器，运行中，AQI ${o.aqi}`,
+    tooltip: "空气净化器 · 正在净化空气",
+    offLabel: "空气净化器，关闭",
+    offTooltip: "关闭",
+  },
+  weatherPanel: {
+    conditions: {
+      sunny: "晴",
+      clear: "晴朗",
+      cloudy: "多云",
+      fog: "雾",
+      rain: "雨",
+      snow: "雪",
+      thunder: "雷雨",
+    },
+    outside: "外面",
+    high: "高",
+    low: "低",
+    label: (o: { temperature: string; condition: string; place: string }) =>
+      `天气面板，${o.temperature} ${o.condition}，${o.place}`,
+    tooltip: (o: { temperature: string; condition: string; place: string }) =>
+      `${o.temperature} · ${o.condition} · ${o.place}`,
+    aqi: "AQI",
+    aqiBands: {
+      good: "优",
+      moderate: "良",
+      sensitive: "轻度污染",
+      unhealthy: "中度污染",
+      veryUnhealthy: "重度污染",
+      hazardous: "严重污染",
+    },
+    airLabel: (o: { aqi: number; band: string }) =>
+      `空气质量${o.band}，AQI ${o.aqi}`,
+    airTooltip: (o: { aqi: number; band: string }) => `空气${o.band}`,
+    offLabel: "天气面板，暂无数据",
+    offTooltip: "暂无数据",
   },
   tv: {
     stations: {

@@ -2,6 +2,7 @@ import { useMemo, useState } from "react";
 
 import { HitTargetButton } from "@/app/laundromat/hit-target-button";
 import { useLaundromatCopy } from "@/app/laundromat/i18n/use-laundromat-copy";
+import { useLocalWeather } from "@/app/laundromat/local-weather/use-local-weather";
 import type { SceneViews } from "@/app/laundromat/objects/scene-views";
 import { RoomDrawing } from "@/app/laundromat/room-drawing";
 import { SceneControlButton } from "@/app/laundromat/scene-control-button";
@@ -56,6 +57,7 @@ export function ObjectWorkbench(props: ObjectWorkbenchProps) {
   const appliances = useRoomAppliances({ config, visitorId: undefined });
   const [plantTouchCount, setPlantTouchCount] = useState(0);
   const [tubeRollCount, setTubeRollCount] = useState(0);
+  const { reading: weather } = useLocalWeather();
   const layout = useMemo(() => {
     const { size } = object;
     return buildSceneLayout({
@@ -130,6 +132,7 @@ export function ObjectWorkbench(props: ObjectWorkbenchProps) {
     notebookNumber: config.details.notebook.coverNumber,
     peopleHere: 3,
     tubeRollCount,
+    weather,
   };
 
   function describeObject() {
@@ -158,6 +161,7 @@ export function ObjectWorkbench(props: ObjectWorkbenchProps) {
           object,
           copy,
           peopleHere: views.peopleHere,
+          weather: views.weather,
         });
     }
   }

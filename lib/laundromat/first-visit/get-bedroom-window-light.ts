@@ -7,10 +7,11 @@ export type BedroomWindowLight = ReturnType<typeof getBedroomWindowLight>;
 
 export type WindowLightSource = BedroomWindowLight["sources"][number];
 
-/** Return the light coming in through the bedroom window as two `sources`, the sun and the moon, each with its own `color`, `strength` (0–1) and position in the sky as `sun`, plus their summed `strength` and strength-weighted `color`. Outside its hours a source keeps the position it set at, with `strength` 0. */
+/** Return the light coming in through the bedroom window, scaled by the `sunlight` share the weather lets through, as two `sources`, the sun and the moon, each with its own `color`, `strength` (0–1) and position in the sky as `sun`, plus their summed `strength` and strength-weighted `color`. Outside its hours a source keeps the position it set at, with `strength` 0. */
 export function getBedroomWindowLight(options: {
   timeOfDay: TimeOfDay;
   sky: SceneConfig["sky"];
+  sunlight: number;
 }) {
   const { timeOfDay } = options;
   const moon = getMoonLight({ timeOfDay, sky: options.sky });
@@ -22,7 +23,7 @@ export function getBedroomWindowLight(options: {
     {
       key: "sun",
       color: timeOfDay.daylightPatchColor,
-      strength: timeOfDay.daylight,
+      strength: timeOfDay.daylight * options.sunlight,
       sun: {
         progress: sunArc.progress,
         elevation: sunArc.elevation,
@@ -32,7 +33,7 @@ export function getBedroomWindowLight(options: {
     {
       key: "moon",
       color: moon.color,
-      strength: moon.strength,
+      strength: moon.strength * options.sunlight,
       sun: { ...moon.arc, color: moon.color },
     },
   ] as const;

@@ -63,6 +63,9 @@ export const en = {
     qualityLiteHint: "lighter on memory and battery",
     close: "close",
     closeHint: "esc to close",
+    temperature: "temperature",
+    temperatureHint:
+      "the weather panel starts with whatever is usual where you are.",
     roomSounds: "room sounds",
     roomSoundsHint:
       "sounds from the room and the people in it. turning one off only mutes it for you.",
@@ -80,6 +83,10 @@ export const en = {
       coffee: { label: "coffee", hint: "the brew gurgle and the ready beep" },
       tv: { label: "tv static", hint: "hiss from the tv with no signal" },
       lamp: { label: "lamp", hint: "the lamp flickering on and clicking off" },
+      weather: {
+        label: "weather",
+        hint: "rain and thunder outside the window",
+      },
     } satisfies { [group in RoomSoundGroup]: { label: string; hint: string } },
   },
   tabDone: "done",
@@ -261,6 +268,10 @@ export const en = {
       board: "board",
     } satisfies { [tag in BoardTag]: string },
     updates: {
+      "weather-panel": {
+        title: "the weather, inside and out",
+        body: "A panel above the window shows the weather where you are, with today's high and low and the air quality. The windows show it too, rain, snow, fog or a storm, with the sound to match. Your city is a rough guess from your connection. When the air turns unhealthy, an air purifier starts up in the corner.",
+      },
       "room-sound-dials": {
         title: "choose the sounds you hear",
         body: "Settings now have a dial for each room sound, from the machines to the shop bell. Turn off any you would rather not hear, and the room stays the same for everyone else.",
@@ -342,6 +353,44 @@ export const en = {
       o.count === 1 ? "just you here" : `${o.count} people here`,
     offLabel: "Tube counter, off",
     offTooltip: "off",
+  },
+  airPurifier: {
+    label: (o: { aqi: number }) => `Air purifier, running, AQI ${o.aqi}`,
+    tooltip: "air purifier · cleaning the air",
+    offLabel: "Air purifier, off",
+    offTooltip: "off",
+  },
+  weatherPanel: {
+    conditions: {
+      sunny: "sunny",
+      clear: "clear",
+      cloudy: "cloudy",
+      fog: "fog",
+      rain: "rain",
+      snow: "snow",
+      thunder: "thunder",
+    },
+    outside: "outside",
+    high: "H",
+    low: "L",
+    label: (o: { temperature: string; condition: string; place: string }) =>
+      `Weather panel, ${o.temperature} and ${o.condition}, ${o.place}`,
+    tooltip: (o: { temperature: string; condition: string; place: string }) =>
+      `${o.temperature} · ${o.condition} · ${o.place}`,
+    aqi: "AQI",
+    aqiBands: {
+      good: "good",
+      moderate: "moderate",
+      sensitive: "unhealthy for some",
+      unhealthy: "unhealthy",
+      veryUnhealthy: "very unhealthy",
+      hazardous: "hazardous",
+    },
+    airLabel: (o: { aqi: number; band: string }) =>
+      `air quality ${o.band}, AQI ${o.aqi}`,
+    airTooltip: (o: { aqi: number; band: string }) => `air ${o.band}`,
+    offLabel: "Weather panel, no reading",
+    offTooltip: "no reading yet",
   },
   tv: {
     stations: {

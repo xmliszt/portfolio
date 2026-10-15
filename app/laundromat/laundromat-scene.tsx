@@ -68,10 +68,12 @@ import { describeTv } from "@/lib/laundromat/tv/describe-tv";
 import type { TvControl } from "@/lib/laundromat/tv/describe-tv-control";
 import { describeTvControl } from "@/lib/laundromat/tv/describe-tv-control";
 import { getYouTubeWatchUrl } from "@/lib/laundromat/tv/get-youtube-watch-url";
+import { isAirPurifierRunning } from "@/lib/laundromat/weather/is-air-purifier-running";
 import { cn } from "@/lib/utils";
 
 import { BOARD_DIALOG_SIZE_PX, BoardDialog } from "./board/board-dialog";
 import { useLaundromatCopy } from "./i18n/use-laundromat-copy";
+import { useLocalWeather } from "./local-weather/use-local-weather";
 import { NotebookBook } from "./notebook/notebook-book";
 import { ShelfBookButton } from "./notebook/shelf-book-button";
 import { useNotebookShelf } from "./notebook/use-notebook-shelf";
@@ -138,9 +140,25 @@ function toFocusUrl(params: URLSearchParams) {
 
 export function LaundromatScene(props: LaundromatSceneProps) {
   const { config } = props;
+  const { reading: weather } = useLocalWeather();
+  const isPurifierRunning = isAirPurifierRunning({
+    aqi: weather?.aqi,
+    minAqi: config.details.airPurifier.minAqi,
+  });
   const layout = useMemo(
-    () => buildSceneLayout({ config, unit: SCENE_UNIT_PX }),
-    [config]
+    () =>
+      buildSceneLayout({
+        config: isPurifierRunning
+          ? config
+          : {
+              ...config,
+              objects: config.objects.filter(
+                (object) => object.kind !== "air-purifier"
+              ),
+            },
+        unit: SCENE_UNIT_PX,
+      }),
+    [config, isPurifierRunning]
   );
   const searchParams = useSearchParams();
   const focus = parseCameraFocus(searchParams.get("focus"));
@@ -588,6 +606,7 @@ export function LaundromatScene(props: LaundromatSceneProps) {
     notebookNumber: coverNumber,
     peopleHere,
     tubeRollCount,
+    weather,
   };
 
   function describeControl(options: {
@@ -658,6 +677,7 @@ export function LaundromatScene(props: LaundromatSceneProps) {
           object: laidOut.object,
           copy,
           peopleHere,
+          weather,
         });
     }
   }

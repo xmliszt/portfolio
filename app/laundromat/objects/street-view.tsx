@@ -11,6 +11,7 @@ import type { SceneConfig } from "@/lib/laundromat/scene-config";
 import { toSvgPoints } from "@/lib/laundromat/to-svg-points";
 
 import { CylinderSides } from "./cylinder-sides";
+import { StreetRain } from "./street-rain";
 
 const SIDEWALK_WIDTH = 3.6;
 const KERB_WIDTH = 0.25;
@@ -27,12 +28,15 @@ const MAX_SHADOW_LENGTH = 8;
 const AMBIENT_OPACITY = 0.16;
 const LIGHT_TINT_OPACITY = 0.3;
 const SHADOW_OPACITY = 0.35;
+const WET_SHEEN_OPACITY = 0.14;
 
 type StreetViewProps = {
   wallX: number;
   opening: { near: number; far: number };
   projection: IsoProjection;
   timeOfDay: TimeOfDay | undefined;
+  sunlight: number;
+  wet: boolean;
   config: SceneConfig;
 };
 
@@ -138,7 +142,10 @@ export function StreetView(props: StreetViewProps) {
   const lights =
     timeOfDay === undefined
       ? []
-      : getStreetLights({ timeOfDay, sky: config.sky });
+      : getStreetLights({ timeOfDay, sky: config.sky }).map((light) => ({
+          ...light,
+          strength: light.strength * props.sunlight,
+        }));
   const lampOpacity = timeOfDay?.nightOpacity ?? 1;
   function shadowLine(options: {
     light: StreetLight;
@@ -305,7 +312,27 @@ export function StreetView(props: StreetViewProps) {
           fill={`url(#${id}-lamp)`}
           style={{ opacity: lampOpacity * 0.55, transition: glide }}
         />
+        {props.wet &&
+          [road, sidewalk].map((ground) => (
+            <polygon
+              key={ground.z}
+              points={band(ground)}
+              className="fill-black"
+              opacity={WET_SHEEN_OPACITY}
+            />
+          ))}
       </g>
+      {props.wet && (
+        <StreetRain
+          wallX={wallX}
+          opening={opening}
+          sidewalkWidth={SIDEWALK_WIDTH}
+          roadZ={road.z}
+          reflection={timeOfDay?.skyHorizon ?? config.sky.keys[0].horizon}
+          glide={glide}
+          projection={projection}
+        />
+      )}
       {litStreet.map(({ light, postShadow, hydrantShadow }) => (
         <g
           key={light.key}

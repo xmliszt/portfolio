@@ -54,6 +54,8 @@ export const it = {
     qualityLiteHint: "più leggera per memoria e batteria",
     close: "chiudi",
     closeHint: "esc per chiudere",
+    temperature: "temperatura",
+    temperatureHint: "il pannello meteo parte con l'unità abituale dove sei.",
     roomSounds: "suoni della sala",
     roomSoundsHint:
       "i suoni della sala e delle persone che ci sono. spegnerne uno lo silenzia solo per te.",
@@ -79,6 +81,10 @@ export const it = {
       lamp: {
         label: "lampada",
         hint: "la lampada che sfarfalla accendendosi e scatta spegnendosi",
+      },
+      weather: {
+        label: "meteo",
+        hint: "pioggia e tuoni fuori dalla finestra",
       },
     } satisfies { [group in RoomSoundGroup]: { label: string; hint: string } },
   },
@@ -271,6 +277,10 @@ export const it = {
       board: "bacheca",
     },
     updates: {
+      "weather-panel": {
+        title: "il meteo, dentro e fuori",
+        body: "Un pannello sopra la finestra mostra il meteo dove sei, con la massima e la minima di oggi e la qualità dell'aria. Anche le finestre lo mostrano, pioggia, neve, nebbia o temporale, con il suono giusto. La tua città è una stima approssimativa dalla tua connessione. Quando l'aria diventa dannosa, un purificatore si accende nell'angolo.",
+      },
       "room-sound-dials": {
         title: "scegli quali suoni sentire",
         body: "Nelle impostazioni ora c'è una manopola per ogni suono della sala, dalle macchine al campanello. Spegni quelli che preferisci non sentire. Per gli altri la sala resta uguale.",
@@ -352,6 +362,44 @@ export const it = {
       o.count === 1 ? "solo tu qui" : `${o.count} persone qui`,
     offLabel: "Contatore a valvole, spento",
     offTooltip: "spento",
+  },
+  airPurifier: {
+    label: (o: { aqi: number }) => `Purificatore d'aria, acceso, AQI ${o.aqi}`,
+    tooltip: "purificatore d'aria · pulisce l'aria",
+    offLabel: "Purificatore d'aria, spento",
+    offTooltip: "spento",
+  },
+  weatherPanel: {
+    conditions: {
+      sunny: "soleggiato",
+      clear: "sereno",
+      cloudy: "nuvoloso",
+      fog: "nebbia",
+      rain: "pioggia",
+      snow: "neve",
+      thunder: "temporale",
+    },
+    outside: "fuori",
+    high: "max",
+    low: "min",
+    label: (o: { temperature: string; condition: string; place: string }) =>
+      `Pannello meteo, ${o.temperature} ${o.condition}, ${o.place}`,
+    tooltip: (o: { temperature: string; condition: string; place: string }) =>
+      `${o.temperature} · ${o.condition} · ${o.place}`,
+    aqi: "AQI",
+    aqiBands: {
+      good: "buona",
+      moderate: "discreta",
+      sensitive: "dannosa per i sensibili",
+      unhealthy: "dannosa",
+      veryUnhealthy: "molto dannosa",
+      hazardous: "pericolosa",
+    },
+    airLabel: (o: { aqi: number; band: string }) =>
+      `qualità dell'aria ${o.band}, AQI ${o.aqi}`,
+    airTooltip: (o: { aqi: number; band: string }) => `aria ${o.band}`,
+    offLabel: "Pannello meteo, nessuna lettura",
+    offTooltip: "ancora nessuna lettura",
   },
   tv: {
     stations: {

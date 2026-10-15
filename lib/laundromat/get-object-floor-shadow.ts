@@ -33,6 +33,7 @@ function getBlocker(object: SceneObject) {
   }
   switch (object.kind) {
     case "window":
+    case "weather-panel":
     case "mat":
     case "notebook":
     case "mug":
@@ -51,6 +52,7 @@ function getBlocker(object: SceneObject) {
     case "shelf":
     case "plant":
     case "basket":
+    case "air-purifier":
       return { position, size };
     case "board":
       return {

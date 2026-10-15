@@ -59,6 +59,9 @@ export const hi = {
     qualityLiteHint: "मेमोरी और बैटरी पर हल्का",
     close: "बंद करें",
     closeHint: "बंद करने के लिए esc",
+    temperature: "तापमान",
+    temperatureHint:
+      "मौसम पैनल उसी इकाई से शुरू होता है जो आपके इलाके में आम है।",
     roomSounds: "कमरे की आवाज़ें",
     roomSoundsHint:
       "कमरे और उसमें मौजूद लोगों की आवाज़ें। किसी को बंद करने पर वह सिर्फ़ आपके लिए बंद होती है।",
@@ -82,6 +85,7 @@ export const hi = {
       },
       tv: { label: "टीवी की खरखर", hint: "बिना सिग्नल वाले टीवी की सरसराहट" },
       lamp: { label: "लैंप", hint: "लैंप का टिमटिमाकर जलना और क्लिक से बुझना" },
+      weather: { label: "मौसम", hint: "खिड़की के बाहर बारिश और गरज" },
     } satisfies { [group in RoomSoundGroup]: { label: string; hint: string } },
   },
   tabDone: "हो गया",
@@ -264,6 +268,10 @@ export const hi = {
       board: "बोर्ड",
     },
     updates: {
+      "weather-panel": {
+        title: "अंदर और बाहर का मौसम",
+        body: "खिड़की के ऊपर एक पैनल आपकी जगह का मौसम दिखाता है, आज के सबसे ज़्यादा और सबसे कम तापमान और हवा की गुणवत्ता के साथ। खिड़कियों में भी बारिश, बर्फ़, कोहरा या तूफ़ान दिखता है, आवाज़ के साथ। आपका शहर आपके कनेक्शन से मोटे तौर पर अंदाज़ा लगाया जाता है। हवा ख़राब होने पर कोने में एयर प्यूरीफ़ायर चालू हो जाता है।",
+      },
       "room-sound-dials": {
         title: "चुनें कि आप क्या सुनें",
         body: "सेटिंग्स में अब कमरे की हर आवाज़ के लिए एक डायल है, मशीनों से लेकर दरवाज़े की घंटी तक। जो न सुनना चाहें उसे बंद कर दें। बाकी सबके लिए कमरा वैसा ही रहता है।",
@@ -345,6 +353,44 @@ export const hi = {
       o.count === 1 ? "यहाँ सिर्फ़ तुम" : `यहाँ ${o.count} लोग`,
     offLabel: "ट्यूब काउंटर, बंद",
     offTooltip: "बंद",
+  },
+  airPurifier: {
+    label: (o: { aqi: number }) => `एयर प्यूरीफ़ायर, चालू, AQI ${o.aqi}`,
+    tooltip: "एयर प्यूरीफ़ायर · हवा साफ़ कर रहा है",
+    offLabel: "एयर प्यूरीफ़ायर, बंद",
+    offTooltip: "बंद",
+  },
+  weatherPanel: {
+    conditions: {
+      sunny: "धूप",
+      clear: "साफ़",
+      cloudy: "बादल",
+      fog: "कोहरा",
+      rain: "बारिश",
+      snow: "बर्फ़",
+      thunder: "आंधी-तूफ़ान",
+    },
+    outside: "बाहर",
+    high: "अधि",
+    low: "न्यू",
+    label: (o: { temperature: string; condition: string; place: string }) =>
+      `मौसम पैनल, ${o.temperature} ${o.condition}, ${o.place}`,
+    tooltip: (o: { temperature: string; condition: string; place: string }) =>
+      `${o.temperature} · ${o.condition} · ${o.place}`,
+    aqi: "AQI",
+    aqiBands: {
+      good: "अच्छी",
+      moderate: "मध्यम",
+      sensitive: "संवेदनशील लोगों के लिए अस्वस्थ",
+      unhealthy: "अस्वस्थ",
+      veryUnhealthy: "बहुत अस्वस्थ",
+      hazardous: "खतरनाक",
+    },
+    airLabel: (o: { aqi: number; band: string }) =>
+      `हवा की गुणवत्ता ${o.band}, AQI ${o.aqi}`,
+    airTooltip: (o: { aqi: number; band: string }) => `हवा ${o.band}`,
+    offLabel: "मौसम पैनल, कोई रीडिंग नहीं",
+    offTooltip: "अभी कोई रीडिंग नहीं",
   },
   tv: {
     stations: {

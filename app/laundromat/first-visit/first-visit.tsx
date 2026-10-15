@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { motion, useReducedMotion } from "motion/react";
 
 import { useLaundromatCopy } from "@/app/laundromat/i18n/use-laundromat-copy";
+import { useLocalWeather } from "@/app/laundromat/local-weather/use-local-weather";
 import { BasketDrawing } from "@/app/laundromat/objects/basket-drawing";
 import { SceneTooltip } from "@/app/laundromat/scene-tooltip";
 import { useSoundBoard } from "@/app/laundromat/sound/use-sound-board";
@@ -30,6 +31,7 @@ import type { Homecoming } from "@/lib/laundromat/laundry/get-homecoming";
 import type { ScreenPoint } from "@/lib/laundromat/project-iso-point";
 import { projectIsoPoint } from "@/lib/laundromat/project-iso-point";
 import type { SceneConfig, SceneObject } from "@/lib/laundromat/scene-config";
+import { getWindowWeather } from "@/lib/laundromat/weather/get-window-weather";
 import { cn } from "@/lib/utils";
 
 import { BedroomDoor } from "./bedroom-door";
@@ -116,6 +118,7 @@ export function FirstVisit(props: FirstVisitProps) {
   const [settling, setSettling] = useState<GarmentKind>();
   const [hover, setHover] = useState<Hover>();
   const sound = useSoundBoard();
+  const { reading: weather } = useLocalWeather();
   const isLampOn = props.lampSwitch ?? (timeOfDay?.lampIntensity ?? 1) > 0.5;
   const isCurtainOpen = props.curtainOpen;
   const [isTouched, setIsTouched] = useState(false);
@@ -270,7 +273,11 @@ export function FirstVisit(props: FirstVisitProps) {
   const windowLight =
     timeOfDay === undefined
       ? undefined
-      : getBedroomWindowLight({ timeOfDay, sky: scene.sky });
+      : getBedroomWindowLight({
+          timeOfDay,
+          sky: scene.sky,
+          sunlight: getWindowWeather(weather?.condition).sunlight,
+        });
   const curtainTopLeft = projectIsoPoint({
     point: {
       x: curtainLayout.rodX,

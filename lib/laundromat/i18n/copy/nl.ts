@@ -53,6 +53,9 @@ export const nl = {
     qualityLiteHint: "lichter voor geheugen en batterij",
     close: "sluiten",
     closeHint: "esc om te sluiten",
+    temperature: "temperatuur",
+    temperatureHint:
+      "het weerpaneel begint met de eenheid die bij jou gebruikelijk is.",
     roomSounds: "geluiden in de zaak",
     roomSoundsHint:
       "geluiden van de zaak en de mensen erin. iets uitzetten dempt het alleen voor jou.",
@@ -79,6 +82,7 @@ export const nl = {
         label: "lamp",
         hint: "de lamp die flikkerend aangaat en met een klik uitgaat",
       },
+      weather: { label: "weer", hint: "regen en onweer buiten het raam" },
     } satisfies { [group in RoomSoundGroup]: { label: string; hint: string } },
   },
   tabDone: "klaar",
@@ -236,6 +240,10 @@ export const nl = {
       board: "bord",
     },
     updates: {
+      "weather-panel": {
+        title: "het weer, binnen en buiten",
+        body: "Een paneel boven het raam toont het weer waar je bent, met de hoogste en laagste temperatuur van vandaag en de luchtkwaliteit. De ramen laten het ook zien, regen, sneeuw, mist of onweer, met het geluid erbij. Je stad is een ruwe schatting op basis van je verbinding. Als de lucht ongezond wordt, slaat in de hoek een luchtreiniger aan.",
+      },
       "room-sound-dials": {
         title: "kies welke geluiden je hoort",
         body: "In de instellingen staat nu een draaiknop voor elk geluid in de zaak, van de machines tot de winkelbel. Zet uit wat je liever niet hoort. Voor anderen blijft de zaak hetzelfde.",
@@ -317,6 +325,44 @@ export const nl = {
       o.count === 1 ? "alleen jij hier" : `${o.count} mensen hier`,
     offLabel: "Buizenteller, uit",
     offTooltip: "uit",
+  },
+  airPurifier: {
+    label: (o: { aqi: number }) => `Luchtreiniger, aan, AQI ${o.aqi}`,
+    tooltip: "luchtreiniger · reinigt de lucht",
+    offLabel: "Luchtreiniger, uit",
+    offTooltip: "uit",
+  },
+  weatherPanel: {
+    conditions: {
+      sunny: "zonnig",
+      clear: "helder",
+      cloudy: "bewolkt",
+      fog: "mist",
+      rain: "regen",
+      snow: "sneeuw",
+      thunder: "onweer",
+    },
+    outside: "buiten",
+    high: "max",
+    low: "min",
+    label: (o: { temperature: string; condition: string; place: string }) =>
+      `Weerpaneel, ${o.temperature} ${o.condition}, ${o.place}`,
+    tooltip: (o: { temperature: string; condition: string; place: string }) =>
+      `${o.temperature} · ${o.condition} · ${o.place}`,
+    aqi: "AQI",
+    aqiBands: {
+      good: "goed",
+      moderate: "matig",
+      sensitive: "ongezond voor gevoeligen",
+      unhealthy: "ongezond",
+      veryUnhealthy: "zeer ongezond",
+      hazardous: "gevaarlijk",
+    },
+    airLabel: (o: { aqi: number; band: string }) =>
+      `luchtkwaliteit ${o.band}, AQI ${o.aqi}`,
+    airTooltip: (o: { aqi: number; band: string }) => `lucht ${o.band}`,
+    offLabel: "Weerpaneel, geen meting",
+    offTooltip: "nog geen meting",
   },
   tv: {
     stations: {

@@ -6,6 +6,7 @@ export function hasFlatFront(kind: SceneObject["kind"]) {
     case "washer":
     case "dryer":
     case "counter":
+    case "air-purifier":
       return true;
     case "coffee-machine":
     case "tv":
@@ -21,6 +22,7 @@ export function hasFlatFront(kind: SceneObject["kind"]) {
     case "mug":
     case "mat":
     case "board":
+    case "weather-panel":
       return false;
     default: {
       const unknown: never = kind;

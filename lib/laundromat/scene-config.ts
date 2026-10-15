@@ -24,7 +24,9 @@ export type FurnitureKind =
   | "basket"
   | "mug"
   | "mat"
-  | "board";
+  | "board"
+  | "weather-panel"
+  | "air-purifier";
 
 export type SceneObject =
   | (Placement & { kind: MachineKind; number: number })
@@ -159,7 +161,11 @@ export type SceneConfig = {
       wiggleMs: number;
     };
     shelf: { bookLean: number; spineGlow: number; bookLift: number };
-    window: { litWindowOpacity: number };
+    window: {
+      litWindowOpacity: number;
+      rainFallSeconds: number;
+      snowFallSeconds: number;
+    };
     board: {
       leanDeg: number;
       dayShade: number;
@@ -172,6 +178,8 @@ export type SceneConfig = {
       ghostOpacity: number;
       rollMs: number;
     };
+    weatherPanel: { glyphMotionSeconds: number };
+    airPurifier: { minAqi: number; fanSeconds: number; airflowOpacity: number };
     notebook: {
       coverNumber: number;
       liftMs: number;
@@ -335,6 +343,18 @@ export const sceneConfig: SceneConfig = {
       kind: "window",
       position: { x: 0, y: 6.1, z: 2.4 },
       size: { w: 0.3, d: 3, h: 3.2 },
+    },
+    {
+      id: "weather-panel",
+      kind: "weather-panel",
+      position: { x: 0, y: 6.2, z: 6 },
+      size: { w: 0.14, d: 2.8, h: 1.6 },
+    },
+    {
+      id: "air-purifier",
+      kind: "air-purifier",
+      position: { x: 0.15, y: 9.2, z: 0 },
+      size: { w: 0.7, d: 0.7, h: 1.9 },
     },
     {
       id: "table",
@@ -546,7 +566,11 @@ export const sceneConfig: SceneConfig = {
       wiggleMs: 900,
     },
     shelf: { bookLean: 0.14, spineGlow: 0.69, bookLift: 0.19 },
-    window: { litWindowOpacity: 0.7 },
+    window: {
+      litWindowOpacity: 0.7,
+      rainFallSeconds: 0.8,
+      snowFallSeconds: 9,
+    },
     board: {
       leanDeg: 8,
       dayShade: 0.3,
@@ -559,6 +583,8 @@ export const sceneConfig: SceneConfig = {
       ghostOpacity: 0.12,
       rollMs: 900,
     },
+    weatherPanel: { glyphMotionSeconds: 1.6 },
+    airPurifier: { minAqi: 101, fanSeconds: 1.2, airflowOpacity: 0.22 },
     notebook: {
       coverNumber: 1,
       liftMs: 650,

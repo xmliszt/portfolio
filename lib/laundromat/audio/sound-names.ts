@@ -21,6 +21,7 @@ export const SOUND_NAMES = [
   "coffee-sip",
   "touch-grass",
   "shop-bell",
+  "thunder-rumble",
 ] as const;
 
 export type SoundName = (typeof SOUND_NAMES)[number];
@@ -30,6 +31,7 @@ export const LOOP_NAMES = [
   "dryer-running",
   "coffee-brewing",
   "tv-no-signal",
+  "rain-outside",
 ] as const;
 
 export type LoopName = (typeof LOOP_NAMES)[number];

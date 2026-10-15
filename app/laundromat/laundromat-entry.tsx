@@ -14,6 +14,7 @@ import { useArrivedFlag } from "./first-visit/use-arrived-flag";
 import { LanguagePicker } from "./i18n/language-picker";
 import { SettingsButton } from "./settings/settings-button";
 import { SoundToggle } from "./sound/sound-toggle";
+import { useWeatherSounds } from "./sound/use-weather-sounds";
 import { LaundromatScene } from "./laundromat-scene";
 import { PortfolioLink } from "./portfolio-link";
 import { ShareButton } from "./share-button";
@@ -35,6 +36,7 @@ type LaundromatEntryProps = {
 };
 
 export function LaundromatEntry(props: LaundromatEntryProps) {
+  useWeatherSounds();
   const bedroom = props.bedroom ?? bedroomConfig;
   const { walkIn } = bedroom.motion;
   const arrivedFlag = useArrivedFlag();

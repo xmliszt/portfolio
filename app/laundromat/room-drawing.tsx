@@ -9,6 +9,7 @@ import { getTimeOfDay } from "@/lib/laundromat/get-time-of-day";
 import { getWindowLights } from "@/lib/laundromat/get-window-lights";
 import type { SceneConfig } from "@/lib/laundromat/scene-config";
 import { toSvgPoints } from "@/lib/laundromat/to-svg-points";
+import { getWindowWeather } from "@/lib/laundromat/weather/get-window-weather";
 
 import { SceneKeyframes } from "./objects/scene-keyframes";
 import { SceneObjectDrawing } from "./objects/scene-object-drawing";
@@ -42,7 +43,16 @@ export function RoomDrawing(props: RoomDrawingProps) {
   const windowLights =
     timeOfDay === undefined || windowObject === undefined
       ? []
-      : getWindowLights({ window: windowObject.object, timeOfDay, config });
+      : getWindowLights({
+          window: windowObject.object,
+          timeOfDay,
+          config,
+        }).map((light) => ({
+          ...light,
+          opacity:
+            light.opacity *
+            getWindowWeather(props.views.weather?.condition).sunlight,
+        }));
   const visibleObjects = layout.objects.filter(
     ({ object }) => object.id !== props.hiddenObjectId
   );

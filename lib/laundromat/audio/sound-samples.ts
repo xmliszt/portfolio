@@ -165,6 +165,14 @@ export const SOUND_SAMPLES = {
     promptInfluence: 0.6,
     gain: 0.7,
   },
+  "thunder-rumble": {
+    kind: "generated",
+    prompt:
+      "One roll of distant thunder heard from inside a shop through a closed window, low muffled rumble rising and fading, no rain",
+    durationSeconds: 5,
+    promptInfluence: 0.5,
+    gain: 0.6,
+  },
   "washer-running": {
     kind: "generated",
     prompt:
@@ -193,5 +201,13 @@ export const SOUND_SAMPLES = {
     durationSeconds: 10,
     promptInfluence: 0.6,
     gain: 0.25,
+  },
+  "rain-outside": {
+    kind: "generated",
+    prompt:
+      "Steady rain heard from inside a quiet shop by a window, individual raindrops tapping on the glass and splashing in puddles on the street, soft hiss of rain, no thunder, no wind, steady",
+    durationSeconds: 20,
+    promptInfluence: 0.5,
+    gain: 0.35,
   },
 } satisfies { [name in SoundName | LoopName]: SoundSample };

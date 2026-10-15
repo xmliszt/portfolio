@@ -10,6 +10,7 @@ function at(hour: number) {
   return getBedroomWindowLight({
     timeOfDay: getTimeOfDay({ hour, config: sceneConfig }),
     sky: sceneConfig.sky,
+    sunlight: 1,
   });
 }
 
@@ -23,7 +24,11 @@ test("lets moonlight in at night, dimmer than daylight", () => {
 
 test("uses the room's daylight colour and strength while the sun is up", () => {
   const timeOfDay = getTimeOfDay({ hour: 12, config: sceneConfig });
-  const noon = getBedroomWindowLight({ timeOfDay, sky: sceneConfig.sky });
+  const noon = getBedroomWindowLight({
+    timeOfDay,
+    sky: sceneConfig.sky,
+    sunlight: 1,
+  });
   assert.equal(noon.color, timeOfDay.daylightPatchColor);
   assert.equal(noon.strength, timeOfDay.daylight);
   assert.equal(noon.sources[0].sun.progress, timeOfDay.sun?.progress);
@@ -35,6 +40,7 @@ test("keeps the sun pointing the same way as it fades out, with the moon still d
     getBedroomWindowLight({
       timeOfDay: getTimeOfDay({ hour, config: sceneConfig }),
       sky: sceneConfig.sky,
+      sunlight: 1,
     })
   );
   const [sunBefore, moonBefore] = before!.sources;
@@ -42,4 +48,14 @@ test("keeps the sun pointing the same way as it fades out, with the moon still d
   assert.ok(Math.abs(sunAfter.sun.progress - sunBefore.sun.progress) < 0.01);
   assert.ok(moonBefore.strength === 0 && moonAfter.strength < 0.001);
   assert.ok(sunAfter.sun.elevation < 0.02 && sunBefore.sun.elevation < 0.02);
+});
+
+test("lets in only the weather's share of the light", () => {
+  const timeOfDay = getTimeOfDay({ hour: 12, config: sceneConfig });
+  const rainy = getBedroomWindowLight({
+    timeOfDay,
+    sky: sceneConfig.sky,
+    sunlight: 0.3,
+  });
+  assert.ok(Math.abs(rainy.strength - timeOfDay.daylight * 0.3) < 1e-9);
 });

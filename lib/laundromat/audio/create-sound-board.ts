@@ -20,10 +20,12 @@ import { playSample } from "./sounds/play-sample";
 import { playShopBell } from "./sounds/play-shop-bell";
 import { playSlidingDoor } from "./sounds/play-sliding-door";
 import { playStartButton } from "./sounds/play-start-button";
+import { playThunderRumble } from "./sounds/play-thunder-rumble";
 import { playTouchGrass } from "./sounds/play-touch-grass";
 import { playTvStatic } from "./sounds/play-tv-static";
 import { startCoffeeBrewing } from "./sounds/start-coffee-brewing";
 import { startDryerRunning } from "./sounds/start-dryer-running";
+import { startRainOutside } from "./sounds/start-rain-outside";
 import { startSampleLoop } from "./sounds/start-sample-loop";
 import { startTvNoSignal } from "./sounds/start-tv-no-signal";
 import { startWasherRunning } from "./sounds/start-washer-running";
@@ -62,6 +64,7 @@ const ONE_SHOTS = {
   "coffee-sip": playCoffeeSip,
   "touch-grass": playTouchGrass,
   "shop-bell": playShopBell,
+  "thunder-rumble": playThunderRumble,
 } satisfies { [name in SoundName]: (options: VoiceOptions) => void };
 
 const LOOPS = {
@@ -69,6 +72,7 @@ const LOOPS = {
   "dryer-running": startDryerRunning,
   "coffee-brewing": startCoffeeBrewing,
   "tv-no-signal": startTvNoSignal,
+  "rain-outside": startRainOutside,
 } satisfies {
   [name in LoopName]: (
     options: VoiceOptions & { fadeInMs: number }

@@ -5,6 +5,7 @@ export const ROOM_SOUND_GROUPS = [
   "coffee",
   "tv",
   "lamp",
+  "weather",
 ] as const;
 
 export type RoomSoundGroup = (typeof ROOM_SOUND_GROUPS)[number];

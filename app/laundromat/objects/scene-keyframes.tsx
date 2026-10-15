@@ -74,6 +74,18 @@ ${lampFlickerFrames}
 }
 @keyframes lm-static { from { opacity: 0.9; transform: translateY(-6px); } to { opacity: 0; transform: translateY(0); } }
 @keyframes lm-power-flash { from { opacity: 0.95; } to { opacity: 0; } }
+@keyframes lm-weather-fall { from { transform: translate(0, 0); } to { transform: translate(var(--lm-fall-drift), var(--lm-fall-distance)); } }
+@keyframes lm-snow-sway { from { transform: translateX(-2.5px); } to { transform: translateX(2.5px); } }
+@keyframes lm-ripple { from { opacity: 0.6; transform: scale(0.15); } to { opacity: 0; transform: scale(1); } }
+@keyframes lm-splash { 0% { opacity: 0; } 8% { opacity: 0.55; } 30%, 100% { opacity: 0; } }
+@keyframes lm-cloud-drift { from { transform: translateX(-4px); } to { transform: translateX(4px); } }
+@keyframes lm-lightning {
+  0% { opacity: 0; }
+  4% { opacity: 0.5; }
+  12% { opacity: 0.05; }
+  20% { opacity: 0.35; }
+  45%, 100% { opacity: 0; }
+}
 @media (prefers-reduced-motion: reduce) {
   [data-lm-motion] { animation: none !important; transition: none !important; }
 }

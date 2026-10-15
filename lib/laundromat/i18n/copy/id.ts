@@ -59,6 +59,8 @@ export const id = {
     qualityLiteHint: "lebih ringan untuk memori dan baterai",
     close: "tutup",
     closeHint: "esc untuk menutup",
+    temperature: "suhu",
+    temperatureHint: "panel cuaca mulai dengan satuan yang biasa di tempatmu.",
     roomSounds: "suara ruangan",
     roomSoundsHint:
       "suara dari ruangan dan orang-orang di dalamnya. mematikan satu suara hanya membisukannya untukmu.",
@@ -84,6 +86,10 @@ export const id = {
       lamp: {
         label: "lampu",
         hint: "lampu berkedip saat menyala dan berbunyi klik saat mati",
+      },
+      weather: {
+        label: "cuaca",
+        hint: "hujan dan guntur di luar jendela",
       },
     } satisfies { [group in RoomSoundGroup]: { label: string; hint: string } },
   },
@@ -268,6 +274,10 @@ export const id = {
       board: "papan",
     },
     updates: {
+      "weather-panel": {
+        title: "cuaca, di dalam dan di luar",
+        body: "Panel di atas jendela menampilkan cuaca di tempatmu, dengan suhu tertinggi dan terendah hari ini serta kualitas udara. Jendela juga menampilkannya, hujan, salju, kabut, atau badai, lengkap dengan suaranya. Kotamu ditebak secara kasar dari koneksimu. Saat udara jadi tidak sehat, pembersih udara di pojok menyala.",
+      },
       "room-sound-dials": {
         title: "pilih suara yang kamu dengar",
         body: "Pengaturan sekarang punya kenop untuk tiap suara ruangan, dari mesin sampai bel toko. Matikan yang tidak ingin kamu dengar. Untuk yang lain, ruangan tetap sama.",
@@ -349,6 +359,44 @@ export const id = {
       o.count === 1 ? "cuma kamu di sini" : `${o.count} orang di sini`,
     offLabel: "Penghitung tabung, mati",
     offTooltip: "mati",
+  },
+  airPurifier: {
+    label: (o: { aqi: number }) => `Pembersih udara, menyala, AQI ${o.aqi}`,
+    tooltip: "pembersih udara · membersihkan udara",
+    offLabel: "Pembersih udara, mati",
+    offTooltip: "mati",
+  },
+  weatherPanel: {
+    conditions: {
+      sunny: "cerah",
+      clear: "cerah",
+      cloudy: "berawan",
+      fog: "kabut",
+      rain: "hujan",
+      snow: "salju",
+      thunder: "badai petir",
+    },
+    outside: "di luar",
+    high: "T",
+    low: "R",
+    label: (o: { temperature: string; condition: string; place: string }) =>
+      `Panel cuaca, ${o.temperature} ${o.condition}, ${o.place}`,
+    tooltip: (o: { temperature: string; condition: string; place: string }) =>
+      `${o.temperature} · ${o.condition} · ${o.place}`,
+    aqi: "AQI",
+    aqiBands: {
+      good: "baik",
+      moderate: "sedang",
+      sensitive: "tidak sehat bagi yang sensitif",
+      unhealthy: "tidak sehat",
+      veryUnhealthy: "sangat tidak sehat",
+      hazardous: "berbahaya",
+    },
+    airLabel: (o: { aqi: number; band: string }) =>
+      `kualitas udara ${o.band}, AQI ${o.aqi}`,
+    airTooltip: (o: { aqi: number; band: string }) => `udara ${o.band}`,
+    offLabel: "Panel cuaca, belum ada data",
+    offTooltip: "belum ada data",
   },
   tv: {
     stations: {
