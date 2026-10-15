@@ -54,6 +54,9 @@ export const de = {
     qualityLiteHint: "schont Speicher und Akku",
     close: "schließen",
     closeHint: "esc zum Schließen",
+    temperature: "temperatur",
+    temperatureHint:
+      "die wetteranzeige startet mit der einheit, die bei dir üblich ist.",
     roomSounds: "Raumgeräusche",
     roomSoundsHint:
       "Geräusche aus dem Raum und von den Leuten darin. Was du ausschaltest, ist nur für dich stumm.",
@@ -80,6 +83,10 @@ export const de = {
       },
       tv: { label: "TV-Rauschen", hint: "Rauschen vom Fernseher ohne Signal" },
       lamp: { label: "Lampe", hint: "die Lampe flackert an und klickt aus" },
+      weather: {
+        label: "Wetter",
+        hint: "Regen und Donner vor dem Fenster",
+      },
     } satisfies { [group in RoomSoundGroup]: { label: string; hint: string } },
   },
   tabDone: "fertig",
@@ -266,6 +273,10 @@ export const de = {
       board: "aushang",
     },
     updates: {
+      "weather-panel": {
+        title: "das Wetter, drinnen und draußen",
+        body: "Eine Anzeige über dem Fenster zeigt das Wetter bei dir, mit dem heutigen Höchst- und Tiefstwert. Auch die Fenster zeigen es, Regen, Schnee, Nebel oder Gewitter, mit passendem Klang. Deine Stadt wird grob über deine Verbindung geschätzt.",
+      },
       "room-sound-dials": {
         title: "wähle, was du hörst",
         body: "In den Einstellungen gibt es jetzt für jedes Raumgeräusch einen Drehknopf, von den Maschinen bis zur Türglocke. Schalte aus, was du nicht hören willst. Für alle anderen bleibt der Raum gleich.",
@@ -347,6 +358,26 @@ export const de = {
       o.count === 1 ? "nur du hier" : `${o.count} Leute hier`,
     offLabel: "Röhrenzähler, aus",
     offTooltip: "aus",
+  },
+  weatherPanel: {
+    conditions: {
+      sunny: "sonnig",
+      clear: "klar",
+      cloudy: "bewölkt",
+      fog: "Nebel",
+      rain: "Regen",
+      snow: "Schnee",
+      thunder: "Gewitter",
+    },
+    outside: "draußen",
+    high: "H",
+    low: "T",
+    label: (o: { temperature: string; condition: string; place: string }) =>
+      `Wetteranzeige, ${o.temperature} ${o.condition}, ${o.place}`,
+    tooltip: (o: { temperature: string; condition: string; place: string }) =>
+      `${o.temperature} · ${o.condition} · ${o.place}`,
+    offLabel: "Wetteranzeige, kein Messwert",
+    offTooltip: "noch kein Messwert",
   },
   tv: {
     stations: {

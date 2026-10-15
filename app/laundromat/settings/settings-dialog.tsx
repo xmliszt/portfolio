@@ -9,6 +9,7 @@ import { cn } from "@/lib/utils";
 
 import { RoomSoundsFieldset } from "./room-sounds-fieldset";
 import { SETTINGS_META_CLASS } from "./settings-meta-class";
+import { TemperatureUnitSwitch } from "./temperature-unit-switch";
 import { useRenderQuality } from "./use-render-quality";
 
 type SettingsDialogProps = {
@@ -120,6 +121,7 @@ export function SettingsDialog(props: SettingsDialogProps) {
             {copy.settings.renderingHint}
           </p>
         </fieldset>
+        <TemperatureUnitSwitch />
         <RoomSoundsFieldset />
       </div>
       <div className="flex justify-end px-2">

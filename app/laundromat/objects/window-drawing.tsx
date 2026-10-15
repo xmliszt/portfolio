@@ -1,5 +1,6 @@
 import { useId } from "react";
 
+import { useRenderQuality } from "@/app/laundromat/settings/use-render-quality";
 import type { LaidOutObject } from "@/lib/laundromat/build-scene-layout";
 import { getFacePlane } from "@/lib/laundromat/get-face-plane";
 import type { TimeOfDay } from "@/lib/laundromat/get-time-of-day";
@@ -7,10 +8,13 @@ import type { IsoProjection } from "@/lib/laundromat/project-iso-point";
 import { projectIsoPoint } from "@/lib/laundromat/project-iso-point";
 import type { SceneConfig } from "@/lib/laundromat/scene-config";
 import { toSvgPoints } from "@/lib/laundromat/to-svg-points";
+import { getWindowWeather } from "@/lib/laundromat/weather/get-window-weather";
+import type { WeatherCondition } from "@/lib/laundromat/weather/weather-reading";
 
 import { IsoBox } from "./iso-box";
 import { partStroke } from "./part-stroke";
 import { StreetView } from "./street-view";
+import { WindowWeather } from "./window-weather";
 
 const CASING = 0.16;
 const GLASS_X = 0.06;
@@ -60,10 +64,14 @@ type WindowDrawingProps = {
   timeOfDay: TimeOfDay | undefined;
   config: SceneConfig;
   view: "street" | "skyline";
+  weather: WeatherCondition | undefined;
 };
 
 export function WindowDrawing(props: WindowDrawingProps) {
   const id = useId();
+  const { quality } = useRenderQuality();
+  const windowWeather = getWindowWeather(props.weather);
+  const skyShown = 1 - windowWeather.skyCover;
   const { position: p, size } = props.laidOut.object;
   const { projection, timeOfDay, config } = props;
   const { unit } = projection;
@@ -202,6 +210,8 @@ export function WindowDrawing(props: WindowDrawingProps) {
             opening={opening}
             projection={projection}
             timeOfDay={timeOfDay}
+            sunlight={windowWeather.sunlight}
+            wet={quality !== "lite" && windowWeather.particles === "rain"}
             config={config}
           />
         ) : (
@@ -226,7 +236,7 @@ export function WindowDrawing(props: WindowDrawingProps) {
             />
             <g
               mask={`url(#${id}-behind-skyline)`}
-              style={{ opacity: nightOpacity, ...glide }}
+              style={{ opacity: nightOpacity * skyShown, ...glide }}
             >
               {STARS.map((star) => {
                 const point = onPane(star);
@@ -254,6 +264,7 @@ export function WindowDrawing(props: WindowDrawingProps) {
                 cy={sun.center.y}
                 r={SUN_RADIUS * unit}
                 fill={sun.color}
+                style={{ opacity: skyShown, ...glide }}
               />
             )}
             <g
@@ -306,6 +317,16 @@ export function WindowDrawing(props: WindowDrawingProps) {
             </g>
           </g>
         )}
+        <g transform={glass.transform}>
+          <WindowWeather
+            weather={windowWeather}
+            paneWidth={paneWidth}
+            paneHeight={paneHeight}
+            showSky={props.view === "skyline"}
+            animated={quality !== "lite"}
+            details={config.details.window}
+          />
+        </g>
         <g className="stroke-[var(--lm-line)]">
           <polygon
             className="fill-[var(--lm-wall-2)]"

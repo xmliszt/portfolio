@@ -59,6 +59,8 @@ export const vi = {
     qualityLiteHint: "nhẹ hơn cho bộ nhớ và pin",
     close: "đóng",
     closeHint: "esc để đóng",
+    temperature: "nhiệt độ",
+    temperatureHint: "bảng thời tiết bắt đầu với đơn vị quen dùng ở nơi bạn ở.",
     roomSounds: "âm thanh trong tiệm",
     roomSoundsHint:
       "âm thanh từ tiệm và những người trong đó. tắt một âm chỉ tắt cho riêng bạn.",
@@ -79,6 +81,7 @@ export const vi = {
       },
       tv: { label: "nhiễu tv", hint: "tiếng rè của tv không có tín hiệu" },
       lamp: { label: "đèn", hint: "đèn chập chờn khi bật và kêu tách khi tắt" },
+      weather: { label: "thời tiết", hint: "mưa và sấm ngoài cửa sổ" },
     } satisfies { [group in RoomSoundGroup]: { label: string; hint: string } },
   },
   tabDone: "xong",
@@ -260,6 +263,10 @@ export const vi = {
       board: "bảng tin",
     },
     updates: {
+      "weather-panel": {
+        title: "thời tiết, trong và ngoài",
+        body: "Một bảng phía trên cửa sổ cho biết thời tiết nơi bạn ở, kèm nhiệt độ cao nhất và thấp nhất hôm nay. Cửa sổ cũng cho thấy điều đó, mưa, tuyết, sương mù hay giông bão, kèm âm thanh. Thành phố của bạn được đoán đại khái từ kết nối.",
+      },
       "room-sound-dials": {
         title: "chọn âm thanh bạn nghe",
         body: "Phần cài đặt giờ có một núm vặn cho từng âm thanh trong tiệm, từ máy giặt đến chuông cửa. Tắt những âm bạn không muốn nghe. Với người khác, tiệm vẫn như cũ.",
@@ -341,6 +348,26 @@ export const vi = {
       o.count === 1 ? "chỉ có bạn ở đây" : `${o.count} người ở đây`,
     offLabel: "Bộ đếm đèn ống, tắt",
     offTooltip: "tắt",
+  },
+  weatherPanel: {
+    conditions: {
+      sunny: "nắng",
+      clear: "trời quang",
+      cloudy: "nhiều mây",
+      fog: "sương mù",
+      rain: "mưa",
+      snow: "tuyết",
+      thunder: "giông",
+    },
+    outside: "bên ngoài",
+    high: "C",
+    low: "T",
+    label: (o: { temperature: string; condition: string; place: string }) =>
+      `Bảng thời tiết, ${o.temperature} ${o.condition}, ${o.place}`,
+    tooltip: (o: { temperature: string; condition: string; place: string }) =>
+      `${o.temperature} · ${o.condition} · ${o.place}`,
+    offLabel: "Bảng thời tiết, chưa có số đo",
+    offTooltip: "chưa có số đo",
   },
   tv: {
     stations: {

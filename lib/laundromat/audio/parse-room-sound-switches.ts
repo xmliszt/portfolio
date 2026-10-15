@@ -22,5 +22,6 @@ export function parseRoomSoundSwitches(
     coffee: !off.includes("coffee"),
     tv: !off.includes("tv"),
     lamp: !off.includes("lamp"),
+    weather: !off.includes("weather"),
   };
 }

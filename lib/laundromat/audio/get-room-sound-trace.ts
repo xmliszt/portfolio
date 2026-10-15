@@ -36,6 +36,11 @@ export function getRoomSoundTrace(options: {
         (Math.sin(x * 20 + timeS * 2) > 0 ? 0.45 : -0.45) *
         (0.6 + 0.4 * Math.sin(timeS * 13))
       );
+    case "weather":
+      return (
+        Math.sin(x * 3 + timeS * 0.7) * 0.35 +
+        hashNoise(x * 311.7 + Math.floor(timeS * 12) * 17.1) * 0.25
+      );
     default: {
       const unknown: never = options.group;
       return unknown;

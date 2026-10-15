@@ -55,6 +55,9 @@ export const ptBR = {
     qualityLiteHint: "mais leve para a memória e a bateria",
     close: "fechar",
     closeHint: "esc para fechar",
+    temperature: "temperatura",
+    temperatureHint:
+      "o painel do tempo começa com a unidade usual onde você está.",
     roomSounds: "sons da lavanderia",
     roomSoundsHint:
       "sons da lavanderia e das pessoas nela. desligar um só silencia para você.",
@@ -77,6 +80,10 @@ export const ptBR = {
       lamp: {
         label: "luminária",
         hint: "a luminária piscando ao acender e estalando ao apagar",
+      },
+      weather: {
+        label: "tempo",
+        hint: "chuva e trovões do lado de fora da janela",
       },
     } satisfies { [group in RoomSoundGroup]: { label: string; hint: string } },
   },
@@ -263,6 +270,10 @@ export const ptBR = {
       board: "mural",
     },
     updates: {
+      "weather-panel": {
+        title: "o tempo, dentro e fora",
+        body: "Um painel acima da janela mostra o tempo onde você está, com a máxima e a mínima de hoje. As janelas também mostram, chuva, neve, neblina ou tempestade, com o som certo. Sua cidade é um palpite aproximado a partir da sua conexão.",
+      },
       "room-sound-dials": {
         title: "escolha os sons que você ouve",
         body: "As configurações agora têm um botão giratório para cada som da lavanderia, das máquinas ao sininho. Desligue os que você prefere não ouvir. Para os outros, a lavanderia continua igual.",
@@ -344,6 +355,26 @@ export const ptBR = {
       o.count === 1 ? "só você aqui" : `${o.count} pessoas aqui`,
     offLabel: "Contador de válvulas, desligado",
     offTooltip: "desligado",
+  },
+  weatherPanel: {
+    conditions: {
+      sunny: "ensolarado",
+      clear: "céu limpo",
+      cloudy: "nublado",
+      fog: "neblina",
+      rain: "chuva",
+      snow: "neve",
+      thunder: "trovoada",
+    },
+    outside: "lá fora",
+    high: "máx",
+    low: "mín",
+    label: (o: { temperature: string; condition: string; place: string }) =>
+      `Painel do tempo, ${o.temperature} ${o.condition}, ${o.place}`,
+    tooltip: (o: { temperature: string; condition: string; place: string }) =>
+      `${o.temperature} · ${o.condition} · ${o.place}`,
+    offLabel: "Painel do tempo, sem leitura",
+    offTooltip: "ainda sem leitura",
   },
   tv: {
     stations: {

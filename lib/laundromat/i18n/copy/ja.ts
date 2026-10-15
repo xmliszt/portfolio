@@ -54,6 +54,9 @@ export const ja = {
     qualityLiteHint: "メモリとバッテリーにやさしい",
     close: "閉じる",
     closeHint: "esc で閉じる",
+    temperature: "温度",
+    temperatureHint:
+      "天気パネルは、あなたのいる地域でふつう使う単位から始まります。",
     roomSounds: "店内の音",
     roomSoundsHint:
       "店内とそこにいる人たちの音です。オフにしても、消えるのはあなたにだけです。",
@@ -77,6 +80,7 @@ export const ja = {
         label: "ランプ",
         hint: "ランプがちらついて点き、カチッと消える音",
       },
+      weather: { label: "天気", hint: "窓の外の雨と雷の音" },
     } satisfies { [group in RoomSoundGroup]: { label: string; hint: string } },
   },
   tabDone: "完了",
@@ -256,6 +260,10 @@ export const ja = {
       board: "掲示板",
     },
     updates: {
+      "weather-panel": {
+        title: "店の中にも外にも天気",
+        body: "窓の上のパネルに、あなたのいる場所の天気と今日の最高・最低気温が出ます。窓の外にも雨、雪、霧、嵐が、音といっしょに見えます。街は接続からおおまかに推測しています。",
+      },
       "room-sound-dials": {
         title: "聞こえる音を選べるように",
         body: "設定に、マシンからドアベルまで、店内の音ごとのダイヤルができました。聞きたくない音はオフにできます。ほかの人の店内はそのままです。",
@@ -337,6 +345,26 @@ export const ja = {
       o.count === 1 ? "いるのはあなただけ" : `いま${o.count}人`,
     offLabel: "ニキシー管カウンター、オフ",
     offTooltip: "オフ",
+  },
+  weatherPanel: {
+    conditions: {
+      sunny: "晴れ",
+      clear: "快晴",
+      cloudy: "くもり",
+      fog: "霧",
+      rain: "雨",
+      snow: "雪",
+      thunder: "雷雨",
+    },
+    outside: "外",
+    high: "高",
+    low: "低",
+    label: (o: { temperature: string; condition: string; place: string }) =>
+      `天気パネル、${o.temperature} ${o.condition}、${o.place}`,
+    tooltip: (o: { temperature: string; condition: string; place: string }) =>
+      `${o.temperature} · ${o.condition} · ${o.place}`,
+    offLabel: "天気パネル、データなし",
+    offTooltip: "まだデータなし",
   },
   tv: {
     stations: {

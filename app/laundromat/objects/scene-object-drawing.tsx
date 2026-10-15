@@ -20,6 +20,7 @@ import { StoolDrawing } from "./stool-drawing";
 import { TableDrawing } from "./table-drawing";
 import { TubeDisplayDrawing } from "./tube-display-drawing";
 import { TvDrawing } from "./tv-drawing";
+import { WeatherPanelDrawing } from "./weather-panel-drawing";
 import { WindowDrawing } from "./window-drawing";
 
 type SceneObjectDrawingProps = {
@@ -89,6 +90,7 @@ export function SceneObjectDrawing(props: SceneObjectDrawingProps) {
           timeOfDay={props.timeOfDay}
           config={config}
           view="street"
+          weather={views.weather?.condition}
         />
       );
     case "clock":
@@ -148,6 +150,14 @@ export function SceneObjectDrawing(props: SceneObjectDrawingProps) {
           count={views.peopleHere}
           rollCount={views.tubeRollCount}
           details={details.tubeDisplay}
+        />
+      );
+    case "weather-panel":
+      return (
+        <WeatherPanelDrawing
+          {...shared}
+          weather={views.weather}
+          details={details.weatherPanel}
         />
       );
     default: {

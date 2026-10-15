@@ -54,6 +54,8 @@ export const zhHant = {
     qualityLiteHint: "更省記憶體和電量",
     close: "關閉",
     closeHint: "按 esc 關閉",
+    temperature: "溫度",
+    temperatureHint: "天氣面板預設使用你所在地區常用的單位。",
     roomSounds: "店內聲音",
     roomSoundsHint:
       "來自店內和店裡其他人的聲音。關掉某個聲音，只對你自己靜音。",
@@ -68,6 +70,7 @@ export const zhHant = {
       coffee: { label: "咖啡", hint: "煮咖啡的咕嘟聲和煮好的提示音" },
       tv: { label: "電視雜訊", hint: "沒有訊號的電視沙沙聲" },
       lamp: { label: "檯燈", hint: "檯燈閃爍亮起和喀噠熄滅的聲音" },
+      weather: { label: "天氣", hint: "窗外的雨聲和雷聲" },
     } satisfies { [group in RoomSoundGroup]: { label: string; hint: string } },
   },
   tabDone: "好了",
@@ -240,6 +243,10 @@ export const zhHant = {
       board: "告示板",
     },
     updates: {
+      "weather-panel": {
+        title: "屋裡屋外的天氣",
+        body: "窗戶上方的面板會顯示你所在地的天氣，以及今天的最高和最低氣溫。窗外也會下雨、下雪、起霧或打雷，還有相應的聲音。城市是根據你的網路連線大致推測的。",
+      },
       "room-sound-dials": {
         title: "選擇你想聽的聲音",
         body: "設定裡現在有店內每種聲音的旋鈕，從機器到門鈴。不想聽的就關掉。其他人那邊的店內照舊。",
@@ -321,6 +328,26 @@ export const zhHant = {
       o.count === 1 ? "只有你在這裡" : `這裡有 ${o.count} 個人`,
     offLabel: "輝光管計數器，關閉",
     offTooltip: "關閉",
+  },
+  weatherPanel: {
+    conditions: {
+      sunny: "晴",
+      clear: "晴朗",
+      cloudy: "多雲",
+      fog: "霧",
+      rain: "雨",
+      snow: "雪",
+      thunder: "雷雨",
+    },
+    outside: "外面",
+    high: "高",
+    low: "低",
+    label: (o: { temperature: string; condition: string; place: string }) =>
+      `天氣面板，${o.temperature} ${o.condition}，${o.place}`,
+    tooltip: (o: { temperature: string; condition: string; place: string }) =>
+      `${o.temperature} · ${o.condition} · ${o.place}`,
+    offLabel: "天氣面板，暫無資料",
+    offTooltip: "暫無資料",
   },
   tv: {
     stations: {

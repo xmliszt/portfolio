@@ -1,6 +1,4 @@
-const LATIN_ADVANCE_EM = 0.6;
-const WIDE_ADVANCE_EM = 1;
-const WIDE_CHARACTER = /[ᄀ-ᅟ⺀-꓏가-힣豈-﫿︰-﹏＀-｠￠-￦]/u;
+import { getCaptionWidthEm } from "@/lib/laundromat/tv/get-caption-width-em";
 
 /** Return the largest font size up to `maxFontSize` at which `text`, set in the monospace caption font, fits in `maxWidth`. */
 export function fitCaptionFontSize(options: {
@@ -8,12 +6,7 @@ export function fitCaptionFontSize(options: {
   maxWidth: number;
   maxFontSize: number;
 }) {
-  const widthEm = [...options.text].reduce(
-    (total, character) =>
-      total +
-      (WIDE_CHARACTER.test(character) ? WIDE_ADVANCE_EM : LATIN_ADVANCE_EM),
-    0
-  );
+  const widthEm = getCaptionWidthEm(options.text);
   return widthEm === 0
     ? options.maxFontSize
     : Math.min(options.maxFontSize, options.maxWidth / widthEm);

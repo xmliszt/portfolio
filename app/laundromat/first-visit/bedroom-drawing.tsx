@@ -1,6 +1,7 @@
 import { useId } from "react";
 import type { MotionValue } from "motion/react";
 
+import { useLocalWeather } from "@/app/laundromat/local-weather/use-local-weather";
 import { IsoBox } from "@/app/laundromat/objects/iso-box";
 import { WindowDrawing } from "@/app/laundromat/objects/window-drawing";
 import { useRenderQuality } from "@/app/laundromat/settings/use-render-quality";
@@ -52,6 +53,7 @@ type BedroomDrawingProps = {
 
 export function BedroomDrawing(props: BedroomDrawingProps) {
   const id = useId();
+  const { reading: weather } = useLocalWeather();
   const { bedroom, projection, timeOfDay, scene } = props;
   const { width, depth, wallHeight } = bedroom.room;
   const { unit } = projection;
@@ -248,6 +250,7 @@ export function BedroomDrawing(props: BedroomDrawingProps) {
         timeOfDay={timeOfDay}
         config={scene}
         view="skyline"
+        weather={weather?.condition}
       />
       <CurtainDrawing
         pose={curtainPose}

@@ -54,6 +54,9 @@ export const es = {
     qualityLiteHint: "más ligero para la memoria y la batería",
     close: "cerrar",
     closeHint: "esc para cerrar",
+    temperature: "temperatura",
+    temperatureHint:
+      "el panel del tiempo empieza con la unidad habitual donde estás.",
     roomSounds: "sonidos de la sala",
     roomSoundsHint:
       "sonidos de la sala y de la gente que hay en ella. si apagas uno, solo se silencia para ti.",
@@ -79,6 +82,10 @@ export const es = {
       lamp: {
         label: "lámpara",
         hint: "la lámpara parpadea al encenderse y hace clic al apagarse",
+      },
+      weather: {
+        label: "tiempo",
+        hint: "lluvia y truenos al otro lado de la ventana",
       },
     } satisfies { [group in RoomSoundGroup]: { label: string; hint: string } },
   },
@@ -264,6 +271,10 @@ export const es = {
       board: "tablón",
     },
     updates: {
+      "weather-panel": {
+        title: "el tiempo, dentro y fuera",
+        body: "Un panel sobre la ventana muestra el tiempo donde estás, con la máxima y la mínima de hoy. Las ventanas también lo muestran, lluvia, nieve, niebla o tormenta, con su sonido. Tu ciudad se calcula a grandes rasgos a partir de tu conexión.",
+      },
       "room-sound-dials": {
         title: "elige qué sonidos oyes",
         body: "Los ajustes tienen ahora un dial para cada sonido de la sala, desde las máquinas hasta la campanilla. Apaga los que no quieras oír. Para los demás, la sala sigue igual.",
@@ -345,6 +356,26 @@ export const es = {
       o.count === 1 ? "solo tú aquí" : `${o.count} personas aquí`,
     offLabel: "Contador de tubos, apagado",
     offTooltip: "apagado",
+  },
+  weatherPanel: {
+    conditions: {
+      sunny: "soleado",
+      clear: "despejado",
+      cloudy: "nublado",
+      fog: "niebla",
+      rain: "lluvia",
+      snow: "nieve",
+      thunder: "tormenta",
+    },
+    outside: "afuera",
+    high: "máx",
+    low: "mín",
+    label: (o: { temperature: string; condition: string; place: string }) =>
+      `Panel del tiempo, ${o.temperature} ${o.condition}, ${o.place}`,
+    tooltip: (o: { temperature: string; condition: string; place: string }) =>
+      `${o.temperature} · ${o.condition} · ${o.place}`,
+    offLabel: "Panel del tiempo, sin lectura",
+    offTooltip: "aún sin lectura",
   },
   tv: {
     stations: {

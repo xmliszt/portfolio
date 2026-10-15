@@ -7,6 +7,7 @@ import { useRouter } from "next/navigation";
 
 import { LaundromatEntry } from "@/app/laundromat/laundromat-entry";
 import { LaundromatScene } from "@/app/laundromat/laundromat-scene";
+import { LocalWeatherProvider } from "@/app/laundromat/local-weather/local-weather-provider";
 import { createFakeRoomSource } from "@/app/laundromat/realtime/create-fake-room-source";
 import { RoomSourceContext } from "@/app/laundromat/realtime/room-source-context";
 import { SoundBoardProvider } from "@/app/laundromat/sound/sound-board-provider";
@@ -19,6 +20,8 @@ import type { RoomPresence } from "@/lib/laundromat/realtime/room-presence";
 import type { SceneConfig } from "@/lib/laundromat/scene-config";
 import { sceneConfig } from "@/lib/laundromat/scene-config";
 import { toCssVariables } from "@/lib/laundromat/to-css-variables";
+import type { WeatherReading } from "@/lib/laundromat/weather/weather-reading";
+import { WEATHER_CONDITIONS } from "@/lib/laundromat/weather/weather-reading";
 
 import type { WorkbenchMachineState } from "./object-workbench";
 import { ObjectWorkbench } from "./object-workbench";
@@ -120,6 +123,17 @@ const timeDials = {
   playDay: { type: "action", label: "play a day" },
 } satisfies DialConfig;
 
+const weatherDials = {
+  condition: {
+    type: "select",
+    options: ["live", ...WEATHER_CONDITIONS],
+    default: "live",
+  },
+  night: false,
+  temperatureC: [18, -20, 40, 1],
+  city: { type: "text", default: "Lisbon" },
+} satisfies DialConfig;
+
 const skyDials = {
   sunriseHour: [sky.sunriseHour, 3, 9, 0.05],
   sunsetHour: [sky.sunsetHour, 16, 22, 0.05],
@@ -196,6 +210,8 @@ const objectDials = {
   },
   window: {
     litWindowOpacity: [details.window.litWindowOpacity, 0, 1, 0.01],
+    rainFallSeconds: [details.window.rainFallSeconds, 0.2, 4, 0.05],
+    snowFallSeconds: [details.window.snowFallSeconds, 1, 20, 0.5],
     _collapsed: true,
   },
   board: {
@@ -210,6 +226,10 @@ const objectDials = {
     digitGlow: [details.tubeDisplay.digitGlow, 0, 1, 0.01],
     ghostOpacity: [details.tubeDisplay.ghostOpacity, 0, 0.5, 0.01],
     rollMs: [details.tubeDisplay.rollMs, 0, 3000, 50],
+    _collapsed: true,
+  },
+  weatherPanel: {
+    glyphMotionSeconds: [details.weatherPanel.glyphMotionSeconds, 0.4, 6, 0.1],
     _collapsed: true,
   },
   notebook: {
@@ -390,6 +410,26 @@ export default function LaundromatLab() {
     id: "laundromat-lab-objects",
     ...PANEL_OPTIONS,
   });
+  const weatherValues = useDialKit("Weather", weatherDials, {
+    id: "laundromat-lab-weather",
+    ...PANEL_OPTIONS,
+  });
+  const weatherCondition = WEATHER_CONDITIONS.find(
+    (condition) => condition === weatherValues.condition
+  );
+  const { night, temperatureC, city } = weatherValues;
+  const labWeather = useMemo((): WeatherReading | undefined => {
+    if (weatherCondition === undefined) return undefined;
+    return {
+      condition: weatherCondition,
+      isDay: !night,
+      temperatureC,
+      highC: temperatureC + 4,
+      lowC: temperatureC - 5,
+      city: city || undefined,
+      unit: "celsius",
+    };
+  }, [weatherCondition, night, temperatureC, city]);
   const workbench = useDialKit("Workbench", workbenchDials, {
     id: "laundromat-lab-workbench",
     ...PANEL_OPTIONS,
@@ -491,6 +531,7 @@ export default function LaundromatLab() {
         window: objectValues.window,
         board: objectValues.board,
         tubeDisplay: objectValues.tubeDisplay,
+        weatherPanel: objectValues.weatherPanel,
         notebook: {
           ...objectValues.notebook,
           turnEase: details.notebook.turnEase,
@@ -595,70 +636,76 @@ export default function LaundromatLab() {
     config.objects[0];
 
   return (
-    <div data-laundromat-lab className="grid size-full grid-cols-[360px_1fr]">
-      <style>{`[data-laundromat-lab] { ${toCssVariables(config.tokens)} }`}</style>
-      <div className="flex min-h-0 flex-col gap-y-3 border-r border-[var(--lm-edge)] p-3">
-        <section className="flex min-h-0 flex-1 flex-col gap-y-2">
-          <h2 className="text-[11px] lowercase">
-            workbench · {workbenchObject.id}
-          </h2>
-          <div className="min-h-0 flex-1 rounded-md border border-[var(--lm-edge)]">
-            <ObjectWorkbench
-              config={config}
-              object={workbenchObject}
-              scale={
-                workbench.framing === "focus" ? config.camera.maxFocusZoom : 1
+    <LocalWeatherProvider reading={labWeather}>
+      <div data-laundromat-lab className="grid size-full grid-cols-[360px_1fr]">
+        <style>{`[data-laundromat-lab] { ${toCssVariables(config.tokens)} }`}</style>
+        <div className="flex min-h-0 flex-col gap-y-3 border-r border-[var(--lm-edge)] p-3">
+          <section className="flex min-h-0 flex-1 flex-col gap-y-2">
+            <h2 className="text-[11px] lowercase">
+              workbench · {workbenchObject.id}
+            </h2>
+            <div className="min-h-0 flex-1 rounded-md border border-[var(--lm-edge)]">
+              <ObjectWorkbench
+                config={config}
+                object={workbenchObject}
+                scale={
+                  workbench.framing === "focus" ? config.camera.maxFocusZoom : 1
+                }
+                highlighted={workbench.highlight}
+                tooltipPinned={workbench.pinTooltip}
+                hour={hour}
+                machineState={toWorkbenchMachineState(workbench.machine)}
+                doorOpen={workbench.doorOpen}
+                basket={toWorkbenchBasket(workbench.basket)}
+              />
+            </div>
+          </section>
+          <section className="flex h-48 flex-col gap-y-2">
+            <h2 className="text-[11px] lowercase">time of day</h2>
+            <SkyPreview
+              top={timeOfDay.skyTop}
+              horizon={timeOfDay.skyHorizon}
+              sunProgress={
+                (hour - config.sky.sunriseHour) /
+                (config.sky.sunsetHour - config.sky.sunriseHour)
               }
-              highlighted={workbench.highlight}
-              tooltipPinned={workbench.pinTooltip}
-              hour={hour}
-              machineState={toWorkbenchMachineState(workbench.machine)}
-              doorOpen={workbench.doorOpen}
-              basket={toWorkbenchBasket(workbench.basket)}
+              label={`${formatHour(hour)} · ${timeValues.override ? "override" : "device"}`}
             />
-          </div>
-        </section>
-        <section className="flex h-48 flex-col gap-y-2">
-          <h2 className="text-[11px] lowercase">time of day</h2>
-          <SkyPreview
-            top={timeOfDay.skyTop}
-            horizon={timeOfDay.skyHorizon}
-            sunProgress={
-              (hour - config.sky.sunriseHour) /
-              (config.sky.sunsetHour - config.sky.sunriseHour)
-            }
-            label={`${formatHour(hour)} · ${timeValues.override ? "override" : "device"}`}
-          />
-        </section>
-        <p
-          role="status"
-          className="h-4 text-[11px] text-[var(--lm-accent-hi)] lowercase"
-        >
-          {isCopied ? "config copied" : ""}
-        </p>
+          </section>
+          <p
+            role="status"
+            className="h-4 text-[11px] text-[var(--lm-accent-hi)] lowercase"
+          >
+            {isCopied ? "config copied" : ""}
+          </p>
+        </div>
+        <SoundBoardProvider>
+          <RoomSourceContext.Provider value={fakeRoom.source}>
+            <div className="min-h-0 min-w-0">
+              {view.room === "hamper room" ? (
+                <LaundromatEntry
+                  key={`${replayCount}-${sceneKey}`}
+                  config={config}
+                  bedroom={bedroom}
+                  hourOverride={
+                    timeValues.override ? timeValues.hour : undefined
+                  }
+                  ignoreArrivedFlag
+                />
+              ) : (
+                <LaundromatScene
+                  key={sceneKey}
+                  config={config}
+                  hourOverride={
+                    timeValues.override ? timeValues.hour : undefined
+                  }
+                />
+              )}
+            </div>
+          </RoomSourceContext.Provider>
+        </SoundBoardProvider>
+        <DialRoot position="top-right" theme="dark" />
       </div>
-      <SoundBoardProvider>
-        <RoomSourceContext.Provider value={fakeRoom.source}>
-          <div className="min-h-0 min-w-0">
-            {view.room === "hamper room" ? (
-              <LaundromatEntry
-                key={`${replayCount}-${sceneKey}`}
-                config={config}
-                bedroom={bedroom}
-                hourOverride={timeValues.override ? timeValues.hour : undefined}
-                ignoreArrivedFlag
-              />
-            ) : (
-              <LaundromatScene
-                key={sceneKey}
-                config={config}
-                hourOverride={timeValues.override ? timeValues.hour : undefined}
-              />
-            )}
-          </div>
-        </RoomSourceContext.Provider>
-      </SoundBoardProvider>
-      <DialRoot position="top-right" theme="dark" />
-    </div>
+    </LocalWeatherProvider>
   );
 }

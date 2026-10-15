@@ -53,6 +53,9 @@ export const tr = {
     qualityLiteHint: "bellek ve pil için daha hafif",
     close: "kapat",
     closeHint: "kapatmak için esc",
+    temperature: "sıcaklık",
+    temperatureHint:
+      "hava durumu panosu, bulunduğun yerde alışılmış birimle başlar.",
     roomSounds: "dükkân sesleri",
     roomSoundsHint:
       "dükkânın ve içindeki insanların sesleri. birini kapatmak onu yalnızca senin için susturur.",
@@ -75,6 +78,10 @@ export const tr = {
       lamp: {
         label: "lamba",
         hint: "lambanın titreyerek yanması ve tıkla sönmesi",
+      },
+      weather: {
+        label: "hava",
+        hint: "pencerenin dışındaki yağmur ve gök gürültüsü",
       },
     } satisfies { [group in RoomSoundGroup]: { label: string; hint: string } },
   },
@@ -228,6 +235,10 @@ export const tr = {
       board: "pano",
     },
     updates: {
+      "weather-panel": {
+        title: "içeride ve dışarıda hava",
+        body: "Pencerenin üstündeki pano, bulunduğun yerin hava durumunu bugünün en yüksek ve en düşük sıcaklığıyla gösterir. Pencereler de gösterir, yağmur, kar, sis ya da fırtına, sesiyle birlikte. Şehrin, bağlantından kabaca tahmin edilir.",
+      },
       "room-sound-dials": {
         title: "duyacağın sesleri seç",
         body: "Ayarlarda artık makinelerden kapı ziline kadar her dükkân sesi için bir düğme var. Duymak istemediklerini kapat. Diğerleri için dükkân aynı kalır.",
@@ -309,6 +320,26 @@ export const tr = {
       o.count === 1 ? "burada sadece sen varsın" : `burada ${o.count} kişi`,
     offLabel: "Tüplü sayaç, kapalı",
     offTooltip: "kapalı",
+  },
+  weatherPanel: {
+    conditions: {
+      sunny: "güneşli",
+      clear: "açık",
+      cloudy: "bulutlu",
+      fog: "sis",
+      rain: "yağmur",
+      snow: "kar",
+      thunder: "fırtına",
+    },
+    outside: "dışarısı",
+    high: "Y",
+    low: "D",
+    label: (o: { temperature: string; condition: string; place: string }) =>
+      `Hava durumu panosu, ${o.temperature} ${o.condition}, ${o.place}`,
+    tooltip: (o: { temperature: string; condition: string; place: string }) =>
+      `${o.temperature} · ${o.condition} · ${o.place}`,
+    offLabel: "Hava durumu panosu, ölçüm yok",
+    offTooltip: "henüz ölçüm yok",
   },
   tv: {
     stations: {

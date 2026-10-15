@@ -72,6 +72,7 @@ import { cn } from "@/lib/utils";
 
 import { BOARD_DIALOG_SIZE_PX, BoardDialog } from "./board/board-dialog";
 import { useLaundromatCopy } from "./i18n/use-laundromat-copy";
+import { useLocalWeather } from "./local-weather/use-local-weather";
 import { NotebookBook } from "./notebook/notebook-book";
 import { ShelfBookButton } from "./notebook/shelf-book-button";
 import { useNotebookShelf } from "./notebook/use-notebook-shelf";
@@ -161,6 +162,7 @@ export function LaundromatScene(props: LaundromatSceneProps) {
     isLite && (focus === "notebook" || focus === "board") ? "room" : focus;
   const sceneHour = useSceneHour();
   const hour = props.hourOverride ?? sceneHour;
+  const { reading: weather } = useLocalWeather();
 
   const rootRef = useRef<HTMLDivElement>(null);
   const [viewport, setViewport] = useState<Viewport>();
@@ -588,6 +590,7 @@ export function LaundromatScene(props: LaundromatSceneProps) {
     notebookNumber: coverNumber,
     peopleHere,
     tubeRollCount,
+    weather,
   };
 
   function describeControl(options: {
@@ -658,6 +661,7 @@ export function LaundromatScene(props: LaundromatSceneProps) {
           object: laidOut.object,
           copy,
           peopleHere,
+          weather,
         });
     }
   }

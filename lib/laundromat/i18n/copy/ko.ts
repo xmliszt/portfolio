@@ -54,6 +54,8 @@ export const ko = {
     qualityLiteHint: "메모리와 배터리에 가벼움",
     close: "닫기",
     closeHint: "esc로 닫기",
+    temperature: "온도",
+    temperatureHint: "날씨 패널은 지금 계신 곳에서 흔히 쓰는 단위로 시작해요.",
     roomSounds: "가게 소리",
     roomSoundsHint:
       "가게와 그 안에 있는 사람들이 내는 소리예요. 끄면 나에게만 들리지 않아요.",
@@ -74,6 +76,7 @@ export const ko = {
       },
       tv: { label: "TV 잡음", hint: "신호 없는 TV의 지지직 소리" },
       lamp: { label: "램프", hint: "램프가 깜빡이며 켜지고 딸깍 꺼지는 소리" },
+      weather: { label: "날씨", hint: "창밖의 비와 천둥 소리" },
     } satisfies { [group in RoomSoundGroup]: { label: string; hint: string } },
   },
   tabDone: "완료",
@@ -254,6 +257,10 @@ export const ko = {
       board: "게시판",
     },
     updates: {
+      "weather-panel": {
+        title: "안과 밖의 날씨",
+        body: "창문 위 패널이 지금 계신 곳의 날씨와 오늘의 최고·최저 기온을 보여 줘요. 창밖에도 비, 눈, 안개, 폭풍이 소리와 함께 보여요. 도시는 연결 정보로 대략 짐작한 거예요.",
+      },
       "room-sound-dials": {
         title: "들을 소리를 골라요",
         body: "이제 설정에서 기계부터 문 종까지 가게 소리마다 다이얼로 켜고 끌 수 있어요. 듣고 싶지 않은 소리는 꺼 두세요. 다른 사람에게는 가게가 그대로예요.",
@@ -335,6 +342,26 @@ export const ko = {
       o.count === 1 ? "혼자 있어요" : `지금 ${o.count}명`,
     offLabel: "닉시관 카운터, 꺼짐",
     offTooltip: "꺼짐",
+  },
+  weatherPanel: {
+    conditions: {
+      sunny: "맑음",
+      clear: "맑음",
+      cloudy: "흐림",
+      fog: "안개",
+      rain: "비",
+      snow: "눈",
+      thunder: "뇌우",
+    },
+    outside: "바깥",
+    high: "최고",
+    low: "최저",
+    label: (o: { temperature: string; condition: string; place: string }) =>
+      `날씨 패널, ${o.temperature} ${o.condition}, ${o.place}`,
+    tooltip: (o: { temperature: string; condition: string; place: string }) =>
+      `${o.temperature} · ${o.condition} · ${o.place}`,
+    offLabel: "날씨 패널, 정보 없음",
+    offTooltip: "아직 정보 없음",
   },
   tv: {
     stations: {

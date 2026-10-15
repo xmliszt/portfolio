@@ -27,6 +27,7 @@ const PREVIEWS = {
   coffee: ["coffee-brew-done"],
   tv: ["tv-static"],
   lamp: ["lamp-flicker"],
+  weather: ["thunder-rumble"],
 } satisfies { [group in RoomSoundGroup]: SoundName[] };
 
 /** Let the visitor switch each room sound group on or off with a dial, playing a preview of a group as it turns on, and turn every dial in turn from "all on" / "all off". */
@@ -76,6 +77,7 @@ export function RoomSoundsFieldset() {
       coffee: on,
       tv: on,
       lamp: on,
+      weather: on,
     });
   }
 

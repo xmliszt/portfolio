@@ -1,11 +1,15 @@
 import type { LaundromatCopy } from "./i18n/laundromat-copy";
+import { formatTemperature } from "./weather/format-temperature";
+import { getWeatherConditionName } from "./weather/get-weather-condition-name";
+import type { WeatherReading } from "./weather/weather-reading";
 import type { SceneObject } from "./scene-config";
 
-/** Return the hit target's `label` and `tooltip` for `object`, counting `peopleHere` on the tube display, or `undefined` when the object is not interactive. */
+/** Return the hit target's `label` and `tooltip` for `object`, counting `peopleHere` on the tube display and reading `weather` on the weather panel, or `undefined` when the object is not interactive. */
 export function describeSceneObject(options: {
   object: SceneObject;
   copy: LaundromatCopy;
   peopleHere?: number;
+  weather?: WeatherReading;
 }) {
   const { object, copy } = options;
   switch (object.kind) {
@@ -65,6 +69,27 @@ export function describeSceneObject(options: {
             label: copy.tubeDisplay.label({ count: options.peopleHere }),
             tooltip: copy.tubeDisplay.tooltip({ count: options.peopleHere }),
           };
+    case "weather-panel": {
+      const { weather } = options;
+      if (weather === undefined) {
+        return {
+          label: copy.weatherPanel.offLabel,
+          tooltip: copy.weatherPanel.offTooltip,
+        };
+      }
+      const reading = {
+        temperature: formatTemperature({
+          celsius: weather.temperatureC,
+          unit: weather.unit,
+        }),
+        condition: getWeatherConditionName({ reading: weather, copy }),
+        place: weather.city ?? copy.weatherPanel.outside,
+      };
+      return {
+        label: copy.weatherPanel.label(reading),
+        tooltip: copy.weatherPanel.tooltip(reading),
+      };
+    }
     case "counter":
     case "window":
     case "clock":

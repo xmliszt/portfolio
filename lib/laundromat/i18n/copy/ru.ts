@@ -67,6 +67,8 @@ export const ru = {
     qualityLiteHint: "бережнее к памяти и батарее",
     close: "закрыть",
     closeHint: "esc — закрыть",
+    temperature: "температура",
+    temperatureHint: "панель погоды начинает с единиц, привычных там, где вы.",
     roomSounds: "звуки прачечной",
     roomSoundsHint:
       "звуки прачечной и людей в ней. если выключить звук, он стихнет только для вас.",
@@ -96,6 +98,7 @@ export const ru = {
         label: "лампа",
         hint: "лампа мерцает при включении и щёлкает при выключении",
       },
+      weather: { label: "погода", hint: "дождь и гром за окном" },
     } satisfies { [group in RoomSoundGroup]: { label: string; hint: string } },
   },
   tabDone: "готово",
@@ -250,6 +253,10 @@ export const ru = {
       board: "стенд",
     },
     updates: {
+      "weather-panel": {
+        title: "погода внутри и снаружи",
+        body: "Панель над окном показывает погоду там, где вы, с сегодняшним максимумом и минимумом. Окна тоже её показывают, дождь, снег, туман или грозу, со своим звуком. Город определяется примерно по вашему подключению.",
+      },
       "room-sound-dials": {
         title: "выбирайте, что слышать",
         body: "В настройках теперь есть ручка для каждого звука прачечной, от машин до колокольчика. Выключите то, что не хотите слышать. Для остальных всё останется как было.",
@@ -333,6 +340,26 @@ export const ru = {
         : `здесь ${o.count} ${pluralize({ count: o.count, one: "человек", few: "человека", many: "человек" })}`,
     offLabel: "Ламповый счётчик, выключен",
     offTooltip: "выключен",
+  },
+  weatherPanel: {
+    conditions: {
+      sunny: "солнечно",
+      clear: "ясно",
+      cloudy: "облачно",
+      fog: "туман",
+      rain: "дождь",
+      snow: "снег",
+      thunder: "гроза",
+    },
+    outside: "снаружи",
+    high: "макс",
+    low: "мин",
+    label: (o: { temperature: string; condition: string; place: string }) =>
+      `Панель погоды, ${o.temperature} ${o.condition}, ${o.place}`,
+    tooltip: (o: { temperature: string; condition: string; place: string }) =>
+      `${o.temperature} · ${o.condition} · ${o.place}`,
+    offLabel: "Панель погоды, нет данных",
+    offTooltip: "пока нет данных",
   },
   tv: {
     stations: {

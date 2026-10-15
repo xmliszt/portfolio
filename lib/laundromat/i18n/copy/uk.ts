@@ -67,6 +67,8 @@ export const uk = {
     qualityLiteHint: "легше для пам'яті та батареї",
     close: "закрити",
     closeHint: "esc — закрити",
+    temperature: "температура",
+    temperatureHint: "панель погоди починає з одиниць, звичних там, де ви.",
     roomSounds: "звуки пральні",
     roomSoundsHint:
       "звуки пральні та людей у ній. якщо вимкнути звук, він стихне лише для вас.",
@@ -93,6 +95,7 @@ export const uk = {
         label: "лампа",
         hint: "лампа мерехтить, вмикаючись, і клацає, вимикаючись",
       },
+      weather: { label: "погода", hint: "дощ і грім за вікном" },
     } satisfies { [group in RoomSoundGroup]: { label: string; hint: string } },
   },
   tabDone: "готово",
@@ -244,6 +247,10 @@ export const uk = {
       board: "стенд",
     },
     updates: {
+      "weather-panel": {
+        title: "погода всередині й надворі",
+        body: "Панель над вікном показує погоду там, де ви, з сьогоднішнім максимумом і мінімумом. Вікна теж її показують, дощ, сніг, туман чи грозу, з відповідним звуком. Місто визначається приблизно за вашим підключенням.",
+      },
       "room-sound-dials": {
         title: "обирайте, що чути",
         body: "У налаштуваннях тепер є ручка для кожного звуку пральні, від машин до дзвоника. Вимкніть те, чого не хочете чути. Для інших усе лишиться як було.",
@@ -327,6 +334,26 @@ export const uk = {
         : `тут ${o.count} ${pluralize({ count: o.count, one: "людина", few: "людини", many: "людей" })}`,
     offLabel: "Ламповий лічильник, вимкнено",
     offTooltip: "вимкнено",
+  },
+  weatherPanel: {
+    conditions: {
+      sunny: "сонячно",
+      clear: "ясно",
+      cloudy: "хмарно",
+      fog: "туман",
+      rain: "дощ",
+      snow: "сніг",
+      thunder: "гроза",
+    },
+    outside: "надворі",
+    high: "макс",
+    low: "мін",
+    label: (o: { temperature: string; condition: string; place: string }) =>
+      `Панель погоди, ${o.temperature} ${o.condition}, ${o.place}`,
+    tooltip: (o: { temperature: string; condition: string; place: string }) =>
+      `${o.temperature} · ${o.condition} · ${o.place}`,
+    offLabel: "Панель погоди, немає даних",
+    offTooltip: "поки немає даних",
   },
   tv: {
     stations: {
