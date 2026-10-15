@@ -34,7 +34,10 @@ export const zhHant = {
       "瀏覽器裡一間安靜的自助洗衣店。丟一籃衣服進去，讓計時器跑著，讀讀別人留下的話。",
     language: "語言",
     settings: "設定",
-    builtBy: "李雨軒製作",
+    builtBy: {
+      beforeClaude: "李雨軒和",
+      afterClaude: "製作",
+    },
     updateAvailable: "重新整理，進入更新後的自助洗衣店",
   },
   settings: {

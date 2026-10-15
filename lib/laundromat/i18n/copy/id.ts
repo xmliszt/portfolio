@@ -39,7 +39,10 @@ export const id = {
       "Laundry yang tenang di browser kamu. Masukkan cucian, biarkan timer berjalan, dan baca catatan yang ditinggalkan orang-orang.",
     language: "Bahasa",
     settings: "pengaturan",
-    builtBy: "dibuat dengan ❤️ oleh Li Yuxuan",
+    builtBy: {
+      beforeClaude: "dibuat dengan ❤️ oleh Li Yuxuan & ",
+      afterClaude: "",
+    },
     updateAvailable: "muat ulang untuk laundry terbaru",
   },
   settings: {

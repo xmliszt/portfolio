@@ -34,7 +34,10 @@ export const it = {
       "Una lavanderia tranquilla nel tuo browser. Carica un bucato, lascia andare il timer e leggi i biglietti che hanno lasciato gli altri.",
     language: "Lingua",
     settings: "impostazioni",
-    builtBy: "fatto con ❤️ da Li Yuxuan",
+    builtBy: {
+      beforeClaude: "fatto con ❤️ da Li Yuxuan e ",
+      afterClaude: "",
+    },
     updateAvailable: "ricarica per la lavanderia aggiornata",
   },
   settings: {

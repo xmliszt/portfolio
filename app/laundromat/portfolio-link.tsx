@@ -4,6 +4,7 @@ import { PORTFOLIO_HOSTNAMES } from "@/lib/laundromat/hosts";
 import { cn } from "@/lib/utils";
 
 import { useLaundromatCopy } from "./i18n/use-laundromat-copy";
+import { ClaudeAvatar } from "./claude-avatar";
 import { TOOLBAR_BUTTON_CLASS } from "./toolbar-button-class";
 import { ToolbarLabel } from "./toolbar-label";
 
@@ -27,7 +28,11 @@ export function PortfolioLink() {
       >
         <path d="M6 10C3.5 8.4 1.5 6.7 1.5 4.5 1.5 3.1 2.6 2 3.9 2c.9 0 1.6.5 2.1 1.2C6.5 2.5 7.2 2 8.1 2c1.3 0 2.4 1.1 2.4 2.5 0 2.2-2 3.9-4.5 5.5Z" />
       </svg>
-      <ToolbarLabel>{copy.toolbar.builtBy}</ToolbarLabel>
+      <ToolbarLabel>
+        {copy.toolbar.builtBy.beforeClaude}
+        <ClaudeAvatar />
+        {copy.toolbar.builtBy.afterClaude}
+      </ToolbarLabel>
     </a>
   );
 }

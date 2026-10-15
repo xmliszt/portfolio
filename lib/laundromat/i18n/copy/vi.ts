@@ -39,7 +39,10 @@ export const vi = {
       "Một tiệm giặt yên tĩnh trong trình duyệt của bạn. Bỏ đồ vào máy, để đồng hồ chạy, và đọc những lời nhắn người khác để lại.",
     language: "Ngôn ngữ",
     settings: "cài đặt",
-    builtBy: "được làm với ❤️ bởi Li Yuxuan",
+    builtBy: {
+      beforeClaude: "được làm với ❤️ bởi Li Yuxuan & ",
+      afterClaude: "",
+    },
     updateAvailable: "tải lại để vào tiệm giặt đã cập nhật",
   },
   settings: {

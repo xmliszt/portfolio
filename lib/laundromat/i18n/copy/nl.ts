@@ -33,7 +33,10 @@ export const nl = {
       "Een rustige wasserette in je browser. Stop er een was in, laat de timer lopen en lees de berichtjes die mensen hebben achtergelaten.",
     language: "Taal",
     settings: "instellingen",
-    builtBy: "met ❤️ gemaakt door Li Yuxuan",
+    builtBy: {
+      beforeClaude: "met ❤️ gemaakt door Li Yuxuan & ",
+      afterClaude: "",
+    },
     updateAvailable: "vernieuw voor de bijgewerkte wasserette",
   },
   settings: {

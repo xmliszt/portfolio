@@ -43,7 +43,10 @@ export const en = {
       "A quiet laundromat in your browser. Put a load in, let the timer run, and read the notes people left behind.",
     language: "Language",
     settings: "settings",
-    builtBy: "built by Li Yuxuan with ❤️",
+    builtBy: {
+      beforeClaude: "built by Li Yuxuan & ",
+      afterClaude: " with ❤️",
+    },
     updateAvailable: "refresh for updated laundromat",
   },
   settings: {

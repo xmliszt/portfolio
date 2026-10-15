@@ -47,7 +47,10 @@ export const ru = {
       "Тихая прачечная в браузере. Загрузи бельё, запусти таймер и почитай записки, которые оставили другие.",
     language: "Язык",
     settings: "настройки",
-    builtBy: "сделано с ❤️ — Li Yuxuan",
+    builtBy: {
+      beforeClaude: "сделано с ❤️ — Li Yuxuan и ",
+      afterClaude: "",
+    },
     updateAvailable: "обнови — прачечная обновилась",
   },
   settings: {
