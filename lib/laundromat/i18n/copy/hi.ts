@@ -39,7 +39,10 @@ export const hi = {
       "तुम्हारे ब्राउज़र में एक शांत लॉन्ड्री। कपड़े डालो, टाइमर चलने दो, और लोगों के छोड़े हुए नोट पढ़ो।",
     language: "भाषा",
     settings: "सेटिंग्स",
-    builtBy: "Li Yuxuan ने ❤️ से बनाया",
+    builtBy: {
+      beforeClaude: "Li Yuxuan और ",
+      afterClaude: " ने ❤️ से बनाया",
+    },
     updateAvailable: "अपडेट हुई लॉन्ड्री के लिए रीफ़्रेश करें",
   },
   settings: {

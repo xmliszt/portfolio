@@ -34,7 +34,10 @@ export const ja = {
       "ブラウザの中の静かなコインランドリー。洗濯物を入れて、タイマーを回して、誰かが残したメモを読もう。",
     language: "言語",
     settings: "設定",
-    builtBy: "Li Yuxuan が ❤️ をこめて作りました",
+    builtBy: {
+      beforeClaude: "Li Yuxuan と ",
+      afterClaude: " が ❤️ をこめて作りました",
+    },
     updateAvailable: "再読み込みで更新されたコインランドリーへ",
   },
   settings: {

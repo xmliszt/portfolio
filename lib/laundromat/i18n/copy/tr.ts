@@ -33,7 +33,10 @@ export const tr = {
       "Tarayıcında sakin bir çamaşırhane. Makineye çamaşırını at, zamanlayıcı işlesin ve insanların bıraktığı notları oku.",
     language: "Dil",
     settings: "ayarlar",
-    builtBy: "Li Yuxuan tarafından ❤️ ile yapıldı",
+    builtBy: {
+      beforeClaude: "Li Yuxuan ve ",
+      afterClaude: " tarafından ❤️ ile yapıldı",
+    },
     updateAvailable: "güncel çamaşırhane için yenile",
   },
   settings: {

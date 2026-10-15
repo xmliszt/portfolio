@@ -19,7 +19,7 @@ export function ToolbarLabel(props: ToolbarLabelProps) {
         props.open && "grid-cols-[1fr] opacity-100"
       )}
     >
-      <span className="min-w-0 overflow-hidden whitespace-nowrap">
+      <span className="min-w-0 overflow-x-clip whitespace-nowrap">
         <span
           role={props.role}
           className="block -translate-y-px pl-2 select-text"

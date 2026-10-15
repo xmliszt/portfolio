@@ -34,7 +34,10 @@ export const zhHans = {
       "浏览器里一间安静的自助洗衣店。放一桶衣服进去，让计时器走着，读读别人留下的话。",
     language: "语言",
     settings: "设置",
-    builtBy: "李雨轩制作",
+    builtBy: {
+      beforeClaude: "李雨轩和",
+      afterClaude: "制作",
+    },
     updateAvailable: "刷新，进入更新后的自助洗衣店",
   },
   settings: {

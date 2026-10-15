@@ -47,7 +47,10 @@ export const pl = {
       "Spokojna pralnia w przeglądarce. Wrzuć pranie, niech timer leci, i poczytaj liściki, które zostawili inni.",
     language: "Język",
     settings: "ustawienia",
-    builtBy: "zrobione z ❤️ przez Li Yuxuan",
+    builtBy: {
+      beforeClaude: "zrobione z ❤️ przez Li Yuxuan & ",
+      afterClaude: "",
+    },
     updateAvailable: "odśwież — pralnia zaktualizowana",
   },
   settings: {

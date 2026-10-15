@@ -47,7 +47,10 @@ export const uk = {
       "Тиха пральня у браузері. Завантаж білизну, запусти таймер і почитай записки, які залишили інші.",
     language: "Мова",
     settings: "налаштування",
-    builtBy: "зроблено з ❤️ — Li Yuxuan",
+    builtBy: {
+      beforeClaude: "зроблено з ❤️ — Li Yuxuan і ",
+      afterClaude: "",
+    },
     updateAvailable: "онови — пральня оновилася",
   },
   settings: {
