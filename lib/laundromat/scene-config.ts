@@ -36,6 +36,7 @@ type FocusTargets = {
   shelf: { objectId: string };
   notebook: { objectId: string };
   board: { objectId: string };
+  weather: { objectId: string };
 };
 
 export type FocusTarget = keyof FocusTargets;
@@ -416,6 +417,7 @@ export const sceneConfig: SceneConfig = {
       shelf: { objectId: "shelf" },
       notebook: { objectId: "notebook" },
       board: { objectId: "board" },
+      weather: { objectId: "weather-panel" },
     },
     nearDurationMs: 500,
     farDurationMs: 800,

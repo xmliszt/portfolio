@@ -78,7 +78,8 @@ ${lampFlickerFrames}
 @keyframes lm-snow-sway { from { transform: translateX(-2.5px); } to { transform: translateX(2.5px); } }
 @keyframes lm-ripple { from { opacity: 0.6; transform: scale(0.15); } to { opacity: 0; transform: scale(1); } }
 @keyframes lm-splash { 0% { opacity: 0; } 8% { opacity: 0.55; } 30%, 100% { opacity: 0; } }
-@keyframes lm-cloud-drift { from { transform: translateX(-4px); } to { transform: translateX(4px); } }
+@keyframes lm-cloud-drift { from { transform: translateX(calc(-1 * var(--lm-cloud-drift))); } to { transform: translateX(var(--lm-cloud-drift)); } }
+@keyframes lm-cloud-puff { from { transform: scale(var(--lm-puff-from)); } to { transform: scale(1); } }
 @keyframes lm-lightning {
   0% { opacity: 0; }
   4% { opacity: 0.5; }

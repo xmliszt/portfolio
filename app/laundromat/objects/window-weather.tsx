@@ -36,27 +36,15 @@ const SNOW_LAYERS = [
   { seed: 41, count: 22, radius: 0.45, opacity: 0.4, pace: 1.4, delay: 0.4 },
   { seed: 53, count: 12, radius: 0.9, opacity: 0.7, pace: 0.8, delay: 0.8 },
 ].map((layer) => ({ ...layer, flakes: getWeatherParticles(layer) }));
-const CLOUDS = [
-  { across: 0.18, up: 0.86, scale: 1 },
-  { across: 0.62, up: 0.92, scale: 1.3 },
-  { across: 0.9, up: 0.78, scale: 0.8 },
-];
-const CLOUD_PUFFS = [
-  { x: -6, y: 0, rx: 7, ry: 3 },
-  { x: 2, y: -2, rx: 7, ry: 4 },
-  { x: 8, y: 0.5, rx: 6, ry: 2.6 },
-];
-
 type WindowWeatherProps = {
   weather: WindowWeatherLook;
   paneWidth: number;
   paneHeight: number;
-  showSky: boolean;
   animated: boolean;
   details: SceneConfig["details"]["window"];
 };
 
-/** Draw the weather on a window pane `paneWidth` by `paneHeight`: a tint over the glass, clouds across the sky when `showSky`, and, only when `animated`, falling rain or snow and a lightning flash at each strike. */
+/** Draw the weather on a window pane `paneWidth` by `paneHeight`: a tint over the glass and, only when `animated`, falling rain or snow and a lightning flash at each strike. */
 export function WindowWeather(props: WindowWeatherProps) {
   const id = useId();
   const { lightningStrikes } = useLocalWeather();
@@ -114,38 +102,6 @@ export function WindowWeather(props: WindowWeatherProps) {
             fill={`url(#${id}-veil)`}
           />
         </>
-      )}
-      {props.showSky && weather.clouds && (
-        <g
-          data-lm-motion
-          className="fill-[var(--lm-line)]"
-          opacity={0.55}
-          style={
-            animated
-              ? {
-                  animation:
-                    "lm-cloud-drift 14s ease-in-out infinite alternate",
-                }
-              : undefined
-          }
-        >
-          {CLOUDS.map((cloud) => (
-            <g
-              key={cloud.across}
-              transform={`translate(${cloud.across * paneWidth} ${(1 - cloud.up) * paneHeight}) scale(${cloud.scale})`}
-            >
-              {CLOUD_PUFFS.map((puff) => (
-                <ellipse
-                  key={puff.x}
-                  cx={puff.x}
-                  cy={puff.y}
-                  rx={puff.rx}
-                  ry={puff.ry}
-                />
-              ))}
-            </g>
-          ))}
-        </g>
       )}
       {animated &&
         particles === "rain" &&

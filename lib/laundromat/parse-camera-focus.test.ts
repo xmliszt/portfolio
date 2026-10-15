@@ -3,9 +3,11 @@ import { test } from "node:test";
 
 import { parseCameraFocus } from "./parse-camera-focus";
 
-test("reads the two focus targets", () => {
+test("reads the focus targets", () => {
   assert.equal(parseCameraFocus("shelf"), "shelf");
   assert.equal(parseCameraFocus("notebook"), "notebook");
+  assert.equal(parseCameraFocus("board"), "board");
+  assert.equal(parseCameraFocus("weather"), "weather");
 });
 
 test("falls back to the room for anything else", () => {
