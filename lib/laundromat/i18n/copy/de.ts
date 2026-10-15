@@ -275,7 +275,7 @@ export const de = {
     updates: {
       "weather-panel": {
         title: "das Wetter, drinnen und draußen",
-        body: "Eine Anzeige über dem Fenster zeigt das Wetter bei dir, mit dem heutigen Höchst- und Tiefstwert und der Luftqualität. Auch die Fenster zeigen es, Regen, Schnee, Nebel oder Gewitter, mit passendem Klang. Deine Stadt wird grob über deine Verbindung geschätzt.",
+        body: "Eine Anzeige über dem Fenster zeigt das Wetter bei dir, mit dem heutigen Höchst- und Tiefstwert und der Luftqualität. Auch die Fenster zeigen es, Regen, Schnee, Nebel oder Gewitter, mit passendem Klang. Deine Stadt wird grob über deine Verbindung geschätzt. Wird die Luft ungesund, springt in der Ecke ein Luftreiniger an.",
       },
       "room-sound-dials": {
         title: "wähle, was du hörst",
@@ -357,6 +357,12 @@ export const de = {
     tooltip: (o: { count: number }) =>
       o.count === 1 ? "nur du hier" : `${o.count} Leute hier`,
     offLabel: "Röhrenzähler, aus",
+    offTooltip: "aus",
+  },
+  airPurifier: {
+    label: (o: { aqi: number }) => `Luftreiniger, läuft, AQI ${o.aqi}`,
+    tooltip: "Luftreiniger · reinigt die Luft",
+    offLabel: "Luftreiniger, aus",
     offTooltip: "aus",
   },
   weatherPanel: {

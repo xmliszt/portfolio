@@ -277,7 +277,7 @@ export const fr = {
     updates: {
       "weather-panel": {
         title: "la météo, dedans et dehors",
-        body: "Un panneau au-dessus de la fenêtre affiche la météo là où tu es, avec les températures max et min du jour et la qualité de l'air. Les fenêtres la montrent aussi, pluie, neige, brouillard ou orage, avec le son qui va avec. Ta ville est devinée à peu près d'après ta connexion.",
+        body: "Un panneau au-dessus de la fenêtre affiche la météo là où tu es, avec les températures max et min du jour et la qualité de l'air. Les fenêtres la montrent aussi, pluie, neige, brouillard ou orage, avec le son qui va avec. Ta ville est devinée à peu près d'après ta connexion. Quand l'air devient mauvais, un purificateur se met en marche dans le coin.",
       },
       "room-sound-dials": {
         title: "choisis les sons que tu entends",
@@ -359,6 +359,13 @@ export const fr = {
     tooltip: (o: { count: number }) =>
       o.count === 1 ? "rien que toi ici" : `${o.count} personnes ici`,
     offLabel: "Compteur à tubes, éteint",
+    offTooltip: "éteint",
+  },
+  airPurifier: {
+    label: (o: { aqi: number }) =>
+      `Purificateur d'air, en marche, AQI ${o.aqi}`,
+    tooltip: "purificateur d'air · nettoie l'air",
+    offLabel: "Purificateur d'air, éteint",
     offTooltip: "éteint",
   },
   weatherPanel: {

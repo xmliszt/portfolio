@@ -237,7 +237,7 @@ export const tr = {
     updates: {
       "weather-panel": {
         title: "içeride ve dışarıda hava",
-        body: "Pencerenin üstündeki pano, bulunduğun yerin hava durumunu bugünün en yüksek ve en düşük sıcaklığı ve hava kalitesiyle gösterir. Pencereler de gösterir, yağmur, kar, sis ya da fırtına, sesiyle birlikte. Şehrin, bağlantından kabaca tahmin edilir.",
+        body: "Pencerenin üstündeki pano, bulunduğun yerin hava durumunu bugünün en yüksek ve en düşük sıcaklığı ve hava kalitesiyle gösterir. Pencereler de gösterir, yağmur, kar, sis ya da fırtına, sesiyle birlikte. Şehrin, bağlantından kabaca tahmin edilir. Hava sağlıksızlaşınca köşede bir hava temizleyici çalışmaya başlar.",
       },
       "room-sound-dials": {
         title: "duyacağın sesleri seç",
@@ -319,6 +319,12 @@ export const tr = {
     tooltip: (o: { count: number }) =>
       o.count === 1 ? "burada sadece sen varsın" : `burada ${o.count} kişi`,
     offLabel: "Tüplü sayaç, kapalı",
+    offTooltip: "kapalı",
+  },
+  airPurifier: {
+    label: (o: { aqi: number }) => `Hava temizleyici, çalışıyor, AQI ${o.aqi}`,
+    tooltip: "hava temizleyici · havayı temizliyor",
+    offLabel: "Hava temizleyici, kapalı",
     offTooltip: "kapalı",
   },
   weatherPanel: {

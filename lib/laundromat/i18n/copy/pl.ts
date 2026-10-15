@@ -250,7 +250,7 @@ export const pl = {
     updates: {
       "weather-panel": {
         title: "pogoda w środku i na zewnątrz",
-        body: "Panel nad oknem pokazuje pogodę tam, gdzie jesteś, z dzisiejszą najwyższą i najniższą temperaturą oraz jakością powietrza. Okna też ją pokazują, deszcz, śnieg, mgłę albo burzę, z pasującym dźwiękiem. Twoje miasto to przybliżone zgadywanie na podstawie połączenia.",
+        body: "Panel nad oknem pokazuje pogodę tam, gdzie jesteś, z dzisiejszą najwyższą i najniższą temperaturą oraz jakością powietrza. Okna też ją pokazują, deszcz, śnieg, mgłę albo burzę, z pasującym dźwiękiem. Twoje miasto to przybliżone zgadywanie na podstawie połączenia. Gdy powietrze robi się szkodliwe, w kącie włącza się oczyszczacz.",
       },
       "room-sound-dials": {
         title: "wybierz, co słyszysz",
@@ -334,6 +334,13 @@ export const pl = {
         ? "tylko ty tutaj"
         : `${o.count} ${pluralize({ count: o.count, one: "osoba", few: "osoby", many: "osób" })} tutaj`,
     offLabel: "Licznik lampowy, wyłączony",
+    offTooltip: "wyłączony",
+  },
+  airPurifier: {
+    label: (o: { aqi: number }) =>
+      `Oczyszczacz powietrza, włączony, AQI ${o.aqi}`,
+    tooltip: "oczyszczacz powietrza · oczyszcza powietrze",
+    offLabel: "Oczyszczacz powietrza, wyłączony",
     offTooltip: "wyłączony",
   },
   weatherPanel: {

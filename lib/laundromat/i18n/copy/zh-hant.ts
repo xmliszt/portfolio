@@ -245,7 +245,7 @@ export const zhHant = {
     updates: {
       "weather-panel": {
         title: "屋裡屋外的天氣",
-        body: "窗戶上方的面板會顯示你所在地的天氣，以及今天的最高和最低氣溫和空氣品質。窗外也會下雨、下雪、起霧或打雷，還有相應的聲音。城市是根據你的網路連線大致推測的。",
+        body: "窗戶上方的面板會顯示你所在地的天氣，以及今天的最高和最低氣溫和空氣品質。窗外也會下雨、下雪、起霧或打雷，還有相應的聲音。城市是根據你的網路連線大致推測的。空氣變差時，角落的空氣清淨機會自動開啟。",
       },
       "room-sound-dials": {
         title: "選擇你想聽的聲音",
@@ -327,6 +327,12 @@ export const zhHant = {
     tooltip: (o: { count: number }) =>
       o.count === 1 ? "只有你在這裡" : `這裡有 ${o.count} 個人`,
     offLabel: "輝光管計數器，關閉",
+    offTooltip: "關閉",
+  },
+  airPurifier: {
+    label: (o: { aqi: number }) => `空氣清淨機，運轉中，AQI ${o.aqi}`,
+    tooltip: "空氣清淨機 · 正在淨化空氣",
+    offLabel: "空氣清淨機，關閉",
     offTooltip: "關閉",
   },
   weatherPanel: {

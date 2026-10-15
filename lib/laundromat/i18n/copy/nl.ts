@@ -242,7 +242,7 @@ export const nl = {
     updates: {
       "weather-panel": {
         title: "het weer, binnen en buiten",
-        body: "Een paneel boven het raam toont het weer waar je bent, met de hoogste en laagste temperatuur van vandaag en de luchtkwaliteit. De ramen laten het ook zien, regen, sneeuw, mist of onweer, met het geluid erbij. Je stad is een ruwe schatting op basis van je verbinding.",
+        body: "Een paneel boven het raam toont het weer waar je bent, met de hoogste en laagste temperatuur van vandaag en de luchtkwaliteit. De ramen laten het ook zien, regen, sneeuw, mist of onweer, met het geluid erbij. Je stad is een ruwe schatting op basis van je verbinding. Als de lucht ongezond wordt, slaat in de hoek een luchtreiniger aan.",
       },
       "room-sound-dials": {
         title: "kies welke geluiden je hoort",
@@ -324,6 +324,12 @@ export const nl = {
     tooltip: (o: { count: number }) =>
       o.count === 1 ? "alleen jij hier" : `${o.count} mensen hier`,
     offLabel: "Buizenteller, uit",
+    offTooltip: "uit",
+  },
+  airPurifier: {
+    label: (o: { aqi: number }) => `Luchtreiniger, aan, AQI ${o.aqi}`,
+    tooltip: "luchtreiniger · reinigt de lucht",
+    offLabel: "Luchtreiniger, uit",
     offTooltip: "uit",
   },
   weatherPanel: {

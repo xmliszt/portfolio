@@ -3,7 +3,9 @@ import type { TimeOfDay } from "@/lib/laundromat/get-time-of-day";
 import { getShelfBookPlacements } from "@/lib/laundromat/notebook/get-shelf-book-placements";
 import type { IsoProjection } from "@/lib/laundromat/project-iso-point";
 import type { SceneConfig } from "@/lib/laundromat/scene-config";
+import { isAirPurifierRunning } from "@/lib/laundromat/weather/is-air-purifier-running";
 
+import { AirPurifierDrawing } from "./air-purifier-drawing";
 import { BasketDrawing } from "./basket-drawing";
 import { BoardDrawing } from "./board-drawing";
 import { ClockDrawing } from "./clock-drawing";
@@ -160,6 +162,20 @@ export function SceneObjectDrawing(props: SceneObjectDrawingProps) {
           details={details.weatherPanel}
         />
       );
+    case "air-purifier": {
+      const aqi = views.weather?.aqi;
+      const isRunning = isAirPurifierRunning({
+        aqi,
+        minAqi: details.airPurifier.minAqi,
+      });
+      return aqi === undefined || !isRunning ? null : (
+        <AirPurifierDrawing
+          {...shared}
+          aqi={aqi}
+          details={details.airPurifier}
+        />
+      );
+    }
     default: {
       const unhandled: never = object;
       return unhandled;

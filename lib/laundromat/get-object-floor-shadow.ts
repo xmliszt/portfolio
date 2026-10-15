@@ -52,6 +52,7 @@ function getBlocker(object: SceneObject) {
     case "shelf":
     case "plant":
     case "basket":
+    case "air-purifier":
       return { position, size };
     case "board":
       return {

@@ -270,7 +270,7 @@ export const en = {
     updates: {
       "weather-panel": {
         title: "the weather, inside and out",
-        body: "A panel above the window shows the weather where you are, with today's high and low and the air quality. The windows show it too, rain, snow, fog or a storm, with the sound to match. Your city is a rough guess from your connection.",
+        body: "A panel above the window shows the weather where you are, with today's high and low and the air quality. The windows show it too, rain, snow, fog or a storm, with the sound to match. Your city is a rough guess from your connection. When the air turns unhealthy, an air purifier starts up in the corner.",
       },
       "room-sound-dials": {
         title: "choose the sounds you hear",
@@ -352,6 +352,12 @@ export const en = {
     tooltip: (o: { count: number }) =>
       o.count === 1 ? "just you here" : `${o.count} people here`,
     offLabel: "Tube counter, off",
+    offTooltip: "off",
+  },
+  airPurifier: {
+    label: (o: { aqi: number }) => `Air purifier, running, AQI ${o.aqi}`,
+    tooltip: "air purifier · cleaning the air",
+    offLabel: "Air purifier, off",
     offTooltip: "off",
   },
   weatherPanel: {

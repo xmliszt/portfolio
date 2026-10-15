@@ -272,7 +272,7 @@ export const ptBR = {
     updates: {
       "weather-panel": {
         title: "o tempo, dentro e fora",
-        body: "Um painel acima da janela mostra o tempo onde você está, com a máxima e a mínima de hoje e a qualidade do ar. As janelas também mostram, chuva, neve, neblina ou tempestade, com o som certo. Sua cidade é um palpite aproximado a partir da sua conexão.",
+        body: "Um painel acima da janela mostra o tempo onde você está, com a máxima e a mínima de hoje e a qualidade do ar. As janelas também mostram, chuva, neve, neblina ou tempestade, com o som certo. Sua cidade é um palpite aproximado a partir da sua conexão. Quando o ar fica ruim, um purificador liga no canto.",
       },
       "room-sound-dials": {
         title: "escolha os sons que você ouve",
@@ -354,6 +354,12 @@ export const ptBR = {
     tooltip: (o: { count: number }) =>
       o.count === 1 ? "só você aqui" : `${o.count} pessoas aqui`,
     offLabel: "Contador de válvulas, desligado",
+    offTooltip: "desligado",
+  },
+  airPurifier: {
+    label: (o: { aqi: number }) => `Purificador de ar, ligado, AQI ${o.aqi}`,
+    tooltip: "purificador de ar · limpando o ar",
+    offLabel: "Purificador de ar, desligado",
     offTooltip: "desligado",
   },
   weatherPanel: {

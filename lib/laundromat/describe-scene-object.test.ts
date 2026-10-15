@@ -7,11 +7,12 @@ import { describeSceneObject } from "./describe-scene-object";
 import { isInteractiveSceneObject } from "./is-interactive-scene-object";
 import { sceneConfig } from "./scene-config";
 
-test("gives every machine, every focus target, the mat, the mug, the plant, the basket, the tube display and the weather panel a label and tooltip", () => {
+test("gives every machine, every focus target, the mat, the mug, the plant, the basket, the tube display, the weather panel and the air purifier a label and tooltip", () => {
   const interactiveIds = sceneConfig.objects
     .filter((object) => describeSceneObject({ object, copy: en }) !== undefined)
     .map((object) => object.id);
   assert.deepEqual(interactiveIds.toSorted(), [
+    "air-purifier",
     "basket",
     "board",
     "coffee-machine",
@@ -122,7 +123,8 @@ test("adds the air quality band when the reading has an AQI", () => {
       },
     }),
     {
-      label: "Weather panel, 27° and fog, Singapore, air quality unhealthy, AQI 169",
+      label:
+        "Weather panel, 27° and fog, Singapore, air quality unhealthy, AQI 169",
       tooltip: "27° · fog · Singapore · air unhealthy",
     }
   );

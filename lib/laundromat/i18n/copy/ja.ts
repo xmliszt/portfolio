@@ -262,7 +262,7 @@ export const ja = {
     updates: {
       "weather-panel": {
         title: "店の中にも外にも天気",
-        body: "窓の上のパネルに、あなたのいる場所の天気と今日の最高・最低気温、空気の質が出ます。窓の外にも雨、雪、霧、嵐が、音といっしょに見えます。街は接続からおおまかに推測しています。",
+        body: "窓の上のパネルに、あなたのいる場所の天気と今日の最高・最低気温、空気の質が出ます。窓の外にも雨、雪、霧、嵐が、音といっしょに見えます。街は接続からおおまかに推測しています。空気が悪くなると、隅の空気清浄機が動き出します。",
       },
       "room-sound-dials": {
         title: "聞こえる音を選べるように",
@@ -344,6 +344,12 @@ export const ja = {
     tooltip: (o: { count: number }) =>
       o.count === 1 ? "いるのはあなただけ" : `いま${o.count}人`,
     offLabel: "ニキシー管カウンター、オフ",
+    offTooltip: "オフ",
+  },
+  airPurifier: {
+    label: (o: { aqi: number }) => `空気清浄機、運転中、AQI ${o.aqi}`,
+    tooltip: "空気清浄機 · 空気をきれいに",
+    offLabel: "空気清浄機、オフ",
     offTooltip: "オフ",
   },
   weatherPanel: {

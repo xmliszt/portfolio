@@ -245,7 +245,7 @@ export const zhHans = {
     updates: {
       "weather-panel": {
         title: "屋里屋外的天气",
-        body: "窗户上方的面板会显示你所在地的天气，以及今天的最高和最低气温和空气质量。窗外也会下雨、下雪、起雾或打雷，还有相应的声音。城市是根据你的网络连接大致推测的。",
+        body: "窗户上方的面板会显示你所在地的天气，以及今天的最高和最低气温和空气质量。窗外也会下雨、下雪、起雾或打雷，还有相应的声音。城市是根据你的网络连接大致推测的。空气变差时，角落里的空气净化器会自动开启。",
       },
       "room-sound-dials": {
         title: "选择你想听的声音",
@@ -327,6 +327,12 @@ export const zhHans = {
     tooltip: (o: { count: number }) =>
       o.count === 1 ? "只有你在这里" : `这里有 ${o.count} 个人`,
     offLabel: "辉光管计数器，关闭",
+    offTooltip: "关闭",
+  },
+  airPurifier: {
+    label: (o: { aqi: number }) => `空气净化器，运行中，AQI ${o.aqi}`,
+    tooltip: "空气净化器 · 正在净化空气",
+    offLabel: "空气净化器，关闭",
     offTooltip: "关闭",
   },
   weatherPanel: {

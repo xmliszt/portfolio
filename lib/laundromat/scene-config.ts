@@ -25,7 +25,8 @@ export type FurnitureKind =
   | "mug"
   | "mat"
   | "board"
-  | "weather-panel";
+  | "weather-panel"
+  | "air-purifier";
 
 export type SceneObject =
   | (Placement & { kind: MachineKind; number: number })
@@ -178,6 +179,7 @@ export type SceneConfig = {
       rollMs: number;
     };
     weatherPanel: { glyphMotionSeconds: number };
+    airPurifier: { minAqi: number; fanSeconds: number; airflowOpacity: number };
     notebook: {
       coverNumber: number;
       liftMs: number;
@@ -347,6 +349,12 @@ export const sceneConfig: SceneConfig = {
       kind: "weather-panel",
       position: { x: 0, y: 6.2, z: 6 },
       size: { w: 0.14, d: 2.8, h: 1.6 },
+    },
+    {
+      id: "air-purifier",
+      kind: "air-purifier",
+      position: { x: 0.15, y: 9.2, z: 0 },
+      size: { w: 0.7, d: 0.7, h: 1.9 },
     },
     {
       id: "table",
@@ -576,6 +584,7 @@ export const sceneConfig: SceneConfig = {
       rollMs: 900,
     },
     weatherPanel: { glyphMotionSeconds: 1.6 },
+    airPurifier: { minAqi: 101, fanSeconds: 1.2, airflowOpacity: 0.22 },
     notebook: {
       coverNumber: 1,
       liftMs: 650,

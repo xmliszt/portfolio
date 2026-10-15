@@ -265,7 +265,7 @@ export const vi = {
     updates: {
       "weather-panel": {
         title: "thời tiết, trong và ngoài",
-        body: "Một bảng phía trên cửa sổ cho biết thời tiết nơi bạn ở, kèm nhiệt độ cao nhất, thấp nhất hôm nay và chất lượng không khí. Cửa sổ cũng cho thấy điều đó, mưa, tuyết, sương mù hay giông bão, kèm âm thanh. Thành phố của bạn được đoán đại khái từ kết nối.",
+        body: "Một bảng phía trên cửa sổ cho biết thời tiết nơi bạn ở, kèm nhiệt độ cao nhất, thấp nhất hôm nay và chất lượng không khí. Cửa sổ cũng cho thấy điều đó, mưa, tuyết, sương mù hay giông bão, kèm âm thanh. Thành phố của bạn được đoán đại khái từ kết nối. Khi không khí trở nên kém, máy lọc không khí ở góc sẽ bật lên.",
       },
       "room-sound-dials": {
         title: "chọn âm thanh bạn nghe",
@@ -347,6 +347,12 @@ export const vi = {
     tooltip: (o: { count: number }) =>
       o.count === 1 ? "chỉ có bạn ở đây" : `${o.count} người ở đây`,
     offLabel: "Bộ đếm đèn ống, tắt",
+    offTooltip: "tắt",
+  },
+  airPurifier: {
+    label: (o: { aqi: number }) => `Máy lọc không khí, đang chạy, AQI ${o.aqi}`,
+    tooltip: "máy lọc không khí · đang lọc",
+    offLabel: "Máy lọc không khí, tắt",
     offTooltip: "tắt",
   },
   weatherPanel: {

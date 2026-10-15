@@ -276,7 +276,7 @@ export const id = {
     updates: {
       "weather-panel": {
         title: "cuaca, di dalam dan di luar",
-        body: "Panel di atas jendela menampilkan cuaca di tempatmu, dengan suhu tertinggi dan terendah hari ini serta kualitas udara. Jendela juga menampilkannya, hujan, salju, kabut, atau badai, lengkap dengan suaranya. Kotamu ditebak secara kasar dari koneksimu.",
+        body: "Panel di atas jendela menampilkan cuaca di tempatmu, dengan suhu tertinggi dan terendah hari ini serta kualitas udara. Jendela juga menampilkannya, hujan, salju, kabut, atau badai, lengkap dengan suaranya. Kotamu ditebak secara kasar dari koneksimu. Saat udara jadi tidak sehat, pembersih udara di pojok menyala.",
       },
       "room-sound-dials": {
         title: "pilih suara yang kamu dengar",
@@ -358,6 +358,12 @@ export const id = {
     tooltip: (o: { count: number }) =>
       o.count === 1 ? "cuma kamu di sini" : `${o.count} orang di sini`,
     offLabel: "Penghitung tabung, mati",
+    offTooltip: "mati",
+  },
+  airPurifier: {
+    label: (o: { aqi: number }) => `Pembersih udara, menyala, AQI ${o.aqi}`,
+    tooltip: "pembersih udara · membersihkan udara",
+    offLabel: "Pembersih udara, mati",
     offTooltip: "mati",
   },
   weatherPanel: {

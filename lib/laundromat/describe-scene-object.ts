@@ -101,6 +101,18 @@ export function describeSceneObject(options: {
         tooltip: `${copy.weatherPanel.tooltip(reading)} · ${copy.weatherPanel.airTooltip(air)}`,
       };
     }
+    case "air-purifier": {
+      const aqi = options.weather?.aqi;
+      return aqi === undefined
+        ? {
+            label: copy.airPurifier.offLabel,
+            tooltip: copy.airPurifier.offTooltip,
+          }
+        : {
+            label: copy.airPurifier.label({ aqi }),
+            tooltip: copy.airPurifier.tooltip,
+          };
+    }
     case "counter":
     case "window":
     case "clock":

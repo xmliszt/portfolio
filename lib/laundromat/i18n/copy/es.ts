@@ -273,7 +273,7 @@ export const es = {
     updates: {
       "weather-panel": {
         title: "el tiempo, dentro y fuera",
-        body: "Un panel sobre la ventana muestra el tiempo donde estás, con la máxima y la mínima de hoy y la calidad del aire. Las ventanas también lo muestran, lluvia, nieve, niebla o tormenta, con su sonido. Tu ciudad se calcula a grandes rasgos a partir de tu conexión.",
+        body: "Un panel sobre la ventana muestra el tiempo donde estás, con la máxima y la mínima de hoy y la calidad del aire. Las ventanas también lo muestran, lluvia, nieve, niebla o tormenta, con su sonido. Tu ciudad se calcula a grandes rasgos a partir de tu conexión. Cuando el aire se vuelve dañino, un purificador se enciende en la esquina.",
       },
       "room-sound-dials": {
         title: "elige qué sonidos oyes",
@@ -355,6 +355,13 @@ export const es = {
     tooltip: (o: { count: number }) =>
       o.count === 1 ? "solo tú aquí" : `${o.count} personas aquí`,
     offLabel: "Contador de tubos, apagado",
+    offTooltip: "apagado",
+  },
+  airPurifier: {
+    label: (o: { aqi: number }) =>
+      `Purificador de aire, encendido, AQI ${o.aqi}`,
+    tooltip: "purificador de aire · limpiando el aire",
+    offLabel: "Purificador de aire, apagado",
     offTooltip: "apagado",
   },
   weatherPanel: {

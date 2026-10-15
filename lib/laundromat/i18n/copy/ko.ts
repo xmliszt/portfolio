@@ -259,7 +259,7 @@ export const ko = {
     updates: {
       "weather-panel": {
         title: "안과 밖의 날씨",
-        body: "창문 위 패널이 지금 계신 곳의 날씨와 오늘의 최고·최저 기온, 대기질을 보여 줘요. 창밖에도 비, 눈, 안개, 폭풍이 소리와 함께 보여요. 도시는 연결 정보로 대략 짐작한 거예요.",
+        body: "창문 위 패널이 지금 계신 곳의 날씨와 오늘의 최고·최저 기온, 대기질을 보여 줘요. 창밖에도 비, 눈, 안개, 폭풍이 소리와 함께 보여요. 도시는 연결 정보로 대략 짐작한 거예요. 공기가 나빠지면 구석의 공기청정기가 켜져요.",
       },
       "room-sound-dials": {
         title: "들을 소리를 골라요",
@@ -341,6 +341,12 @@ export const ko = {
     tooltip: (o: { count: number }) =>
       o.count === 1 ? "혼자 있어요" : `지금 ${o.count}명`,
     offLabel: "닉시관 카운터, 꺼짐",
+    offTooltip: "꺼짐",
+  },
+  airPurifier: {
+    label: (o: { aqi: number }) => `공기청정기, 작동 중, AQI ${o.aqi}`,
+    tooltip: "공기청정기 · 공기를 깨끗하게",
+    offLabel: "공기청정기, 꺼짐",
     offTooltip: "꺼짐",
   },
   weatherPanel: {

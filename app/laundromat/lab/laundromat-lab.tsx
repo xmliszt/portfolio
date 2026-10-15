@@ -131,7 +131,7 @@ const weatherDials = {
   },
   night: false,
   temperatureC: [18, -20, 40, 1],
-  aqi: [42, 0, 400, 1],
+  aqi: [128, 0, 400, 1],
   city: { type: "text", default: "Lisbon" },
 } satisfies DialConfig;
 
@@ -227,6 +227,12 @@ const objectDials = {
     digitGlow: [details.tubeDisplay.digitGlow, 0, 1, 0.01],
     ghostOpacity: [details.tubeDisplay.ghostOpacity, 0, 0.5, 0.01],
     rollMs: [details.tubeDisplay.rollMs, 0, 3000, 50],
+    _collapsed: true,
+  },
+  airPurifier: {
+    minAqi: [details.airPurifier.minAqi, 0, 300, 1],
+    fanSeconds: [details.airPurifier.fanSeconds, 0.2, 5, 0.1],
+    airflowOpacity: [details.airPurifier.airflowOpacity, 0, 1, 0.01],
     _collapsed: true,
   },
   weatherPanel: {
@@ -534,6 +540,7 @@ export default function LaundromatLab() {
         board: objectValues.board,
         tubeDisplay: objectValues.tubeDisplay,
         weatherPanel: objectValues.weatherPanel,
+        airPurifier: objectValues.airPurifier,
         notebook: {
           ...objectValues.notebook,
           turnEase: details.notebook.turnEase,

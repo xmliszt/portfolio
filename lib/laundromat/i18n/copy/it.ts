@@ -279,7 +279,7 @@ export const it = {
     updates: {
       "weather-panel": {
         title: "il meteo, dentro e fuori",
-        body: "Un pannello sopra la finestra mostra il meteo dove sei, con la massima e la minima di oggi e la qualità dell'aria. Anche le finestre lo mostrano, pioggia, neve, nebbia o temporale, con il suono giusto. La tua città è una stima approssimativa dalla tua connessione.",
+        body: "Un pannello sopra la finestra mostra il meteo dove sei, con la massima e la minima di oggi e la qualità dell'aria. Anche le finestre lo mostrano, pioggia, neve, nebbia o temporale, con il suono giusto. La tua città è una stima approssimativa dalla tua connessione. Quando l'aria diventa dannosa, un purificatore si accende nell'angolo.",
       },
       "room-sound-dials": {
         title: "scegli quali suoni sentire",
@@ -361,6 +361,12 @@ export const it = {
     tooltip: (o: { count: number }) =>
       o.count === 1 ? "solo tu qui" : `${o.count} persone qui`,
     offLabel: "Contatore a valvole, spento",
+    offTooltip: "spento",
+  },
+  airPurifier: {
+    label: (o: { aqi: number }) => `Purificatore d'aria, acceso, AQI ${o.aqi}`,
+    tooltip: "purificatore d'aria · pulisce l'aria",
+    offLabel: "Purificatore d'aria, spento",
     offTooltip: "spento",
   },
   weatherPanel: {
