@@ -8,6 +8,8 @@ const CHIN = 0.2;
 const GLYPH_COLUMN = 0.34;
 const RANGE_ROW = 0.24;
 
+export type WeatherPanelRects = ReturnType<typeof getWeatherPanelFace>["rects"];
+
 /** Return the `transform` from the front of a left-wall weather panel (its x-max face) to scene pixels, and the face-pixel `rects` of its bezel, screen and screen regions. */
 export function getWeatherPanelFace(options: {
   position: IsoPoint;
@@ -28,11 +30,12 @@ export function getWeatherPanelFace(options: {
   const width = size.d * unit;
   const height = size.h * unit;
   const bezel = BEZEL * unit;
+  const chinTop = height - CHIN * unit;
   const screen = {
     x: bezel,
     y: bezel,
     width: width - 2 * bezel,
-    height: height - bezel - CHIN * unit,
+    height: chinTop - 1.5 * bezel,
   };
   const pad = bezel * 0.8;
   const rangeHeight = RANGE_ROW * screen.height;
@@ -41,7 +44,7 @@ export function getWeatherPanelFace(options: {
     x: screen.x + pad,
     y: screen.y + pad,
     width: screen.width - glyphWidth - 2 * pad,
-    height: screen.height - rangeHeight - pad,
+    height: screen.height - rangeHeight - 2 * pad,
   };
   const rects = {
     body: { x: 0, y: 0, width, height },
@@ -61,9 +64,9 @@ export function getWeatherPanelFace(options: {
     },
     chin: {
       x: 0,
-      y: screen.y + screen.height,
+      y: chinTop,
       width,
-      height: height - screen.y - screen.height,
+      height: height - chinTop,
     },
   } satisfies { [part: string]: FaceRect };
   return { transform: plane.transform, rects };

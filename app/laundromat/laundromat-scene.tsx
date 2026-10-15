@@ -68,6 +68,7 @@ import { describeTv } from "@/lib/laundromat/tv/describe-tv";
 import type { TvControl } from "@/lib/laundromat/tv/describe-tv-control";
 import { describeTvControl } from "@/lib/laundromat/tv/describe-tv-control";
 import { getYouTubeWatchUrl } from "@/lib/laundromat/tv/get-youtube-watch-url";
+import { getWeatherPanelFace } from "@/lib/laundromat/weather/get-weather-panel-face";
 import { isAirPurifierRunning } from "@/lib/laundromat/weather/is-air-purifier-running";
 import { cn } from "@/lib/utils";
 
@@ -95,15 +96,24 @@ import { useRoomAppliances } from "./use-room-appliances";
 import { useSceneHour } from "./use-scene-hour";
 import { useTickingNow } from "./use-ticking-now";
 import { useTvAudio } from "./use-tv-audio";
+import {
+  WEATHER_DIALOG_SIZE_PX,
+  WeatherPanelDialog,
+} from "./weather-panel-dialog";
 
 const SCENE_UNIT_PX = 40;
 const TOOLTIP_DELAY_MS = 300;
 const TOUCH_TOOLTIP_HOLD_MS = 1500;
-const FOCUS_TARGETS = ["shelf", "notebook", "board"] satisfies FocusTarget[];
+const FOCUS_TARGETS = [
+  "shelf",
+  "notebook",
+  "board",
+  "weather",
+] satisfies FocusTarget[];
 const KNOB_CONTROLS: LaidOutControl["control"][] = ["dial", "tuner", "volume"];
 const DOOR_HOLD_OPEN_MS = 700;
-const BOARD_DIALOG_FILL = 0.9;
-const BOARD_DIALOG_MAX_SCALE = 1.15;
+const DIALOG_FILL = 0.9;
+const DIALOG_MAX_SCALE = 1.15;
 
 function getFocusedObjectId(options: {
   focus: CameraFocus;
@@ -175,8 +185,9 @@ export function LaundromatScene(props: LaundromatSceneProps) {
   }, [isHidden]);
   const { quality } = useRenderQuality();
   const isLite = quality === "lite";
-  const cameraFocus =
-    isLite && (focus === "notebook" || focus === "board") ? "room" : focus;
+  const isDialogFocus =
+    focus === "notebook" || focus === "board" || focus === "weather";
+  const cameraFocus = isLite && isDialogFocus ? "room" : focus;
   const sceneHour = useSceneHour();
   const hour = props.hourOverride ?? sceneHour;
 
@@ -805,7 +816,7 @@ export function LaundromatScene(props: LaundromatSceneProps) {
     setHighlightedId(undefined);
     const objectId =
       focusedObjectId ?? getFocusedObjectId({ focus: previousFocus, config });
-    if (focus !== "board" && objectId !== undefined) {
+    if (focus !== "board" && focus !== "weather" && objectId !== undefined) {
       rootRef.current
         ?.querySelector<HTMLButtonElement>(`[data-hit-target="${objectId}"]`)
         ?.focus({ preventScroll: true });
@@ -1062,14 +1073,14 @@ export function LaundromatScene(props: LaundromatSceneProps) {
     const isOnHitTarget =
       event.target instanceof Element &&
       event.target.closest(
-        "[data-hit-target], [data-notebook], [data-board-dialog]"
+        "[data-hit-target], [data-notebook], [data-board-dialog], [data-weather-dialog]"
       ) !== null;
     if (!isOnHitTarget) setFocus("room");
   }
 
   const tooltip = (() => {
     if (tooltipId === undefined || viewport === undefined) return undefined;
-    if (focus === "notebook" || focus === "board") return undefined;
+    if (isDialogFocus) return undefined;
     const target = layout.objects
       .flatMap((laidOut) => [
         {
@@ -1145,9 +1156,9 @@ export function LaundromatScene(props: LaundromatSceneProps) {
     if (viewport === undefined) return undefined;
     const { width: dialogWidth, height: dialogHeight } = BOARD_DIALOG_SIZE_PX;
     const scale = Math.min(
-      BOARD_DIALOG_MAX_SCALE,
-      (viewport.width * BOARD_DIALOG_FILL) / dialogWidth,
-      (viewport.height * BOARD_DIALOG_FILL) / dialogHeight
+      DIALOG_MAX_SCALE,
+      (viewport.width * DIALOG_FILL) / dialogWidth,
+      (viewport.height * DIALOG_FILL) / dialogHeight
     );
     const to = { x: 0, y: 0, scale, opacity: 1 };
     const boardObject = layout.objects.find(
@@ -1175,6 +1186,56 @@ export function LaundromatScene(props: LaundromatSceneProps) {
         y: centerY - viewport.height / 2,
         scale:
           ((Math.max(...xs) - Math.min(...xs)) * camera.scale) / dialogWidth,
+        opacity: 0,
+      },
+      to,
+    };
+  })();
+
+  const weatherLift = (() => {
+    if (viewport === undefined) return undefined;
+    const panel = layout.objects.find(
+      ({ object }) => object.id === config.camera.focusTargets.weather.objectId
+    );
+    const label = describeObject(
+      config.camera.focusTargets.weather.objectId
+    )?.label;
+    if (panel === undefined || label === undefined) return undefined;
+    const { width: dialogWidth, height: dialogHeight } = WEATHER_DIALOG_SIZE_PX;
+    const scale = Math.min(
+      DIALOG_MAX_SCALE,
+      (viewport.width * DIALOG_FILL) / dialogWidth,
+      (viewport.height * DIALOG_FILL) / dialogHeight
+    );
+    const to = { x: 0, y: 0, scale, opacity: 1 };
+    const { rects } = getWeatherPanelFace({
+      position: panel.object.position,
+      size: panel.object.size,
+      projection: layout.projection,
+    });
+    if (prefersReducedMotion || isLite) {
+      return { rects, label, from: { ...to, opacity: 0 }, to };
+    }
+    const camera = computeCamera({
+      focus: "weather",
+      viewport,
+      layout,
+      config,
+    });
+    const { bounds } = panel;
+    return {
+      rects,
+      label,
+      from: {
+        x:
+          (bounds.x + bounds.width / 2) * camera.scale +
+          camera.x -
+          viewport.width / 2,
+        y:
+          (bounds.y + bounds.height / 2) * camera.scale +
+          camera.y -
+          viewport.height / 2,
+        scale: (bounds.width * camera.scale) / dialogWidth,
         opacity: 0,
       },
       to,
@@ -1362,6 +1423,39 @@ export function LaundromatScene(props: LaundromatSceneProps) {
                     : getTimeOfDay({ hour, config }).isLampOn
                 }
                 details={config.details.board}
+                onClose={() => setFocus("room")}
+              />
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+      <AnimatePresence>
+        {focus === "weather" && weatherLift !== undefined && (
+          <motion.div
+            key="weather"
+            className="pointer-events-none absolute inset-0 flex items-center justify-center"
+          >
+            <motion.div
+              className="pointer-events-auto origin-center"
+              initial={weatherLift.from}
+              animate={weatherLift.to}
+              exit={{ ...weatherLift.from, transition: { duration: 0.32 } }}
+              transition={{
+                duration:
+                  prefersReducedMotion || isLite
+                    ? 0.2
+                    : config.details.notebook.liftMs / 1000,
+                ease: config.camera.ease,
+              }}
+            >
+              <WeatherPanelDialog
+                rects={weatherLift.rects}
+                weather={weather}
+                label={weatherLift.label}
+                animated={!isLite}
+                glyphMotionSeconds={
+                  config.details.weatherPanel.glyphMotionSeconds
+                }
                 onClose={() => setFocus("room")}
               />
             </motion.div>

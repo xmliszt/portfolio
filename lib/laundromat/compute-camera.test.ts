@@ -85,7 +85,7 @@ test("zooms in on a phone rather than shrinking hit targets below 24px", () => {
   );
 });
 
-for (const focus of ["shelf", "notebook"] as const) {
+for (const focus of ["shelf", "notebook", "weather"] as const) {
   test(`centres the ${focus} and leaves the room visible around it`, () => {
     const room = computeCamera({
       focus: "room",

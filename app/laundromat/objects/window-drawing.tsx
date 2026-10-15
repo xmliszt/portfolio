@@ -8,15 +8,19 @@ import type { IsoProjection } from "@/lib/laundromat/project-iso-point";
 import { projectIsoPoint } from "@/lib/laundromat/project-iso-point";
 import type { SceneConfig } from "@/lib/laundromat/scene-config";
 import { toSvgPoints } from "@/lib/laundromat/to-svg-points";
+import type { GlassCell } from "@/lib/laundromat/weather/get-window-clouds";
 import { getWindowWeather } from "@/lib/laundromat/weather/get-window-weather";
 import type { WeatherCondition } from "@/lib/laundromat/weather/weather-reading";
 
 import { IsoBox } from "./iso-box";
 import { partStroke } from "./part-stroke";
 import { StreetView } from "./street-view";
+import { WindowClouds } from "./window-clouds";
 import { WindowWeather } from "./window-weather";
 
 const CASING = 0.16;
+const BAR_PX = 3;
+const TRANSOM_AT = 0.32;
 const GLASS_X = 0.06;
 const SILL_NOSE_DEPTH = 0.1;
 const SUN_RADIUS = 0.28;
@@ -107,6 +111,22 @@ export function WindowDrawing(props: WindowDrawingProps) {
   const paneWidth = (opening.far - opening.near) * unit;
   const paneHeight = (opening.top - opening.bottom) * unit;
   const glide = { transition: `opacity ${sky.timeJumpGlideMs}ms` };
+  const transomY = paneHeight * TRANSOM_AT;
+  // The casing in front of the glass hides up to its depth along every edge of the pane.
+  const hiddenEdge = (outer - glassX) * unit;
+  const cellWidth = (paneWidth - BAR_PX) / 2 - hiddenEdge;
+  function upperCell(x: number) {
+    return {
+      x,
+      y: hiddenEdge,
+      width: cellWidth,
+      height: transomY - BAR_PX / 2 - hiddenEdge,
+    };
+  }
+  const upperCells: [GlassCell, GlassCell] = [
+    upperCell(hiddenEdge),
+    upperCell((paneWidth + BAR_PX) / 2),
+  ];
   function onPane(spot: { across: number; up: number }) {
     return { x: spot.across * paneWidth, y: (1 - spot.up) * paneHeight };
   }
@@ -267,6 +287,14 @@ export function WindowDrawing(props: WindowDrawingProps) {
                 style={{ opacity: skyShown, ...glide }}
               />
             )}
+            {windowWeather.clouds && quality !== "lite" && (
+              <WindowClouds
+                cells={upperCells}
+                cover={windowWeather.skyCover}
+                daylight={1 - nightOpacity}
+                glideMs={sky.timeJumpGlideMs}
+              />
+            )}
             <g
               className="stroke-[var(--lm-detail)]"
               strokeWidth={0.5}
@@ -322,7 +350,6 @@ export function WindowDrawing(props: WindowDrawingProps) {
             weather={windowWeather}
             paneWidth={paneWidth}
             paneHeight={paneHeight}
-            showSky={props.view === "skyline"}
             animated={quality !== "lite"}
             details={config.details.window}
           />
@@ -342,12 +369,17 @@ export function WindowDrawing(props: WindowDrawingProps) {
           className="fill-[var(--lm-face)] stroke-[var(--lm-line)]"
           strokeWidth={0.75}
         >
-          <rect x={paneWidth / 2 - 1.5} y={0} width={3} height={paneHeight} />
+          <rect
+            x={(paneWidth - BAR_PX) / 2}
+            y={0}
+            width={BAR_PX}
+            height={paneHeight}
+          />
           <rect
             x={0}
-            y={paneHeight * 0.32 - 1.5}
+            y={transomY - BAR_PX / 2}
             width={paneWidth}
-            height={3}
+            height={BAR_PX}
           />
           <path
             d={`M ${paneWidth * 0.08} ${paneHeight * 0.9} L ${paneWidth * 0.3} ${paneHeight * 0.4}`}
