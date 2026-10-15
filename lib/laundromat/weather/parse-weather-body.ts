@@ -5,6 +5,7 @@ function isWeatherReading(value: object): value is WeatherReading {
   const condition = Reflect.get(value, "condition");
   const unit = Reflect.get(value, "unit");
   const city = Reflect.get(value, "city");
+  const aqi = Reflect.get(value, "aqi");
   return (
     WEATHER_CONDITIONS.some((known) => known === condition) &&
     typeof Reflect.get(value, "isDay") === "boolean" &&
@@ -12,6 +13,7 @@ function isWeatherReading(value: object): value is WeatherReading {
       (field) => typeof Reflect.get(value, field) === "number"
     ) &&
     (city === undefined || typeof city === "string") &&
+    (aqi === undefined || typeof aqi === "number") &&
     (unit === "celsius" || unit === "fahrenheit")
   );
 }
@@ -30,5 +32,6 @@ export function parseWeatherBody(value: unknown): WeatherReading | undefined {
     lowC: value.lowC,
     city: value.city,
     unit: value.unit,
+    aqi: value.aqi,
   };
 }

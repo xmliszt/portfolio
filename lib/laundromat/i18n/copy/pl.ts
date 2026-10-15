@@ -250,7 +250,7 @@ export const pl = {
     updates: {
       "weather-panel": {
         title: "pogoda w środku i na zewnątrz",
-        body: "Panel nad oknem pokazuje pogodę tam, gdzie jesteś, z dzisiejszą najwyższą i najniższą temperaturą. Okna też ją pokazują, deszcz, śnieg, mgłę albo burzę, z pasującym dźwiękiem. Twoje miasto to przybliżone zgadywanie na podstawie połączenia.",
+        body: "Panel nad oknem pokazuje pogodę tam, gdzie jesteś, z dzisiejszą najwyższą i najniższą temperaturą oraz jakością powietrza. Okna też ją pokazują, deszcz, śnieg, mgłę albo burzę, z pasującym dźwiękiem. Twoje miasto to przybliżone zgadywanie na podstawie połączenia.",
       },
       "room-sound-dials": {
         title: "wybierz, co słyszysz",
@@ -353,6 +353,18 @@ export const pl = {
       `Panel pogody, ${o.temperature} ${o.condition}, ${o.place}`,
     tooltip: (o: { temperature: string; condition: string; place: string }) =>
       `${o.temperature} · ${o.condition} · ${o.place}`,
+    aqi: "AQI",
+    aqiBands: {
+      good: "dobra",
+      moderate: "umiarkowana",
+      sensitive: "szkodliwa dla wrażliwych",
+      unhealthy: "szkodliwa",
+      veryUnhealthy: "bardzo szkodliwa",
+      hazardous: "niebezpieczna",
+    },
+    airLabel: (o: { aqi: number; band: string }) =>
+      `jakość powietrza: ${o.band}, AQI ${o.aqi}`,
+    airTooltip: (o: { aqi: number; band: string }) => `powietrze: ${o.band}`,
     offLabel: "Panel pogody, brak odczytu",
     offTooltip: "jeszcze brak odczytu",
   },

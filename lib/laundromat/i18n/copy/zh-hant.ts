@@ -245,7 +245,7 @@ export const zhHant = {
     updates: {
       "weather-panel": {
         title: "屋裡屋外的天氣",
-        body: "窗戶上方的面板會顯示你所在地的天氣，以及今天的最高和最低氣溫。窗外也會下雨、下雪、起霧或打雷，還有相應的聲音。城市是根據你的網路連線大致推測的。",
+        body: "窗戶上方的面板會顯示你所在地的天氣，以及今天的最高和最低氣溫和空氣品質。窗外也會下雨、下雪、起霧或打雷，還有相應的聲音。城市是根據你的網路連線大致推測的。",
       },
       "room-sound-dials": {
         title: "選擇你想聽的聲音",
@@ -346,6 +346,18 @@ export const zhHant = {
       `天氣面板，${o.temperature} ${o.condition}，${o.place}`,
     tooltip: (o: { temperature: string; condition: string; place: string }) =>
       `${o.temperature} · ${o.condition} · ${o.place}`,
+    aqi: "AQI",
+    aqiBands: {
+      good: "優",
+      moderate: "良",
+      sensitive: "輕度污染",
+      unhealthy: "中度污染",
+      veryUnhealthy: "重度污染",
+      hazardous: "嚴重污染",
+    },
+    airLabel: (o: { aqi: number; band: string }) =>
+      `空氣品質${o.band}，AQI ${o.aqi}`,
+    airTooltip: (o: { aqi: number; band: string }) => `空氣${o.band}`,
     offLabel: "天氣面板，暫無資料",
     offTooltip: "暫無資料",
   },

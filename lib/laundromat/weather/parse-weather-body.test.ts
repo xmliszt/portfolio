@@ -11,6 +11,7 @@ const reading = {
   lowC: -5,
   city: "Oslo",
   unit: "celsius",
+  aqi: 31,
 };
 
 test("reads a reading body", () => {
@@ -18,6 +19,10 @@ test("reads a reading body", () => {
   assert.deepEqual(
     parseWeatherBody({ kind: "reading", ...reading, city: undefined }),
     { ...reading, city: undefined }
+  );
+  assert.deepEqual(
+    parseWeatherBody({ kind: "reading", ...reading, aqi: undefined }),
+    { ...reading, aqi: undefined }
   );
 });
 
@@ -29,6 +34,10 @@ test("returns undefined for an unknown location or a malformed body", () => {
   );
   assert.equal(
     parseWeatherBody({ kind: "reading", ...reading, highC: "1" }),
+    undefined
+  );
+  assert.equal(
+    parseWeatherBody({ kind: "reading", ...reading, aqi: "31" }),
     undefined
   );
   assert.equal(parseWeatherBody("reading"), undefined);

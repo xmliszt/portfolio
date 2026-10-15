@@ -262,7 +262,7 @@ export const ja = {
     updates: {
       "weather-panel": {
         title: "店の中にも外にも天気",
-        body: "窓の上のパネルに、あなたのいる場所の天気と今日の最高・最低気温が出ます。窓の外にも雨、雪、霧、嵐が、音といっしょに見えます。街は接続からおおまかに推測しています。",
+        body: "窓の上のパネルに、あなたのいる場所の天気と今日の最高・最低気温、空気の質が出ます。窓の外にも雨、雪、霧、嵐が、音といっしょに見えます。街は接続からおおまかに推測しています。",
       },
       "room-sound-dials": {
         title: "聞こえる音を選べるように",
@@ -363,6 +363,18 @@ export const ja = {
       `天気パネル、${o.temperature} ${o.condition}、${o.place}`,
     tooltip: (o: { temperature: string; condition: string; place: string }) =>
       `${o.temperature} · ${o.condition} · ${o.place}`,
+    aqi: "AQI",
+    aqiBands: {
+      good: "良好",
+      moderate: "普通",
+      sensitive: "敏感な人に有害",
+      unhealthy: "有害",
+      veryUnhealthy: "非常に有害",
+      hazardous: "危険",
+    },
+    airLabel: (o: { aqi: number; band: string }) =>
+      `空気の質 ${o.band}、AQI ${o.aqi}`,
+    airTooltip: (o: { aqi: number; band: string }) => `空気 ${o.band}`,
     offLabel: "天気パネル、データなし",
     offTooltip: "まだデータなし",
   },

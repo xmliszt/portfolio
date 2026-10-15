@@ -131,6 +131,7 @@ const weatherDials = {
   },
   night: false,
   temperatureC: [18, -20, 40, 1],
+  aqi: [42, 0, 400, 1],
   city: { type: "text", default: "Lisbon" },
 } satisfies DialConfig;
 
@@ -417,7 +418,7 @@ export default function LaundromatLab() {
   const weatherCondition = WEATHER_CONDITIONS.find(
     (condition) => condition === weatherValues.condition
   );
-  const { night, temperatureC, city } = weatherValues;
+  const { night, temperatureC, city, aqi } = weatherValues;
   const labWeather = useMemo((): WeatherReading | undefined => {
     if (weatherCondition === undefined) return undefined;
     return {
@@ -428,8 +429,9 @@ export default function LaundromatLab() {
       lowC: temperatureC - 5,
       city: city || undefined,
       unit: "celsius",
+      aqi,
     };
-  }, [weatherCondition, night, temperatureC, city]);
+  }, [weatherCondition, night, temperatureC, city, aqi]);
   const workbench = useDialKit("Workbench", workbenchDials, {
     id: "laundromat-lab-workbench",
     ...PANEL_OPTIONS,

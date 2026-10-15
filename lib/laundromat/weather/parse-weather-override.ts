@@ -20,5 +20,6 @@ export function parseWeatherOverride(
     lowC: condition === "snow" ? -6 : 13,
     city: "Lisbon",
     unit: "celsius",
+    aqi: condition === "fog" ? 128 : 38,
   };
 }

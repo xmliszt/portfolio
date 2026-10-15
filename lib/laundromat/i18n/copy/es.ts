@@ -273,7 +273,7 @@ export const es = {
     updates: {
       "weather-panel": {
         title: "el tiempo, dentro y fuera",
-        body: "Un panel sobre la ventana muestra el tiempo donde estás, con la máxima y la mínima de hoy. Las ventanas también lo muestran, lluvia, nieve, niebla o tormenta, con su sonido. Tu ciudad se calcula a grandes rasgos a partir de tu conexión.",
+        body: "Un panel sobre la ventana muestra el tiempo donde estás, con la máxima y la mínima de hoy y la calidad del aire. Las ventanas también lo muestran, lluvia, nieve, niebla o tormenta, con su sonido. Tu ciudad se calcula a grandes rasgos a partir de tu conexión.",
       },
       "room-sound-dials": {
         title: "elige qué sonidos oyes",
@@ -374,6 +374,18 @@ export const es = {
       `Panel del tiempo, ${o.temperature} ${o.condition}, ${o.place}`,
     tooltip: (o: { temperature: string; condition: string; place: string }) =>
       `${o.temperature} · ${o.condition} · ${o.place}`,
+    aqi: "AQI",
+    aqiBands: {
+      good: "buena",
+      moderate: "moderada",
+      sensitive: "dañina para sensibles",
+      unhealthy: "dañina",
+      veryUnhealthy: "muy dañina",
+      hazardous: "peligrosa",
+    },
+    airLabel: (o: { aqi: number; band: string }) =>
+      `calidad del aire ${o.band}, AQI ${o.aqi}`,
+    airTooltip: (o: { aqi: number; band: string }) => `aire ${o.band}`,
     offLabel: "Panel del tiempo, sin lectura",
     offTooltip: "aún sin lectura",
   },

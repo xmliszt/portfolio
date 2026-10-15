@@ -277,7 +277,7 @@ export const fr = {
     updates: {
       "weather-panel": {
         title: "la météo, dedans et dehors",
-        body: "Un panneau au-dessus de la fenêtre affiche la météo là où tu es, avec les températures max et min du jour. Les fenêtres la montrent aussi, pluie, neige, brouillard ou orage, avec le son qui va avec. Ta ville est devinée à peu près d'après ta connexion.",
+        body: "Un panneau au-dessus de la fenêtre affiche la météo là où tu es, avec les températures max et min du jour et la qualité de l'air. Les fenêtres la montrent aussi, pluie, neige, brouillard ou orage, avec le son qui va avec. Ta ville est devinée à peu près d'après ta connexion.",
       },
       "room-sound-dials": {
         title: "choisis les sons que tu entends",
@@ -378,6 +378,18 @@ export const fr = {
       `Panneau météo, ${o.temperature} ${o.condition}, ${o.place}`,
     tooltip: (o: { temperature: string; condition: string; place: string }) =>
       `${o.temperature} · ${o.condition} · ${o.place}`,
+    aqi: "AQI",
+    aqiBands: {
+      good: "bonne",
+      moderate: "moyenne",
+      sensitive: "mauvaise pour les sensibles",
+      unhealthy: "mauvaise",
+      veryUnhealthy: "très mauvaise",
+      hazardous: "dangereuse",
+    },
+    airLabel: (o: { aqi: number; band: string }) =>
+      `qualité de l'air ${o.band}, AQI ${o.aqi}`,
+    airTooltip: (o: { aqi: number; band: string }) => `air ${o.band}`,
     offLabel: "Panneau météo, pas de relevé",
     offTooltip: "pas encore de relevé",
   },

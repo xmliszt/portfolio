@@ -275,7 +275,7 @@ export const de = {
     updates: {
       "weather-panel": {
         title: "das Wetter, drinnen und draußen",
-        body: "Eine Anzeige über dem Fenster zeigt das Wetter bei dir, mit dem heutigen Höchst- und Tiefstwert. Auch die Fenster zeigen es, Regen, Schnee, Nebel oder Gewitter, mit passendem Klang. Deine Stadt wird grob über deine Verbindung geschätzt.",
+        body: "Eine Anzeige über dem Fenster zeigt das Wetter bei dir, mit dem heutigen Höchst- und Tiefstwert und der Luftqualität. Auch die Fenster zeigen es, Regen, Schnee, Nebel oder Gewitter, mit passendem Klang. Deine Stadt wird grob über deine Verbindung geschätzt.",
       },
       "room-sound-dials": {
         title: "wähle, was du hörst",
@@ -376,6 +376,18 @@ export const de = {
       `Wetteranzeige, ${o.temperature} ${o.condition}, ${o.place}`,
     tooltip: (o: { temperature: string; condition: string; place: string }) =>
       `${o.temperature} · ${o.condition} · ${o.place}`,
+    aqi: "AQI",
+    aqiBands: {
+      good: "gut",
+      moderate: "mäßig",
+      sensitive: "ungesund für Empfindliche",
+      unhealthy: "ungesund",
+      veryUnhealthy: "sehr ungesund",
+      hazardous: "gefährlich",
+    },
+    airLabel: (o: { aqi: number; band: string }) =>
+      `Luftqualität ${o.band}, AQI ${o.aqi}`,
+    airTooltip: (o: { aqi: number; band: string }) => `Luft ${o.band}`,
     offLabel: "Wetteranzeige, kein Messwert",
     offTooltip: "noch kein Messwert",
   },

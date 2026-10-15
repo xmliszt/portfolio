@@ -242,7 +242,7 @@ export const nl = {
     updates: {
       "weather-panel": {
         title: "het weer, binnen en buiten",
-        body: "Een paneel boven het raam toont het weer waar je bent, met de hoogste en laagste temperatuur van vandaag. De ramen laten het ook zien, regen, sneeuw, mist of onweer, met het geluid erbij. Je stad is een ruwe schatting op basis van je verbinding.",
+        body: "Een paneel boven het raam toont het weer waar je bent, met de hoogste en laagste temperatuur van vandaag en de luchtkwaliteit. De ramen laten het ook zien, regen, sneeuw, mist of onweer, met het geluid erbij. Je stad is een ruwe schatting op basis van je verbinding.",
       },
       "room-sound-dials": {
         title: "kies welke geluiden je hoort",
@@ -343,6 +343,18 @@ export const nl = {
       `Weerpaneel, ${o.temperature} ${o.condition}, ${o.place}`,
     tooltip: (o: { temperature: string; condition: string; place: string }) =>
       `${o.temperature} · ${o.condition} · ${o.place}`,
+    aqi: "AQI",
+    aqiBands: {
+      good: "goed",
+      moderate: "matig",
+      sensitive: "ongezond voor gevoeligen",
+      unhealthy: "ongezond",
+      veryUnhealthy: "zeer ongezond",
+      hazardous: "gevaarlijk",
+    },
+    airLabel: (o: { aqi: number; band: string }) =>
+      `luchtkwaliteit ${o.band}, AQI ${o.aqi}`,
+    airTooltip: (o: { aqi: number; band: string }) => `lucht ${o.band}`,
     offLabel: "Weerpaneel, geen meting",
     offTooltip: "nog geen meting",
   },

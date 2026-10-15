@@ -6,7 +6,9 @@ import type { IsoProjection } from "@/lib/laundromat/project-iso-point";
 import type { SceneConfig } from "@/lib/laundromat/scene-config";
 import { fitCaptionFontSize } from "@/lib/laundromat/tv/fit-caption-font-size";
 import { getCaptionWidthEm } from "@/lib/laundromat/tv/get-caption-width-em";
+import { AQI_BAND_COLORS } from "@/lib/laundromat/weather/aqi-band-colors";
 import { formatTemperature } from "@/lib/laundromat/weather/format-temperature";
+import { getAqiBand } from "@/lib/laundromat/weather/get-aqi-band";
 import { getWeatherConditionName } from "@/lib/laundromat/weather/get-weather-condition-name";
 import { getWeatherPanelFace } from "@/lib/laundromat/weather/get-weather-panel-face";
 import type { WeatherReading } from "@/lib/laundromat/weather/weather-reading";
@@ -62,11 +64,25 @@ export function WeatherPanelDrawing(props: WeatherPanelDrawingProps) {
           unit: weather.unit,
         });
   const textInset = 1;
-  const glyphScale = Math.min(glyph.width, glyph.height * 0.72) / GLYPH_BOX;
+  const glyphScale = Math.min(glyph.width, glyph.height * 0.6) / GLYPH_BOX;
   const glyphCenter = {
     x: glyph.x + glyph.width / 2,
-    y: glyph.y + glyph.height * 0.44,
+    y: glyph.y + glyph.height * 0.5,
   };
+  const air = (() => {
+    if (weather?.aqi === undefined) return undefined;
+    const text = `${copy.weatherPanel.aqi} ${weather.aqi}`;
+    const fontSize = 3.8;
+    const right = glyph.x + glyph.width;
+    return {
+      text,
+      fontSize,
+      right,
+      y: glyph.y + 3.5,
+      dotX: right - fontSize * getCaptionWidthEm(text) - 2.2,
+      color: AQI_BAND_COLORS[getAqiBand(weather.aqi)],
+    };
+  })();
   const rangeRow = (() => {
     if (weather === undefined) return undefined;
     const low = `${copy.weatherPanel.low} ${formatTemperature({ celsius: weather.lowC, unit: weather.unit })}`;
@@ -173,6 +189,25 @@ export function WeatherPanelDrawing(props: WeatherPanelDrawingProps) {
           >
             {cityText}
           </text>
+          {air !== undefined && (
+            <>
+              <circle
+                cx={air.dotX}
+                cy={air.y - air.fontSize * 0.32}
+                r={1.1}
+                style={{ fill: air.color }}
+              />
+              <text
+                x={air.right}
+                y={air.y}
+                textAnchor="end"
+                fontSize={air.fontSize}
+                className="fill-[var(--lm-ink)] normal-case"
+              >
+                {air.text}
+              </text>
+            </>
+          )}
           {conditionName !== undefined && (
             <text
               x={glyphCenter.x}

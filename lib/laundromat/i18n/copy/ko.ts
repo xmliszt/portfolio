@@ -259,7 +259,7 @@ export const ko = {
     updates: {
       "weather-panel": {
         title: "안과 밖의 날씨",
-        body: "창문 위 패널이 지금 계신 곳의 날씨와 오늘의 최고·최저 기온을 보여 줘요. 창밖에도 비, 눈, 안개, 폭풍이 소리와 함께 보여요. 도시는 연결 정보로 대략 짐작한 거예요.",
+        body: "창문 위 패널이 지금 계신 곳의 날씨와 오늘의 최고·최저 기온, 대기질을 보여 줘요. 창밖에도 비, 눈, 안개, 폭풍이 소리와 함께 보여요. 도시는 연결 정보로 대략 짐작한 거예요.",
       },
       "room-sound-dials": {
         title: "들을 소리를 골라요",
@@ -360,6 +360,18 @@ export const ko = {
       `날씨 패널, ${o.temperature} ${o.condition}, ${o.place}`,
     tooltip: (o: { temperature: string; condition: string; place: string }) =>
       `${o.temperature} · ${o.condition} · ${o.place}`,
+    aqi: "AQI",
+    aqiBands: {
+      good: "좋음",
+      moderate: "보통",
+      sensitive: "민감군 나쁨",
+      unhealthy: "나쁨",
+      veryUnhealthy: "매우 나쁨",
+      hazardous: "위험",
+    },
+    airLabel: (o: { aqi: number; band: string }) =>
+      `대기질 ${o.band}, AQI ${o.aqi}`,
+    airTooltip: (o: { aqi: number; band: string }) => `대기 ${o.band}`,
     offLabel: "날씨 패널, 정보 없음",
     offTooltip: "아직 정보 없음",
   },

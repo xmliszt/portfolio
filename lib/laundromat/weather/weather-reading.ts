@@ -19,6 +19,7 @@ export type WeatherReading = {
   lowC: number;
   city: string | undefined;
   unit: TemperatureUnit;
+  aqi: number | undefined;
 };
 
 export type WeatherBody =

@@ -245,7 +245,7 @@ export const zhHans = {
     updates: {
       "weather-panel": {
         title: "屋里屋外的天气",
-        body: "窗户上方的面板会显示你所在地的天气，以及今天的最高和最低气温。窗外也会下雨、下雪、起雾或打雷，还有相应的声音。城市是根据你的网络连接大致推测的。",
+        body: "窗户上方的面板会显示你所在地的天气，以及今天的最高和最低气温和空气质量。窗外也会下雨、下雪、起雾或打雷，还有相应的声音。城市是根据你的网络连接大致推测的。",
       },
       "room-sound-dials": {
         title: "选择你想听的声音",
@@ -346,6 +346,18 @@ export const zhHans = {
       `天气面板，${o.temperature} ${o.condition}，${o.place}`,
     tooltip: (o: { temperature: string; condition: string; place: string }) =>
       `${o.temperature} · ${o.condition} · ${o.place}`,
+    aqi: "AQI",
+    aqiBands: {
+      good: "优",
+      moderate: "良",
+      sensitive: "轻度污染",
+      unhealthy: "中度污染",
+      veryUnhealthy: "重度污染",
+      hazardous: "严重污染",
+    },
+    airLabel: (o: { aqi: number; band: string }) =>
+      `空气质量${o.band}，AQI ${o.aqi}`,
+    airTooltip: (o: { aqi: number; band: string }) => `空气${o.band}`,
     offLabel: "天气面板，暂无数据",
     offTooltip: "暂无数据",
   },

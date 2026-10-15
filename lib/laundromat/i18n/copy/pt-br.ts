@@ -272,7 +272,7 @@ export const ptBR = {
     updates: {
       "weather-panel": {
         title: "o tempo, dentro e fora",
-        body: "Um painel acima da janela mostra o tempo onde você está, com a máxima e a mínima de hoje. As janelas também mostram, chuva, neve, neblina ou tempestade, com o som certo. Sua cidade é um palpite aproximado a partir da sua conexão.",
+        body: "Um painel acima da janela mostra o tempo onde você está, com a máxima e a mínima de hoje e a qualidade do ar. As janelas também mostram, chuva, neve, neblina ou tempestade, com o som certo. Sua cidade é um palpite aproximado a partir da sua conexão.",
       },
       "room-sound-dials": {
         title: "escolha os sons que você ouve",
@@ -373,6 +373,18 @@ export const ptBR = {
       `Painel do tempo, ${o.temperature} ${o.condition}, ${o.place}`,
     tooltip: (o: { temperature: string; condition: string; place: string }) =>
       `${o.temperature} · ${o.condition} · ${o.place}`,
+    aqi: "AQI",
+    aqiBands: {
+      good: "boa",
+      moderate: "moderada",
+      sensitive: "ruim para sensíveis",
+      unhealthy: "ruim",
+      veryUnhealthy: "muito ruim",
+      hazardous: "perigosa",
+    },
+    airLabel: (o: { aqi: number; band: string }) =>
+      `qualidade do ar ${o.band}, AQI ${o.aqi}`,
+    airTooltip: (o: { aqi: number; band: string }) => `ar ${o.band}`,
     offLabel: "Painel do tempo, sem leitura",
     offTooltip: "ainda sem leitura",
   },

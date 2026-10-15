@@ -70,6 +70,7 @@ test("reads the weather panel's temperature, condition and city", () => {
         lowC: 15,
         city: "Austin",
         unit: "fahrenheit",
+        aqi: undefined,
       },
     }),
     {
@@ -89,6 +90,7 @@ test("reads the weather panel's temperature, condition and city", () => {
         lowC: 8,
         city: undefined,
         unit: "celsius",
+        aqi: undefined,
       },
     })?.tooltip,
     "10° · clear · outside"
@@ -97,4 +99,31 @@ test("reads the weather panel's temperature, condition and city", () => {
     label: "Weather panel, no reading",
     tooltip: "no reading yet",
   });
+});
+
+test("adds the air quality band when the reading has an AQI", () => {
+  const panel = sceneConfig.objects.find(
+    (object) => object.id === "weather-panel"
+  );
+  assert.ok(panel);
+  assert.deepEqual(
+    describeSceneObject({
+      object: panel,
+      copy: en,
+      weather: {
+        condition: "fog",
+        isDay: true,
+        temperatureC: 27,
+        highC: 30,
+        lowC: 25,
+        city: "Singapore",
+        unit: "celsius",
+        aqi: 169,
+      },
+    }),
+    {
+      label: "Weather panel, 27° and fog, Singapore, air quality unhealthy, AQI 169",
+      tooltip: "27° · fog · Singapore · air unhealthy",
+    }
+  );
 });

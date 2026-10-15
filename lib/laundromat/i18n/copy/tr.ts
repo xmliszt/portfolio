@@ -237,7 +237,7 @@ export const tr = {
     updates: {
       "weather-panel": {
         title: "içeride ve dışarıda hava",
-        body: "Pencerenin üstündeki pano, bulunduğun yerin hava durumunu bugünün en yüksek ve en düşük sıcaklığıyla gösterir. Pencereler de gösterir, yağmur, kar, sis ya da fırtına, sesiyle birlikte. Şehrin, bağlantından kabaca tahmin edilir.",
+        body: "Pencerenin üstündeki pano, bulunduğun yerin hava durumunu bugünün en yüksek ve en düşük sıcaklığı ve hava kalitesiyle gösterir. Pencereler de gösterir, yağmur, kar, sis ya da fırtına, sesiyle birlikte. Şehrin, bağlantından kabaca tahmin edilir.",
       },
       "room-sound-dials": {
         title: "duyacağın sesleri seç",
@@ -338,6 +338,18 @@ export const tr = {
       `Hava durumu panosu, ${o.temperature} ${o.condition}, ${o.place}`,
     tooltip: (o: { temperature: string; condition: string; place: string }) =>
       `${o.temperature} · ${o.condition} · ${o.place}`,
+    aqi: "AQI",
+    aqiBands: {
+      good: "iyi",
+      moderate: "orta",
+      sensitive: "hassaslar için sağlıksız",
+      unhealthy: "sağlıksız",
+      veryUnhealthy: "çok sağlıksız",
+      hazardous: "tehlikeli",
+    },
+    airLabel: (o: { aqi: number; band: string }) =>
+      `hava kalitesi ${o.band}, AQI ${o.aqi}`,
+    airTooltip: (o: { aqi: number; band: string }) => `hava ${o.band}`,
     offLabel: "Hava durumu panosu, ölçüm yok",
     offTooltip: "henüz ölçüm yok",
   },

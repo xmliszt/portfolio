@@ -255,7 +255,7 @@ export const ru = {
     updates: {
       "weather-panel": {
         title: "погода внутри и снаружи",
-        body: "Панель над окном показывает погоду там, где вы, с сегодняшним максимумом и минимумом. Окна тоже её показывают, дождь, снег, туман или грозу, со своим звуком. Город определяется примерно по вашему подключению.",
+        body: "Панель над окном показывает погоду там, где вы, с сегодняшним максимумом и минимумом и качеством воздуха. Окна тоже её показывают, дождь, снег, туман или грозу, со своим звуком. Город определяется примерно по вашему подключению.",
       },
       "room-sound-dials": {
         title: "выбирайте, что слышать",
@@ -358,6 +358,18 @@ export const ru = {
       `Панель погоды, ${o.temperature} ${o.condition}, ${o.place}`,
     tooltip: (o: { temperature: string; condition: string; place: string }) =>
       `${o.temperature} · ${o.condition} · ${o.place}`,
+    aqi: "AQI",
+    aqiBands: {
+      good: "хороший",
+      moderate: "умеренный",
+      sensitive: "вредный для чувствительных",
+      unhealthy: "вредный",
+      veryUnhealthy: "очень вредный",
+      hazardous: "опасный",
+    },
+    airLabel: (o: { aqi: number; band: string }) =>
+      `качество воздуха: ${o.band}, AQI ${o.aqi}`,
+    airTooltip: (o: { aqi: number; band: string }) => `воздух: ${o.band}`,
     offLabel: "Панель погоды, нет данных",
     offTooltip: "пока нет данных",
   },

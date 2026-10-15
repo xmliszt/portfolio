@@ -270,7 +270,7 @@ export const en = {
     updates: {
       "weather-panel": {
         title: "the weather, inside and out",
-        body: "A panel above the window shows the weather where you are, with today's high and low. The windows show it too, rain, snow, fog or a storm, with the sound to match. Your city is a rough guess from your connection.",
+        body: "A panel above the window shows the weather where you are, with today's high and low and the air quality. The windows show it too, rain, snow, fog or a storm, with the sound to match. Your city is a rough guess from your connection.",
       },
       "room-sound-dials": {
         title: "choose the sounds you hear",
@@ -371,6 +371,18 @@ export const en = {
       `Weather panel, ${o.temperature} and ${o.condition}, ${o.place}`,
     tooltip: (o: { temperature: string; condition: string; place: string }) =>
       `${o.temperature} · ${o.condition} · ${o.place}`,
+    aqi: "AQI",
+    aqiBands: {
+      good: "good",
+      moderate: "moderate",
+      sensitive: "unhealthy for some",
+      unhealthy: "unhealthy",
+      veryUnhealthy: "very unhealthy",
+      hazardous: "hazardous",
+    },
+    airLabel: (o: { aqi: number; band: string }) =>
+      `air quality ${o.band}, AQI ${o.aqi}`,
+    airTooltip: (o: { aqi: number; band: string }) => `air ${o.band}`,
     offLabel: "Weather panel, no reading",
     offTooltip: "no reading yet",
   },

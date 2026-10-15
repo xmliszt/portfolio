@@ -1,10 +1,11 @@
 import type { LaundromatCopy } from "./i18n/laundromat-copy";
 import { formatTemperature } from "./weather/format-temperature";
+import { getAqiBand } from "./weather/get-aqi-band";
 import { getWeatherConditionName } from "./weather/get-weather-condition-name";
 import type { WeatherReading } from "./weather/weather-reading";
 import type { SceneObject } from "./scene-config";
 
-/** Return the hit target's `label` and `tooltip` for `object`, counting `peopleHere` on the tube display and reading `weather` on the weather panel, or `undefined` when the object is not interactive. */
+/** Return the hit target's `label` and `tooltip` for `object`, counting `peopleHere` on the tube display and reading `weather` and its air quality on the weather panel, or `undefined` when the object is not interactive. */
 export function describeSceneObject(options: {
   object: SceneObject;
   copy: LaundromatCopy;
@@ -85,9 +86,19 @@ export function describeSceneObject(options: {
         condition: getWeatherConditionName({ reading: weather, copy }),
         place: weather.city ?? copy.weatherPanel.outside,
       };
+      if (weather.aqi === undefined) {
+        return {
+          label: copy.weatherPanel.label(reading),
+          tooltip: copy.weatherPanel.tooltip(reading),
+        };
+      }
+      const air = {
+        aqi: weather.aqi,
+        band: copy.weatherPanel.aqiBands[getAqiBand(weather.aqi)],
+      };
       return {
-        label: copy.weatherPanel.label(reading),
-        tooltip: copy.weatherPanel.tooltip(reading),
+        label: `${copy.weatherPanel.label(reading)}, ${copy.weatherPanel.airLabel(air)}`,
+        tooltip: `${copy.weatherPanel.tooltip(reading)} · ${copy.weatherPanel.airTooltip(air)}`,
       };
     }
     case "counter":

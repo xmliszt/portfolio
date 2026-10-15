@@ -279,7 +279,7 @@ export const it = {
     updates: {
       "weather-panel": {
         title: "il meteo, dentro e fuori",
-        body: "Un pannello sopra la finestra mostra il meteo dove sei, con la massima e la minima di oggi. Anche le finestre lo mostrano, pioggia, neve, nebbia o temporale, con il suono giusto. La tua città è una stima approssimativa dalla tua connessione.",
+        body: "Un pannello sopra la finestra mostra il meteo dove sei, con la massima e la minima di oggi e la qualità dell'aria. Anche le finestre lo mostrano, pioggia, neve, nebbia o temporale, con il suono giusto. La tua città è una stima approssimativa dalla tua connessione.",
       },
       "room-sound-dials": {
         title: "scegli quali suoni sentire",
@@ -380,6 +380,18 @@ export const it = {
       `Pannello meteo, ${o.temperature} ${o.condition}, ${o.place}`,
     tooltip: (o: { temperature: string; condition: string; place: string }) =>
       `${o.temperature} · ${o.condition} · ${o.place}`,
+    aqi: "AQI",
+    aqiBands: {
+      good: "buona",
+      moderate: "discreta",
+      sensitive: "dannosa per i sensibili",
+      unhealthy: "dannosa",
+      veryUnhealthy: "molto dannosa",
+      hazardous: "pericolosa",
+    },
+    airLabel: (o: { aqi: number; band: string }) =>
+      `qualità dell'aria ${o.band}, AQI ${o.aqi}`,
+    airTooltip: (o: { aqi: number; band: string }) => `aria ${o.band}`,
     offLabel: "Pannello meteo, nessuna lettura",
     offTooltip: "ancora nessuna lettura",
   },

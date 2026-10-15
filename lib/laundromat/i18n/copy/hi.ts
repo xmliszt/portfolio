@@ -270,7 +270,7 @@ export const hi = {
     updates: {
       "weather-panel": {
         title: "अंदर और बाहर का मौसम",
-        body: "खिड़की के ऊपर एक पैनल आपकी जगह का मौसम दिखाता है, आज के सबसे ज़्यादा और सबसे कम तापमान के साथ। खिड़कियों में भी बारिश, बर्फ़, कोहरा या तूफ़ान दिखता है, आवाज़ के साथ। आपका शहर आपके कनेक्शन से मोटे तौर पर अंदाज़ा लगाया जाता है।",
+        body: "खिड़की के ऊपर एक पैनल आपकी जगह का मौसम दिखाता है, आज के सबसे ज़्यादा और सबसे कम तापमान और हवा की गुणवत्ता के साथ। खिड़कियों में भी बारिश, बर्फ़, कोहरा या तूफ़ान दिखता है, आवाज़ के साथ। आपका शहर आपके कनेक्शन से मोटे तौर पर अंदाज़ा लगाया जाता है।",
       },
       "room-sound-dials": {
         title: "चुनें कि आप क्या सुनें",
@@ -371,6 +371,18 @@ export const hi = {
       `मौसम पैनल, ${o.temperature} ${o.condition}, ${o.place}`,
     tooltip: (o: { temperature: string; condition: string; place: string }) =>
       `${o.temperature} · ${o.condition} · ${o.place}`,
+    aqi: "AQI",
+    aqiBands: {
+      good: "अच्छी",
+      moderate: "मध्यम",
+      sensitive: "संवेदनशील लोगों के लिए अस्वस्थ",
+      unhealthy: "अस्वस्थ",
+      veryUnhealthy: "बहुत अस्वस्थ",
+      hazardous: "खतरनाक",
+    },
+    airLabel: (o: { aqi: number; band: string }) =>
+      `हवा की गुणवत्ता ${o.band}, AQI ${o.aqi}`,
+    airTooltip: (o: { aqi: number; band: string }) => `हवा ${o.band}`,
     offLabel: "मौसम पैनल, कोई रीडिंग नहीं",
     offTooltip: "अभी कोई रीडिंग नहीं",
   },

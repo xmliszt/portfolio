@@ -265,7 +265,7 @@ export const vi = {
     updates: {
       "weather-panel": {
         title: "thời tiết, trong và ngoài",
-        body: "Một bảng phía trên cửa sổ cho biết thời tiết nơi bạn ở, kèm nhiệt độ cao nhất và thấp nhất hôm nay. Cửa sổ cũng cho thấy điều đó, mưa, tuyết, sương mù hay giông bão, kèm âm thanh. Thành phố của bạn được đoán đại khái từ kết nối.",
+        body: "Một bảng phía trên cửa sổ cho biết thời tiết nơi bạn ở, kèm nhiệt độ cao nhất, thấp nhất hôm nay và chất lượng không khí. Cửa sổ cũng cho thấy điều đó, mưa, tuyết, sương mù hay giông bão, kèm âm thanh. Thành phố của bạn được đoán đại khái từ kết nối.",
       },
       "room-sound-dials": {
         title: "chọn âm thanh bạn nghe",
@@ -366,6 +366,18 @@ export const vi = {
       `Bảng thời tiết, ${o.temperature} ${o.condition}, ${o.place}`,
     tooltip: (o: { temperature: string; condition: string; place: string }) =>
       `${o.temperature} · ${o.condition} · ${o.place}`,
+    aqi: "AQI",
+    aqiBands: {
+      good: "tốt",
+      moderate: "trung bình",
+      sensitive: "kém với người nhạy cảm",
+      unhealthy: "kém",
+      veryUnhealthy: "rất kém",
+      hazardous: "nguy hại",
+    },
+    airLabel: (o: { aqi: number; band: string }) =>
+      `chất lượng không khí ${o.band}, AQI ${o.aqi}`,
+    airTooltip: (o: { aqi: number; band: string }) => `không khí ${o.band}`,
     offLabel: "Bảng thời tiết, chưa có số đo",
     offTooltip: "chưa có số đo",
   },

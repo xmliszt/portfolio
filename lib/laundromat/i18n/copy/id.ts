@@ -276,7 +276,7 @@ export const id = {
     updates: {
       "weather-panel": {
         title: "cuaca, di dalam dan di luar",
-        body: "Panel di atas jendela menampilkan cuaca di tempatmu, dengan suhu tertinggi dan terendah hari ini. Jendela juga menampilkannya, hujan, salju, kabut, atau badai, lengkap dengan suaranya. Kotamu ditebak secara kasar dari koneksimu.",
+        body: "Panel di atas jendela menampilkan cuaca di tempatmu, dengan suhu tertinggi dan terendah hari ini serta kualitas udara. Jendela juga menampilkannya, hujan, salju, kabut, atau badai, lengkap dengan suaranya. Kotamu ditebak secara kasar dari koneksimu.",
       },
       "room-sound-dials": {
         title: "pilih suara yang kamu dengar",
@@ -377,6 +377,18 @@ export const id = {
       `Panel cuaca, ${o.temperature} ${o.condition}, ${o.place}`,
     tooltip: (o: { temperature: string; condition: string; place: string }) =>
       `${o.temperature} · ${o.condition} · ${o.place}`,
+    aqi: "AQI",
+    aqiBands: {
+      good: "baik",
+      moderate: "sedang",
+      sensitive: "tidak sehat bagi yang sensitif",
+      unhealthy: "tidak sehat",
+      veryUnhealthy: "sangat tidak sehat",
+      hazardous: "berbahaya",
+    },
+    airLabel: (o: { aqi: number; band: string }) =>
+      `kualitas udara ${o.band}, AQI ${o.aqi}`,
+    airTooltip: (o: { aqi: number; band: string }) => `udara ${o.band}`,
     offLabel: "Panel cuaca, belum ada data",
     offTooltip: "belum ada data",
   },

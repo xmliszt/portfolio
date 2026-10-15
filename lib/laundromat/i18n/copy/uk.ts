@@ -249,7 +249,7 @@ export const uk = {
     updates: {
       "weather-panel": {
         title: "погода всередині й надворі",
-        body: "Панель над вікном показує погоду там, де ви, з сьогоднішнім максимумом і мінімумом. Вікна теж її показують, дощ, сніг, туман чи грозу, з відповідним звуком. Місто визначається приблизно за вашим підключенням.",
+        body: "Панель над вікном показує погоду там, де ви, з сьогоднішнім максимумом і мінімумом та якістю повітря. Вікна теж її показують, дощ, сніг, туман чи грозу, з відповідним звуком. Місто визначається приблизно за вашим підключенням.",
       },
       "room-sound-dials": {
         title: "обирайте, що чути",
@@ -352,6 +352,18 @@ export const uk = {
       `Панель погоди, ${o.temperature} ${o.condition}, ${o.place}`,
     tooltip: (o: { temperature: string; condition: string; place: string }) =>
       `${o.temperature} · ${o.condition} · ${o.place}`,
+    aqi: "AQI",
+    aqiBands: {
+      good: "добра",
+      moderate: "помірна",
+      sensitive: "шкідлива для чутливих",
+      unhealthy: "шкідлива",
+      veryUnhealthy: "дуже шкідлива",
+      hazardous: "небезпечна",
+    },
+    airLabel: (o: { aqi: number; band: string }) =>
+      `якість повітря: ${o.band}, AQI ${o.aqi}`,
+    airTooltip: (o: { aqi: number; band: string }) => `повітря: ${o.band}`,
     offLabel: "Панель погоди, немає даних",
     offTooltip: "поки немає даних",
   },
