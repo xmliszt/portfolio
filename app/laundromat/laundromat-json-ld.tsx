@@ -37,7 +37,7 @@ export function LaundromatJsonLd(props: LaundromatJsonLdProps) {
         browserRequirements: "Requires JavaScript.",
         isAccessibleForFree: true,
         offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
-        image: `${LAUNDROMAT_ORIGIN}/laundromat/og.png`,
+        image: `${LAUNDROMAT_ORIGIN}/laundromat/og-v2.png`,
         isPartOf: { "@id": `${LAUNDROMAT_ORIGIN}/#website` },
         author,
         creator: author,

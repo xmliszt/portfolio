@@ -8,7 +8,7 @@ import { getLaundromatLocaleUrl } from "./get-laundromat-locale-url";
 import type { LaundromatLocale } from "./laundromat-locales";
 import { LAUNDROMAT_LOCALES } from "./laundromat-locales";
 
-const OPEN_GRAPH_IMAGE_URL = `${LAUNDROMAT_ORIGIN}/laundromat/og.png`;
+const OPEN_GRAPH_IMAGE_URL = `${LAUNDROMAT_ORIGIN}/laundromat/og-v2.png`;
 
 /** Return the page metadata for `locale`: its title, description, keywords and Open Graph locale, its own URL as canonical, and every language's URL as an alternate. */
 export function getLaundromatLocaleMetadata(
