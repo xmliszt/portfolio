@@ -1076,7 +1076,7 @@ export function FirstVisit(props: FirstVisitProps) {
       {bedtime === undefined && (
         <button
           type="button"
-          className="absolute right-9 bottom-7 cursor-pointer bg-transparent px-1.5 py-3 text-[11px] text-[var(--lm-line)] lowercase transition-colors duration-200 outline-none hover:text-[var(--lm-ink)] focus-visible:outline-1 focus-visible:outline-[var(--lm-line)] focus-visible:outline-dashed"
+          className="absolute right-[max(2.25rem,env(safe-area-inset-right))] bottom-[max(1.75rem,env(safe-area-inset-bottom))] cursor-pointer bg-transparent px-1.5 py-3 text-[11px] text-[var(--lm-line)] lowercase transition-colors duration-200 outline-none hover:text-[var(--lm-ink)] focus-visible:outline-1 focus-visible:outline-[var(--lm-line)] focus-visible:outline-dashed"
           onClick={props.onListen}
         >
           {copy.firstVisit.justListen}

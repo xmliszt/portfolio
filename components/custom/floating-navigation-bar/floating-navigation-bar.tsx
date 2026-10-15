@@ -35,7 +35,7 @@ export function FloatingNavigationBar(props: FloatingNavigationBarProps) {
           <DrawerTrigger
             asChild
             className={cn(
-              "fixed bottom-10 left-4 z-50 md:left-10",
+              "fixed bottom-[max(2.5rem,env(safe-area-inset-bottom))] left-[max(1rem,env(safe-area-inset-left))] z-50 md:left-10",
               "block md:hidden"
             )}
           >
@@ -64,7 +64,7 @@ export function FloatingNavigationBar(props: FloatingNavigationBarProps) {
 
       <DrawerContent
         className={cn(
-          "flex flex-col gap-12 rounded-none rounded-t-lg focus-visible:outline-hidden",
+          "flex flex-col gap-12 rounded-none rounded-t-lg pb-[env(safe-area-inset-bottom)] focus-visible:outline-hidden",
           // hide the drawer handle
           "[&>*:first-child]:hidden"
         )}

@@ -14,7 +14,7 @@ export function LaundromatIntro() {
     <>
       <h1 className="sr-only">{copy.site.name}</h1>
       <p className="sr-only">{copy.site.intro}</p>
-      <p className="sr-only text-[11px] text-[var(--lm-ink)] focus-within:not-sr-only focus-within:fixed focus-within:bottom-6 focus-within:left-7 focus-within:z-20">
+      <p className="sr-only text-[11px] text-[var(--lm-ink)] focus-within:not-sr-only focus-within:fixed focus-within:bottom-[max(1.5rem,env(safe-area-inset-bottom))] focus-within:left-[max(1.75rem,env(safe-area-inset-left))] focus-within:z-20">
         {copy.site.inspiredBy}{" "}
         <a
           href={INSPIRATION_BOOK.url}

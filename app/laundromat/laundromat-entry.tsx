@@ -133,7 +133,7 @@ export function LaundromatEntry(props: LaundromatEntryProps) {
   return (
     <div className="relative size-full">
       <FirstVisitKeyframes motion={bedroom.motion} />
-      <div className="absolute top-5 right-5 z-10 flex flex-col items-end gap-y-1">
+      <div className="absolute top-[max(1.25rem,env(safe-area-inset-top))] right-[max(1.25rem,env(safe-area-inset-right))] z-10 flex flex-col items-end gap-y-1">
         <UpdateNotice />
         <LanguagePicker />
         <SoundToggle />
