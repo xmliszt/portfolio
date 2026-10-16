@@ -1,5 +1,7 @@
+import { useRenderQuality } from "@/app/laundromat/settings/use-render-quality";
 import type { LaidOutObject } from "@/lib/laundromat/build-scene-layout";
 import { getDialAngleDeg } from "@/lib/laundromat/laundry/get-dial-angle-deg";
+import { LITE_DRUM_POSES } from "@/lib/laundromat/render-quality/lite-drum-poses";
 import type { SceneConfig } from "@/lib/laundromat/scene-config";
 import { toSvgPoints } from "@/lib/laundromat/to-svg-points";
 import { cn } from "@/lib/utils";
@@ -37,8 +39,10 @@ type MachineDrawingProps = {
 };
 
 export function MachineDrawing(props: MachineDrawingProps) {
+  const { quality } = useRenderQuality();
   const { object, faces, face } = props.laidOut;
   if (face?.target !== "machine") return null;
+  const isLite = quality === "lite";
   const { details, view } = props;
   const isDryer = object.kind === "dryer";
   const { panel, dial, readout, start, band, door, body, plinth } = face.rects;
@@ -47,6 +51,16 @@ export function MachineDrawing(props: MachineDrawingProps) {
     view.status.kind === "running" ||
     (view.status.kind === "occupied" && view.status.phase === "running");
   const isLive = view.status.kind === "running" || view.status.kind === "done";
+  const remainingMs =
+    view.status.kind === "running" ||
+    (view.status.kind === "occupied" && view.status.phase === "running")
+      ? view.status.remainingMs
+      : undefined;
+  const liteDrumDeg =
+    remainingMs === undefined
+      ? 0
+      : -(Math.floor(remainingMs / 1000) % LITE_DRUM_POSES) *
+        (360 / LITE_DRUM_POSES);
   const hasLaundry = isLive || isSomeoneElses || view.status.kind === "loaded";
   function isHighlighted(part: string) {
     return props.highlightedId === `${object.id}-${part}`;
@@ -379,7 +393,7 @@ export function MachineDrawing(props: MachineDrawingProps) {
           {hasLaundry && (
             <DrumLaundry
               radius={doorRadius - 7}
-              running={isRunning}
+              running={isRunning && !isLite}
               wet={!isDryer}
               secondsPerTurn={details.drumSecondsPerTurn}
             />
@@ -387,11 +401,13 @@ export function MachineDrawing(props: MachineDrawingProps) {
           <g
             data-lm-motion
             style={
-              isRunning
-                ? {
-                    animation: `lm-spin ${details.drumSecondsPerTurn}s linear infinite`,
-                  }
-                : undefined
+              !isRunning
+                ? undefined
+                : isLite
+                  ? { transform: `rotate(${liteDrumDeg}deg)` }
+                  : {
+                      animation: `lm-spin ${details.drumSecondsPerTurn}s linear infinite`,
+                    }
             }
           >
             <circle
@@ -443,7 +459,7 @@ export function MachineDrawing(props: MachineDrawingProps) {
                 : partStroke(isHighlighted("door"))
             )}
             style={
-              view.status.kind === "done"
+              view.status.kind === "done" && !isLite
                 ? { animation: "lm-pulse 2.4s ease-in-out infinite" }
                 : undefined
             }

@@ -1,4 +1,5 @@
 import { useLaundromatCopy } from "@/app/laundromat/i18n/use-laundromat-copy";
+import { useRenderQuality } from "@/app/laundromat/settings/use-render-quality";
 import { useStationThumbnail } from "@/app/laundromat/use-station-thumbnail";
 import type { LaidOutObject } from "@/lib/laundromat/build-scene-layout";
 import type { IsoProjection } from "@/lib/laundromat/project-iso-point";
@@ -37,12 +38,14 @@ type TvDrawingProps = {
 
 export function TvDrawing(props: TvDrawingProps) {
   const { copy } = useLaundromatCopy();
+  const { quality } = useRenderQuality();
   const { object, faces, face } = props.laidOut;
   const { state: tv, noSignal } = props.view;
   const thumbnailUrl = useStationThumbnail(
     props.details.stations[tv.station]?.videoId
   );
   if (face?.target !== "tv") return null;
+  const isGlassMoving = tv.on && quality !== "lite";
   const { projection, details } = props;
   const { position, size } = object;
   const { screen, grille, tuner, volume, power, body } = face.rects;
@@ -94,7 +97,9 @@ export function TvDrawing(props: TvDrawingProps) {
   };
   const scanlineStyle: React.CSSProperties & { "--lm-scan-step": string } = {
     "--lm-scan-step": `${SCANLINE_GAP}px`,
-    animation: `lm-scan-drift ${details.scanlineDriftSeconds}s linear infinite`,
+    animation: isGlassMoving
+      ? `lm-scan-drift ${details.scanlineDriftSeconds}s linear infinite`
+      : "none",
   };
   const glassClipId = `${object.id}-glass`;
   const vignetteId = `${object.id}-vignette`;
@@ -325,7 +330,11 @@ export function TvDrawing(props: TvDrawingProps) {
                   data-lm-motion
                   {...screenBox}
                   className="fill-[var(--lm-ink-hi)]"
-                  style={{ animation: "lm-flicker 4.8s steps(12) infinite" }}
+                  style={{
+                    animation: isGlassMoving
+                      ? "lm-flicker 4.8s steps(12) infinite"
+                      : "none",
+                  }}
                 />
               </g>
               <rect
@@ -335,7 +344,9 @@ export function TvDrawing(props: TvDrawingProps) {
                 filter={`url(#${staticId})`}
                 opacity={0}
                 style={{
-                  animation: `lm-static ${details.staticMs}ms steps(4) forwards`,
+                  animation: tv.on
+                    ? `lm-static ${details.staticMs}ms steps(4) forwards`
+                    : "none",
                 }}
               />
               {tv.on && (
@@ -363,7 +374,9 @@ export function TvDrawing(props: TvDrawingProps) {
                 })}
                 className="fill-[var(--lm-accent-hi)]"
                 style={{
-                  animation: `lm-fade-out ${details.osdSeconds}s ease-out forwards`,
+                  animation: tv.on
+                    ? `lm-fade-out ${details.osdSeconds}s ease-out forwards`
+                    : "none",
                 }}
               >
                 {station}

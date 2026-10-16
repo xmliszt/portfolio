@@ -9,6 +9,7 @@ export type Viewport = { width: number; height: number };
 
 export const MIN_HIT_TARGET_PX = 24;
 
+/** Return the room scale: the padded fit, raised until the smallest hit target is `MIN_HIT_TARGET_PX`, capped where the room still fits the viewport. */
 function getRoomScale(options: {
   viewport: Viewport;
   layout: SceneLayout;
@@ -29,7 +30,14 @@ function getRoomScale(options: {
       ])
       .map((bounds) => Math.min(bounds.width, bounds.height))
   );
-  return Math.max(fitScale, MIN_HIT_TARGET_PX / smallestTargetSide);
+  const fullScale = Math.min(
+    viewport.width / layout.size.width,
+    viewport.height / layout.size.height
+  );
+  return Math.min(
+    Math.max(fitScale, MIN_HIT_TARGET_PX / smallestTargetSide),
+    fullScale
+  );
 }
 
 /** Return the translate and scale that frame the room, or zoom onto the focused object leaving room around it. */
