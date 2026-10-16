@@ -24,6 +24,10 @@ export const zhHant = {
     ],
     inspiredBy: "靈感來自",
     openGraphLocale: "zh_TW",
+    shareImage: {
+      headline: "瀏覽器裡一間安靜的自助洗衣店。",
+      subline: "洗衣、烘乾、專注、lofi、咖啡、寫給陌生人的筆記本，或者只是放空",
+    },
   },
   toolbar: {
     soundOn: "聲音開",

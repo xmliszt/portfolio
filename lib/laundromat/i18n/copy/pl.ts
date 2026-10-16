@@ -37,6 +37,11 @@ export const pl = {
     ],
     inspiredBy: "inspiracja",
     openGraphLocale: "pl_PL",
+    shareImage: {
+      headline: "spokojna pralnia w przeglądarce.",
+      subline:
+        "pranie, suszenie, skupienie, lofi, kawa, notes dla nieznajomych albo po prostu odpoczynek",
+    },
   },
   toolbar: {
     soundOn: "dźwięk wł.",

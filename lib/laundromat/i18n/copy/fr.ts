@@ -24,6 +24,11 @@ export const fr = {
     ],
     inspiredBy: "inspiré de",
     openGraphLocale: "fr_FR",
+    shareImage: {
+      headline: "une laverie tranquille dans ton navigateur.",
+      subline:
+        "laver, sécher, se concentrer, lofi, café, un carnet pour des inconnus, ou juste rêvasser",
+    },
   },
   toolbar: {
     soundOn: "son activé",

@@ -24,6 +24,11 @@ export const ja = {
     ],
     inspiredBy: "着想をくれた本",
     openGraphLocale: "ja_JP",
+    shareImage: {
+      headline: "ブラウザの中の静かなコインランドリー。",
+      subline:
+        "洗って、乾かして、集中して、lofi、コーヒー、見知らぬ誰かへのノート、それともただぼんやり",
+    },
   },
   toolbar: {
     soundOn: "サウンド オン",

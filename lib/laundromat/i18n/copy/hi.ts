@@ -29,6 +29,11 @@ export const hi = {
     ],
     inspiredBy: "प्रेरणा",
     openGraphLocale: "hi_IN",
+    shareImage: {
+      headline: "तुम्हारे ब्राउज़र में एक शांत लॉन्ड्री।",
+      subline:
+        "धोना, सुखाना, फ़ोकस, lofi, कॉफ़ी, अजनबियों के लिए एक नोटबुक, या बस खो जाना",
+    },
   },
   toolbar: {
     soundOn: "आवाज़ चालू",

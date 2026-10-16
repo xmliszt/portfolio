@@ -33,6 +33,11 @@ export const en = {
     ],
     inspiredBy: "inspired by",
     openGraphLocale: "en_US",
+    shareImage: {
+      headline: "a quiet laundromat in your browser.",
+      subline:
+        "wash, dry, focus, lofi, coffee, a notebook for strangers, or just zone out",
+    },
   },
   toolbar: {
     soundOn: "sound on",

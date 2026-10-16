@@ -24,6 +24,11 @@ export const ko = {
     ],
     inspiredBy: "영감을 준 책",
     openGraphLocale: "ko_KR",
+    shareImage: {
+      headline: "브라우저 속 조용한 빨래방.",
+      subline:
+        "빨래, 건조, 집중, 로파이, 커피, 낯선 이를 위한 노트, 아니면 그냥 멍때리기",
+    },
   },
   toolbar: {
     soundOn: "소리 켬",

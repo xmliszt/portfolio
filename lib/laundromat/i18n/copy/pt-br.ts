@@ -25,6 +25,11 @@ export const ptBR = {
     ],
     inspiredBy: "inspirado em",
     openGraphLocale: "pt_BR",
+    shareImage: {
+      headline: "uma lavanderia tranquila no seu navegador.",
+      subline:
+        "lavar, secar, focar, lofi, café, um caderno para desconhecidos ou só desligar",
+    },
   },
   toolbar: {
     soundOn: "som ligado",
