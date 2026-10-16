@@ -70,7 +70,7 @@ test("keeps every machine control at least 24px on a laptop at room zoom", () =>
   }
 });
 
-test("zooms in on a phone rather than shrinking hit targets below 24px", () => {
+test("frames the whole room on a phone instead of zooming in on its centre", () => {
   const phone = { width: 390, height: 844 };
   const camera = computeCamera({
     focus: "room",
@@ -78,10 +78,11 @@ test("zooms in on a phone rather than shrinking hit targets below 24px", () => {
     layout,
     config: sceneConfig,
   });
-  const notebook = findBounds("notebook");
+  assert.ok(camera.x >= -1e-9);
+  assert.ok(camera.y >= -1e-9);
+  assert.ok(camera.x + layout.size.width * camera.scale <= phone.width + 1e-9);
   assert.ok(
-    Math.min(notebook.width, notebook.height) * camera.scale >=
-      MIN_HIT_TARGET_PX - 1e-9
+    camera.y + layout.size.height * camera.scale <= phone.height + 1e-9
   );
 });
 
