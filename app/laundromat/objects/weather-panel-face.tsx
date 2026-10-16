@@ -12,6 +12,8 @@ import { cn } from "@/lib/utils";
 import { WeatherGlyph } from "./weather-glyph";
 
 const GLYPH_BOX = 24;
+/** Width the sun, cloud and fog icons actually draw across, inside `GLYPH_BOX`. */
+const GLYPH_INK_WIDTH = 19;
 const SCREW_RADIUS = 0.55;
 const OFF_OPACITY = 0.18;
 
@@ -44,8 +46,22 @@ export function WeatherPanelFace(props: WeatherPanelFaceProps) {
         });
   const textInset = 1;
   const glyphScale = Math.min(glyph.width, glyph.height * 0.6) / GLYPH_BOX;
+  const conditionFontSize =
+    conditionName === undefined
+      ? 0
+      : fitCaptionFontSize({
+          text: conditionName,
+          maxWidth: glyph.width,
+          maxFontSize: 4.2,
+        });
+  const columnWidth = Math.max(
+    GLYPH_INK_WIDTH * glyphScale,
+    conditionName === undefined
+      ? 0
+      : conditionFontSize * getCaptionWidthEm(conditionName)
+  );
   const glyphCenter = {
-    x: glyph.x + glyph.width / 2,
+    x: glyph.x + glyph.width - columnWidth / 2,
     y: glyph.y + glyph.height * 0.5,
   };
   const air = (() => {
@@ -180,11 +196,7 @@ export function WeatherPanelFace(props: WeatherPanelFaceProps) {
             x={glyphCenter.x}
             y={glyph.y + glyph.height - 1}
             textAnchor="middle"
-            fontSize={fitCaptionFontSize({
-              text: conditionName,
-              maxWidth: glyph.width,
-              maxFontSize: 4.2,
-            })}
+            fontSize={conditionFontSize}
             className="fill-[var(--lm-ink)]"
           >
             {conditionName}
