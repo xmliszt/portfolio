@@ -9,13 +9,7 @@ import {
   useRef,
   useState,
 } from "react";
-import {
-  animate,
-  AnimatePresence,
-  motion,
-  useMotionValue,
-  useReducedMotion,
-} from "motion/react";
+import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { useSearchParams } from "next/navigation";
 
 import { getBoardFrame } from "@/lib/laundromat/board/get-board-frame";
@@ -124,6 +118,15 @@ function getFocusedObjectId(options: {
     : options.config.camera.focusTargets[options.focus].objectId;
 }
 
+function toCameraTransform(camera: Camera) {
+  return `translate(${camera.x}px, ${camera.y}px) scale(${camera.scale})`;
+}
+
+function jumpCameraTo(options: { scene: HTMLElement; camera: Camera }) {
+  options.scene.style.transition = "none";
+  options.scene.style.transform = toCameraTransform(options.camera);
+}
+
 function parseBookNumber(value: string | null) {
   const number = Number.parseInt(value ?? "", 10);
   return Number.isInteger(number) && number > 0 ? number : undefined;
@@ -194,7 +197,6 @@ export function LaundromatScene(props: LaundromatSceneProps) {
   const rootRef = useRef<HTMLDivElement>(null);
   const [viewport, setViewport] = useState<Viewport>();
   const [isReady, setIsReady] = useState(false);
-  const [settledFocus, setSettledFocus] = useState<CameraFocus>();
   const [highlightedId, setHighlightedId] = useState<string>();
   const [tooltipId, setTooltipId] = useState<string>();
   const [openDoorId, setOpenDoorId] = useState<string>();
@@ -204,10 +206,7 @@ export function LaundromatScene(props: LaundromatSceneProps) {
   const tooltipCooldownTimerRef = useRef<number>(undefined);
   const isTooltipWarmRef = useRef(false);
 
-  const cameraX = useMotionValue(0);
-  const cameraY = useMotionValue(0);
-  const cameraScale = useMotionValue(1);
-  const sceneOpacity = useMotionValue(1);
+  const sceneRef = useRef<HTMLDivElement>(null);
   const previousCameraRef = useRef<{ camera: Camera; focus: CameraFocus }>(
     undefined
   );
@@ -735,7 +734,8 @@ export function LaundromatScene(props: LaundromatSceneProps) {
   }, []);
 
   useEffect(() => {
-    if (viewport === undefined) return;
+    const scene = sceneRef.current;
+    if (viewport === undefined || scene === null) return;
     const camera = computeCamera({
       focus: cameraFocus,
       viewport,
@@ -745,66 +745,36 @@ export function LaundromatScene(props: LaundromatSceneProps) {
     const previous = previousCameraRef.current;
     previousCameraRef.current = { camera, focus: cameraFocus };
 
-    function jumpTo(target: Camera) {
-      cameraX.set(target.x);
-      cameraY.set(target.y);
-      cameraScale.set(target.scale);
-    }
-
     const from =
       previous?.camera ??
       computeCamera({ focus: "room", viewport, layout, config });
     if (previous === undefined) {
-      jumpTo(from);
+      jumpCameraTo({ scene, camera: from });
+      // A transition started in the same task would otherwise run from the last painted transform.
+      void scene.offsetWidth;
       setIsReady(true);
     }
     const isResize = previous?.focus === cameraFocus;
     if (isResize || (previous === undefined && cameraFocus === "room")) {
-      jumpTo(camera);
-      setSettledFocus(cameraFocus);
+      jumpCameraTo({ scene, camera });
       return;
     }
     if (prefersReducedMotion) {
-      jumpTo(camera);
-      setSettledFocus(cameraFocus);
-      const fade = animate(sceneOpacity, [0.5, 1], { duration: 0.25 });
-      return () => fade.stop();
+      jumpCameraTo({ scene, camera });
+      const fade = scene.animate([{ opacity: 0.5 }, { opacity: 1 }], {
+        duration: 250,
+      });
+      return () => fade.cancel();
     }
-    const transition = {
-      duration:
-        getCameraMoveDurationMs({
-          from,
-          to: camera,
-          viewport,
-          config,
-        }) / 1000,
-      ease: config.camera.ease,
-    };
-    setSettledFocus(undefined);
-    const moves = [
-      animate(cameraX, camera.x, transition),
-      animate(cameraY, camera.y, transition),
-      animate(cameraScale, camera.scale, transition),
-    ];
-    const move = { isCurrent: true };
-    void Promise.all(moves.map(({ finished }) => finished)).then(() => {
-      if (move.isCurrent) setSettledFocus(cameraFocus);
+    const durationMs = getCameraMoveDurationMs({
+      from,
+      to: camera,
+      viewport,
+      config,
     });
-    return () => {
-      move.isCurrent = false;
-      moves.forEach((cameraMove) => cameraMove.stop());
-    };
-  }, [
-    viewport,
-    cameraFocus,
-    layout,
-    config,
-    prefersReducedMotion,
-    cameraX,
-    cameraY,
-    cameraScale,
-    sceneOpacity,
-  ]);
+    scene.style.transition = `transform ${durationMs}ms cubic-bezier(${config.camera.ease.join(",")})`;
+    scene.style.transform = toCameraTransform(camera);
+  }, [viewport, cameraFocus, layout, config, prefersReducedMotion]);
 
   useEffect(() => {
     const previousFocus = previousFocusRef.current;
@@ -1250,23 +1220,15 @@ export function LaundromatScene(props: LaundromatSceneProps) {
       style={getDaylitTokenStyle({ config, hour })}
       onClick={handleBackdropClick}
     >
-      <motion.div
+      <div
+        ref={sceneRef}
         className={cn(
           "absolute top-0 left-0 origin-top-left",
           !isReady && "invisible",
           // The open book covers every animated object, and each frame of one would re-rasterize the zoomed-in room.
-          focus === "notebook" &&
-            settledFocus === "notebook" &&
-            "[&_*]:![animation-play-state:paused]"
+          cameraFocus === "notebook" && "[&_*]:![animation-play-state:paused]"
         )}
-        style={{
-          x: cameraX,
-          y: cameraY,
-          scale: cameraScale,
-          opacity: sceneOpacity,
-          width: layout.size.width,
-          height: layout.size.height,
-        }}
+        style={{ width: layout.size.width, height: layout.size.height }}
       >
         <RoomDrawing
           layout={layout}
@@ -1355,7 +1317,7 @@ export function LaundromatScene(props: LaundromatSceneProps) {
               onHideTooltip={() => hideTooltip(book.id)}
             />
           ))}
-      </motion.div>
+      </div>
       <AnimatePresence>
         {focus === "notebook" && bookLift !== undefined && (
           <motion.div
@@ -1363,7 +1325,7 @@ export function LaundromatScene(props: LaundromatSceneProps) {
             className="pointer-events-none absolute inset-0 flex items-center justify-center"
           >
             <motion.div
-              className="pointer-events-auto origin-center"
+              className="pointer-events-auto origin-center will-change-transform"
               initial={bookLift.from}
               animate={bookLift.to}
               exit={{ ...bookLift.from, transition: { duration: 0.32 } }}
@@ -1404,7 +1366,7 @@ export function LaundromatScene(props: LaundromatSceneProps) {
             className="pointer-events-none absolute inset-0 flex items-center justify-center"
           >
             <motion.div
-              className="pointer-events-auto origin-center"
+              className="pointer-events-auto origin-center will-change-transform"
               initial={boardLift.from}
               animate={boardLift.to}
               exit={{ ...boardLift.from, transition: { duration: 0.32 } }}
@@ -1436,7 +1398,7 @@ export function LaundromatScene(props: LaundromatSceneProps) {
             className="pointer-events-none absolute inset-0 flex items-center justify-center"
           >
             <motion.div
-              className="pointer-events-auto origin-center"
+              className="pointer-events-auto origin-center will-change-transform"
               initial={weatherLift.from}
               animate={weatherLift.to}
               exit={{ ...weatherLift.from, transition: { duration: 0.32 } }}
