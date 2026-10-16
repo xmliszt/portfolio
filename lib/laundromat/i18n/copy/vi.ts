@@ -29,6 +29,11 @@ export const vi = {
     ],
     inspiredBy: "lấy cảm hứng từ",
     openGraphLocale: "vi_VN",
+    shareImage: {
+      headline: "một tiệm giặt yên tĩnh trong trình duyệt của bạn.",
+      subline:
+        "giặt, sấy, tập trung, lofi, cà phê, cuốn sổ cho người lạ, hoặc chỉ ngồi thả hồn",
+    },
   },
   toolbar: {
     soundOn: "đang bật tiếng",

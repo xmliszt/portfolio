@@ -23,6 +23,11 @@ export const tr = {
     ],
     inspiredBy: "ilham kaynağı",
     openGraphLocale: "tr_TR",
+    shareImage: {
+      headline: "tarayıcında sakin bir çamaşırhane.",
+      subline:
+        "yıka, kurut, odaklan, lofi, kahve, yabancılar için bir defter ya da sadece dalıp git",
+    },
   },
   toolbar: {
     soundOn: "ses açık",

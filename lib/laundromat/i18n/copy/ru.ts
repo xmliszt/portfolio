@@ -37,6 +37,11 @@ export const ru = {
     ],
     inspiredBy: "по мотивам",
     openGraphLocale: "ru_RU",
+    shareImage: {
+      headline: "тихая прачечная в браузере.",
+      subline:
+        "стирка, сушка, фокус, lofi, кофе, блокнот для незнакомцев или просто отдых",
+    },
   },
   toolbar: {
     soundOn: "звук вкл.",

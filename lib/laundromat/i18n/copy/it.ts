@@ -24,6 +24,11 @@ export const it = {
     ],
     inspiredBy: "ispirato a",
     openGraphLocale: "it_IT",
+    shareImage: {
+      headline: "una lavanderia tranquilla nel tuo browser.",
+      subline:
+        "lavare, asciugare, concentrarsi, lofi, caffè, un quaderno per sconosciuti o semplicemente staccare",
+    },
   },
   toolbar: {
     soundOn: "audio attivo",

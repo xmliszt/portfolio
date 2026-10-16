@@ -1,14 +1,12 @@
 import type { Metadata } from "next";
 
-import { LAUNDROMAT_ORIGIN } from "@/lib/laundromat/hosts";
+import { getShareImageUrl } from "@/lib/laundromat/share-image/get-share-image-url";
 
 import { getLaundromatCopy } from "./get-laundromat-copy";
 import { getLaundromatLanguageUrls } from "./get-laundromat-language-urls";
 import { getLaundromatLocaleUrl } from "./get-laundromat-locale-url";
 import type { LaundromatLocale } from "./laundromat-locales";
 import { LAUNDROMAT_LOCALES } from "./laundromat-locales";
-
-const OPEN_GRAPH_IMAGE_URL = `${LAUNDROMAT_ORIGIN}/laundromat/og-v2.png`;
 
 /** Return the page metadata for `locale`: its title, description, keywords and Open Graph locale, its own URL as canonical, and every language's URL as an alternate. */
 export function getLaundromatLocaleMetadata(
@@ -17,7 +15,7 @@ export function getLaundromatLocaleMetadata(
   const { site } = getLaundromatCopy(locale);
   const localeUrl = getLaundromatLocaleUrl(locale);
   const image = {
-    url: OPEN_GRAPH_IMAGE_URL,
+    url: getShareImageUrl(locale),
     width: 1200,
     height: 630,
     alt: site.title,

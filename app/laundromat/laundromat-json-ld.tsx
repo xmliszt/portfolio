@@ -1,6 +1,7 @@
 import { LAUNDROMAT_ORIGIN } from "@/lib/laundromat/hosts";
 import type { LaundromatLocale } from "@/lib/laundromat/i18n/laundromat-locales";
 import { INSPIRATION_BOOK } from "@/lib/laundromat/inspiration-book";
+import { getShareImageUrl } from "@/lib/laundromat/share-image/get-share-image-url";
 
 type LaundromatJsonLdProps = {
   name: string;
@@ -37,7 +38,7 @@ export function LaundromatJsonLd(props: LaundromatJsonLdProps) {
         browserRequirements: "Requires JavaScript.",
         isAccessibleForFree: true,
         offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
-        image: `${LAUNDROMAT_ORIGIN}/laundromat/og-v2.png`,
+        image: getShareImageUrl(props.locale),
         isPartOf: { "@id": `${LAUNDROMAT_ORIGIN}/#website` },
         author,
         creator: author,

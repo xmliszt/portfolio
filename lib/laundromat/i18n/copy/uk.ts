@@ -37,6 +37,11 @@ export const uk = {
     ],
     inspiredBy: "за мотивами",
     openGraphLocale: "uk_UA",
+    shareImage: {
+      headline: "тиха пральня у браузері.",
+      subline:
+        "прання, сушіння, фокус, lofi, кава, блокнот для незнайомців або просто відпочинок",
+    },
   },
   toolbar: {
     soundOn: "звук увімк.",

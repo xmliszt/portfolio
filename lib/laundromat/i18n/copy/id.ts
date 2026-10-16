@@ -29,6 +29,11 @@ export const id = {
     ],
     inspiredBy: "terinspirasi dari",
     openGraphLocale: "id_ID",
+    shareImage: {
+      headline: "laundry yang tenang di browser kamu.",
+      subline:
+        "cuci, keringkan, fokus, lofi, kopi, buku catatan untuk orang asing, atau sekadar melamun",
+    },
   },
   toolbar: {
     soundOn: "suara nyala",

@@ -24,6 +24,11 @@ export const de = {
     ],
     inspiredBy: "inspiriert von",
     openGraphLocale: "de_DE",
+    shareImage: {
+      headline: "ein ruhiger Waschsalon in deinem Browser.",
+      subline:
+        "waschen, trocknen, fokussieren, Lofi, Kaffee, ein Notizbuch für Fremde oder einfach abschalten",
+    },
   },
   toolbar: {
     soundOn: "Ton an",

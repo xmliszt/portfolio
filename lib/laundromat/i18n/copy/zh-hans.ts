@@ -24,6 +24,11 @@ export const zhHans = {
     ],
     inspiredBy: "灵感来自",
     openGraphLocale: "zh_CN",
+    shareImage: {
+      headline: "浏览器里一间安静的自助洗衣店。",
+      subline:
+        "洗衣、烘干、专注、lofi、咖啡、写给陌生人的笔记本，或者只是发会儿呆",
+    },
   },
   toolbar: {
     soundOn: "声音开",

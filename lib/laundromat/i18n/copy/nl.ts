@@ -23,6 +23,11 @@ export const nl = {
     ],
     inspiredBy: "geïnspireerd door",
     openGraphLocale: "nl_NL",
+    shareImage: {
+      headline: "een rustige wasserette in je browser.",
+      subline:
+        "wassen, drogen, focussen, lofi, koffie, een notitieboek voor vreemden, of gewoon even niks",
+    },
   },
   toolbar: {
     soundOn: "geluid aan",
