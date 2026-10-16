@@ -1,3 +1,5 @@
+import { useRenderQuality } from "@/app/laundromat/settings/use-render-quality";
+
 const WISPS = [
   { offset: -2.5, delayRatio: 0 },
   { offset: 1.5, delayRatio: 0.45 },
@@ -13,7 +15,9 @@ type SteamWispsProps = {
 };
 
 export function SteamWisps(props: SteamWispsProps) {
+  const { quality } = useRenderQuality();
   const { height } = props;
+  if (quality === "lite") return null;
   return (
     <g
       transform={`translate(${props.x} ${props.y})`}
