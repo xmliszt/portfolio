@@ -68,6 +68,10 @@ export default function LaundromatLayout(props: LaundromatLayoutProps) {
         fontMono.variable
       )}
     >
+      <meta
+        property="og:logo"
+        content={`${LAUNDROMAT_ORIGIN}/laundromat/icon-192.png`}
+      />
       <style>{`[data-laundromat-root] { ${toCssVariables(sceneConfig.tokens)} }\n${getDaylitTokenCss(sceneConfig)}\n${getCursorCss(sceneConfig.tokens)}`}</style>
       {props.children}
       <LaundromatCursor />
