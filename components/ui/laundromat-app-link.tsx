@@ -1,14 +1,9 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import { motion } from "motion/react";
 import Link from "next/link";
 
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
+import { FlyOutTooltip } from "@/components/ui/fly-out-tooltip";
 import { createSoundBoard } from "@/lib/laundromat/audio/create-sound-board";
 import { LAUNDROMAT_ORIGIN } from "@/lib/laundromat/hosts";
 import { cn } from "@/lib/utils";
@@ -46,47 +41,29 @@ export function LaundromatAppLink(props: LaundromatAppLinkProps) {
   }
 
   return (
-    <Tooltip delayDuration={0}>
-      <TooltipTrigger asChild>
-        <span
-          className="group relative m-0 inline-block w-fit"
-          onPointerEnter={handlePointerEnter}
-          onPointerLeave={handlePointerLeave}
-        >
-          <Link
-            href={LAUNDROMAT_ORIGIN}
-            className={cn(
-              "text-muted-foreground hover:text-foreground",
-              "font-normal transition-colors [&>p]:m-0",
-              "no-underline [@media(hover:none)]:underline [@media(hover:none)]:underline-offset-2"
-            )}
-            target="_self"
-          >
-            {props.children}
-          </Link>
-          <span
-            className={cn(
-              "bg-foreground absolute bottom-0 left-0 rounded-full",
-              "h-0 w-0 opacity-0 transition-[opacity_width] duration-300 group-hover:h-px group-hover:w-full group-hover:opacity-100"
-            )}
-          ></span>
-        </span>
-      </TooltipTrigger>
-
-      <TooltipContent
-        side="top"
-        align="end"
-        sideOffset={4}
-        className="bg-transparent p-0 shadow-none [&>span]:hidden"
+    <FlyOutTooltip label="Laundro Cafe" content={<LaundromatDoor />}>
+      <span
+        className="group relative m-0 inline-block w-fit"
+        onPointerEnter={handlePointerEnter}
+        onPointerLeave={handlePointerLeave}
       >
-        <motion.div
-          initial={{ opacity: 0, scale: 0.9, x: 20, y: 20 }}
-          animate={{ opacity: 1, scale: 1, x: 56, y: 8 }}
-          transition={{ duration: 0.25 }}
+        <Link
+          href={LAUNDROMAT_ORIGIN}
+          className={cn(
+            "text-muted-foreground hover:text-foreground",
+            "font-normal no-underline transition-colors [&>p]:m-0"
+          )}
+          target="_self"
         >
-          <LaundromatDoor />
-        </motion.div>
-      </TooltipContent>
-    </Tooltip>
+          {props.children}
+        </Link>
+        <span
+          className={cn(
+            "bg-foreground absolute bottom-0 left-0 rounded-full",
+            "h-0 w-0 opacity-0 transition-[opacity_width] duration-300 group-hover:h-px group-hover:w-full group-hover:opacity-100"
+          )}
+        ></span>
+      </span>
+    </FlyOutTooltip>
   );
 }
