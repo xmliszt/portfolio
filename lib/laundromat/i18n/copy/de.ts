@@ -60,8 +60,17 @@ export const de = {
     close: "schließen",
     closeHint: "esc zum Schließen",
     temperature: "temperatur",
-    temperatureHint:
-      "die wetteranzeige startet mit der einheit, die bei dir üblich ist.",
+    weather: "Wetter",
+    placeLabel: "Wetterort",
+    placePlaceholder: "nach einer Stadt suchen",
+    placeLive: "live",
+    placeNearYou: "in deiner Nähe",
+    placeSearching: "suche…",
+    placeNoResults: "keine Orte gefunden",
+    conditionLabel: "Himmel",
+    conditionLive: "Live-Wetter",
+    weatherHint:
+      "das Live-Wetter wird anhand deiner IP-Adresse geschätzt und kann daher manchmal danebenliegen. wähl eine Stadt oder einen Himmel, um es selbst festzulegen. die Temperatureinheit richtet sich nach dem Ort, bis du eine wählst.",
     roomSounds: "Raumgeräusche",
     roomSoundsHint:
       "Geräusche aus dem Raum und von den Leuten darin. Was du ausschaltest oder leiser stellst, ändert sich nur für dich.",
@@ -310,6 +319,10 @@ export const de = {
       board: "aushang",
     },
     updates: {
+      "weather-anywhere": {
+        title: "wähl das Wetter draußen",
+        body: "In den Einstellungen kannst du eine Stadt wählen, deren Wetter du im Fenster und auf der Anzeige siehst, oder den Himmel selbst bestimmen. Standardmäßig bleibt es beim Live-Wetter.",
+      },
       "room-sound-mixer": {
         title: "misch den Raum nach deinem Geschmack",
         body: "Jedes Raumgeräusch hat in den Einstellungen jetzt einen eigenen Regler, damit der Regen lauter und die Maschinen leiser sein können. Spiel den Raummix ab, um alles zusammen zu hören, und druck einen Wäschezettel, um deine Einstellungen aufzubewahren oder auf ein anderes Gerät mitzunehmen.",

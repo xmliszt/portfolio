@@ -59,8 +59,17 @@ export const tr = {
     close: "kapat",
     closeHint: "kapatmak için esc",
     temperature: "sıcaklık",
-    temperatureHint:
-      "hava durumu panosu, bulunduğun yerde alışılmış birimle başlar.",
+    weather: "hava",
+    placeLabel: "hava durumu konumu",
+    placePlaceholder: "şehir ara",
+    placeLive: "canlı",
+    placeNearYou: "yakınında",
+    placeSearching: "aranıyor…",
+    placeNoResults: "yer bulunamadı",
+    conditionLabel: "gökyüzü",
+    conditionLive: "canlı hava durumu",
+    weatherHint:
+      "canlı hava durumu IP adresinden tahmin edilir, bu yüzden bazen yanılabilir. kendin belirlemek için bir şehir ya da gökyüzü seç. sıcaklık birimi sen seçene kadar o yere göre ayarlanır.",
     roomSounds: "dükkân sesleri",
     roomSoundsHint:
       "dükkânın ve içindeki insanların sesleri. birini kapatmak ya da kısmak onu yalnızca senin için değiştirir.",
@@ -271,6 +280,10 @@ export const tr = {
       board: "pano",
     },
     updates: {
+      "weather-anywhere": {
+        title: "dışarıdaki havayı seç",
+        body: "Ayarlarda bir şehir seçerek oranın havasını pencerede ve panoda görebilir ya da gökyüzünü kendin seçebilirsin. Varsayılan yine canlı hava durumu.",
+      },
       "room-sound-mixer": {
         title: "dükkânı kendi zevkine göre ayarla",
         body: "Ayarlarda artık her dükkân sesinin kendi kaydırıcısı var, böylece yağmur daha yüksek, makineler daha kısık olabilir. Hepsini birlikte duymak için dükkân miksini çal, ayarlarını saklamak ya da başka bir cihaza taşımak için bir çamaşır fişi yazdır.",

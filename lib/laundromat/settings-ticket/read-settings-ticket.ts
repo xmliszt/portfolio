@@ -2,8 +2,13 @@ import { clampRoomSoundVolume } from "@/lib/laundromat/audio/clamp-room-sound-vo
 import { ROOM_SOUND_GROUPS } from "@/lib/laundromat/audio/room-sound-groups";
 import { RENDER_QUALITY_PREFERENCES } from "@/lib/laundromat/render-quality/render-quality";
 import { TV_STATION_IDS } from "@/lib/laundromat/tv/tv-state";
+import { parseWeatherPlace } from "@/lib/laundromat/weather/parse-weather-place";
+import { WEATHER_CONDITIONS } from "@/lib/laundromat/weather/weather-reading";
 
-import type { ReadSettingsTicket } from "./settings-ticket";
+import type {
+  ReadSettingsTicket,
+  SettingsTicketWeather,
+} from "./settings-ticket";
 import { SETTINGS_TICKET_APP, SETTINGS_TICKET_KIND } from "./settings-ticket";
 
 function isObject(value: unknown): value is { [key: string]: unknown } {
@@ -23,6 +28,21 @@ function readTv(value: unknown) {
   return { station, volumePercent };
 }
 
+function readWeather(value: unknown): {
+  [field in keyof SettingsTicketWeather]:
+    | SettingsTicketWeather[field]
+    | undefined;
+} {
+  if (!isObject(value)) return { place: undefined, condition: undefined };
+  return {
+    place: value.place === "live" ? "live" : parseWeatherPlace(value.place),
+    condition:
+      value.condition === "live"
+        ? "live"
+        : WEATHER_CONDITIONS.find((known) => known === value.condition),
+  };
+}
+
 /** Return the settings held in `value`, a parsed ticket file, or `undefined` when it is not a laundro.cafe settings ticket; unknown keys are ignored, volumes are clamped into range, and unreadable fields come back `undefined`. */
 export function readSettingsTicket(
   value: unknown
@@ -36,6 +56,7 @@ export function readSettingsTicket(
     return undefined;
   }
   const { settings } = value;
+  const weather = readWeather(settings.weather);
   const roomSounds = isObject(settings.roomSounds) ? settings.roomSounds : {};
   const entries = ROOM_SOUND_GROUPS.map((group) => {
     const entry = roomSounds[group];
@@ -60,6 +81,8 @@ export function readSettingsTicket(
       settings.temperatureUnit === "fahrenheit"
         ? settings.temperatureUnit
         : undefined,
+    weatherPlace: weather.place,
+    weatherCondition: weather.condition,
     muted:
       settings.sound === "on" || settings.sound === "off"
         ? settings.sound === "off"

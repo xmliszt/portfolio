@@ -1,10 +1,4 @@
-function parseCoordinate(options: { value: string | null; limit: number }) {
-  if (options.value === null || options.value.trim() === "") return undefined;
-  const coordinate = Number(options.value);
-  return Number.isFinite(coordinate) && Math.abs(coordinate) <= options.limit
-    ? coordinate
-    : undefined;
-}
+import { parseCoordinate } from "./parse-coordinate";
 
 function decodeCity(value: string | null) {
   if (value === null || value === "") return undefined;

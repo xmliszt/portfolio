@@ -5,7 +5,11 @@ import type {
 } from "@/lib/laundromat/audio/room-sound-groups";
 import type { RenderQualityPreference } from "@/lib/laundromat/render-quality/render-quality";
 import type { TvStationId } from "@/lib/laundromat/tv/tv-state";
-import type { TemperatureUnit } from "@/lib/laundromat/weather/weather-reading";
+import type { WeatherPlace } from "@/lib/laundromat/weather/weather-place";
+import type {
+  TemperatureUnit,
+  WeatherCondition,
+} from "@/lib/laundromat/weather/weather-reading";
 
 export const SETTINGS_TICKET_APP = "laundro.cafe";
 export const SETTINGS_TICKET_KIND = "settings";
@@ -17,6 +21,11 @@ export const SETTINGS_TICKET_HASH_PREFIX = "#ticket=";
 
 export type SettingsTicketTv = { station: TvStationId; volumePercent: number };
 
+export type SettingsTicketWeather = {
+  place: WeatherPlace | "live";
+  condition: WeatherCondition | "live";
+};
+
 export type SettingsTicket = {
   app: typeof SETTINGS_TICKET_APP;
   kind: typeof SETTINGS_TICKET_KIND;
@@ -25,6 +34,7 @@ export type SettingsTicket = {
   settings: {
     renderQuality: RenderQualityPreference;
     temperatureUnit: TemperatureUnit;
+    weather: SettingsTicketWeather;
     sound: "on" | "off";
     roomSounds: { [group in RoomSoundGroup]: { on: boolean; volume: number } };
     tv?: SettingsTicketTv;
@@ -36,6 +46,8 @@ export type ReadSettingsTicket = {
   printedAt: string | undefined;
   renderQuality: RenderQualityPreference | undefined;
   temperatureUnit: TemperatureUnit | undefined;
+  weatherPlace: SettingsTicketWeather["place"] | undefined;
+  weatherCondition: SettingsTicketWeather["condition"] | undefined;
   muted: boolean | undefined;
   switches: { [group in RoomSoundGroup]?: RoomSoundSwitches[group] };
   volumes: { [group in RoomSoundGroup]?: RoomSoundVolumes[group] };

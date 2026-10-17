@@ -60,8 +60,17 @@ export const es = {
     close: "cerrar",
     closeHint: "esc para cerrar",
     temperature: "temperatura",
-    temperatureHint:
-      "el panel del tiempo empieza con la unidad habitual donde estás.",
+    weather: "tiempo",
+    placeLabel: "ubicación del tiempo",
+    placePlaceholder: "busca una ciudad",
+    placeLive: "en vivo",
+    placeNearYou: "cerca de ti",
+    placeSearching: "buscando…",
+    placeNoResults: "no se encontraron lugares",
+    conditionLabel: "cielo",
+    conditionLive: "tiempo en vivo",
+    weatherHint:
+      "el tiempo en vivo se calcula a partir de tu dirección IP, así que a veces puede fallar. elige una ciudad o un cielo para fijarlo tú. la unidad de temperatura sigue al lugar hasta que elijas una.",
     roomSounds: "sonidos de la sala",
     roomSoundsHint:
       "sonidos de la sala y de la gente que hay en ella. si apagas o bajas uno, solo cambia para ti.",
@@ -308,6 +317,10 @@ export const es = {
       board: "tablón",
     },
     updates: {
+      "weather-anywhere": {
+        title: "elige el tiempo de afuera",
+        body: "En los ajustes, elige una ciudad para ver su tiempo por la ventana y en el panel, o elige tú el cielo. Por defecto sigue siendo el tiempo en vivo.",
+      },
       "room-sound-mixer": {
         title: "mezcla la sala a tu gusto",
         body: "Cada sonido de la sala tiene ahora su propio control deslizante en los ajustes, para que la lluvia suene más fuerte y las máquinas más bajo. Escucha la mezcla de la sala para oírlos juntos e imprime un resguardo de lavandería para guardar tus ajustes o llevarlos a otro dispositivo.",

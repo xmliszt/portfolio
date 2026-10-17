@@ -69,8 +69,17 @@ export const en = {
     close: "close",
     closeHint: "esc to close",
     temperature: "temperature",
-    temperatureHint:
-      "the weather panel starts with whatever is usual where you are.",
+    weather: "weather",
+    placeLabel: "weather location",
+    placePlaceholder: "search for a city",
+    placeLive: "live",
+    placeNearYou: "near you",
+    placeSearching: "searching…",
+    placeNoResults: "no places found",
+    conditionLabel: "sky",
+    conditionLive: "live weather",
+    weatherHint:
+      "live weather is estimated from your IP address, so it can be off sometimes. pick a city or a sky to set it yourself. the temperature unit follows the place until you choose one.",
     roomSounds: "room sounds",
     roomSoundsHint:
       "sounds from the room and the people in it. turning one off or down only changes it for you.",
@@ -305,6 +314,10 @@ export const en = {
       board: "board",
     } satisfies { [tag in BoardTag]: string },
     updates: {
+      "weather-anywhere": {
+        title: "choose the weather outside",
+        body: "In settings, pick a city to see its weather through the window and on the panel, or choose the sky yourself. Live weather stays the default.",
+      },
       "room-sound-mixer": {
         title: "mix the room your way",
         body: "Each room sound in settings now has its own fader, so the rain can be louder and the machines quieter. Play the room mix to hear them together, and print a laundry ticket to keep your settings or bring them to another device.",

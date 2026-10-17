@@ -59,8 +59,17 @@ export const nl = {
     close: "sluiten",
     closeHint: "esc om te sluiten",
     temperature: "temperatuur",
-    temperatureHint:
-      "het weerpaneel begint met de eenheid die bij jou gebruikelijk is.",
+    weather: "weer",
+    placeLabel: "weerlocatie",
+    placePlaceholder: "zoek een stad",
+    placeLive: "live",
+    placeNearYou: "bij jou in de buurt",
+    placeSearching: "zoeken…",
+    placeNoResults: "geen plaatsen gevonden",
+    conditionLabel: "lucht",
+    conditionLive: "live weer",
+    weatherHint:
+      "het live weer wordt geschat op basis van je IP-adres, dus het kan soms niet kloppen. kies een stad of een lucht om het zelf in te stellen. de temperatuureenheid volgt de plaats tot je er zelf een kiest.",
     roomSounds: "geluiden in de zaak",
     roomSoundsHint:
       "geluiden van de zaak en de mensen erin. iets uit- of zachter zetten verandert het alleen voor jou.",
@@ -277,6 +286,10 @@ export const nl = {
       board: "bord",
     },
     updates: {
+      "weather-anywhere": {
+        title: "kies het weer buiten",
+        body: "Kies in de instellingen een stad om het weer daar door het raam en op het paneel te zien, of kies zelf de lucht. Standaard blijft het live weer.",
+      },
       "room-sound-mixer": {
         title: "mix de zaak zoals jij wilt",
         body: "Elk geluid in de zaak heeft in de instellingen nu een eigen schuifregelaar, zodat de regen harder kan en de machines zachter. Speel de mix van de zaak om ze samen te horen, en print een wasbonnetje om je instellingen te bewaren of mee te nemen naar een ander apparaat.",

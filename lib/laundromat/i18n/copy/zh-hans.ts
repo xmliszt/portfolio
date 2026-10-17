@@ -60,7 +60,17 @@ export const zhHans = {
     close: "关闭",
     closeHint: "按 esc 关闭",
     temperature: "温度",
-    temperatureHint: "天气面板默认使用你所在地区常用的单位。",
+    weather: "天气",
+    placeLabel: "天气地点",
+    placePlaceholder: "搜索城市",
+    placeLive: "实时",
+    placeNearYou: "你附近",
+    placeSearching: "搜索中…",
+    placeNoResults: "没有找到地点",
+    conditionLabel: "天空",
+    conditionLive: "实时天气",
+    weatherHint:
+      "实时天气是根据你的 IP 地址估算的，有时可能不准。选一个城市或天空，就能自己设定。温度单位会跟随地点，直到你自己选择。",
     roomSounds: "店内声音",
     roomSoundsHint:
       "来自店内和店里其他人的声音。关掉或调小某个声音，只会改变你自己听到的。",
@@ -277,6 +287,10 @@ export const zhHans = {
       board: "告示板",
     },
     updates: {
+      "weather-anywhere": {
+        title: "选择窗外的天气",
+        body: "在设置里选一个城市，窗外和天气面板就会显示那里的天气；也可以自己选天空。默认仍是实时天气。",
+      },
       "room-sound-mixer": {
         title: "按你的喜好调配店内声音",
         body: "设置里的每种店内声音现在都有自己的滑块，可以让雨声大一些、机器声小一些。播放店内混音，就能一起听到它们；打印一张洗衣取件单，就能保存设置，或带到另一台设备上。",

@@ -60,7 +60,17 @@ export const it = {
     close: "chiudi",
     closeHint: "esc per chiudere",
     temperature: "temperatura",
-    temperatureHint: "il pannello meteo parte con l'unità abituale dove sei.",
+    weather: "meteo",
+    placeLabel: "luogo del meteo",
+    placePlaceholder: "cerca una città",
+    placeLive: "dal vivo",
+    placeNearYou: "vicino a te",
+    placeSearching: "ricerca…",
+    placeNoResults: "nessun luogo trovato",
+    conditionLabel: "cielo",
+    conditionLive: "meteo dal vivo",
+    weatherHint:
+      "il meteo dal vivo è stimato dal tuo indirizzo IP, quindi a volte può sbagliare. scegli una città o un cielo per impostarlo tu. l'unità di temperatura segue il luogo finché non ne scegli una.",
     roomSounds: "suoni della sala",
     roomSoundsHint:
       "i suoni della sala e delle persone che ci sono. spegnerne o abbassarne uno lo cambia solo per te.",
@@ -314,6 +324,10 @@ export const it = {
       board: "bacheca",
     },
     updates: {
+      "weather-anywhere": {
+        title: "scegli il tempo fuori",
+        body: "Nelle impostazioni scegli una città per vederne il meteo dalla finestra e sul pannello, oppure scegli tu il cielo. Di base resta il meteo dal vivo.",
+      },
       "room-sound-mixer": {
         title: "mixa la sala a modo tuo",
         body: "Ogni suono della sala nelle impostazioni ora ha il suo cursore, così la pioggia può essere più forte e le macchine più piano. Ascolta il mix della sala per sentirli insieme, e stampa un tagliando della lavanderia per tenere le tue impostazioni o portarle su un altro dispositivo.",

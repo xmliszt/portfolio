@@ -3,7 +3,11 @@ import type {
   RoomSoundVolumes,
 } from "@/lib/laundromat/audio/room-sound-groups";
 import type { RenderQualityPreference } from "@/lib/laundromat/render-quality/render-quality";
-import type { TemperatureUnit } from "@/lib/laundromat/weather/weather-reading";
+import type { WeatherPlace } from "@/lib/laundromat/weather/weather-place";
+import type {
+  TemperatureUnit,
+  WeatherCondition,
+} from "@/lib/laundromat/weather/weather-reading";
 
 import type { SettingsTicket, SettingsTicketTv } from "./settings-ticket";
 import {
@@ -12,11 +16,13 @@ import {
   SETTINGS_TICKET_VERSION,
 } from "./settings-ticket";
 
-/** Return a settings ticket holding the visitor's current choices, printed at `printedAt`, leaving out `tv` when it is `undefined`. */
+/** Return a settings ticket holding the visitor's current choices, printed at `printedAt`, writing `"live"` for an `undefined` `weatherPlace` or `weatherCondition` and leaving out `tv` when it is `undefined`. */
 export function buildSettingsTicket(options: {
   printedAt: Date;
   renderQuality: RenderQualityPreference;
   temperatureUnit: TemperatureUnit;
+  weatherPlace: WeatherPlace | undefined;
+  weatherCondition: WeatherCondition | undefined;
   muted: boolean;
   switches: RoomSoundSwitches;
   volumes: RoomSoundVolumes;
@@ -31,6 +37,10 @@ export function buildSettingsTicket(options: {
     settings: {
       renderQuality: options.renderQuality,
       temperatureUnit: options.temperatureUnit,
+      weather: {
+        place: options.weatherPlace ?? "live",
+        condition: options.weatherCondition ?? "live",
+      },
       sound: options.muted ? "off" : "on",
       roomSounds: {
         machines: { on: switches.machines, volume: volumes.machines },

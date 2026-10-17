@@ -27,7 +27,11 @@ import {
   TV_RESTORED_EVENT,
   TV_STORAGE_KEYS,
 } from "@/lib/laundromat/tv/tv-storage";
-import type { TemperatureUnit } from "@/lib/laundromat/weather/weather-reading";
+import type { WeatherPlace } from "@/lib/laundromat/weather/weather-place";
+import type {
+  TemperatureUnit,
+  WeatherCondition,
+} from "@/lib/laundromat/weather/weather-reading";
 import { cn } from "@/lib/utils";
 
 import { SETTINGS_LCD_CLASS } from "./settings-lcd-class";
@@ -65,7 +69,17 @@ type TicketView = {
   switches: RoomSoundSwitches;
   volumes: RoomSoundVolumes;
   tvVolumePercent: number | undefined;
+  weatherPlace: WeatherPlace | undefined;
+  weatherCondition: WeatherCondition | undefined;
 };
+
+function readTicketChoice<Choice>(options: {
+  value: Choice | "live" | undefined;
+  current: Choice | undefined;
+}) {
+  if (options.value === undefined) return options.current;
+  return options.value === "live" ? undefined : options.value;
+}
 
 function wait(ms: number) {
   return new Promise((resolve) => window.setTimeout(resolve, ms));
@@ -146,7 +160,8 @@ export function SettingsTicketPrinter(props: SettingsTicketPrinterProps) {
   const { copy } = useLaundromatCopy();
   const sound = useSoundBoard();
   const { preference, setPreference } = useRenderQuality();
-  const { unit, setUnit } = useLocalWeather();
+  const { unit, setUnit, place, setPlace, condition, setCondition } =
+    useLocalWeather();
   const { muted, setMuted } = useSoundMuted();
   const { switches, setSwitches, volumes, setVolumes } = useRoomSounds();
   const prefersReducedMotion = useReducedMotion() ?? false;
@@ -287,6 +302,8 @@ export function SettingsTicketPrinter(props: SettingsTicketPrinterProps) {
       printedAt,
       renderQuality: preference,
       temperatureUnit: unit,
+      weatherPlace: place,
+      weatherCondition: condition,
       muted,
       switches,
       volumes,
@@ -305,6 +322,8 @@ export function SettingsTicketPrinter(props: SettingsTicketPrinterProps) {
       switches,
       volumes,
       tvVolumePercent: tv?.volumePercent,
+      weatherPlace: place,
+      weatherCondition: condition,
     });
     setDisplay("printing");
     setIsLit(true);
@@ -380,6 +399,14 @@ export function SettingsTicketPrinter(props: SettingsTicketPrinterProps) {
       return;
     }
     isBusyRef.current = true;
+    const readPlace = readTicketChoice({
+      value: read.weatherPlace,
+      current: place,
+    });
+    const readCondition = readTicketChoice({
+      value: read.weatherCondition,
+      current: condition,
+    });
     await tearOffTicket();
     const heightPx = await showTicket({
       printedAt:
@@ -389,6 +416,8 @@ export function SettingsTicketPrinter(props: SettingsTicketPrinterProps) {
       switches: { ...switches, ...read.switches },
       volumes: { ...volumes, ...read.volumes },
       tvVolumePercent: read.tv?.volumePercent,
+      weatherPlace: readPlace,
+      weatherCondition: readCondition,
     });
     setDisplay("reading");
     setIsLit(true);
@@ -434,6 +463,8 @@ export function SettingsTicketPrinter(props: SettingsTicketPrinterProps) {
     setTicket(undefined);
     if (read.renderQuality !== undefined) setPreference(read.renderQuality);
     if (read.temperatureUnit !== undefined) setUnit(read.temperatureUnit);
+    setPlace(readPlace);
+    setCondition(readCondition);
     if (read.muted !== undefined) setMuted(read.muted);
     if (read.tv !== undefined) storeTv(read.tv);
     const current = roomSoundsRef.current;

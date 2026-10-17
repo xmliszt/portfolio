@@ -59,7 +59,17 @@ export const zhHant = {
     close: "關閉",
     closeHint: "按 esc 關閉",
     temperature: "溫度",
-    temperatureHint: "天氣面板預設使用你所在地區常用的單位。",
+    weather: "天氣",
+    placeLabel: "天氣地點",
+    placePlaceholder: "搜尋城市",
+    placeLive: "即時",
+    placeNearYou: "你附近",
+    placeSearching: "搜尋中…",
+    placeNoResults: "找不到地點",
+    conditionLabel: "天空",
+    conditionLive: "即時天氣",
+    weatherHint:
+      "即時天氣是根據你的 IP 位址估算的，有時可能不準。選一個城市或天空，就能自己設定。溫度單位會跟著地點，直到你自己選擇。",
     roomSounds: "店內聲音",
     roomSoundsHint:
       "來自店內和店裡其他人的聲音。關掉或調小某個聲音，只會改變你自己聽到的。",
@@ -276,6 +286,10 @@ export const zhHant = {
       board: "告示板",
     },
     updates: {
+      "weather-anywhere": {
+        title: "選擇窗外的天氣",
+        body: "在設定裡選一個城市，窗外和天氣面板就會顯示那裡的天氣；也可以自己選天空。預設仍是即時天氣。",
+      },
       "room-sound-mixer": {
         title: "依你的喜好調配店內聲音",
         body: "設定裡的每種店內聲音現在都有自己的滑桿，可以讓雨聲大一些、機器聲小一些。播放店內混音，就能一起聽到它們；列印一張洗衣取件單，就能保存設定，或帶到另一台裝置上。",

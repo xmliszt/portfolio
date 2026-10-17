@@ -28,52 +28,47 @@ export function TemperatureUnitSwitch() {
   }
 
   return (
-    <div className="flex flex-col gap-y-2">
-      <div className="flex items-center justify-between gap-x-3">
+    <div className="flex items-center justify-between gap-x-3">
+      <span
+        id="temperature-unit-label"
+        className={cn(SETTINGS_META_CLASS, "opacity-60")}
+      >
+        {copy.settings.temperature}
+      </span>
+      <div
+        role="radiogroup"
+        aria-labelledby="temperature-unit-label"
+        className="relative grid grid-cols-2 rounded-full p-0.5 shadow-[inset_0_0_0_1px_var(--lm-edge)]"
+      >
         <span
-          id="temperature-unit-label"
-          className={cn(SETTINGS_META_CLASS, "opacity-60")}
-        >
-          {copy.settings.temperature}
-        </span>
-        <div
-          role="radiogroup"
-          aria-labelledby="temperature-unit-label"
-          className="relative grid grid-cols-2 rounded-full p-0.5 shadow-[inset_0_0_0_1px_var(--lm-edge)]"
-        >
-          <span
-            aria-hidden
+          aria-hidden
+          className={cn(
+            "absolute inset-y-0.5 left-0.5 w-[calc(50%-2px)] rounded-full bg-[var(--lm-accent)] transition-transform duration-200 ease-out motion-reduce:transition-none",
+            unit === "fahrenheit" && "translate-x-full"
+          )}
+        />
+        {TEMPERATURE_UNITS.map((option) => (
+          <label
+            key={option}
             className={cn(
-              "absolute inset-y-0.5 left-0.5 w-[calc(50%-2px)] rounded-full bg-[var(--lm-accent)] transition-transform duration-200 ease-out motion-reduce:transition-none",
-              unit === "fahrenheit" && "translate-x-full"
+              "relative flex h-7 w-11 cursor-pointer items-center justify-center rounded-full font-[family-name:var(--lm-font-mono)] text-[13px] transition-colors has-[:focus-visible]:ring-1 has-[:focus-visible]:ring-[var(--lm-ink-hi)]",
+              option === unit
+                ? "text-[var(--lm-panel)]"
+                : "text-[var(--lm-ink)] hover:text-[var(--lm-ink-hi)]"
             )}
-          />
-          {TEMPERATURE_UNITS.map((option) => (
-            <label
-              key={option}
-              className={cn(
-                "relative flex h-7 w-11 cursor-pointer items-center justify-center rounded-full font-[family-name:var(--lm-font-mono)] text-[13px] transition-colors has-[:focus-visible]:ring-1 has-[:focus-visible]:ring-[var(--lm-ink-hi)]",
-                option === unit
-                  ? "text-[var(--lm-panel)]"
-                  : "text-[var(--lm-ink)] hover:text-[var(--lm-ink-hi)]"
-              )}
-            >
-              <input
-                type="radio"
-                name="temperature-unit"
-                value={option}
-                checked={option === unit}
-                onChange={() => choose(option)}
-                className="sr-only"
-              />
-              {UNIT_SYMBOLS[option]}
-            </label>
-          ))}
-        </div>
+          >
+            <input
+              type="radio"
+              name="temperature-unit"
+              value={option}
+              checked={option === unit}
+              onChange={() => choose(option)}
+              className="sr-only"
+            />
+            {UNIT_SYMBOLS[option]}
+          </label>
+        ))}
       </div>
-      <p className="m-0 font-[family-name:var(--lm-font-display)] text-[13px] leading-5 text-pretty opacity-60">
-        {copy.settings.temperatureHint}
-      </p>
     </div>
   );
 }
