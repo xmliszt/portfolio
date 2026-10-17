@@ -266,10 +266,20 @@ export function NotebookBook(props: NotebookBookProps) {
     function handlePageKey(event: KeyboardEvent) {
       if (event.defaultPrevented || event.metaKey || event.ctrlKey) return;
       const target = event.target;
+      const isCaretAtTextEdge =
+        target instanceof HTMLTextAreaElement &&
+        !event.shiftKey &&
+        !event.altKey &&
+        !event.isComposing &&
+        target.selectionStart === target.selectionEnd &&
+        ((event.key === "ArrowLeft" && target.selectionStart === 0) ||
+          (event.key === "ArrowRight" &&
+            target.selectionEnd === target.value.length));
       if (
-        target instanceof HTMLTextAreaElement ||
-        target instanceof HTMLInputElement ||
-        (target instanceof HTMLElement && target.isContentEditable)
+        !isCaretAtTextEdge &&
+        (target instanceof HTMLTextAreaElement ||
+          target instanceof HTMLInputElement ||
+          (target instanceof HTMLElement && target.isContentEditable))
       ) {
         return;
       }
