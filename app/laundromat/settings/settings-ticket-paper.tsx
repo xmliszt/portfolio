@@ -11,7 +11,11 @@ import {
 } from "@/lib/laundromat/audio/room-sound-groups";
 import type { RenderQualityPreference } from "@/lib/laundromat/render-quality/render-quality";
 import { getTicketNumber } from "@/lib/laundromat/settings-ticket/get-ticket-number";
-import type { TemperatureUnit } from "@/lib/laundromat/weather/weather-reading";
+import type { WeatherPlace } from "@/lib/laundromat/weather/weather-place";
+import type {
+  TemperatureUnit,
+  WeatherCondition,
+} from "@/lib/laundromat/weather/weather-reading";
 import { cn } from "@/lib/utils";
 
 const UNIT_SYMBOLS = {
@@ -26,9 +30,11 @@ type SettingsTicketPaperProps = {
   switches: RoomSoundSwitches;
   volumes: RoomSoundVolumes;
   tvVolumePercent: number | undefined;
+  weatherPlace: WeatherPlace | undefined;
+  weatherCondition: WeatherCondition | undefined;
 };
 
-/** Render a paper laundry ticket listing each room sound's level, the temperature unit, the rendering choice and the tv volume, numbered from `printedAt`. */
+/** Render a paper laundry ticket listing each room sound's level, the weather place and sky, the temperature unit, the rendering choice and the tv volume, numbered from `printedAt`. */
 export function SettingsTicketPaper(props: SettingsTicketPaperProps) {
   const { copy } = useLaundromatCopy();
   const ticketNumber = getTicketNumber(props.printedAt);
@@ -85,6 +91,19 @@ export function SettingsTicketPaper(props: SettingsTicketPaperProps) {
         })}
       </span>
       <span className="h-px bg-[repeating-linear-gradient(90deg,rgb(43_38_32/0.45)_0_3px,transparent_3px_6px)]" />
+      <span className="flex justify-between gap-x-2">
+        <span className="shrink-0">{copy.settings.weather}</span>
+        <span className="min-w-0 truncate">
+          {[
+            props.weatherPlace?.name ?? copy.settings.placeLive,
+            props.weatherCondition === undefined
+              ? undefined
+              : copy.weatherPanel.conditions[props.weatherCondition],
+          ]
+            .filter((part) => part !== undefined)
+            .join(" · ")}
+        </span>
+      </span>
       <span className="flex justify-between gap-x-2 opacity-70">
         <span>
           {UNIT_SYMBOLS[props.temperatureUnit]} ·{" "}
