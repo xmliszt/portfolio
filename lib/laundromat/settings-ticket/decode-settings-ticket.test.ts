@@ -15,6 +15,8 @@ const TICKET = buildSettingsTicket({
   printedAt: new Date("2026-10-17T06:00:00.000Z"),
   renderQuality: "auto",
   temperatureUnit: "celsius",
+  weatherPlace: undefined,
+  weatherCondition: undefined,
   muted: false,
   switches: parseRoomSoundSwitches(null),
   volumes: { ...parseRoomSoundVolumes(null), weather: 1.4 },

@@ -60,8 +60,17 @@ export const ja = {
     close: "閉じる",
     closeHint: "esc で閉じる",
     temperature: "温度",
-    temperatureHint:
-      "天気パネルは、あなたのいる地域でふつう使う単位から始まります。",
+    weather: "天気",
+    placeLabel: "天気の場所",
+    placePlaceholder: "都市を検索",
+    placeLive: "ライブ",
+    placeNearYou: "現在地付近",
+    placeSearching: "検索中…",
+    placeNoResults: "場所が見つかりません",
+    conditionLabel: "空",
+    conditionLive: "ライブの天気",
+    weatherHint:
+      "ライブの天気はIPアドレスから推定しているので、ずれることがあります。都市や空を選べば、自分で決められます。温度の単位は、自分で選ぶまでその場所に合わせます。",
     roomSounds: "店内の音",
     roomSoundsHint:
       "店内とそこにいる人たちの音です。オフにしたり小さくしたりしても、変わるのはあなたにだけです。",
@@ -295,6 +304,10 @@ export const ja = {
       board: "掲示板",
     },
     updates: {
+      "weather-anywhere": {
+        title: "外の天気を選べるように",
+        body: "設定で都市を選ぶと、その街の天気が窓とパネルに映ります。空を自分で選ぶこともできます。最初はライブの天気のままです。",
+      },
       "room-sound-mixer": {
         title: "店内の音を好きなバランスに",
         body: "設定の店内の音それぞれに、音量のスライダーがつきました。雨を大きく、マシンを小さく、といった調整ができます。店内ミックスを再生すればまとめて聞けます。ランドリー引換券を印刷すれば、設定を残したり、別の端末に持っていったりできます。",

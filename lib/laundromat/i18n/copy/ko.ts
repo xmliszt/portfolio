@@ -60,7 +60,17 @@ export const ko = {
     close: "닫기",
     closeHint: "esc로 닫기",
     temperature: "온도",
-    temperatureHint: "날씨 패널은 지금 계신 곳에서 흔히 쓰는 단위로 시작해요.",
+    weather: "날씨",
+    placeLabel: "날씨 위치",
+    placePlaceholder: "도시 검색",
+    placeLive: "실시간",
+    placeNearYou: "현재 위치 근처",
+    placeSearching: "검색 중…",
+    placeNoResults: "찾은 장소가 없어요",
+    conditionLabel: "하늘",
+    conditionLive: "실시간 날씨",
+    weatherHint:
+      "실시간 날씨는 IP 주소로 추정해서 가끔 틀릴 수 있어요. 도시나 하늘을 골라 직접 정할 수 있어요. 온도 단위는 직접 고르기 전까지 그 장소를 따라가요.",
     roomSounds: "가게 소리",
     roomSoundsHint:
       "가게와 그 안에 있는 사람들이 내는 소리예요. 끄거나 줄여도 나에게만 바뀌어요.",
@@ -291,6 +301,10 @@ export const ko = {
       board: "게시판",
     },
     updates: {
+      "weather-anywhere": {
+        title: "바깥 날씨를 골라 보세요",
+        body: "설정에서 도시를 고르면 그곳의 날씨가 창밖과 패널에 보여요. 하늘을 직접 고를 수도 있어요. 기본은 계속 실시간 날씨예요.",
+      },
       "room-sound-mixer": {
         title: "가게 소리를 내 마음대로",
         body: "이제 설정에서 가게 소리마다 슬라이더가 있어서, 비는 크게 기계는 작게 맞출 수 있어요. 가게 믹스를 재생하면 한꺼번에 들을 수 있고, 세탁물 보관증을 출력하면 설정을 간직하거나 다른 기기로 옮길 수 있어요.",

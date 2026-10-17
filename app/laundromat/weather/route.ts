@@ -2,6 +2,7 @@ import type { NextRequest } from "next/server";
 
 import { getAirQualityUrl } from "@/lib/laundromat/weather/get-air-quality-url";
 import { getOpenMeteoUrl } from "@/lib/laundromat/weather/get-open-meteo-url";
+import { getRequestedLocation } from "@/lib/laundromat/weather/get-requested-location";
 import { getTemperatureUnit } from "@/lib/laundromat/weather/get-temperature-unit";
 import { getVisitorLocation } from "@/lib/laundromat/weather/get-visitor-location";
 import { parseAirQuality } from "@/lib/laundromat/weather/parse-air-quality";
@@ -26,7 +27,9 @@ async function getAqi(location: { latitude: number; longitude: number }) {
 }
 
 async function getWeatherBody(request: NextRequest): Promise<WeatherBody> {
-  const location = getVisitorLocation(request.headers);
+  const location =
+    getRequestedLocation(request.nextUrl.searchParams) ??
+    getVisitorLocation(request.headers);
   if (location === undefined) return { kind: "unknown" };
   try {
     const [response, aqi] = await Promise.all([

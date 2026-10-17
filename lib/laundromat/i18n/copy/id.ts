@@ -65,7 +65,17 @@ export const id = {
     close: "tutup",
     closeHint: "esc untuk menutup",
     temperature: "suhu",
-    temperatureHint: "panel cuaca mulai dengan satuan yang biasa di tempatmu.",
+    weather: "cuaca",
+    placeLabel: "lokasi cuaca",
+    placePlaceholder: "cari kota",
+    placeLive: "langsung",
+    placeNearYou: "di dekatmu",
+    placeSearching: "mencari…",
+    placeNoResults: "tidak ada tempat ditemukan",
+    conditionLabel: "langit",
+    conditionLive: "cuaca langsung",
+    weatherHint:
+      "cuaca langsung diperkirakan dari alamat IP-mu, jadi kadang bisa meleset. pilih kota atau langit untuk mengaturnya sendiri. satuan suhu mengikuti tempatnya sampai kamu memilih satu.",
     roomSounds: "suara ruangan",
     roomSoundsHint:
       "suara dari ruangan dan orang-orang di dalamnya. mematikan atau mengecilkan satu suara hanya mengubahnya untukmu.",
@@ -310,6 +320,10 @@ export const id = {
       board: "papan",
     },
     updates: {
+      "weather-anywhere": {
+        title: "pilih cuaca di luar",
+        body: "Di pengaturan, pilih kota untuk melihat cuacanya di jendela dan di panel, atau pilih langitnya sendiri. Bawaannya tetap cuaca langsung.",
+      },
       "room-sound-mixer": {
         title: "racik suara ruangan sesukamu",
         body: "Setiap suara ruangan di pengaturan sekarang punya penggeser sendiri, jadi hujan bisa lebih keras dan mesin lebih pelan. Putar mix ruangan untuk mendengar semuanya bersama, dan cetak tiket laundry untuk menyimpan pengaturanmu atau membawanya ke perangkat lain.",

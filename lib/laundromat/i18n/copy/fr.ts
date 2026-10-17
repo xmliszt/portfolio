@@ -60,8 +60,17 @@ export const fr = {
     close: "fermer",
     closeHint: "échap pour fermer",
     temperature: "température",
-    temperatureHint:
-      "le panneau météo commence avec l'unité habituelle là où tu es.",
+    weather: "météo",
+    placeLabel: "lieu de la météo",
+    placePlaceholder: "chercher une ville",
+    placeLive: "en direct",
+    placeNearYou: "près de toi",
+    placeSearching: "recherche…",
+    placeNoResults: "aucun lieu trouvé",
+    conditionLabel: "ciel",
+    conditionLive: "météo en direct",
+    weatherHint:
+      "la météo en direct est estimée d'après ton adresse IP, elle peut donc parfois se tromper. choisis une ville ou un ciel pour la régler toi-même. l'unité de température suit le lieu tant que tu n'en choisis pas une.",
     roomSounds: "sons de la salle",
     roomSoundsHint:
       "les sons de la salle et des gens qui s'y trouvent. couper ou baisser un son ne le change que pour toi.",
@@ -312,6 +321,10 @@ export const fr = {
       board: "panneau",
     },
     updates: {
+      "weather-anywhere": {
+        title: "choisis la météo dehors",
+        body: "Dans les réglages, choisis une ville pour voir sa météo par la fenêtre et sur le panneau, ou choisis toi-même le ciel. Par défaut, c'est toujours la météo en direct.",
+      },
       "room-sound-mixer": {
         title: "mixe la salle à ta façon",
         body: "Chaque son de la salle a maintenant son propre curseur dans les réglages, pour que la pluie soit plus forte et les machines plus douces. Écoute le mix de la salle pour les entendre ensemble, et imprime un ticket de laverie pour garder tes réglages ou les emporter sur un autre appareil.",

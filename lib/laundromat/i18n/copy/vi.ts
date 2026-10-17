@@ -65,7 +65,17 @@ export const vi = {
     close: "đóng",
     closeHint: "esc để đóng",
     temperature: "nhiệt độ",
-    temperatureHint: "bảng thời tiết bắt đầu với đơn vị quen dùng ở nơi bạn ở.",
+    weather: "thời tiết",
+    placeLabel: "vị trí thời tiết",
+    placePlaceholder: "tìm thành phố",
+    placeLive: "trực tiếp",
+    placeNearYou: "gần bạn",
+    placeSearching: "đang tìm…",
+    placeNoResults: "không tìm thấy nơi nào",
+    conditionLabel: "bầu trời",
+    conditionLive: "thời tiết trực tiếp",
+    weatherHint:
+      "thời tiết trực tiếp được ước tính từ địa chỉ IP của bạn nên đôi khi có thể sai. chọn một thành phố hoặc bầu trời để tự đặt. đơn vị nhiệt độ theo nơi đó cho đến khi bạn tự chọn.",
     roomSounds: "âm thanh trong tiệm",
     roomSoundsHint:
       "âm thanh từ tiệm và những người trong đó. tắt hay vặn nhỏ một âm chỉ thay đổi cho riêng bạn.",
@@ -299,6 +309,10 @@ export const vi = {
       board: "bảng tin",
     },
     updates: {
+      "weather-anywhere": {
+        title: "chọn thời tiết bên ngoài",
+        body: "Trong cài đặt, chọn một thành phố để xem thời tiết ở đó qua cửa sổ và trên bảng, hoặc tự chọn bầu trời. Mặc định vẫn là thời tiết trực tiếp.",
+      },
       "room-sound-mixer": {
         title: "tự phối âm thanh trong tiệm",
         body: "Mỗi âm thanh trong tiệm giờ có thanh trượt riêng trong phần cài đặt, để tiếng mưa to hơn và tiếng máy nhỏ hơn. Phát bản phối của tiệm để nghe tất cả cùng lúc, và in một phiếu giặt để giữ cài đặt của bạn hoặc mang sang máy khác.",

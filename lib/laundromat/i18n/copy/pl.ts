@@ -73,8 +73,17 @@ export const pl = {
     close: "zamknij",
     closeHint: "esc, aby zamknąć",
     temperature: "temperatura",
-    temperatureHint:
-      "panel pogody zaczyna od jednostki zwykłej tam, gdzie jesteś.",
+    weather: "pogoda",
+    placeLabel: "miejsce pogody",
+    placePlaceholder: "szukaj miasta",
+    placeLive: "na żywo",
+    placeNearYou: "w pobliżu",
+    placeSearching: "szukam…",
+    placeNoResults: "nie znaleziono miejsc",
+    conditionLabel: "niebo",
+    conditionLive: "pogoda na żywo",
+    weatherHint:
+      "pogoda na żywo jest szacowana na podstawie twojego adresu IP, więc czasem może się mylić. wybierz miasto albo niebo, żeby ustawić ją samodzielnie. jednostka temperatury zależy od miejsca, dopóki sam jej nie wybierzesz.",
     roomSounds: "dźwięki w pralni",
     roomSoundsHint:
       "dźwięki pralni i ludzi, którzy w niej są. wyłączenie albo ściszenie dźwięku zmienia go tylko dla ciebie.",
@@ -284,6 +293,10 @@ export const pl = {
       board: "tablica",
     },
     updates: {
+      "weather-anywhere": {
+        title: "wybierz pogodę za oknem",
+        body: "W ustawieniach wybierz miasto, żeby zobaczyć jego pogodę za oknem i na panelu, albo sam wybierz niebo. Domyślnie zostaje pogoda na żywo.",
+      },
       "room-sound-mixer": {
         title: "zmiksuj pralnię po swojemu",
         body: "Każdy dźwięk pralni ma teraz w ustawieniach własny suwak, więc deszcz może być głośniej, a maszyny ciszej. Odtwórz miks pralni, żeby usłyszeć wszystko razem, i wydrukuj kwit z pralni, żeby zachować ustawienia albo przenieść je na inne urządzenie.",

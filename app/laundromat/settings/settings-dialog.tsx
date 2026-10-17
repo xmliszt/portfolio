@@ -10,8 +10,8 @@ import { cn } from "@/lib/utils";
 import { RoomSoundsFieldset } from "./room-sounds-fieldset";
 import { SETTINGS_META_CLASS } from "./settings-meta-class";
 import { SettingsTicketPrinter } from "./settings-ticket-printer";
-import { TemperatureUnitSwitch } from "./temperature-unit-switch";
 import { useRenderQuality } from "./use-render-quality";
+import { WeatherFieldset } from "./weather-fieldset";
 
 type SettingsDialogProps = {
   restoreCode: string | undefined;
@@ -48,7 +48,11 @@ export function SettingsDialog(props: SettingsDialogProps) {
   const { onClose } = props;
   useEffect(() => {
     function handleKeyDown(event: KeyboardEvent) {
-      if (event.key === "Escape") {
+      const focused = document.activeElement;
+      const isComboboxOpen =
+        focused?.getAttribute("role") === "combobox" &&
+        focused.getAttribute("aria-expanded") === "true";
+      if (event.key === "Escape" && !isComboboxOpen) {
         event.preventDefault();
         event.stopPropagation();
         onClose();
@@ -58,7 +62,7 @@ export function SettingsDialog(props: SettingsDialogProps) {
       if (event.key !== "Tab" || dialog === null) return;
       const focusable = [
         ...dialog.querySelectorAll<HTMLElement>(
-          "input:checked, input[type=range], button"
+          "input:checked, input[type=range], input[role=combobox], button"
         ),
       ];
       const first = focusable.at(0);
@@ -129,7 +133,7 @@ export function SettingsDialog(props: SettingsDialogProps) {
             {copy.settings.renderingHint}
           </p>
         </fieldset>
-        <TemperatureUnitSwitch />
+        <WeatherFieldset />
         <RoomSoundsFieldset />
         <SettingsTicketPrinter
           restoreCode={props.restoreCode}

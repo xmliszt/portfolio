@@ -146,7 +146,8 @@ export function SettingsTicketPrinter(props: SettingsTicketPrinterProps) {
   const { copy } = useLaundromatCopy();
   const sound = useSoundBoard();
   const { preference, setPreference } = useRenderQuality();
-  const { unit, setUnit } = useLocalWeather();
+  const { unit, setUnit, place, setPlace, condition, setCondition } =
+    useLocalWeather();
   const { muted, setMuted } = useSoundMuted();
   const { switches, setSwitches, volumes, setVolumes } = useRoomSounds();
   const prefersReducedMotion = useReducedMotion() ?? false;
@@ -287,6 +288,8 @@ export function SettingsTicketPrinter(props: SettingsTicketPrinterProps) {
       printedAt,
       renderQuality: preference,
       temperatureUnit: unit,
+      weatherPlace: place,
+      weatherCondition: condition,
       muted,
       switches,
       volumes,
@@ -434,6 +437,14 @@ export function SettingsTicketPrinter(props: SettingsTicketPrinterProps) {
     setTicket(undefined);
     if (read.renderQuality !== undefined) setPreference(read.renderQuality);
     if (read.temperatureUnit !== undefined) setUnit(read.temperatureUnit);
+    if (read.weatherPlace !== undefined) {
+      setPlace(read.weatherPlace === "live" ? undefined : read.weatherPlace);
+    }
+    if (read.weatherCondition !== undefined) {
+      setCondition(
+        read.weatherCondition === "live" ? undefined : read.weatherCondition
+      );
+    }
     if (read.muted !== undefined) setMuted(read.muted);
     if (read.tv !== undefined) storeTv(read.tv);
     const current = roomSoundsRef.current;

@@ -61,8 +61,17 @@ export const ptBR = {
     close: "fechar",
     closeHint: "esc para fechar",
     temperature: "temperatura",
-    temperatureHint:
-      "o painel do tempo começa com a unidade usual onde você está.",
+    weather: "tempo",
+    placeLabel: "local do tempo",
+    placePlaceholder: "buscar uma cidade",
+    placeLive: "ao vivo",
+    placeNearYou: "perto de você",
+    placeSearching: "buscando…",
+    placeNoResults: "nenhum lugar encontrado",
+    conditionLabel: "céu",
+    conditionLive: "tempo ao vivo",
+    weatherHint:
+      "o tempo ao vivo é estimado pelo seu endereço IP, então às vezes pode errar. escolha uma cidade ou um céu para definir você mesmo. a unidade de temperatura segue o lugar até você escolher uma.",
     roomSounds: "sons da lavanderia",
     roomSoundsHint:
       "sons da lavanderia e das pessoas nela. desligar ou abaixar um só muda para você.",
@@ -307,6 +316,10 @@ export const ptBR = {
       board: "mural",
     },
     updates: {
+      "weather-anywhere": {
+        title: "escolha o tempo lá fora",
+        body: "Nas configurações, escolha uma cidade para ver o tempo dela pela janela e no painel, ou escolha o céu você mesmo. O padrão continua sendo o tempo ao vivo.",
+      },
       "room-sound-mixer": {
         title: "mixe a lavanderia do seu jeito",
         body: "Cada som da lavanderia nas configurações agora tem seu próprio controle deslizante, então a chuva pode ficar mais alta e as máquinas mais baixas. Toque a mixagem da lavanderia para ouvir tudo junto e imprima um tíquete da lavanderia para guardar suas configurações ou levá-las para outro aparelho.",
