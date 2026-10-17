@@ -278,6 +278,21 @@ export const ko = {
   plant: {
     label: "화분, 풀 만지기",
     tooltip: "풀 만지기",
+    blessings: [
+      "행운",
+      "복",
+      "평온",
+      "건강",
+      "기쁨",
+      "꿀잠",
+      "따뜻한 커피",
+      "깨끗한 빨래",
+      "집중력",
+      "다정함",
+      "햇살",
+      "좋은 소식",
+    ],
+    blessing: (o: { count: number; word: string }) => `${o.word} +${o.count}`,
   },
   board: {
     label: "게시판, 빨래방의 새 소식",

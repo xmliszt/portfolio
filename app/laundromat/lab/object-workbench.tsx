@@ -1,9 +1,10 @@
-import { useMemo, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 
 import { HitTargetButton } from "@/app/laundromat/hit-target-button";
 import { useLaundromatCopy } from "@/app/laundromat/i18n/use-laundromat-copy";
 import { useLocalWeather } from "@/app/laundromat/local-weather/use-local-weather";
 import type { SceneViews } from "@/app/laundromat/objects/scene-views";
+import { wigglePlant } from "@/app/laundromat/plant/wiggle-plant";
 import { RoomDrawing } from "@/app/laundromat/room-drawing";
 import { SceneControlButton } from "@/app/laundromat/scene-control-button";
 import { SceneTooltip } from "@/app/laundromat/scene-tooltip";
@@ -55,8 +56,8 @@ export function ObjectWorkbench(props: ObjectWorkbenchProps) {
   }>({});
   const [openedAt] = useState(() => Date.now());
   const appliances = useRoomAppliances({ config, visitorId: undefined });
-  const [plantTouchCount, setPlantTouchCount] = useState(0);
   const [tubeRollCount, setTubeRollCount] = useState(0);
+  const roomRef = useRef<HTMLDivElement>(null);
   const { reading: weather } = useLocalWeather();
   const layout = useMemo(() => {
     const { size } = object;
@@ -126,7 +127,6 @@ export function ObjectWorkbench(props: ObjectWorkbenchProps) {
       full: appliances.cup.kind === "full",
       steaming: appliances.isCupSteaming,
     },
-    plantTouchCount,
     basket: props.basket,
     shelfBookNumbers: WORKBENCH_SHELF_BOOKS,
     notebookNumber: config.details.notebook.coverNumber,
@@ -238,7 +238,13 @@ export function ObjectWorkbench(props: ObjectWorkbenchProps) {
 
   function handleObjectActivate() {
     setHoveredId(object.id);
-    if (object.kind === "plant") setPlantTouchCount((count) => count + 1);
+    if (object.kind === "plant" && roomRef.current !== null) {
+      wigglePlant({
+        root: roomRef.current,
+        swayDeg: config.details.plant.swayDeg,
+        durationMs: config.details.plant.wiggleMs,
+      });
+    }
     if (object.kind === "mug") appliances.dispatchCoffee({ type: "drink" });
     if (object.kind === "tube-display") setTubeRollCount((count) => count + 1);
   }
@@ -266,6 +272,7 @@ export function ObjectWorkbench(props: ObjectWorkbenchProps) {
         }}
       >
         <div
+          ref={roomRef}
           className="absolute top-0 left-0 origin-top-left"
           style={{
             width: layout.size.width,

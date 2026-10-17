@@ -293,6 +293,21 @@ export const ptBR = {
   plant: {
     label: "Planta, tocar na grama",
     tooltip: "tocar na grama",
+    blessings: [
+      "sorte",
+      "fortuna",
+      "calma",
+      "alegria",
+      "saúde",
+      "sono bom",
+      "roupa limpa",
+      "café quentinho",
+      "foco",
+      "gentileza",
+      "sol",
+      "boas notícias",
+    ],
+    blessing: (o: { count: number; word: string }) => `+${o.count} ${o.word}`,
   },
   board: {
     label: "Mural, novidades da lavanderia",

@@ -73,6 +73,9 @@ import { NotebookBook } from "./notebook/notebook-book";
 import { ShelfBookButton } from "./notebook/shelf-book-button";
 import { useNotebookShelf } from "./notebook/use-notebook-shelf";
 import type { SceneViews } from "./objects/scene-views";
+import type { PlantStreakHandle } from "./plant/plant-streak-layer";
+import { PlantStreakLayer } from "./plant/plant-streak-layer";
+import { wigglePlant } from "./plant/wiggle-plant";
 import { RoomSourceContext } from "./realtime/room-source-context";
 import { useRoom } from "./realtime/use-room";
 import { useVisitorRegion } from "./realtime/use-visitor-region";
@@ -219,7 +222,7 @@ export function LaundromatScene(props: LaundromatSceneProps) {
     config,
     visitorId: laundry.visitorId,
   });
-  const [plantTouchCount, setPlantTouchCount] = useState(0);
+  const plantStreakRef = useRef<PlantStreakHandle>(undefined);
   const [tubeRollCount, setTubeRollCount] = useState(0);
   const notebookShelf = useNotebookShelf();
   const shelf = notebookShelf.shelf;
@@ -610,7 +613,6 @@ export function LaundromatScene(props: LaundromatSceneProps) {
       full: appliances.cup.kind === "full",
       steaming: appliances.isCupSteaming,
     },
-    plantTouchCount,
     basket,
     shelfBookNumbers: filledBooks.map(({ number }) => number),
     notebookNumber: coverNumber,
@@ -894,7 +896,16 @@ export function LaundromatScene(props: LaundromatSceneProps) {
       }
       if (kind === "plant") {
         sound?.play("touch-grass");
-        setPlantTouchCount((count) => count + 1);
+        if (rootRef.current !== null) {
+          wigglePlant({
+            root: rootRef.current,
+            swayDeg: config.details.plant.swayDeg,
+            durationMs: config.details.plant.wiggleMs,
+          });
+        }
+        window.clearTimeout(tooltipTimerRef.current);
+        setTooltipId(undefined);
+        plantStreakRef.current?.touch();
         return;
       }
       if (appliances.cup.kind === "full") {
@@ -1425,6 +1436,18 @@ export function LaundromatScene(props: LaundromatSceneProps) {
         )}
       </AnimatePresence>
       <SceneTooltip text={tooltip?.text} position={tooltip?.position} />
+      {!isHidden && (
+        <PlantStreakLayer
+          handleRef={plantStreakRef}
+          layout={layout}
+          viewport={viewport}
+          focus={focus}
+          config={config}
+          copy={copy}
+          lite={isLite}
+          reducedMotion={prefersReducedMotion}
+        />
+      )}
       <div
         ref={setTvAudioContainer}
         data-audio-state={tvAudioState}

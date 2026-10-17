@@ -257,6 +257,21 @@ export const tr = {
   plant: {
     label: "Bitki, çimlere dokun",
     tooltip: "çimlere dokun",
+    blessings: [
+      "şans",
+      "bereket",
+      "huzur",
+      "neşe",
+      "sağlık",
+      "tatlı uyku",
+      "temiz çamaşır",
+      "sıcak kahve",
+      "odak",
+      "iyilik",
+      "güneş",
+      "güzel haber",
+    ],
+    blessing: (o: { count: number; word: string }) => `+${o.count} ${o.word}`,
   },
   board: {
     label: "İlan panosu, çamaşırhanede neler yeni",

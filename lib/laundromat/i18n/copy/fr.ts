@@ -297,6 +297,21 @@ export const fr = {
   plant: {
     label: "Plante, toucher de l'herbe",
     tooltip: "toucher de l'herbe",
+    blessings: [
+      "chance",
+      "fortune",
+      "calme",
+      "joie",
+      "santé",
+      "bon sommeil",
+      "linge propre",
+      "café chaud",
+      "concentration",
+      "gentillesse",
+      "soleil",
+      "bonnes nouvelles",
+    ],
+    blessing: (o: { count: number; word: string }) => `+${o.count} ${o.word}`,
   },
   board: {
     label: "Panneau, les nouveautés de la laverie",

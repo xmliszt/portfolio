@@ -297,6 +297,21 @@ export const id = {
   plant: {
     label: "Tanaman, sentuh rumput",
     tooltip: "sentuh rumput",
+    blessings: [
+      "hoki",
+      "rezeki",
+      "ketenangan",
+      "kebahagiaan",
+      "kesehatan",
+      "tidur nyenyak",
+      "cucian bersih",
+      "kopi hangat",
+      "fokus",
+      "kebaikan",
+      "sinar matahari",
+      "kabar baik",
+    ],
+    blessing: (o: { count: number; word: string }) => `+${o.count} ${o.word}`,
   },
   board: {
     label: "Papan pengumuman, apa yang baru di laundromat",

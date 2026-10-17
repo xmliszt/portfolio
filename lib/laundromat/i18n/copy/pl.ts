@@ -270,6 +270,21 @@ export const pl = {
   plant: {
     label: "Roślina, dotknij trawy",
     tooltip: "dotknij trawy",
+    blessings: [
+      "szczęście",
+      "pomyślność",
+      "spokój",
+      "radość",
+      "zdrowie",
+      "dobry sen",
+      "czyste pranie",
+      "ciepła kawa",
+      "skupienie",
+      "życzliwość",
+      "słońce",
+      "dobre wieści",
+    ],
+    blessing: (o: { count: number; word: string }) => `+${o.count} ${o.word}`,
   },
   board: {
     label: "Tablica, co nowego w pralni",
