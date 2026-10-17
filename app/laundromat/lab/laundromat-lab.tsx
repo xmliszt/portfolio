@@ -201,6 +201,8 @@ const objectDials = {
     swayMinSeconds: [details.plant.swayMinSeconds, 1, 20, 0.5],
     swayMaxSeconds: [details.plant.swayMaxSeconds, 1, 30, 0.5],
     wiggleMs: [details.plant.wiggleMs, 200, 3000, 50],
+    streakWindowMs: [details.plant.streakWindowMs, 500, 5000, 100],
+    cloverStreak: [details.plant.cloverStreak, 2, 30, 1],
     _collapsed: true,
   },
   shelf: {

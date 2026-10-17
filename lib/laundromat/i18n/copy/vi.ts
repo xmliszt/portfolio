@@ -286,6 +286,21 @@ export const vi = {
   plant: {
     label: "Chậu cây, chạm vào cỏ",
     tooltip: "chạm vào cỏ",
+    blessings: [
+      "công đức",
+      "may mắn",
+      "phúc lộc",
+      "bình yên",
+      "niềm vui",
+      "sức khỏe",
+      "ngủ ngon",
+      "đồ sạch thơm",
+      "cà phê nóng",
+      "tập trung",
+      "nắng ấm",
+      "tin vui",
+    ],
+    blessing: (o: { count: number; word: string }) => `${o.word} +${o.count}`,
   },
   board: {
     label: "Bảng tin, có gì mới ở tiệm giặt",

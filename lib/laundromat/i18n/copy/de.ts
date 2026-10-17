@@ -296,6 +296,21 @@ export const de = {
   plant: {
     label: "Pflanze, Gras anfassen",
     tooltip: "Gras anfassen",
+    blessings: [
+      "Glück",
+      "Segen",
+      "Ruhe",
+      "Freude",
+      "Gesundheit",
+      "guter Schlaf",
+      "saubere Wäsche",
+      "warmer Kaffee",
+      "Fokus",
+      "Güte",
+      "Sonnenschein",
+      "gute Nachrichten",
+    ],
+    blessing: (o: { count: number; word: string }) => `+${o.count} ${o.word}`,
   },
   board: {
     label: "Aushang, was es Neues im Waschsalon gibt",

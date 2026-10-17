@@ -263,6 +263,21 @@ export const zhHant = {
   plant: {
     label: "盆栽，摸摸草",
     tooltip: "摸摸草",
+    blessings: [
+      "功德",
+      "好運",
+      "福氣",
+      "平安",
+      "健康",
+      "快樂",
+      "好夢",
+      "熱咖啡",
+      "乾淨衣服",
+      "專注",
+      "陽光",
+      "好消息",
+    ],
+    blessing: (o: { count: number; word: string }) => `${o.word} +${o.count}`,
   },
   board: {
     label: "告示板，洗衣店的新鮮事",

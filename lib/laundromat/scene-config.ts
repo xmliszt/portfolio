@@ -160,6 +160,8 @@ export type SceneConfig = {
       swayMinSeconds: number;
       swayMaxSeconds: number;
       wiggleMs: number;
+      streakWindowMs: number;
+      cloverStreak: number;
     };
     shelf: { bookLean: number; spineGlow: number; bookLift: number };
     window: {
@@ -566,6 +568,8 @@ export const sceneConfig: SceneConfig = {
       swayMinSeconds: 8,
       swayMaxSeconds: 8.5,
       wiggleMs: 900,
+      streakWindowMs: 2000,
+      cloverStreak: 10,
     },
     shelf: { bookLean: 0.14, spineGlow: 0.69, bookLift: 0.19 },
     window: {

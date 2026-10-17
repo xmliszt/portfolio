@@ -281,6 +281,21 @@ export const ja = {
   plant: {
     label: "観葉植物、草に触れる",
     tooltip: "草に触れる",
+    blessings: [
+      "徳",
+      "運",
+      "福",
+      "癒し",
+      "健康",
+      "幸せ",
+      "いい夢",
+      "温かいコーヒー",
+      "きれいな洗濯物",
+      "集中力",
+      "やさしさ",
+      "いい知らせ",
+    ],
+    blessing: (o: { count: number; word: string }) => `${o.word} +${o.count}`,
   },
   board: {
     label: "掲示板、コインランドリーのお知らせ",

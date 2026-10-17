@@ -264,6 +264,21 @@ export const zhHans = {
   plant: {
     label: "盆栽，摸摸草",
     tooltip: "摸摸草",
+    blessings: [
+      "功德",
+      "好运",
+      "福气",
+      "平安",
+      "健康",
+      "快乐",
+      "好梦",
+      "热咖啡",
+      "干净衣服",
+      "专注",
+      "阳光",
+      "好消息",
+    ],
+    blessing: (o: { count: number; word: string }) => `${o.word} +${o.count}`,
   },
   board: {
     label: "告示板，洗衣房的新鲜事",

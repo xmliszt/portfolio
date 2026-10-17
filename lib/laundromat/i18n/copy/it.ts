@@ -301,6 +301,21 @@ export const it = {
   plant: {
     label: "Pianta, tocca l'erba",
     tooltip: "tocca l'erba",
+    blessings: [
+      "fortuna",
+      "prosperità",
+      "calma",
+      "gioia",
+      "salute",
+      "sonni tranquilli",
+      "bucato pulito",
+      "caffè caldo",
+      "concentrazione",
+      "gentilezza",
+      "sole",
+      "belle notizie",
+    ],
+    blessing: (o: { count: number; word: string }) => `+${o.count} ${o.word}`,
   },
   board: {
     label: "Bacheca, le novità della lavanderia",

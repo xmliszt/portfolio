@@ -263,6 +263,21 @@ export const nl = {
   plant: {
     label: "Plant, gras aanraken",
     tooltip: "gras aanraken",
+    blessings: [
+      "geluk",
+      "voorspoed",
+      "rust",
+      "vreugde",
+      "gezondheid",
+      "goede nachtrust",
+      "schone was",
+      "warme koffie",
+      "focus",
+      "vriendelijkheid",
+      "zonneschijn",
+      "goed nieuws",
+    ],
+    blessing: (o: { count: number; word: string }) => `+${o.count} ${o.word}`,
   },
   board: {
     label: "Prikbord, wat er nieuw is in de wasserette",
