@@ -44,7 +44,7 @@ export const metadata: Metadata = {
   creator: "Li Yuxuan",
   publisher: "Li Yuxuan",
   category: "productivity",
-  robots: { index: true, follow: true },
+  robots: { index: true, follow: true, "max-image-preview": "large" },
 };
 
 export const viewport: Viewport = {
