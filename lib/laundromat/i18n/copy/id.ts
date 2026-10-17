@@ -68,11 +68,42 @@ export const id = {
     temperatureHint: "panel cuaca mulai dengan satuan yang biasa di tempatmu.",
     roomSounds: "suara ruangan",
     roomSoundsHint:
-      "suara dari ruangan dan orang-orang di dalamnya. mematikan satu suara hanya membisukannya untukmu.",
+      "suara dari ruangan dan orang-orang di dalamnya. mematikan atau mengecilkan satu suara hanya mengubahnya untukmu.",
     roomSoundsAllOn: "nyalakan semua",
     roomSoundsAllOff: "matikan semua",
     roomSoundOn: "nyala",
     roomSoundOff: "mati",
+    roomSoundVolume: (o: { sound: string }) => `volume ${o.sound}`,
+    roomMix: {
+      play: "putar mix ruangan",
+      playing: "memutar mix-mu",
+      playLabel: "putar mix ruangan dengan level pilihanmu",
+      stopLabel: "hentikan mix ruangan",
+    },
+    ticket: {
+      heading: "tiket laundry",
+      hint: "cetak tiket untuk menyimpan pengaturanmu sebagai file kecil dan menyalin link-nya. buka link itu, atau masukkan file-nya di sini, di perangkat mana pun untuk memulihkannya.",
+      print: "cetak",
+      insert: "masukkan",
+      printLabel:
+        "cetak tiket laundry, yang menyimpan pengaturanmu ke file dan menyalin link-nya",
+      insertLabel: "masukkan tiket laundry, yang memuat pengaturanmu dari file",
+      ready: "siap",
+      printing: "mencetak…",
+      saved: "tersimpan",
+      linkCopied: "link disalin",
+      linkLabel: "link ke tiket laundry-mu",
+      copyLink: "salin link",
+      copied: "disalin",
+      linkHint:
+        "buka link ini di perangkat lain untuk membawa pengaturanmu ke sana.",
+      reading: "membaca…",
+      loaded: "termuat",
+      unreadable: "bukan tiket",
+      title: "tiket laundry",
+      number: (o: { number: string }) => `no. ${o.number}`,
+      tv: (o: { percent: number }) => `tv ${o.percent}%`,
+    },
     roomSound: {
       machines: {
         label: "mesin",
@@ -279,6 +310,10 @@ export const id = {
       board: "papan",
     },
     updates: {
+      "room-sound-mixer": {
+        title: "racik suara ruangan sesukamu",
+        body: "Setiap suara ruangan di pengaturan sekarang punya penggeser sendiri, jadi hujan bisa lebih keras dan mesin lebih pelan. Putar mix ruangan untuk mendengar semuanya bersama, dan cetak tiket laundry untuk menyimpan pengaturanmu atau membawanya ke perangkat lain.",
+      },
       "weather-panel": {
         title: "cuaca, di dalam dan di luar",
         body: "Panel di atas jendela menampilkan cuaca di tempatmu, dengan suhu tertinggi dan terendah hari ini serta kualitas udara. Jendela juga menampilkannya, hujan, salju, kabut, atau badai, lengkap dengan suaranya. Kotamu ditebak secara kasar dari koneksimu. Saat udara jadi tidak sehat, pembersih udara di pojok menyala.",

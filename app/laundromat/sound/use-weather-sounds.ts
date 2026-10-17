@@ -23,7 +23,7 @@ export function useWeatherSounds() {
   useEffect(() => {
     if (sound === undefined) return;
     const loops = getWeatherLoops(heardCondition);
-    loops.forEach((loop) => sound.startLoop(loop));
+    loops.forEach((loop) => sound.startLoop(loop, { group: "weather" }));
     return () => loops.forEach((loop) => sound.stopLoop(loop));
   }, [sound, heardCondition]);
 
@@ -34,7 +34,7 @@ export function useWeatherSounds() {
       return;
     }
     const timer = window.setTimeout(
-      () => sound.play("thunder-rumble"),
+      () => sound.play("thunder-rumble", { group: "weather" }),
       randomBetween({ min: THUNDER_MIN_DELAY_MS, max: THUNDER_MAX_DELAY_MS })
     );
     return () => window.clearTimeout(timer);

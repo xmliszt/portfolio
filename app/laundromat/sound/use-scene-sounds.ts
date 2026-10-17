@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 
+import type { RoomSoundGroup } from "@/lib/laundromat/audio/room-sound-groups";
 import type { LoopName } from "@/lib/laundromat/audio/sound-names";
 import type { CoffeePhase } from "@/lib/laundromat/coffee/get-coffee-phase";
 import { LAMP_FLICKER_MS } from "@/lib/laundromat/lamp-flicker-steps";
@@ -19,14 +20,15 @@ export type LampSwitch = "on" | "off";
 function useLoop(options: {
   sound: SoundBoard | undefined;
   name: LoopName;
+  group: RoomSoundGroup;
   playing: boolean;
 }) {
-  const { sound, name, playing } = options;
+  const { sound, name, group, playing } = options;
   useEffect(() => {
     if (sound === undefined || !playing) return;
-    sound.startLoop(name);
+    sound.startLoop(name, { group });
     return () => sound.stopLoop(name);
-  }, [sound, name, playing]);
+  }, [sound, name, group, playing]);
 }
 
 function useOnChange<T>(options: {
@@ -67,21 +69,25 @@ export function useSceneSounds(options: {
   useLoop({
     sound,
     name: "washer-running",
+    group: "machines",
     playing: switches.machines && options.isWasherRunning,
   });
   useLoop({
     sound,
     name: "dryer-running",
+    group: "machines",
     playing: switches.machines && options.isDryerRunning,
   });
   useLoop({
     sound,
     name: "coffee-brewing",
+    group: "coffee",
     playing: switches.coffee && coffeeKind === "brewing",
   });
   useLoop({
     sound,
     name: "tv-no-signal",
+    group: "tv",
     playing: switches.tv && options.isTvHissing,
   });
 
@@ -89,7 +95,7 @@ export function useSceneSounds(options: {
     value: coffeeKind,
     onChange: ({ previous, current }) => {
       if (switches.coffee && previous === "brewing" && current === "ready") {
-        sound?.play("coffee-brew-done");
+        sound?.play("coffee-brew-done", { group: "coffee" });
       }
     },
   });
@@ -113,11 +119,11 @@ export function useSceneSounds(options: {
         isInside &&
         getArrivedVisitorIds(changes).length > 0
       ) {
-        sound?.play("shop-bell", { volume: 0.5 });
+        sound?.play("shop-bell", { volume: 0.5, group: "shop-bell" });
       }
       if (switches.unloading && getUnloadedVisitorIds(changes).length > 0) {
-        sound?.play("door-latch-open");
-        sound?.play("collect-laundry", { volume: 0.5 });
+        sound?.play("door-latch-open", { group: "unloading" });
+        sound?.play("collect-laundry", { volume: 0.5, group: "unloading" });
       }
     },
   });
@@ -125,7 +131,9 @@ export function useSceneSounds(options: {
   useOnChange({
     value: isInside,
     onChange: ({ current }) => {
-      if (current && switches["shop-bell"]) sound?.play("shop-bell");
+      if (current && switches["shop-bell"]) {
+        sound?.play("shop-bell", { group: "shop-bell" });
+      }
     },
   });
 
@@ -141,7 +149,9 @@ export function useSceneSounds(options: {
     value: isLampOn,
     onChange: ({ previous, current }) => {
       if (previous === undefined || current === undefined) return;
-      if (switches.lamp) sound?.play(current ? "lamp-flicker" : "lamp-off");
+      if (switches.lamp) {
+        sound?.play(current ? "lamp-flicker" : "lamp-off", { group: "lamp" });
+      }
       setLampSwitch(current ? "on" : "off");
       const timer = window.setTimeout(
         () => setLampSwitch(undefined),

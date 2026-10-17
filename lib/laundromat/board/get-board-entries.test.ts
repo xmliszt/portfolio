@@ -24,8 +24,8 @@ test("returns the newest `count` updates", () => {
 test("formats the day for the copy's locale and keeps the ISO date", () => {
   const [english] = getBoardEntries({ copy: en, count: 1 });
   const [japanese] = getBoardEntries({ copy: ja, count: 1 });
-  assert.equal(english?.date, "Oct 15");
-  assert.equal(japanese?.date, "10月15日");
-  assert.equal(english?.isoDate, "2026-10-15");
-  assert.equal(english?.tag, "window");
+  assert.equal(english?.date, "Oct 17");
+  assert.equal(japanese?.date, "10月17日");
+  assert.equal(english?.isoDate, "2026-10-17");
+  assert.equal(english?.tag, "room");
 });

@@ -63,11 +63,43 @@ export const it = {
     temperatureHint: "il pannello meteo parte con l'unità abituale dove sei.",
     roomSounds: "suoni della sala",
     roomSoundsHint:
-      "i suoni della sala e delle persone che ci sono. spegnerne uno lo silenzia solo per te.",
+      "i suoni della sala e delle persone che ci sono. spegnerne o abbassarne uno lo cambia solo per te.",
     roomSoundsAllOn: "tutti accesi",
     roomSoundsAllOff: "tutti spenti",
     roomSoundOn: "on",
     roomSoundOff: "off",
+    roomSoundVolume: (o: { sound: string }) => `volume: ${o.sound}`,
+    roomMix: {
+      play: "ascolta il mix della sala",
+      playing: "suona il tuo mix",
+      playLabel: "ascolta il mix della sala ai tuoi livelli",
+      stopLabel: "ferma il mix della sala",
+    },
+    ticket: {
+      heading: "tagliando della lavanderia",
+      hint: "stampa un tagliando per tenere le tue impostazioni in un piccolo file e copiare un link alle impostazioni. apri il link, o inserisci il file qui, su qualsiasi dispositivo per riaverle.",
+      print: "stampa",
+      insert: "inserisci",
+      printLabel:
+        "stampa un tagliando della lavanderia, che salva le tue impostazioni in un file e copia un link alle impostazioni",
+      insertLabel:
+        "inserisci un tagliando della lavanderia, che carica le tue impostazioni da un file",
+      ready: "pronto",
+      printing: "stampa…",
+      saved: "salvato",
+      linkCopied: "link copiato",
+      linkLabel: "link al tuo tagliando della lavanderia",
+      copyLink: "copia link",
+      copied: "copiato",
+      linkHint:
+        "apri questo link su un altro dispositivo per portarci le tue impostazioni.",
+      reading: "lettura…",
+      loaded: "caricato",
+      unreadable: "non valido",
+      title: "tagliando della lavanderia",
+      number: (o: { number: string }) => `n. ${o.number}`,
+      tv: (o: { percent: number }) => `tv ${o.percent}%`,
+    },
     roomSound: {
       machines: {
         label: "macchine",
@@ -282,6 +314,10 @@ export const it = {
       board: "bacheca",
     },
     updates: {
+      "room-sound-mixer": {
+        title: "mixa la sala a modo tuo",
+        body: "Ogni suono della sala nelle impostazioni ora ha il suo cursore, così la pioggia può essere più forte e le macchine più piano. Ascolta il mix della sala per sentirli insieme, e stampa un tagliando della lavanderia per tenere le tue impostazioni o portarle su un altro dispositivo.",
+      },
       "weather-panel": {
         title: "il meteo, dentro e fuori",
         body: "Un pannello sopra la finestra mostra il meteo dove sei, con la massima e la minima di oggi e la qualità dell'aria. Anche le finestre lo mostrano, pioggia, neve, nebbia o temporale, con il suono giusto. La tua città è una stima approssimativa dalla tua connessione. Quando l'aria diventa dannosa, un purificatore si accende nell'angolo.",

@@ -11,3 +11,7 @@ export const ROOM_SOUND_GROUPS = [
 export type RoomSoundGroup = (typeof ROOM_SOUND_GROUPS)[number];
 
 export type RoomSoundSwitches = { [group in RoomSoundGroup]: boolean };
+
+export type RoomSoundVolumes = { [group in RoomSoundGroup]: number };
+
+export const ROOM_SOUND_VOLUME = { min: 0, max: 1.5, usual: 1 };

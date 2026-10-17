@@ -63,11 +63,42 @@ export const tr = {
       "hava durumu panosu, bulunduğun yerde alışılmış birimle başlar.",
     roomSounds: "dükkân sesleri",
     roomSoundsHint:
-      "dükkânın ve içindeki insanların sesleri. birini kapatmak onu yalnızca senin için susturur.",
+      "dükkânın ve içindeki insanların sesleri. birini kapatmak ya da kısmak onu yalnızca senin için değiştirir.",
     roomSoundsAllOn: "hepsi açık",
     roomSoundsAllOff: "hepsi kapalı",
     roomSoundOn: "açık",
     roomSoundOff: "kapalı",
+    roomSoundVolume: (o: { sound: string }) => `${o.sound} ses düzeyi`,
+    roomMix: {
+      play: "dükkân miksini çal",
+      playing: "miksin çalıyor",
+      playLabel: "dükkân miksini kendi seviyelerinle çal",
+      stopLabel: "dükkân miksini durdur",
+    },
+    ticket: {
+      heading: "çamaşır fişi",
+      hint: "ayarlarını küçük bir dosya olarak saklamak ve onlara bir bağlantı kopyalamak için bir fiş yazdır. herhangi bir cihazda bağlantıyı aç ya da dosyayı buraya tak, ayarlarını geri al.",
+      print: "yazdır",
+      insert: "tak",
+      printLabel:
+        "çamaşır fişi yazdır, ayarlarını bir dosyaya kaydeder ve onlara bir bağlantı kopyalar",
+      insertLabel: "çamaşır fişi tak, ayarlarını bir dosyadan yükler",
+      ready: "hazır",
+      printing: "basılıyor…",
+      saved: "kaydedildi",
+      linkCopied: "kopyalandı",
+      linkLabel: "çamaşır fişinin bağlantısı",
+      copyLink: "bağlantıyı kopyala",
+      copied: "kopyalandı",
+      linkHint:
+        "ayarlarını oraya taşımak için bu bağlantıyı başka bir cihazda aç.",
+      reading: "okunuyor…",
+      loaded: "yüklendi",
+      unreadable: "fiş değil",
+      title: "çamaşır fişi",
+      number: (o: { number: string }) => `no. ${o.number}`,
+      tv: (o: { percent: number }) => `tv %${o.percent}`,
+    },
     roomSound: {
       machines: {
         label: "makineler",
@@ -240,6 +271,10 @@ export const tr = {
       board: "pano",
     },
     updates: {
+      "room-sound-mixer": {
+        title: "dükkânı kendi zevkine göre ayarla",
+        body: "Ayarlarda artık her dükkân sesinin kendi kaydırıcısı var, böylece yağmur daha yüksek, makineler daha kısık olabilir. Hepsini birlikte duymak için dükkân miksini çal, ayarlarını saklamak ya da başka bir cihaza taşımak için bir çamaşır fişi yazdır.",
+      },
       "weather-panel": {
         title: "içeride ve dışarıda hava",
         body: "Pencerenin üstündeki pano, bulunduğun yerin hava durumunu bugünün en yüksek ve en düşük sıcaklığı ve hava kalitesiyle gösterir. Pencereler de gösterir, yağmur, kar, sis ya da fırtına, sesiyle birlikte. Şehrin, bağlantından kabaca tahmin edilir. Hava sağlıksızlaşınca köşede bir hava temizleyici çalışmaya başlar.",

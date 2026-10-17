@@ -10,12 +10,14 @@ const CANVAS = { widthPx: 120, heightPx: 68 };
 
 const TRACE = {
   heightRatio: 0.34,
-  maxAmplitude: 1.25,
+  maxAmplitude: 1.5,
   lineWidthPx: 2,
   minAlpha: 0.4,
   glowPx: 6,
   afterglowFade: 0.35,
   stillTimeS: 1.3,
+  riseRatio: 0.45,
+  fallRatio: 0.12,
 };
 
 const POWER_ON = { delayMs: 120, durationMs: 320 };
@@ -42,15 +44,21 @@ const GLASS_STYLE = {
 type RoomSoundScopeProps = {
   group: RoomSoundGroup;
   turn: MotionValue<number>;
+  level: MotionValue<number>;
+  getLiveAmplitude: () => number | undefined;
   on: boolean;
   still: boolean;
   delayMs: number;
 };
 
-/** Draw a small amber CRT whose trace is `group`'s waveform scaled by `turn`, flat at 0 and full at 1; it moves with phosphor afterglow unless `still`. */
+/** Draw a small amber CRT whose trace is `group`'s waveform scaled by `turn` times `level`, or by `getLiveAmplitude` while that returns a number; it moves with phosphor afterglow unless `still`. */
 export function RoomSoundScope(props: RoomSoundScopeProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const { group, turn, still } = props;
+  const { group, turn, level, still } = props;
+  const getLiveAmplitudeRef = useRef(props.getLiveAmplitude);
+  useEffect(() => {
+    getLiveAmplitudeRef.current = props.getLiveAmplitude;
+  });
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -60,10 +68,24 @@ export function RoomSoundScope(props: RoomSoundScopeProps) {
       .getPropertyValue("--lm-accent")
       .trim();
 
+    const shown = { amplitude: turn.get() * level.get() };
     function draw(timeS: number) {
       if (!canvas || !context) return;
       const { width, height } = canvas;
-      const amplitude = Math.min(TRACE.maxAmplitude, Math.max(0, turn.get()));
+      const target =
+        (still ? undefined : getLiveAmplitudeRef.current()) ??
+        turn.get() * level.get();
+      shown.amplitude +=
+        (target - shown.amplitude) *
+        (still
+          ? 1
+          : target > shown.amplitude
+            ? TRACE.riseRatio
+            : TRACE.fallRatio);
+      const amplitude = Math.min(
+        TRACE.maxAmplitude,
+        Math.max(0, shown.amplitude)
+      );
       context.shadowBlur = 0;
       context.globalAlpha = 1;
       if (still) {
@@ -98,7 +120,13 @@ export function RoomSoundScope(props: RoomSoundScopeProps) {
 
     if (still) {
       draw(TRACE.stillTimeS);
-      return turn.on("change", () => draw(TRACE.stillTimeS));
+      const redraw = () => draw(TRACE.stillTimeS);
+      const stopTurn = turn.on("change", redraw);
+      const stopLevel = level.on("change", redraw);
+      return () => {
+        stopTurn();
+        stopLevel();
+      };
     }
     const frame = { id: 0 };
     function tick(nowMs: number) {
@@ -107,7 +135,7 @@ export function RoomSoundScope(props: RoomSoundScopeProps) {
     }
     frame.id = requestAnimationFrame(tick);
     return () => cancelAnimationFrame(frame.id);
-  }, [group, turn, still]);
+  }, [group, turn, level, still]);
 
   const wasOnRef = useRef(props.on);
   const { on, delayMs } = props;
