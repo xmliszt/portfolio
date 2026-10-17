@@ -226,6 +226,7 @@ export function LaundromatScene(props: LaundromatSceneProps) {
   const plantStreak = usePlantStreak({
     windowMs: config.details.plant.streakWindowMs,
     cloverStreak: config.details.plant.cloverStreak,
+    maxStreak: config.details.plant.maxStreak,
     copy,
   });
   const [tubeRollCount, setTubeRollCount] = useState(0);
@@ -903,6 +904,8 @@ export function LaundromatScene(props: LaundromatSceneProps) {
       if (kind === "plant") {
         sound?.play("touch-grass");
         setPlantTouchCount((count) => count + 1);
+        window.clearTimeout(tooltipTimerRef.current);
+        setTooltipId(undefined);
         plantStreak.touch();
         return;
       }
@@ -1457,13 +1460,14 @@ export function LaundromatScene(props: LaundromatSceneProps) {
             onDone={() => plantStreak.removePop(pop.id)}
           />
         ))}
-      {plantStreak.isShowering && (
+      {plantStreak.showerIds.map((id) => (
         <CloverShower
+          key={id}
           lite={isLite}
           still={prefersReducedMotion}
-          onDone={plantStreak.endShower}
+          onDone={() => plantStreak.endShower(id)}
         />
-      )}
+      ))}
       <div
         ref={setTvAudioContainer}
         data-audio-state={tvAudioState}

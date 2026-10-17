@@ -203,6 +203,7 @@ const objectDials = {
     wiggleMs: [details.plant.wiggleMs, 200, 3000, 50],
     streakWindowMs: [details.plant.streakWindowMs, 500, 5000, 100],
     cloverStreak: [details.plant.cloverStreak, 2, 30, 1],
+    maxStreak: [details.plant.maxStreak, 10, 999, 1],
     _collapsed: true,
   },
   shelf: {

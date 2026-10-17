@@ -15,15 +15,16 @@ export type BlessingPop = {
   tiltDeg: number;
 };
 
-/** Track the plant's touch streak: the blessing labels on screen, whether the clover shower is running, and the handlers that change them. */
+/** Track the plant's touch streak: the blessing labels on screen, the clover showers running, and the handlers that change them. */
 export function usePlantStreak(options: {
   windowMs: number;
   cloverStreak: number;
+  maxStreak: number;
   copy: LaundromatCopy;
 }) {
   const streakRef = useRef<TouchStreak>(undefined);
   const [pops, setPops] = useState<BlessingPop[]>([]);
-  const [isShowering, setIsShowering] = useState(false);
+  const [showerIds, setShowerIds] = useState<number[]>([]);
 
   function touch() {
     const nowMs = performance.now();
@@ -31,6 +32,7 @@ export function usePlantStreak(options: {
       previous: streakRef.current,
       nowMs,
       windowMs: options.windowMs,
+      maxCount: options.maxStreak,
     });
     streakRef.current = streak;
     const { blessings } = options.copy.plant;
@@ -40,12 +42,17 @@ export function usePlantStreak(options: {
         count: streak.count,
         word: blessings[(streak.count - 1) % blessings.length],
       }),
-      driftPx: randomBetween({ min: -40, max: 40 }),
-      liftPx: randomBetween({ min: 24, max: 56 }),
+      driftPx: randomBetween({ min: -32, max: 32 }),
+      liftPx: randomBetween({ min: 0, max: 16 }),
       tiltDeg: randomBetween({ min: -8, max: 8 }),
     };
     setPops((current) => [...current, pop]);
-    if (streak.count === options.cloverStreak) setIsShowering(true);
+    if (
+      streak.count < options.maxStreak &&
+      streak.count % options.cloverStreak === 0
+    ) {
+      setShowerIds((current) => [...current, nowMs]);
+    }
   }
 
   function removePop(id: number) {
@@ -54,9 +61,10 @@ export function usePlantStreak(options: {
 
   return {
     pops,
-    isShowering,
+    showerIds,
     touch,
     removePop,
-    endShower: () => setIsShowering(false),
+    endShower: (id: number) =>
+      setShowerIds((current) => current.filter((showerId) => showerId !== id)),
   };
 }

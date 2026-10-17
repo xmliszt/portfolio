@@ -6,7 +6,12 @@ import { advanceTouchStreak } from "./advance-touch-streak";
 
 test("advanceTouchStreak starts at 1 without a previous touch", () => {
   assert.deepEqual(
-    advanceTouchStreak({ previous: undefined, nowMs: 500, windowMs: 2000 }),
+    advanceTouchStreak({
+      previous: undefined,
+      nowMs: 500,
+      windowMs: 2000,
+      maxCount: 99,
+    }),
     { count: 1, atMs: 500 }
   );
 });
@@ -14,7 +19,7 @@ test("advanceTouchStreak starts at 1 without a previous touch", () => {
 test("advanceTouchStreak chains touches that each land inside the window of the last one", () => {
   const streak = [0, 1900, 3800, 5800].reduce<TouchStreak | undefined>(
     (previous, nowMs) =>
-      advanceTouchStreak({ previous, nowMs, windowMs: 2000 }),
+      advanceTouchStreak({ previous, nowMs, windowMs: 2000, maxCount: 99 }),
     undefined
   );
   assert.deepEqual(streak, { count: 4, atMs: 5800 });
@@ -26,7 +31,20 @@ test("advanceTouchStreak resets to 1 once the window has passed", () => {
       previous: { count: 9, atMs: 1000 },
       nowMs: 3001,
       windowMs: 2000,
+      maxCount: 99,
     }),
     { count: 1, atMs: 3001 }
+  );
+});
+
+test("advanceTouchStreak stops counting at maxCount", () => {
+  assert.deepEqual(
+    advanceTouchStreak({
+      previous: { count: 99, atMs: 1000 },
+      nowMs: 1500,
+      windowMs: 2000,
+      maxCount: 99,
+    }),
+    { count: 99, atMs: 1500 }
   );
 });

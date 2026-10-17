@@ -4,7 +4,7 @@ import { motion } from "motion/react";
 
 import type { BlessingPop } from "./use-plant-streak";
 
-const START_PX = 28;
+const START_PX = 40;
 
 type BlessingPopLabelProps = {
   pop: BlessingPop;
@@ -37,10 +37,10 @@ export function BlessingPopLabel(props: BlessingPopLabelProps) {
                 scale: [0.3, 1.22, 0.9, 1.05, 1],
                 y: [
                   START_PX,
-                  -liftPx - 22,
-                  -liftPx + 6,
-                  -liftPx - 4,
-                  -liftPx - 44,
+                  -liftPx - 14,
+                  -liftPx + 4,
+                  -liftPx - 2,
+                  -liftPx - 20,
                 ],
                 x: [0, driftPx * 0.6, driftPx * 0.85, driftPx, driftPx * 1.3],
                 rotate: [

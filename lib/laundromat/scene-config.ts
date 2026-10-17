@@ -162,6 +162,7 @@ export type SceneConfig = {
       wiggleMs: number;
       streakWindowMs: number;
       cloverStreak: number;
+      maxStreak: number;
     };
     shelf: { bookLean: number; spineGlow: number; bookLift: number };
     window: {
@@ -570,6 +571,7 @@ export const sceneConfig: SceneConfig = {
       wiggleMs: 900,
       streakWindowMs: 2000,
       cloverStreak: 10,
+      maxStreak: 99,
     },
     shelf: { bookLean: 0.14, spineGlow: 0.69, bookLift: 0.19 },
     window: {
