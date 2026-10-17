@@ -73,9 +73,9 @@ import { NotebookBook } from "./notebook/notebook-book";
 import { ShelfBookButton } from "./notebook/shelf-book-button";
 import { useNotebookShelf } from "./notebook/use-notebook-shelf";
 import type { SceneViews } from "./objects/scene-views";
-import { BlessingPopLabel } from "./plant/blessing-pop-label";
-import { CloverShower } from "./plant/clover-shower";
-import { usePlantStreak } from "./plant/use-plant-streak";
+import type { PlantStreakHandle } from "./plant/plant-streak-layer";
+import { PlantStreakLayer } from "./plant/plant-streak-layer";
+import { wigglePlant } from "./plant/wiggle-plant";
 import { RoomSourceContext } from "./realtime/room-source-context";
 import { useRoom } from "./realtime/use-room";
 import { useVisitorRegion } from "./realtime/use-visitor-region";
@@ -222,13 +222,7 @@ export function LaundromatScene(props: LaundromatSceneProps) {
     config,
     visitorId: laundry.visitorId,
   });
-  const [plantTouchCount, setPlantTouchCount] = useState(0);
-  const plantStreak = usePlantStreak({
-    windowMs: config.details.plant.streakWindowMs,
-    cloverStreak: config.details.plant.cloverStreak,
-    maxStreak: config.details.plant.maxStreak,
-    copy,
-  });
+  const plantStreakRef = useRef<PlantStreakHandle>(undefined);
   const [tubeRollCount, setTubeRollCount] = useState(0);
   const notebookShelf = useNotebookShelf();
   const shelf = notebookShelf.shelf;
@@ -619,7 +613,6 @@ export function LaundromatScene(props: LaundromatSceneProps) {
       full: appliances.cup.kind === "full",
       steaming: appliances.isCupSteaming,
     },
-    plantTouchCount,
     basket,
     shelfBookNumbers: filledBooks.map(({ number }) => number),
     notebookNumber: coverNumber,
@@ -903,10 +896,16 @@ export function LaundromatScene(props: LaundromatSceneProps) {
       }
       if (kind === "plant") {
         sound?.play("touch-grass");
-        setPlantTouchCount((count) => count + 1);
+        if (rootRef.current !== null) {
+          wigglePlant({
+            root: rootRef.current,
+            swayDeg: config.details.plant.swayDeg,
+            durationMs: config.details.plant.wiggleMs,
+          });
+        }
         window.clearTimeout(tooltipTimerRef.current);
         setTooltipId(undefined);
-        plantStreak.touch();
+        plantStreakRef.current?.touch();
         return;
       }
       if (appliances.cup.kind === "full") {
@@ -1094,19 +1093,6 @@ export function LaundromatScene(props: LaundromatSceneProps) {
           (target.bounds.x + target.bounds.width / 2) * camera.scale + camera.x,
         y: target.bounds.y * camera.scale + camera.y,
       },
-    };
-  })();
-
-  const plantTop = (() => {
-    if (plantStreak.pops.length === 0 || viewport === undefined) {
-      return undefined;
-    }
-    const plant = layout.objects.find(({ object }) => object.kind === "plant");
-    if (plant === undefined) return undefined;
-    const camera = computeCamera({ focus, viewport, layout, config });
-    return {
-      x: (plant.bounds.x + plant.bounds.width / 2) * camera.scale + camera.x,
-      y: plant.bounds.y * camera.scale + camera.y,
     };
   })();
 
@@ -1450,24 +1436,18 @@ export function LaundromatScene(props: LaundromatSceneProps) {
         )}
       </AnimatePresence>
       <SceneTooltip text={tooltip?.text} position={tooltip?.position} />
-      {plantTop !== undefined &&
-        plantStreak.pops.map((pop) => (
-          <BlessingPopLabel
-            key={pop.id}
-            pop={pop}
-            anchor={plantTop}
-            reducedMotion={prefersReducedMotion}
-            onDone={() => plantStreak.removePop(pop.id)}
-          />
-        ))}
-      {plantStreak.showerIds.map((id) => (
-        <CloverShower
-          key={id}
+      {!isHidden && (
+        <PlantStreakLayer
+          handleRef={plantStreakRef}
+          layout={layout}
+          viewport={viewport}
+          focus={focus}
+          config={config}
+          copy={copy}
           lite={isLite}
-          still={prefersReducedMotion}
-          onDone={() => plantStreak.endShower(id)}
+          reducedMotion={prefersReducedMotion}
         />
-      ))}
+      )}
       <div
         ref={setTvAudioContainer}
         data-audio-state={tvAudioState}

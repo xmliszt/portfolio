@@ -6,7 +6,7 @@ export function advanceTouchStreak(options: {
   nowMs: number;
   windowMs: number;
   maxCount: number;
-}): TouchStreak {
+}) {
   const { previous, nowMs } = options;
   if (previous !== undefined && nowMs - previous.atMs <= options.windowMs) {
     return {

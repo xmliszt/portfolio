@@ -198,7 +198,6 @@ type PlantDrawingProps = {
   laidOut: LaidOutObject;
   projection: IsoProjection;
   highlighted: boolean;
-  touchCount: number;
   details: SceneConfig["details"]["plant"];
 };
 
@@ -229,13 +228,7 @@ export function PlantDrawing(props: PlantDrawingProps) {
   });
   const scale = projection.unit / 40;
   const bendSeconds = (details.swayMinSeconds + details.swayMaxSeconds) / 2;
-  const wiggle = {
-    "data-lm-motion": true,
-    style:
-      props.touchCount === 0
-        ? undefined
-        : { animation: `lm-wiggle ${details.wiggleMs}ms ease-out` },
-  };
+  const wiggle = { "data-lm-plant-wiggle": true };
   const bend = {
     "data-lm-motion": true,
     style:
@@ -296,7 +289,7 @@ export function PlantDrawing(props: PlantDrawingProps) {
       strokeLinecap="round"
     >
       <g transform={`translate(${soil.cx} ${soil.cy}) scale(${scale})`}>
-        <g key={props.touchCount} {...wiggle}>
+        <g {...wiggle}>
           <g {...bend}>{renderLeaves("back")}</g>
         </g>
       </g>
@@ -309,7 +302,7 @@ export function PlantDrawing(props: PlantDrawingProps) {
         strokeWidth={0.75}
       />
       <g transform={`translate(${soil.cx} ${soil.cy}) scale(${scale})`}>
-        <g key={props.touchCount} {...wiggle}>
+        <g {...wiggle}>
           <g {...bend}>
             {renderLeaves("middle")}
             <g className="fill-none" strokeWidth={0.75}>

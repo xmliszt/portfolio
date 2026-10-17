@@ -1,69 +1,57 @@
 "use client";
 
-import { motion } from "motion/react";
-
 import type { BlessingPop } from "./use-plant-streak";
 
-const START_PX = 40;
+const DURATION_MS = 1600;
 
 type BlessingPopLabelProps = {
   pop: BlessingPop;
-  anchor: { x: number; y: number };
   reducedMotion: boolean;
   onDone: () => void;
 };
 
-/** A blessing label that bounces up out of the plant at `anchor`, drifts and fades, then calls `onDone`. */
+/** A blessing label that bounces up out of the plant at the pop's anchor, drifts and fades, then calls `onDone`. */
 export function BlessingPopLabel(props: BlessingPopLabelProps) {
-  const { driftPx, liftPx, tiltDeg } = props.pop;
+  const { anchor, driftPx, liftPx, tiltDeg } = props.pop;
+  const style: React.CSSProperties & {
+    "--lm-drift": string;
+    "--lm-lift": string;
+    "--lm-tilt": string;
+  } = {
+    left: anchor.x,
+    top: anchor.y,
+    "--lm-drift": `${driftPx}px`,
+    "--lm-lift": `${liftPx}px`,
+    "--lm-tilt": `${tiltDeg}deg`,
+  };
+  const fade = `lm-blessing-fade ${DURATION_MS}ms ease-out both`;
+
+  function handleAnimationEnd(event: React.AnimationEvent<HTMLDivElement>) {
+    if (event.animationName === "lm-blessing-fade") props.onDone();
+  }
+
   return (
     <div
       aria-hidden
       className="pointer-events-none absolute -translate-x-1/2 -translate-y-full"
-      style={{ left: props.anchor.x, top: props.anchor.y }}
+      style={style}
     >
-      <motion.div
+      <div
         className="rounded-md border border-[var(--lm-edge)] bg-[var(--lm-panel)] px-2.5 py-1.5 text-[11px] leading-none font-medium whitespace-nowrap text-[var(--lm-ink-hi)]"
-        initial={
+        style={
           props.reducedMotion
-            ? { opacity: 0, y: -liftPx }
-            : { opacity: 0, scale: 0.3, y: START_PX }
-        }
-        animate={
-          props.reducedMotion
-            ? { opacity: [0, 1, 1, 0] }
+            ? {
+                animation: fade,
+                transform: "translateY(calc(var(--lm-lift) * -1))",
+              }
             : {
-                opacity: [0, 1, 1, 0],
-                scale: [0.3, 1.22, 0.9, 1.05, 1],
-                y: [
-                  START_PX,
-                  -liftPx - 14,
-                  -liftPx + 4,
-                  -liftPx - 2,
-                  -liftPx - 20,
-                ],
-                x: [0, driftPx * 0.6, driftPx * 0.85, driftPx, driftPx * 1.3],
-                rotate: [
-                  -tiltDeg,
-                  tiltDeg,
-                  -tiltDeg * 0.5,
-                  tiltDeg * 0.25,
-                  tiltDeg * 0.5,
-                ],
+                animation: `lm-blessing-pop ${DURATION_MS}ms ease-out both, ${fade}`,
               }
         }
-        transition={{
-          duration: props.reducedMotion ? 1.2 : 1.6,
-          times: props.reducedMotion
-            ? [0, 0.15, 0.7, 1]
-            : [0, 0.18, 0.3, 0.4, 1],
-          ease: "easeOut",
-          opacity: { duration: 1.6, times: [0, 0.08, 0.75, 1] },
-        }}
-        onAnimationComplete={props.onDone}
+        onAnimationEnd={handleAnimationEnd}
       >
         {props.pop.text}
-      </motion.div>
+      </div>
     </div>
   );
 }

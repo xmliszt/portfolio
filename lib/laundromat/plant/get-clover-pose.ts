@@ -2,10 +2,7 @@ import type { FallingClover } from "./create-falling-clovers";
 
 const MIN_FLIP = 0.12;
 
-/**
- * Return where `clover` is drawn at `timeS` into the shower, or `undefined` before it spawns and after it has fallen past the bottom.
- * With `still`, the clover fades in and out at `stillY` without moving.
- */
+/** Return `clover`'s pose at `timeS`, or `undefined` outside `delayS` to `delayS + fallS`; with `still`, keep it at `stillY` and fade it in and out. */
 export function getCloverPose(options: {
   clover: FallingClover;
   timeS: number;

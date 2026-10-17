@@ -20,7 +20,6 @@ export type SceneViews = {
   tv: TvView;
   coffee: CoffeePhase;
   cup: CupView;
-  plantTouchCount: number;
   basket: BasketContents;
   shelfBookNumbers: number[];
   notebookNumber: number;

@@ -4,14 +4,23 @@ import { test } from "node:test";
 import { createFallingClovers } from "./create-falling-clovers";
 import { getCloverPose } from "./get-clover-pose";
 
+function createSeededRandom(seed: number) {
+  let state = seed;
+  return () => {
+    state = (state * 1664525 + 1013904223) % 2 ** 32;
+    return state / 2 ** 32;
+  };
+}
+
 const VIEWPORT = { width: 1200, height: 800 };
 const clovers = createFallingClovers({
   count: 40,
   viewport: VIEWPORT,
   shadeCount: 3,
+  random: createSeededRandom(7),
 });
 
-test("getCloverPose hides a clover before it spawns and after it falls", () => {
+test("a clover is hidden before it spawns and after it has fallen", () => {
   clovers.forEach((clover) => {
     const base = { clover, viewportHeight: VIEWPORT.height, gustPx: 0 };
     assert.equal(
@@ -29,7 +38,7 @@ test("getCloverPose hides a clover before it spawns and after it falls", () => {
   });
 });
 
-test("getCloverPose starts each clover above the screen and ends it below", () => {
+test("each clover starts above the screen and ends below it", () => {
   clovers.forEach((clover) => {
     const base = {
       clover,
@@ -49,7 +58,7 @@ test("getCloverPose starts each clover above the screen and ends it below", () =
   });
 });
 
-test("getCloverPose keeps a still clover in place and fades it", () => {
+test("a still clover stays in place and fades in and out", () => {
   clovers.forEach((clover) => {
     const base = {
       clover,

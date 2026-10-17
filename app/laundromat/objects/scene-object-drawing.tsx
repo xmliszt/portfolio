@@ -108,7 +108,6 @@ export function SceneObjectDrawing(props: SceneObjectDrawingProps) {
       return (
         <PlantDrawing
           {...shared}
-          touchCount={views.plantTouchCount}
           details={details.plant}
         />
       );

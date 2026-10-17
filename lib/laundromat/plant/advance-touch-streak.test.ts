@@ -4,7 +4,7 @@ import { test } from "node:test";
 import type { TouchStreak } from "./advance-touch-streak";
 import { advanceTouchStreak } from "./advance-touch-streak";
 
-test("advanceTouchStreak starts at 1 without a previous touch", () => {
+test("the first touch starts a streak of 1", () => {
   assert.deepEqual(
     advanceTouchStreak({
       previous: undefined,
@@ -16,7 +16,7 @@ test("advanceTouchStreak starts at 1 without a previous touch", () => {
   );
 });
 
-test("advanceTouchStreak chains touches that each land inside the window of the last one", () => {
+test("touches that each land within the window of the last one chain", () => {
   const streak = [0, 1900, 3800, 5800].reduce<TouchStreak | undefined>(
     (previous, nowMs) =>
       advanceTouchStreak({ previous, nowMs, windowMs: 2000, maxCount: 99 }),
@@ -25,7 +25,7 @@ test("advanceTouchStreak chains touches that each land inside the window of the 
   assert.deepEqual(streak, { count: 4, atMs: 5800 });
 });
 
-test("advanceTouchStreak resets to 1 once the window has passed", () => {
+test("a touch after the window has passed starts over at 1", () => {
   assert.deepEqual(
     advanceTouchStreak({
       previous: { count: 9, atMs: 1000 },
@@ -37,7 +37,7 @@ test("advanceTouchStreak resets to 1 once the window has passed", () => {
   );
 });
 
-test("advanceTouchStreak stops counting at maxCount", () => {
+test("the streak stops counting at maxCount", () => {
   assert.deepEqual(
     advanceTouchStreak({
       previous: { count: 99, atMs: 1000 },

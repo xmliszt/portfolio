@@ -34,26 +34,28 @@ export function createFallingClovers(options: {
   const heightScale = Math.sqrt(
     Math.min(1.6, Math.max(0.6, height / REFERENCE_HEIGHT_PX))
   );
-  function between(min: number, max: number) {
-    return randomBetween({ min, max, random });
-  }
   return Array.from({ length: options.count }, (): FallingClover => {
     const depth = random();
     return {
-      x: between(-0.05, 1.05) * width,
-      stillY: between(0.08, 0.92) * height,
-      sizePx: (14 + 32 * depth) * between(0.85, 1.15),
+      x: randomBetween({ min: -0.05, max: 1.05, random }) * width,
+      stillY: randomBetween({ min: 0.08, max: 0.92, random }) * height,
+      sizePx:
+        (14 + 32 * depth) * randomBetween({ min: 0.85, max: 1.15, random }),
       depth,
       delayS: SPAWN_S * random() ** OPENING_BURST_SKEW,
-      fallS: (5.4 - 2.6 * depth) * between(0.85, 1.2) * heightScale,
-      swayPx: between(10, 50) * (0.5 + 0.5 * depth),
-      swayHz: between(0.15, 0.55),
-      swayPhase: between(0, Math.PI * 2),
-      driftPxPerS: between(-30, 30),
-      rotation: between(0, Math.PI * 2),
-      spin: (random() < 0.5 ? -1 : 1) * between(0.4, 3),
-      flipHz: between(0.2, 1.2),
-      flipPhase: between(0, Math.PI * 2),
+      fallS:
+        (5.4 - 2.6 * depth) *
+        randomBetween({ min: 0.85, max: 1.2, random }) *
+        heightScale,
+      swayPx: randomBetween({ min: 10, max: 50, random }) * (0.5 + 0.5 * depth),
+      swayHz: randomBetween({ min: 0.15, max: 0.55, random }),
+      swayPhase: randomBetween({ min: 0, max: Math.PI * 2, random }),
+      driftPxPerS: randomBetween({ min: -30, max: 30, random }),
+      rotation: randomBetween({ min: 0, max: Math.PI * 2, random }),
+      spin:
+        (random() < 0.5 ? -1 : 1) * randomBetween({ min: 0.4, max: 3, random }),
+      flipHz: randomBetween({ min: 0.2, max: 1.2, random }),
+      flipPhase: randomBetween({ min: 0, max: Math.PI * 2, random }),
       shade: Math.floor(random() * options.shadeCount),
     };
   });
