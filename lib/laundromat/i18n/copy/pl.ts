@@ -77,11 +77,42 @@ export const pl = {
       "panel pogody zaczyna od jednostki zwykłej tam, gdzie jesteś.",
     roomSounds: "dźwięki w pralni",
     roomSoundsHint:
-      "dźwięki pralni i ludzi, którzy w niej są. wyłączenie dźwięku wycisza go tylko dla ciebie.",
+      "dźwięki pralni i ludzi, którzy w niej są. wyłączenie albo ściszenie dźwięku zmienia go tylko dla ciebie.",
     roomSoundsAllOn: "włącz wszystkie",
     roomSoundsAllOff: "wyłącz wszystkie",
     roomSoundOn: "wł.",
     roomSoundOff: "wył.",
+    roomSoundVolume: (o: { sound: string }) => `głośność: ${o.sound}`,
+    roomMix: {
+      play: "odtwórz miks pralni",
+      playing: "gra twój miks",
+      playLabel: "odtwórz miks pralni z twoimi poziomami",
+      stopLabel: "zatrzymaj miks pralni",
+    },
+    ticket: {
+      heading: "kwit z pralni",
+      hint: "wydrukuj kwit, żeby zachować ustawienia w małym pliku i skopiować do nich link. otwórz link albo włóż tutaj plik na dowolnym urządzeniu, żeby je odzyskać.",
+      print: "drukuj",
+      insert: "włóż",
+      printLabel:
+        "wydrukuj kwit z pralni, który zapisuje ustawienia do pliku i kopiuje do nich link",
+      insertLabel: "włóż kwit z pralni, który wczytuje ustawienia z pliku",
+      ready: "gotowe",
+      printing: "drukuję…",
+      saved: "zapisano",
+      linkCopied: "skopiowano",
+      linkLabel: "link do twojego kwitu z pralni",
+      copyLink: "kopiuj link",
+      copied: "skopiowano",
+      linkHint:
+        "otwórz ten link na innym urządzeniu, żeby przenieść tam ustawienia.",
+      reading: "czytam…",
+      loaded: "wczytano",
+      unreadable: "to nie kwit",
+      title: "kwit z pralni",
+      number: (o: { number: string }) => `nr ${o.number}`,
+      tv: (o: { percent: number }) => `tv ${o.percent}%`,
+    },
     roomSound: {
       machines: { label: "maszyny", hint: "kręcące się pralki i suszarki" },
       "shop-bell": { label: "dzwonek", hint: "dzwoni, gdy ktoś wchodzi" },
@@ -253,6 +284,10 @@ export const pl = {
       board: "tablica",
     },
     updates: {
+      "room-sound-mixer": {
+        title: "zmiksuj pralnię po swojemu",
+        body: "Każdy dźwięk pralni ma teraz w ustawieniach własny suwak, więc deszcz może być głośniej, a maszyny ciszej. Odtwórz miks pralni, żeby usłyszeć wszystko razem, i wydrukuj kwit z pralni, żeby zachować ustawienia albo przenieść je na inne urządzenie.",
+      },
       "weather-panel": {
         title: "pogoda w środku i na zewnątrz",
         body: "Panel nad oknem pokazuje pogodę tam, gdzie jesteś, z dzisiejszą najwyższą i najniższą temperaturą oraz jakością powietrza. Okna też ją pokazują, deszcz, śnieg, mgłę albo burzę, z pasującym dźwiękiem. Twoje miasto to przybliżone zgadywanie na podstawie połączenia. Gdy powietrze robi się szkodliwe, w kącie włącza się oczyszczacz.",

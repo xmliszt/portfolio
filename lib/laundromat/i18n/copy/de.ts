@@ -64,11 +64,43 @@ export const de = {
       "die wetteranzeige startet mit der einheit, die bei dir üblich ist.",
     roomSounds: "Raumgeräusche",
     roomSoundsHint:
-      "Geräusche aus dem Raum und von den Leuten darin. Was du ausschaltest, ist nur für dich stumm.",
+      "Geräusche aus dem Raum und von den Leuten darin. Was du ausschaltest oder leiser stellst, ändert sich nur für dich.",
     roomSoundsAllOn: "alle an",
     roomSoundsAllOff: "alle aus",
     roomSoundOn: "an",
     roomSoundOff: "aus",
+    roomSoundVolume: (o: { sound: string }) => `Lautstärke: ${o.sound}`,
+    roomMix: {
+      play: "Raummix abspielen",
+      playing: "dein Mix läuft",
+      playLabel: "Raummix in deiner Lautstärke abspielen",
+      stopLabel: "Raummix stoppen",
+    },
+    ticket: {
+      heading: "Wäschezettel",
+      hint: "Druck einen Zettel, um deine Einstellungen als kleine Datei aufzubewahren und einen Link dazu zu kopieren. Öffne den Link oder leg die Datei hier ein, um sie auf jedem Gerät zurückzuholen.",
+      print: "drucken",
+      insert: "einlegen",
+      printLabel:
+        "Wäschezettel drucken, speichert deine Einstellungen in einer Datei und kopiert einen Link dazu",
+      insertLabel:
+        "Wäschezettel einlegen, lädt deine Einstellungen aus einer Datei",
+      ready: "bereit",
+      printing: "druckt…",
+      saved: "gespeichert",
+      linkCopied: "Link kopiert",
+      linkLabel: "Link zu deinem Wäschezettel",
+      copyLink: "Link kopieren",
+      copied: "kopiert",
+      linkHint:
+        "Öffne diesen Link auf einem anderen Gerät, um deine Einstellungen dorthin mitzunehmen.",
+      reading: "liest…",
+      loaded: "geladen",
+      unreadable: "kein Zettel",
+      title: "Wäschezettel",
+      number: (o: { number: string }) => `Nr. ${o.number}`,
+      tv: (o: { percent: number }) => `TV ${o.percent}%`,
+    },
     roomSound: {
       machines: {
         label: "Maschinen",
@@ -278,6 +310,10 @@ export const de = {
       board: "aushang",
     },
     updates: {
+      "room-sound-mixer": {
+        title: "misch den Raum nach deinem Geschmack",
+        body: "Jedes Raumgeräusch hat in den Einstellungen jetzt einen eigenen Regler, damit der Regen lauter und die Maschinen leiser sein können. Spiel den Raummix ab, um alles zusammen zu hören, und druck einen Wäschezettel, um deine Einstellungen aufzubewahren oder auf ein anderes Gerät mitzunehmen.",
+      },
       "weather-panel": {
         title: "das Wetter, drinnen und draußen",
         body: "Eine Anzeige über dem Fenster zeigt das Wetter bei dir, mit dem heutigen Höchst- und Tiefstwert und der Luftqualität. Auch die Fenster zeigen es, Regen, Schnee, Nebel oder Gewitter, mit passendem Klang. Deine Stadt wird grob über deine Verbindung geschätzt. Wird die Luft ungesund, springt in der Ecke ein Luftreiniger an.",

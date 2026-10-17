@@ -17,18 +17,20 @@ import type { SceneConfig } from "@/lib/laundromat/scene-config";
 import { parseStoredTv } from "@/lib/laundromat/tv/parse-stored-tv";
 import { transitionTv } from "@/lib/laundromat/tv/transition-tv";
 import type { TvEvent, TvState, TvStation } from "@/lib/laundromat/tv/tv-state";
+import {
+  TV_RESTORED_EVENT,
+  TV_STORAGE_KEYS,
+} from "@/lib/laundromat/tv/tv-storage";
 
 const TICK_MS = 1000;
 const MS_PER_MINUTE = 60_000;
-const TV_STATION_STORAGE_KEY = "laundromat:tv-station";
-const TV_VOLUME_STORAGE_KEY = "laundromat:tv-volume";
 
 function readStoredTv(stations: TvStation[]) {
   try {
     return parseStoredTv({
       stations,
-      storedStation: window.localStorage.getItem(TV_STATION_STORAGE_KEY),
-      storedVolume: window.localStorage.getItem(TV_VOLUME_STORAGE_KEY),
+      storedStation: window.localStorage.getItem(TV_STORAGE_KEYS.station),
+      storedVolume: window.localStorage.getItem(TV_STORAGE_KEYS.volume),
     });
   } catch {
     return { station: undefined, volumePercent: undefined };
@@ -79,19 +81,24 @@ export function useRoomAppliances(options: {
 
   const { stations } = tvDetails;
   useLayoutEffect(() => {
-    const stored = readStoredTv(stations);
-    setTv((current) => ({
-      ...current,
-      station: stored.station ?? current.station,
-      volumePercent: stored.volumePercent ?? current.volumePercent,
-    }));
+    function applyStoredTv() {
+      const stored = readStoredTv(stations);
+      setTv((current) => ({
+        ...current,
+        station: stored.station ?? current.station,
+        volumePercent: stored.volumePercent ?? current.volumePercent,
+      }));
+    }
+    applyStoredTv();
+    window.addEventListener(TV_RESTORED_EVENT, applyStoredTv);
+    return () => window.removeEventListener(TV_RESTORED_EVENT, applyStoredTv);
   }, [stations]);
 
   const stationId = stations[tv.station]?.id;
   useEffect(() => {
     if (!isTvTouched || stationId === undefined) return;
     try {
-      window.localStorage.setItem(TV_STATION_STORAGE_KEY, stationId);
+      window.localStorage.setItem(TV_STORAGE_KEYS.station, stationId);
     } catch {
       return;
     }
@@ -101,7 +108,10 @@ export function useRoomAppliances(options: {
   useEffect(() => {
     if (!isTvTouched) return;
     try {
-      window.localStorage.setItem(TV_VOLUME_STORAGE_KEY, String(volumePercent));
+      window.localStorage.setItem(
+        TV_STORAGE_KEYS.volume,
+        String(volumePercent)
+      );
     } catch {
       return;
     }

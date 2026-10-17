@@ -15,6 +15,7 @@ import { playLampOff } from "./sounds/play-lamp-off";
 import { playNotebookFree } from "./sounds/play-notebook-free";
 import { playNotebookOpen } from "./sounds/play-notebook-open";
 import { playPageFlip } from "./sounds/play-page-flip";
+import { playPrinterFeed } from "./sounds/play-printer-feed";
 import { playRoomDoorOpen } from "./sounds/play-room-door-open";
 import { playSample } from "./sounds/play-sample";
 import { playShopBell } from "./sounds/play-shop-bell";
@@ -25,12 +26,15 @@ import { playTouchGrass } from "./sounds/play-touch-grass";
 import { playTvStatic } from "./sounds/play-tv-static";
 import { startCoffeeBrewing } from "./sounds/start-coffee-brewing";
 import { startDryerRunning } from "./sounds/start-dryer-running";
+import { startPrinterMotor } from "./sounds/start-printer-motor";
 import { startRainOutside } from "./sounds/start-rain-outside";
 import { startSampleLoop } from "./sounds/start-sample-loop";
 import { startTvNoSignal } from "./sounds/start-tv-no-signal";
 import { startWasherRunning } from "./sounds/start-washer-running";
 import type { LoopHandle, VoiceOptions } from "./sounds/voice-options";
 import { getPeakGain } from "./get-peak-gain";
+import type { RoomSoundGroup, RoomSoundVolumes } from "./room-sound-groups";
+import { ROOM_SOUND_VOLUME } from "./room-sound-groups";
 import type { LoopName, SoundName } from "./sound-names";
 import { LOOP_NAMES, SOUND_NAMES } from "./sound-names";
 import { SOUND_SAMPLE_BASE_PATH, SOUND_SAMPLES } from "./sound-samples";
@@ -40,6 +44,8 @@ const MASTER_LOWPASS_HZ = 9000;
 const MUTE_TIME_CONSTANT_S = 0.03;
 const LOOP_FADE_IN_MS = 700;
 const LOOP_FADE_OUT_MS = 600;
+const GROUP_TIME_CONSTANT_S = 0.04;
+const ANALYSER_FFT_SIZE = 512;
 
 const ONE_SHOTS = {
   "door-latch-open": playDoorLatchOpen,
@@ -65,6 +71,7 @@ const ONE_SHOTS = {
   "touch-grass": playTouchGrass,
   "shop-bell": playShopBell,
   "thunder-rumble": playThunderRumble,
+  "printer-feed": playPrinterFeed,
 } satisfies { [name in SoundName]: (options: VoiceOptions) => void };
 
 const LOOPS = {
@@ -73,13 +80,22 @@ const LOOPS = {
   "coffee-brewing": startCoffeeBrewing,
   "tv-no-signal": startTvNoSignal,
   "rain-outside": startRainOutside,
+  "printer-motor": startPrinterMotor,
 } satisfies {
   [name in LoopName]: (
     options: VoiceOptions & { fadeInMs: number }
   ) => LoopHandle;
 };
 
-type Graph = { context: AudioContext; bus: GainNode; master: GainNode };
+type Meter = { analyser: AnalyserNode; samples: Float32Array };
+
+type Graph = {
+  context: AudioContext;
+  bus: GainNode;
+  master: GainNode;
+  groups: { [group in RoomSoundGroup]: { gain: GainNode; meter: Meter } };
+  masterMeter: Meter;
+};
 
 type SampleName = SoundName | LoopName;
 
@@ -105,6 +121,25 @@ async function fetchSampleBytes(name: SampleName) {
   }
 }
 
+function getDestination(graph: Graph, group: RoomSoundGroup | undefined) {
+  return group === undefined ? graph.bus : graph.groups[group].gain;
+}
+
+function createMeter(context: AudioContext): Meter {
+  const analyser = context.createAnalyser();
+  analyser.fftSize = ANALYSER_FFT_SIZE;
+  return { analyser, samples: new Float32Array(analyser.fftSize) };
+}
+
+function readMeter(meter: Meter) {
+  meter.analyser.getFloatTimeDomainData(meter.samples);
+  const sumOfSquares = meter.samples.reduce(
+    (sum, sample) => sum + sample * sample,
+    0
+  );
+  return Math.sqrt(sumOfSquares / meter.samples.length);
+}
+
 /** Return a sound board that plays the laundromat's one-shots and loops from recorded samples, synthesizing any sample that is missing, and creates its `AudioContext` and starts fetching samples on the first unmuted `resume`. */
 export function createSoundBoard(
   options: {
@@ -120,7 +155,8 @@ export function createSoundBoard(
     graph?: Graph;
     muted: boolean;
     disposed: boolean;
-    wantedLoops: { [name in LoopName]?: true };
+    wantedLoops: { [name in LoopName]?: { group?: RoomSoundGroup } };
+    groupVolumes: RoomSoundVolumes;
     activeLoops: { [name in LoopName]?: LoopHandle };
     sampleLoops: { [name in LoopName]?: true };
     samplesRequested: boolean;
@@ -136,6 +172,15 @@ export function createSoundBoard(
     muted: false,
     disposed: false,
     wantedLoops: {},
+    groupVolumes: {
+      machines: ROOM_SOUND_VOLUME.usual,
+      "shop-bell": ROOM_SOUND_VOLUME.usual,
+      unloading: ROOM_SOUND_VOLUME.usual,
+      coffee: ROOM_SOUND_VOLUME.usual,
+      tv: ROOM_SOUND_VOLUME.usual,
+      lamp: ROOM_SOUND_VOLUME.usual,
+      weather: ROOM_SOUND_VOLUME.usual,
+    },
     activeLoops: {},
     sampleLoops: {},
     samplesRequested: false,
@@ -200,6 +245,8 @@ export function createSoundBoard(
     const master = context.createGain();
     master.gain.value = state.muted ? 0 : MASTER_LEVEL;
     master.connect(context.destination);
+    const masterMeter = createMeter(context);
+    master.connect(masterMeter.analyser);
     const compressor = context.createDynamicsCompressor();
     compressor.threshold.value = -24;
     compressor.knee.value = 30;
@@ -223,7 +270,24 @@ export function createSoundBoard(
         dampingHz: 3500,
       })
     );
-    return { context, bus, master };
+    function createGroup(group: RoomSoundGroup) {
+      const gain = context.createGain();
+      gain.gain.value = state.groupVolumes[group];
+      gain.connect(bus);
+      const meter = createMeter(context);
+      gain.connect(meter.analyser);
+      return { gain, meter };
+    }
+    const groups = {
+      machines: createGroup("machines"),
+      "shop-bell": createGroup("shop-bell"),
+      unloading: createGroup("unloading"),
+      coffee: createGroup("coffee"),
+      tv: createGroup("tv"),
+      lamp: createGroup("lamp"),
+      weather: createGroup("weather"),
+    };
+    return { context, bus, master, groups, masterMeter };
   }
 
   function getRunningGraph() {
@@ -235,35 +299,52 @@ export function createSoundBoard(
   function startWantedLoops() {
     const graph = getRunningGraph();
     if (!graph) return;
-    LOOP_NAMES.filter(
-      (name) => state.wantedLoops[name] && !state.activeLoops[name]
-    ).forEach((name) => {
-      const sample = state.samples[name];
-      const voice = {
-        context: graph.context,
-        destination: graph.bus,
-        fadeInMs: LOOP_FADE_IN_MS,
-      };
-      if (sample === undefined) {
-        state.activeLoops[name] = LOOPS[name]({ ...voice, volume: 1 });
-        return;
-      }
-      state.sampleLoops[name] = true;
-      state.activeLoops[name] = startSampleLoop({
-        ...voice,
-        buffer: sample.buffer,
-        volume: sample.gain,
+    LOOP_NAMES.forEach((name) => {
+      const wanted = state.wantedLoops[name];
+      if (wanted === undefined || state.activeLoops[name]) return;
+      if (state.samples[name] !== undefined) state.sampleLoops[name] = true;
+      state.activeLoops[name] = startLoopVoice({
+        graph,
+        name,
+        group: wanted.group,
       });
     });
   }
 
+  function startLoopVoice(voice: {
+    graph: Graph;
+    name: LoopName;
+    group: RoomSoundGroup | undefined;
+  }) {
+    const sample = state.samples[voice.name];
+    const options = {
+      context: voice.graph.context,
+      destination: getDestination(voice.graph, voice.group),
+      fadeInMs: LOOP_FADE_IN_MS,
+    };
+    if (sample === undefined) {
+      return LOOPS[voice.name]({ ...options, volume: 1 });
+    }
+    return startSampleLoop({
+      ...options,
+      buffer: sample.buffer,
+      volume: sample.gain,
+    });
+  }
+
   return {
-    play(name: SoundName, playOptions?: { volume?: number }) {
+    play(
+      name: SoundName,
+      playOptions?: { volume?: number; group?: RoomSoundGroup }
+    ) {
       const graph = getRunningGraph();
       if (!graph || state.muted) return;
       const volume = playOptions?.volume ?? 1;
       const sample = state.samples[name];
-      const voice = { context: graph.context, destination: graph.bus };
+      const voice = {
+        context: graph.context,
+        destination: getDestination(graph, playOptions?.group),
+      };
       if (sample === undefined) {
         ONE_SHOTS[name]({ ...voice, volume });
         return;
@@ -275,9 +356,33 @@ export function createSoundBoard(
         lengthMs: sample.lengthMs,
       });
     },
-    startLoop(name: LoopName) {
-      state.wantedLoops[name] = true;
+    startLoop(name: LoopName, loopOptions?: { group?: RoomSoundGroup }) {
+      state.wantedLoops[name] = { group: loopOptions?.group };
       startWantedLoops();
+    },
+    holdLoop(name: LoopName, loopOptions?: { group?: RoomSoundGroup }) {
+      const graph = getRunningGraph();
+      const handle =
+        graph === undefined
+          ? undefined
+          : startLoopVoice({ graph, name, group: loopOptions?.group });
+      return { stop: () => handle?.stop(LOOP_FADE_OUT_MS) };
+    },
+    setGroupVolume(group: RoomSoundGroup, volume: number) {
+      state.groupVolumes[group] = volume;
+      const graph = state.graph;
+      if (graph === undefined) return;
+      const { gain } = graph.groups[group].gain;
+      const nowS = graph.context.currentTime;
+      gain.cancelScheduledValues(nowS);
+      gain.setTargetAtTime(volume, nowS, GROUP_TIME_CONSTANT_S);
+    },
+    getLevel(group?: RoomSoundGroup) {
+      const graph = state.graph;
+      if (graph === undefined) return 0;
+      return readMeter(
+        group === undefined ? graph.masterMeter : graph.groups[group].meter
+      );
     },
     stopLoop(name: LoopName) {
       delete state.wantedLoops[name];

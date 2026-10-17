@@ -64,11 +64,41 @@ export const ja = {
       "天気パネルは、あなたのいる地域でふつう使う単位から始まります。",
     roomSounds: "店内の音",
     roomSoundsHint:
-      "店内とそこにいる人たちの音です。オフにしても、消えるのはあなたにだけです。",
+      "店内とそこにいる人たちの音です。オフにしたり小さくしたりしても、変わるのはあなたにだけです。",
     roomSoundsAllOn: "すべてオン",
     roomSoundsAllOff: "すべてオフ",
     roomSoundOn: "オン",
     roomSoundOff: "オフ",
+    roomSoundVolume: (o: { sound: string }) => `${o.sound}の音量`,
+    roomMix: {
+      play: "店内ミックスを再生",
+      playing: "ミックスを再生中",
+      playLabel: "自分の音量で店内ミックスを再生",
+      stopLabel: "店内ミックスを停止",
+    },
+    ticket: {
+      heading: "ランドリー引換券",
+      hint: "引換券を印刷すると、設定を小さなファイルとして残し、設定へのリンクをコピーします。どの端末でも、リンクを開くか、ここにファイルを入れれば、設定が戻ります。",
+      print: "印刷",
+      insert: "挿入",
+      printLabel:
+        "ランドリー引換券を印刷して、設定をファイルに保存し、リンクをコピー",
+      insertLabel: "ランドリー引換券を挿入して、ファイルから設定を読み込む",
+      ready: "待機中",
+      printing: "印刷中…",
+      saved: "保存済み",
+      linkCopied: "リンクコピー済み",
+      linkLabel: "ランドリー引換券へのリンク",
+      copyLink: "リンクをコピー",
+      copied: "コピー済み",
+      linkHint: "別の端末でこのリンクを開くと、設定をそちらに移せます。",
+      reading: "読込中…",
+      loaded: "読込完了",
+      unreadable: "引換券ではない",
+      title: "ランドリー引換券",
+      number: (o: { number: string }) => `No. ${o.number}`,
+      tv: (o: { percent: number }) => `テレビ ${o.percent}%`,
+    },
     roomSound: {
       machines: { label: "マシン", hint: "回っている洗濯機と乾燥機" },
       "shop-bell": { label: "ドアベル", hint: "誰かが入ってくると鳴ります" },
@@ -265,6 +295,10 @@ export const ja = {
       board: "掲示板",
     },
     updates: {
+      "room-sound-mixer": {
+        title: "店内の音を好きなバランスに",
+        body: "設定の店内の音それぞれに、音量のスライダーがつきました。雨を大きく、マシンを小さく、といった調整ができます。店内ミックスを再生すればまとめて聞けます。ランドリー引換券を印刷すれば、設定を残したり、別の端末に持っていったりできます。",
+      },
       "weather-panel": {
         title: "店の中にも外にも天気",
         body: "窓の上のパネルに、あなたのいる場所の天気と今日の最高・最低気温、空気の質が出ます。窓の外にも雨、雪、霧、嵐が、音といっしょに見えます。街は接続からおおまかに推測しています。空気が悪くなると、隅の空気清浄機が動き出します。",

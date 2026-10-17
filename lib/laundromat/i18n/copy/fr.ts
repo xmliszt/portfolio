@@ -64,11 +64,43 @@ export const fr = {
       "le panneau météo commence avec l'unité habituelle là où tu es.",
     roomSounds: "sons de la salle",
     roomSoundsHint:
-      "les sons de la salle et des gens qui s'y trouvent. en couper un ne le coupe que pour toi.",
+      "les sons de la salle et des gens qui s'y trouvent. couper ou baisser un son ne le change que pour toi.",
     roomSoundsAllOn: "tout activer",
     roomSoundsAllOff: "tout couper",
     roomSoundOn: "act.",
     roomSoundOff: "coupé",
+    roomSoundVolume: (o: { sound: string }) => `volume : ${o.sound}`,
+    roomMix: {
+      play: "écouter le mix de la salle",
+      playing: "ton mix en cours",
+      playLabel: "écouter le mix de la salle à tes niveaux",
+      stopLabel: "arrêter le mix de la salle",
+    },
+    ticket: {
+      heading: "ticket de laverie",
+      hint: "imprime un ticket pour garder tes réglages dans un petit fichier et copier un lien vers eux. ouvre le lien, ou insère le fichier ici, sur n'importe quel appareil pour les retrouver.",
+      print: "imprimer",
+      insert: "insérer",
+      printLabel:
+        "imprimer un ticket de laverie, qui enregistre tes réglages dans un fichier et copie un lien vers eux",
+      insertLabel:
+        "insérer un ticket de laverie, qui charge tes réglages depuis un fichier",
+      ready: "prêt",
+      printing: "impression…",
+      saved: "enregistré",
+      linkCopied: "lien copié",
+      linkLabel: "lien vers ton ticket de laverie",
+      copyLink: "copier le lien",
+      copied: "copié",
+      linkHint:
+        "ouvre ce lien sur un autre appareil pour y retrouver tes réglages.",
+      reading: "lecture…",
+      loaded: "chargé",
+      unreadable: "illisible",
+      title: "ticket de laverie",
+      number: (o: { number: string }) => `n° ${o.number}`,
+      tv: (o: { percent: number }) => `télé ${o.percent}%`,
+    },
     roomSound: {
       machines: {
         label: "machines",
@@ -280,6 +312,10 @@ export const fr = {
       board: "panneau",
     },
     updates: {
+      "room-sound-mixer": {
+        title: "mixe la salle à ta façon",
+        body: "Chaque son de la salle a maintenant son propre curseur dans les réglages, pour que la pluie soit plus forte et les machines plus douces. Écoute le mix de la salle pour les entendre ensemble, et imprime un ticket de laverie pour garder tes réglages ou les emporter sur un autre appareil.",
+      },
       "weather-panel": {
         title: "la météo, dedans et dehors",
         body: "Un panneau au-dessus de la fenêtre affiche la météo là où tu es, avec les températures max et min du jour et la qualité de l'air. Les fenêtres la montrent aussi, pluie, neige, brouillard ou orage, avec le son qui va avec. Ta ville est devinée à peu près d'après ta connexion. Quand l'air devient mauvais, un purificateur se met en marche dans le coin.",

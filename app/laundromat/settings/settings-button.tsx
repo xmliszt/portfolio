@@ -1,25 +1,50 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 
 import { useLaundromatCopy } from "@/app/laundromat/i18n/use-laundromat-copy";
 import { TOOLBAR_BUTTON_CLASS } from "@/app/laundromat/toolbar-button-class";
 import { ToolbarLabel } from "@/app/laundromat/toolbar-label";
+import { readSettingsTicketHash } from "@/lib/laundromat/settings-ticket/read-settings-ticket-hash";
 
 import { SettingsDialog } from "./settings-dialog";
 
 const DIALOG_EASE = [0.23, 1, 0.32, 1] as const;
 
-/** Open the laundromat's settings dialog from a gear in the toolbar, returning focus to the gear when it closes. */
+/** Open the laundromat's settings dialog from a gear in the toolbar, returning focus to the gear when it closes, or on its own with the ticket from a `#ticket=` link to restore, removing the link's ticket from the address once it is read. */
 export function SettingsButton() {
   const { copy } = useLaundromatCopy();
   const [isOpen, setOpen] = useState(false);
   const prefersReducedMotion = useReducedMotion() ?? false;
   const triggerRef = useRef<HTMLButtonElement>(null);
+  const [restoreCode, setRestoreCode] = useState<string>();
+
+  useEffect(() => {
+    function openFromTicketLink() {
+      const code = readSettingsTicketHash(window.location.hash);
+      if (code === undefined) return;
+      setRestoreCode(code);
+      setOpen(true);
+    }
+    openFromTicketLink();
+    window.addEventListener("hashchange", openFromTicketLink);
+    return () => window.removeEventListener("hashchange", openFromTicketLink);
+  }, []);
+
+  function clearTicketLink() {
+    setRestoreCode(undefined);
+    if (readSettingsTicketHash(window.location.hash) === undefined) return;
+    window.history.replaceState(
+      window.history.state,
+      "",
+      `${window.location.pathname}${window.location.search}`
+    );
+  }
 
   function close() {
     setOpen(false);
+    setRestoreCode(undefined);
     triggerRef.current?.focus({ preventScroll: true });
   }
 
@@ -77,7 +102,11 @@ export function SettingsButton() {
               }
               transition={{ duration: 0.24, ease: DIALOG_EASE }}
             >
-              <SettingsDialog onClose={close} />
+              <SettingsDialog
+                restoreCode={restoreCode}
+                onRestoreRead={clearTicketLink}
+                onClose={close}
+              />
             </motion.div>
           </motion.div>
         )}

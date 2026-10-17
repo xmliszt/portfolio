@@ -64,11 +64,43 @@ export const es = {
       "el panel del tiempo empieza con la unidad habitual donde estás.",
     roomSounds: "sonidos de la sala",
     roomSoundsHint:
-      "sonidos de la sala y de la gente que hay en ella. si apagas uno, solo se silencia para ti.",
+      "sonidos de la sala y de la gente que hay en ella. si apagas o bajas uno, solo cambia para ti.",
     roomSoundsAllOn: "todo encendido",
     roomSoundsAllOff: "todo apagado",
     roomSoundOn: "enc.",
     roomSoundOff: "apag.",
+    roomSoundVolume: (o: { sound: string }) => `volumen: ${o.sound}`,
+    roomMix: {
+      play: "escuchar la mezcla de la sala",
+      playing: "suena tu mezcla",
+      playLabel: "escuchar la mezcla de la sala a tus niveles",
+      stopLabel: "parar la mezcla de la sala",
+    },
+    ticket: {
+      heading: "resguardo de lavandería",
+      hint: "imprime un resguardo para guardar tus ajustes en un archivo pequeño y copiar un enlace a ellos. abre el enlace, o inserta el archivo aquí, en cualquier dispositivo para recuperarlos.",
+      print: "imprimir",
+      insert: "insertar",
+      printLabel:
+        "imprimir un resguardo de lavandería, que guarda tus ajustes en un archivo y copia un enlace a ellos",
+      insertLabel:
+        "insertar un resguardo de lavandería, que carga tus ajustes desde un archivo",
+      ready: "listo",
+      printing: "imprimiendo…",
+      saved: "guardado",
+      linkCopied: "link copiado",
+      linkLabel: "enlace a tu resguardo de lavandería",
+      copyLink: "copiar enlace",
+      copied: "copiado",
+      linkHint:
+        "abre este enlace en otro dispositivo para llevar tus ajustes allí.",
+      reading: "leyendo…",
+      loaded: "cargado",
+      unreadable: "no válido",
+      title: "resguardo de lavandería",
+      number: (o: { number: string }) => `n.º ${o.number}`,
+      tv: (o: { percent: number }) => `tele ${o.percent}%`,
+    },
     roomSound: {
       machines: { label: "máquinas", hint: "lavadoras y secadoras girando" },
       "shop-bell": { label: "campanilla", hint: "suena cuando entra alguien" },
@@ -276,6 +308,10 @@ export const es = {
       board: "tablón",
     },
     updates: {
+      "room-sound-mixer": {
+        title: "mezcla la sala a tu gusto",
+        body: "Cada sonido de la sala tiene ahora su propio control deslizante en los ajustes, para que la lluvia suene más fuerte y las máquinas más bajo. Escucha la mezcla de la sala para oírlos juntos e imprime un resguardo de lavandería para guardar tus ajustes o llevarlos a otro dispositivo.",
+      },
       "weather-panel": {
         title: "el tiempo, dentro y fuera",
         body: "Un panel sobre la ventana muestra el tiempo donde estás, con la máxima y la mínima de hoy y la calidad del aire. Las ventanas también lo muestran, lluvia, nieve, niebla o tormenta, con su sonido. Tu ciudad se calcula a grandes rasgos a partir de tu conexión. Cuando el aire se vuelve dañino, un purificador se enciende en la esquina.",

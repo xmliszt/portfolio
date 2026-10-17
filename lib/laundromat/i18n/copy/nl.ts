@@ -63,11 +63,43 @@ export const nl = {
       "het weerpaneel begint met de eenheid die bij jou gebruikelijk is.",
     roomSounds: "geluiden in de zaak",
     roomSoundsHint:
-      "geluiden van de zaak en de mensen erin. iets uitzetten dempt het alleen voor jou.",
+      "geluiden van de zaak en de mensen erin. iets uit- of zachter zetten verandert het alleen voor jou.",
     roomSoundsAllOn: "alles aan",
     roomSoundsAllOff: "alles uit",
     roomSoundOn: "aan",
     roomSoundOff: "uit",
+    roomSoundVolume: (o: { sound: string }) => `volume ${o.sound}`,
+    roomMix: {
+      play: "speel de mix van de zaak",
+      playing: "je mix speelt",
+      playLabel: "speel de mix van de zaak op jouw niveaus",
+      stopLabel: "stop de mix van de zaak",
+    },
+    ticket: {
+      heading: "wasbonnetje",
+      hint: "print een bonnetje om je instellingen als klein bestand te bewaren en een link ernaar te kopiëren. open de link, of stop het bestand hier in, op elk apparaat om ze terug te krijgen.",
+      print: "print",
+      insert: "invoeren",
+      printLabel:
+        "print een wasbonnetje, dat je instellingen in een bestand opslaat en een link ernaar kopieert",
+      insertLabel:
+        "voer een wasbonnetje in, dat je instellingen uit een bestand laadt",
+      ready: "klaar",
+      printing: "printen…",
+      saved: "bewaard",
+      linkCopied: "gekopieerd",
+      linkLabel: "link naar je wasbonnetje",
+      copyLink: "kopieer link",
+      copied: "gekopieerd",
+      linkHint:
+        "open deze link op een ander apparaat om je instellingen daar te krijgen.",
+      reading: "lezen…",
+      loaded: "geladen",
+      unreadable: "ongeldig",
+      title: "wasbonnetje",
+      number: (o: { number: string }) => `nr. ${o.number}`,
+      tv: (o: { percent: number }) => `tv ${o.percent}%`,
+    },
     roomSound: {
       machines: { label: "machines", hint: "draaiende wasmachines en drogers" },
       "shop-bell": {
@@ -245,6 +277,10 @@ export const nl = {
       board: "bord",
     },
     updates: {
+      "room-sound-mixer": {
+        title: "mix de zaak zoals jij wilt",
+        body: "Elk geluid in de zaak heeft in de instellingen nu een eigen schuifregelaar, zodat de regen harder kan en de machines zachter. Speel de mix van de zaak om ze samen te horen, en print een wasbonnetje om je instellingen te bewaren of mee te nemen naar een ander apparaat.",
+      },
       "weather-panel": {
         title: "het weer, binnen en buiten",
         body: "Een paneel boven het raam toont het weer waar je bent, met de hoogste en laagste temperatuur van vandaag en de luchtkwaliteit. De ramen laten het ook zien, regen, sneeuw, mist of onweer, met het geluid erbij. Je stad is een ruwe schatting op basis van je verbinding. Als de lucht ongezond wordt, slaat in de hoek een luchtreiniger aan.",

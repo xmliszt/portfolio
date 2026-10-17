@@ -65,11 +65,43 @@ export const ptBR = {
       "o painel do tempo começa com a unidade usual onde você está.",
     roomSounds: "sons da lavanderia",
     roomSoundsHint:
-      "sons da lavanderia e das pessoas nela. desligar um só silencia para você.",
+      "sons da lavanderia e das pessoas nela. desligar ou abaixar um só muda para você.",
     roomSoundsAllOn: "ligar todos",
     roomSoundsAllOff: "desligar todos",
     roomSoundOn: "lig.",
     roomSoundOff: "desl.",
+    roomSoundVolume: (o: { sound: string }) => `volume: ${o.sound}`,
+    roomMix: {
+      play: "tocar a mixagem da lavanderia",
+      playing: "tocando sua mixagem",
+      playLabel: "tocar a mixagem da lavanderia nos seus níveis",
+      stopLabel: "parar a mixagem da lavanderia",
+    },
+    ticket: {
+      heading: "tíquete da lavanderia",
+      hint: "imprima um tíquete para guardar suas configurações num arquivo pequeno e copiar um link para elas. abra o link, ou insira o arquivo aqui, em qualquer aparelho para recuperá-las.",
+      print: "imprimir",
+      insert: "inserir",
+      printLabel:
+        "imprimir um tíquete da lavanderia, que salva suas configurações num arquivo e copia um link para elas",
+      insertLabel:
+        "inserir um tíquete da lavanderia, que carrega suas configurações de um arquivo",
+      ready: "pronto",
+      printing: "imprimindo…",
+      saved: "salvo",
+      linkCopied: "link copiado",
+      linkLabel: "link para seu tíquete da lavanderia",
+      copyLink: "copiar link",
+      copied: "copiado",
+      linkHint:
+        "abra este link em outro aparelho para levar suas configurações para lá.",
+      reading: "lendo…",
+      loaded: "carregado",
+      unreadable: "inválido",
+      title: "tíquete da lavanderia",
+      number: (o: { number: string }) => `nº ${o.number}`,
+      tv: (o: { percent: number }) => `tv ${o.percent}%`,
+    },
     roomSound: {
       machines: { label: "máquinas", hint: "lavadoras e secadoras girando" },
       "shop-bell": { label: "sininho", hint: "toca quando alguém entra" },
@@ -275,6 +307,10 @@ export const ptBR = {
       board: "mural",
     },
     updates: {
+      "room-sound-mixer": {
+        title: "mixe a lavanderia do seu jeito",
+        body: "Cada som da lavanderia nas configurações agora tem seu próprio controle deslizante, então a chuva pode ficar mais alta e as máquinas mais baixas. Toque a mixagem da lavanderia para ouvir tudo junto e imprima um tíquete da lavanderia para guardar suas configurações ou levá-las para outro aparelho.",
+      },
       "weather-panel": {
         title: "o tempo, dentro e fora",
         body: "Um painel acima da janela mostra o tempo onde você está, com a máxima e a mínima de hoje e a qualidade do ar. As janelas também mostram, chuva, neve, neblina ou tempestade, com o som certo. Sua cidade é um palpite aproximado a partir da sua conexão. Quando o ar fica ruim, um purificador liga no canto.",

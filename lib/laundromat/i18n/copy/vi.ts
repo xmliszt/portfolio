@@ -68,11 +68,42 @@ export const vi = {
     temperatureHint: "bảng thời tiết bắt đầu với đơn vị quen dùng ở nơi bạn ở.",
     roomSounds: "âm thanh trong tiệm",
     roomSoundsHint:
-      "âm thanh từ tiệm và những người trong đó. tắt một âm chỉ tắt cho riêng bạn.",
+      "âm thanh từ tiệm và những người trong đó. tắt hay vặn nhỏ một âm chỉ thay đổi cho riêng bạn.",
     roomSoundsAllOn: "bật hết",
     roomSoundsAllOff: "tắt hết",
     roomSoundOn: "bật",
     roomSoundOff: "tắt",
+    roomSoundVolume: (o: { sound: string }) => `âm lượng ${o.sound}`,
+    roomMix: {
+      play: "phát bản phối của tiệm",
+      playing: "đang phát bản phối",
+      playLabel: "phát bản phối của tiệm theo mức của bạn",
+      stopLabel: "dừng bản phối của tiệm",
+    },
+    ticket: {
+      heading: "phiếu giặt",
+      hint: "in một phiếu để giữ cài đặt của bạn thành một tệp nhỏ và sao chép liên kết tới chúng. mở liên kết, hoặc nạp tệp vào đây, trên bất kỳ máy nào để lấy lại.",
+      print: "in",
+      insert: "nạp",
+      printLabel:
+        "in phiếu giặt, lưu cài đặt của bạn vào một tệp và sao chép liên kết tới chúng",
+      insertLabel: "nạp phiếu giặt, tải cài đặt của bạn từ một tệp",
+      ready: "sẵn sàng",
+      printing: "đang in…",
+      saved: "đã lưu",
+      linkCopied: "đã sao chép",
+      linkLabel: "liên kết tới phiếu giặt của bạn",
+      copyLink: "sao chép",
+      copied: "đã sao chép",
+      linkHint:
+        "mở liên kết này trên máy khác để mang cài đặt của bạn sang đó.",
+      reading: "đang đọc…",
+      loaded: "đã tải",
+      unreadable: "phiếu lỗi",
+      title: "phiếu giặt",
+      number: (o: { number: string }) => `số ${o.number}`,
+      tv: (o: { percent: number }) => `tv ${o.percent}%`,
+    },
     roomSound: {
       machines: { label: "máy móc", hint: "máy giặt và máy sấy đang quay" },
       "shop-bell": { label: "chuông cửa", hint: "reo khi có người bước vào" },
@@ -268,6 +299,10 @@ export const vi = {
       board: "bảng tin",
     },
     updates: {
+      "room-sound-mixer": {
+        title: "tự phối âm thanh trong tiệm",
+        body: "Mỗi âm thanh trong tiệm giờ có thanh trượt riêng trong phần cài đặt, để tiếng mưa to hơn và tiếng máy nhỏ hơn. Phát bản phối của tiệm để nghe tất cả cùng lúc, và in một phiếu giặt để giữ cài đặt của bạn hoặc mang sang máy khác.",
+      },
       "weather-panel": {
         title: "thời tiết, trong và ngoài",
         body: "Một bảng phía trên cửa sổ cho biết thời tiết nơi bạn ở, kèm nhiệt độ cao nhất, thấp nhất hôm nay và chất lượng không khí. Cửa sổ cũng cho thấy điều đó, mưa, tuyết, sương mù hay giông bão, kèm âm thanh. Thành phố của bạn được đoán đại khái từ kết nối. Khi không khí trở nên kém, máy lọc không khí ở góc sẽ bật lên.",

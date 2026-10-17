@@ -173,6 +173,7 @@ export const SOUND_SAMPLES = {
     promptInfluence: 0.5,
     gain: 0.6,
   },
+  "printer-feed": { kind: "synthesized" },
   "washer-running": {
     kind: "generated",
     prompt:
@@ -210,4 +211,5 @@ export const SOUND_SAMPLES = {
     promptInfluence: 0.5,
     gain: 0.35,
   },
+  "printer-motor": { kind: "synthesized" },
 } satisfies { [name in SoundName | LoopName]: SoundSample };

@@ -73,11 +73,43 @@ export const en = {
       "the weather panel starts with whatever is usual where you are.",
     roomSounds: "room sounds",
     roomSoundsHint:
-      "sounds from the room and the people in it. turning one off only mutes it for you.",
+      "sounds from the room and the people in it. turning one off or down only changes it for you.",
     roomSoundsAllOn: "all on",
     roomSoundsAllOff: "all off",
     roomSoundOn: "on",
     roomSoundOff: "off",
+    roomSoundVolume: (o: { sound: string }) => `${o.sound} volume`,
+    roomMix: {
+      play: "play the room mix",
+      playing: "playing your mix",
+      playLabel: "play the room mix at your levels",
+      stopLabel: "stop the room mix",
+    },
+    ticket: {
+      heading: "laundry ticket",
+      hint: "print a ticket to save your settings as a small file and copy a link to them. open the link, or insert the file here, on any device to get them back.",
+      print: "print",
+      insert: "insert",
+      printLabel:
+        "print a laundry ticket, which saves your settings to a file and copies a link to them",
+      insertLabel:
+        "insert a laundry ticket, which loads your settings from a file",
+      ready: "ready",
+      printing: "printing…",
+      saved: "saved",
+      linkCopied: "link copied",
+      linkLabel: "link to your laundry ticket",
+      copyLink: "copy link",
+      copied: "copied",
+      linkHint:
+        "open this link on another device to bring your settings there.",
+      reading: "reading…",
+      loaded: "loaded",
+      unreadable: "not a ticket",
+      title: "laundry ticket",
+      number: (o: { number: string }) => `no. ${o.number}`,
+      tv: (o: { percent: number }) => `tv ${o.percent}%`,
+    },
     roomSound: {
       machines: { label: "machines", hint: "washers and dryers spinning" },
       "shop-bell": { label: "shop bell", hint: "rings when someone walks in" },
@@ -273,6 +305,10 @@ export const en = {
       board: "board",
     } satisfies { [tag in BoardTag]: string },
     updates: {
+      "room-sound-mixer": {
+        title: "mix the room your way",
+        body: "Each room sound in settings now has its own fader, so the rain can be louder and the machines quieter. Play the room mix to hear them together, and print a laundry ticket to keep your settings or bring them to another device.",
+      },
       "weather-panel": {
         title: "the weather, inside and out",
         body: "A panel above the window shows the weather where you are, with today's high and low and the air quality. The windows show it too, rain, snow, fog or a storm, with the sound to match. Your city is a rough guess from your connection. When the air turns unhealthy, an air purifier starts up in the corner.",

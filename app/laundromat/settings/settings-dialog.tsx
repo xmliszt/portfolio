@@ -9,10 +9,13 @@ import { cn } from "@/lib/utils";
 
 import { RoomSoundsFieldset } from "./room-sounds-fieldset";
 import { SETTINGS_META_CLASS } from "./settings-meta-class";
+import { SettingsTicketPrinter } from "./settings-ticket-printer";
 import { TemperatureUnitSwitch } from "./temperature-unit-switch";
 import { useRenderQuality } from "./use-render-quality";
 
 type SettingsDialogProps = {
+  restoreCode: string | undefined;
+  onRestoreRead: () => void;
   onClose: () => void;
 };
 
@@ -54,7 +57,9 @@ export function SettingsDialog(props: SettingsDialogProps) {
       const dialog = dialogRef.current;
       if (event.key !== "Tab" || dialog === null) return;
       const focusable = [
-        ...dialog.querySelectorAll<HTMLElement>("input:checked, button"),
+        ...dialog.querySelectorAll<HTMLElement>(
+          "input:checked, input[type=range], button"
+        ),
       ];
       const first = focusable.at(0);
       const last = focusable.at(-1);
@@ -80,7 +85,10 @@ export function SettingsDialog(props: SettingsDialogProps) {
       aria-labelledby="settings-dialog-heading"
       className="flex max-h-[calc(100dvh-32px)] w-[min(360px,calc(100vw-32px))] flex-col gap-y-3 rounded-[22px] bg-[var(--lm-panel)] p-3.5 shadow-[0_1px_0_rgb(255_255_255/0.04)_inset,0_1px_2px_rgb(0_0_0/0.5),0_24px_64px_rgb(0_0_0/0.55)]"
     >
-      <div className="flex min-h-0 flex-col gap-y-5 overflow-y-auto overscroll-contain rounded-lg px-5 pt-5 pb-4 text-[var(--lm-ink)] shadow-[0_0_0_1px_var(--lm-edge)] [scrollbar-color:var(--lm-line)_transparent] [scrollbar-width:thin]">
+      <div
+        data-settings-scroll
+        className="flex min-h-0 flex-col gap-y-5 overflow-y-auto overscroll-contain rounded-lg px-5 pt-5 pb-4 text-[var(--lm-ink)] shadow-[0_0_0_1px_var(--lm-edge)] [scrollbar-color:var(--lm-line)_transparent] [scrollbar-width:thin]"
+      >
         <h2
           id="settings-dialog-heading"
           className="m-0 font-[family-name:var(--lm-font-display)] text-[24px] leading-[1.1] font-normal lowercase"
@@ -123,6 +131,10 @@ export function SettingsDialog(props: SettingsDialogProps) {
         </fieldset>
         <TemperatureUnitSwitch />
         <RoomSoundsFieldset />
+        <SettingsTicketPrinter
+          restoreCode={props.restoreCode}
+          onRestoreRead={props.onRestoreRead}
+        />
       </div>
       <div className="flex justify-end px-2">
         <button
