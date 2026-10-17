@@ -22,6 +22,7 @@ import { BedLaundryPile } from "./bed-laundry-pile";
 import { CurtainDaylight } from "./curtain-daylight";
 import { CurtainDrawing } from "./curtain-drawing";
 import { CurtainRoomFill } from "./curtain-room-fill";
+import { PhotoFrameDrawing } from "./photo-frame-drawing";
 import { RugCredit } from "./rug-credit";
 import { TableLampDrawing } from "./table-lamp-drawing";
 import type { CurtainPose } from "./use-curtain-pose";
@@ -273,6 +274,7 @@ export function BedroomDrawing(props: BedroomDrawingProps) {
           details={scene.details.clock}
         />
       )}
+      <PhotoFrameDrawing frame={bedroom.photoFrame} projection={projection} />
 
       {windowLight?.sources.map((source) => (
         <CurtainDaylight

@@ -32,6 +32,13 @@ export type BedroomConfig = {
   };
   door: { fromY: number; width: number; height: number; thickness: number };
   clock: { center: IsoPoint; radius: number; depth: number };
+  photoFrame: {
+    position: IsoPoint;
+    size: IsoSize;
+    matInset: number;
+    photoInset: number;
+    nailRise: number;
+  };
   bedsideTable: { position: IsoPoint; size: IsoSize };
   lamp: { center: { x: number; y: number }; shadeRadius: number };
   bed: {
@@ -137,6 +144,13 @@ export const bedroomConfig: BedroomConfig = {
   },
   door: { fromY: 3.3, width: 1.1, height: 2.5, thickness: 0.06 },
   clock: { center: { x: 3.3, y: 0.1, z: 3 }, radius: 0.27, depth: 0.07 },
+  photoFrame: {
+    position: { x: 5.2, y: 0, z: 1.9 },
+    size: { w: 1, d: 0.05, h: 1 },
+    matInset: 0.05,
+    photoInset: 0.08,
+    nailRise: 0.18,
+  },
   bedsideTable: {
     position: { x: 3.7, y: 0.08, z: 0 },
     size: { w: 0.62, d: 0.55, h: 0.62 },
