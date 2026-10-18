@@ -280,8 +280,8 @@ export const zhHant = {
     blessing: (o: { count: number; word: string }) => `${o.word} +${o.count}`,
   },
   toyBox: {
-    closedLabel: "寫著 1955 的玩具盒，打開《回到未來》玩具盒",
-    closedTooltip: "打開《回到未來》玩具盒",
+    closedLabel: "寫著 1955 的玩具盒，打開《這就是未來》玩具盒",
+    closedTooltip: "打開《這就是未來》玩具盒",
     setLabel: "飛行汽車玩具，開始",
     setTooltip: "開始",
   },

@@ -5,6 +5,7 @@ import { playCoffeePour } from "./sounds/play-coffee-pour";
 import { playCoffeeSip } from "./sounds/play-coffee-sip";
 import { playCoffeeSwitch } from "./sounds/play-coffee-switch";
 import { playCollectLaundry } from "./sounds/play-collect-laundry";
+import { playCrayonScratch } from "./sounds/play-crayon-scratch";
 import { playDoneDing } from "./sounds/play-done-ding";
 import { playDoorLatchClose } from "./sounds/play-door-latch-close";
 import { playDoorLatchOpen } from "./sounds/play-door-latch-open";
@@ -80,6 +81,7 @@ const ONE_SHOTS = {
   "toy-car-launch": playToyCarLaunch,
   "toy-thruster": playToyThruster,
   "toy-hover-jets": playToyHoverJets,
+  "crayon-scratch": playCrayonScratch,
 } satisfies { [name in SoundName]: (options: VoiceOptions) => void };
 
 const LOOPS = {
