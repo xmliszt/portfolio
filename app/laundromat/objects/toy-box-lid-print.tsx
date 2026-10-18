@@ -1,3 +1,5 @@
+import { toyBoxTitleFont } from "./toy-box-title-font";
+
 const ART = { width: 200, height: 70 };
 const CAR_BODY = [
   [56, 58],
@@ -61,7 +63,7 @@ type ToyBoxLidPrintProps = {
   height: number;
 };
 
-/** Draw the lid's movie poster print inside the `x`, `y`, `width`, `height` panel: lightning from the top corners, the title in slanted capitals, the roadster in profile, and the flame tracks behind its wheels. */
+/** Draw the lid's movie poster print inside the `x`, `y`, `width`, `height` panel: lightning from the top corners, the title in slanted poster capitals, the roadster in profile, and the flame tracks behind its wheels. */
 export function ToyBoxLidPrint(props: ToyBoxLidPrintProps) {
   const scale = Math.min(props.width / ART.width, props.height / ART.height);
   const offsetX = props.x + (props.width - ART.width * scale) / 2;
@@ -74,9 +76,7 @@ export function ToyBoxLidPrint(props: ToyBoxLidPrintProps) {
         ))}
       </g>
       <g
-        className="fill-[var(--lm-ink-hi)] stroke-none font-[family-name:var(--lm-font-mono)]"
-        fontWeight={700}
-        fontStyle="italic"
+        className={`fill-[var(--lm-ink-hi)] stroke-none ${toyBoxTitleFont.className}`}
         textAnchor="middle"
       >
         <text
@@ -86,13 +86,13 @@ export function ToyBoxLidPrint(props: ToyBoxLidPrintProps) {
           letterSpacing={2}
           transform={skewAround({ x: 100, y: 17 })}
         >
-          BACK TO THE
+          IT IS THE
         </text>
         <text
           x={100}
           y={36}
-          fontSize={21}
-          letterSpacing={1.5}
+          fontSize={18}
+          letterSpacing={1}
           transform={skewAround({ x: 100, y: 36 })}
         >
           FUTURE

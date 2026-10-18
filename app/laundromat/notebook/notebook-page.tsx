@@ -80,6 +80,7 @@ type PadControls = {
   onStrokeStart: () => void;
   onStrokeCancel: () => void;
   onStroke: (stroke: DoodleStroke) => void;
+  onScratch: (volume: number) => void;
   onUndo: () => void;
   onClear: () => void;
 };
@@ -183,9 +184,11 @@ export function NotebookPage(props: NotebookPageProps) {
             strokes={doodle.strokes}
             strokeWidthPx={props.doodle.strokeWidthPx}
             ink={doodle.ink}
-            speed={props.doodle.replaySpeed}
+            replay={props.doodle.replay}
             opacity={1}
             onComplete={() => props.controls?.onInkComplete(doodle.entryId)}
+            wiggle={props.doodle.wiggle}
+            crayon={props.doodle.crayon}
           />
         </div>
       ))}
@@ -211,9 +214,11 @@ export function NotebookPage(props: NotebookPageProps) {
               strokes={pad.strokes}
               strokeWidthPx={props.doodle.strokeWidthPx}
               ink="plain"
-              speed={props.doodle.replaySpeed}
+              replay={props.doodle.replay}
               opacity={pad.tone === "remote" ? 0.45 : 1}
               onComplete={undefined}
+              wiggle={undefined}
+              crayon={props.doodle.crayon}
             />
             {pad.tone === "own" && props.controls?.pad !== undefined && (
               <DoodlePad
@@ -223,10 +228,12 @@ export function NotebookPage(props: NotebookPageProps) {
                 strokeWidthPx={props.doodle.strokeWidthPx}
                 smoothing={props.doodle.smoothing}
                 simplifyPx={props.doodle.simplifyPx}
+                crayon={props.doodle.crayon}
                 disabled={props.controls.pad.disabled}
                 onStrokeStart={props.controls.pad.onStrokeStart}
                 onStrokeCancel={props.controls.pad.onStrokeCancel}
                 onStroke={props.controls.pad.onStroke}
+                onScratch={props.controls.pad.onScratch}
               />
             )}
           </div>

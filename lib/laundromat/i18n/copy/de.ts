@@ -314,8 +314,8 @@ export const de = {
   },
   toyBox: {
     closedLabel:
-      "Spielzeugkiste mit der Aufschrift 1955, die „Zurück in die Zukunft“-Spielzeugkiste öffnen",
-    closedTooltip: "die „Zurück in die Zukunft“-Spielzeugkiste öffnen",
+      "Spielzeugkiste mit der Aufschrift 1955, die „Es ist die Zukunft“-Spielzeugkiste öffnen",
+    closedTooltip: "die „Es ist die Zukunft“-Spielzeugkiste öffnen",
     setLabel: "Fliegendes Spielzeugauto, spielen",
     setTooltip: "spielen",
   },

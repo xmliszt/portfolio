@@ -178,6 +178,7 @@ export const SOUND_SAMPLES = {
   "toy-car-launch": { kind: "synthesized" },
   "toy-thruster": { kind: "synthesized" },
   "toy-hover-jets": { kind: "synthesized" },
+  "crayon-scratch": { kind: "synthesized" },
   "washer-running": {
     kind: "generated",
     prompt:

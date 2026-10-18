@@ -303,8 +303,8 @@ export const vi = {
     blessing: (o: { count: number; word: string }) => `${o.word} +${o.count}`,
   },
   toyBox: {
-    closedLabel: "Hộp đồ chơi ghi 1955, mở hộp đồ chơi “Trở về tương lai”",
-    closedTooltip: "mở hộp đồ chơi “Trở về tương lai”",
+    closedLabel: "Hộp đồ chơi ghi 1955, mở hộp đồ chơi “Đây là tương lai”",
+    closedTooltip: "mở hộp đồ chơi “Đây là tương lai”",
     setLabel: "Xe bay đồ chơi, chơi",
     setTooltip: "chơi",
   },

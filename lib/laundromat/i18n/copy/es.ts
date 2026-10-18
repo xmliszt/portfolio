@@ -312,8 +312,8 @@ export const es = {
   },
   toyBox: {
     closedLabel:
-      "Caja de juguete con el año 1955, abrir la caja de juguete de “Volver al futuro”",
-    closedTooltip: "abrir la caja de juguete de “Volver al futuro”",
+      "Caja de juguete con el año 1955, abrir la caja de juguete de “Es el futuro”",
+    closedTooltip: "abrir la caja de juguete de “Es el futuro”",
     setLabel: "Coche volador de juguete, jugar",
     setTooltip: "jugar",
   },

@@ -223,7 +223,25 @@ export type SceneConfig = {
       smoothing: number;
       simplifyPx: number;
       padInsetPx: number;
-      replaySpeed: number;
+      replay: {
+        speedPxPerMs: number;
+        minStrokeMs: number;
+        gapMs: number;
+        maxDurationMs: number;
+        strokeEasing: string;
+      };
+      wiggle: { amplitudePx: number; fps: number; frameCount: number };
+      crayon: {
+        bodyWidthScale: number;
+        bodyOpacity: number;
+        grainFrequency: number;
+        patchFrequency: number;
+        wobbleFrequency: number;
+        edgeRoughnessPx: number;
+        grainWeight: number;
+        patchWeight: number;
+        coverageOffset: number;
+      };
     };
   };
   sky: {
@@ -674,7 +692,25 @@ export const sceneConfig: SceneConfig = {
       smoothing: 0.35,
       simplifyPx: 0.6,
       padInsetPx: 6,
-      replaySpeed: 2,
+      replay: {
+        speedPxPerMs: 0.6,
+        minStrokeMs: 60,
+        gapMs: 45,
+        maxDurationMs: 5000,
+        strokeEasing: "cubic-bezier(0.45, 0, 0.55, 1)",
+      },
+      wiggle: { amplitudePx: 1.3, fps: 7, frameCount: 3 },
+      crayon: {
+        bodyWidthScale: 1.5,
+        bodyOpacity: 0.85,
+        grainFrequency: 1.1,
+        patchFrequency: 0.07,
+        wobbleFrequency: 0.22,
+        edgeRoughnessPx: 3,
+        grainWeight: 3,
+        patchWeight: 1.2,
+        coverageOffset: -1.15,
+      },
     },
   },
   sky: {

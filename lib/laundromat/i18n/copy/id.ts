@@ -315,8 +315,8 @@ export const id = {
   },
   toyBox: {
     closedLabel:
-      "Kotak mainan bertuliskan 1955, buka kotak mainan “Back to the Future”",
-    closedTooltip: "buka kotak mainan “Back to the Future”",
+      "Kotak mainan bertuliskan 1955, buka kotak mainan “It is the Future”",
+    closedTooltip: "buka kotak mainan “It is the Future”",
     setLabel: "Mainan mobil terbang, mainkan",
     setTooltip: "mainkan",
   },
