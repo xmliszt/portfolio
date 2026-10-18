@@ -1258,7 +1258,8 @@ export function NotebookBook(props: NotebookBookProps) {
   }
 
   function handlePageClick() {
-    if (canWrite && mode === "write") {
+    const isSelectingText = window.getSelection()?.isCollapsed === false;
+    if (canWrite && mode === "write" && !isSelectingText) {
       textareaRef.current?.focus({ preventScroll: true });
     }
   }

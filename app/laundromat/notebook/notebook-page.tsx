@@ -438,6 +438,10 @@ function PageRowLine(props: PageRowLineProps) {
   }
 
   const textClassName = "whitespace-pre text-[var(--lm-ink-pen)]";
+  const isSelectable =
+    row.ink === "plain" &&
+    row.selected === undefined &&
+    row.caretAt === undefined;
   const textStyle = {
     fontFamily: row.fontFamily,
     fontSize: row.fontSizePx,
@@ -461,7 +465,10 @@ function PageRowLine(props: PageRowLineProps) {
         />
       ) : (
         <span
-          className={textClassName}
+          className={cn(
+            textClassName,
+            isSelectable && "cursor-text select-text"
+          )}
           style={{ opacity: row.ink === "waiting" ? 0 : 1 }}
         >
           {(() => {
