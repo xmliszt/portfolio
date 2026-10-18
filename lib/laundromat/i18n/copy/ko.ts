@@ -316,6 +316,10 @@ export const ko = {
       board: "게시판",
     },
     updates: {
+      "notebook-doodles": {
+        title: "노트에 그림 그리기",
+        body: "노트 펜을 쓰기에서 그리기로 바꾸고 다음 사람에게 작은 그림을 남겨요. 빨래방에서 노트를 열어 둔 사람은 누구나 그림이 페이지에 저절로 그려지는 걸 볼 수 있어요.",
+      },
       "weather-anywhere": {
         title: "바깥 날씨를 골라 보세요",
         body: "설정에서 도시를 고르면 그곳의 날씨가 창밖과 패널에 보여요. 하늘을 직접 고를 수도 있어요. 기본은 계속 실시간 날씨예요.",
@@ -524,12 +528,27 @@ export const ko = {
     comeBackToWrite: "2분 뒤에 다시 와서 하나 더 써 줘",
     startsNext: (o: { number: number }) =>
       `이 메모로 노트 제${o.number}권이 시작돼`,
+    writePrompt: "다음 사람에게 메모를 남겨 봐",
     writePromptBeforeKeys: "다음 사람에게 메모를 남겨 봐 · ",
     writePromptAfterKeys: "로 저장",
     textareaLabel: "노트에 메모 쓰기",
     notifyWhenFree: "비면 알려 줘",
     notifyPending: "비면 알려 줄게",
     saveNote: "메모 저장",
+    saveDoodle: "그림 저장",
+    penModeLabel: "펜",
+    penModes: { write: "쓰기", draw: "그리기" },
+    drawPrompt: "다음 사람에게 그림을 남겨 봐",
+    doodleMoved: (o: { page: number }) =>
+      `이 쪽엔 자리가 없어 · ${o.page}쪽에 그리는 중`,
+    doodleBookFull: "이 노트엔 그림 그릴 자리가 없어 · 대신 메모를 써 줘",
+    inkFull: "잉크 자리가 더 없어 · 저장하거나 되돌려 줘",
+    someoneDrawingInNotebook: "누가 노트에 그리는 중 · 차례를 기다려 줘",
+    padLabel: "노트의 그림 공간",
+    drawingNow: "그리는 중…",
+    someoneDrawingNow: "누가 그리는 중…",
+    undo: "되돌리기",
+    clear: "지우기",
     savingNote: "저장 중…",
     close: "닫기",
     freeNotificationTitle: "노트가 비었어",

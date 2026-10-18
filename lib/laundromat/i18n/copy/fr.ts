@@ -336,6 +336,10 @@ export const fr = {
       board: "panneau",
     },
     updates: {
+      "notebook-doodles": {
+        title: "dessine dans le carnet",
+        body: "Passe le stylo du carnet d'écrire à dessiner et laisse un petit dessin à la prochaine personne. Chaque personne dans la laverie qui a le carnet ouvert le voit se dessiner tout seul sur la page.",
+      },
       "weather-anywhere": {
         title: "choisis la météo dehors",
         body: "Dans les réglages, choisis une ville pour voir sa météo par la fenêtre et sur le panneau, ou choisis toi-même le ciel. Par défaut, c'est toujours la météo en direct.",
@@ -551,12 +555,29 @@ export const fr = {
     comeBackToWrite: "reviens dans deux minutes pour en écrire un autre",
     startsNext: (o: { number: number }) =>
       `ce mot ouvre le carnet nº ${o.number}`,
+    writePrompt: "écris un mot pour la prochaine personne",
     writePromptBeforeKeys: "écris un mot pour la prochaine personne · ",
     writePromptAfterKeys: " pour l'enregistrer",
     textareaLabel: "Écrire un mot dans le carnet",
     notifyWhenFree: "préviens-moi quand il est libre",
     notifyPending: "on te préviendra",
     saveNote: "enregistrer mon mot",
+    saveDoodle: "enregistrer mon dessin",
+    penModeLabel: "Stylo",
+    penModes: { write: "écrire", draw: "dessiner" },
+    drawPrompt: "dessine quelque chose pour la prochaine personne",
+    doodleMoved: (o: { page: number }) =>
+      `plus de place sur cette page · dessin sur la p. ${o.page}`,
+    doodleBookFull:
+      "plus de place pour un dessin dans ce carnet · écris plutôt un mot",
+    inkFull: "plus de place pour l'encre · enregistre ou annule",
+    someoneDrawingInNotebook:
+      "quelqu'un dessine dans le carnet · attends ton tour",
+    padLabel: "Espace de dessin dans le carnet",
+    drawingNow: "dessin en cours…",
+    someoneDrawingNow: "quelqu'un dessine…",
+    undo: "annuler",
+    clear: "effacer",
     savingNote: "enregistrement…",
     close: "fermer",
     freeNotificationTitle: "le carnet est libre",

@@ -301,6 +301,10 @@ export const nl = {
       board: "bord",
     },
     updates: {
+      "notebook-doodles": {
+        title: "tekenen in het notitieboek",
+        body: "Zet de pen van het notitieboek van schrijven op tekenen en laat een kleine tekening achter voor wie na je komt. Iedereen in de wasserette die het notitieboek open heeft, ziet de tekening zichzelf op de pagina tekenen.",
+      },
       "weather-anywhere": {
         title: "kies het weer buiten",
         body: "Kies in de instellingen een stad om het weer daar door het raam en op het paneel te zien, of kies zelf de lucht. Standaard blijft het live weer.",
@@ -507,12 +511,29 @@ export const nl = {
     someoneWriting: "iemand is nu aan het schrijven · wacht je beurt af",
     comeBackToWrite: "kom over twee minuten terug om er nog een te schrijven",
     startsNext: (o) => `dit berichtje begint notitieboek nr. ${o.number}`,
+    writePrompt: "schrijf een berichtje voor de volgende",
     writePromptBeforeKeys: "schrijf een berichtje voor de volgende · ",
     writePromptAfterKeys: " om het op te slaan",
     textareaLabel: "Schrijf een berichtje in het notitieboek",
     notifyWhenFree: "laat me weten als het vrij is",
     notifyPending: "we laten het je weten",
     saveNote: "berichtje opslaan",
+    saveDoodle: "tekening opslaan",
+    penModeLabel: "Pen",
+    penModes: { write: "schrijven", draw: "tekenen" },
+    drawPrompt: "teken iets voor de volgende",
+    doodleMoved: (o) =>
+      `geen ruimte meer op deze pagina · je tekent op blz. ${o.page}`,
+    doodleBookFull:
+      "geen ruimte voor een tekening in dit notitieboek · schrijf liever een berichtje",
+    inkFull: "geen ruimte meer voor inkt · sla het op of maak ongedaan",
+    someoneDrawingInNotebook:
+      "iemand tekent in het notitieboek · wacht je beurt af",
+    padLabel: "Tekenruimte in het notitieboek",
+    drawingNow: "aan het tekenen…",
+    someoneDrawingNow: "iemand is aan het tekenen…",
+    undo: "terug",
+    clear: "wissen",
     savingNote: "opslaan…",
     close: "sluiten",
     freeNotificationTitle: "het notitieboek is vrij",

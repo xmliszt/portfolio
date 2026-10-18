@@ -45,8 +45,10 @@ export type Database = {
         Row: {
           body: string
           created_at: string
+          drawing: Json | null
           hidden_at: string | null
           id: number
+          kind: string
           line_count: number
           line_start: number
           notebook_id: number
@@ -58,8 +60,10 @@ export type Database = {
         Insert: {
           body: string
           created_at?: string
+          drawing?: Json | null
           hidden_at?: string | null
           id?: never
+          kind?: string
           line_count: number
           line_start: number
           notebook_id: number
@@ -71,8 +75,10 @@ export type Database = {
         Update: {
           body?: string
           created_at?: string
+          drawing?: Json | null
           hidden_at?: string | null
           id?: never
+          kind?: string
           line_count?: number
           line_start?: number
           notebook_id?: number
@@ -152,6 +158,34 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      append_doodle: {
+        Args: {
+          p_drawing: Json
+          p_line_count: number
+          p_visitor_id: string
+        }
+        Returns: {
+          body: string
+          created_at: string
+          drawing: Json | null
+          hidden_at: string | null
+          id: number
+          kind: string
+          line_count: number
+          line_start: number
+          notebook_id: number
+          page: number
+          report_count: number
+          script: string
+          sign_off: string | null
+        }
+        SetofOptions: {
+          from: "*"
+          to: "notebook_entries"
+          isOneToOne: true
+          isSetofReturn: false
+        }
+      }
       append_entry: {
         Args: {
           p_body: string
@@ -163,8 +197,10 @@ export type Database = {
         Returns: {
           body: string
           created_at: string
+          drawing: Json | null
           hidden_at: string | null
           id: number
+          kind: string
           line_count: number
           line_start: number
           notebook_id: number

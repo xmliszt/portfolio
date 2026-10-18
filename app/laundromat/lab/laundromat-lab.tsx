@@ -470,6 +470,7 @@ export default function LaundromatLab() {
     if (!someoneWriting) return;
     fakeRoom.setDraft({
       sessionId: FAKE_WRITER_ID,
+      kind: "text",
       text: writerDraft,
       script: detectScript(writerDraft),
     });

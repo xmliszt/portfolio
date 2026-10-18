@@ -302,6 +302,10 @@ export const zhHans = {
       board: "告示板",
     },
     updates: {
+      "notebook-doodles": {
+        title: "在笔记本上画画",
+        body: "把笔记本的笔从写切换到画，给下一个人留一幅小画。洗衣店里正翻开本子的人，都会看到它在页面上一笔一笔画出来。",
+      },
       "weather-anywhere": {
         title: "选择窗外的天气",
         body: "在设置里选一个城市，窗外和天气面板就会显示那里的天气；也可以自己选天空。默认仍是实时天气。",
@@ -508,12 +512,27 @@ export const zhHans = {
     comeBackToWrite: "两分钟后再来写下一条",
     startsNext: (o: { number: number }) =>
       `这条留言会开启第 ${o.number} 本笔记本`,
+    writePrompt: "给下一个人留句话",
     writePromptBeforeKeys: "给下一个人留句话 · 按",
     writePromptAfterKeys: "保存",
     textareaLabel: "在笔记本上写一句话",
     notifyWhenFree: "空出来时告诉我",
     notifyPending: "到时会通知你",
     saveNote: "保存我的留言",
+    saveDoodle: "保存我的涂鸦",
+    penModeLabel: "笔",
+    penModes: { write: "写", draw: "画" },
+    drawPrompt: "给下一个人画点什么",
+    doodleMoved: (o: { page: number }) =>
+      `这一页没地方了 · 画在第 ${o.page} 页`,
+    doodleBookFull: "这本笔记本没地方画画了 · 改写一句话吧",
+    inkFull: "墨水没地方了 · 先保存或撤销",
+    someoneDrawingInNotebook: "有人正在笔记本上画画 · 等一等",
+    padLabel: "笔记本里的画画区域",
+    drawingNow: "正在画…",
+    someoneDrawingNow: "有人正在画…",
+    undo: "撤销",
+    clear: "清空",
     savingNote: "正在保存…",
     close: "关闭",
     freeNotificationTitle: "笔记本空出来了",

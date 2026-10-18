@@ -329,6 +329,10 @@ export const en = {
       board: "board",
     } satisfies { [tag in BoardTag]: string },
     updates: {
+      "notebook-doodles": {
+        title: "draw in the notebook",
+        body: "Switch the notebook pen from write to draw and leave a small drawing for the next person. Anyone in the laundromat with the notebook open watches it draw itself onto the page.",
+      },
       "weather-anywhere": {
         title: "choose the weather outside",
         body: "In settings, pick a city to see its weather through the window and on the panel, or choose the sky yourself. Live weather stays the default.",
@@ -541,12 +545,29 @@ export const en = {
     comeBackToWrite: "come back after two minutes to write another one",
     startsNext: (o: { number: number }) =>
       `this note starts notebook No. ${o.number}`,
+    writePrompt: "write a note for the next person",
     writePromptBeforeKeys: "write a note for the next person · ",
     writePromptAfterKeys: " to save it",
     textareaLabel: "Write a note in the notebook",
     notifyWhenFree: "tell me when it's free",
     notifyPending: "we'll let you know",
     saveNote: "save my note",
+    saveDoodle: "save my doodle",
+    penModeLabel: "Pen",
+    penModes: { write: "write", draw: "draw" },
+    drawPrompt: "draw something for the next person",
+    doodleMoved: (o: { page: number }) =>
+      `no room left on this page · drawing on p. ${o.page}`,
+    doodleBookFull:
+      "no room for a drawing in this notebook · write a note instead",
+    inkFull: "no more room for ink · save it or undo",
+    someoneDrawingInNotebook:
+      "someone is drawing in the notebook · wait your turn",
+    padLabel: "Drawing space in the notebook",
+    drawingNow: "drawing…",
+    someoneDrawingNow: "someone is drawing…",
+    undo: "undo",
+    clear: "clear",
     savingNote: "saving…",
     close: "close",
     freeNotificationTitle: "the notebook is free",

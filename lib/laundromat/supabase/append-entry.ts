@@ -3,8 +3,8 @@ import "server-only";
 import { SupabaseClient } from "@supabase/supabase-js";
 
 import {
-  APPEND_ENTRY_REJECTIONS,
   AppendEntryRejection,
+  isAppendEntryRejection,
   LaundromatDatabase,
   NotebookEntry,
   NotebookScript,
@@ -22,12 +22,6 @@ type AppendEntryOptions = {
 type AppendEntryResult =
   | { kind: "placed"; entry: NotebookEntry }
   | { kind: "rejected"; reason: AppendEntryRejection };
-
-function isAppendEntryRejection(
-  message: string
-): message is AppendEntryRejection {
-  return APPEND_ENTRY_REJECTIONS.some((rejection) => rejection === message);
-}
 
 /**
  * Place an entry on the next free lines of the current notebook through `append_entry`.

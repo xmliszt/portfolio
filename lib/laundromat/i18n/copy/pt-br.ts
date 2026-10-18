@@ -331,6 +331,10 @@ export const ptBR = {
       board: "mural",
     },
     updates: {
+      "notebook-doodles": {
+        title: "desenhe no caderno",
+        body: "Troque a caneta do caderno de escrever para desenhar e deixe um pequeno desenho para quem chegar depois. Quem estiver na lavanderia com o caderno aberto vê o desenho surgir sozinho na página.",
+      },
       "weather-anywhere": {
         title: "escolha o tempo lá fora",
         body: "Nas configurações, escolha uma cidade para ver o tempo dela pela janela e no painel, ou escolha o céu você mesmo. O padrão continua sendo o tempo ao vivo.",
@@ -544,12 +548,29 @@ export const ptBR = {
     comeBackToWrite: "volte daqui a dois minutos para escrever outro",
     startsNext: (o: { number: number }) =>
       `este recado abre o caderno nº ${o.number}`,
+    writePrompt: "escreva um recado para a próxima pessoa",
     writePromptBeforeKeys: "escreva um recado para a próxima pessoa · ",
     writePromptAfterKeys: " para salvar",
     textareaLabel: "Escrever um recado no caderno",
     notifyWhenFree: "me avise quando estiver livre",
     notifyPending: "a gente te avisa",
     saveNote: "salvar meu recado",
+    saveDoodle: "salvar meu desenho",
+    penModeLabel: "Caneta",
+    penModes: { write: "escrever", draw: "desenhar" },
+    drawPrompt: "desenhe algo para a próxima pessoa",
+    doodleMoved: (o: { page: number }) =>
+      `não há mais espaço nesta página · desenhando na p. ${o.page}`,
+    doodleBookFull:
+      "não há espaço para um desenho neste caderno · escreva um recado",
+    inkFull: "não há mais espaço para tinta · salve ou desfaça",
+    someoneDrawingInNotebook:
+      "alguém está desenhando no caderno · espere sua vez",
+    padLabel: "Espaço para desenhar no caderno",
+    drawingNow: "desenhando…",
+    someoneDrawingNow: "alguém está desenhando…",
+    undo: "desfazer",
+    clear: "limpar",
     savingNote: "salvando…",
     close: "fechar",
     freeNotificationTitle: "o caderno está livre",

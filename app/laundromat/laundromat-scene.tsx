@@ -52,7 +52,7 @@ import { getClockOffsetMs } from "@/lib/laundromat/realtime/get-clock-offset-ms"
 import { getNotebookLock } from "@/lib/laundromat/realtime/get-notebook-lock";
 import { getPeopleHere } from "@/lib/laundromat/realtime/get-people-here";
 import type {
-  RemoteDraft,
+  DraftContent,
   RemoteEntry,
   RemoteLoad,
 } from "@/lib/laundromat/realtime/room-presence";
@@ -111,6 +111,7 @@ const KNOB_CONTROLS: LaidOutControl["control"][] = ["dial", "tuner", "volume"];
 const DOOR_HOLD_OPEN_MS = 700;
 const DIALOG_FILL = 0.9;
 const DIALOG_MAX_SCALE = 1.15;
+const SINGLE_PAGE_GUTTER_PX = 8;
 
 function getFocusedObjectId(options: {
   focus: CameraFocus;
@@ -452,6 +453,7 @@ export function LaundromatScene(props: LaundromatSceneProps) {
 
   const [wantsFreeNotice, setWantsFreeNotice] = useState(false);
   const [hasUnsavedNote, setHasUnsavedNote] = useState(false);
+  const [bookFocusSide, setBookFocusSide] = useState<"left" | "right">();
   const isNotebookTaken = notebookLock.kind === "taken";
   const isNotebookFree = notebookLock.kind === "free";
   const wasNotebookTakenRef = useRef(isNotebookTaken);
@@ -496,7 +498,7 @@ export function LaundromatScene(props: LaundromatSceneProps) {
     );
   }, []);
 
-  function handleDraftChange(draft: Omit<RemoteDraft, "sessionId">) {
+  function handleDraftChange(draft: DraftContent) {
     room.sendDraft(draft);
   }
 
@@ -1106,7 +1108,20 @@ export function LaundromatScene(props: LaundromatSceneProps) {
       (viewport.width * fill) / bookWidth,
       (viewport.height * fill) / bookHeight
     );
-    const to = { x: 0, y: 0, scale, opacity: 1 };
+    const to = (() => {
+      if (bookFocusSide === undefined) return { x: 0, y: 0, scale, opacity: 1 };
+      const pageScale = Math.min(
+        (viewport.width - SINGLE_PAGE_GUTTER_PX * 2) / page.width,
+        (viewport.height * fill) / bookHeight
+      );
+      const towardPage = bookFocusSide === "left" ? 1 : -1;
+      return {
+        x: (towardPage * page.width * pageScale) / 2,
+        y: 0,
+        scale: pageScale,
+        opacity: 1,
+      };
+    })();
     const notebookObject = layout.objects.find(
       ({ object }) => object.id === notebookObjectId
     );
@@ -1365,6 +1380,7 @@ export function LaundromatScene(props: LaundromatSceneProps) {
                 remoteEntry={room.lastEntry}
                 onEntryPlaced={handleEntryPlaced}
                 onRequestFreeNotice={handleRequestFreeNotice}
+                onFocusPageChange={setBookFocusSide}
               />
             </motion.div>
           </motion.div>

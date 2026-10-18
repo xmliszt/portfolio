@@ -335,6 +335,10 @@ export const id = {
       board: "papan",
     },
     updates: {
+      "notebook-doodles": {
+        title: "menggambar di buku catatan",
+        body: "Ganti pena buku catatan dari tulis ke gambar dan tinggalkan gambar kecil untuk orang berikutnya. Siapa pun di laundry yang sedang membuka buku catatan akan melihat gambarnya muncul sendiri di halaman.",
+      },
       "weather-anywhere": {
         title: "pilih cuaca di luar",
         body: "Di pengaturan, pilih kota untuk melihat cuacanya di jendela dan di panel, atau pilih langitnya sendiri. Bawaannya tetap cuaca langsung.",
@@ -548,12 +552,29 @@ export const id = {
     comeBackToWrite: "kembali dua menit lagi untuk menulis yang berikutnya",
     startsNext: (o: { number: number }) =>
       `catatan ini membuka buku catatan No. ${o.number}`,
+    writePrompt: "tulis catatan untuk orang berikutnya",
     writePromptBeforeKeys: "tulis catatan untuk orang berikutnya · ",
     writePromptAfterKeys: " untuk menyimpannya",
     textareaLabel: "Tulis catatan di buku catatan",
     notifyWhenFree: "kabari aku saat giliranku",
     notifyPending: "nanti kami kabari",
     saveNote: "simpan catatanku",
+    saveDoodle: "simpan gambarku",
+    penModeLabel: "Pena",
+    penModes: { write: "tulis", draw: "gambar" },
+    drawPrompt: "gambar sesuatu untuk orang berikutnya",
+    doodleMoved: (o: { page: number }) =>
+      `halaman ini sudah tidak muat · menggambar di hlm. ${o.page}`,
+    doodleBookFull:
+      "tidak ada ruang untuk gambar di buku catatan ini · tulis catatan saja",
+    inkFull: "tinta sudah tidak muat · simpan atau urungkan",
+    someoneDrawingInNotebook:
+      "seseorang sedang menggambar di buku catatan · tunggu giliranmu",
+    padLabel: "Ruang gambar di buku catatan",
+    drawingNow: "menggambar…",
+    someoneDrawingNow: "seseorang sedang menggambar…",
+    undo: "urungkan",
+    clear: "hapus",
     savingNote: "menyimpan…",
     close: "tutup",
     freeNotificationTitle: "buku catatan sudah bisa dipakai",

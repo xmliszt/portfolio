@@ -12,14 +12,20 @@ import { uniq } from "lodash";
 import { motion, useIsPresent, useTransform } from "motion/react";
 
 import { useLaundromatCopy } from "@/app/laundromat/i18n/use-laundromat-copy";
+import { useRenderQuality } from "@/app/laundromat/settings/use-render-quality";
 import { useSoundBoard } from "@/app/laundromat/sound/use-sound-board";
+import { decodeDoodle } from "@/lib/laundromat/notebook/decode-doodle";
 import { describeEntryMeta } from "@/lib/laundromat/notebook/describe-entry-meta";
 import type { LeaveEntryFailure } from "@/lib/laundromat/notebook/describe-leave-failure";
 import { describeLeaveFailure } from "@/lib/laundromat/notebook/describe-leave-failure";
 import { detectScript } from "@/lib/laundromat/notebook/detect-script";
+import { DOODLE_LIMITS } from "@/lib/laundromat/notebook/doodle-limits";
+import type { DoodleStroke } from "@/lib/laundromat/notebook/doodle-stroke";
+import { encodeDoodle } from "@/lib/laundromat/notebook/encode-doodle";
 import { fitEntry } from "@/lib/laundromat/notebook/fit-entry";
 import { fitsNotebook } from "@/lib/laundromat/notebook/fits-notebook";
 import { formatEntryDay } from "@/lib/laundromat/notebook/format-entry-day";
+import { getDoodlePlacement } from "@/lib/laundromat/notebook/get-doodle-placement";
 import { getDraftPlacement } from "@/lib/laundromat/notebook/get-draft-placement";
 import { getDraftRowMarks } from "@/lib/laundromat/notebook/get-draft-row-marks";
 import { getEntryLineCount } from "@/lib/laundromat/notebook/get-entry-line-count";
@@ -30,10 +36,12 @@ import { isRtlScript } from "@/lib/laundromat/notebook/is-rtl-script";
 import { keepTrailingSpace } from "@/lib/laundromat/notebook/keep-trailing-space";
 import type { FittedEntry } from "@/lib/laundromat/notebook/layout-page-rows";
 import { layoutPageRows } from "@/lib/laundromat/notebook/layout-page-rows";
+import { parseDoodleDrawing } from "@/lib/laundromat/notebook/parse-doodle-drawing";
 import { wrapEntryLines } from "@/lib/laundromat/notebook/wrap-entry-lines";
 import { wrapEntryText } from "@/lib/laundromat/notebook/wrap-entry-text";
 import type { NotebookLock } from "@/lib/laundromat/realtime/notebook-lock";
 import type {
+  DraftContent,
   RemoteDraft,
   RemoteEntry,
 } from "@/lib/laundromat/realtime/room-presence";
@@ -43,25 +51,39 @@ import { cn } from "@/lib/utils";
 
 import { getPageRadius } from "./get-page-radius";
 import { HANDWRITING_FONT_FAMILIES } from "./handwriting-fonts";
-import type { NotebookResult, NotebookView } from "./notebook-actions";
+import type {
+  LeaveEntryResult,
+  NotebookResult,
+  NotebookView,
+} from "./notebook-actions";
 import {
+  leaveDoodle,
   leaveEntry,
   loadNotebook,
   reportNotebookEntry,
 } from "./notebook-actions";
-import type { PageContent, RemoteCaret, RowView } from "./notebook-page";
+import type {
+  DoodleView,
+  PadView,
+  PageContent,
+  RemoteCaret,
+  RowView,
+} from "./notebook-page";
 import { NotebookPage } from "./notebook-page";
+import { NotebookPhoneBar } from "./notebook-phone-bar";
 import type { CurlTurn } from "./page-curl-canvas";
 import { CURL_REST_PROGRESS, PageCurlCanvas } from "./page-curl-canvas";
 import { PageLeaf } from "./page-leaf";
 import { PageScrubber } from "./page-scrubber";
 import type { PageSpec } from "./paint-page-texture";
-import { ShortcutKeys } from "./shortcut-keys";
+import { ShortcutHint } from "./shortcut-hint";
 import { useBookTurns } from "./use-book-turns";
+import { useIsNarrowScreen } from "./use-is-narrow-screen";
 import { usePageDrag } from "./use-page-drag";
 import { useTextMeasurers } from "./use-text-measurers";
 
 const DRAFT_STORAGE_KEY = "laundromat:notebook-draft";
+const DOODLE_STORAGE_KEY = "laundromat:notebook-doodle";
 const PLACED_AT_STORAGE_KEY = "laundromat:notebook-placed-at";
 const APPEND_ENTRY_INTERVAL_MS = 2 * 60_000;
 const DRAFT_ID = "draft";
@@ -70,6 +92,10 @@ const WRITING_IDLE_RELEASE_MS = 90_000;
 const TAB_SPACES = "    ";
 
 type BookPhase = "closed" | "opening" | "open";
+
+type PenMode = "write" | "draw";
+
+type PlacedEntry = Extract<LeaveEntryResult, { kind: "placed" }>;
 
 type EntryStyle = {
   script: NotebookScript;
@@ -90,11 +116,12 @@ type NotebookBookProps = {
   lock: NotebookLock;
   freeNoticeOn: boolean;
   onWritingChange: (isWriting: boolean) => void;
-  onDraftChange: (draft: Omit<RemoteDraft, "sessionId">) => void;
+  onDraftChange: (draft: DraftContent) => void;
   onUnsavedChange: (hasUnsavedNote: boolean) => void;
   remoteEntry: RemoteEntry | undefined;
   onEntryPlaced: (entry: Omit<RemoteEntry, "sessionId">) => void;
   onRequestFreeNotice: () => void;
+  onFocusPageChange: (side: "left" | "right" | undefined) => void;
 };
 
 function createOfflineNotebook(options: {
@@ -154,12 +181,44 @@ function writeStoredDraft(value: string) {
   }
 }
 
+function readStoredDoodle(widthPx: number) {
+  try {
+    const stored = window.localStorage.getItem(DOODLE_STORAGE_KEY);
+    const drawing =
+      stored === null ? undefined : parseDoodleDrawing(JSON.parse(stored));
+    return drawing === undefined ? [] : decodeDoodle({ drawing, widthPx });
+  } catch {
+    return [];
+  }
+}
+
+function writeStoredDoodle(options: {
+  strokes: DoodleStroke[];
+  widthPx: number;
+}) {
+  try {
+    if (options.strokes.length === 0) {
+      window.localStorage.removeItem(DOODLE_STORAGE_KEY);
+      return;
+    }
+    window.localStorage.setItem(
+      DOODLE_STORAGE_KEY,
+      JSON.stringify(encodeDoodle(options))
+    );
+  } catch {
+    return;
+  }
+}
+
 export function NotebookBook(props: NotebookBookProps) {
   const { copy } = useLaundromatCopy();
   const { config } = props;
   const settings = config.notebook.page;
   const details = config.details.notebook;
+  const doodle = config.notebook.doodle;
   const isWritable = props.bookNumber === undefined;
+  const { quality } = useRenderQuality();
+  const isNarrowScreen = useIsNarrowScreen();
   const [isReloading, setIsReloading] = useState(true);
   const [placedAt, setPlacedAt] = useState<number>();
   const canWrite =
@@ -171,6 +230,8 @@ export function NotebookBook(props: NotebookBookProps) {
   const [result, setResult] = useState<NotebookResult>();
   const [phase, setPhase] = useState<BookPhase>("closed");
   const [draft, setDraft] = useState("");
+  const [mode, setMode] = useState<PenMode>("write");
+  const [strokes, setStrokes] = useState<DoodleStroke[]>([]);
   const [selection, setSelection] = useState({ start: 0, end: 0 });
   const [failure, setFailure] = useState<LeaveEntryFailure>();
   const [isLeaving, setIsLeaving] = useState(false);
@@ -317,23 +378,25 @@ export function NotebookBook(props: NotebookBookProps) {
 
   const stored = useMemo(() => {
     return notebook.entries.map((entry) => {
+      const isHidden =
+        entry.kind === "text" ? entry.body === "" : entry.drawing === undefined;
       const style = getEntryStyle({
         script: entry.script,
-        reportEntryId: entry.body === "" ? undefined : entry.id,
+        reportEntryId: isHidden ? undefined : entry.id,
       });
-      const isHidden = entry.body === "";
       const fitted: FittedEntry = {
         id: String(entry.id),
         page: entry.page,
         lineStart: entry.lineStart,
         lineCount: entry.lineCount,
-        lines: isHidden
-          ? []
-          : wrapEntryText({
-              text: entry.body,
-              maxWidthPx,
-              measure: getMeasure(style),
-            }),
+        lines:
+          isHidden || entry.kind === "doodle"
+            ? []
+            : wrapEntryText({
+                text: entry.body,
+                maxWidthPx,
+                measure: getMeasure(style),
+              }),
         meta: isHidden
           ? undefined
           : describeEntryMeta({
@@ -346,14 +409,62 @@ export function NotebookBook(props: NotebookBookProps) {
     });
   }, [notebook.entries, getEntryStyle, getMeasure, maxWidthPx, copy.locale]);
 
+  const storedDoodles = useMemo(
+    () =>
+      notebook.entries.flatMap((entry) =>
+        entry.kind === "doodle" && entry.drawing !== undefined
+          ? [
+              {
+                id: String(entry.id),
+                page: entry.page,
+                row: entry.lineStart - 1,
+                rowCount: entry.lineCount - 1,
+                strokes: decodeDoodle({
+                  drawing: entry.drawing,
+                  widthPx: maxWidthPx,
+                }),
+              },
+            ]
+          : []
+      ),
+    [notebook.entries, maxWidthPx]
+  );
+
   const takenDraft = props.lock.kind === "taken" ? props.lock.draft : undefined;
   const remoteDraft = props.lock.kind === "taken" ? takenDraft : handoffDraft;
+  const isRemoteDraft =
+    props.lock.kind === "taken" || handoffDraft !== undefined;
+  const shownMode: PenMode = (() => {
+    if (!isRemoteDraft) return mode;
+    return remoteDraft?.kind === "doodle" ? "draw" : "write";
+  })();
   const pageDraft = (() => {
-    if (props.lock.kind === "taken") return remoteDraft?.text ?? "";
-    return handoffDraft?.text ?? draft;
+    if (isRemoteDraft)
+      return remoteDraft?.kind === "text" ? remoteDraft.text : "";
+    return draft;
   })();
   const trimmedDraft = pageDraft.trimEnd();
-  const draftScript = remoteDraft?.script ?? detectScript(trimmedDraft);
+  const draftScript =
+    remoteDraft?.kind === "text"
+      ? remoteDraft.script
+      : detectScript(trimmedDraft);
+  const remoteDrawing =
+    remoteDraft?.kind === "doodle" ? remoteDraft.drawing : undefined;
+  const remoteStrokes = useMemo(
+    () =>
+      remoteDrawing === undefined
+        ? []
+        : decodeDoodle({ drawing: remoteDrawing, widthPx: maxWidthPx }),
+    [remoteDrawing, maxWidthPx]
+  );
+  const shownStrokes = isRemoteDraft ? remoteStrokes : strokes;
+  const pointCount = strokes.reduce(
+    (total, stroke) => total + stroke.points.length,
+    0
+  );
+  const isInkFull =
+    pointCount >= DOODLE_LIMITS.maxPoints ||
+    strokes.length >= DOODLE_LIMITS.maxStrokes;
   const draftStyle = getEntryStyle({
     script: draftScript,
     reportEntryId: undefined,
@@ -380,13 +491,28 @@ export function NotebookBook(props: NotebookBookProps) {
     linesPerPage: notebook.linesPerPage,
     pageCount: notebook.pageCount,
   });
-  const writeSpread = getSpreadOfPage(draftPlacement.caretPage);
-  const isRemoteDraft =
-    props.lock.kind === "taken" || handoffDraft !== undefined;
+  const doodlePlacement = getDoodlePlacement({
+    linesUsed: notebook.linesUsed,
+    spaceLineCount: doodle.maxRows + 1,
+    linesPerPage: notebook.linesPerPage,
+    pageCount: notebook.pageCount,
+  });
+  const isPadVisible =
+    isWritable &&
+    shownMode === "draw" &&
+    !doodlePlacement.startsNewBook &&
+    (isRemoteDraft || canWrite);
+  const padSpread = getSpreadOfPage(doodlePlacement.page);
+  const writeSpread = isPadVisible
+    ? padSpread
+    : getSpreadOfPage(draftPlacement.caretPage);
+  const padSide = doodlePlacement.page % 2 === 0 ? "left" : "right";
+  const isSinglePage =
+    isNarrowScreen && isPadVisible && phase === "open" && spread === padSpread;
   const shownSelection = (() => {
     if (!isRemoteDraft) return selection;
     return (
-      remoteDraft?.selection ?? {
+      (remoteDraft?.kind === "text" ? remoteDraft.selection : undefined) ?? {
         start: pageDraft.length,
         end: pageDraft.length,
       }
@@ -395,6 +521,7 @@ export function NotebookBook(props: NotebookBookProps) {
   const markTone = isRemoteDraft ? "remote" : "own";
   const isDraftVisible =
     isWritable &&
+    shownMode === "write" &&
     !draftPlacement.startsNewBook &&
     (canWrite || trimmedDraft !== "");
   const draftEntry: FittedEntry | undefined = isDraftVisible
@@ -457,7 +584,35 @@ export function NotebookBook(props: NotebookBookProps) {
 
   function getPageSpec(page: number): PageSpec {
     const content = getPageContent(page);
-    if (content.kind !== "paper") return { content, rows: [] };
+    if (content.kind !== "paper") {
+      return { content, rows: [], doodles: [], pad: undefined };
+    }
+    const doodles = storedDoodles.flatMap((entry): DoodleView[] =>
+      entry.page === page
+        ? [
+            {
+              entryId: entry.id,
+              row: entry.row,
+              rowCount: entry.rowCount,
+              strokes: entry.strokes,
+              ink: getInkState({
+                entryId: entry.id,
+                kind: "text",
+                lineInEntry: 0,
+              }),
+            },
+          ]
+        : []
+    );
+    const pad: PadView | undefined =
+      isPadVisible && doodlePlacement.page === page
+        ? {
+            row: doodlePlacement.lineStart - 1,
+            rowCount: doodle.maxRows,
+            strokes: shownStrokes,
+            tone: isRemoteDraft ? "remote" : "own",
+          }
+        : undefined;
     const rows = layoutPageRows({
       entries: fittedEntries,
       page,
@@ -483,7 +638,7 @@ export function NotebookBook(props: NotebookBookProps) {
             });
       return [{ ...row, ...style, ink: getInkState(row), ...marks, markTone }];
     });
-    return { content, rows };
+    return { content, rows, doodles, pad };
   }
 
   function getRemoteCaret(rows: RowView[]): RemoteCaret | undefined {
@@ -506,10 +661,15 @@ export function NotebookBook(props: NotebookBookProps) {
   }
 
   const restoredDraftRef = useRef("");
+  const restoredStrokesRef = useRef<DoodleStroke[]>([]);
   useEffect(() => {
     const restored = readStoredDraft();
     restoredDraftRef.current = restored;
     setDraft(restored);
+    const restoredStrokes = readStoredDoodle(maxWidthPx);
+    restoredStrokesRef.current = restoredStrokes;
+    setStrokes(restoredStrokes);
+    if (restoredStrokes.length > 0 && restored.trim() === "") setMode("draw");
     setPlacedAt(readStoredPlacedAt());
     function handleStorage(event: StorageEvent) {
       if (event.key === PLACED_AT_STORAGE_KEY) {
@@ -518,7 +678,7 @@ export function NotebookBook(props: NotebookBookProps) {
     }
     window.addEventListener("storage", handleStorage);
     return () => window.removeEventListener("storage", handleStorage);
-  }, []);
+  }, [maxWidthPx]);
   useEffect(() => {
     if (placedAt === undefined) return;
     const timeout = window.setTimeout(
@@ -577,8 +737,11 @@ export function NotebookBook(props: NotebookBookProps) {
       return;
     }
     const { linesPerPage } = result.notebook;
-    const entries = result.notebook.entries.filter((entry) =>
+    const entries = result.notebook.entries.flatMap((entry) =>
+      entry.kind === "text" &&
       getEntrySpreads({ ...entry, linesPerPage }).includes(arrivalSpread)
+        ? [entry]
+        : []
     );
     const state = { isCurrent: true };
     void Promise.all(
@@ -642,8 +805,19 @@ export function NotebookBook(props: NotebookBookProps) {
     hasArrivedRef.current = true;
     const target = isWritable ? writeSpread : 0;
     if (target !== spread) goToSpread(target);
-    if (canWrite) textareaRef.current?.focus({ preventScroll: true });
-  }, [phase, result, isWritable, canWrite, writeSpread, spread, goToSpread]);
+    if (canWrite && mode === "write") {
+      textareaRef.current?.focus({ preventScroll: true });
+    }
+  }, [
+    phase,
+    result,
+    isWritable,
+    canWrite,
+    mode,
+    writeSpread,
+    spread,
+    goToSpread,
+  ]);
 
   const { onWritingChange } = props;
   const lockRef = useRef(props.lock);
@@ -706,6 +880,7 @@ export function NotebookBook(props: NotebookBookProps) {
     const entrySpreads = getEntrySpreads({ ...entry, linesPerPage });
     const canReplay =
       !reducedMotion &&
+      (entry.kind === "text" || quality === "full") &&
       entrySpreads.length === 1 &&
       entrySpreads.at(0) === spread;
     setInk(canReplay ? { entryId: String(entry.id), line: 0 } : undefined);
@@ -718,6 +893,7 @@ export function NotebookBook(props: NotebookBookProps) {
     reloadNotebook,
     spread,
     reducedMotion,
+    quality,
   ]);
 
   useEffect(() => {
@@ -730,7 +906,7 @@ export function NotebookBook(props: NotebookBookProps) {
       WRITING_IDLE_RELEASE_MS
     );
     return () => window.clearTimeout(timeout);
-  }, [canWrite, draft, onWritingChange]);
+  }, [canWrite, draft, strokes, onWritingChange]);
 
   useEffect(() => () => onWritingChange(false), [onWritingChange]);
 
@@ -742,20 +918,40 @@ export function NotebookBook(props: NotebookBookProps) {
   useEffect(() => {
     if (isPresent || !isWritable) return;
     onWritingChange(false);
-    onDraftChangeRef.current({ text: "", script: "latin" });
+    onDraftChangeRef.current({ kind: "text", text: "", script: "latin" });
   }, [isPresent, isWritable, onWritingChange]);
   useEffect(() => {
     const restored = restoredDraftRef.current;
-    if (restored === "" || !canWrite) return;
+    const restoredStrokes = restoredStrokesRef.current;
+    if ((restored === "" && restoredStrokes.length === 0) || !canWrite) return;
     restoredDraftRef.current = "";
+    restoredStrokesRef.current = [];
     onWritingChange(true);
-    onDraftChangeRef.current({
-      text: restored,
-      script: detectScript(restored),
-    });
-  }, [canWrite, onWritingChange]);
+    onDraftChangeRef.current(
+      restored === ""
+        ? {
+            kind: "doodle",
+            drawing: encodeDoodle({
+              strokes: restoredStrokes,
+              widthPx: maxWidthPx,
+            }),
+          }
+        : {
+            kind: "text",
+            text: restored,
+            script: detectScript(restored),
+          }
+    );
+  }, [canWrite, onWritingChange, maxWidthPx]);
 
-  const hasUnsavedNote = canWrite && draft.trim() !== "";
+  const { onFocusPageChange } = props;
+  useEffect(() => {
+    onFocusPageChange(isSinglePage ? padSide : undefined);
+  }, [isSinglePage, padSide, onFocusPageChange]);
+  useEffect(() => () => onFocusPageChange(undefined), [onFocusPageChange]);
+
+  const hasUnsavedNote =
+    canWrite && (draft.trim() !== "" || strokes.length > 0);
   const { onUnsavedChange } = props;
   useEffect(() => {
     onUnsavedChange(hasUnsavedNote);
@@ -784,6 +980,14 @@ export function NotebookBook(props: NotebookBookProps) {
     isRemoteDraft,
   ]);
 
+  const lastModeRef = useRef(mode);
+  useEffect(() => {
+    const didModeChange = lastModeRef.current !== mode;
+    lastModeRef.current = mode;
+    if (!didModeChange || !hasArrivedRef.current || isRemoteDraft) return;
+    if (writeSpread !== spread) goToSpread(writeSpread);
+  }, [mode, writeSpread, spread, goToSpread, isRemoteDraft]);
+
   function handleDraftChange(event: React.ChangeEvent<HTMLTextAreaElement>) {
     const next = event.target.value.slice(0, config.notebook.maxChars);
     setDraft(next);
@@ -792,6 +996,7 @@ export function NotebookBook(props: NotebookBookProps) {
     writeStoredDraft(next);
     if (next.trim() !== "") props.onWritingChange(true);
     props.onDraftChange({
+      kind: "text",
       text: next,
       script: detectScript(next),
       selection: nextSelection,
@@ -802,6 +1007,7 @@ export function NotebookBook(props: NotebookBookProps) {
     const nextSelection = readSelection(textarea);
     if (!canWrite || draft.trim() === "") return;
     props.onDraftChange({
+      kind: "text",
       text: draft,
       script: detectScript(draft),
       selection: nextSelection,
@@ -842,19 +1048,56 @@ export function NotebookBook(props: NotebookBookProps) {
       props.onWritingChange(false);
       return;
     }
+    setDraft("");
+    writeStoredDraft("");
+    await handlePlaced({
+      placed,
+      emptyDraft: {
+        kind: "text",
+        text: "",
+        script: draftScript,
+        selection: { start: 0, end: 0 },
+      },
+    });
+  }
+
+  async function handleLeaveDoodle() {
+    if (!canWrite || !isPadVisible || isLeaving || strokes.length === 0) {
+      return;
+    }
+    props.onWritingChange(true);
+    setIsLeaving(true);
+    setFailure(undefined);
+    const placed = await leaveDoodle(
+      encodeDoodle({ strokes, widthPx: maxWidthPx })
+    ).catch((): LeaveEntryFailure => ({ kind: "offline" }));
+    setIsLeaving(false);
+    if (placed.kind !== "placed") {
+      setFailure(placed);
+      props.onWritingChange(false);
+      return;
+    }
+    setStrokes([]);
+    writeStoredDoodle({ strokes: [], widthPx: maxWidthPx });
+    setMode("write");
+    await handlePlaced({
+      placed,
+      emptyDraft: { kind: "text", text: "", script: draftScript },
+    });
+  }
+
+  async function handlePlaced(options: {
+    placed: PlacedEntry;
+    emptyDraft: DraftContent;
+  }) {
+    const { placed } = options;
     props.onEntryPlaced({
       notebookNumber: placed.notebookNumber,
       entry: placed.entry,
     });
-    setDraft("");
-    writeStoredDraft("");
     setPlacedAt(storePlacedAtNow());
     props.onWritingChange(false);
-    props.onDraftChange({
-      text: "",
-      script: draftScript,
-      selection: { start: 0, end: 0 },
-    });
+    props.onDraftChange(options.emptyDraft);
     props.onPlaced();
     if (placed.notebookNumber !== notebook.number) {
       const isLatest = await reloadNotebook(undefined);
@@ -862,12 +1105,96 @@ export function NotebookBook(props: NotebookBookProps) {
     } else {
       setLocalEntries((entries) => [...entries, placed.entry]);
     }
+    const canReplay =
+      !props.reducedMotion &&
+      (placed.entry.kind === "text" || quality === "full");
     setInk(
-      props.reducedMotion
-        ? undefined
-        : { entryId: String(placed.entry.id), line: 0 }
+      canReplay ? { entryId: String(placed.entry.id), line: 0 } : undefined
     );
   }
+
+  function updateStrokes(next: DoodleStroke[]) {
+    setStrokes(next);
+    setFailure(undefined);
+    writeStoredDoodle({ strokes: next, widthPx: maxWidthPx });
+    if (next.length > 0) props.onWritingChange(true);
+    props.onDraftChange({
+      kind: "doodle",
+      drawing:
+        next.length === 0
+          ? undefined
+          : encodeDoodle({ strokes: next, widthPx: maxWidthPx }),
+    });
+  }
+
+  function handleStroke(stroke: DoodleStroke) {
+    if (!canWrite || isLeaving || isInkFull) return;
+    updateStrokes([
+      ...strokes,
+      {
+        points: stroke.points.slice(0, DOODLE_LIMITS.maxPoints - pointCount),
+        durationMs: Math.min(stroke.durationMs, DOODLE_LIMITS.maxStrokeMs),
+      },
+    ]);
+  }
+
+  function handleUndo() {
+    if (!isLeaving && strokes.length > 0) updateStrokes(strokes.slice(0, -1));
+  }
+
+  function handleModeChange(next: PenMode) {
+    if (!canWrite || isLeaving || next === mode) return;
+    setMode(next);
+    setFailure(undefined);
+    if (next === "draw") {
+      textareaRef.current?.blur();
+      props.onDraftChange({
+        kind: "doodle",
+        drawing:
+          strokes.length === 0
+            ? undefined
+            : encodeDoodle({ strokes, widthPx: maxWidthPx }),
+      });
+      return;
+    }
+    textareaRef.current?.focus({ preventScroll: true });
+    props.onDraftChange({
+      kind: "text",
+      text: draft,
+      script: detectScript(draft),
+    });
+  }
+
+  const isPenKeysOn = phase === "open" && isWritable;
+  useEffect(() => {
+    if (!isPenKeysOn) return;
+    function handlePenKey(event: KeyboardEvent) {
+      if (event.defaultPrevented || !canWrite || isLeaving) return;
+      const isOnControl =
+        event.target instanceof HTMLInputElement ||
+        event.target instanceof HTMLButtonElement;
+      if (
+        event.key === "Tab" &&
+        event.shiftKey &&
+        !event.isComposing &&
+        !isOnControl
+      ) {
+        event.preventDefault();
+        handleModeChange(mode === "draw" ? "write" : "draw");
+        return;
+      }
+      if (mode !== "draw" || !(event.metaKey || event.ctrlKey)) return;
+      if (event.key === "z" && !event.shiftKey && strokes.length > 0) {
+        event.preventDefault();
+        handleUndo();
+      } else if (event.key === "Enter") {
+        event.preventDefault();
+        void handleLeaveDoodle();
+      }
+    }
+    window.addEventListener("keydown", handlePenKey);
+    return () => window.removeEventListener("keydown", handlePenKey);
+  });
 
   const handleInkComplete = useCallback(
     (entryId: string) => {
@@ -931,7 +1258,9 @@ export function NotebookBook(props: NotebookBookProps) {
   }
 
   function handlePageClick() {
-    if (canWrite) textareaRef.current?.focus({ preventScroll: true });
+    if (canWrite && mode === "write") {
+      textareaRef.current?.focus({ preventScroll: true });
+    }
   }
 
   const handleCurlUnsupported = useCallback(
@@ -947,6 +1276,21 @@ export function NotebookBook(props: NotebookBookProps) {
     reportedIds,
     onInkComplete: handleInkComplete,
     inkSpeed: details.inkSpeed,
+    pad: {
+      disabled: !canWrite || isLeaving || isInkFull,
+      isEditable: canWrite && !isLeaving,
+      onStrokeStart: () => props.onWritingChange(true),
+      onStrokeCancel: () => {
+        if (strokes.length === 0 && draft.trim() === "") {
+          props.onWritingChange(false);
+        }
+      },
+      onStroke: handleStroke,
+      onUndo: handleUndo,
+      onClear: () => {
+        if (!isLeaving) updateStrokes([]);
+      },
+    },
   };
 
   const staticLeft = (() => {
@@ -995,6 +1339,9 @@ export function NotebookBook(props: NotebookBookProps) {
         settings={settings}
         pitch={pitch}
         rows={spec.rows}
+        doodles={spec.doodles}
+        pad={spec.pad}
+        doodle={doodle}
         remoteCaret={getRemoteCaret(spec.rows)}
         controls={
           options.isInteractive
@@ -1018,7 +1365,7 @@ export function NotebookBook(props: NotebookBookProps) {
     );
   }
 
-  const statusText = (() => {
+  const statusMessage = (() => {
     if (failure !== undefined) return describeLeaveFailure({ failure, copy });
     if (result === undefined || !isContentReady) return copy.notebook.opening;
     if (result.kind === "offline") {
@@ -1032,9 +1379,18 @@ export function NotebookBook(props: NotebookBookProps) {
     if (placedAt !== undefined) return copy.notebook.comeBackToWrite;
     if (props.lock.kind === "joining") return copy.notebook.opening;
     if (props.lock.kind === "taken") {
+      if (shownMode === "draw") return copy.notebook.someoneDrawingInNotebook;
       return trimmedDraft === ""
         ? copy.notebook.someoneWritingInNotebook
         : copy.notebook.someoneWriting;
+    }
+    if (mode === "draw") {
+      if (doodlePlacement.startsNewBook) return copy.notebook.doodleBookFull;
+      if (isInkFull) return copy.notebook.inkFull;
+      if (doodlePlacement.isMoved) {
+        return copy.notebook.doodleMoved({ page: doodlePlacement.page });
+      }
+      return copy.notebook.drawPrompt;
     }
     if (draftPlacement.startsNewBook) {
       return copy.notebook.startsNext({ number: notebook.number + 1 });
@@ -1045,14 +1401,53 @@ export function NotebookBook(props: NotebookBookProps) {
     ) {
       return `${draft.length} / ${config.notebook.maxChars}`;
     }
-    return (
-      <>
-        {copy.notebook.writePromptBeforeKeys}
-        <ShortcutKeys />
-        {copy.notebook.writePromptAfterKeys}
-      </>
-    );
+    return undefined;
   })();
+  const statusText = statusMessage ?? (
+    <>
+      {copy.notebook.writePromptBeforeKeys}
+      <ShortcutHint keys={["mod", "↵"]} label={undefined} />
+      {copy.notebook.writePromptAfterKeys}
+    </>
+  );
+  const penHints =
+    canWrite && failure === undefined && isContentReady
+      ? mode === "draw"
+        ? [
+            { keys: ["mod", "z"], label: copy.notebook.undo },
+            { keys: ["⇧", "tab"], label: copy.notebook.penModes.write },
+          ]
+        : [{ keys: ["⇧", "tab"], label: copy.notebook.penModes.draw }]
+      : [];
+
+  const isSaveDisabled =
+    isLeaving ||
+    (mode === "draw"
+      ? strokes.length === 0 || !isPadVisible
+      : trimmedDraft === "" || !draftFit.fits);
+
+  function handleSave() {
+    void (mode === "draw" ? handleLeaveDoodle() : handleLeave());
+  }
+
+  const jumpField = isJumping ? (
+    <label className="flex items-center gap-x-2 lowercase">
+      {copy.notebook.goToPage}
+      <input
+        autoFocus
+        type="number"
+        inputMode="numeric"
+        min={1}
+        max={notebook.pageCount}
+        aria-label={copy.notebook.pageInputLabel({
+          pageCount: notebook.pageCount,
+        })}
+        onKeyDown={handleJumpKeyDown}
+        onBlur={() => setIsJumping(false)}
+        className="w-14 rounded-md border border-[var(--lm-edge)] bg-[var(--lm-panel)] px-2 py-1 text-[var(--lm-ink-hi)] tabular-nums outline-none focus-visible:border-[var(--lm-accent)]"
+      />
+    </label>
+  ) : null;
 
   const width = settings.width * 2;
   const height = settings.height;
@@ -1067,7 +1462,7 @@ export function NotebookBook(props: NotebookBookProps) {
     >
       <div
         ref={bookRef}
-        data-lm-text={canWrite ? "" : undefined}
+        data-lm-text={canWrite && mode === "write" ? "" : undefined}
         className="relative z-10 [perspective:2600px]"
         style={{ width, height }}
         onClick={handlePageClick}
@@ -1090,7 +1485,10 @@ export function NotebookBook(props: NotebookBookProps) {
               transition={{ duration: FADE_MS / 1000 }}
             >
               <div
-                className="absolute top-0 left-0 h-full overflow-hidden"
+                className={cn(
+                  "absolute top-0 left-0 h-full overflow-hidden transition-opacity duration-500",
+                  isSinglePage && padSide !== "left" && "opacity-0"
+                )}
                 style={{ width: settings.width }}
               >
                 {renderPage({
@@ -1100,7 +1498,10 @@ export function NotebookBook(props: NotebookBookProps) {
                 })}
               </div>
               <div
-                className="absolute top-0 h-full overflow-hidden"
+                className={cn(
+                  "absolute top-0 h-full overflow-hidden transition-opacity duration-500",
+                  isSinglePage && padSide !== "right" && "opacity-0"
+                )}
                 style={{ left: settings.width, width: settings.width }}
               >
                 {renderPage({
@@ -1194,6 +1595,9 @@ export function NotebookBook(props: NotebookBookProps) {
                   settings={settings}
                   pitch={pitch}
                   rows={[]}
+                  doodles={[]}
+                  pad={undefined}
+                  doodle={doodle}
                   remoteCaret={undefined}
                   controls={undefined}
                 />
@@ -1209,6 +1613,7 @@ export function NotebookBook(props: NotebookBookProps) {
               progress={turns.progress}
               settings={settings}
               pitch={pitch}
+              strokeWidthPx={doodle.strokeWidthPx}
               curlStrength={details.curlStrength}
               onUnsupported={handleCurlUnsupported}
             />
@@ -1219,6 +1624,8 @@ export function NotebookBook(props: NotebookBookProps) {
 @keyframes lm-riffle-forward { from { transform: rotateY(0deg); } to { transform: rotateY(-180deg); } }
 @keyframes lm-riffle-back { from { transform: rotateY(-180deg); } to { transform: rotateY(0deg); } }
 @keyframes lm-caret { 50% { opacity: 0; } }
+@keyframes lm-doodle-ink { to { stroke-dashoffset: 0; } }
+@keyframes lm-doodle-dot { to { opacity: 1; } }
 `}</style>
       {isWritable && (
         <textarea
@@ -1236,15 +1643,20 @@ export function NotebookBook(props: NotebookBookProps) {
       )}
       <div
         className={cn(
-          "absolute inset-x-0 bottom-0 flex flex-col justify-start gap-y-1 px-2 text-[12px] text-[var(--lm-ink)] transition-opacity duration-300",
+          "absolute bottom-0 flex flex-col justify-start gap-y-1 px-2 text-[12px] text-[var(--lm-ink)] transition-opacity duration-300",
           isLifted ? "opacity-100" : "opacity-0"
         )}
-        style={{ height: config.notebook.statusBarPx }}
+        style={{
+          height: config.notebook.statusBarPx,
+          left: isSinglePage && padSide === "right" ? settings.width : 0,
+          width: isSinglePage ? settings.width : width,
+        }}
       >
         <div
           className={cn(
             "transition-opacity duration-300",
-            phase !== "open" && "opacity-0"
+            phase !== "open" && "opacity-0",
+            isSinglePage && "hidden"
           )}
         >
           <PageScrubber
@@ -1256,72 +1668,148 @@ export function NotebookBook(props: NotebookBookProps) {
             onSelect={goToSpread}
           />
         </div>
-        <div className="flex items-center justify-between gap-x-4">
-          <p role="status" className="truncate lowercase opacity-70">
-            {statusText}
-          </p>
-          <div className="flex shrink-0 items-center gap-x-2">
-            {isJumping ? (
-              <label className="flex items-center gap-x-2 lowercase">
-                {copy.notebook.goToPage}
-                <input
-                  autoFocus
-                  type="number"
-                  inputMode="numeric"
-                  min={1}
-                  max={notebook.pageCount}
-                  aria-label={copy.notebook.pageInputLabel({
-                    pageCount: notebook.pageCount,
-                  })}
-                  onKeyDown={handleJumpKeyDown}
-                  onBlur={() => setIsJumping(false)}
-                  className="w-14 rounded-md border border-[var(--lm-edge)] bg-[var(--lm-panel)] px-2 py-1 text-[var(--lm-ink-hi)] tabular-nums outline-none focus-visible:border-[var(--lm-accent)]"
-                />
-              </label>
-            ) : null}
-            {isWritable &&
-              props.lock.kind === "taken" &&
-              placedAt === undefined && (
+        {isNarrowScreen ? (
+          <div className="flex justify-end">{jumpField}</div>
+        ) : (
+          <div className="flex items-center justify-between gap-x-4">
+            <div className="flex min-w-0 items-center gap-x-4 opacity-70">
+              <p role="status" className="truncate lowercase">
+                {statusText}
+              </p>
+              {penHints.length > 0 && (
+                <span className="flex shrink-0 items-center gap-x-3 lowercase [@media(pointer:coarse)]:hidden">
+                  {penHints.map((hint) => (
+                    <ShortcutHint
+                      key={hint.label}
+                      keys={hint.keys}
+                      label={hint.label}
+                    />
+                  ))}
+                </span>
+              )}
+            </div>
+            <div className="flex shrink-0 items-center gap-x-2">
+              {jumpField}
+              {isWritable &&
+                props.lock.kind === "taken" &&
+                placedAt === undefined && (
+                  <button
+                    type="button"
+                    disabled={props.freeNoticeOn}
+                    onClick={props.onRequestFreeNotice}
+                    className="cursor-pointer rounded-md border border-[var(--lm-edge)] bg-[var(--lm-panel)] px-3 py-1.5 text-[var(--lm-ink-hi)] lowercase transition-opacity outline-none hover:border-[var(--lm-accent)] focus-visible:border-[var(--lm-accent)] disabled:cursor-default disabled:opacity-60"
+                  >
+                    {props.freeNoticeOn
+                      ? copy.notebook.notifyPending
+                      : copy.notebook.notifyWhenFree}
+                  </button>
+                )}
+              {canWrite && (
+                <div
+                  role="group"
+                  aria-label={copy.notebook.penModeLabel}
+                  className="flex rounded-md border border-[var(--lm-edge)] bg-[var(--lm-panel)] p-0.5"
+                >
+                  {(["write", "draw"] satisfies PenMode[]).map((option) => (
+                    <button
+                      key={option}
+                      type="button"
+                      aria-pressed={mode === option}
+                      onClick={() => handleModeChange(option)}
+                      className={cn(
+                        "cursor-pointer rounded-[5px] px-2.5 py-1 lowercase outline-none focus-visible:text-[var(--lm-ink-hi)]",
+                        mode === option
+                          ? "bg-[var(--lm-edge)] text-[var(--lm-ink-hi)]"
+                          : "text-[var(--lm-ink)] hover:text-[var(--lm-ink-hi)]"
+                      )}
+                    >
+                      {copy.notebook.penModes[option]}
+                    </button>
+                  ))}
+                </div>
+              )}
+              {canWrite && (
                 <button
                   type="button"
-                  disabled={props.freeNoticeOn}
-                  onClick={props.onRequestFreeNotice}
-                  className="cursor-pointer rounded-md border border-[var(--lm-edge)] bg-[var(--lm-panel)] px-3 py-1.5 text-[var(--lm-ink-hi)] lowercase transition-opacity outline-none hover:border-[var(--lm-accent)] focus-visible:border-[var(--lm-accent)] disabled:cursor-default disabled:opacity-60"
+                  disabled={isSaveDisabled}
+                  onClick={handleSave}
+                  className="cursor-pointer rounded-md border border-[var(--lm-edge)] bg-[var(--lm-panel)] px-3 py-1.5 text-[var(--lm-ink-hi)] lowercase transition-opacity outline-none hover:border-[var(--lm-accent)] focus-visible:border-[var(--lm-accent)] disabled:cursor-default disabled:opacity-40"
                 >
-                  {props.freeNoticeOn
-                    ? copy.notebook.notifyPending
-                    : copy.notebook.notifyWhenFree}
+                  {isLeaving ? (
+                    copy.notebook.savingNote
+                  ) : (
+                    <span className="flex items-center gap-x-2">
+                      {mode === "draw"
+                        ? copy.notebook.saveDoodle
+                        : copy.notebook.saveNote}
+                      <span className="contents [@media(pointer:coarse)]:hidden">
+                        <ShortcutHint keys={["mod", "↵"]} label={undefined} />
+                      </span>
+                    </span>
+                  )}
                 </button>
               )}
-            {canWrite && (
               <button
                 type="button"
-                disabled={isLeaving || trimmedDraft === "" || !draftFit.fits}
-                onClick={() => void handleLeave()}
-                className="cursor-pointer rounded-md border border-[var(--lm-edge)] bg-[var(--lm-panel)] px-3 py-1.5 text-[var(--lm-ink-hi)] lowercase transition-opacity outline-none hover:border-[var(--lm-accent)] focus-visible:border-[var(--lm-accent)] disabled:cursor-default disabled:opacity-40"
+                onClick={props.onClose}
+                className="cursor-pointer rounded-md px-3 py-1.5 text-[var(--lm-ink)] lowercase outline-none hover:text-[var(--lm-ink-hi)] focus-visible:text-[var(--lm-ink-hi)]"
               >
-                {isLeaving ? (
-                  copy.notebook.savingNote
-                ) : (
-                  <span className="flex items-center gap-x-2">
-                    {copy.notebook.saveNote}
-                    <span className="contents [@media(pointer:coarse)]:hidden">
-                      <ShortcutKeys />
-                    </span>
-                  </span>
-                )}
+                {copy.notebook.close}
               </button>
-            )}
-            <button
-              type="button"
-              onClick={props.onClose}
-              className="cursor-pointer rounded-md px-3 py-1.5 text-[var(--lm-ink)] lowercase outline-none hover:text-[var(--lm-ink-hi)] focus-visible:text-[var(--lm-ink-hi)]"
-            >
-              {copy.notebook.close}
-            </button>
+            </div>
           </div>
-        </div>
+        )}
       </div>
+      {isNarrowScreen && isLifted && (
+        <NotebookPhoneBar
+          status={statusMessage ?? copy.notebook.writePrompt}
+          pen={
+            canWrite
+              ? {
+                  mode,
+                  disabled: isLeaving,
+                  label: copy.notebook.penModeLabel,
+                  modeLabels: copy.notebook.penModes,
+                  onModeChange: handleModeChange,
+                }
+              : undefined
+          }
+          notify={
+            isWritable && props.lock.kind === "taken" && placedAt === undefined
+              ? {
+                  label: props.freeNoticeOn
+                    ? copy.notebook.notifyPending
+                    : copy.notebook.notifyWhenFree,
+                  disabled: props.freeNoticeOn,
+                  onPress: props.onRequestFreeNotice,
+                }
+              : undefined
+          }
+          undo={
+            canWrite && mode === "draw"
+              ? {
+                  label: copy.notebook.undo,
+                  disabled: strokes.length === 0 || isLeaving,
+                  onPress: handleUndo,
+                }
+              : undefined
+          }
+          save={
+            canWrite
+              ? {
+                  label:
+                    mode === "draw"
+                      ? copy.notebook.saveDoodle
+                      : copy.notebook.saveNote,
+                  disabled: isSaveDisabled,
+                  busy: isLeaving,
+                  onPress: handleSave,
+                }
+              : undefined
+          }
+          close={{ label: copy.notebook.close, onPress: props.onClose }}
+        />
+      )}
     </div>
   );
 }

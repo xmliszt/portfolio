@@ -5,6 +5,7 @@ import { isEqual, omit } from "lodash";
 
 import { mergeClockOffset } from "@/lib/laundromat/realtime/merge-clock-offset";
 import type {
+  DraftContent,
   RemoteDraft,
   RemoteEntry,
   RemoteLoad,
@@ -226,12 +227,16 @@ export function useRoom(presence: OwnPresence | undefined) {
       )
     );
     const latest = latestDraftRef.current;
-    if (latest !== undefined && latest.text !== "") {
+    const hasInk =
+      latest?.kind === "text"
+        ? latest.text !== ""
+        : latest?.drawing !== undefined;
+    if (latest !== undefined && hasInk) {
       connectionRef.current?.sendDraft(latest);
     }
   }, [peerIds, sessionId, visitorId]);
 
-  function sendDraft(draft: Omit<RemoteDraft, "sessionId">) {
+  function sendDraft(draft: DraftContent) {
     latestDraftRef.current = { sessionId, ...draft };
     if (draftTimerRef.current !== undefined) return;
     draftTimerRef.current = window.setTimeout(() => {

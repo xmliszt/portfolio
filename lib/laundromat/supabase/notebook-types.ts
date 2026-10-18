@@ -28,7 +28,15 @@ export const APPEND_ENTRY_REJECTIONS = [
   "invalid_script",
   "contains_link",
   "invalid_line_count",
+  "invalid_drawing",
   "rate_limited",
 ] as const;
 
 export type AppendEntryRejection = (typeof APPEND_ENTRY_REJECTIONS)[number];
+
+/** Return `true` if `message` is one of the rejections `append_entry` and `append_doodle` raise; `false` when it is any other error. */
+export function isAppendEntryRejection(
+  message: string
+): message is AppendEntryRejection {
+  return APPEND_ENTRY_REJECTIONS.some((rejection) => rejection === message);
+}

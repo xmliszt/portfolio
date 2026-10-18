@@ -33,6 +33,7 @@ export function describeLeaveFailure(options: {
       return hints.too_long;
     case "missing_visitor":
     case "invalid_script":
+    case "invalid_drawing":
       return hints.unknown;
     default: {
       const unhandled: never = failure.reason;

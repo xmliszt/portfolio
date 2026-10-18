@@ -329,6 +329,10 @@ export const hi = {
       board: "बोर्ड",
     },
     updates: {
+      "notebook-doodles": {
+        title: "नोटबुक में ड्रॉइंग बनाएँ",
+        body: "नोटबुक के पेन को लिखने से ड्रॉइंग पर बदलिए और अगले आने वाले के लिए एक छोटी ड्रॉइंग छोड़िए। लॉन्ड्री में जिसके पास भी नोटबुक खुली है, उसे यह पन्ने पर अपने आप बनती दिखती है।",
+      },
       "weather-anywhere": {
         title: "बाहर का मौसम चुनें",
         body: "सेटिंग्स में कोई शहर चुनें और खिड़की और पैनल पर उसका मौसम देखें, या आसमान खुद चुनें। डिफ़ॉल्ट रूप से लाइव मौसम ही रहता है।",
@@ -540,12 +544,29 @@ export const hi = {
     comeBackToWrite: "दूसरा नोट लिखने के लिए दो मिनट बाद आना",
     startsNext: (o: { number: number }) =>
       `यह नोट नोटबुक नं. ${o.number} की शुरुआत करेगा`,
+    writePrompt: "अगले व्यक्ति के लिए एक नोट लिखो",
     writePromptBeforeKeys: "अगले व्यक्ति के लिए एक नोट लिखो · ",
     writePromptAfterKeys: " दबाकर सहेजो",
     textareaLabel: "नोटबुक में एक नोट लिखो",
     notifyWhenFree: "खाली होने पर बताना",
     notifyPending: "हम बता देंगे",
     saveNote: "मेरा नोट सहेजो",
+    saveDoodle: "मेरी ड्रॉइंग सहेजो",
+    penModeLabel: "पेन",
+    penModes: { write: "लिखो", draw: "बनाओ" },
+    drawPrompt: "अगले व्यक्ति के लिए कुछ बनाओ",
+    doodleMoved: (o: { page: number }) =>
+      `इस पेज पर जगह नहीं बची · पृ. ${o.page} पर बना रहे हैं`,
+    doodleBookFull:
+      "इस नोटबुक में ड्रॉइंग के लिए जगह नहीं है · इसके बजाय एक नोट लिखो",
+    inkFull: "स्याही के लिए और जगह नहीं · सहेजो या वापस लो",
+    someoneDrawingInNotebook:
+      "कोई नोटबुक में ड्रॉइंग बना रहा है · अपनी बारी का इंतज़ार करो",
+    padLabel: "नोटबुक में ड्रॉइंग की जगह",
+    drawingNow: "बना रहे हैं…",
+    someoneDrawingNow: "कोई ड्रॉइंग बना रहा है…",
+    undo: "वापस",
+    clear: "मिटाओ",
     savingNote: "सहेज रहे हैं…",
     close: "बंद करो",
     freeNotificationTitle: "नोटबुक खाली है",

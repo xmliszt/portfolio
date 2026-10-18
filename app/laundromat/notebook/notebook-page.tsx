@@ -4,11 +4,17 @@ import type { PointerEvent as ReactPointerEvent } from "react";
 import { useState } from "react";
 
 import { useLaundromatCopy } from "@/app/laundromat/i18n/use-laundromat-copy";
+import type { DoodleStroke } from "@/lib/laundromat/notebook/doodle-stroke";
 import type { PageRow } from "@/lib/laundromat/notebook/layout-page-rows";
-import type { NotebookPage as NotebookPageSettings } from "@/lib/laundromat/scene-config";
+import type {
+  NotebookPage as NotebookPageSettings,
+  SceneConfig,
+} from "@/lib/laundromat/scene-config";
 import type { NotebookScript } from "@/lib/laundromat/supabase/notebook-types";
 import { cn } from "@/lib/utils";
 
+import { DoodleInk } from "./doodle-ink";
+import { DoodlePad } from "./doodle-pad";
 import { getPageRadius } from "./get-page-radius";
 import { InkedLine } from "./inked-line";
 import { NOTEBOOK_PAGE_METRICS } from "./notebook-page-metrics";
@@ -31,6 +37,21 @@ export type RowView = PageRow & {
   reportEntryId: number | undefined;
 };
 
+export type DoodleView = {
+  entryId: string;
+  row: number;
+  rowCount: number;
+  strokes: DoodleStroke[];
+  ink: RowView["ink"];
+};
+
+export type PadView = {
+  row: number;
+  rowCount: number;
+  strokes: DoodleStroke[];
+  tone: "own" | "remote";
+};
+
 export type RemoteCaret = {
   left: number;
   top: number;
@@ -50,6 +71,17 @@ type PageControls = {
   reportedIds: number[];
   onInkComplete: (entryId: string) => void;
   inkSpeed: number;
+  pad: PadControls | undefined;
+};
+
+type PadControls = {
+  disabled: boolean;
+  isEditable: boolean;
+  onStrokeStart: () => void;
+  onStrokeCancel: () => void;
+  onStroke: (stroke: DoodleStroke) => void;
+  onUndo: () => void;
+  onClear: () => void;
 };
 
 type NotebookPageProps = {
@@ -58,6 +90,9 @@ type NotebookPageProps = {
   settings: NotebookPageSettings;
   pitch: number;
   rows: RowView[];
+  doodles: DoodleView[];
+  pad: PadView | undefined;
+  doodle: SceneConfig["notebook"]["doodle"];
   remoteCaret: RemoteCaret | undefined;
   controls: PageControls | undefined;
 };
@@ -106,20 +141,142 @@ export function NotebookPage(props: NotebookPageProps) {
   const ruleCount = Math.round(
     (settings.height - settings.marginTop - settings.marginBottom) / pitch
   );
+  const { pad } = props;
+  const isPadEditable = props.controls?.pad?.isEditable ?? false;
+  const textWidthPx = settings.width - settings.marginX * 2;
 
   return (
     <div
       className="absolute inset-0 overflow-hidden bg-[var(--lm-paper)]"
       style={{ borderRadius, boxShadow: shading }}
     >
-      {Array.from({ length: ruleCount }, (_, index) => (
-        <span
-          key={index}
-          aria-hidden
-          className="absolute inset-x-0 h-px bg-[var(--lm-paper-rule)]"
-          style={{ top: settings.marginTop + (index + 1) * pitch - 1 }}
-        />
+      {Array.from({ length: ruleCount }, (_, index) =>
+        pad !== undefined &&
+        index >= pad.row &&
+        index < pad.row + pad.rowCount - 1 ? null : (
+          <span
+            key={index}
+            aria-hidden
+            className="absolute inset-x-0 h-px bg-[var(--lm-paper-rule)]"
+            style={{ top: settings.marginTop + (index + 1) * pitch - 1 }}
+          />
+        )
+      )}
+      {props.doodles.map((doodle) => (
+        <div
+          key={doodle.entryId}
+          className="absolute"
+          style={{
+            top: settings.marginTop + doodle.row * pitch,
+            left: settings.marginX,
+            width: textWidthPx,
+            height: doodle.rowCount * pitch,
+          }}
+          onPointerEnter={() => setHoveredEntryId(doodle.entryId)}
+          onPointerLeave={() =>
+            setHoveredEntryId((current) =>
+              current === doodle.entryId ? undefined : current
+            )
+          }
+        >
+          <DoodleInk
+            strokes={doodle.strokes}
+            strokeWidthPx={props.doodle.strokeWidthPx}
+            ink={doodle.ink}
+            speed={props.doodle.replaySpeed}
+            opacity={1}
+            onComplete={() => props.controls?.onInkComplete(doodle.entryId)}
+          />
+        </div>
       ))}
+      {pad !== undefined && (
+        <>
+          <div
+            className="absolute"
+            style={{
+              top: settings.marginTop + pad.row * pitch,
+              left: settings.marginX,
+              width: textWidthPx,
+              height: pad.rowCount * pitch,
+            }}
+          >
+            <span
+              aria-hidden
+              className="pointer-events-none absolute rounded-[6px] border border-dashed border-[var(--lm-paper-rule)]"
+              style={{
+                inset: `${props.doodle.padInsetPx}px -${props.doodle.padInsetPx}px`,
+              }}
+            />
+            <DoodleInk
+              strokes={pad.strokes}
+              strokeWidthPx={props.doodle.strokeWidthPx}
+              ink="plain"
+              speed={props.doodle.replaySpeed}
+              opacity={pad.tone === "remote" ? 0.45 : 1}
+              onComplete={undefined}
+            />
+            {pad.tone === "own" && props.controls?.pad !== undefined && (
+              <DoodlePad
+                label={copy.notebook.padLabel}
+                widthPx={textWidthPx}
+                heightPx={pad.rowCount * pitch}
+                strokeWidthPx={props.doodle.strokeWidthPx}
+                smoothing={props.doodle.smoothing}
+                simplifyPx={props.doodle.simplifyPx}
+                disabled={props.controls.pad.disabled}
+                onStrokeStart={props.controls.pad.onStrokeStart}
+                onStrokeCancel={props.controls.pad.onStrokeCancel}
+                onStroke={props.controls.pad.onStroke}
+              />
+            )}
+          </div>
+          <div
+            className="absolute flex items-center justify-between text-[var(--lm-ink-pen)]"
+            style={{
+              top: settings.marginTop + (pad.row + pad.rowCount) * pitch,
+              left: settings.marginX,
+              right: settings.marginX,
+              height: pitch,
+              fontSize: NOTEBOOK_PAGE_METRICS.metaFontPx,
+            }}
+          >
+            <span className="opacity-45">
+              {pad.tone === "own"
+                ? copy.notebook.drawingNow
+                : copy.notebook.someoneDrawingNow}
+            </span>
+            {pad.tone === "own" && props.controls?.pad !== undefined && (
+              <span className="flex items-center gap-x-1">
+                {(
+                  [
+                    {
+                      label: copy.notebook.undo,
+                      onClick: props.controls.pad.onUndo,
+                    },
+                    {
+                      label: copy.notebook.clear,
+                      onClick: props.controls.pad.onClear,
+                    },
+                  ] satisfies { label: string; onClick: () => void }[]
+                ).map((action) => (
+                  <button
+                    key={action.label}
+                    type="button"
+                    disabled={pad.strokes.length === 0 || !isPadEditable}
+                    onClick={(event) => {
+                      event.stopPropagation();
+                      action.onClick();
+                    }}
+                    className="relative cursor-pointer px-1.5 opacity-45 outline-none after:absolute after:inset-x-0 after:-inset-y-2.5 after:content-[''] hover:opacity-80 focus-visible:opacity-80 disabled:cursor-default disabled:opacity-20"
+                  >
+                    {action.label}
+                  </button>
+                ))}
+              </span>
+            )}
+          </div>
+        </>
+      )}
       {props.rows.map((row) => (
         <PageRowLine
           key={row.key}

@@ -1,6 +1,13 @@
+import type { DoodleStroke } from "@/lib/laundromat/notebook/doodle-stroke";
+import { toStrokePath } from "@/lib/laundromat/notebook/to-stroke-path";
 import type { NotebookPage as NotebookPageSettings } from "@/lib/laundromat/scene-config";
 
-import type { PageContent, RowView } from "./notebook-page";
+import type {
+  DoodleView,
+  PadView,
+  PageContent,
+  RowView,
+} from "./notebook-page";
 import { NOTEBOOK_PAGE_METRICS } from "./notebook-page-metrics";
 
 export type PagePalette = {
@@ -14,7 +21,12 @@ export type PagePalette = {
   monoFont: string;
 };
 
-export type PageSpec = { content: PageContent; rows: RowView[] };
+export type PageSpec = {
+  content: PageContent;
+  rows: RowView[];
+  doodles: DoodleView[];
+  pad: PadView | undefined;
+};
 
 const SPINE_SHADOW_STEP_PX = 2;
 
@@ -64,6 +76,32 @@ function getBaselineY(options: {
   });
 }
 
+function paintStrokes(options: {
+  context: CanvasRenderingContext2D;
+  strokes: DoodleStroke[];
+  left: number;
+  top: number;
+  strokeWidthPx: number;
+}) {
+  const { context } = options;
+  context.save();
+  context.translate(options.left, options.top);
+  context.lineWidth = options.strokeWidthPx;
+  context.lineCap = "round";
+  context.lineJoin = "round";
+  for (const stroke of options.strokes) {
+    const [x, y] = stroke.points[0];
+    if (stroke.points.length === 1) {
+      context.beginPath();
+      context.arc(x, y, options.strokeWidthPx * 0.7, 0, Math.PI * 2);
+      context.fill();
+    } else {
+      context.stroke(new Path2D(toStrokePath(stroke.points)));
+    }
+  }
+  context.restore();
+}
+
 function paintSpineShadow(options: {
   context: CanvasRenderingContext2D;
   side: "left" | "right";
@@ -100,6 +138,7 @@ type PaintPageTextureOptions = {
   side: "left" | "right";
   settings: NotebookPageSettings;
   pitch: number;
+  strokeWidthPx: number;
   palette: PagePalette;
   devicePixelRatio: number;
   resolution: number;
@@ -113,6 +152,7 @@ export function paintPageTexture(options: PaintPageTextureOptions) {
     side,
     settings,
     pitch,
+    strokeWidthPx,
     palette,
     devicePixelRatio,
     resolution,
@@ -170,7 +210,16 @@ export function paintPageTexture(options: PaintPageTextureOptions) {
   const bodyHeight =
     settings.height - settings.marginTop - settings.marginBottom;
   const ruleCount = Math.round(bodyHeight / pitch);
+  const { pad } = page;
   for (let rule = 1; rule <= ruleCount; rule += 1) {
+    const row = rule - 1;
+    if (
+      pad !== undefined &&
+      row >= pad.row &&
+      row < pad.row + pad.rowCount - 1
+    ) {
+      continue;
+    }
     context.fillRect(
       0,
       snapToDevicePixel({
@@ -207,6 +256,30 @@ export function paintPageTexture(options: PaintPageTextureOptions) {
   }
   context.globalAlpha = 1;
   context.direction = "ltr";
+
+  context.strokeStyle = palette.inkPen;
+  context.fillStyle = palette.inkPen;
+  for (const doodle of page.doodles) {
+    if (doodle.ink === "waiting") continue;
+    paintStrokes({
+      context,
+      strokes: doodle.strokes,
+      left: settings.marginX,
+      top: settings.marginTop + doodle.row * pitch,
+      strokeWidthPx,
+    });
+  }
+  if (pad !== undefined) {
+    context.globalAlpha = pad.tone === "remote" ? 0.45 : 1;
+    paintStrokes({
+      context,
+      strokes: pad.strokes,
+      left: settings.marginX,
+      top: settings.marginTop + pad.row * pitch,
+      strokeWidthPx,
+    });
+    context.globalAlpha = 1;
+  }
 
   if (content.kind === "paper") {
     context.globalAlpha = 0.5;

@@ -319,6 +319,10 @@ export const ja = {
       board: "掲示板",
     },
     updates: {
+      "notebook-doodles": {
+        title: "ノートに絵を描けるように",
+        body: "ノートのペンを「書く」から「描く」に切り替えて、次の人へ小さな絵を残せます。コインランドリーでノートを開いている人には、絵がページに描かれていく様子が見えます。",
+      },
       "weather-anywhere": {
         title: "外の天気を選べるように",
         body: "設定で都市を選ぶと、その街の天気が窓とパネルに映ります。空を自分で選ぶこともできます。最初はライブの天気のままです。",
@@ -529,12 +533,27 @@ export const ja = {
     comeBackToWrite: "2分後にまた来て、もう1つ書いてね",
     startsNext: (o: { number: number }) =>
       `このメモからノート No. ${o.number} が始まる`,
+    writePrompt: "次の人へメモを書こう",
     writePromptBeforeKeys: "次の人へメモを書こう · ",
     writePromptAfterKeys: "で保存",
     textareaLabel: "ノートにメモを書く",
     notifyWhenFree: "空いたら知らせて",
     notifyPending: "空いたら知らせるね",
     saveNote: "メモを保存",
+    saveDoodle: "絵を保存",
+    penModeLabel: "ペン",
+    penModes: { write: "書く", draw: "描く" },
+    drawPrompt: "次の人へ絵を描こう",
+    doodleMoved: (o: { page: number }) =>
+      `このページは余白がない · ${o.page} ページに描く`,
+    doodleBookFull: "このノートには絵を描く余白がない · 代わりにメモを書いて",
+    inkFull: "もうインクの余白がない · 保存するか元に戻して",
+    someoneDrawingInNotebook: "誰かがノートに描いている · 順番を待って",
+    padLabel: "ノートの絵を描くスペース",
+    drawingNow: "描いている…",
+    someoneDrawingNow: "誰かが描いている…",
+    undo: "戻す",
+    clear: "消す",
     savingNote: "保存中…",
     close: "閉じる",
     freeNotificationTitle: "ノートが空いた",

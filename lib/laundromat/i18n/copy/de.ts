@@ -334,6 +334,10 @@ export const de = {
       board: "aushang",
     },
     updates: {
+      "notebook-doodles": {
+        title: "im Notizbuch zeichnen",
+        body: "Stell den Stift im Notizbuch von schreiben auf zeichnen und hinterlass eine kleine Zeichnung für die nächste Person. Alle im Waschsalon, die das Notizbuch offen haben, sehen zu, wie sie sich von selbst auf die Seite zeichnet.",
+      },
       "weather-anywhere": {
         title: "wähl das Wetter draußen",
         body: "In den Einstellungen kannst du eine Stadt wählen, deren Wetter du im Fenster und auf der Anzeige siehst, oder den Himmel selbst bestimmen. Standardmäßig bleibt es beim Live-Wetter.",
@@ -549,12 +553,29 @@ export const de = {
     comeBackToWrite: "komm in zwei Minuten wieder, um noch eine zu schreiben",
     startsNext: (o: { number: number }) =>
       `mit dieser Notiz beginnt Notizbuch Nr. ${o.number}`,
+    writePrompt: "schreib eine Notiz für die nächste Person",
     writePromptBeforeKeys: "schreib eine Notiz für die nächste Person · ",
     writePromptAfterKeys: " zum Speichern",
     textareaLabel: "Eine Notiz ins Notizbuch schreiben",
     notifyWhenFree: "sag mir, wenn es frei ist",
     notifyPending: "wir sagen dir Bescheid",
     saveNote: "Notiz speichern",
+    saveDoodle: "Zeichnung speichern",
+    penModeLabel: "Stift",
+    penModes: { write: "schreiben", draw: "zeichnen" },
+    drawPrompt: "zeichne etwas für die nächste Person",
+    doodleMoved: (o: { page: number }) =>
+      `kein Platz mehr auf dieser Seite · du zeichnest auf S. ${o.page}`,
+    doodleBookFull:
+      "kein Platz für eine Zeichnung in diesem Notizbuch · schreib lieber eine Notiz",
+    inkFull: "kein Platz mehr für Tinte · speichere oder mach etwas rückgängig",
+    someoneDrawingInNotebook:
+      "jemand zeichnet gerade ins Notizbuch · warte, bis du dran bist",
+    padLabel: "Zeichenfläche im Notizbuch",
+    drawingNow: "du zeichnest…",
+    someoneDrawingNow: "jemand zeichnet gerade…",
+    undo: "zurück",
+    clear: "löschen",
     savingNote: "wird gespeichert…",
     close: "schließen",
     freeNotificationTitle: "das Notizbuch ist frei",

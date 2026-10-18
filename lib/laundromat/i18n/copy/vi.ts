@@ -324,6 +324,10 @@ export const vi = {
       board: "bảng tin",
     },
     updates: {
+      "notebook-doodles": {
+        title: "vẽ vào sổ",
+        body: "Chuyển bút của sổ từ viết sang vẽ và để lại một hình vẽ nhỏ cho người đến sau. Bất kỳ ai trong tiệm giặt đang mở sổ đều thấy hình vẽ tự hiện dần trên trang.",
+      },
       "weather-anywhere": {
         title: "chọn thời tiết bên ngoài",
         body: "Trong cài đặt, chọn một thành phố để xem thời tiết ở đó qua cửa sổ và trên bảng, hoặc tự chọn bầu trời. Mặc định vẫn là thời tiết trực tiếp.",
@@ -532,12 +536,27 @@ export const vi = {
     comeBackToWrite: "hai phút nữa quay lại để viết thêm một lời nhắn nhé",
     startsNext: (o: { number: number }) =>
       `lời nhắn này mở đầu sổ số ${o.number}`,
+    writePrompt: "viết một lời nhắn cho người đến sau",
     writePromptBeforeKeys: "viết một lời nhắn cho người đến sau · ",
     writePromptAfterKeys: " để lưu",
     textareaLabel: "Viết lời nhắn vào sổ",
     notifyWhenFree: "báo mình khi đến lượt",
     notifyPending: "sẽ báo bạn",
     saveNote: "lưu lời nhắn",
+    saveDoodle: "lưu hình vẽ",
+    penModeLabel: "Bút",
+    penModes: { write: "viết", draw: "vẽ" },
+    drawPrompt: "vẽ gì đó cho người đến sau",
+    doodleMoved: (o: { page: number }) =>
+      `trang này hết chỗ · đang vẽ ở tr. ${o.page}`,
+    doodleBookFull: "sổ này không còn chỗ để vẽ · viết lời nhắn thay nhé",
+    inkFull: "hết chỗ cho mực · lưu lại hoặc hoàn tác",
+    someoneDrawingInNotebook: "có người đang vẽ vào sổ · chờ đến lượt bạn",
+    padLabel: "Chỗ vẽ trong sổ",
+    drawingNow: "đang vẽ…",
+    someoneDrawingNow: "có người đang vẽ…",
+    undo: "hoàn tác",
+    clear: "xóa",
     savingNote: "đang lưu…",
     close: "đóng",
     freeNotificationTitle: "cuốn sổ đã rảnh",

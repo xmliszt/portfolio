@@ -332,6 +332,10 @@ export const es = {
       board: "tablón",
     },
     updates: {
+      "notebook-doodles": {
+        title: "dibuja en el cuaderno",
+        body: "Cambia la pluma del cuaderno de escribir a dibujar y deja un pequeño dibujo para quien llegue después. Cualquiera en la lavandería con el cuaderno abierto ve cómo se dibuja solo en la página.",
+      },
       "weather-anywhere": {
         title: "elige el tiempo de afuera",
         body: "En los ajustes, elige una ciudad para ver su tiempo por la ventana y en el panel, o elige tú el cielo. Por defecto sigue siendo el tiempo en vivo.",
@@ -548,12 +552,29 @@ export const es = {
     comeBackToWrite: "vuelve en dos minutos para escribir otra",
     startsNext: (o: { number: number }) =>
       `esta nota abre el cuaderno n.º ${o.number}`,
+    writePrompt: "escribe una nota para la próxima persona",
     writePromptBeforeKeys: "escribe una nota para la próxima persona · ",
     writePromptAfterKeys: " para guardarla",
     textareaLabel: "Escribir una nota en el cuaderno",
     notifyWhenFree: "avísame cuando esté libre",
     notifyPending: "te avisaremos",
     saveNote: "guardar mi nota",
+    saveDoodle: "guardar mi dibujo",
+    penModeLabel: "Pluma",
+    penModes: { write: "escribir", draw: "dibujar" },
+    drawPrompt: "dibuja algo para la próxima persona",
+    doodleMoved: (o: { page: number }) =>
+      `no queda espacio en esta página · dibujando en la p. ${o.page}`,
+    doodleBookFull:
+      "no hay espacio para un dibujo en este cuaderno · mejor escribe una nota",
+    inkFull: "no queda espacio para más tinta · guárdalo o deshaz",
+    someoneDrawingInNotebook:
+      "alguien está dibujando en el cuaderno · espera tu turno",
+    padLabel: "Espacio para dibujar en el cuaderno",
+    drawingNow: "dibujando…",
+    someoneDrawingNow: "alguien está dibujando…",
+    undo: "deshacer",
+    clear: "borrar",
     savingNote: "guardando…",
     close: "cerrar",
     freeNotificationTitle: "el cuaderno está libre",

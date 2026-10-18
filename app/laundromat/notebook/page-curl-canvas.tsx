@@ -98,6 +98,7 @@ type PageCurlCanvasProps = {
   progress: MotionValue<number>;
   settings: NotebookPageSettings;
   pitch: number;
+  strokeWidthPx: number;
   curlStrength: number;
   onUnsupported: () => void;
 };
@@ -179,8 +180,15 @@ function createCurlScene(options: {
 export function PageCurlCanvas(props: PageCurlCanvasProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const sceneRef = useRef<CurlScene>(undefined);
-  const { settings, pitch, curlStrength, progress, turn, onUnsupported } =
-    props;
+  const {
+    settings,
+    pitch,
+    strokeWidthPx,
+    curlStrength,
+    progress,
+    turn,
+    onUnsupported,
+  } = props;
   const padding = Math.round(settings.height * LIFT_PADDING_RATIO);
   const width = settings.width * 2;
   const height = settings.height + padding * 2;
@@ -225,6 +233,7 @@ export function PageCurlCanvas(props: PageCurlCanvasProps) {
       side: "right",
       settings,
       pitch,
+      strokeWidthPx,
       palette,
       devicePixelRatio,
       resolution,
@@ -235,6 +244,7 @@ export function PageCurlCanvas(props: PageCurlCanvasProps) {
       side: "left",
       settings,
       pitch,
+      strokeWidthPx,
       palette,
       devicePixelRatio,
       resolution,
@@ -257,7 +267,16 @@ export function PageCurlCanvas(props: PageCurlCanvasProps) {
       unsubscribe();
       renderer.gl.clear(renderer.gl.COLOR_BUFFER_BIT);
     };
-  }, [turn, progress, settings, pitch, curlStrength, width, height]);
+  }, [
+    turn,
+    progress,
+    settings,
+    pitch,
+    strokeWidthPx,
+    curlStrength,
+    width,
+    height,
+  ]);
 
   return (
     <canvas
