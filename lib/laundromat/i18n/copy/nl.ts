@@ -306,6 +306,8 @@ export const nl = {
     copied: "foto gekopieerd",
     copyFailed: "de foto kon hier niet worden gekopieerd",
     shareOn: (o: { platform: string }) => `Delen op ${o.platform}`,
+    share: "delen",
+    shareLabel: "Foto delen",
     more: "meer",
     moreLabel: "Meer manieren om te delen",
     shareText: "gekiekt bij laundro.cafe",

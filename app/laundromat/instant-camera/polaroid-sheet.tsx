@@ -207,7 +207,7 @@ export function PolaroidSheet(props: PolaroidSheetProps) {
       type: "image/png",
     });
     navigator
-      .share({ files: [file], text: shareText() })
+      .share({ files: [file] })
       .catch((error: unknown) => {
         if (error instanceof DOMException && error.name === "AbortError") {
           return;
@@ -425,35 +425,12 @@ export function PolaroidSheet(props: PolaroidSheetProps) {
           </div>
         </motion.div>
 
-        <div className="flex max-w-[30rem] flex-wrap justify-center gap-x-1.5 gap-y-1.5">
-          {SHARE_TARGETS.map((target) => (
-            <button
-              key={target.id}
-              type="button"
-              aria-label={text.shareOn({ platform: target.label })}
-              disabled={isShareDisabled}
-              className={SHARE_BUTTON_CLASS}
-              onClick={() => handleTarget({ id: target.id })}
-            >
-              <svg
-                aria-hidden
-                viewBox="0 0 24 24"
-                className="size-[19px] fill-current"
-              >
-                <path d={SHARE_TARGET_ICON_PATHS[target.id]} />
-              </svg>
-              <span className={SHARE_TIP_CLASS}>{target.label}</span>
-            </button>
-          ))}
-          <span
-            aria-hidden
-            className="h-[18px] w-px self-center bg-[var(--lm-line)]"
-          />
+        {canShareFiles ? (
           <button
             type="button"
-            aria-label={text.moreLabel}
+            aria-label={text.shareLabel}
             disabled={isShareDisabled}
-            className={SHARE_BUTTON_CLASS}
+            className="flex h-11 cursor-pointer items-center gap-x-2.5 rounded-full border border-[var(--lm-line)] bg-transparent px-5 text-[12px] text-[var(--lm-ink-hi)] lowercase outline-none focus-visible:outline-1 focus-visible:outline-offset-2 focus-visible:outline-[var(--lm-ink)] focus-visible:outline-dashed disabled:cursor-default disabled:opacity-40"
             onClick={handleMore}
           >
             <svg
@@ -466,9 +443,54 @@ export function PolaroidSheet(props: PolaroidSheetProps) {
             >
               <path d="M12 3v12M7.5 7.5L12 3l4.5 4.5M5 12v8h14v-8" />
             </svg>
-            <span className={SHARE_TIP_CLASS}>{text.more}</span>
+            {text.share}
           </button>
-        </div>
+        ) : (
+          <div className="flex max-w-[30rem] flex-wrap justify-center gap-x-1.5 gap-y-1.5">
+            {SHARE_TARGETS.map((target) => (
+              <button
+                key={target.id}
+                type="button"
+                aria-label={text.shareOn({ platform: target.label })}
+                disabled={isShareDisabled}
+                className={SHARE_BUTTON_CLASS}
+                onClick={() => handleTarget({ id: target.id })}
+              >
+                <svg
+                  aria-hidden
+                  viewBox="0 0 24 24"
+                  className="size-[19px] fill-current"
+                >
+                  <path d={SHARE_TARGET_ICON_PATHS[target.id]} />
+                </svg>
+                <span className={SHARE_TIP_CLASS}>{target.label}</span>
+              </button>
+            ))}
+            <span
+              aria-hidden
+              className="h-[18px] w-px self-center bg-[var(--lm-line)]"
+            />
+            <button
+              type="button"
+              aria-label={text.moreLabel}
+              disabled={isShareDisabled}
+              className={SHARE_BUTTON_CLASS}
+              onClick={handleMore}
+            >
+              <svg
+                aria-hidden
+                viewBox="0 0 24 24"
+                className="size-[19px] fill-none stroke-current"
+                strokeWidth={1.4}
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <path d="M12 3v12M7.5 7.5L12 3l4.5 4.5M5 12v8h14v-8" />
+              </svg>
+              <span className={SHARE_TIP_CLASS}>{text.more}</span>
+            </button>
+          </div>
+        )}
 
         {isAskingMastodon && (
           <form

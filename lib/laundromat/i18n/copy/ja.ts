@@ -324,6 +324,8 @@ export const ja = {
     copied: "写真をコピーした",
     copyFailed: "ここでは写真をコピーできなかった",
     shareOn: (o: { platform: string }) => `${o.platform} でシェア`,
+    share: "シェア",
+    shareLabel: "写真をシェア",
     more: "その他",
     moreLabel: "ほかのシェア方法",
     shareText: "laundro.cafe で撮った",

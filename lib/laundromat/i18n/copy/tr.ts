@@ -300,6 +300,8 @@ export const tr = {
     copied: "fotoğraf kopyalandı",
     copyFailed: "fotoğraf burada kopyalanamadı",
     shareOn: (o: { platform: string }) => `${o.platform} üzerinden paylaş`,
+    share: "paylaş",
+    shareLabel: "Fotoğrafı paylaş",
     more: "daha fazla",
     moreLabel: "Diğer paylaşım yolları",
     shareText: "laundro.cafe'de çekildi",

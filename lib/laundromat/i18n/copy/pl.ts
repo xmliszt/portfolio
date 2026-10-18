@@ -313,6 +313,8 @@ export const pl = {
     copied: "skopiowano zdjęcie",
     copyFailed: "nie udało się tu skopiować zdjęcia",
     shareOn: (o: { platform: string }) => `Udostępnij w serwisie ${o.platform}`,
+    share: "udostępnij",
+    shareLabel: "Udostępnij zdjęcie",
     more: "więcej",
     moreLabel: "Więcej sposobów udostępniania",
     shareText: "zrobione w laundro.cafe",

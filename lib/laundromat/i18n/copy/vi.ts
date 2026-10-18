@@ -328,6 +328,8 @@ export const vi = {
     copied: "đã sao chép ảnh",
     copyFailed: "không sao chép được ảnh ở đây",
     shareOn: (o: { platform: string }) => `Chia sẻ lên ${o.platform}`,
+    share: "chia sẻ",
+    shareLabel: "Chia sẻ ảnh",
     more: "thêm",
     moreLabel: "Các cách chia sẻ khác",
     shareText: "chụp tại laundro.cafe",

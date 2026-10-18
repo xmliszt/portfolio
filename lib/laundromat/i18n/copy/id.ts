@@ -340,6 +340,8 @@ export const id = {
     copied: "foto disalin",
     copyFailed: "foto tidak bisa disalin di sini",
     shareOn: (o: { platform: string }) => `Bagikan ke ${o.platform}`,
+    share: "bagikan",
+    shareLabel: "Bagikan foto",
     more: "lainnya",
     moreLabel: "Cara lain untuk berbagi",
     shareText: "dipotret di laundro.cafe",

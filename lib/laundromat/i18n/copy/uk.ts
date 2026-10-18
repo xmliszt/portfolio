@@ -314,6 +314,8 @@ export const uk = {
     copied: "знімок скопійовано",
     copyFailed: "тут не вдалося скопіювати знімок",
     shareOn: (o: { platform: string }) => `Поділитися в ${o.platform}`,
+    share: "поділитися",
+    shareLabel: "Поділитися фото",
     more: "ще",
     moreLabel: "Інші способи поділитися",
     shareText: "знято в laundro.cafe",

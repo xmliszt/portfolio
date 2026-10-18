@@ -320,6 +320,8 @@ export const ru = {
     copied: "снимок скопирован",
     copyFailed: "здесь не получилось скопировать снимок",
     shareOn: (o: { platform: string }) => `Поделиться в ${o.platform}`,
+    share: "поделиться",
+    shareLabel: "Поделиться фото",
     more: "ещё",
     moreLabel: "Другие способы поделиться",
     shareText: "снято в laundro.cafe",

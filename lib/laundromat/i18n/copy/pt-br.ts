@@ -336,6 +336,8 @@ export const ptBR = {
     copied: "foto copiada",
     copyFailed: "não deu para copiar a foto aqui",
     shareOn: (o: { platform: string }) => `Compartilhar no ${o.platform}`,
+    share: "compartilhar",
+    shareLabel: "Compartilhar a foto",
     more: "mais",
     moreLabel: "Mais formas de compartilhar",
     shareText: "clicado no laundro.cafe",

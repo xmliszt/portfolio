@@ -304,6 +304,8 @@ export const zhHant = {
     copied: "照片已複製",
     copyFailed: "這裡無法複製照片",
     shareOn: (o: { platform: string }) => `分享到 ${o.platform}`,
+    share: "分享",
+    shareLabel: "分享照片",
     more: "更多",
     moreLabel: "更多分享方式",
     shareText: "拍攝於 laundro.cafe",

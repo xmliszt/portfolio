@@ -320,6 +320,8 @@ export const ko = {
     copied: "사진 복사됨",
     copyFailed: "여기서는 사진을 복사할 수 없어요",
     shareOn: (o: { platform: string }) => `${o.platform}에 공유`,
+    share: "공유",
+    shareLabel: "사진 공유",
     more: "더 보기",
     moreLabel: "다른 공유 방법",
     shareText: "laundro.cafe에서 찍음",

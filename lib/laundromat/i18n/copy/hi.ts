@@ -334,6 +334,8 @@ export const hi = {
     copied: "फ़ोटो कॉपी हो गई",
     copyFailed: "फ़ोटो यहाँ कॉपी नहीं हो सकी",
     shareOn: (o: { platform: string }) => `${o.platform} पर शेयर करें`,
+    share: "शेयर करें",
+    shareLabel: "फ़ोटो शेयर करें",
     more: "और",
     moreLabel: "शेयर करने के और तरीके",
     shareText: "laundro.cafe पर खींची गई",

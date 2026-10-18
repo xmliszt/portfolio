@@ -340,6 +340,8 @@ export const fr = {
     copied: "photo copiée",
     copyFailed: "impossible de copier la photo ici",
     shareOn: (o: { platform: string }) => `Partager sur ${o.platform}`,
+    share: "partager",
+    shareLabel: "Partager la photo",
     more: "plus",
     moreLabel: "Autres façons de partager",
     shareText: "photo prise à laundro.cafe",
