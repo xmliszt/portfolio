@@ -9,4 +9,5 @@ export const INSTANT_CAMERA = {
   developMs: { full: 3200, lite: 400 },
   tiltDeg: { min: 0.8, max: 2.5 },
   printFileName: "laundro-cafe.png",
+  sharedFileName: "laundro-cafe.jpg",
 } as const;

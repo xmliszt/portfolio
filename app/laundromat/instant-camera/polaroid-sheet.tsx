@@ -21,6 +21,7 @@ import { detectScript } from "@/lib/laundromat/notebook/detect-script";
 import { cn } from "@/lib/utils";
 
 import { canShareImageFiles } from "./can-share-image-files";
+import { convertToJpeg } from "./convert-to-jpeg";
 import { copyImageToClipboard } from "./copy-image-to-clipboard";
 import { renderPolaroidBlob } from "./render-polaroid-blob";
 import { saveBlobAsFile } from "./save-blob-as-file";
@@ -151,18 +152,20 @@ export function PolaroidSheet(props: PolaroidSheetProps) {
       },
     });
     printRef.current = { note: printedNote, blob };
-    blob.then(
-      (ready) => {
-        if (printRef.current?.blob === blob) {
-          setReadyPrint({ note: printedNote, blob: ready });
+    blob
+      .then((png) => (canShareFiles ? convertToJpeg(png) : png))
+      .then(
+        (ready) => {
+          if (printRef.current?.blob === blob) {
+            setReadyPrint({ note: printedNote, blob: ready });
+          }
+        },
+        () => {
+          if (printRef.current?.blob !== blob) return;
+          printRef.current = undefined;
+          setFailedNote(printedNote);
         }
-      },
-      () => {
-        if (printRef.current?.blob !== blob) return;
-        printRef.current = undefined;
-        setFailedNote(printedNote);
-      }
-    );
+      );
     return blob;
   }
 
@@ -231,8 +234,8 @@ export function PolaroidSheet(props: PolaroidSheetProps) {
   function shareThroughSheet() {
     if (!canShareFiles) return false;
     if (readyPrint?.note !== note) return failedNote !== note;
-    const file = new File([readyPrint.blob], INSTANT_CAMERA.printFileName, {
-      type: "image/png",
+    const file = new File([readyPrint.blob], INSTANT_CAMERA.sharedFileName, {
+      type: readyPrint.blob.type,
     });
     navigator.share({ files: [file] }).catch((error: unknown) => {
       if (error instanceof DOMException && error.name === "AbortError") {
@@ -410,6 +413,7 @@ export function PolaroidSheet(props: PolaroidSheetProps) {
           <div
             className="relative flex flex-col justify-between"
             style={{
+              width: metrics.photoWidth,
               height: metrics.bottom,
               padding: `${metrics.noteTop}px 2px ${metrics.stampBottom}px`,
             }}
