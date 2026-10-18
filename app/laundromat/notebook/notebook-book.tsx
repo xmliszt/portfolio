@@ -1624,7 +1624,7 @@ export function NotebookBook(props: NotebookBookProps) {
 @keyframes lm-riffle-forward { from { transform: rotateY(0deg); } to { transform: rotateY(-180deg); } }
 @keyframes lm-riffle-back { from { transform: rotateY(-180deg); } to { transform: rotateY(0deg); } }
 @keyframes lm-caret { 50% { opacity: 0; } }
-@keyframes lm-doodle-ink { to { stroke-dashoffset: 0; } }
+@keyframes lm-doodle-ink { from { opacity: 1; } to { stroke-dashoffset: 0; opacity: 1; } }
 @keyframes lm-doodle-dot { to { opacity: 1; } }
 `}</style>
       {isWritable && (
