@@ -76,6 +76,7 @@ import { CURL_REST_PROGRESS, PageCurlCanvas } from "./page-curl-canvas";
 import { PageLeaf } from "./page-leaf";
 import { PageScrubber } from "./page-scrubber";
 import type { PageSpec } from "./paint-page-texture";
+import { ReportEntryDialog } from "./report-entry-dialog";
 import { ShortcutHint } from "./shortcut-hint";
 import { useBookTurns } from "./use-book-turns";
 import { useIsNarrowScreen } from "./use-is-narrow-screen";
@@ -237,6 +238,7 @@ export function NotebookBook(props: NotebookBookProps) {
   const [isLeaving, setIsLeaving] = useState(false);
   const [ink, setInk] = useState<{ entryId: string; line: number }>();
   const [reportedIds, setReportedIds] = useState<number[]>([]);
+  const [reportingEntryId, setReportingEntryId] = useState<number>();
   const [isJumping, setIsJumping] = useState(false);
   const [isCurlUnsupported, setIsCurlUnsupported] = useState(false);
   const curlMode = props.pageCurl && !isCurlUnsupported ? "webgl" : "css";
@@ -1211,9 +1213,13 @@ export function NotebookBook(props: NotebookBookProps) {
     [stored]
   );
 
-  async function handleReport(entryId: number) {
-    setReportedIds((ids) => [...ids, entryId]);
-    await reportNotebookEntry(entryId).catch(() => ({ kind: "offline" }));
+  async function handleReport(options: {
+    entryId: number;
+    reason: string | undefined;
+  }) {
+    setReportingEntryId(undefined);
+    setReportedIds((ids) => [...ids, options.entryId]);
+    await reportNotebookEntry(options).catch(() => ({ kind: "offline" }));
   }
 
   function readSelection(textarea: HTMLTextAreaElement) {
@@ -1273,7 +1279,7 @@ export function NotebookBook(props: NotebookBookProps) {
   const isIdle = phase === "open" && turn === undefined;
   const pageControls = {
     onNumber: isIdle ? () => setIsJumping(true) : undefined,
-    onReport: (entryId: number) => void handleReport(entryId),
+    onReport: (entryId: number) => setReportingEntryId(entryId),
     reportedIds,
     onInkComplete: handleInkComplete,
     inkSpeed: details.inkSpeed,
@@ -1762,6 +1768,14 @@ export function NotebookBook(props: NotebookBookProps) {
           </div>
         )}
       </div>
+      {reportingEntryId !== undefined && (
+        <ReportEntryDialog
+          onCancel={() => setReportingEntryId(undefined)}
+          onConfirm={(reason) =>
+            void handleReport({ entryId: reportingEntryId, reason })
+          }
+        />
+      )}
       {isNarrowScreen && isLifted && (
         <NotebookPhoneBar
           status={statusMessage ?? copy.notebook.writePrompt}

@@ -608,6 +608,14 @@ export const id = {
       `Nomor halaman, 1 sampai ${o.pageCount}`,
     report: "laporkan",
     reported: "dilaporkan",
+    reportDialog: {
+      title: "Laporkan catatan ini?",
+      body: "Laporan membantu buku catatan tetap jadi tempat yang ramah.",
+      reasonLabel: "alasan (opsional)",
+      reasonPlaceholder: "apa yang salah dengan catatan ini?",
+      cancel: "batal",
+      confirm: "laporkan",
+    },
     opening: "membuka buku catatan…",
     missing: (o: { number: number }) =>
       `tidak ada buku catatan No. ${o.number}`,

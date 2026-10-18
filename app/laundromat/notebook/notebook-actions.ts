@@ -8,6 +8,7 @@ import { getDoodleArea } from "@/lib/laundromat/notebook/get-doodle-area";
 import { getDoodleLineCount } from "@/lib/laundromat/notebook/get-doodle-line-count";
 import { maskProfanity } from "@/lib/laundromat/notebook/mask-profanity";
 import { parseDoodleDrawing } from "@/lib/laundromat/notebook/parse-doodle-drawing";
+import { REPORT_REASON_MAX_CHARS } from "@/lib/laundromat/notebook/report-reason-max-chars";
 import { sceneConfig } from "@/lib/laundromat/scene-config";
 import { appendDoodle } from "@/lib/laundromat/supabase/append-doodle";
 import { appendEntry } from "@/lib/laundromat/supabase/append-entry";
@@ -296,17 +297,23 @@ export async function leaveDoodle(
   }
 }
 
-/** Record the visitor's report of entry `entryId`; does nothing when the database or the visitor secret is not configured. */
-export async function reportNotebookEntry(
-  entryId: number
-): Promise<ReportEntryResult> {
+/** Record the visitor's report of entry `entryId` with the first `REPORT_REASON_MAX_CHARS` characters of `reason`; does nothing when the database or the visitor secret is not configured. */
+export async function reportNotebookEntry(options: {
+  entryId: number;
+  reason: string | undefined;
+}): Promise<ReportEntryResult> {
+  const { entryId } = options;
+  const reason =
+    options.reason === undefined
+      ? undefined
+      : [...options.reason].slice(0, REPORT_REASON_MAX_CHARS).join("");
   if ((await readFakeNotebooks()) !== undefined) return { kind: "reported" };
   const client = createLaundromatServiceClient();
   const secret = process.env.LAUNDROMAT_VISITOR_SECRET;
   if (client === undefined || !secret) return { kind: "offline" };
   try {
     const visitorId = await readOrCreateVisitorId(secret);
-    await reportEntry({ client, entryId, visitorId, reason: undefined });
+    await reportEntry({ client, entryId, visitorId, reason });
     return { kind: "reported" };
   } catch {
     return { kind: "offline" };

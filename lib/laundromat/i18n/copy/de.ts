@@ -612,6 +612,14 @@ export const de = {
       `Seitenzahl, 1 bis ${o.pageCount}`,
     report: "melden",
     reported: "gemeldet",
+    reportDialog: {
+      title: "Diese Notiz melden?",
+      body: "Meldungen helfen, das Notizbuch freundlich zu halten.",
+      reasonLabel: "Grund (optional)",
+      reasonPlaceholder: "was stimmt damit nicht?",
+      cancel: "abbrechen",
+      confirm: "melden",
+    },
     opening: "Notizbuch wird geöffnet…",
     missing: (o: { number: number }) =>
       `es gibt kein Notizbuch Nr. ${o.number}`,

@@ -604,6 +604,14 @@ export const hi = {
       `पेज नंबर, 1 से ${o.pageCount}`,
     report: "रिपोर्ट करो",
     reported: "रिपोर्ट हो गया",
+    reportDialog: {
+      title: "यह नोट रिपोर्ट करो?",
+      body: "रिपोर्ट से नोटबुक एक प्यारी जगह बनी रहती है।",
+      reasonLabel: "वजह (ज़रूरी नहीं)",
+      reasonPlaceholder: "इसमें क्या गड़बड़ है?",
+      cancel: "रद्द करो",
+      confirm: "रिपोर्ट करो",
+    },
     opening: "नोटबुक खुल रही है…",
     missing: (o: { number: number }) => `नोटबुक नं. ${o.number} नहीं है`,
     full: (o: { number: number }) =>

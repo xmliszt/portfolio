@@ -588,6 +588,14 @@ export const ko = {
       `쪽 번호, 1부터 ${o.pageCount}까지`,
     report: "신고",
     reported: "신고됨",
+    reportDialog: {
+      title: "이 메모를 신고할까요?",
+      body: "신고는 노트를 다정한 곳으로 지키는 데 도움이 돼요.",
+      reasonLabel: "이유 (선택)",
+      reasonPlaceholder: "어떤 점이 문제인가요?",
+      cancel: "취소",
+      confirm: "신고",
+    },
     opening: "노트를 여는 중…",
     missing: (o: { number: number }) => `노트 제${o.number}권은 없어`,
     full: (o: { number: number }) =>

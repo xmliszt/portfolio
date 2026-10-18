@@ -605,6 +605,14 @@ export const ptBR = {
       `Número da página, de 1 a ${o.pageCount}`,
     report: "denunciar",
     reported: "denunciado",
+    reportDialog: {
+      title: "Denunciar este recado?",
+      body: "As denúncias ajudam a manter o caderno um lugar gentil.",
+      reasonLabel: "motivo (opcional)",
+      reasonPlaceholder: "o que há de errado com ele?",
+      cancel: "cancelar",
+      confirm: "denunciar",
+    },
     opening: "abrindo o caderno…",
     missing: (o: { number: number }) => `não existe caderno nº ${o.number}`,
     full: (o: { number: number }) =>

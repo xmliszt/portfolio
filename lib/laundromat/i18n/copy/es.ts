@@ -609,6 +609,14 @@ export const es = {
       `Número de página, del 1 al ${o.pageCount}`,
     report: "denunciar",
     reported: "denunciada",
+    reportDialog: {
+      title: "¿Denunciar esta nota?",
+      body: "Las denuncias ayudan a que el cuaderno siga siendo un lugar amable.",
+      reasonLabel: "motivo (opcional)",
+      reasonPlaceholder: "¿qué tiene de malo?",
+      cancel: "cancelar",
+      confirm: "denunciar",
+    },
     opening: "abriendo el cuaderno…",
     missing: (o: { number: number }) => `no existe el cuaderno n.º ${o.number}`,
     full: (o: { number: number }) =>

@@ -613,6 +613,14 @@ export const it = {
       `Numero di pagina, da 1 a ${o.pageCount}`,
     report: "segnala",
     reported: "segnalato",
+    reportDialog: {
+      title: "Segnalare questo biglietto?",
+      body: "Le segnalazioni aiutano a mantenere il quaderno un posto gentile.",
+      reasonLabel: "motivo (facoltativo)",
+      reasonPlaceholder: "cosa c'è che non va?",
+      cancel: "annulla",
+      confirm: "segnala",
+    },
     opening: "apro il quaderno…",
     missing: (o: { number: number }) => `non esiste il quaderno n. ${o.number}`,
     full: (o: { number: number }) =>

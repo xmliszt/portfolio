@@ -615,6 +615,14 @@ export const fr = {
       `Numéro de page, de 1 à ${o.pageCount}`,
     report: "signaler",
     reported: "signalé",
+    reportDialog: {
+      title: "Signaler ce mot ?",
+      body: "Les signalements aident à garder le carnet bienveillant.",
+      reasonLabel: "motif (facultatif)",
+      reasonPlaceholder: "qu'est-ce qui ne va pas ?",
+      cancel: "annuler",
+      confirm: "signaler",
+    },
     opening: "ouverture du carnet…",
     missing: (o: { number: number }) => `il n'y a pas de carnet nº ${o.number}`,
     full: (o: { number: number }) =>

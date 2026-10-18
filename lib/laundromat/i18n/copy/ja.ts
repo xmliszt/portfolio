@@ -591,6 +591,14 @@ export const ja = {
       `ページ番号、1〜${o.pageCount}`,
     report: "報告",
     reported: "報告済み",
+    reportDialog: {
+      title: "このメモを報告しますか？",
+      body: "報告があると、ノートをやさしい場所に保てます。",
+      reasonLabel: "理由（任意）",
+      reasonPlaceholder: "どこが問題？",
+      cancel: "キャンセル",
+      confirm: "報告",
+    },
     opening: "ノートを開いている…",
     missing: (o: { number: number }) => `ノート No. ${o.number} はない`,
     full: (o: { number: number }) =>

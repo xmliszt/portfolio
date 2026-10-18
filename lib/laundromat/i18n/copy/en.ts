@@ -604,6 +604,14 @@ export const en = {
       `Page number, 1 to ${o.pageCount}`,
     report: "report",
     reported: "reported",
+    reportDialog: {
+      title: "Report this note?",
+      body: "Reports help keep the notebook a kind place.",
+      reasonLabel: "reason (optional)",
+      reasonPlaceholder: "what's wrong with it?",
+      cancel: "cancel",
+      confirm: "report",
+    },
     opening: "opening the notebook…",
     missing: (o: { number: number }) => `there is no notebook No. ${o.number}`,
     full: (o: { number: number }) =>
