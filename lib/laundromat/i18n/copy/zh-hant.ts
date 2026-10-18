@@ -279,6 +279,12 @@ export const zhHant = {
     ],
     blessing: (o: { count: number; word: string }) => `${o.word} +${o.count}`,
   },
+  toyBox: {
+    closedLabel: "寫著 1955 的玩具盒，打開《回到未來》玩具盒",
+    closedTooltip: "打開《回到未來》玩具盒",
+    setLabel: "飛行汽車玩具，開始",
+    setTooltip: "開始",
+  },
   board: {
     label: "告示板，洗衣店的新鮮事",
     tooltip: "新鮮事",

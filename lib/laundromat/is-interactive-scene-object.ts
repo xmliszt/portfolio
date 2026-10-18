@@ -17,6 +17,8 @@ export function isInteractiveSceneObject(object: SceneObject) {
     case "board":
     case "weather-panel":
     case "air-purifier":
+    case "toy-box":
+    case "toy-set":
       return true;
     case "counter":
     case "window":

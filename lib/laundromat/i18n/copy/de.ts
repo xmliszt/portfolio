@@ -312,6 +312,13 @@ export const de = {
     ],
     blessing: (o: { count: number; word: string }) => `+${o.count} ${o.word}`,
   },
+  toyBox: {
+    closedLabel:
+      "Spielzeugkiste mit der Aufschrift 1955, die „Zurück in die Zukunft“-Spielzeugkiste öffnen",
+    closedTooltip: "die „Zurück in die Zukunft“-Spielzeugkiste öffnen",
+    setLabel: "Fliegendes Spielzeugauto, spielen",
+    setTooltip: "spielen",
+  },
   board: {
     label: "Aushang, was es Neues im Waschsalon gibt",
     tooltip: "was gibt's neues",

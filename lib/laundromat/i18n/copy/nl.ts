@@ -279,6 +279,13 @@ export const nl = {
     ],
     blessing: (o: { count: number; word: string }) => `+${o.count} ${o.word}`,
   },
+  toyBox: {
+    closedLabel:
+      "Speelgoeddoos met 1955 erop, de ‘Back to the Future’-speelgoeddoos openen",
+    closedTooltip: "de ‘Back to the Future’-speelgoeddoos openen",
+    setLabel: "Vliegende speelgoedauto, spelen",
+    setTooltip: "spelen",
+  },
   board: {
     label: "Prikbord, wat er nieuw is in de wasserette",
     tooltip: "wat is er nieuw",

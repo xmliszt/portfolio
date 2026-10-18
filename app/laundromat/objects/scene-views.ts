@@ -15,6 +15,11 @@ export type TvView = { state: TvState; noSignal: boolean };
 
 export type CupView = { full: boolean; steaming: boolean };
 
+export type ToyBoxView =
+  | { kind: "closed" }
+  | { kind: "opening" }
+  | { kind: "open"; runStartedAtMs: number };
+
 export type SceneViews = {
   machines: { [objectId: string]: MachineView };
   tv: TvView;
@@ -26,4 +31,6 @@ export type SceneViews = {
   peopleHere: number | undefined;
   tubeRollCount: number;
   weather: WeatherReading | undefined;
+  toyBox: ToyBoxView;
+  hidden: boolean;
 };

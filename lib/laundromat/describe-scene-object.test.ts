@@ -7,7 +7,7 @@ import { describeSceneObject } from "./describe-scene-object";
 import { isInteractiveSceneObject } from "./is-interactive-scene-object";
 import { sceneConfig } from "./scene-config";
 
-test("gives every machine, every focus target, the mat, the mug, the plant, the basket, the tube display, the weather panel and the air purifier a label and tooltip", () => {
+test("gives every machine, every focus target, the mat, the mug, the plant, the basket, the tube display, the weather panel, the air purifier and the toy box a label and tooltip", () => {
   const interactiveIds = sceneConfig.objects
     .filter((object) => describeSceneObject({ object, copy: en }) !== undefined)
     .map((object) => object.id);
@@ -25,6 +25,8 @@ test("gives every machine, every focus target, the mat, the mug, the plant, the 
     "notebook",
     "plant",
     "shelf",
+    "toy-box",
+    "toy-set",
     "tube-display",
     "tv",
     "washer-1",
@@ -52,6 +54,17 @@ test("marks the same objects interactive as it describes", () => {
       object.id
     );
   }
+});
+
+test("asks to open the closed toy box and to play the opened set", () => {
+  const box = sceneConfig.objects.find((object) => object.kind === "toy-box");
+  const set = sceneConfig.objects.find((object) => object.kind === "toy-set");
+  assert.ok(box && set);
+  assert.equal(
+    describeSceneObject({ object: box, copy: en })?.tooltip,
+    "open the “Back to the Future” toy box"
+  );
+  assert.equal(describeSceneObject({ object: set, copy: en })?.tooltip, "play");
 });
 
 test("reads the weather panel's temperature, condition and city", () => {

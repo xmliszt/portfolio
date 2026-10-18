@@ -1,4 +1,5 @@
 import { BOARD_PANEL_BOTTOM_RATIO } from "./board/get-board-frame";
+import { TOY_SET } from "./toy/toy-set-geometry";
 import type { SceneObject } from "./scene-config";
 
 const TABLE_TOP_THICKNESS = 0.1;
@@ -53,7 +54,21 @@ function getBlocker(object: SceneObject) {
     case "plant":
     case "basket":
     case "air-purifier":
+    case "toy-box":
       return { position, size };
+    case "toy-set":
+      return {
+        position: {
+          ...position,
+          x: position.x + TOY_SET.tower.fromX,
+          y: position.y + TOY_SET.tower.fromY,
+        },
+        size: {
+          w: TOY_SET.tower.toX - TOY_SET.tower.fromX,
+          d: TOY_SET.gantry.toY - TOY_SET.tower.fromY,
+          h: TOY_SET.tower.height,
+        },
+      };
     case "board":
       return {
         position: {

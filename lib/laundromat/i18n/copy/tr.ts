@@ -273,6 +273,13 @@ export const tr = {
     ],
     blessing: (o: { count: number; word: string }) => `+${o.count} ${o.word}`,
   },
+  toyBox: {
+    closedLabel:
+      "Üzerinde 1955 yazan oyuncak kutusu, “Geleceğe Dönüş” oyuncak kutusunu aç",
+    closedTooltip: "“Geleceğe Dönüş” oyuncak kutusunu aç",
+    setLabel: "Uçan oyuncak araba, oynat",
+    setTooltip: "oynat",
+  },
   board: {
     label: "İlan panosu, çamaşırhanede neler yeni",
     tooltip: "neler yeni",

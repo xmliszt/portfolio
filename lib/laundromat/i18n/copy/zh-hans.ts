@@ -280,6 +280,12 @@ export const zhHans = {
     ],
     blessing: (o: { count: number; word: string }) => `${o.word} +${o.count}`,
   },
+  toyBox: {
+    closedLabel: "写着 1955 的玩具盒，打开《回到未来》玩具盒",
+    closedTooltip: "打开《回到未来》玩具盒",
+    setLabel: "飞行汽车玩具，开始",
+    setTooltip: "开始",
+  },
   board: {
     label: "告示板，洗衣房的新鲜事",
     tooltip: "新鲜事",

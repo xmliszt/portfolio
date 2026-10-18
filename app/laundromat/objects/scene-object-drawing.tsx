@@ -20,6 +20,8 @@ import type { SceneViews } from "./scene-views";
 import { ShelfDrawing } from "./shelf-drawing";
 import { StoolDrawing } from "./stool-drawing";
 import { TableDrawing } from "./table-drawing";
+import { ToyBoxDrawing } from "./toy-box-drawing";
+import { ToySetDrawing } from "./toy-set-drawing";
 import { TubeDisplayDrawing } from "./tube-display-drawing";
 import { TvDrawing } from "./tv-drawing";
 import { WeatherPanelDrawing } from "./weather-panel-drawing";
@@ -105,12 +107,7 @@ export function SceneObjectDrawing(props: SceneObjectDrawingProps) {
         />
       );
     case "plant":
-      return (
-        <PlantDrawing
-          {...shared}
-          details={details.plant}
-        />
-      );
+      return <PlantDrawing {...shared} details={details.plant} />;
     case "table":
       return <TableDrawing {...shared} />;
     case "stool":
@@ -175,6 +172,27 @@ export function SceneObjectDrawing(props: SceneObjectDrawingProps) {
         />
       );
     }
+    case "toy-box":
+      return (
+        <ToyBoxDrawing
+          {...shared}
+          opening={views.toyBox.kind === "opening"}
+          details={details.toyBox}
+        />
+      );
+    case "toy-set":
+      return (
+        <ToySetDrawing
+          {...shared}
+          runStartedAtMs={
+            views.toyBox.kind === "open"
+              ? views.toyBox.runStartedAtMs
+              : -Infinity
+          }
+          silent={views.hidden}
+          details={details.toyBox}
+        />
+      );
     default: {
       const unhandled: never = object;
       return unhandled;

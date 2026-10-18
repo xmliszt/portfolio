@@ -92,6 +92,7 @@ import { useLaundry } from "./use-laundry";
 import { useRoomAppliances } from "./use-room-appliances";
 import { useSceneHour } from "./use-scene-hour";
 import { useTickingNow } from "./use-ticking-now";
+import { useToyBox } from "./use-toy-box";
 import { useTvAudio } from "./use-tv-audio";
 import {
   WEATHER_DIALOG_SIZE_PX,
@@ -162,20 +163,34 @@ export function LaundromatScene(props: LaundromatSceneProps) {
     aqi: weather?.aqi,
     minAqi: config.details.airPurifier.minAqi,
   });
+  const prefersReducedMotion = useReducedMotion() ?? false;
+  const toyBox = useToyBox({
+    details: config.details.toyBox,
+    reducedMotion: prefersReducedMotion,
+  });
+  const isToyBoxOpen = toyBox.view.kind === "open";
+  const isToyBoxFocusedRef = useRef(false);
   const layout = useMemo(
     () =>
       buildSceneLayout({
-        config: isPurifierRunning
-          ? config
-          : {
-              ...config,
-              objects: config.objects.filter(
-                (object) => object.kind !== "air-purifier"
-              ),
-            },
+        config: {
+          ...config,
+          objects: config.objects.filter((object) => {
+            switch (object.kind) {
+              case "air-purifier":
+                return isPurifierRunning;
+              case "toy-box":
+                return !isToyBoxOpen;
+              case "toy-set":
+                return isToyBoxOpen;
+              default:
+                return true;
+            }
+          }),
+        },
         unit: SCENE_UNIT_PX,
       }),
-    [config, isPurifierRunning]
+    [config, isPurifierRunning, isToyBoxOpen]
   );
   const searchParams = useSearchParams();
   const focus = parseCameraFocus(searchParams.get("focus"));
@@ -184,7 +199,6 @@ export function LaundromatScene(props: LaundromatSceneProps) {
     focus === "notebook"
       ? parseBookNumber(searchParams.get("book"))
       : undefined;
-  const prefersReducedMotion = useReducedMotion() ?? false;
   const isHidden = props.hidden === true;
   const isLeavingRef = useRef(false);
   useEffect(() => {
@@ -621,6 +635,8 @@ export function LaundromatScene(props: LaundromatSceneProps) {
     peopleHere,
     tubeRollCount,
     weather,
+    toyBox: toyBox.view,
+    hidden: isHidden,
   };
 
   function describeControl(options: {
@@ -807,6 +823,20 @@ export function LaundromatScene(props: LaundromatSceneProps) {
     []
   );
 
+  useEffect(() => {
+    if (!isToyBoxOpen || !isToyBoxFocusedRef.current) return;
+    isToyBoxFocusedRef.current = false;
+    if (
+      document.activeElement !== null &&
+      document.activeElement !== document.body
+    ) {
+      return;
+    }
+    rootRef.current
+      ?.querySelector<HTMLButtonElement>('[data-hit-target="toy-set"]')
+      ?.focus({ preventScroll: true });
+  }, [isToyBoxOpen]);
+
   function setFocus(next: CameraFocus, book?: number) {
     const params = new URLSearchParams(searchParams.toString());
     if (next === "room") params.delete("focus");
@@ -887,6 +917,23 @@ export function LaundromatScene(props: LaundromatSceneProps) {
     }
     const kind = layout.objects.find(({ object }) => object.id === objectId)
       ?.object.kind;
+    if (kind === "toy-box" || kind === "toy-set") {
+      if (focus !== "room") {
+        setFocus("room");
+        return;
+      }
+      if (kind === "toy-box" && toyBox.view.kind === "closed") {
+        isToyBoxFocusedRef.current =
+          document.activeElement?.matches('[data-hit-target="toy-box"]') ??
+          false;
+        sound?.play("toy-box-open");
+        window.clearTimeout(tooltipTimerRef.current);
+        setTooltipId(undefined);
+        toyBox.open();
+      }
+      if (kind === "toy-set") toyBox.play();
+      return;
+    }
     if (kind === "mug" || kind === "plant" || kind === "tube-display") {
       if (focus !== "room") {
         setFocus("room");

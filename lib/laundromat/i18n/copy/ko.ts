@@ -294,6 +294,12 @@ export const ko = {
     ],
     blessing: (o: { count: number; word: string }) => `${o.word} +${o.count}`,
   },
+  toyBox: {
+    closedLabel: "1955가 적힌 장난감 상자, “백 투 더 퓨처” 장난감 상자 열기",
+    closedTooltip: "“백 투 더 퓨처” 장난감 상자 열기",
+    setLabel: "하늘을 나는 장난감 차, 플레이",
+    setTooltip: "플레이",
+  },
   board: {
     label: "게시판, 빨래방의 새 소식",
     tooltip: "새 소식",
