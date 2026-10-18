@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { motion, useReducedMotion } from "motion/react";
+import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 
 import type { BedroomConfig } from "@/lib/laundromat/first-visit/bedroom-config";
 import { bedroomConfig } from "@/lib/laundromat/first-visit/bedroom-config";
@@ -12,12 +12,13 @@ import { FirstVisit } from "./first-visit/first-visit";
 import { FirstVisitKeyframes } from "./first-visit/first-visit-keyframes";
 import { useArrivedFlag } from "./first-visit/use-arrived-flag";
 import { LanguagePicker } from "./i18n/language-picker";
+import { InstantCamera } from "./instant-camera/instant-camera";
 import { SettingsButton } from "./settings/settings-button";
 import { SoundToggle } from "./sound/sound-toggle";
 import { useWeatherSounds } from "./sound/use-weather-sounds";
+import { CameraButton } from "./camera-button";
 import { LaundromatScene } from "./laundromat-scene";
 import { PortfolioLink } from "./portfolio-link";
-import { ShareButton } from "./share-button";
 import { UpdateNotice } from "./update-notice";
 
 const HEAD_HOME_DIM_MS = 700;
@@ -46,6 +47,7 @@ export function LaundromatEntry(props: LaundromatEntryProps) {
   const [lampSwitch, setLampSwitch] = useState<boolean>();
   const [isCurtainOpen, setIsCurtainOpen] = useState(true);
   const [homeVeil, setHomeVeil] = useState<HomeVeil>();
+  const [isCameraOut, setIsCameraOut] = useState(false);
   const hasArrived =
     props.ignoreArrivedFlag || isBackHome ? false : arrivedFlag.hasArrived;
   const prefersReducedMotion = useReducedMotion() ?? false;
@@ -53,6 +55,7 @@ export function LaundromatEntry(props: LaundromatEntryProps) {
   const [isBedroomGone, setIsBedroomGone] = useState(false);
   const [isDoorLit, setIsDoorLit] = useState(false);
   const sceneRef = useRef<HTMLDivElement>(null);
+  const bedroomRef = useRef<HTMLDivElement>(null);
   const timersRef = useRef<number[]>([]);
   const visibleArrival = hasArrived === true ? "arrived" : arrival;
   const isFirstVisit = hasArrived === false && !isBedroomGone;
@@ -65,8 +68,17 @@ export function LaundromatEntry(props: LaundromatEntryProps) {
   useEffect(() => {
     const scene = sceneRef.current;
     if (scene === null) return;
-    scene.inert = visibleArrival === "hidden";
-  }, [visibleArrival]);
+    scene.inert = visibleArrival === "hidden" || isCameraOut;
+  }, [visibleArrival, isCameraOut]);
+
+  useEffect(() => {
+    const bedroom = bedroomRef.current;
+    if (bedroom === null) return;
+    bedroom.inert = isCameraOut;
+    return () => {
+      bedroom.inert = false;
+    };
+  }, [isCameraOut, isFirstVisit]);
 
   function later(delayMs: number, run: () => void) {
     timersRef.current.push(window.setTimeout(run, delayMs));
@@ -135,16 +147,19 @@ export function LaundromatEntry(props: LaundromatEntryProps) {
   return (
     <div className="relative size-full">
       <FirstVisitKeyframes motion={bedroom.motion} />
-      <div className="absolute top-[max(1.25rem,env(safe-area-inset-top))] right-[max(1.25rem,env(safe-area-inset-right))] z-10 flex flex-col items-end gap-y-1">
+      <div
+        data-lm-control
+        className="absolute top-[max(1.25rem,env(safe-area-inset-top))] right-[max(1.25rem,env(safe-area-inset-right))] z-10 flex flex-col items-end gap-y-1"
+      >
         <UpdateNotice />
         <LanguagePicker />
         <SoundToggle />
-        <ShareButton />
+        <CameraButton onPickUp={() => setIsCameraOut(true)} />
         <SettingsButton />
         <PortfolioLink />
       </div>
       {isFirstVisit && (
-        <div className="absolute inset-0">
+        <div ref={bedroomRef} className="absolute inset-0">
           <FirstVisit
             scene={props.config}
             bedroom={bedroom}
@@ -157,6 +172,8 @@ export function LaundromatEntry(props: LaundromatEntryProps) {
             onCurtainOpenChange={setIsCurtainOpen}
             onWalkIn={handleWalkIn}
             onListen={handleListen}
+            cameraHeld={isCameraOut}
+            onPickUpCamera={() => setIsCameraOut(true)}
           />
         </div>
       )}
@@ -172,6 +189,8 @@ export function LaundromatEntry(props: LaundromatEntryProps) {
           hourOverride={props.hourOverride}
           onHeadHome={handleHeadHome}
           hidden={visibleArrival === "hidden"}
+          cameraHeld={isCameraOut}
+          onPickUpCamera={() => setIsCameraOut(true)}
         />
       </div>
       {isDoorLit && (
@@ -211,6 +230,16 @@ export function LaundromatEntry(props: LaundromatEntryProps) {
           />
         </motion.div>
       )}
+      <AnimatePresence>
+        {isCameraOut && (
+          <InstantCamera
+            key="instant-camera"
+            subject={isFirstVisit ? "bedroom" : "laundromat"}
+            background={props.config.tokens.bg}
+            onPutDown={() => setIsCameraOut(false)}
+          />
+        )}
+      </AnimatePresence>
       {homeVeil !== undefined && (
         <motion.div
           aria-hidden

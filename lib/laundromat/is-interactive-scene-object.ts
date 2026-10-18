@@ -19,6 +19,7 @@ export function isInteractiveSceneObject(object: SceneObject) {
     case "air-purifier":
     case "toy-box":
     case "toy-set":
+    case "instant-camera":
       return true;
     case "counter":
     case "window":

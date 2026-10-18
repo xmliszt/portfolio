@@ -13,7 +13,10 @@ const withPWA = require("next-pwa")({
   disable: isDevelopment,
   runtimeCaching: [
     { urlPattern: /\/laundromat\/version$/, handler: "NetworkOnly" },
-    { urlPattern: /\/laundromat\/weather(\/places)?(\?|$)/, handler: "NetworkOnly" },
+    {
+      urlPattern: /\/laundromat\/weather(\/places)?(\?|$)/,
+      handler: "NetworkOnly",
+    },
     ...require("next-pwa/cache"),
   ],
 });
@@ -43,6 +46,10 @@ const nextConfig = {
       {
         protocol: "https",
         hostname: "joodle.liyuxuan.dev",
+      },
+      {
+        protocol: "https",
+        hostname: "i.ytimg.com",
       },
     ],
   },

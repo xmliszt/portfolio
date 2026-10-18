@@ -46,10 +46,6 @@ export const pl = {
   toolbar: {
     soundOn: "dźwięk wł.",
     soundOff: "dźwięk wył.",
-    share: "udostępnij",
-    linkCopied: "link skopiowany",
-    shareText:
-      "Spokojna pralnia w przeglądarce. Wrzuć pranie, niech timer leci, i poczytaj liściki, które zostawili inni.",
     language: "Język",
     settings: "ustawienia",
     builtBy: {
@@ -293,6 +289,69 @@ export const pl = {
     setLabel: "Latający samochodzik, graj",
     setTooltip: "graj",
   },
+  instantCamera: {
+    objectLabel: "Aparat natychmiastowy, zrób zdjęcie",
+    objectTooltip: "zrób zdjęcie",
+    toolbar: "zrób zdjęcie",
+    viewfinderLabel:
+      "Wizjer. Przeciągnij, aby skadrować zdjęcie, przeciągnij róg, aby zmienić rozmiar, naciśnij Enter, aby je zrobić.",
+    hint: "przeciągnij, żeby skadrować · pociągnij róg, żeby zmienić rozmiar",
+    snapFailed: "zdjęcie nie wyszło · spróbuj jeszcze raz",
+    putDown: "odłóż",
+    shutter: "Zrób zdjęcie",
+    portrait: "pion",
+    landscape: "poziom",
+    turnToLandscape: "Obróć aparat do poziomu",
+    turnToPortrait: "Obróć aparat do pionu",
+    cardLabel: "Twoje zdjęcie",
+    photoAlt: "Twoje zdjęcie natychmiastowe",
+    notePlaceholder: "napisz krótką notkę…",
+    noteLabel: "Notka na zdjęciu",
+    retake: "jeszcze raz",
+    copy: "kopiuj",
+    done: "gotowe",
+    copied: "skopiowano zdjęcie",
+    copyFailed: "nie udało się tu skopiować zdjęcia",
+    shareOn: (o: { platform: string }) => `Udostępnij w serwisie ${o.platform}`,
+    share: "udostępnij",
+    shareLabel: "Udostępnij zdjęcie",
+    more: "więcej",
+    moreLabel: "Więcej sposobów udostępniania",
+    shareText: "zrobione w laundro.cafe",
+    handoff: {
+      copiedTitle: "Skopiowano zdjęcie",
+      savedTitle: "Zapisano zdjęcie",
+      opening: (o: { platform: string; seconds: number }) =>
+        `Otwieram ${o.platform} za ${o.seconds}…`,
+      pasteInPost: {
+        before: "Wklej zdjęcie do swojego posta skrótem ",
+        after: ".",
+      },
+      pasteInChat: {
+        before: "Wybierz czat, a potem wklej zdjęcie skrótem ",
+        after: ".",
+      },
+      pasteInNewPost: {
+        before: "Zacznij post, a potem wklej zdjęcie skrótem ",
+        after: ".",
+      },
+      pickFromDownloads: (o: { file: string }) =>
+        `Kliknij Utwórz, a potem wybierz ${o.file} z pobranych plików.`,
+      blocked: "Przeglądarka wstrzymała nową kartę.",
+      openNow: (o: { platform: string }) => `Otwórz ${o.platform} teraz`,
+      open: (o: { platform: string }) => `Otwórz ${o.platform}`,
+      cancel: "Anuluj",
+      pasteReminder: (o: { platform: string; keys: string }) =>
+        `skopiowano zdjęcie · wklej je w serwisie ${o.platform} skrótem ${o.keys}`,
+      savedReminder: (o: { platform: string }) =>
+        `zapisano zdjęcie · dodaj je w serwisie ${o.platform} przez utwórz`,
+    },
+    mastodon: {
+      ask: "mastodon musi znać twój serwer",
+      server: "twój serwer",
+      post: "opublikuj",
+    },
+  },
   board: {
     label: "Tablica, co nowego w pralni",
     tooltip: "co nowego",
@@ -315,6 +374,10 @@ export const pl = {
       board: "tablica",
     },
     updates: {
+      "instant-camera": {
+        title: "zrób zdjęcie pokoju",
+        body: "Weź aparat natychmiastowy ze stołka albo z łóżka, skadruj dowolny fragment pokoju i pstryknij. Napisz krótką notkę na odbitce, a potem udostępnij ją albo skopiuj, żeby wysłać znajomemu.",
+      },
       "notebook-doodles": {
         title: "rysuj w notesie",
         body: "Przełącz pióro notesu z pisania na rysowanie i zostaw mały rysunek dla kolejnej osoby. Każdy w pralni, kto ma otwarty notes, widzi, jak rysunek sam pojawia się na stronie.",
@@ -519,6 +582,14 @@ export const pl = {
     pageInputLabel: (o) => `Numer strony, od 1 do ${o.pageCount}`,
     report: "zgłoś",
     reported: "zgłoszono",
+    reportDialog: {
+      title: "Zgłosić ten liścik?",
+      body: "Zgłoszenia pomagają, by notes pozostał miłym miejscem.",
+      reasonLabel: "powód (opcjonalnie)",
+      reasonPlaceholder: "co jest z nim nie tak?",
+      cancel: "anuluj",
+      confirm: "zgłoś",
+    },
     opening: "otwieram notes…",
     missing: (o) => `nie ma notesu nr ${o.number}`,
     full: (o) => `notes nr ${o.number} jest pełny · tylko do odczytu`,

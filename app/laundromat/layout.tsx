@@ -72,7 +72,7 @@ export default function LaundromatLayout(props: LaundromatLayoutProps) {
         property="og:logo"
         content={`${LAUNDROMAT_ORIGIN}/laundromat/icon-192.png`}
       />
-      <style>{`[data-laundromat-root] { ${toCssVariables(sceneConfig.tokens)} }\n${getDaylitTokenCss(sceneConfig)}\n${getCursorCss(sceneConfig.tokens)}`}</style>
+      <style>{`[data-laundromat-root] { ${toCssVariables(sceneConfig.tokens)} }\n[data-lm-camera-out] [data-lm-control] { visibility: hidden !important; }\n${getDaylitTokenCss(sceneConfig)}\n${getCursorCss(sceneConfig.tokens)}`}</style>
       {props.children}
       <LaundromatCursor />
     </div>

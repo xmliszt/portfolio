@@ -33,10 +33,6 @@ export const fr = {
   toolbar: {
     soundOn: "son activé",
     soundOff: "son coupé",
-    share: "partager",
-    linkCopied: "lien copié",
-    shareText:
-      "Une laverie tranquille dans ton navigateur. Lance une machine, laisse tourner le minuteur et lis les mots que les autres ont laissés.",
     language: "Langue",
     settings: "réglages",
     builtBy: {
@@ -320,6 +316,69 @@ export const fr = {
     setLabel: "Voiture volante jouet, jouer",
     setTooltip: "jouer",
   },
+  instantCamera: {
+    objectLabel: "Appareil photo instantané, prendre une photo",
+    objectTooltip: "prendre une photo",
+    toolbar: "prendre une photo",
+    viewfinderLabel:
+      "Viseur. Fais glisser pour cadrer la photo, tire un coin pour la redimensionner, appuie sur Entrée pour la prendre.",
+    hint: "glisse pour cadrer · tire un coin pour redimensionner",
+    snapFailed: "la photo n'est pas sortie · réessaie",
+    putDown: "poser",
+    shutter: "Prendre la photo",
+    portrait: "portrait",
+    landscape: "paysage",
+    turnToLandscape: "Tourner l'appareil en paysage",
+    turnToPortrait: "Tourner l'appareil en portrait",
+    cardLabel: "Ta photo",
+    photoAlt: "Ta photo instantanée",
+    notePlaceholder: "écris un petit mot…",
+    noteLabel: "Mot sur la photo",
+    retake: "reprendre",
+    copy: "copier",
+    done: "terminé",
+    copied: "photo copiée",
+    copyFailed: "impossible de copier la photo ici",
+    shareOn: (o: { platform: string }) => `Partager sur ${o.platform}`,
+    share: "partager",
+    shareLabel: "Partager la photo",
+    more: "plus",
+    moreLabel: "Autres façons de partager",
+    shareText: "photo prise à laundro.cafe",
+    handoff: {
+      copiedTitle: "Photo copiée",
+      savedTitle: "Photo enregistrée",
+      opening: (o: { platform: string; seconds: number }) =>
+        `Ouverture de ${o.platform} dans ${o.seconds}…`,
+      pasteInPost: {
+        before: "Colle la photo dans ta publication avec ",
+        after: ".",
+      },
+      pasteInChat: {
+        before: "Choisis une discussion, puis colle la photo avec ",
+        after: ".",
+      },
+      pasteInNewPost: {
+        before: "Commence une publication, puis colle la photo avec ",
+        after: ".",
+      },
+      pickFromDownloads: (o: { file: string }) =>
+        `Clique sur Créer, puis choisis ${o.file} dans tes téléchargements.`,
+      blocked: "Ton navigateur a retenu le nouvel onglet.",
+      openNow: (o: { platform: string }) => `Ouvrir ${o.platform} maintenant`,
+      open: (o: { platform: string }) => `Ouvrir ${o.platform}`,
+      cancel: "Annuler",
+      pasteReminder: (o: { platform: string; keys: string }) =>
+        `photo copiée · colle-la dans ${o.platform} avec ${o.keys}`,
+      savedReminder: (o: { platform: string }) =>
+        `photo enregistrée · ajoute-la dans ${o.platform} avec créer`,
+    },
+    mastodon: {
+      ask: "mastodon doit connaître ton serveur",
+      server: "ton serveur",
+      post: "publier",
+    },
+  },
   board: {
     label: "Panneau, les nouveautés de la laverie",
     tooltip: "quoi de neuf",
@@ -343,6 +402,10 @@ export const fr = {
       board: "panneau",
     },
     updates: {
+      "instant-camera": {
+        title: "prends une photo de la pièce",
+        body: "Prends l'appareil photo instantané sur le tabouret ou sur le lit, cadre n'importe quel coin de la pièce et déclenche. Écris un petit mot sur le tirage, puis partage-le ou copie-le pour l'envoyer à un ami.",
+      },
       "notebook-doodles": {
         title: "dessine dans le carnet",
         body: "Passe le stylo du carnet d'écrire à dessiner et laisse un petit dessin à la prochaine personne. Chaque personne dans la laverie qui a le carnet ouvert le voit se dessiner tout seul sur la page.",
@@ -552,6 +615,14 @@ export const fr = {
       `Numéro de page, de 1 à ${o.pageCount}`,
     report: "signaler",
     reported: "signalé",
+    reportDialog: {
+      title: "Signaler ce mot ?",
+      body: "Les signalements aident à garder le carnet bienveillant.",
+      reasonLabel: "motif (facultatif)",
+      reasonPlaceholder: "qu'est-ce qui ne va pas ?",
+      cancel: "annuler",
+      confirm: "signaler",
+    },
     opening: "ouverture du carnet…",
     missing: (o: { number: number }) => `il n'y a pas de carnet nº ${o.number}`,
     full: (o: { number: number }) =>

@@ -33,10 +33,6 @@ export const it = {
   toolbar: {
     soundOn: "audio attivo",
     soundOff: "audio disattivato",
-    share: "condividi",
-    linkCopied: "link copiato",
-    shareText:
-      "Una lavanderia tranquilla nel tuo browser. Carica un bucato, lascia andare il timer e leggi i biglietti che hanno lasciato gli altri.",
     language: "Lingua",
     settings: "impostazioni",
     builtBy: {
@@ -324,6 +320,66 @@ export const it = {
     setLabel: "Auto volante giocattolo, gioca",
     setTooltip: "gioca",
   },
+  instantCamera: {
+    objectLabel: "Fotocamera istantanea, scatta una foto",
+    objectTooltip: "scatta una foto",
+    toolbar: "scatta una foto",
+    viewfinderLabel:
+      "Mirino. Trascina per inquadrare la foto, trascina un angolo per ridimensionarla, premi Invio per scattarla.",
+    hint: "trascina per inquadrare · tira un angolo per ridimensionare",
+    snapFailed: "la foto non è venuta · riprova",
+    putDown: "posa",
+    shutter: "Scatta la foto",
+    portrait: "verticale",
+    landscape: "orizzontale",
+    turnToLandscape: "Ruota la fotocamera in orizzontale",
+    turnToPortrait: "Ruota la fotocamera in verticale",
+    cardLabel: "La tua foto",
+    photoAlt: "La tua foto istantanea",
+    notePlaceholder: "scrivi una piccola nota…",
+    noteLabel: "Nota sulla foto",
+    retake: "rifai",
+    copy: "copia",
+    done: "fatto",
+    copied: "foto copiata",
+    copyFailed: "qui non è stato possibile copiare la foto",
+    shareOn: (o: { platform: string }) => `Condividi su ${o.platform}`,
+    share: "condividi",
+    shareLabel: "Condividi la foto",
+    more: "altro",
+    moreLabel: "Altri modi per condividere",
+    shareText: "scattata su laundro.cafe",
+    handoff: {
+      copiedTitle: "Foto copiata",
+      savedTitle: "Foto salvata",
+      opening: (o: { platform: string; seconds: number }) =>
+        `Apro ${o.platform} tra ${o.seconds}…`,
+      pasteInPost: { before: "Incolla la foto nel tuo post con ", after: "." },
+      pasteInChat: {
+        before: "Scegli una chat, poi incolla la foto con ",
+        after: ".",
+      },
+      pasteInNewPost: {
+        before: "Inizia un post, poi incolla la foto con ",
+        after: ".",
+      },
+      pickFromDownloads: (o: { file: string }) =>
+        `Fai clic su Crea, poi scegli ${o.file} dai tuoi download.`,
+      blocked: "Il browser ha trattenuto la nuova scheda.",
+      openNow: (o: { platform: string }) => `Apri ${o.platform} ora`,
+      open: (o: { platform: string }) => `Apri ${o.platform}`,
+      cancel: "Annulla",
+      pasteReminder: (o: { platform: string; keys: string }) =>
+        `foto copiata · incollala su ${o.platform} con ${o.keys}`,
+      savedReminder: (o: { platform: string }) =>
+        `foto salvata · aggiungila su ${o.platform} con crea`,
+    },
+    mastodon: {
+      ask: "mastodon deve sapere qual è il tuo server",
+      server: "il tuo server",
+      post: "pubblica",
+    },
+  },
   board: {
     label: "Bacheca, le novità della lavanderia",
     tooltip: "novità",
@@ -346,6 +402,10 @@ export const it = {
       board: "bacheca",
     },
     updates: {
+      "instant-camera": {
+        title: "scatta una foto della stanza",
+        body: "Prendi la fotocamera istantanea dallo sgabello o dal letto, inquadra un angolo qualsiasi della stanza e scatta. Scrivi una breve nota sulla stampa, poi condividila o copiala per mandarla a un amico.",
+      },
       "notebook-doodles": {
         title: "disegna nel quaderno",
         body: "Passa la penna del quaderno da scrivi a disegna e lascia un piccolo disegno a chi arriva dopo. Chiunque sia in lavanderia con il quaderno aperto lo vede disegnarsi da solo sulla pagina.",
@@ -553,6 +613,14 @@ export const it = {
       `Numero di pagina, da 1 a ${o.pageCount}`,
     report: "segnala",
     reported: "segnalato",
+    reportDialog: {
+      title: "Segnalare questo biglietto?",
+      body: "Le segnalazioni aiutano a mantenere il quaderno un posto gentile.",
+      reasonLabel: "motivo (facoltativo)",
+      reasonPlaceholder: "cosa c'è che non va?",
+      cancel: "annulla",
+      confirm: "segnala",
+    },
     opening: "apro il quaderno…",
     missing: (o: { number: number }) => `non esiste il quaderno n. ${o.number}`,
     full: (o: { number: number }) =>

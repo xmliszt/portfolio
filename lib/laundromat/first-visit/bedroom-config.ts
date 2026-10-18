@@ -41,6 +41,7 @@ export type BedroomConfig = {
   };
   bedsideTable: { position: IsoPoint; size: IsoSize };
   lamp: { center: { x: number; y: number }; shadeRadius: number };
+  instantCamera: { position: IsoPoint; size: IsoSize };
   bed: {
     headboard: { position: IsoPoint; size: IsoSize };
     cushions: {
@@ -156,6 +157,10 @@ export const bedroomConfig: BedroomConfig = {
     size: { w: 0.62, d: 0.55, h: 0.62 },
   },
   lamp: { center: { x: 4, y: 0.36 }, shadeRadius: 0.25 },
+  instantCamera: {
+    position: { x: 4.8, y: 1.6, z: 0.68 },
+    size: { w: 0.42, d: 0.36, h: 0.32 },
+  },
   bed: {
     headboard: {
       position: { x: 4.4, y: 0, z: 0 },

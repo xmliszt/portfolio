@@ -1,4 +1,6 @@
 import { createRoomTail } from "./sounds/create-room-tail";
+import { playCameraEject } from "./sounds/play-camera-eject";
+import { playCameraShutter } from "./sounds/play-camera-shutter";
 import { playCoffeeBeep } from "./sounds/play-coffee-beep";
 import { playCoffeeBrewDone } from "./sounds/play-coffee-brew-done";
 import { playCoffeePour } from "./sounds/play-coffee-pour";
@@ -81,6 +83,8 @@ const ONE_SHOTS = {
   "toy-car-launch": playToyCarLaunch,
   "toy-thruster": playToyThruster,
   "toy-hover-jets": playToyHoverJets,
+  "camera-shutter": playCameraShutter,
+  "camera-eject": playCameraEject,
   "crayon-scratch": playCrayonScratch,
 } satisfies { [name in SoundName]: (options: VoiceOptions) => void };
 

@@ -149,6 +149,8 @@ type LaundromatSceneProps = {
   hourOverride?: number;
   onHeadHome?: (homecoming: Homecoming) => void;
   hidden?: boolean;
+  cameraHeld?: boolean;
+  onPickUpCamera?: () => void;
 };
 
 function toFocusUrl(params: URLSearchParams) {
@@ -170,6 +172,7 @@ export function LaundromatScene(props: LaundromatSceneProps) {
   });
   const isToyBoxOpen = toyBox.view.kind === "open";
   const isToyBoxFocusedRef = useRef(false);
+  const isCameraHeld = props.cameraHeld === true;
   const layout = useMemo(
     () =>
       buildSceneLayout({
@@ -183,6 +186,8 @@ export function LaundromatScene(props: LaundromatSceneProps) {
                 return !isToyBoxOpen;
               case "toy-set":
                 return isToyBoxOpen;
+              case "instant-camera":
+                return !isCameraHeld;
               default:
                 return true;
             }
@@ -190,7 +195,7 @@ export function LaundromatScene(props: LaundromatSceneProps) {
         },
         unit: SCENE_UNIT_PX,
       }),
-    [config, isPurifierRunning, isToyBoxOpen]
+    [config, isPurifierRunning, isToyBoxOpen, isCameraHeld]
   );
   const searchParams = useSearchParams();
   const focus = parseCameraFocus(searchParams.get("focus"));
@@ -848,6 +853,12 @@ export function LaundromatScene(props: LaundromatSceneProps) {
   }
 
   useEffect(() => {
+    if (!isCameraHeld) return;
+    const isZoomedIn = new URLSearchParams(window.location.search).has("focus");
+    if (isZoomedIn) setFocus("room");
+  });
+
+  useEffect(() => {
     if (focus === "room") return;
     function handleKeyDown(event: KeyboardEvent) {
       if (event.key !== "Escape") return;
@@ -917,6 +928,12 @@ export function LaundromatScene(props: LaundromatSceneProps) {
     }
     const kind = layout.objects.find(({ object }) => object.id === objectId)
       ?.object.kind;
+    if (kind === "instant-camera") {
+      window.clearTimeout(tooltipTimerRef.current);
+      setTooltipId(undefined);
+      props.onPickUpCamera?.();
+      return;
+    }
     if (kind === "toy-box" || kind === "toy-set") {
       if (focus !== "room") {
         setFocus("room");

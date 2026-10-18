@@ -32,10 +32,6 @@ export const zhHant = {
   toolbar: {
     soundOn: "聲音開",
     soundOff: "聲音關",
-    share: "分享",
-    linkCopied: "已複製連結",
-    shareText:
-      "瀏覽器裡一間安靜的自助洗衣店。丟一籃衣服進去，讓計時器跑著，讀讀別人留下的話。",
     language: "語言",
     settings: "設定",
     builtBy: {
@@ -285,6 +281,59 @@ export const zhHant = {
     setLabel: "飛行汽車玩具，開始",
     setTooltip: "開始",
   },
+  instantCamera: {
+    objectLabel: "拍立得相機，拍一張照片",
+    objectTooltip: "拍張照片",
+    toolbar: "拍照",
+    viewfinderLabel: "取景框。拖曳來取景，拖曳一角來調整大小，按 Enter 拍下。",
+    hint: "拖曳取景 · 拉動一角調整大小",
+    snapFailed: "照片沒洗出來 · 再試一次",
+    putDown: "放下",
+    shutter: "拍照",
+    portrait: "直拍",
+    landscape: "橫拍",
+    turnToLandscape: "把相機轉成橫向",
+    turnToPortrait: "把相機轉成直向",
+    cardLabel: "你的照片",
+    photoAlt: "你的拍立得照片",
+    notePlaceholder: "寫一句小留言…",
+    noteLabel: "照片上的留言",
+    retake: "重拍",
+    copy: "複製",
+    done: "完成",
+    copied: "照片已複製",
+    copyFailed: "這裡無法複製照片",
+    shareOn: (o: { platform: string }) => `分享到 ${o.platform}`,
+    share: "分享",
+    shareLabel: "分享照片",
+    more: "更多",
+    moreLabel: "更多分享方式",
+    shareText: "拍攝於 laundro.cafe",
+    handoff: {
+      copiedTitle: "照片已複製",
+      savedTitle: "照片已儲存",
+      opening: (o: { platform: string; seconds: number }) =>
+        `${o.seconds} 秒後開啟 ${o.platform}…`,
+      pasteInPost: { before: "在貼文裡按 ", after: " 貼上照片。" },
+      pasteInChat: { before: "選一個聊天，然後按 ", after: " 貼上照片。" },
+      pasteInNewPost: { before: "建立一則貼文，然後按 ", after: " 貼上照片。" },
+      pickFromDownloads: (o: { file: string }) =>
+        `點擊「建立」，然後從下載項目中選擇 ${o.file}。`,
+      blocked: "瀏覽器擋下了新分頁。",
+      openNow: (o: { platform: string }) => `立即開啟 ${o.platform}`,
+      open: (o: { platform: string }) => `開啟 ${o.platform}`,
+      cancel: "取消",
+      pasteReminder: (o: { platform: string; keys: string }) =>
+        `照片已複製 · 在 ${o.platform} 中按 ${o.keys} 貼上`,
+      savedReminder: (o: { platform: string }) =>
+        `照片已儲存 · 在 ${o.platform} 中點「建立」新增`,
+    },
+    mastodon: {
+      ask: "mastodon 需要知道你的伺服器",
+      server: "你的伺服器",
+      post: "發布",
+    },
+  },
   board: {
     label: "告示板，洗衣店的新鮮事",
     tooltip: "新鮮事",
@@ -307,6 +356,10 @@ export const zhHant = {
       board: "告示板",
     },
     updates: {
+      "instant-camera": {
+        title: "幫房間拍張照",
+        body: "拿起高腳椅或床上的拍立得，框住房間裡任何一處，按下快門。在相片上寫一句簡短的留言，然後分享出去，或者複製下來傳給朋友。",
+      },
       "notebook-doodles": {
         title: "在筆記本上畫畫",
         body: "把筆記本的筆從寫切換到畫，給下一個人留一幅小畫。洗衣店裡正翻開本子的人，都會看到它在頁面上一筆一筆畫出來。",
@@ -509,6 +562,14 @@ export const zhHant = {
     pageInputLabel: (o: { pageCount: number }) => `頁碼，1 到 ${o.pageCount}`,
     report: "檢舉",
     reported: "已檢舉",
+    reportDialog: {
+      title: "檢舉這則留言？",
+      body: "檢舉能讓筆記本一直是個友善的地方。",
+      reasonLabel: "原因（選填）",
+      reasonPlaceholder: "哪裡有問題？",
+      cancel: "取消",
+      confirm: "檢舉",
+    },
     opening: "正在打開筆記本…",
     missing: (o: { number: number }) => `沒有第 ${o.number} 本筆記本`,
     full: (o: { number: number }) => `第 ${o.number} 本筆記本已寫滿 · 只能閱讀`,

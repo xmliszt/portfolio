@@ -32,10 +32,6 @@ export const tr = {
   toolbar: {
     soundOn: "ses açık",
     soundOff: "ses kapalı",
-    share: "paylaş",
-    linkCopied: "bağlantı kopyalandı",
-    shareText:
-      "Tarayıcında sakin bir çamaşırhane. Makineye çamaşırını at, zamanlayıcı işlesin ve insanların bıraktığı notları oku.",
     language: "Dil",
     settings: "ayarlar",
     builtBy: {
@@ -280,6 +276,66 @@ export const tr = {
     setLabel: "Uçan oyuncak araba, oynat",
     setTooltip: "oynat",
   },
+  instantCamera: {
+    objectLabel: "Anlık fotoğraf makinesi, fotoğraf çek",
+    objectTooltip: "fotoğraf çek",
+    toolbar: "fotoğraf çek",
+    viewfinderLabel:
+      "Vizör. Fotoğrafı çerçevelemek için sürükle, boyutunu değiştirmek için bir köşeyi sürükle, çekmek için Enter'a bas.",
+    hint: "çerçevelemek için sürükle · boyut için bir köşeyi çek",
+    snapFailed: "fotoğraf çıkmadı · tekrar dene",
+    putDown: "bırak",
+    shutter: "Fotoğrafı çek",
+    portrait: "dikey",
+    landscape: "yatay",
+    turnToLandscape: "Makineyi yataya çevir",
+    turnToPortrait: "Makineyi dikeye çevir",
+    cardLabel: "Fotoğrafın",
+    photoAlt: "Anlık fotoğrafın",
+    notePlaceholder: "küçük bir not yaz…",
+    noteLabel: "Fotoğraftaki not",
+    retake: "yeniden çek",
+    copy: "kopyala",
+    done: "tamam",
+    copied: "fotoğraf kopyalandı",
+    copyFailed: "fotoğraf burada kopyalanamadı",
+    shareOn: (o: { platform: string }) => `${o.platform} üzerinden paylaş`,
+    share: "paylaş",
+    shareLabel: "Fotoğrafı paylaş",
+    more: "daha fazla",
+    moreLabel: "Diğer paylaşım yolları",
+    shareText: "laundro.cafe'de çekildi",
+    handoff: {
+      copiedTitle: "Fotoğraf kopyalandı",
+      savedTitle: "Fotoğraf kaydedildi",
+      opening: (o: { platform: string; seconds: number }) =>
+        `${o.platform} açılıyor: ${o.seconds}…`,
+      pasteInPost: { before: "Fotoğrafı ", after: " ile gönderine yapıştır." },
+      pasteInChat: {
+        before: "Bir sohbet seç, sonra fotoğrafı ",
+        after: " ile yapıştır.",
+      },
+      pasteInNewPost: {
+        before: "Bir gönderi başlat, sonra fotoğrafı ",
+        after: " ile yapıştır.",
+      },
+      pickFromDownloads: (o: { file: string }) =>
+        `Oluştur'a tıkla, sonra indirilenlerden ${o.file} dosyasını seç.`,
+      blocked: "Tarayıcın yeni sekmeyi tuttu.",
+      openNow: (o: { platform: string }) => `Şimdi aç: ${o.platform}`,
+      open: (o: { platform: string }) => `Aç: ${o.platform}`,
+      cancel: "İptal",
+      pasteReminder: (o: { platform: string; keys: string }) =>
+        `fotoğraf kopyalandı · ${o.keys} ile ${o.platform} içine yapıştır`,
+      savedReminder: (o: { platform: string }) =>
+        `fotoğraf kaydedildi · ${o.platform} içinde oluştur ile ekle`,
+    },
+    mastodon: {
+      ask: "mastodon sunucunu bilmeli",
+      server: "sunucun",
+      post: "paylaş",
+    },
+  },
   board: {
     label: "İlan panosu, çamaşırhanede neler yeni",
     tooltip: "neler yeni",
@@ -302,6 +358,10 @@ export const tr = {
       board: "pano",
     },
     updates: {
+      "instant-camera": {
+        title: "odanın fotoğrafını çek",
+        body: "Taburedeki ya da yataktaki anlık fotoğraf makinesini al, odanın istediğin bir köşesini çerçevele ve çek. Baskının üzerine kısa bir not yaz, sonra paylaş ya da bir arkadaşına göndermek için kopyala.",
+      },
       "notebook-doodles": {
         title: "defterde çizim yap",
         body: "Defterin kalemini yaz modundan çiz moduna al ve sonra gelecek kişiye küçük bir çizim bırak. Çamaşırhanede defteri açık olan herkes, çizimin sayfaya kendiliğinden çizildiğini izler.",
@@ -501,6 +561,14 @@ export const tr = {
     pageInputLabel: (o) => `Sayfa numarası, 1 ile ${o.pageCount} arası`,
     report: "bildir",
     reported: "bildirildi",
+    reportDialog: {
+      title: "Bu not bildirilsin mi?",
+      body: "Bildirimler defterin nazik bir yer olarak kalmasına yardımcı olur.",
+      reasonLabel: "neden (isteğe bağlı)",
+      reasonPlaceholder: "nesi yanlış?",
+      cancel: "iptal",
+      confirm: "bildir",
+    },
     opening: "defter açılıyor…",
     missing: (o) => `defter No. ${o.number} yok`,
     full: (o) => `defter No. ${o.number} doldu · yalnızca okunabilir`,

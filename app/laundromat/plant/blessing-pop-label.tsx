@@ -33,6 +33,7 @@ export function BlessingPopLabel(props: BlessingPopLabelProps) {
   return (
     <div
       aria-hidden
+      data-lm-control
       className="pointer-events-none absolute -translate-x-1/2 -translate-y-full"
       style={style}
     >

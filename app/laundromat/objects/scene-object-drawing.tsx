@@ -11,6 +11,7 @@ import { BoardDrawing } from "./board-drawing";
 import { ClockDrawing } from "./clock-drawing";
 import { CoffeeMachineDrawing } from "./coffee-machine-drawing";
 import { CounterDrawing } from "./counter-drawing";
+import { InstantCameraDrawing } from "./instant-camera-drawing";
 import { MachineDrawing } from "./machine-drawing";
 import { MatDrawing } from "./mat-drawing";
 import { MugDrawing } from "./mug-drawing";
@@ -193,6 +194,8 @@ export function SceneObjectDrawing(props: SceneObjectDrawingProps) {
           details={details.toyBox}
         />
       );
+    case "instant-camera":
+      return <InstantCameraDrawing {...shared} />;
     default: {
       const unhandled: never = object;
       return unhandled;
