@@ -1,6 +1,9 @@
 import "server-only";
 
+import type { DoodleDrawing } from "@/lib/laundromat/notebook/doodle-stroke";
+import { getDoodlePlacement } from "@/lib/laundromat/notebook/get-doodle-placement";
 import { getDraftPlacement } from "@/lib/laundromat/notebook/get-draft-placement";
+import { sceneConfig } from "@/lib/laundromat/scene-config";
 import type { NotebookScript } from "@/lib/laundromat/supabase/notebook-types";
 
 import type {
@@ -84,6 +87,7 @@ function buildEntries(options: {
         page: placement.page,
         lineStart: placement.lineStart,
         lineCount,
+        kind: "text",
         body: sample.body,
         signOff: null,
         script: sample.script,
@@ -192,6 +196,7 @@ export function createFakeNotebookStore() {
       page: placement.startsNewBook ? 1 : placement.page,
       lineStart: placement.startsNewBook ? 1 : placement.lineStart,
       lineCount: options.lineCount,
+      kind: "text",
       body: options.body,
       signOff: null,
       script: options.script,
@@ -206,5 +211,50 @@ export function createFakeNotebookStore() {
     return { kind: "placed", entry, notebookNumber: book.number };
   }
 
-  return { loadShelf, loadNotebook, leaveEntry };
+  function leaveDoodle(options: {
+    drawing: DoodleDrawing;
+    lineCount: number;
+  }): LeaveEntryResult {
+    const current = getCurrent();
+    const placement = getDoodlePlacement({
+      linesUsed: current.linesUsed,
+      spaceLineCount: sceneConfig.notebook.doodle.maxRows + 1,
+      linesPerPage: current.linesPerPage,
+      pageCount: current.pageCount,
+    });
+    const now = new Date().toISOString();
+    if (placement.startsNewBook) {
+      current.filledAt = now;
+      books.push({
+        ...buildBook(current.number + 1),
+        entries: [],
+        linesUsed: 0,
+      });
+    }
+    const book = getCurrent();
+    const entry = {
+      id: Date.now(),
+      page: placement.page,
+      lineStart: placement.lineStart,
+      lineCount: options.lineCount,
+      kind: "doodle",
+      drawing: options.drawing,
+      signOff: null,
+      script: "latin",
+      createdAt: now,
+    } satisfies NotebookEntryView;
+    book.entries.push(entry);
+    book.linesUsed =
+      (placement.page - 1) * book.linesPerPage +
+      placement.lineStart -
+      1 +
+      options.lineCount;
+    if (book.linesUsed >= book.pageCount * book.linesPerPage) {
+      book.filledAt = now;
+      books.push({ ...buildBook(book.number + 1), entries: [], linesUsed: 0 });
+    }
+    return { kind: "placed", entry, notebookNumber: book.number };
+  }
+
+  return { loadShelf, loadNotebook, leaveEntry, leaveDoodle };
 }

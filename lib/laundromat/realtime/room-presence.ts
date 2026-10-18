@@ -1,3 +1,4 @@
+import type { DoodleDrawing } from "@/lib/laundromat/notebook/doodle-stroke";
 import type { MachineKind } from "@/lib/laundromat/scene-config";
 import type { NotebookScript } from "@/lib/laundromat/supabase/notebook-types";
 
@@ -40,12 +41,16 @@ export type RemoteClock = {
 
 export type DraftSelection = { start: number; end: number };
 
-export type RemoteDraft = {
-  sessionId: string;
-  text: string;
-  script: NotebookScript;
-  selection?: DraftSelection;
-};
+export type DraftContent =
+  | {
+      kind: "text";
+      text: string;
+      script: NotebookScript;
+      selection?: DraftSelection;
+    }
+  | { kind: "doodle"; drawing: DoodleDrawing | undefined };
+
+export type RemoteDraft = { sessionId: string } & DraftContent;
 
 export type RemoteEntry = {
   sessionId: string;
@@ -55,9 +60,11 @@ export type RemoteEntry = {
     page: number;
     lineStart: number;
     lineCount: number;
-    body: string;
     signOff: string | null;
     script: NotebookScript;
     createdAt: string;
-  };
+  } & (
+    | { kind: "text"; body: string }
+    | { kind: "doodle"; drawing: DoodleDrawing | undefined }
+  );
 };

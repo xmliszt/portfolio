@@ -206,6 +206,15 @@ export type SceneConfig = {
     counterFromRatio: number;
     bookViewportFill: number;
     fontSizeRatio: { [script in NotebookScript]: number };
+    doodle: {
+      maxRows: number;
+      strokeWidthPx: number;
+      smoothing: number;
+      simplifyPx: number;
+      maxPoints: number;
+      padInsetPx: number;
+      replaySpeed: number;
+    };
   };
   sky: {
     keys: SkyKey[];
@@ -627,6 +636,15 @@ export const sceneConfig: SceneConfig = {
       hebrew: 0.6,
       devanagari: 0.66,
       bengali: 0.66,
+    },
+    doodle: {
+      maxRows: 6,
+      strokeWidthPx: 2.4,
+      smoothing: 0.35,
+      simplifyPx: 0.6,
+      maxPoints: 2000,
+      padInsetPx: 6,
+      replaySpeed: 2,
     },
   },
   sky: {

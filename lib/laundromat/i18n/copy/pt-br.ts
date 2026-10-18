@@ -316,6 +316,10 @@ export const ptBR = {
       board: "mural",
     },
     updates: {
+      "notebook-doodles": {
+        title: "desenhe no caderno",
+        body: "Troque a caneta do caderno de escrever para desenhar e deixe um pequeno desenho para quem chegar depois. Ele se desenha sozinho na página para quem abrir o caderno depois de você.",
+      },
       "weather-anywhere": {
         title: "escolha o tempo lá fora",
         body: "Nas configurações, escolha uma cidade para ver o tempo dela pela janela e no painel, ou escolha o céu você mesmo. O padrão continua sendo o tempo ao vivo.",
@@ -535,6 +539,22 @@ export const ptBR = {
     notifyWhenFree: "me avise quando estiver livre",
     notifyPending: "a gente te avisa",
     saveNote: "salvar meu recado",
+    saveDoodle: "salvar meu desenho",
+    penModeLabel: "Caneta",
+    penModes: { write: "escrever", draw: "desenhar" },
+    drawPrompt: "desenhe algo para a próxima pessoa",
+    doodleMoved: (o: { page: number }) =>
+      `não há mais espaço nesta página · desenhando na p. ${o.page}`,
+    doodleBookFull:
+      "não há espaço para um desenho neste caderno · escreva um recado",
+    inkFull: "não há mais espaço para tinta · salve ou desfaça",
+    someoneDrawingInNotebook:
+      "alguém está desenhando no caderno · espere sua vez",
+    padLabel: "Espaço para desenhar no caderno",
+    drawingNow: "desenhando…",
+    someoneDrawingNow: "alguém está desenhando…",
+    undo: "desfazer",
+    clear: "limpar",
     savingNote: "salvando…",
     close: "fechar",
     freeNotificationTitle: "o caderno está livre",

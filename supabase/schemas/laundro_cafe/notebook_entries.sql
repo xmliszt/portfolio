@@ -4,7 +4,9 @@ create table "laundro_cafe"."notebook_entries" (
   "page" integer not null,
   "line_start" integer not null,
   "line_count" integer not null,
+  "kind" text not null default 'text',
   "body" text not null,
+  "drawing" jsonb,
   "sign_off" text,
   "script" text not null,
   "created_at" timestamp with time zone not null default now(),
@@ -17,7 +19,11 @@ alter table "laundro_cafe"."notebook_entries" add constraint "notebook_entries_n
 alter table "laundro_cafe"."notebook_entries" add constraint "notebook_entries_page_check" check ("page" > 0);
 alter table "laundro_cafe"."notebook_entries" add constraint "notebook_entries_line_start_check" check ("line_start" > 0);
 alter table "laundro_cafe"."notebook_entries" add constraint "notebook_entries_line_count_check" check ("line_count" > 0);
-alter table "laundro_cafe"."notebook_entries" add constraint "notebook_entries_body_check" check (char_length("body") between 1 and 1200);
+alter table "laundro_cafe"."notebook_entries" add constraint "notebook_entries_kind_check" check ("kind" = any (array['text'::text, 'doodle'::text]));
+alter table "laundro_cafe"."notebook_entries" add constraint "notebook_entries_body_check" check (
+  ("kind" = 'text' and char_length("body") between 1 and 1200 and "drawing" is null)
+  or ("kind" = 'doodle' and "body" = '' and "drawing" is not null)
+);
 alter table "laundro_cafe"."notebook_entries" add constraint "notebook_entries_sign_off_check" check (char_length("sign_off") between 1 and 40);
 alter table "laundro_cafe"."notebook_entries" add constraint "notebook_entries_script_check" check ("script" = any (array['latin'::text, 'korean'::text, 'japanese'::text, 'chinese'::text, 'arabic'::text, 'hebrew'::text, 'devanagari'::text, 'bengali'::text]));
 create index "notebook_entries_notebook_id_page_line_start_idx" on "laundro_cafe"."notebook_entries" using btree ("notebook_id", "page", "line_start");
@@ -31,7 +37,9 @@ grant select (
   "page",
   "line_start",
   "line_count",
+  "kind",
   "body",
+  "drawing",
   "sign_off",
   "script",
   "created_at",

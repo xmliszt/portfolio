@@ -309,6 +309,10 @@ export const vi = {
       board: "bảng tin",
     },
     updates: {
+      "notebook-doodles": {
+        title: "vẽ vào sổ",
+        body: "Chuyển bút của sổ từ viết sang vẽ và để lại một hình vẽ nhỏ cho người đến sau. Hình vẽ sẽ tự hiện dần trên trang cho bất kỳ ai mở sổ sau bạn.",
+      },
       "weather-anywhere": {
         title: "chọn thời tiết bên ngoài",
         body: "Trong cài đặt, chọn một thành phố để xem thời tiết ở đó qua cửa sổ và trên bảng, hoặc tự chọn bầu trời. Mặc định vẫn là thời tiết trực tiếp.",
@@ -523,6 +527,20 @@ export const vi = {
     notifyWhenFree: "báo mình khi đến lượt",
     notifyPending: "sẽ báo bạn",
     saveNote: "lưu lời nhắn",
+    saveDoodle: "lưu hình vẽ",
+    penModeLabel: "Bút",
+    penModes: { write: "viết", draw: "vẽ" },
+    drawPrompt: "vẽ gì đó cho người đến sau",
+    doodleMoved: (o: { page: number }) =>
+      `trang này hết chỗ · đang vẽ ở tr. ${o.page}`,
+    doodleBookFull: "sổ này không còn chỗ để vẽ · viết lời nhắn thay nhé",
+    inkFull: "hết chỗ cho mực · lưu lại hoặc hoàn tác",
+    someoneDrawingInNotebook: "có người đang vẽ vào sổ · chờ đến lượt bạn",
+    padLabel: "Chỗ vẽ trong sổ",
+    drawingNow: "đang vẽ…",
+    someoneDrawingNow: "có người đang vẽ…",
+    undo: "hoàn tác",
+    clear: "xóa",
     savingNote: "đang lưu…",
     close: "đóng",
     freeNotificationTitle: "cuốn sổ đã rảnh",

@@ -293,6 +293,10 @@ export const pl = {
       board: "tablica",
     },
     updates: {
+      "notebook-doodles": {
+        title: "rysuj w notesie",
+        body: "Przełącz pióro notesu z pisania na rysowanie i zostaw mały rysunek dla kolejnej osoby. Rysunek sam pojawi się na stronie u każdego, kto otworzy notes po tobie.",
+      },
       "weather-anywhere": {
         title: "wybierz pogodę za oknem",
         body: "W ustawieniach wybierz miasto, żeby zobaczyć jego pogodę za oknem i na panelu, albo sam wybierz niebo. Domyślnie zostaje pogoda na żywo.",
@@ -506,6 +510,21 @@ export const pl = {
     notifyWhenFree: "daj znać, gdy będzie wolny",
     notifyPending: "damy ci znać",
     saveNote: "zapisz liścik",
+    saveDoodle: "zapisz rysunek",
+    penModeLabel: "Pióro",
+    penModes: { write: "pisz", draw: "rysuj" },
+    drawPrompt: "narysuj coś dla następnej osoby",
+    doodleMoved: (o) =>
+      `na tej stronie brak miejsca · rysujesz na s. ${o.page}`,
+    doodleBookFull:
+      "w tym notesie nie ma miejsca na rysunek · napisz lepiej liścik",
+    inkFull: "brak miejsca na atrament · zapisz albo cofnij",
+    someoneDrawingInNotebook: "ktoś rysuje w notesie · poczekaj na swoją kolej",
+    padLabel: "Miejsce do rysowania w notesie",
+    drawingNow: "rysujesz…",
+    someoneDrawingNow: "ktoś rysuje…",
+    undo: "cofnij",
+    clear: "wyczyść",
     savingNote: "zapisuję…",
     close: "zamknij",
     freeNotificationTitle: "notes jest wolny",

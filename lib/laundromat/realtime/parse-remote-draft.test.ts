@@ -9,7 +9,7 @@ test("reads a draft and cuts its text to the notebook's limit", () => {
       value: { sessionId: "s", text: "abcdef", script: "latin" },
       maxChars: 4,
     }),
-    { sessionId: "s", text: "abcd", script: "latin" }
+    { sessionId: "s", kind: "text", text: "abcd", script: "latin" }
   );
   assert.equal(
     parseRemoteDraft({
@@ -33,6 +33,7 @@ test("keeps the selection clamped to the cut text and drops a malformed one", ()
     }),
     {
       sessionId: "s",
+      kind: "text",
       text: "abcd",
       script: "latin",
       selection: { start: 2, end: 4 },
@@ -48,7 +49,7 @@ test("keeps the selection clamped to the cut text and drops a malformed one", ()
       },
       maxChars: 4,
     }),
-    { sessionId: "s", text: "hi", script: "latin" }
+    { sessionId: "s", kind: "text", text: "hi", script: "latin" }
   );
 });
 
@@ -65,9 +66,28 @@ test("masks swear words in a draft and keeps its selection", () => {
     }),
     {
       sessionId: "s",
+      kind: "text",
       text: "what the ****",
       script: "latin",
       selection: { start: 13, end: 13 },
     }
+  );
+});
+
+test("reads a doodle draft and drops a malformed drawing", () => {
+  const drawing = { w: 396, strokes: [[80, 10, 10, 4, 2]] };
+  assert.deepEqual(
+    parseRemoteDraft({
+      value: { sessionId: "s", kind: "doodle", drawing },
+      maxChars: 4,
+    }),
+    { sessionId: "s", kind: "doodle", drawing }
+  );
+  assert.deepEqual(
+    parseRemoteDraft({
+      value: { sessionId: "s", kind: "doodle", drawing: { w: 396 } },
+      maxChars: 4,
+    }),
+    { sessionId: "s", kind: "doodle", drawing: undefined }
   );
 });

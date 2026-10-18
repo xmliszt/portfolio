@@ -324,6 +324,10 @@ export const it = {
       board: "bacheca",
     },
     updates: {
+      "notebook-doodles": {
+        title: "disegna nel quaderno",
+        body: "Passa la penna del quaderno da scrivi a disegna e lascia un piccolo disegno a chi arriva dopo. Si disegna da solo sulla pagina per chiunque apra il quaderno dopo di te.",
+      },
       "weather-anywhere": {
         title: "scegli il tempo fuori",
         body: "Nelle impostazioni scegli una città per vederne il meteo dalla finestra e sul pannello, oppure scegli tu il cielo. Di base resta il meteo dal vivo.",
@@ -543,6 +547,22 @@ export const it = {
     notifyWhenFree: "avvisami quando è libero",
     notifyPending: "ti avviseremo",
     saveNote: "salva il mio biglietto",
+    saveDoodle: "salva il mio disegno",
+    penModeLabel: "Penna",
+    penModes: { write: "scrivi", draw: "disegna" },
+    drawPrompt: "disegna qualcosa per la prossima persona",
+    doodleMoved: (o: { page: number }) =>
+      `non c'è più spazio su questa pagina · disegni a p. ${o.page}`,
+    doodleBookFull:
+      "non c'è spazio per un disegno in questo quaderno · scrivi un biglietto",
+    inkFull: "non c'è più spazio per l'inchiostro · salva o annulla",
+    someoneDrawingInNotebook:
+      "qualcuno sta disegnando nel quaderno · aspetta il tuo turno",
+    padLabel: "Spazio per disegnare nel quaderno",
+    drawingNow: "stai disegnando…",
+    someoneDrawingNow: "qualcuno sta disegnando…",
+    undo: "annulla",
+    clear: "cancella",
     savingNote: "salvataggio…",
     close: "chiudi",
     freeNotificationTitle: "il quaderno è libero",

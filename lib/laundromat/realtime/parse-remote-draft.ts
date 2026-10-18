@@ -1,4 +1,5 @@
 import { maskProfanity } from "@/lib/laundromat/notebook/mask-profanity";
+import { parseDoodleDrawing } from "@/lib/laundromat/notebook/parse-doodle-drawing";
 import {
   NOTEBOOK_SCRIPTS,
   type NotebookScript,
@@ -30,7 +31,7 @@ function parseSelection(options: {
   return { start: Math.min(start, end), end: Math.max(start, end) };
 }
 
-/** Return the draft another tab broadcast with its text cut to `maxChars` with swear words masked, and its selection clamped to that text, or `undefined` when the payload is not one; a missing or malformed selection is dropped. */
+/** Return the draft another tab broadcast, or `undefined` when the payload is not one: a doodle draft with its drawing, dropped when malformed, or a text draft (also when `kind` is missing, as older tabs send) with its text cut to `maxChars` with swear words masked and its selection clamped to that text; a missing or malformed selection is dropped. */
 export function parseRemoteDraft(options: {
   value: unknown;
   maxChars: number;
@@ -39,7 +40,19 @@ export function parseRemoteDraft(options: {
   if (
     typeof value !== "object" ||
     value === null ||
-    !("sessionId" in value && typeof value.sessionId === "string") ||
+    !("sessionId" in value && typeof value.sessionId === "string")
+  ) {
+    return undefined;
+  }
+  if ("kind" in value && value.kind === "doodle") {
+    return {
+      sessionId: value.sessionId,
+      kind: "doodle",
+      drawing:
+        "drawing" in value ? parseDoodleDrawing(value.drawing) : undefined,
+    };
+  }
+  if (
     !("text" in value && typeof value.text === "string") ||
     !("script" in value && isNotebookScript(value.script))
   ) {
@@ -52,6 +65,7 @@ export function parseRemoteDraft(options: {
       : undefined;
   return {
     sessionId: value.sessionId,
+    kind: "text",
     text,
     script: value.script,
     ...(selection === undefined ? {} : { selection }),

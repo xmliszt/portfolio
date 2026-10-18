@@ -286,6 +286,10 @@ export const nl = {
       board: "bord",
     },
     updates: {
+      "notebook-doodles": {
+        title: "tekenen in het notitieboek",
+        body: "Zet de pen van het notitieboek van schrijven op tekenen en laat een kleine tekening achter voor wie na je komt. Die tekent zichzelf op de pagina voor iedereen die het boek na jou opent.",
+      },
       "weather-anywhere": {
         title: "kies het weer buiten",
         body: "Kies in de instellingen een stad om het weer daar door het raam en op het paneel te zien, of kies zelf de lucht. Standaard blijft het live weer.",
@@ -498,6 +502,22 @@ export const nl = {
     notifyWhenFree: "laat me weten als het vrij is",
     notifyPending: "we laten het je weten",
     saveNote: "berichtje opslaan",
+    saveDoodle: "tekening opslaan",
+    penModeLabel: "Pen",
+    penModes: { write: "schrijven", draw: "tekenen" },
+    drawPrompt: "teken iets voor de volgende",
+    doodleMoved: (o) =>
+      `geen ruimte meer op deze pagina · je tekent op blz. ${o.page}`,
+    doodleBookFull:
+      "geen ruimte voor een tekening in dit notitieboek · schrijf liever een berichtje",
+    inkFull: "geen ruimte meer voor inkt · sla het op of maak ongedaan",
+    someoneDrawingInNotebook:
+      "iemand tekent in het notitieboek · wacht je beurt af",
+    padLabel: "Tekenruimte in het notitieboek",
+    drawingNow: "aan het tekenen…",
+    someoneDrawingNow: "iemand is aan het tekenen…",
+    undo: "terug",
+    clear: "wissen",
     savingNote: "opslaan…",
     close: "sluiten",
     freeNotificationTitle: "het notitieboek is vrij",

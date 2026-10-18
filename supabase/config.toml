@@ -69,6 +69,7 @@ schema_paths = [
   "./schemas/laundro_cafe/count_entry_report.sql",
   "./schemas/laundro_cafe/entry_reports.sql",
   "./schemas/laundro_cafe/append_entry.sql",
+  "./schemas/laundro_cafe/append_doodle.sql",
 ]
 
 [db.seed]

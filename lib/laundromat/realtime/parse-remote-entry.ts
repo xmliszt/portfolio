@@ -1,4 +1,5 @@
 import { maskProfanity } from "@/lib/laundromat/notebook/mask-profanity";
+import { parseDoodleDrawing } from "@/lib/laundromat/notebook/parse-doodle-drawing";
 import {
   NOTEBOOK_SCRIPTS,
   type NotebookScript,
@@ -14,7 +15,7 @@ function isPositiveInteger(value: unknown): value is number {
   return Number.isInteger(value) && Number(value) > 0;
 }
 
-/** Return the entry another tab broadcast right after saving it, with its body cut to `maxChars` and swear words masked in its body and sign-off, or `undefined` when the payload is not one. */
+/** Return the entry another tab broadcast right after saving it, or `undefined` when the payload is not one: a doodle with its drawing (`undefined` when malformed), or a text entry (also when `kind` is missing, as older tabs send) with its body cut to `maxChars`; swear words are masked in the body and sign-off. */
 export function parseRemoteEntry(options: {
   value: unknown;
   maxChars: number;
@@ -37,7 +38,6 @@ export function parseRemoteEntry(options: {
     !("page" in entry && isPositiveInteger(entry.page)) ||
     !("lineStart" in entry && isPositiveInteger(entry.lineStart)) ||
     !("lineCount" in entry && isPositiveInteger(entry.lineCount)) ||
-    !("body" in entry && typeof entry.body === "string") ||
     !(
       "signOff" in entry &&
       (entry.signOff === null || typeof entry.signOff === "string")
@@ -48,18 +48,35 @@ export function parseRemoteEntry(options: {
   ) {
     return undefined;
   }
+  const base = {
+    id: entry.id,
+    page: entry.page,
+    lineStart: entry.lineStart,
+    lineCount: entry.lineCount,
+    signOff: entry.signOff === null ? null : maskProfanity(entry.signOff),
+    script: entry.script,
+    createdAt: entry.createdAt,
+  };
+  if ("kind" in entry && entry.kind === "doodle") {
+    return {
+      sessionId: value.sessionId,
+      notebookNumber: value.notebookNumber,
+      entry: {
+        ...base,
+        kind: "doodle",
+        drawing:
+          "drawing" in entry ? parseDoodleDrawing(entry.drawing) : undefined,
+      },
+    };
+  }
+  if (!("body" in entry && typeof entry.body === "string")) return undefined;
   return {
     sessionId: value.sessionId,
     notebookNumber: value.notebookNumber,
     entry: {
-      id: entry.id,
-      page: entry.page,
-      lineStart: entry.lineStart,
-      lineCount: entry.lineCount,
+      ...base,
+      kind: "text",
       body: maskProfanity(entry.body.slice(0, options.maxChars)),
-      signOff: entry.signOff === null ? null : maskProfanity(entry.signOff),
-      script: entry.script,
-      createdAt: entry.createdAt,
     },
   };
 }

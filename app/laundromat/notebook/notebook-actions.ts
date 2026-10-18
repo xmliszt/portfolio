@@ -2,7 +2,10 @@
 
 import { cookies } from "next/headers";
 
+import type { DoodleDrawing } from "@/lib/laundromat/notebook/doodle-stroke";
 import { maskProfanity } from "@/lib/laundromat/notebook/mask-profanity";
+import { parseDoodleDrawing } from "@/lib/laundromat/notebook/parse-doodle-drawing";
+import { appendDoodle } from "@/lib/laundromat/supabase/append-doodle";
 import { appendEntry } from "@/lib/laundromat/supabase/append-entry";
 import { countNotebookEntries } from "@/lib/laundromat/supabase/count-notebook-entries";
 import { createLaundromatServiceClient } from "@/lib/laundromat/supabase/create-laundromat-service-client";
@@ -37,11 +40,13 @@ export type NotebookEntryView = {
   page: number;
   lineStart: number;
   lineCount: number;
-  body: string;
   signOff: string | null;
   script: NotebookScript;
   createdAt: string;
-};
+} & (
+  | { kind: "text"; body: string }
+  | { kind: "doodle"; drawing: DoodleDrawing | undefined }
+);
 
 export type NotebookView = {
   number: number;
@@ -83,18 +88,29 @@ export type ReportEntryResult = { kind: "reported" } | { kind: "offline" };
 
 function toEntryView(entry: NotebookEntry): NotebookEntryView {
   const isHidden = entry.hidden_at !== null;
-  return {
+  const base = {
     id: entry.id,
     page: entry.page,
     lineStart: entry.line_start,
     lineCount: entry.line_count,
-    body: isHidden ? "" : maskProfanity(entry.body),
     signOff:
       isHidden || entry.sign_off === null
         ? null
         : maskProfanity(entry.sign_off),
     script: toNotebookScript(entry.script),
     createdAt: entry.created_at,
+  };
+  if (entry.kind === "doodle") {
+    return {
+      ...base,
+      kind: "doodle",
+      drawing: isHidden ? undefined : parseDoodleDrawing(entry.drawing),
+    };
+  }
+  return {
+    ...base,
+    kind: "text",
+    body: isHidden ? "" : maskProfanity(entry.body),
   };
 }
 
@@ -212,6 +228,45 @@ export async function leaveEntry(options: {
       body: options.body,
       signOff: undefined,
       script: options.script,
+      lineCount: options.lineCount,
+    });
+    if (result.kind === "rejected") return result;
+    const { data: notebook, error } = await client
+      .from("notebooks")
+      .select("number")
+      .eq("id", result.entry.notebook_id)
+      .single();
+    if (error) throw error;
+    return {
+      kind: "placed",
+      entry: toEntryView(result.entry),
+      notebookNumber: notebook.number,
+    };
+  } catch {
+    return { kind: "offline" };
+  }
+}
+
+/** Leave a doodle of `lineCount` lines in the current notebook through `append_doodle` as the visitor in the signed cookie, creating the cookie on first write. */
+export async function leaveDoodle(options: {
+  drawing: DoodleDrawing;
+  lineCount: number;
+}): Promise<LeaveEntryResult> {
+  const fake = await readFakeNotebooks();
+  if (fake !== undefined) return fake.leaveDoodle(options);
+  const drawing = parseDoodleDrawing(options.drawing);
+  if (drawing === undefined) {
+    return { kind: "rejected", reason: "invalid_drawing" };
+  }
+  const client = createLaundromatServiceClient();
+  const secret = process.env.LAUNDROMAT_VISITOR_SECRET;
+  if (client === undefined || !secret) return { kind: "offline" };
+  try {
+    const visitorId = await readOrCreateVisitorId(secret);
+    const result = await appendDoodle({
+      client,
+      visitorId,
+      drawing,
       lineCount: options.lineCount,
     });
     if (result.kind === "rejected") return result;

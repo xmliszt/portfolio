@@ -28,6 +28,7 @@ export const APPEND_ENTRY_REJECTIONS = [
   "invalid_script",
   "contains_link",
   "invalid_line_count",
+  "invalid_drawing",
   "rate_limited",
 ] as const;
 
