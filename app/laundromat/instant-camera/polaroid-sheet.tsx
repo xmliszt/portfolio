@@ -30,6 +30,7 @@ import { useViewportSize } from "./use-viewport-size";
 
 const PRERENDER_DELAY_MS = 400;
 const NOTE_FOCUS_DELAY_MS = 700;
+const TOAST_MS = 2600;
 const UNDEVELOPED_FILTER =
   "brightness(0.25) sepia(0.6) contrast(0.6) saturate(0.2)";
 const DEVELOPED_FILTER = "brightness(1) sepia(0) contrast(1) saturate(1)";
@@ -80,7 +81,7 @@ export function PolaroidSheet(props: PolaroidSheetProps) {
   const prefersReducedMotion = useReducedMotion() ?? false;
   const viewport = useViewportSize();
   const [note, setNote] = useState("");
-  const [toast, setToast] = useState("");
+  const [toast, setToast] = useState<{ text: string; id: number }>();
   const [handoff, setHandoff] = useState<Handoff>();
   const [isAskingMastodon, setIsAskingMastodon] = useState(false);
   const [mastodonInput, setMastodonInput] = useState("");
@@ -181,6 +182,16 @@ export function PolaroidSheet(props: PolaroidSheetProps) {
     return () => window.clearTimeout(timer);
   }, []);
 
+  useEffect(() => {
+    if (toast === undefined) return;
+    const timer = window.setTimeout(() => setToast(undefined), TOAST_MS);
+    return () => window.clearTimeout(timer);
+  }, [toast]);
+
+  function showToast(next: string) {
+    setToast((current) => ({ text: next, id: (current?.id ?? 0) + 1 }));
+  }
+
   function shareText() {
     const trimmed = note.trim();
     return trimmed === "" ? text.shareText : `${trimmed}\n\n${text.shareText}`;
@@ -206,14 +217,12 @@ export function PolaroidSheet(props: PolaroidSheetProps) {
     const file = new File([readyPrint.blob], INSTANT_CAMERA.printFileName, {
       type: "image/png",
     });
-    navigator
-      .share({ files: [file] })
-      .catch((error: unknown) => {
-        if (error instanceof DOMException && error.name === "AbortError") {
-          return;
-        }
-        handleCopy();
-      });
+    navigator.share({ files: [file] }).catch((error: unknown) => {
+      if (error instanceof DOMException && error.name === "AbortError") {
+        return;
+      }
+      handleCopy();
+    });
     return true;
   }
 
@@ -227,7 +236,7 @@ export function PolaroidSheet(props: PolaroidSheetProps) {
     if (target.id === "mastodon" && options.mastodonServer === undefined) {
       setMastodonInput(readMastodonServer() ?? "");
       setIsAskingMastodon(true);
-      setToast(text.mastodon.ask);
+      showToast(text.mastodon.ask);
       return;
     }
     const url = getShareIntentUrl({
@@ -247,12 +256,12 @@ export function PolaroidSheet(props: PolaroidSheetProps) {
         () => {}
       );
     }
-    setToast("");
+    setToast(undefined);
     setIsCopying(true);
     copied.then((isCopied) => {
       setIsCopying(false);
       if (!isCopied && !isSaved) {
-        setToast(text.copyFailed);
+        showToast(text.copyFailed);
         return;
       }
       setHandoff({
@@ -272,7 +281,7 @@ export function PolaroidSheet(props: PolaroidSheetProps) {
     event.preventDefault();
     const server = normalizeMastodonServer(mastodonInput);
     if (server === undefined) {
-      setToast(text.mastodon.ask);
+      showToast(text.mastodon.ask);
       return;
     }
     rememberMastodonServer(server);
@@ -308,7 +317,7 @@ export function PolaroidSheet(props: PolaroidSheetProps) {
 
   function handleCopy() {
     copyImageToClipboard(getPrint()).then((copied) =>
-      setToast(copied ? text.copied : text.copyFailed)
+      showToast(copied ? text.copied : text.copyFailed)
     );
   }
 
@@ -316,7 +325,7 @@ export function PolaroidSheet(props: PolaroidSheetProps) {
     const current = handoff;
     setHandoff(undefined);
     if (current === undefined) return;
-    setToast(
+    showToast(
       current.step === "pick-from-downloads"
         ? text.handoff.savedReminder({ platform: current.label })
         : text.handoff.pasteReminder({
@@ -526,7 +535,20 @@ export function PolaroidSheet(props: PolaroidSheetProps) {
           role="status"
           className="min-h-4 max-w-[22.5rem] text-center text-[10px] text-[var(--lm-ink-hi)]"
         >
-          {toast}
+          <AnimatePresence mode="wait">
+            {toast !== undefined && (
+              <motion.span
+                key={toast.id}
+                className="block"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.25 }}
+              >
+                {toast.text}
+              </motion.span>
+            )}
+          </AnimatePresence>
         </p>
 
         <div className="flex gap-x-5">
