@@ -237,12 +237,14 @@ export function PolaroidSheet(props: PolaroidSheetProps) {
     const file = new File([readyPrint.blob], INSTANT_CAMERA.sharedFileName, {
       type: readyPrint.blob.type,
     });
-    navigator.share({ files: [file] }).catch((error: unknown) => {
-      if (error instanceof DOMException && error.name === "AbortError") {
-        return;
-      }
-      handleCopy();
-    });
+    navigator
+      .share({ files: [file], text: shareText() })
+      .catch((error: unknown) => {
+        if (error instanceof DOMException && error.name === "AbortError") {
+          return;
+        }
+        handleCopy();
+      });
     return true;
   }
 
