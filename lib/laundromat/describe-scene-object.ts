@@ -120,6 +120,11 @@ export function describeSceneObject(options: {
       };
     case "toy-set":
       return { label: copy.toyBox.setLabel, tooltip: copy.toyBox.setTooltip };
+    case "instant-camera":
+      return {
+        label: copy.instantCamera.objectLabel,
+        tooltip: copy.instantCamera.objectTooltip,
+      };
     case "counter":
     case "window":
     case "clock":

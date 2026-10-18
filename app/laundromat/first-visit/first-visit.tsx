@@ -6,6 +6,7 @@ import { motion, useReducedMotion } from "motion/react";
 import { useLaundromatCopy } from "@/app/laundromat/i18n/use-laundromat-copy";
 import { useLocalWeather } from "@/app/laundromat/local-weather/use-local-weather";
 import { BasketDrawing } from "@/app/laundromat/objects/basket-drawing";
+import { InstantCameraDrawing } from "@/app/laundromat/objects/instant-camera-drawing";
 import { SceneTooltip } from "@/app/laundromat/scene-tooltip";
 import { useSoundBoard } from "@/app/laundromat/sound/use-sound-board";
 import { useSceneHour } from "@/app/laundromat/use-scene-hour";
@@ -69,7 +70,14 @@ type Drag = {
   moved: boolean;
 };
 
-type Hover = GarmentKind | "basket" | "door" | "lamp" | "curtain" | "bed";
+type Hover =
+  | GarmentKind
+  | "basket"
+  | "door"
+  | "lamp"
+  | "curtain"
+  | "bed"
+  | "camera";
 
 type Phase = "room" | "opening" | "entering";
 
@@ -93,6 +101,8 @@ type FirstVisitProps = {
   onCurtainOpenChange: (open: boolean) => void;
   onWalkIn: () => void;
   onListen: () => void;
+  cameraHeld: boolean;
+  onPickUpCamera: () => void;
 };
 
 export function FirstVisit(props: FirstVisitProps) {
@@ -259,6 +269,31 @@ export function FirstVisit(props: FirstVisitProps) {
     projection,
   });
   const lampHitWidth = bedroom.lamp.shadeRadius * 2.4 * projection.unit;
+  const cameraBounds = (() => {
+    const { position, size } = bedroom.instantCamera;
+    const corners = [0, size.w].flatMap((dx) =>
+      [0, size.d].flatMap((dy) =>
+        [0, size.h * 1.26].map((dz) =>
+          projectIsoPoint({
+            point: {
+              x: position.x + dx,
+              y: position.y + dy,
+              z: position.z + dz,
+            },
+            projection,
+          })
+        )
+      )
+    );
+    const left = Math.min(...corners.map((corner) => corner.x));
+    const top = Math.min(...corners.map((corner) => corner.y));
+    return {
+      x: left,
+      y: top,
+      width: Math.max(...corners.map((corner) => corner.x)) - left,
+      height: Math.max(...corners.map((corner) => corner.y)) - top,
+    };
+  })();
   const curtainLayout = getCurtainLayout({
     window: bedroom.window,
     curtain: bedroom.curtain,
@@ -520,6 +555,15 @@ export function FirstVisit(props: FirstVisitProps) {
     if (event.currentTarget.matches(":focus-visible")) setHover("curtain");
   }
 
+  function handleCameraClick() {
+    setHover(undefined);
+    props.onPickUpCamera();
+  }
+
+  function handleCameraFocus(event: React.FocusEvent<HTMLButtonElement>) {
+    if (event.currentTarget.matches(":focus-visible")) setHover("camera");
+  }
+
   function handleLampFocus(event: React.FocusEvent<HTMLButtonElement>) {
     if (event.currentTarget.matches(":focus-visible")) setHover("lamp");
   }
@@ -549,6 +593,12 @@ export function FirstVisit(props: FirstVisitProps) {
             },
             projection,
           }),
+        };
+      }
+      if (hover === "camera") {
+        return {
+          text: copy.instantCamera.objectTooltip,
+          at: { x: cameraBounds.x + cameraBounds.width / 2, y: cameraBounds.y },
         };
       }
       if (hover === "lamp") {
@@ -744,6 +794,7 @@ export function FirstVisit(props: FirstVisitProps) {
           >
             <svg
               aria-hidden
+              data-instant-camera-subject="bedroom"
               width={stage.width}
               height={stage.height}
               viewBox={`0 0 ${stage.width} ${stage.height}`}
@@ -811,6 +862,13 @@ export function FirstVisit(props: FirstVisitProps) {
                   bedHighlighted={hover === "bed" && canSleep}
                   cleanPile={props.cleanPile}
                 />
+                {!props.cameraHeld && (
+                  <InstantCameraDrawing
+                    laidOut={{ object: bedroom.instantCamera }}
+                    projection={projection}
+                    highlighted={hover === "camera"}
+                  />
+                )}
                 <BedroomDoor
                   door={door}
                   walkIn={walkIn}
@@ -988,6 +1046,24 @@ export function FirstVisit(props: FirstVisitProps) {
                 onBlur={() => clearHover("bed")}
               />
             )}
+            {!props.cameraHeld && (
+              <button
+                type="button"
+                aria-label={copy.instantCamera.objectLabel}
+                className="absolute cursor-pointer rounded-md bg-transparent outline-none focus-visible:outline-1 focus-visible:outline-offset-2 focus-visible:outline-[var(--lm-ink)] focus-visible:outline-dashed"
+                style={{
+                  left: cameraBounds.x - HIT_PADDING_PX,
+                  top: cameraBounds.y - HIT_PADDING_PX,
+                  width: cameraBounds.width + HIT_PADDING_PX * 2,
+                  height: cameraBounds.height + HIT_PADDING_PX * 2,
+                }}
+                onClick={handleCameraClick}
+                onPointerEnter={() => handleHover("camera")}
+                onPointerLeave={() => clearHover("camera")}
+                onFocus={handleCameraFocus}
+                onBlur={() => clearHover("camera")}
+              />
+            )}
             <button
               type="button"
               aria-label={
@@ -1083,6 +1159,7 @@ export function FirstVisit(props: FirstVisitProps) {
       {bedtime === undefined && (
         <button
           type="button"
+          data-lm-control
           className="absolute right-[max(2.25rem,env(safe-area-inset-right))] bottom-[max(1.75rem,env(safe-area-inset-bottom))] cursor-pointer bg-transparent px-1.5 py-3 text-[11px] text-[var(--lm-line)] lowercase transition-colors duration-200 outline-none hover:text-[var(--lm-ink)] focus-visible:outline-1 focus-visible:outline-[var(--lm-line)] focus-visible:outline-dashed"
           onClick={props.onListen}
         >

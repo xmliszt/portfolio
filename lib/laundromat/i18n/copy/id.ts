@@ -38,10 +38,6 @@ export const id = {
   toolbar: {
     soundOn: "suara nyala",
     soundOff: "suara mati",
-    share: "bagikan",
-    linkCopied: "tautan disalin",
-    shareText:
-      "Laundry yang tenang di browser kamu. Masukkan cucian, biarkan timer berjalan, dan baca catatan yang ditinggalkan orang-orang.",
     language: "Bahasa",
     settings: "pengaturan",
     builtBy: {
@@ -320,6 +316,64 @@ export const id = {
     setLabel: "Mainan mobil terbang, mainkan",
     setTooltip: "mainkan",
   },
+  instantCamera: {
+    objectLabel: "Kamera instan, ambil foto",
+    objectTooltip: "ambil foto",
+    toolbar: "ambil foto",
+    viewfinderLabel:
+      "Jendela bidik. Seret untuk membingkai foto, seret sudutnya untuk mengubah ukuran, tekan Enter untuk memotret.",
+    hint: "seret untuk membingkai · tarik sudut untuk mengubah ukuran",
+    snapFailed: "fotonya tidak jadi · coba lagi",
+    putDown: "taruh",
+    shutter: "Ambil foto",
+    portrait: "potret",
+    landscape: "lanskap",
+    turnToLandscape: "Putar kamera ke lanskap",
+    turnToPortrait: "Putar kamera ke potret",
+    cardLabel: "Fotomu",
+    photoAlt: "Foto instanmu",
+    notePlaceholder: "tulis catatan kecil…",
+    noteLabel: "Catatan di foto",
+    retake: "ulangi",
+    copy: "salin",
+    done: "selesai",
+    copied: "foto disalin",
+    copyFailed: "foto tidak bisa disalin di sini",
+    shareOn: (o: { platform: string }) => `Bagikan ke ${o.platform}`,
+    more: "lainnya",
+    moreLabel: "Cara lain untuk berbagi",
+    shareText: "dipotret di laundro.cafe",
+    handoff: {
+      copiedTitle: "Foto disalin",
+      savedTitle: "Foto disimpan",
+      opening: (o: { platform: string; seconds: number }) =>
+        `Membuka ${o.platform} dalam ${o.seconds}…`,
+      pasteInPost: { before: "Tempel foto ke postinganmu dengan ", after: "." },
+      pasteInChat: {
+        before: "Pilih obrolan, lalu tempel foto dengan ",
+        after: ".",
+      },
+      pasteInNewPost: {
+        before: "Mulai postingan, lalu tempel foto dengan ",
+        after: ".",
+      },
+      pickFromDownloads: (o: { file: string }) =>
+        `Klik Buat, lalu pilih ${o.file} dari unduhanmu.`,
+      blocked: "Browser-mu menahan tab baru.",
+      openNow: (o: { platform: string }) => `Buka ${o.platform} sekarang`,
+      open: (o: { platform: string }) => `Buka ${o.platform}`,
+      cancel: "Batal",
+      pasteReminder: (o: { platform: string; keys: string }) =>
+        `foto disalin · tempel ke ${o.platform} dengan ${o.keys}`,
+      savedReminder: (o: { platform: string }) =>
+        `foto disimpan · tambahkan di ${o.platform} lewat buat`,
+    },
+    mastodon: {
+      ask: "mastodon perlu tahu servermu",
+      server: "servermu",
+      post: "posting",
+    },
+  },
   board: {
     label: "Papan pengumuman, apa yang baru di laundromat",
     tooltip: "apa yang baru",
@@ -342,6 +396,10 @@ export const id = {
       board: "papan",
     },
     updates: {
+      "instant-camera": {
+        title: "memotret ruangan",
+        body: "Ambil kamera instan di kursi bar atau di kasur, bingkai bagian mana pun dari ruangan, lalu jepret. Tulis catatan singkat di cetakan fotonya, lalu bagikan atau salin untuk dikirim ke teman.",
+      },
       "notebook-doodles": {
         title: "menggambar di buku catatan",
         body: "Ganti pena buku catatan dari tulis ke gambar dan tinggalkan gambar kecil untuk orang berikutnya. Siapa pun di laundry yang sedang membuka buku catatan akan melihat gambarnya muncul sendiri di halaman.",

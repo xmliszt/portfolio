@@ -28,7 +28,8 @@ export type FurnitureKind =
   | "weather-panel"
   | "air-purifier"
   | "toy-box"
-  | "toy-set";
+  | "toy-set"
+  | "instant-camera";
 
 export type SceneObject =
   | (Placement & { kind: MachineKind; number: number })
@@ -399,6 +400,12 @@ export const sceneConfig: SceneConfig = {
       kind: "stool",
       position: { x: 6.7, y: 7.6, z: 0 },
       size: { w: 0.9, d: 0.9, h: 1.8 },
+    },
+    {
+      id: "instant-camera",
+      kind: "instant-camera",
+      position: { x: 6.9, y: 7.84, z: 1.8 },
+      size: { w: 0.5, d: 0.42, h: 0.38 },
     },
     {
       id: "stool-2",

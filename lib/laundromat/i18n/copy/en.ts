@@ -42,10 +42,6 @@ export const en = {
   toolbar: {
     soundOn: "sound on",
     soundOff: "sound off",
-    share: "share",
-    linkCopied: "link copied",
-    shareText:
-      "A quiet laundromat in your browser. Put a load in, let the timer run, and read the notes people left behind.",
     language: "Language",
     settings: "settings",
     builtBy: {
@@ -313,6 +309,67 @@ export const en = {
     setLabel: "Flying car toy, play",
     setTooltip: "play",
   },
+  instantCamera: {
+    objectLabel: "Instant camera, take a photo",
+    objectTooltip: "take a photo",
+    toolbar: "take a photo",
+    viewfinderLabel:
+      "Viewfinder. Drag to frame the photo, drag a corner to resize it, press Enter to take it.",
+    hint: "drag to frame · pull a corner to resize",
+    snapFailed: "the photo didn't come out · try again",
+    putDown: "put down",
+    shutter: "Take the photo",
+    portrait: "portrait",
+    landscape: "landscape",
+    turnToLandscape: "Turn the camera to landscape",
+    turnToPortrait: "Turn the camera to portrait",
+    cardLabel: "Your photo",
+    photoAlt: "Your instant photo",
+    notePlaceholder: "write a little note…",
+    noteLabel: "Note on the photo",
+    retake: "retake",
+    copy: "copy",
+    done: "done",
+    copied: "photo copied",
+    copyFailed: "the photo could not be copied here",
+    shareOn: (o: { platform: string }) => `Share on ${o.platform}`,
+    more: "more",
+    moreLabel: "More ways to share",
+    shareText: "snapped at laundro.cafe",
+    handoff: {
+      copiedTitle: "Photo copied",
+      savedTitle: "Photo saved",
+      opening: (o: { platform: string; seconds: number }) =>
+        `Opening ${o.platform} in ${o.seconds}…`,
+      pasteInPost: {
+        before: "Paste the photo into your post with ",
+        after: ".",
+      },
+      pasteInChat: {
+        before: "Pick a chat, then paste the photo with ",
+        after: ".",
+      },
+      pasteInNewPost: {
+        before: "Start a post, then paste the photo with ",
+        after: ".",
+      },
+      pickFromDownloads: (o: { file: string }) =>
+        `Click Create, then pick ${o.file} from your downloads.`,
+      blocked: "Your browser held back the new tab.",
+      openNow: (o: { platform: string }) => `Open ${o.platform} now`,
+      open: (o: { platform: string }) => `Open ${o.platform}`,
+      cancel: "Cancel",
+      pasteReminder: (o: { platform: string; keys: string }) =>
+        `photo copied · paste it into ${o.platform} with ${o.keys}`,
+      savedReminder: (o: { platform: string }) =>
+        `photo saved · add it in ${o.platform} with create`,
+    },
+    mastodon: {
+      ask: "mastodon needs to know your server",
+      server: "your server",
+      post: "post",
+    },
+  },
   board: {
     label: "Notice board, what's new at the laundromat",
     tooltip: "what's new",
@@ -335,6 +392,10 @@ export const en = {
       board: "board",
     } satisfies { [tag in BoardTag]: string },
     updates: {
+      "instant-camera": {
+        title: "take a photo of the room",
+        body: "Pick up the instant camera on the stool or the bed, frame any part of the room and snap it. Write a short note on the print, then share it or copy it to send to a friend.",
+      },
       "notebook-doodles": {
         title: "draw in the notebook",
         body: "Switch the notebook pen from write to draw and leave a small drawing for the next person. Anyone in the laundromat with the notebook open watches it draw itself onto the page.",

@@ -33,10 +33,6 @@ export const ja = {
   toolbar: {
     soundOn: "サウンド オン",
     soundOff: "サウンド オフ",
-    share: "シェア",
-    linkCopied: "リンクをコピーした",
-    shareText:
-      "ブラウザの中の静かなコインランドリー。洗濯物を入れて、タイマーを回して、誰かが残したメモを読もう。",
     language: "言語",
     settings: "設定",
     builtBy: {
@@ -304,6 +300,64 @@ export const ja = {
     setLabel: "空飛ぶ車のおもちゃ、遊ぶ",
     setTooltip: "遊ぶ",
   },
+  instantCamera: {
+    objectLabel: "インスタントカメラ、写真を撮る",
+    objectTooltip: "写真を撮る",
+    toolbar: "写真を撮る",
+    viewfinderLabel:
+      "ファインダー。ドラッグで写す範囲を決め、角をドラッグでサイズを変え、Enter で撮影します。",
+    hint: "ドラッグで範囲を決める · 角を引いてサイズを変える",
+    snapFailed: "写真がうまく出てこなかった · もう一度撮る",
+    putDown: "置く",
+    shutter: "写真を撮る",
+    portrait: "縦",
+    landscape: "横",
+    turnToLandscape: "カメラを横向きにする",
+    turnToPortrait: "カメラを縦向きにする",
+    cardLabel: "あなたの写真",
+    photoAlt: "あなたのインスタント写真",
+    notePlaceholder: "ひとことメモを書く…",
+    noteLabel: "写真のメモ",
+    retake: "撮り直す",
+    copy: "コピー",
+    done: "完了",
+    copied: "写真をコピーした",
+    copyFailed: "ここでは写真をコピーできなかった",
+    shareOn: (o: { platform: string }) => `${o.platform} でシェア`,
+    more: "その他",
+    moreLabel: "ほかのシェア方法",
+    shareText: "laundro.cafe で撮った",
+    handoff: {
+      copiedTitle: "写真をコピーしました",
+      savedTitle: "写真を保存しました",
+      opening: (o: { platform: string; seconds: number }) =>
+        `${o.seconds} 秒後に ${o.platform} を開きます…`,
+      pasteInPost: { before: "", after: " で写真を投稿に貼り付けてください。" },
+      pasteInChat: {
+        before: "チャットを選んでから、",
+        after: " で写真を貼り付けてください。",
+      },
+      pasteInNewPost: {
+        before: "投稿を作り始めてから、",
+        after: " で写真を貼り付けてください。",
+      },
+      pickFromDownloads: (o: { file: string }) =>
+        `「作成」をクリックして、ダウンロードから ${o.file} を選んでください。`,
+      blocked: "ブラウザが新しいタブを止めました。",
+      openNow: (o: { platform: string }) => `今すぐ ${o.platform} を開く`,
+      open: (o: { platform: string }) => `${o.platform} を開く`,
+      cancel: "キャンセル",
+      pasteReminder: (o: { platform: string; keys: string }) =>
+        `写真をコピーした · ${o.keys} で ${o.platform} に貼り付け`,
+      savedReminder: (o: { platform: string }) =>
+        `写真を保存した · ${o.platform} の「作成」から追加`,
+    },
+    mastodon: {
+      ask: "mastodon のサーバーを教えて",
+      server: "あなたのサーバー",
+      post: "投稿",
+    },
+  },
   board: {
     label: "掲示板、コインランドリーのお知らせ",
     tooltip: "お知らせ",
@@ -326,6 +380,10 @@ export const ja = {
       board: "掲示板",
     },
     updates: {
+      "instant-camera": {
+        title: "部屋の写真を撮れるように",
+        body: "スツールやベッドの上のインスタントカメラを手に取って、部屋の好きなところを切り取って撮れます。プリントに短いメモを書いて、シェアしたり、コピーして友だちに送ったりできます。",
+      },
       "notebook-doodles": {
         title: "ノートに絵を描けるように",
         body: "ノートのペンを「書く」から「描く」に切り替えて、次の人へ小さな絵を残せます。コインランドリーでノートを開いている人には、絵がページに描かれていく様子が見えます。",

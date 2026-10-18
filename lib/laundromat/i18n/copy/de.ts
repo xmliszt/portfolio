@@ -33,10 +33,6 @@ export const de = {
   toolbar: {
     soundOn: "Ton an",
     soundOff: "Ton aus",
-    share: "teilen",
-    linkCopied: "Link kopiert",
-    shareText:
-      "Ein ruhiger Waschsalon in deinem Browser. Steck eine Ladung rein, lass den Timer laufen und lies die Notizen, die andere hinterlassen haben.",
     language: "Sprache",
     settings: "Einstellungen",
     builtBy: {
@@ -319,6 +315,67 @@ export const de = {
     setLabel: "Fliegendes Spielzeugauto, spielen",
     setTooltip: "spielen",
   },
+  instantCamera: {
+    objectLabel: "Sofortbildkamera, ein Foto machen",
+    objectTooltip: "ein Foto machen",
+    toolbar: "ein Foto machen",
+    viewfinderLabel:
+      "Sucher. Zieh, um das Foto auszurichten, zieh an einer Ecke, um die Größe zu ändern, drück Enter, um es aufzunehmen.",
+    hint: "zieh zum Ausrichten · zieh an einer Ecke für die Größe",
+    snapFailed: "das Foto ist nichts geworden · versuch's noch mal",
+    putDown: "weglegen",
+    shutter: "Foto aufnehmen",
+    portrait: "Hochformat",
+    landscape: "Querformat",
+    turnToLandscape: "Kamera ins Querformat drehen",
+    turnToPortrait: "Kamera ins Hochformat drehen",
+    cardLabel: "Dein Foto",
+    photoAlt: "Dein Sofortbild",
+    notePlaceholder: "schreib eine kleine Notiz…",
+    noteLabel: "Notiz auf dem Foto",
+    retake: "neu aufnehmen",
+    copy: "kopieren",
+    done: "fertig",
+    copied: "Foto kopiert",
+    copyFailed: "das Foto konnte hier nicht kopiert werden",
+    shareOn: (o: { platform: string }) => `Auf ${o.platform} teilen`,
+    more: "mehr",
+    moreLabel: "Weitere Möglichkeiten zum Teilen",
+    shareText: "geknipst bei laundro.cafe",
+    handoff: {
+      copiedTitle: "Foto kopiert",
+      savedTitle: "Foto gespeichert",
+      opening: (o: { platform: string; seconds: number }) =>
+        `${o.platform} öffnet sich in ${o.seconds}…`,
+      pasteInPost: {
+        before: "Füg das Foto mit ",
+        after: " in deinen Beitrag ein.",
+      },
+      pasteInChat: {
+        before: "Wähl einen Chat und füg das Foto dann mit ",
+        after: " ein.",
+      },
+      pasteInNewPost: {
+        before: "Starte einen Beitrag und füg das Foto dann mit ",
+        after: " ein.",
+      },
+      pickFromDownloads: (o: { file: string }) =>
+        `Klick auf Erstellen und wähl dann ${o.file} aus deinen Downloads.`,
+      blocked: "Dein Browser hat den neuen Tab zurückgehalten.",
+      openNow: (o: { platform: string }) => `${o.platform} jetzt öffnen`,
+      open: (o: { platform: string }) => `${o.platform} öffnen`,
+      cancel: "Abbrechen",
+      pasteReminder: (o: { platform: string; keys: string }) =>
+        `Foto kopiert · füg es mit ${o.keys} in ${o.platform} ein`,
+      savedReminder: (o: { platform: string }) =>
+        `Foto gespeichert · füg es in ${o.platform} über Erstellen hinzu`,
+    },
+    mastodon: {
+      ask: "mastodon muss deinen Server kennen",
+      server: "dein Server",
+      post: "posten",
+    },
+  },
   board: {
     label: "Aushang, was es Neues im Waschsalon gibt",
     tooltip: "was gibt's neues",
@@ -341,6 +398,10 @@ export const de = {
       board: "aushang",
     },
     updates: {
+      "instant-camera": {
+        title: "ein Foto vom Raum machen",
+        body: "Nimm die Sofortbildkamera vom Hocker oder vom Bett, wähl einen beliebigen Ausschnitt des Raums und drück ab. Schreib eine kurze Notiz auf den Abzug, dann teil ihn oder kopier ihn, um ihn einem Freund zu schicken.",
+      },
       "notebook-doodles": {
         title: "im Notizbuch zeichnen",
         body: "Stell den Stift im Notizbuch von schreiben auf zeichnen und hinterlass eine kleine Zeichnung für die nächste Person. Alle im Waschsalon, die das Notizbuch offen haben, sehen zu, wie sie sich von selbst auf die Seite zeichnet.",

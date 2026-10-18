@@ -38,10 +38,6 @@ export const vi = {
   toolbar: {
     soundOn: "đang bật tiếng",
     soundOff: "đang tắt tiếng",
-    share: "chia sẻ",
-    linkCopied: "đã sao chép liên kết",
-    shareText:
-      "Một tiệm giặt yên tĩnh trong trình duyệt của bạn. Bỏ đồ vào máy, để đồng hồ chạy, và đọc những lời nhắn người khác để lại.",
     language: "Ngôn ngữ",
     settings: "cài đặt",
     builtBy: {
@@ -308,6 +304,64 @@ export const vi = {
     setLabel: "Xe bay đồ chơi, chơi",
     setTooltip: "chơi",
   },
+  instantCamera: {
+    objectLabel: "Máy ảnh chụp lấy liền, chụp ảnh",
+    objectTooltip: "chụp ảnh",
+    toolbar: "chụp ảnh",
+    viewfinderLabel:
+      "Khung ngắm. Kéo để căn khung ảnh, kéo một góc để đổi kích thước, nhấn Enter để chụp.",
+    hint: "kéo để căn khung · kéo một góc để đổi kích thước",
+    snapFailed: "ảnh chưa ra được · thử lại nhé",
+    putDown: "đặt xuống",
+    shutter: "Chụp ảnh",
+    portrait: "dọc",
+    landscape: "ngang",
+    turnToLandscape: "Xoay máy ảnh sang ngang",
+    turnToPortrait: "Xoay máy ảnh sang dọc",
+    cardLabel: "Ảnh của bạn",
+    photoAlt: "Ảnh chụp lấy liền của bạn",
+    notePlaceholder: "viết một ghi chú nhỏ…",
+    noteLabel: "Ghi chú trên ảnh",
+    retake: "chụp lại",
+    copy: "sao chép",
+    done: "xong",
+    copied: "đã sao chép ảnh",
+    copyFailed: "không sao chép được ảnh ở đây",
+    shareOn: (o: { platform: string }) => `Chia sẻ lên ${o.platform}`,
+    more: "thêm",
+    moreLabel: "Các cách chia sẻ khác",
+    shareText: "chụp tại laundro.cafe",
+    handoff: {
+      copiedTitle: "Đã sao chép ảnh",
+      savedTitle: "Đã lưu ảnh",
+      opening: (o: { platform: string; seconds: number }) =>
+        `Mở ${o.platform} sau ${o.seconds}…`,
+      pasteInPost: { before: "Dán ảnh vào bài đăng bằng ", after: "." },
+      pasteInChat: {
+        before: "Chọn một cuộc trò chuyện, rồi dán ảnh bằng ",
+        after: ".",
+      },
+      pasteInNewPost: {
+        before: "Bắt đầu một bài đăng, rồi dán ảnh bằng ",
+        after: ".",
+      },
+      pickFromDownloads: (o: { file: string }) =>
+        `Nhấp Tạo, rồi chọn ${o.file} trong mục tải xuống.`,
+      blocked: "Trình duyệt đã chặn tab mới.",
+      openNow: (o: { platform: string }) => `Mở ${o.platform} ngay`,
+      open: (o: { platform: string }) => `Mở ${o.platform}`,
+      cancel: "Hủy",
+      pasteReminder: (o: { platform: string; keys: string }) =>
+        `đã sao chép ảnh · dán vào ${o.platform} bằng ${o.keys}`,
+      savedReminder: (o: { platform: string }) =>
+        `đã lưu ảnh · thêm vào ${o.platform} bằng nút tạo`,
+    },
+    mastodon: {
+      ask: "mastodon cần biết máy chủ của bạn",
+      server: "máy chủ của bạn",
+      post: "đăng",
+    },
+  },
   board: {
     label: "Bảng tin, có gì mới ở tiệm giặt",
     tooltip: "có gì mới",
@@ -330,6 +384,10 @@ export const vi = {
       board: "bảng tin",
     },
     updates: {
+      "instant-camera": {
+        title: "chụp ảnh căn phòng",
+        body: "Cầm chiếc máy ảnh chụp lấy liền trên ghế đẩu hoặc trên giường, căn khung bất kỳ góc nào trong phòng rồi bấm chụp. Viết một ghi chú ngắn lên tấm ảnh in, rồi chia sẻ hoặc sao chép để gửi cho bạn bè.",
+      },
       "notebook-doodles": {
         title: "vẽ vào sổ",
         body: "Chuyển bút của sổ từ viết sang vẽ và để lại một hình vẽ nhỏ cho người đến sau. Bất kỳ ai trong tiệm giặt đang mở sổ đều thấy hình vẽ tự hiện dần trên trang.",

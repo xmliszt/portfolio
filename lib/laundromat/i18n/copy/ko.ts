@@ -33,10 +33,6 @@ export const ko = {
   toolbar: {
     soundOn: "소리 켬",
     soundOff: "소리 끔",
-    share: "공유",
-    linkCopied: "링크 복사됨",
-    shareText:
-      "브라우저 속 조용한 빨래방. 빨래를 넣고, 타이머를 돌리고, 사람들이 남긴 메모를 읽어 봐.",
     language: "언어",
     settings: "설정",
     builtBy: {
@@ -300,6 +296,67 @@ export const ko = {
     setLabel: "하늘을 나는 장난감 차, 플레이",
     setTooltip: "플레이",
   },
+  instantCamera: {
+    objectLabel: "즉석카메라, 사진 찍기",
+    objectTooltip: "사진 찍기",
+    toolbar: "사진 찍기",
+    viewfinderLabel:
+      "뷰파인더. 드래그해서 구도를 잡고, 모서리를 드래그해서 크기를 바꾸고, Enter를 눌러 찍어요.",
+    hint: "드래그해서 구도 잡기 · 모서리를 당겨 크기 조절",
+    snapFailed: "사진이 나오지 않았어요 · 다시 찍어 보기",
+    putDown: "내려놓기",
+    shutter: "사진 찍기",
+    portrait: "세로",
+    landscape: "가로",
+    turnToLandscape: "카메라를 가로로 돌리기",
+    turnToPortrait: "카메라를 세로로 돌리기",
+    cardLabel: "내 사진",
+    photoAlt: "내 즉석 사진",
+    notePlaceholder: "짧은 메모 쓰기…",
+    noteLabel: "사진 메모",
+    retake: "다시 찍기",
+    copy: "복사",
+    done: "완료",
+    copied: "사진 복사됨",
+    copyFailed: "여기서는 사진을 복사할 수 없어요",
+    shareOn: (o: { platform: string }) => `${o.platform}에 공유`,
+    more: "더 보기",
+    moreLabel: "다른 공유 방법",
+    shareText: "laundro.cafe에서 찍음",
+    handoff: {
+      copiedTitle: "사진 복사됨",
+      savedTitle: "사진 저장됨",
+      opening: (o: { platform: string; seconds: number }) =>
+        `${o.seconds}초 후 ${o.platform} 열기…`,
+      pasteInPost: {
+        before: "",
+        after: " 키로 사진을 게시물에 붙여 넣으세요.",
+      },
+      pasteInChat: {
+        before: "채팅을 고른 다음 ",
+        after: " 키로 사진을 붙여 넣으세요.",
+      },
+      pasteInNewPost: {
+        before: "새 게시물을 시작한 다음 ",
+        after: " 키로 사진을 붙여 넣으세요.",
+      },
+      pickFromDownloads: (o: { file: string }) =>
+        `만들기를 클릭한 다음 다운로드에서 ${o.file} 파일을 고르세요.`,
+      blocked: "브라우저가 새 탭을 막았어요.",
+      openNow: (o: { platform: string }) => `지금 ${o.platform} 열기`,
+      open: (o: { platform: string }) => `${o.platform} 열기`,
+      cancel: "취소",
+      pasteReminder: (o: { platform: string; keys: string }) =>
+        `사진 복사됨 · ${o.keys} 키로 ${o.platform}에 붙여 넣기`,
+      savedReminder: (o: { platform: string }) =>
+        `사진 저장됨 · ${o.platform}에서 만들기로 추가`,
+    },
+    mastodon: {
+      ask: "mastodon 서버를 알려 주세요",
+      server: "내 서버",
+      post: "게시",
+    },
+  },
   board: {
     label: "게시판, 빨래방의 새 소식",
     tooltip: "새 소식",
@@ -322,6 +379,10 @@ export const ko = {
       board: "게시판",
     },
     updates: {
+      "instant-camera": {
+        title: "방 사진 찍기",
+        body: "스툴이나 침대 위의 즉석카메라를 집어 들고, 방 어디든 구도를 잡아 찍어요. 인화된 사진에 짧은 메모를 쓰고, 공유하거나 복사해서 친구에게 보낼 수 있어요.",
+      },
       "notebook-doodles": {
         title: "노트에 그림 그리기",
         body: "노트 펜을 쓰기에서 그리기로 바꾸고 다음 사람에게 작은 그림을 남겨요. 빨래방에서 노트를 열어 둔 사람은 누구나 그림이 페이지에 저절로 그려지는 걸 볼 수 있어요.",

@@ -27,6 +27,8 @@ export const SOUND_NAMES = [
   "toy-car-launch",
   "toy-thruster",
   "toy-hover-jets",
+  "camera-shutter",
+  "camera-eject",
 ] as const;
 
 export type SoundName = (typeof SOUND_NAMES)[number];

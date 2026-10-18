@@ -34,10 +34,6 @@ export const ptBR = {
   toolbar: {
     soundOn: "som ligado",
     soundOff: "som desligado",
-    share: "compartilhar",
-    linkCopied: "link copiado",
-    shareText:
-      "Uma lavanderia tranquila no seu navegador. Coloque uma leva de roupa, deixe o timer rodar e leia os recados que as pessoas deixaram.",
     language: "Idioma",
     settings: "configurações",
     builtBy: {
@@ -316,6 +312,64 @@ export const ptBR = {
     setLabel: "Carro voador de brinquedo, jogar",
     setTooltip: "jogar",
   },
+  instantCamera: {
+    objectLabel: "Câmera instantânea, tirar uma foto",
+    objectTooltip: "tirar uma foto",
+    toolbar: "tirar uma foto",
+    viewfinderLabel:
+      "Visor. Arraste para enquadrar a foto, arraste um canto para redimensionar e pressione Enter para tirá-la.",
+    hint: "arraste para enquadrar · puxe um canto para redimensionar",
+    snapFailed: "a foto não saiu · tente de novo",
+    putDown: "guardar",
+    shutter: "Tirar a foto",
+    portrait: "retrato",
+    landscape: "paisagem",
+    turnToLandscape: "Virar a câmera para paisagem",
+    turnToPortrait: "Virar a câmera para retrato",
+    cardLabel: "Sua foto",
+    photoAlt: "Sua foto instantânea",
+    notePlaceholder: "escreva um bilhetinho…",
+    noteLabel: "Bilhete na foto",
+    retake: "tirar de novo",
+    copy: "copiar",
+    done: "pronto",
+    copied: "foto copiada",
+    copyFailed: "não deu para copiar a foto aqui",
+    shareOn: (o: { platform: string }) => `Compartilhar no ${o.platform}`,
+    more: "mais",
+    moreLabel: "Mais formas de compartilhar",
+    shareText: "clicado no laundro.cafe",
+    handoff: {
+      copiedTitle: "Foto copiada",
+      savedTitle: "Foto salva",
+      opening: (o: { platform: string; seconds: number }) =>
+        `Abrindo o ${o.platform} em ${o.seconds}…`,
+      pasteInPost: { before: "Cole a foto no seu post com ", after: "." },
+      pasteInChat: {
+        before: "Escolha uma conversa e cole a foto com ",
+        after: ".",
+      },
+      pasteInNewPost: {
+        before: "Comece um post e cole a foto com ",
+        after: ".",
+      },
+      pickFromDownloads: (o: { file: string }) =>
+        `Clique em Criar e escolha ${o.file} nos seus downloads.`,
+      blocked: "Seu navegador segurou a nova aba.",
+      openNow: (o: { platform: string }) => `Abrir o ${o.platform} agora`,
+      open: (o: { platform: string }) => `Abrir o ${o.platform}`,
+      cancel: "Cancelar",
+      pasteReminder: (o: { platform: string; keys: string }) =>
+        `foto copiada · cole no ${o.platform} com ${o.keys}`,
+      savedReminder: (o: { platform: string }) =>
+        `foto salva · adicione no ${o.platform} com criar`,
+    },
+    mastodon: {
+      ask: "o mastodon precisa saber qual é o seu servidor",
+      server: "seu servidor",
+      post: "publicar",
+    },
+  },
   board: {
     label: "Mural, novidades da lavanderia",
     tooltip: "novidades",
@@ -338,6 +392,10 @@ export const ptBR = {
       board: "mural",
     },
     updates: {
+      "instant-camera": {
+        title: "tire uma foto do lugar",
+        body: "Pegue a câmera instantânea no banquinho ou na cama, enquadre qualquer canto do lugar e clique. Escreva um bilhete curto na foto impressa e depois compartilhe ou copie para mandar para um amigo.",
+      },
       "notebook-doodles": {
         title: "desenhe no caderno",
         body: "Troque a caneta do caderno de escrever para desenhar e deixe um pequeno desenho para quem chegar depois. Quem estiver na lavanderia com o caderno aberto vê o desenho surgir sozinho na página.",

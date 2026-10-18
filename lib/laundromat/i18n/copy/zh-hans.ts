@@ -33,10 +33,6 @@ export const zhHans = {
   toolbar: {
     soundOn: "声音开",
     soundOff: "声音关",
-    share: "分享",
-    linkCopied: "链接已复制",
-    shareText:
-      "浏览器里一间安静的自助洗衣店。放一桶衣服进去，让计时器走着，读读别人留下的话。",
     language: "语言",
     settings: "设置",
     builtBy: {
@@ -286,6 +282,57 @@ export const zhHans = {
     setLabel: "飞行汽车玩具，开始",
     setTooltip: "开始",
   },
+  instantCamera: {
+    objectLabel: "拍立得相机，拍一张照片",
+    objectTooltip: "拍张照片",
+    toolbar: "拍照",
+    viewfinderLabel: "取景框。拖动来取景，拖动一角来调整大小，按 Enter 拍下。",
+    hint: "拖动取景 · 拉动一角调整大小",
+    snapFailed: "照片没洗出来 · 再试一次",
+    putDown: "放下",
+    shutter: "拍照",
+    portrait: "竖拍",
+    landscape: "横拍",
+    turnToLandscape: "把相机转成横向",
+    turnToPortrait: "把相机转成竖向",
+    cardLabel: "你的照片",
+    photoAlt: "你的拍立得照片",
+    notePlaceholder: "写一句小留言…",
+    noteLabel: "照片上的留言",
+    retake: "重拍",
+    copy: "复制",
+    done: "完成",
+    copied: "照片已复制",
+    copyFailed: "这里无法复制照片",
+    shareOn: (o: { platform: string }) => `分享到 ${o.platform}`,
+    more: "更多",
+    moreLabel: "更多分享方式",
+    shareText: "拍摄于 laundro.cafe",
+    handoff: {
+      copiedTitle: "照片已复制",
+      savedTitle: "照片已保存",
+      opening: (o: { platform: string; seconds: number }) =>
+        `${o.seconds} 秒后打开 ${o.platform}…`,
+      pasteInPost: { before: "在帖子里按 ", after: " 粘贴照片。" },
+      pasteInChat: { before: "选一个聊天，然后按 ", after: " 粘贴照片。" },
+      pasteInNewPost: { before: "新建一个帖子，然后按 ", after: " 粘贴照片。" },
+      pickFromDownloads: (o: { file: string }) =>
+        `点击「创建」，然后从下载中选择 ${o.file}。`,
+      blocked: "浏览器拦下了新标签页。",
+      openNow: (o: { platform: string }) => `立即打开 ${o.platform}`,
+      open: (o: { platform: string }) => `打开 ${o.platform}`,
+      cancel: "取消",
+      pasteReminder: (o: { platform: string; keys: string }) =>
+        `照片已复制 · 在 ${o.platform} 中按 ${o.keys} 粘贴`,
+      savedReminder: (o: { platform: string }) =>
+        `照片已保存 · 在 ${o.platform} 中点「创建」添加`,
+    },
+    mastodon: {
+      ask: "mastodon 需要知道你的服务器",
+      server: "你的服务器",
+      post: "发布",
+    },
+  },
   board: {
     label: "告示板，洗衣房的新鲜事",
     tooltip: "新鲜事",
@@ -308,6 +355,10 @@ export const zhHans = {
       board: "告示板",
     },
     updates: {
+      "instant-camera": {
+        title: "给房间拍张照",
+        body: "拿起高脚凳或床上的拍立得，框住房间里任意一处，按下快门。在相片上写一句简短的留言，然后分享出去，或者复制下来发给朋友。",
+      },
       "notebook-doodles": {
         title: "在笔记本上画画",
         body: "把笔记本的笔从写切换到画，给下一个人留一幅小画。洗衣店里正翻开本子的人，都会看到它在页面上一笔一笔画出来。",

@@ -86,6 +86,7 @@ export function RoomDrawing(props: RoomDrawingProps) {
       height={layout.size.height}
       viewBox={`0 0 ${layout.size.width} ${layout.size.height}`}
       className="pointer-events-none absolute top-0 left-0 overflow-visible"
+      data-instant-camera-subject="laundromat"
       data-lm-lamp-switch={props.lampSwitch}
       data-lm-daylit
       style={getDaylitTokenStyle({ config, hour })}

@@ -32,10 +32,6 @@ export const nl = {
   toolbar: {
     soundOn: "geluid aan",
     soundOff: "geluid uit",
-    share: "delen",
-    linkCopied: "link gekopieerd",
-    shareText:
-      "Een rustige wasserette in je browser. Stop er een was in, laat de timer lopen en lees de berichtjes die mensen hebben achtergelaten.",
     language: "Taal",
     settings: "instellingen",
     builtBy: {
@@ -286,6 +282,64 @@ export const nl = {
     setLabel: "Vliegende speelgoedauto, spelen",
     setTooltip: "spelen",
   },
+  instantCamera: {
+    objectLabel: "Instantcamera, een foto maken",
+    objectTooltip: "een foto maken",
+    toolbar: "een foto maken",
+    viewfinderLabel:
+      "Zoeker. Sleep om de foto in te kaderen, sleep aan een hoek om het formaat te wijzigen, druk op Enter om hem te maken.",
+    hint: "sleep om in te kaderen · trek aan een hoek voor het formaat",
+    snapFailed: "de foto is niet gelukt · probeer het opnieuw",
+    putDown: "neerleggen",
+    shutter: "De foto maken",
+    portrait: "staand",
+    landscape: "liggend",
+    turnToLandscape: "De camera liggend draaien",
+    turnToPortrait: "De camera staand draaien",
+    cardLabel: "Je foto",
+    photoAlt: "Je instantfoto",
+    notePlaceholder: "schrijf een klein briefje…",
+    noteLabel: "Briefje op de foto",
+    retake: "opnieuw",
+    copy: "kopiëren",
+    done: "klaar",
+    copied: "foto gekopieerd",
+    copyFailed: "de foto kon hier niet worden gekopieerd",
+    shareOn: (o: { platform: string }) => `Delen op ${o.platform}`,
+    more: "meer",
+    moreLabel: "Meer manieren om te delen",
+    shareText: "gekiekt bij laundro.cafe",
+    handoff: {
+      copiedTitle: "Foto gekopieerd",
+      savedTitle: "Foto opgeslagen",
+      opening: (o: { platform: string; seconds: number }) =>
+        `${o.platform} gaat open over ${o.seconds}…`,
+      pasteInPost: { before: "Plak de foto met ", after: " in je bericht." },
+      pasteInChat: {
+        before: "Kies een chat en plak de foto dan met ",
+        after: ".",
+      },
+      pasteInNewPost: {
+        before: "Begin een bericht en plak de foto dan met ",
+        after: ".",
+      },
+      pickFromDownloads: (o: { file: string }) =>
+        `Klik op Maken en kies dan ${o.file} uit je downloads.`,
+      blocked: "Je browser hield het nieuwe tabblad tegen.",
+      openNow: (o: { platform: string }) => `${o.platform} nu openen`,
+      open: (o: { platform: string }) => `${o.platform} openen`,
+      cancel: "Annuleren",
+      pasteReminder: (o: { platform: string; keys: string }) =>
+        `foto gekopieerd · plak hem in ${o.platform} met ${o.keys}`,
+      savedReminder: (o: { platform: string }) =>
+        `foto opgeslagen · voeg hem in ${o.platform} toe via maken`,
+    },
+    mastodon: {
+      ask: "mastodon moet je server weten",
+      server: "je server",
+      post: "plaatsen",
+    },
+  },
   board: {
     label: "Prikbord, wat er nieuw is in de wasserette",
     tooltip: "wat is er nieuw",
@@ -308,6 +362,10 @@ export const nl = {
       board: "bord",
     },
     updates: {
+      "instant-camera": {
+        title: "een foto maken van de kamer",
+        body: "Pak de instantcamera van de kruk of het bed, kader een stukje van de kamer in en druk af. Schrijf een kort briefje op de afdruk en deel hem, of kopieer hem om naar een vriend te sturen.",
+      },
       "notebook-doodles": {
         title: "tekenen in het notitieboek",
         body: "Zet de pen van het notitieboek van schrijven op tekenen en laat een kleine tekening achter voor wie na je komt. Iedereen in de wasserette die het notitieboek open heeft, ziet de tekening zichzelf op de pagina tekenen.",

@@ -38,6 +38,7 @@ function getBlocker(object: SceneObject) {
     case "mat":
     case "notebook":
     case "mug":
+    case "instant-camera":
       return undefined;
     case "table":
       return topSlab(TABLE_TOP_THICKNESS);

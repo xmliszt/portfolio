@@ -45,6 +45,7 @@ export function CloverShowerLayer(props: CloverShowerLayerProps) {
     <canvas
       ref={canvasRef}
       aria-hidden
+      data-lm-control
       className="pointer-events-none absolute inset-0 size-full"
     />
   );

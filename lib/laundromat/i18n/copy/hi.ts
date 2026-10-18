@@ -38,10 +38,6 @@ export const hi = {
   toolbar: {
     soundOn: "आवाज़ चालू",
     soundOff: "आवाज़ बंद",
-    share: "शेयर करो",
-    linkCopied: "लिंक कॉपी हो गया",
-    shareText:
-      "तुम्हारे ब्राउज़र में एक शांत लॉन्ड्री। कपड़े डालो, टाइमर चलने दो, और लोगों के छोड़े हुए नोट पढ़ो।",
     language: "भाषा",
     settings: "सेटिंग्स",
     builtBy: {
@@ -314,6 +310,67 @@ export const hi = {
     setLabel: "उड़ने वाली खिलौना कार, चलाओ",
     setTooltip: "चलाओ",
   },
+  instantCamera: {
+    objectLabel: "इंस्टेंट कैमरा, फ़ोटो खींचो",
+    objectTooltip: "फ़ोटो खींचो",
+    toolbar: "फ़ोटो खींचो",
+    viewfinderLabel:
+      "व्यूफ़ाइंडर। फ़ोटो का फ़्रेम चुनने के लिए खींचें, साइज़ बदलने के लिए कोना खींचें, फ़ोटो लेने के लिए Enter दबाएँ।",
+    hint: "फ़्रेम चुनने के लिए खींचें · साइज़ के लिए कोना खींचें",
+    snapFailed: "फ़ोटो नहीं बनी · फिर से कोशिश करें",
+    putDown: "नीचे रखो",
+    shutter: "फ़ोटो खींचें",
+    portrait: "पोर्ट्रेट",
+    landscape: "लैंडस्केप",
+    turnToLandscape: "कैमरा लैंडस्केप में घुमाएँ",
+    turnToPortrait: "कैमरा पोर्ट्रेट में घुमाएँ",
+    cardLabel: "आपकी फ़ोटो",
+    photoAlt: "आपकी इंस्टेंट फ़ोटो",
+    notePlaceholder: "एक छोटा-सा नोट लिखें…",
+    noteLabel: "फ़ोटो पर नोट",
+    retake: "फिर से खींचो",
+    copy: "कॉपी",
+    done: "हो गया",
+    copied: "फ़ोटो कॉपी हो गई",
+    copyFailed: "फ़ोटो यहाँ कॉपी नहीं हो सकी",
+    shareOn: (o: { platform: string }) => `${o.platform} पर शेयर करें`,
+    more: "और",
+    moreLabel: "शेयर करने के और तरीके",
+    shareText: "laundro.cafe पर खींची गई",
+    handoff: {
+      copiedTitle: "फ़ोटो कॉपी हो गई",
+      savedTitle: "फ़ोटो सेव हो गई",
+      opening: (o: { platform: string; seconds: number }) =>
+        `${o.seconds} में ${o.platform} खुल रहा है…`,
+      pasteInPost: {
+        before: "",
+        after: " से फ़ोटो अपनी पोस्ट में पेस्ट करें।",
+      },
+      pasteInChat: {
+        before: "कोई चैट चुनें, फिर ",
+        after: " से फ़ोटो पेस्ट करें।",
+      },
+      pasteInNewPost: {
+        before: "नई पोस्ट शुरू करें, फिर ",
+        after: " से फ़ोटो पेस्ट करें।",
+      },
+      pickFromDownloads: (o: { file: string }) =>
+        `बनाएँ पर क्लिक करें, फिर अपने डाउनलोड में से ${o.file} चुनें।`,
+      blocked: "आपके ब्राउज़र ने नया टैब रोक लिया।",
+      openNow: (o: { platform: string }) => `${o.platform} अभी खोलें`,
+      open: (o: { platform: string }) => `${o.platform} खोलें`,
+      cancel: "रद्द करें",
+      pasteReminder: (o: { platform: string; keys: string }) =>
+        `फ़ोटो कॉपी हो गई · ${o.keys} से इसे ${o.platform} में पेस्ट करें`,
+      savedReminder: (o: { platform: string }) =>
+        `फ़ोटो सेव हो गई · ${o.platform} में बनाएँ से इसे जोड़ें`,
+    },
+    mastodon: {
+      ask: "mastodon को आपका सर्वर जानना है",
+      server: "आपका सर्वर",
+      post: "पोस्ट करें",
+    },
+  },
   board: {
     label: "सूचना बोर्ड, लॉन्ड्रोमैट में नया क्या है",
     tooltip: "नया क्या है",
@@ -336,6 +393,10 @@ export const hi = {
       board: "बोर्ड",
     },
     updates: {
+      "instant-camera": {
+        title: "कमरे की फ़ोटो खींचें",
+        body: "स्टूल या बिस्तर पर रखा इंस्टेंट कैमरा उठाइए, कमरे का कोई भी हिस्सा फ़्रेम कीजिए और फ़ोटो खींचिए। प्रिंट पर एक छोटा नोट लिखिए, फिर उसे शेयर कीजिए या किसी दोस्त को भेजने के लिए कॉपी कीजिए।",
+      },
       "notebook-doodles": {
         title: "नोटबुक में ड्रॉइंग बनाएँ",
         body: "नोटबुक के पेन को लिखने से ड्रॉइंग पर बदलिए और अगले आने वाले के लिए एक छोटी ड्रॉइंग छोड़िए। लॉन्ड्री में जिसके पास भी नोटबुक खुली है, उसे यह पन्ने पर अपने आप बनती दिखती है।",
