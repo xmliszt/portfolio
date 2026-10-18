@@ -23,6 +23,10 @@ import { playSlidingDoor } from "./sounds/play-sliding-door";
 import { playStartButton } from "./sounds/play-start-button";
 import { playThunderRumble } from "./sounds/play-thunder-rumble";
 import { playTouchGrass } from "./sounds/play-touch-grass";
+import { playToyBoxOpen } from "./sounds/play-toy-box-open";
+import { playToyCarLaunch } from "./sounds/play-toy-car-launch";
+import { playToyHoverJets } from "./sounds/play-toy-hover-jets";
+import { playToyThruster } from "./sounds/play-toy-thruster";
 import { playTvStatic } from "./sounds/play-tv-static";
 import { startCoffeeBrewing } from "./sounds/start-coffee-brewing";
 import { startDryerRunning } from "./sounds/start-dryer-running";
@@ -72,6 +76,10 @@ const ONE_SHOTS = {
   "shop-bell": playShopBell,
   "thunder-rumble": playThunderRumble,
   "printer-feed": playPrinterFeed,
+  "toy-box-open": playToyBoxOpen,
+  "toy-car-launch": playToyCarLaunch,
+  "toy-thruster": playToyThruster,
+  "toy-hover-jets": playToyHoverJets,
 } satisfies { [name in SoundName]: (options: VoiceOptions) => void };
 
 const LOOPS = {

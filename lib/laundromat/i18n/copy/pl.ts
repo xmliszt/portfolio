@@ -286,6 +286,13 @@ export const pl = {
     ],
     blessing: (o: { count: number; word: string }) => `+${o.count} ${o.word}`,
   },
+  toyBox: {
+    closedLabel:
+      "Pudełko z zabawką z napisem 1955, otwórz pudełko z zabawką „Powrót do przyszłości”",
+    closedTooltip: "otwórz pudełko z zabawką „Powrót do przyszłości”",
+    setLabel: "Latający samochodzik, graj",
+    setTooltip: "graj",
+  },
   board: {
     label: "Tablica, co nowego w pralni",
     tooltip: "co nowego",

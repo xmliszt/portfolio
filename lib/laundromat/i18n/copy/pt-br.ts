@@ -309,6 +309,13 @@ export const ptBR = {
     ],
     blessing: (o: { count: number; word: string }) => `+${o.count} ${o.word}`,
   },
+  toyBox: {
+    closedLabel:
+      "Caixa de brinquedo com 1955, abrir a caixa de brinquedo de “De Volta para o Futuro”",
+    closedTooltip: "abrir a caixa de brinquedo de “De Volta para o Futuro”",
+    setLabel: "Carro voador de brinquedo, jogar",
+    setTooltip: "jogar",
+  },
   board: {
     label: "Mural, novidades da lavanderia",
     tooltip: "novidades",

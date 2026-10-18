@@ -174,6 +174,10 @@ export const SOUND_SAMPLES = {
     gain: 0.6,
   },
   "printer-feed": { kind: "synthesized" },
+  "toy-box-open": { kind: "synthesized" },
+  "toy-car-launch": { kind: "synthesized" },
+  "toy-thruster": { kind: "synthesized" },
+  "toy-hover-jets": { kind: "synthesized" },
   "washer-running": {
     kind: "generated",
     prompt:

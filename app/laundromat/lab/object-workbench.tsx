@@ -57,6 +57,8 @@ export function ObjectWorkbench(props: ObjectWorkbenchProps) {
   const [openedAt] = useState(() => Date.now());
   const appliances = useRoomAppliances({ config, visitorId: undefined });
   const [tubeRollCount, setTubeRollCount] = useState(0);
+  const [toyRunStartedAtMs, setToyRunStartedAtMs] = useState(-Infinity);
+  const [isToyBoxOpening, setIsToyBoxOpening] = useState(false);
   const roomRef = useRef<HTMLDivElement>(null);
   const { reading: weather } = useLocalWeather();
   const layout = useMemo(() => {
@@ -133,6 +135,11 @@ export function ObjectWorkbench(props: ObjectWorkbenchProps) {
     peopleHere: 3,
     tubeRollCount,
     weather,
+    toyBox:
+      object.kind === "toy-box" && isToyBoxOpening
+        ? { kind: "opening" }
+        : { kind: "open", runStartedAtMs: toyRunStartedAtMs },
+    hidden: false,
   };
 
   function describeObject() {
@@ -247,6 +254,8 @@ export function ObjectWorkbench(props: ObjectWorkbenchProps) {
     }
     if (object.kind === "mug") appliances.dispatchCoffee({ type: "drink" });
     if (object.kind === "tube-display") setTubeRollCount((count) => count + 1);
+    if (object.kind === "toy-box") setIsToyBoxOpening((opening) => !opening);
+    if (object.kind === "toy-set") setToyRunStartedAtMs(performance.now());
   }
 
   const laidOut = layout.objects.at(0);

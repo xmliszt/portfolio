@@ -238,6 +238,13 @@ const objectDials = {
     airflowOpacity: [details.airPurifier.airflowOpacity, 0, 1, 0.01],
     _collapsed: true,
   },
+  toyBox: {
+    lightColor: details.toyBox.lightColor,
+    lidFallMs: [details.toyBox.lidFallMs, 0, 3000, 10],
+    boxFadeMs: [details.toyBox.boxFadeMs, 0, 3000, 10],
+    plumeOpacity: [details.toyBox.plumeOpacity, 0, 1, 0.01],
+    _collapsed: true,
+  },
   weatherPanel: {
     glyphMotionSeconds: [details.weatherPanel.glyphMotionSeconds, 0.4, 6, 0.1],
     _collapsed: true,
@@ -545,6 +552,7 @@ export default function LaundromatLab() {
         tubeDisplay: objectValues.tubeDisplay,
         weatherPanel: objectValues.weatherPanel,
         airPurifier: objectValues.airPurifier,
+        toyBox: objectValues.toyBox,
         notebook: {
           ...objectValues.notebook,
           turnEase: details.notebook.turnEase,

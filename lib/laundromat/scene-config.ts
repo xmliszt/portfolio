@@ -26,7 +26,9 @@ export type FurnitureKind =
   | "mat"
   | "board"
   | "weather-panel"
-  | "air-purifier";
+  | "air-purifier"
+  | "toy-box"
+  | "toy-set";
 
 export type SceneObject =
   | (Placement & { kind: MachineKind; number: number })
@@ -184,6 +186,12 @@ export type SceneConfig = {
     };
     weatherPanel: { glyphMotionSeconds: number };
     airPurifier: { minAqi: number; fanSeconds: number; airflowOpacity: number };
+    toyBox: {
+      lightColor: string;
+      lidFallMs: number;
+      boxFadeMs: number;
+      plumeOpacity: number;
+    };
     notebook: {
       coverNumber: number;
       liftMs: number;
@@ -422,6 +430,18 @@ export const sceneConfig: SceneConfig = {
       position: { x: 1.4, y: 3.5, z: 0 },
       size: { w: 1.4, d: 1.4, h: 1.1 },
     },
+    {
+      id: "toy-box",
+      kind: "toy-box",
+      position: { x: 0.15, y: 5.5, z: 0 },
+      size: { w: 0.8, d: 3.3, h: 1.1 },
+    },
+    {
+      id: "toy-set",
+      kind: "toy-set",
+      position: { x: 0.15, y: 5.5, z: 0 },
+      size: { w: 0.8, d: 3.3, h: 1.95 },
+    },
   ],
   camera: {
     focusTargets: {
@@ -601,6 +621,12 @@ export const sceneConfig: SceneConfig = {
     },
     weatherPanel: { glyphMotionSeconds: 1.6 },
     airPurifier: { minAqi: 101, fanSeconds: 1.2, airflowOpacity: 0.22 },
+    toyBox: {
+      lightColor: "#ff3b30",
+      lidFallMs: 700,
+      boxFadeMs: 500,
+      plumeOpacity: 0.55,
+    },
     notebook: {
       coverNumber: 1,
       liftMs: 650,

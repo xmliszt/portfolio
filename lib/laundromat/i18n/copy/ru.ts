@@ -293,6 +293,13 @@ export const ru = {
     ],
     blessing: (o: { count: number; word: string }) => `+${o.count} ${o.word}`,
   },
+  toyBox: {
+    closedLabel:
+      "Коробка с игрушкой с надписью 1955, открыть коробку «Назад в будущее»",
+    closedTooltip: "открыть коробку «Назад в будущее»",
+    setLabel: "Игрушечная летающая машина, играть",
+    setTooltip: "играть",
+  },
   board: {
     label: "Стенд, что нового в прачечной",
     tooltip: "что нового",

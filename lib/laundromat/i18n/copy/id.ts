@@ -313,6 +313,13 @@ export const id = {
     ],
     blessing: (o: { count: number; word: string }) => `+${o.count} ${o.word}`,
   },
+  toyBox: {
+    closedLabel:
+      "Kotak mainan bertuliskan 1955, buka kotak mainan “Back to the Future”",
+    closedTooltip: "buka kotak mainan “Back to the Future”",
+    setLabel: "Mainan mobil terbang, mainkan",
+    setTooltip: "mainkan",
+  },
   board: {
     label: "Papan pengumuman, apa yang baru di laundromat",
     tooltip: "apa yang baru",

@@ -307,6 +307,13 @@ export const hi = {
     ],
     blessing: (o: { count: number; word: string }) => `+${o.count} ${o.word}`,
   },
+  toyBox: {
+    closedLabel:
+      "1955 लिखा खिलौने का डिब्बा, “बैक टू द फ्यूचर” खिलौने का डिब्बा खोलो",
+    closedTooltip: "“बैक टू द फ्यूचर” खिलौने का डिब्बा खोलो",
+    setLabel: "उड़ने वाली खिलौना कार, चलाओ",
+    setTooltip: "चलाओ",
+  },
   board: {
     label: "सूचना बोर्ड, लॉन्ड्रोमैट में नया क्या है",
     tooltip: "नया क्या है",

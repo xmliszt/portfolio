@@ -23,6 +23,10 @@ export const SOUND_NAMES = [
   "shop-bell",
   "thunder-rumble",
   "printer-feed",
+  "toy-box-open",
+  "toy-car-launch",
+  "toy-thruster",
+  "toy-hover-jets",
 ] as const;
 
 export type SoundName = (typeof SOUND_NAMES)[number];

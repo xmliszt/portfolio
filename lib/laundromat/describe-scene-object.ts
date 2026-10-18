@@ -113,6 +113,13 @@ export function describeSceneObject(options: {
             tooltip: copy.airPurifier.tooltip,
           };
     }
+    case "toy-box":
+      return {
+        label: copy.toyBox.closedLabel,
+        tooltip: copy.toyBox.closedTooltip,
+      };
+    case "toy-set":
+      return { label: copy.toyBox.setLabel, tooltip: copy.toyBox.setTooltip };
     case "counter":
     case "window":
     case "clock":

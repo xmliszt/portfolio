@@ -317,6 +317,13 @@ export const it = {
     ],
     blessing: (o: { count: number; word: string }) => `+${o.count} ${o.word}`,
   },
+  toyBox: {
+    closedLabel:
+      "Scatola giocattolo con scritto 1955, apri la scatola giocattolo di “Ritorno al futuro”",
+    closedTooltip: "apri la scatola giocattolo di “Ritorno al futuro”",
+    setLabel: "Auto volante giocattolo, gioca",
+    setTooltip: "gioca",
+  },
   board: {
     label: "Bacheca, le novità della lavanderia",
     tooltip: "novità",

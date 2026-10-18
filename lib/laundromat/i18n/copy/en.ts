@@ -307,6 +307,12 @@ export const en = {
     ],
     blessing: (o: { count: number; word: string }) => `+${o.count} ${o.word}`,
   },
+  toyBox: {
+    closedLabel: "Toy box marked 1955, open the “Back to the Future” toy box",
+    closedTooltip: "open the “Back to the Future” toy box",
+    setLabel: "Flying car toy, play",
+    setTooltip: "play",
+  },
   board: {
     label: "Notice board, what's new at the laundromat",
     tooltip: "what's new",

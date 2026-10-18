@@ -297,6 +297,13 @@ export const ja = {
     ],
     blessing: (o: { count: number; word: string }) => `${o.word} +${o.count}`,
   },
+  toyBox: {
+    closedLabel:
+      "1955 と書かれたおもちゃ箱、「バック・トゥ・ザ・フューチャー」のおもちゃ箱を開ける",
+    closedTooltip: "「バック・トゥ・ザ・フューチャー」のおもちゃ箱を開ける",
+    setLabel: "空飛ぶ車のおもちゃ、遊ぶ",
+    setTooltip: "遊ぶ",
+  },
   board: {
     label: "掲示板、コインランドリーのお知らせ",
     tooltip: "お知らせ",
