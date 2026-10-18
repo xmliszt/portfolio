@@ -18,6 +18,7 @@ import { SHARE_TARGETS } from "@/lib/laundromat/instant-camera/share-targets";
 import { splitGraphemes } from "@/lib/laundromat/instant-camera/split-graphemes";
 import type { ViewfinderOrientation } from "@/lib/laundromat/instant-camera/viewfinder-frame";
 import { detectScript } from "@/lib/laundromat/notebook/detect-script";
+import { cn } from "@/lib/utils";
 
 import { canShareImageFiles } from "./can-share-image-files";
 import { copyImageToClipboard } from "./copy-image-to-clipboard";
@@ -81,7 +82,11 @@ export function PolaroidSheet(props: PolaroidSheetProps) {
   const prefersReducedMotion = useReducedMotion() ?? false;
   const viewport = useViewportSize();
   const [note, setNote] = useState("");
-  const [toast, setToast] = useState<{ text: string; id: number }>();
+  const [toast, setToast] = useState<{
+    text: string;
+    id: number;
+    visible: boolean;
+  }>();
   const [handoff, setHandoff] = useState<Handoff>();
   const [isAskingMastodon, setIsAskingMastodon] = useState(false);
   const [mastodonInput, setMastodonInput] = useState("");
@@ -182,14 +187,25 @@ export function PolaroidSheet(props: PolaroidSheetProps) {
     return () => window.clearTimeout(timer);
   }, []);
 
+  const toastId = toast?.visible === true ? toast.id : undefined;
   useEffect(() => {
-    if (toast === undefined) return;
-    const timer = window.setTimeout(() => setToast(undefined), TOAST_MS);
+    if (toastId === undefined) return;
+    const timer = window.setTimeout(
+      () =>
+        setToast((current) =>
+          current === undefined ? current : { ...current, visible: false }
+        ),
+      TOAST_MS
+    );
     return () => window.clearTimeout(timer);
-  }, [toast]);
+  }, [toastId]);
 
   function showToast(next: string) {
-    setToast((current) => ({ text: next, id: (current?.id ?? 0) + 1 }));
+    setToast((current) => ({
+      text: next,
+      id: (current?.id ?? 0) + 1,
+      visible: true,
+    }));
   }
 
   function shareText() {
@@ -535,20 +551,14 @@ export function PolaroidSheet(props: PolaroidSheetProps) {
           role="status"
           className="min-h-4 max-w-[22.5rem] text-center text-[10px] text-[var(--lm-ink-hi)]"
         >
-          <AnimatePresence mode="wait">
-            {toast !== undefined && (
-              <motion.span
-                key={toast.id}
-                className="block"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                transition={{ duration: 0.25 }}
-              >
-                {toast.text}
-              </motion.span>
+          <span
+            className={cn(
+              "block transition-opacity duration-250",
+              toast?.visible !== true && "opacity-0"
             )}
-          </AnimatePresence>
+          >
+            {toast?.text}
+          </span>
         </p>
 
         <div className="flex gap-x-5">
