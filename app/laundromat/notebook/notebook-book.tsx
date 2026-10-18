@@ -19,12 +19,12 @@ import { describeEntryMeta } from "@/lib/laundromat/notebook/describe-entry-meta
 import type { LeaveEntryFailure } from "@/lib/laundromat/notebook/describe-leave-failure";
 import { describeLeaveFailure } from "@/lib/laundromat/notebook/describe-leave-failure";
 import { detectScript } from "@/lib/laundromat/notebook/detect-script";
+import { DOODLE_LIMITS } from "@/lib/laundromat/notebook/doodle-limits";
 import type { DoodleStroke } from "@/lib/laundromat/notebook/doodle-stroke";
 import { encodeDoodle } from "@/lib/laundromat/notebook/encode-doodle";
 import { fitEntry } from "@/lib/laundromat/notebook/fit-entry";
 import { fitsNotebook } from "@/lib/laundromat/notebook/fits-notebook";
 import { formatEntryDay } from "@/lib/laundromat/notebook/format-entry-day";
-import { getDoodleLineCount } from "@/lib/laundromat/notebook/get-doodle-line-count";
 import { getDoodlePlacement } from "@/lib/laundromat/notebook/get-doodle-placement";
 import { getDraftPlacement } from "@/lib/laundromat/notebook/get-draft-placement";
 import { getDraftRowMarks } from "@/lib/laundromat/notebook/get-draft-row-marks";
@@ -447,17 +447,23 @@ export function NotebookBook(props: NotebookBookProps) {
     remoteDraft?.kind === "text"
       ? remoteDraft.script
       : detectScript(trimmedDraft);
-  const shownStrokes = (() => {
-    if (!isRemoteDraft) return strokes;
-    return remoteDraft?.kind === "doodle" && remoteDraft.drawing !== undefined
-      ? decodeDoodle({ drawing: remoteDraft.drawing, widthPx: maxWidthPx })
-      : [];
-  })();
+  const remoteDrawing =
+    remoteDraft?.kind === "doodle" ? remoteDraft.drawing : undefined;
+  const remoteStrokes = useMemo(
+    () =>
+      remoteDrawing === undefined
+        ? []
+        : decodeDoodle({ drawing: remoteDrawing, widthPx: maxWidthPx }),
+    [remoteDrawing, maxWidthPx]
+  );
+  const shownStrokes = isRemoteDraft ? remoteStrokes : strokes;
   const pointCount = strokes.reduce(
     (total, stroke) => total + stroke.points.length,
     0
   );
-  const isInkFull = pointCount >= doodle.maxPoints;
+  const isInkFull =
+    pointCount >= DOODLE_LIMITS.maxPoints ||
+    strokes.length >= DOODLE_LIMITS.maxStrokes;
   const draftStyle = getEntryStyle({
     script: draftScript,
     reportEntryId: undefined,
@@ -1055,19 +1061,15 @@ export function NotebookBook(props: NotebookBookProps) {
   }
 
   async function handleLeaveDoodle() {
-    if (!canWrite || isLeaving || strokes.length === 0) return;
+    if (!canWrite || !isPadVisible || isLeaving || strokes.length === 0) {
+      return;
+    }
     props.onWritingChange(true);
     setIsLeaving(true);
     setFailure(undefined);
-    const placed = await leaveDoodle({
-      drawing: encodeDoodle({ strokes, widthPx: maxWidthPx }),
-      lineCount: getDoodleLineCount({
-        strokes,
-        pitchPx: pitch,
-        strokeWidthPx: doodle.strokeWidthPx,
-        maxRows: doodle.maxRows,
-      }),
-    }).catch((): LeaveEntryFailure => ({ kind: "offline" }));
+    const placed = await leaveDoodle(
+      encodeDoodle({ strokes, widthPx: maxWidthPx })
+    ).catch((): LeaveEntryFailure => ({ kind: "offline" }));
     setIsLeaving(false);
     if (placed.kind !== "placed") {
       setFailure(placed);
@@ -1125,14 +1127,18 @@ export function NotebookBook(props: NotebookBookProps) {
   }
 
   function handleStroke(stroke: DoodleStroke) {
-    if (!canWrite || pointCount + stroke.points.length > doodle.maxPoints) {
-      return;
-    }
-    updateStrokes([...strokes, stroke]);
+    if (!canWrite || isLeaving || isInkFull) return;
+    updateStrokes([
+      ...strokes,
+      {
+        points: stroke.points.slice(0, DOODLE_LIMITS.maxPoints - pointCount),
+        durationMs: Math.min(stroke.durationMs, DOODLE_LIMITS.maxStrokeMs),
+      },
+    ]);
   }
 
   function handleModeChange(next: PenMode) {
-    if (!canWrite || next === mode) return;
+    if (!canWrite || isLeaving || next === mode) return;
     setMode(next);
     setFailure(undefined);
     if (next === "draw") {
@@ -1158,8 +1164,16 @@ export function NotebookBook(props: NotebookBookProps) {
   useEffect(() => {
     if (!isPenKeysOn) return;
     function handlePenKey(event: KeyboardEvent) {
-      if (event.defaultPrevented) return;
-      if (event.key === "Tab" && event.shiftKey) {
+      if (event.defaultPrevented || !canWrite || isLeaving) return;
+      const isOnControl =
+        event.target instanceof HTMLInputElement ||
+        event.target instanceof HTMLButtonElement;
+      if (
+        event.key === "Tab" &&
+        event.shiftKey &&
+        !event.isComposing &&
+        !isOnControl
+      ) {
         event.preventDefault();
         handleModeChange(mode === "draw" ? "write" : "draw");
         return;
@@ -1258,7 +1272,8 @@ export function NotebookBook(props: NotebookBookProps) {
     onInkComplete: handleInkComplete,
     inkSpeed: details.inkSpeed,
     pad: {
-      disabled: !canWrite || isInkFull,
+      disabled: !canWrite || isLeaving || isInkFull,
+      onStrokeStart: () => props.onWritingChange(true),
       onStroke: handleStroke,
       onUndo: () => updateStrokes(strokes.slice(0, -1)),
       onClear: () => updateStrokes([]),
@@ -1700,7 +1715,7 @@ export function NotebookBook(props: NotebookBookProps) {
                 disabled={
                   isLeaving ||
                   (mode === "draw"
-                    ? strokes.length === 0
+                    ? strokes.length === 0 || !isPadVisible
                     : trimmedDraft === "" || !draftFit.fits)
                 }
                 onClick={() =>

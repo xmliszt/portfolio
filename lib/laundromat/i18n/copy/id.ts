@@ -322,7 +322,7 @@ export const id = {
     updates: {
       "notebook-doodles": {
         title: "menggambar di buku catatan",
-        body: "Ganti pena buku catatan dari tulis ke gambar dan tinggalkan gambar kecil untuk orang berikutnya. Gambarnya akan muncul sendiri di halaman bagi siapa pun yang membuka buku setelahmu.",
+        body: "Ganti pena buku catatan dari tulis ke gambar dan tinggalkan gambar kecil untuk orang berikutnya. Siapa pun di laundry yang sedang membuka buku catatan akan melihat gambarnya muncul sendiri di halaman.",
       },
       "weather-anywhere": {
         title: "pilih cuaca di luar",

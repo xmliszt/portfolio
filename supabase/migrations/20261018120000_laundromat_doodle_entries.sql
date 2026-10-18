@@ -36,8 +36,8 @@ begin
     raise exception 'invalid_drawing' using errcode = '22023';
   end if;
 
-  if jsonb_array_length(p_drawing -> 'strokes') not between 1 and 400
-    or pg_column_size(p_drawing) > 32768 then
+  if jsonb_array_length(p_drawing -> 'strokes') not between 1 and 300
+    or octet_length(p_drawing::text) > 32768 then
     raise exception 'invalid_drawing' using errcode = '22023';
   end if;
 

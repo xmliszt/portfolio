@@ -288,7 +288,7 @@ export const nl = {
     updates: {
       "notebook-doodles": {
         title: "tekenen in het notitieboek",
-        body: "Zet de pen van het notitieboek van schrijven op tekenen en laat een kleine tekening achter voor wie na je komt. Die tekent zichzelf op de pagina voor iedereen die het boek na jou opent.",
+        body: "Zet de pen van het notitieboek van schrijven op tekenen en laat een kleine tekening achter voor wie na je komt. Iedereen in de wasserette die het notitieboek open heeft, ziet de tekening zichzelf op de pagina tekenen.",
       },
       "weather-anywhere": {
         title: "kies het weer buiten",

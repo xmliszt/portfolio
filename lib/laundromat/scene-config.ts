@@ -211,7 +211,6 @@ export type SceneConfig = {
       strokeWidthPx: number;
       smoothing: number;
       simplifyPx: number;
-      maxPoints: number;
       padInsetPx: number;
       replaySpeed: number;
     };
@@ -642,7 +641,6 @@ export const sceneConfig: SceneConfig = {
       strokeWidthPx: 2.4,
       smoothing: 0.35,
       simplifyPx: 0.6,
-      maxPoints: 2000,
       padInsetPx: 6,
       replaySpeed: 2,
     },

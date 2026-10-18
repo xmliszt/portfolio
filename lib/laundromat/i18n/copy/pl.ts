@@ -295,7 +295,7 @@ export const pl = {
     updates: {
       "notebook-doodles": {
         title: "rysuj w notesie",
-        body: "Przełącz pióro notesu z pisania na rysowanie i zostaw mały rysunek dla kolejnej osoby. Rysunek sam pojawi się na stronie u każdego, kto otworzy notes po tobie.",
+        body: "Przełącz pióro notesu z pisania na rysowanie i zostaw mały rysunek dla kolejnej osoby. Każdy w pralni, kto ma otwarty notes, widzi, jak rysunek sam pojawia się na stronie.",
       },
       "weather-anywhere": {
         title: "wybierz pogodę za oknem",

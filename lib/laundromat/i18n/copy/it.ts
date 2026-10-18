@@ -326,7 +326,7 @@ export const it = {
     updates: {
       "notebook-doodles": {
         title: "disegna nel quaderno",
-        body: "Passa la penna del quaderno da scrivi a disegna e lascia un piccolo disegno a chi arriva dopo. Si disegna da solo sulla pagina per chiunque apra il quaderno dopo di te.",
+        body: "Passa la penna del quaderno da scrivi a disegna e lascia un piccolo disegno a chi arriva dopo. Chiunque sia in lavanderia con il quaderno aperto lo vede disegnarsi da solo sulla pagina.",
       },
       "weather-anywhere": {
         title: "scegli il tempo fuori",

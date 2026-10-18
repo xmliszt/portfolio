@@ -311,7 +311,7 @@ export const vi = {
     updates: {
       "notebook-doodles": {
         title: "vẽ vào sổ",
-        body: "Chuyển bút của sổ từ viết sang vẽ và để lại một hình vẽ nhỏ cho người đến sau. Hình vẽ sẽ tự hiện dần trên trang cho bất kỳ ai mở sổ sau bạn.",
+        body: "Chuyển bút của sổ từ viết sang vẽ và để lại một hình vẽ nhỏ cho người đến sau. Bất kỳ ai trong tiệm giặt đang mở sổ đều thấy hình vẽ tự hiện dần trên trang.",
       },
       "weather-anywhere": {
         title: "chọn thời tiết bên ngoài",

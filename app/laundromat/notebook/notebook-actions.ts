@@ -2,9 +2,13 @@
 
 import { cookies } from "next/headers";
 
+import { decodeDoodle } from "@/lib/laundromat/notebook/decode-doodle";
 import type { DoodleDrawing } from "@/lib/laundromat/notebook/doodle-stroke";
+import { getDoodleArea } from "@/lib/laundromat/notebook/get-doodle-area";
+import { getDoodleLineCount } from "@/lib/laundromat/notebook/get-doodle-line-count";
 import { maskProfanity } from "@/lib/laundromat/notebook/mask-profanity";
 import { parseDoodleDrawing } from "@/lib/laundromat/notebook/parse-doodle-drawing";
+import { sceneConfig } from "@/lib/laundromat/scene-config";
 import { appendDoodle } from "@/lib/laundromat/supabase/append-doodle";
 import { appendEntry } from "@/lib/laundromat/supabase/append-entry";
 import { countNotebookEntries } from "@/lib/laundromat/supabase/count-notebook-entries";
@@ -183,7 +187,7 @@ export async function loadShelf(): Promise<ShelfResult> {
   }
 }
 
-/** Load notebook `number` with all its entries, or the current one when `number` is `undefined`; hidden entries keep their place with an empty `body`. */
+/** Load notebook `number` with all its entries, or the current one when `number` is `undefined`; hidden text entries keep their place with an empty `body` and hidden doodles with an `undefined` `drawing`. */
 export async function loadNotebook(
   number: number | undefined
 ): Promise<NotebookResult> {
@@ -247,17 +251,23 @@ export async function leaveEntry(options: {
   }
 }
 
-/** Leave a doodle of `lineCount` lines in the current notebook through `append_doodle` as the visitor in the signed cookie, creating the cookie on first write. */
-export async function leaveDoodle(options: {
-  drawing: DoodleDrawing;
-  lineCount: number;
-}): Promise<LeaveEntryResult> {
-  const fake = await readFakeNotebooks();
-  if (fake !== undefined) return fake.leaveDoodle(options);
-  const drawing = parseDoodleDrawing(options.drawing);
+/** Leave `drawing` in the current notebook through `append_doodle` as the visitor in the signed cookie, creating the cookie on first write; the lines it takes are counted from the drawing itself. */
+export async function leaveDoodle(
+  value: DoodleDrawing
+): Promise<LeaveEntryResult> {
+  const drawing = parseDoodleDrawing(value);
   if (drawing === undefined) {
     return { kind: "rejected", reason: "invalid_drawing" };
   }
+  const area = getDoodleArea();
+  const lineCount = getDoodleLineCount({
+    strokes: decodeDoodle({ drawing, widthPx: area.widthPx }),
+    pitchPx: area.pitchPx,
+    strokeWidthPx: sceneConfig.notebook.doodle.strokeWidthPx,
+    maxRows: sceneConfig.notebook.doodle.maxRows,
+  });
+  const fake = await readFakeNotebooks();
+  if (fake !== undefined) return fake.leaveDoodle({ drawing, lineCount });
   const client = createLaundromatServiceClient();
   const secret = process.env.LAUNDROMAT_VISITOR_SECRET;
   if (client === undefined || !secret) return { kind: "offline" };
@@ -267,7 +277,7 @@ export async function leaveDoodle(options: {
       client,
       visitorId,
       drawing,
-      lineCount: options.lineCount,
+      lineCount,
     });
     if (result.kind === "rejected") return result;
     const { data: notebook, error } = await client

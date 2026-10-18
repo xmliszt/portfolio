@@ -1,18 +1,34 @@
+import { DOODLE_LIMITS } from "./doodle-limits";
 import type { DoodleDrawing } from "./doodle-stroke";
-
-const MAX_STROKES = 400;
-const MAX_POINTS = 4000;
+import { getDoodleArea } from "./get-doodle-area";
 
 function isIntegerList(value: unknown): value is number[] {
   return Array.isArray(value) && value.every((item) => Number.isInteger(item));
 }
 
-/** Return `value` as a `DoodleDrawing`, or `undefined` when it is not one: no positive width, no strokes, a stroke that is not a duration plus whole x/y pairs, or more than the stroke and point limits. */
+function isInsideArea(options: {
+  stroke: number[];
+  widthHalfPx: number;
+  heightHalfPx: number;
+}) {
+  const [durationMs, ...deltas] = options.stroke;
+  if (durationMs < 0 || durationMs > DOODLE_LIMITS.maxStrokeMs) return false;
+  const corners = { x: 0, y: 0 };
+  return deltas.every((delta, index) => {
+    const axis = index % 2 === 0 ? "x" : "y";
+    corners[axis] += delta;
+    const max = axis === "x" ? options.widthHalfPx : options.heightHalfPx;
+    return corners[axis] >= 0 && corners[axis] <= max;
+  });
+}
+
+/** Return `value` as a `DoodleDrawing`, or `undefined` when it is not one: drawn at another width than the drawing space, a stroke that is not a duration plus whole x/y pairs, a point outside the drawing space, or more than `DOODLE_LIMITS` allows. */
 export function parseDoodleDrawing(value: unknown): DoodleDrawing | undefined {
+  const area = getDoodleArea();
   if (
     typeof value !== "object" ||
     value === null ||
-    !("w" in value && typeof value.w === "number" && value.w > 0) ||
+    !("w" in value && value.w === area.widthPx) ||
     !("strokes" in value && Array.isArray(value.strokes))
   ) {
     return undefined;
@@ -25,11 +41,18 @@ export function parseDoodleDrawing(value: unknown): DoodleDrawing | undefined {
   if (
     strokes.length !== value.strokes.length ||
     strokes.length === 0 ||
-    strokes.length > MAX_STROKES ||
-    pointCount > MAX_POINTS ||
-    strokes.some((stroke) => stroke.length < 3 || stroke.length % 2 === 0)
+    strokes.length > DOODLE_LIMITS.maxStrokes ||
+    pointCount > DOODLE_LIMITS.maxPoints ||
+    strokes.some((stroke) => stroke.length < 3 || stroke.length % 2 === 0) ||
+    !strokes.every((stroke) =>
+      isInsideArea({
+        stroke,
+        widthHalfPx: area.widthPx * 2,
+        heightHalfPx: Math.ceil(area.heightPx * 2),
+      })
+    )
   ) {
     return undefined;
   }
-  return { w: value.w, strokes };
+  return { w: area.widthPx, strokes };
 }

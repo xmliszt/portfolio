@@ -23,6 +23,7 @@ type DoodlePadProps = {
   smoothing: number;
   simplifyPx: number;
   disabled: boolean;
+  onStrokeStart: () => void;
   onStroke: (stroke: DoodleStroke) => void;
 };
 
@@ -82,6 +83,7 @@ export function DoodlePad(props: DoodlePadProps) {
       startedAt: performance.now(),
     };
     livePathRef.current?.setAttribute("d", toStrokePath([point, point]));
+    props.onStrokeStart();
   }
 
   function handlePointerMove(event: ReactPointerEvent<HTMLDivElement>) {

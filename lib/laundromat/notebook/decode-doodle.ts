@@ -7,13 +7,12 @@ export function decodeDoodle(options: {
 }): DoodleStroke[] {
   const scale = options.widthPx / options.drawing.w / 2;
   return options.drawing.strokes.map(([durationMs, ...deltas]) => {
-    const points = deltas
-      .filter((_, index) => index % 2 === 0)
-      .reduce<[number, number][]>((acc, dx, index) => {
-        const dy = deltas[index * 2 + 1];
-        const previous = acc.at(-1) ?? [0, 0];
-        return [...acc, [previous[0] + dx, previous[1] + dy]];
-      }, []);
+    const points = deltas.reduce<[number, number][]>((acc, delta, index) => {
+      if (index % 2 === 1) return acc;
+      const [x, y] = acc.at(-1) ?? [0, 0];
+      acc.push([x + delta, y + deltas[index + 1]]);
+      return acc;
+    }, []);
     return {
       durationMs: Math.max(0, durationMs),
       points: points.map(([x, y]) => [x * scale, y * scale]),

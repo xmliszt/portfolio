@@ -321,7 +321,7 @@ export const de = {
     updates: {
       "notebook-doodles": {
         title: "im Notizbuch zeichnen",
-        body: "Stell den Stift im Notizbuch von schreiben auf zeichnen und hinterlass eine kleine Zeichnung für die nächste Person. Sie zeichnet sich von selbst auf die Seite, für alle, die das Buch nach dir öffnen.",
+        body: "Stell den Stift im Notizbuch von schreiben auf zeichnen und hinterlass eine kleine Zeichnung für die nächste Person. Alle im Waschsalon, die das Notizbuch offen haben, sehen zu, wie sie sich von selbst auf die Seite zeichnet.",
       },
       "weather-anywhere": {
         title: "wähl das Wetter draußen",

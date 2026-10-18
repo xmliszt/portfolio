@@ -318,7 +318,7 @@ export const ptBR = {
     updates: {
       "notebook-doodles": {
         title: "desenhe no caderno",
-        body: "Troque a caneta do caderno de escrever para desenhar e deixe um pequeno desenho para quem chegar depois. Ele se desenha sozinho na página para quem abrir o caderno depois de você.",
+        body: "Troque a caneta do caderno de escrever para desenhar e deixe um pequeno desenho para quem chegar depois. Quem estiver na lavanderia com o caderno aberto vê o desenho surgir sozinho na página.",
       },
       "weather-anywhere": {
         title: "escolha o tempo lá fora",

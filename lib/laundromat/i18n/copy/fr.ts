@@ -323,7 +323,7 @@ export const fr = {
     updates: {
       "notebook-doodles": {
         title: "dessine dans le carnet",
-        body: "Passe le stylo du carnet d'écrire à dessiner et laisse un petit dessin à la prochaine personne. Il se dessine tout seul sur la page pour chaque personne qui ouvre le carnet après toi.",
+        body: "Passe le stylo du carnet d'écrire à dessiner et laisse un petit dessin à la prochaine personne. Chaque personne dans la laverie qui a le carnet ouvert le voit se dessiner tout seul sur la page.",
       },
       "weather-anywhere": {
         title: "choisis la météo dehors",

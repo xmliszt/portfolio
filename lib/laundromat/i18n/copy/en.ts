@@ -316,7 +316,7 @@ export const en = {
     updates: {
       "notebook-doodles": {
         title: "draw in the notebook",
-        body: "Switch the notebook pen from write to draw and leave a small drawing for the next person. It draws itself onto the page for anyone who opens the book after you.",
+        body: "Switch the notebook pen from write to draw and leave a small drawing for the next person. Anyone in the laundromat with the notebook open watches it draw itself onto the page.",
       },
       "weather-anywhere": {
         title: "choose the weather outside",

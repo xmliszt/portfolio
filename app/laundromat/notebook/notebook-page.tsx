@@ -76,6 +76,7 @@ type PageControls = {
 
 type PadControls = {
   disabled: boolean;
+  onStrokeStart: () => void;
   onStroke: (stroke: DoodleStroke) => void;
   onUndo: () => void;
   onClear: () => void;
@@ -220,6 +221,7 @@ export function NotebookPage(props: NotebookPageProps) {
                 smoothing={props.doodle.smoothing}
                 simplifyPx={props.doodle.simplifyPx}
                 disabled={props.controls.pad.disabled}
+                onStrokeStart={props.controls.pad.onStrokeStart}
                 onStroke={props.controls.pad.onStroke}
               />
             )}
@@ -251,7 +253,7 @@ export function NotebookPage(props: NotebookPageProps) {
                       label: copy.notebook.clear,
                       onClick: props.controls.pad.onClear,
                     },
-                  ] as const
+                  ] satisfies { label: string; onClick: () => void }[]
                 ).map((action) => (
                   <button
                     key={action.label}

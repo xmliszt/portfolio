@@ -319,7 +319,7 @@ export const es = {
     updates: {
       "notebook-doodles": {
         title: "dibuja en el cuaderno",
-        body: "Cambia la pluma del cuaderno de escribir a dibujar y deja un pequeño dibujo para quien llegue después. Se dibuja solo en la página para cualquiera que abra el cuaderno después de ti.",
+        body: "Cambia la pluma del cuaderno de escribir a dibujar y deja un pequeño dibujo para quien llegue después. Cualquiera en la lavandería con el cuaderno abierto ve cómo se dibuja solo en la página.",
       },
       "weather-anywhere": {
         title: "elige el tiempo de afuera",

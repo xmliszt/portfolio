@@ -282,7 +282,7 @@ export const tr = {
     updates: {
       "notebook-doodles": {
         title: "defterde çizim yap",
-        body: "Defterin kalemini yaz modundan çiz moduna al ve sonra gelecek kişiye küçük bir çizim bırak. Senden sonra defteri açan herkes için sayfaya kendiliğinden çizilir.",
+        body: "Defterin kalemini yaz modundan çiz moduna al ve sonra gelecek kişiye küçük bir çizim bırak. Çamaşırhanede defteri açık olan herkes, çizimin sayfaya kendiliğinden çizildiğini izler.",
       },
       "weather-anywhere": {
         title: "dışarıdaki havayı seç",
