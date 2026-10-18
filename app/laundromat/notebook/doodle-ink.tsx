@@ -79,8 +79,9 @@ export function DoodleInk(props: DoodleInkProps) {
             style={
               isInking
                 ? {
-                    strokeDasharray: "1 1",
+                    strokeDasharray: "1 2",
                     strokeDashoffset: 1,
+                    opacity: 0,
                     animation: `lm-doodle-ink ${durationMs}ms linear ${delayMs}ms forwards`,
                   }
                 : undefined
