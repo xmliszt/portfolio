@@ -529,6 +529,7 @@ export const hi = {
     comeBackToWrite: "दूसरा नोट लिखने के लिए दो मिनट बाद आना",
     startsNext: (o: { number: number }) =>
       `यह नोट नोटबुक नं. ${o.number} की शुरुआत करेगा`,
+    writePrompt: "अगले व्यक्ति के लिए एक नोट लिखो",
     writePromptBeforeKeys: "अगले व्यक्ति के लिए एक नोट लिखो · ",
     writePromptAfterKeys: " दबाकर सहेजो",
     textareaLabel: "नोटबुक में एक नोट लिखो",

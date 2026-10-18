@@ -538,6 +538,7 @@ export const de = {
     comeBackToWrite: "komm in zwei Minuten wieder, um noch eine zu schreiben",
     startsNext: (o: { number: number }) =>
       `mit dieser Notiz beginnt Notizbuch Nr. ${o.number}`,
+    writePrompt: "schreib eine Notiz für die nächste Person",
     writePromptBeforeKeys: "schreib eine Notiz für die nächste Person · ",
     writePromptAfterKeys: " zum Speichern",
     textareaLabel: "Eine Notiz ins Notizbuch schreiben",

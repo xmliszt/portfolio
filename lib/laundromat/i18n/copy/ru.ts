@@ -510,6 +510,7 @@ export const ru = {
     someoneWriting: "кто-то сейчас пишет · подожди своей очереди",
     comeBackToWrite: "возвращайся через две минуты, чтобы написать ещё одну",
     startsNext: (o) => `с этой записки начнётся блокнот № ${o.number}`,
+    writePrompt: "напиши записку следующему",
     writePromptBeforeKeys: "напиши записку следующему · ",
     writePromptAfterKeys: ", чтобы сохранить",
     textareaLabel: "Написать записку в блокноте",

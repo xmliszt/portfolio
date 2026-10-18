@@ -521,6 +521,7 @@ export const vi = {
     comeBackToWrite: "hai phút nữa quay lại để viết thêm một lời nhắn nhé",
     startsNext: (o: { number: number }) =>
       `lời nhắn này mở đầu sổ số ${o.number}`,
+    writePrompt: "viết một lời nhắn cho người đến sau",
     writePromptBeforeKeys: "viết một lời nhắn cho người đến sau · ",
     writePromptAfterKeys: " để lưu",
     textareaLabel: "Viết lời nhắn vào sổ",

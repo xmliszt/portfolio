@@ -518,6 +518,7 @@ export const ja = {
     comeBackToWrite: "2分後にまた来て、もう1つ書いてね",
     startsNext: (o: { number: number }) =>
       `このメモからノート No. ${o.number} が始まる`,
+    writePrompt: "次の人へメモを書こう",
     writePromptBeforeKeys: "次の人へメモを書こう · ",
     writePromptAfterKeys: "で保存",
     textareaLabel: "ノートにメモを書く",

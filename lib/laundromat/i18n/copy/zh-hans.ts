@@ -497,6 +497,7 @@ export const zhHans = {
     comeBackToWrite: "两分钟后再来写下一条",
     startsNext: (o: { number: number }) =>
       `这条留言会开启第 ${o.number} 本笔记本`,
+    writePrompt: "给下一个人留句话",
     writePromptBeforeKeys: "给下一个人留句话 · 按",
     writePromptAfterKeys: "保存",
     textareaLabel: "在笔记本上写一句话",

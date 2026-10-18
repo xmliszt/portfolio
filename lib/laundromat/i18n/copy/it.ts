@@ -541,6 +541,7 @@ export const it = {
     comeBackToWrite: "torna tra due minuti per scriverne un altro",
     startsNext: (o: { number: number }) =>
       `questo biglietto apre il quaderno n. ${o.number}`,
+    writePrompt: "scrivi un biglietto per la prossima persona",
     writePromptBeforeKeys: "scrivi un biglietto per la prossima persona · ",
     writePromptAfterKeys: " per salvarlo",
     textareaLabel: "Scrivi un biglietto nel quaderno",

@@ -504,6 +504,7 @@ export const pl = {
     someoneWriting: "ktoś właśnie pisze · poczekaj na swoją kolej",
     comeBackToWrite: "wróć za dwie minuty, żeby napisać kolejny",
     startsNext: (o) => `ten liścik zaczyna notes nr ${o.number}`,
+    writePrompt: "napisz liścik dla następnej osoby",
     writePromptBeforeKeys: "napisz liścik dla następnej osoby · ",
     writePromptAfterKeys: ", by go zapisać",
     textareaLabel: "Napisz liścik w notesie",

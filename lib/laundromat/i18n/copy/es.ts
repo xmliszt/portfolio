@@ -537,6 +537,7 @@ export const es = {
     comeBackToWrite: "vuelve en dos minutos para escribir otra",
     startsNext: (o: { number: number }) =>
       `esta nota abre el cuaderno n.º ${o.number}`,
+    writePrompt: "escribe una nota para la próxima persona",
     writePromptBeforeKeys: "escribe una nota para la próxima persona · ",
     writePromptAfterKeys: " para guardarla",
     textareaLabel: "Escribir una nota en el cuaderno",

@@ -70,6 +70,7 @@ import type {
   RowView,
 } from "./notebook-page";
 import { NotebookPage } from "./notebook-page";
+import { NotebookPhoneBar } from "./notebook-phone-bar";
 import type { CurlTurn } from "./page-curl-canvas";
 import { CURL_REST_PROGRESS, PageCurlCanvas } from "./page-curl-canvas";
 import { PageLeaf } from "./page-leaf";
@@ -1406,6 +1407,36 @@ export function NotebookBook(props: NotebookBookProps) {
         : [{ keys: ["⇧", "tab"], label: copy.notebook.penModes.draw }]
       : [];
 
+  const hasShortcutKeys = typeof statusText !== "string";
+  const isSaveDisabled =
+    isLeaving ||
+    (mode === "draw"
+      ? strokes.length === 0 || !isPadVisible
+      : trimmedDraft === "" || !draftFit.fits);
+
+  function handleSave() {
+    void (mode === "draw" ? handleLeaveDoodle() : handleLeave());
+  }
+
+  const jumpField = isJumping ? (
+    <label className="flex items-center gap-x-2 lowercase">
+      {copy.notebook.goToPage}
+      <input
+        autoFocus
+        type="number"
+        inputMode="numeric"
+        min={1}
+        max={notebook.pageCount}
+        aria-label={copy.notebook.pageInputLabel({
+          pageCount: notebook.pageCount,
+        })}
+        onKeyDown={handleJumpKeyDown}
+        onBlur={() => setIsJumping(false)}
+        className="w-14 rounded-md border border-[var(--lm-edge)] bg-[var(--lm-panel)] px-2 py-1 text-[var(--lm-ink-hi)] tabular-nums outline-none focus-visible:border-[var(--lm-accent)]"
+      />
+    </label>
+  ) : null;
+
   const width = settings.width * 2;
   const height = settings.height;
 
@@ -1625,128 +1656,147 @@ export function NotebookBook(props: NotebookBookProps) {
             onSelect={goToSpread}
           />
         </div>
-        <div
-          className={cn(
-            "flex items-center justify-between gap-x-4",
-            isSinglePage && "flex-wrap gap-y-2"
-          )}
-        >
-          <div
-            className={cn(
-              "flex min-w-0 items-center gap-x-4 opacity-70",
-              isSinglePage && "basis-full"
-            )}
-          >
-            <p role="status" className="truncate lowercase">
-              {statusText}
-            </p>
-            {penHints.length > 0 && (
-              <span className="flex shrink-0 items-center gap-x-3 lowercase [@media(pointer:coarse)]:hidden">
-                {penHints.map((hint) => (
-                  <ShortcutHint
-                    key={hint.label}
-                    keys={hint.keys}
-                    label={hint.label}
-                  />
-                ))}
-              </span>
-            )}
-          </div>
-          <div className="flex shrink-0 items-center gap-x-2">
-            {isJumping ? (
-              <label className="flex items-center gap-x-2 lowercase">
-                {copy.notebook.goToPage}
-                <input
-                  autoFocus
-                  type="number"
-                  inputMode="numeric"
-                  min={1}
-                  max={notebook.pageCount}
-                  aria-label={copy.notebook.pageInputLabel({
-                    pageCount: notebook.pageCount,
-                  })}
-                  onKeyDown={handleJumpKeyDown}
-                  onBlur={() => setIsJumping(false)}
-                  className="w-14 rounded-md border border-[var(--lm-edge)] bg-[var(--lm-panel)] px-2 py-1 text-[var(--lm-ink-hi)] tabular-nums outline-none focus-visible:border-[var(--lm-accent)]"
-                />
-              </label>
-            ) : null}
-            {isWritable &&
-              props.lock.kind === "taken" &&
-              placedAt === undefined && (
+        {isNarrowScreen ? (
+          <div className="flex justify-end">{jumpField}</div>
+        ) : (
+          <div className="flex items-center justify-between gap-x-4">
+            <div className="flex min-w-0 items-center gap-x-4 opacity-70">
+              <p role="status" className="truncate lowercase">
+                {statusText}
+              </p>
+              {penHints.length > 0 && (
+                <span className="flex shrink-0 items-center gap-x-3 lowercase [@media(pointer:coarse)]:hidden">
+                  {penHints.map((hint) => (
+                    <ShortcutHint
+                      key={hint.label}
+                      keys={hint.keys}
+                      label={hint.label}
+                    />
+                  ))}
+                </span>
+              )}
+            </div>
+            <div className="flex shrink-0 items-center gap-x-2">
+              {jumpField}
+              {isWritable &&
+                props.lock.kind === "taken" &&
+                placedAt === undefined && (
+                  <button
+                    type="button"
+                    disabled={props.freeNoticeOn}
+                    onClick={props.onRequestFreeNotice}
+                    className="cursor-pointer rounded-md border border-[var(--lm-edge)] bg-[var(--lm-panel)] px-3 py-1.5 text-[var(--lm-ink-hi)] lowercase transition-opacity outline-none hover:border-[var(--lm-accent)] focus-visible:border-[var(--lm-accent)] disabled:cursor-default disabled:opacity-60"
+                  >
+                    {props.freeNoticeOn
+                      ? copy.notebook.notifyPending
+                      : copy.notebook.notifyWhenFree}
+                  </button>
+                )}
+              {canWrite && (
+                <div
+                  role="group"
+                  aria-label={copy.notebook.penModeLabel}
+                  className="flex rounded-md border border-[var(--lm-edge)] bg-[var(--lm-panel)] p-0.5"
+                >
+                  {(["write", "draw"] satisfies PenMode[]).map((option) => (
+                    <button
+                      key={option}
+                      type="button"
+                      aria-pressed={mode === option}
+                      onClick={() => handleModeChange(option)}
+                      className={cn(
+                        "cursor-pointer rounded-[5px] px-2.5 py-1 lowercase outline-none focus-visible:text-[var(--lm-ink-hi)]",
+                        mode === option
+                          ? "bg-[var(--lm-edge)] text-[var(--lm-ink-hi)]"
+                          : "text-[var(--lm-ink)] hover:text-[var(--lm-ink-hi)]"
+                      )}
+                    >
+                      {copy.notebook.penModes[option]}
+                    </button>
+                  ))}
+                </div>
+              )}
+              {canWrite && (
                 <button
                   type="button"
-                  disabled={props.freeNoticeOn}
-                  onClick={props.onRequestFreeNotice}
-                  className="cursor-pointer rounded-md border border-[var(--lm-edge)] bg-[var(--lm-panel)] px-3 py-1.5 text-[var(--lm-ink-hi)] lowercase transition-opacity outline-none hover:border-[var(--lm-accent)] focus-visible:border-[var(--lm-accent)] disabled:cursor-default disabled:opacity-60"
+                  disabled={isSaveDisabled}
+                  onClick={handleSave}
+                  className="cursor-pointer rounded-md border border-[var(--lm-edge)] bg-[var(--lm-panel)] px-3 py-1.5 text-[var(--lm-ink-hi)] lowercase transition-opacity outline-none hover:border-[var(--lm-accent)] focus-visible:border-[var(--lm-accent)] disabled:cursor-default disabled:opacity-40"
                 >
-                  {props.freeNoticeOn
-                    ? copy.notebook.notifyPending
-                    : copy.notebook.notifyWhenFree}
+                  {isLeaving ? (
+                    copy.notebook.savingNote
+                  ) : (
+                    <span className="flex items-center gap-x-2">
+                      {mode === "draw"
+                        ? copy.notebook.saveDoodle
+                        : copy.notebook.saveNote}
+                      <span className="contents [@media(pointer:coarse)]:hidden">
+                        <ShortcutHint keys={["mod", "↵"]} label={undefined} />
+                      </span>
+                    </span>
+                  )}
                 </button>
               )}
-            {canWrite && (
-              <div
-                role="group"
-                aria-label={copy.notebook.penModeLabel}
-                className="flex rounded-md border border-[var(--lm-edge)] bg-[var(--lm-panel)] p-0.5"
-              >
-                {(["write", "draw"] satisfies PenMode[]).map((option) => (
-                  <button
-                    key={option}
-                    type="button"
-                    aria-pressed={mode === option}
-                    onClick={() => handleModeChange(option)}
-                    className={cn(
-                      "cursor-pointer rounded-[5px] px-2.5 py-1 lowercase outline-none focus-visible:text-[var(--lm-ink-hi)]",
-                      mode === option
-                        ? "bg-[var(--lm-edge)] text-[var(--lm-ink-hi)]"
-                        : "text-[var(--lm-ink)] hover:text-[var(--lm-ink-hi)]"
-                    )}
-                  >
-                    {copy.notebook.penModes[option]}
-                  </button>
-                ))}
-              </div>
-            )}
-            {canWrite && (
               <button
                 type="button"
-                disabled={
-                  isLeaving ||
-                  (mode === "draw"
-                    ? strokes.length === 0 || !isPadVisible
-                    : trimmedDraft === "" || !draftFit.fits)
-                }
-                onClick={() =>
-                  void (mode === "draw" ? handleLeaveDoodle() : handleLeave())
-                }
-                className="cursor-pointer rounded-md border border-[var(--lm-edge)] bg-[var(--lm-panel)] px-3 py-1.5 text-[var(--lm-ink-hi)] lowercase transition-opacity outline-none hover:border-[var(--lm-accent)] focus-visible:border-[var(--lm-accent)] disabled:cursor-default disabled:opacity-40"
+                onClick={props.onClose}
+                className="cursor-pointer rounded-md px-3 py-1.5 text-[var(--lm-ink)] lowercase outline-none hover:text-[var(--lm-ink-hi)] focus-visible:text-[var(--lm-ink-hi)]"
               >
-                {isLeaving ? (
-                  copy.notebook.savingNote
-                ) : (
-                  <span className="flex items-center gap-x-2">
-                    {mode === "draw"
-                      ? copy.notebook.saveDoodle
-                      : copy.notebook.saveNote}
-                    <span className="contents [@media(pointer:coarse)]:hidden">
-                      <ShortcutHint keys={["mod", "↵"]} label={undefined} />
-                    </span>
-                  </span>
-                )}
+                {copy.notebook.close}
               </button>
-            )}
-            <button
-              type="button"
-              onClick={props.onClose}
-              className="cursor-pointer rounded-md px-3 py-1.5 text-[var(--lm-ink)] lowercase outline-none hover:text-[var(--lm-ink-hi)] focus-visible:text-[var(--lm-ink-hi)]"
-            >
-              {copy.notebook.close}
-            </button>
+            </div>
           </div>
-        </div>
+        )}
       </div>
+      {isNarrowScreen && isLifted && (
+        <NotebookPhoneBar
+          status={hasShortcutKeys ? copy.notebook.writePrompt : statusText}
+          pen={
+            canWrite
+              ? {
+                  mode,
+                  label: copy.notebook.penModeLabel,
+                  modeLabels: copy.notebook.penModes,
+                  onModeChange: handleModeChange,
+                }
+              : undefined
+          }
+          notify={
+            isWritable && props.lock.kind === "taken" && placedAt === undefined
+              ? {
+                  label: props.freeNoticeOn
+                    ? copy.notebook.notifyPending
+                    : copy.notebook.notifyWhenFree,
+                  disabled: props.freeNoticeOn,
+                  onPress: props.onRequestFreeNotice,
+                }
+              : undefined
+          }
+          undo={
+            canWrite && mode === "draw"
+              ? {
+                  label: copy.notebook.undo,
+                  disabled: strokes.length === 0 || isLeaving,
+                  onPress: () => updateStrokes(strokes.slice(0, -1)),
+                }
+              : undefined
+          }
+          save={
+            canWrite
+              ? {
+                  label:
+                    mode === "draw"
+                      ? copy.notebook.saveDoodle
+                      : copy.notebook.saveNote,
+                  disabled: isSaveDisabled,
+                  busy: isLeaving,
+                  onPress: handleSave,
+                }
+              : undefined
+          }
+          close={{ label: copy.notebook.close, onPress: props.onClose }}
+        />
+      )}
     </div>
   );
 }

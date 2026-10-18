@@ -496,6 +496,7 @@ export const zhHant = {
     comeBackToWrite: "兩分鐘後再來寫下一則",
     startsNext: (o: { number: number }) =>
       `這則留言會開啟第 ${o.number} 本筆記本`,
+    writePrompt: "給下一個人留句話",
     writePromptBeforeKeys: "給下一個人留句話 · 按",
     writePromptAfterKeys: "儲存",
     textareaLabel: "在筆記本上寫一句話",

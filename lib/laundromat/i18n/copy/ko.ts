@@ -513,6 +513,7 @@ export const ko = {
     comeBackToWrite: "2분 뒤에 다시 와서 하나 더 써 줘",
     startsNext: (o: { number: number }) =>
       `이 메모로 노트 제${o.number}권이 시작돼`,
+    writePrompt: "다음 사람에게 메모를 남겨 봐",
     writePromptBeforeKeys: "다음 사람에게 메모를 남겨 봐 · ",
     writePromptAfterKeys: "로 저장",
     textareaLabel: "노트에 메모 쓰기",

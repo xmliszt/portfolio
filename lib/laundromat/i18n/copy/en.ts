@@ -530,6 +530,7 @@ export const en = {
     comeBackToWrite: "come back after two minutes to write another one",
     startsNext: (o: { number: number }) =>
       `this note starts notebook No. ${o.number}`,
+    writePrompt: "write a note for the next person",
     writePromptBeforeKeys: "write a note for the next person · ",
     writePromptAfterKeys: " to save it",
     textareaLabel: "Write a note in the notebook",

@@ -486,6 +486,7 @@ export const tr = {
     someoneWriting: "şu an biri yazıyor · sıranı bekle",
     comeBackToWrite: "bir tane daha yazmak için iki dakika sonra gel",
     startsNext: (o) => `defter No. ${o.number} bu notla başlıyor`,
+    writePrompt: "sonraki kişiye bir not yaz",
     writePromptBeforeKeys: "sonraki kişiye bir not yaz · ",
     writePromptAfterKeys: " ile kaydet",
     textareaLabel: "Deftere bir not yaz",

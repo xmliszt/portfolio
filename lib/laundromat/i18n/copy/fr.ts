@@ -540,6 +540,7 @@ export const fr = {
     comeBackToWrite: "reviens dans deux minutes pour en écrire un autre",
     startsNext: (o: { number: number }) =>
       `ce mot ouvre le carnet nº ${o.number}`,
+    writePrompt: "écris un mot pour la prochaine personne",
     writePromptBeforeKeys: "écris un mot pour la prochaine personne · ",
     writePromptAfterKeys: " pour l'enregistrer",
     textareaLabel: "Écrire un mot dans le carnet",

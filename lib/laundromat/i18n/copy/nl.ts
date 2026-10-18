@@ -496,6 +496,7 @@ export const nl = {
     someoneWriting: "iemand is nu aan het schrijven · wacht je beurt af",
     comeBackToWrite: "kom over twee minuten terug om er nog een te schrijven",
     startsNext: (o) => `dit berichtje begint notitieboek nr. ${o.number}`,
+    writePrompt: "schrijf een berichtje voor de volgende",
     writePromptBeforeKeys: "schrijf een berichtje voor de volgende · ",
     writePromptAfterKeys: " om het op te slaan",
     textareaLabel: "Schrijf een berichtje in het notitieboek",

@@ -504,6 +504,7 @@ export const uk = {
     someoneWriting: "хтось зараз пише · зачекай своєї черги",
     comeBackToWrite: "повертайся за дві хвилини, щоб написати ще одну",
     startsNext: (o) => `із цієї записки почнеться блокнот № ${o.number}`,
+    writePrompt: "напиши записку наступному",
     writePromptBeforeKeys: "напиши записку наступному · ",
     writePromptAfterKeys: ", щоб зберегти",
     textareaLabel: "Написати записку в блокноті",

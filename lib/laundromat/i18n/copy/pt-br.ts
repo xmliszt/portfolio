@@ -533,6 +533,7 @@ export const ptBR = {
     comeBackToWrite: "volte daqui a dois minutos para escrever outro",
     startsNext: (o: { number: number }) =>
       `este recado abre o caderno nº ${o.number}`,
+    writePrompt: "escreva um recado para a próxima pessoa",
     writePromptBeforeKeys: "escreva um recado para a próxima pessoa · ",
     writePromptAfterKeys: " para salvar",
     textareaLabel: "Escrever um recado no caderno",

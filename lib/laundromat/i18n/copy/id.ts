@@ -537,6 +537,7 @@ export const id = {
     comeBackToWrite: "kembali dua menit lagi untuk menulis yang berikutnya",
     startsNext: (o: { number: number }) =>
       `catatan ini membuka buku catatan No. ${o.number}`,
+    writePrompt: "tulis catatan untuk orang berikutnya",
     writePromptBeforeKeys: "tulis catatan untuk orang berikutnya · ",
     writePromptAfterKeys: " untuk menyimpannya",
     textareaLabel: "Tulis catatan di buku catatan",
