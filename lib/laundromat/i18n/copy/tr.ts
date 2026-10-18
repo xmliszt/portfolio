@@ -271,8 +271,8 @@ export const tr = {
   },
   toyBox: {
     closedLabel:
-      "Üzerinde 1955 yazan oyuncak kutusu, “Geleceğe Dönüş” oyuncak kutusunu aç",
-    closedTooltip: "“Geleceğe Dönüş” oyuncak kutusunu aç",
+      "Üzerinde 1955 yazan oyuncak kutusu, “Bu Gelecek” oyuncak kutusunu aç",
+    closedTooltip: "“Bu Gelecek” oyuncak kutusunu aç",
     setLabel: "Uçan oyuncak araba, oynat",
     setTooltip: "oynat",
   },

@@ -1,18 +1,27 @@
 "use client";
 
 import type { PointerEvent as ReactPointerEvent } from "react";
-import { useEffect, useRef } from "react";
+import { useEffect, useId, useRef } from "react";
 
+import { useRenderQuality } from "@/app/laundromat/settings/use-render-quality";
 import type { DoodleStroke } from "@/lib/laundromat/notebook/doodle-stroke";
+import { getStrokeLength } from "@/lib/laundromat/notebook/get-stroke-length";
 import { simplifyStroke } from "@/lib/laundromat/notebook/simplify-stroke";
 import { toStrokePath } from "@/lib/laundromat/notebook/to-stroke-path";
+import type { SceneConfig } from "@/lib/laundromat/scene-config";
+
+import { CrayonFilter } from "./crayon-filter";
 
 const DOT_TRAVEL_PX = 1.5;
+const SCRATCH_STEP_PX = 12;
+const SCRATCH_MIN_GAP_MS = 40;
+const SCRATCH_VOLUME = { min: 0.35, max: 1, perPxPerMs: 0.4 };
 
 type ActiveStroke = {
   pointerId: number;
   points: [number, number][];
   startedAt: number;
+  scratch: { travelPx: number; atMs: number };
 };
 
 type DoodlePadProps = {
@@ -22,20 +31,13 @@ type DoodlePadProps = {
   strokeWidthPx: number;
   smoothing: number;
   simplifyPx: number;
+  crayon: SceneConfig["notebook"]["doodle"]["crayon"];
   disabled: boolean;
   onStrokeStart: () => void;
   onStrokeCancel: () => void;
   onStroke: (stroke: DoodleStroke) => void;
+  onScratch: (volume: number) => void;
 };
-
-function getTravelPx(points: [number, number][]) {
-  return points.reduce((total, [x, y], index) => {
-    const previous = points.at(index - 1);
-    return index === 0 || previous === undefined
-      ? total
-      : total + Math.hypot(x - previous[0], y - previous[1]);
-  }, 0);
-}
 
 function roundToHalf(points: [number, number][]) {
   return points.map(
@@ -48,7 +50,15 @@ function roundToHalf(points: [number, number][]) {
 export function DoodlePad(props: DoodlePadProps) {
   const padRef = useRef<HTMLDivElement>(null);
   const livePathRef = useRef<SVGPathElement>(null);
+  const liveBodyRef = useRef<SVGPathElement>(null);
+  const crayonFilterId = useId();
+  const isCrayon = useRenderQuality().quality === "full";
   const activeRef = useRef<ActiveStroke>(undefined);
+
+  function setLivePath(d: string) {
+    livePathRef.current?.setAttribute("d", d);
+    liveBodyRef.current?.setAttribute("d", d);
+  }
 
   function toPadPoint(event: {
     clientX: number;
@@ -65,7 +75,7 @@ export function DoodlePad(props: DoodlePadProps) {
 
   function clearLiveStroke() {
     activeRef.current = undefined;
-    livePathRef.current?.setAttribute("d", "");
+    setLivePath("");
   }
 
   function cancelStroke() {
@@ -77,7 +87,7 @@ export function DoodlePad(props: DoodlePadProps) {
   useEffect(() => {
     if (!props.disabled) return;
     activeRef.current = undefined;
-    livePathRef.current?.setAttribute("d", "");
+    setLivePath("");
   }, [props.disabled]);
 
   function handlePointerDown(event: ReactPointerEvent<HTMLDivElement>) {
@@ -90,13 +100,16 @@ export function DoodlePad(props: DoodlePadProps) {
     event.preventDefault();
     event.currentTarget.setPointerCapture(event.pointerId);
     const point = toPadPoint(event);
+    const now = performance.now();
     activeRef.current = {
       pointerId: event.pointerId,
       points: [point],
-      startedAt: performance.now(),
+      startedAt: now,
+      scratch: { travelPx: 0, atMs: now },
     };
-    livePathRef.current?.setAttribute("d", toStrokePath([point, point]));
+    setLivePath(toStrokePath([point, point]));
     props.onStrokeStart();
+    props.onScratch(SCRATCH_VOLUME.min);
   }
 
   function handlePointerMove(event: ReactPointerEvent<HTMLDivElement>) {
@@ -117,15 +130,37 @@ export function DoodlePad(props: DoodlePadProps) {
         ],
       ];
     }, active.points);
-    activeRef.current = { ...active, points };
-    livePathRef.current?.setAttribute("d", toStrokePath(points));
+    const now = performance.now();
+    const travelPx =
+      active.scratch.travelPx +
+      getStrokeLength(points.slice(active.points.length - 1));
+    const elapsedMs = now - active.scratch.atMs;
+    const isScratch =
+      travelPx >= SCRATCH_STEP_PX && elapsedMs >= SCRATCH_MIN_GAP_MS;
+    if (isScratch) {
+      props.onScratch(
+        Math.min(
+          SCRATCH_VOLUME.max,
+          SCRATCH_VOLUME.min +
+            (travelPx / elapsedMs) * SCRATCH_VOLUME.perPxPerMs
+        )
+      );
+    }
+    activeRef.current = {
+      ...active,
+      points,
+      scratch: isScratch
+        ? { travelPx: 0, atMs: now }
+        : { travelPx, atMs: active.scratch.atMs },
+    };
+    setLivePath(toStrokePath(points));
   }
 
   function handlePointerUp(event: ReactPointerEvent<HTMLDivElement>) {
     const active = activeRef.current;
     if (active === undefined || active.pointerId !== event.pointerId) return;
     clearLiveStroke();
-    const isDot = getTravelPx(active.points) < DOT_TRAVEL_PX;
+    const isDot = getStrokeLength(active.points) < DOT_TRAVEL_PX;
     props.onStroke({
       points: roundToHalf(
         isDot
@@ -160,14 +195,30 @@ export function DoodlePad(props: DoodlePadProps) {
         aria-hidden
         className="pointer-events-none absolute inset-0 size-full overflow-visible"
       >
-        <path
-          ref={livePathRef}
-          fill="none"
-          stroke="var(--lm-ink-pen)"
-          strokeWidth={props.strokeWidthPx}
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        />
+        {isCrayon && (
+          <CrayonFilter id={crayonFilterId} crayon={props.crayon} seed={1} />
+        )}
+        <g filter={isCrayon ? `url(#${crayonFilterId})` : undefined}>
+          {isCrayon && (
+            <path
+              ref={liveBodyRef}
+              fill="none"
+              stroke="var(--lm-ink-pen)"
+              strokeOpacity={props.crayon.bodyOpacity}
+              strokeWidth={props.strokeWidthPx * props.crayon.bodyWidthScale}
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          )}
+          <path
+            ref={livePathRef}
+            fill="none"
+            stroke="var(--lm-ink-pen)"
+            strokeWidth={props.strokeWidthPx}
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+        </g>
       </svg>
     </div>
   );

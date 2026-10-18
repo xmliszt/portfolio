@@ -315,8 +315,8 @@ export const it = {
   },
   toyBox: {
     closedLabel:
-      "Scatola giocattolo con scritto 1955, apri la scatola giocattolo di “Ritorno al futuro”",
-    closedTooltip: "apri la scatola giocattolo di “Ritorno al futuro”",
+      "Scatola giocattolo con scritto 1955, apri la scatola giocattolo di “È il futuro”",
+    closedTooltip: "apri la scatola giocattolo di “È il futuro”",
     setLabel: "Auto volante giocattolo, gioca",
     setTooltip: "gioca",
   },

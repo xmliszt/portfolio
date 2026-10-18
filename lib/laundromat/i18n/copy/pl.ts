@@ -284,8 +284,8 @@ export const pl = {
   },
   toyBox: {
     closedLabel:
-      "Pudełko z zabawką z napisem 1955, otwórz pudełko z zabawką „Powrót do przyszłości”",
-    closedTooltip: "otwórz pudełko z zabawką „Powrót do przyszłości”",
+      "Pudełko z zabawką z napisem 1955, otwórz pudełko z zabawką „To jest przyszłość”",
+    closedTooltip: "otwórz pudełko z zabawką „To jest przyszłość”",
     setLabel: "Latający samochodzik, graj",
     setTooltip: "graj",
   },

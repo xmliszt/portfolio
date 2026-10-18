@@ -307,8 +307,8 @@ export const ptBR = {
   },
   toyBox: {
     closedLabel:
-      "Caixa de brinquedo com 1955, abrir a caixa de brinquedo de “De Volta para o Futuro”",
-    closedTooltip: "abrir a caixa de brinquedo de “De Volta para o Futuro”",
+      "Caixa de brinquedo com 1955, abrir a caixa de brinquedo de “É o Futuro”",
+    closedTooltip: "abrir a caixa de brinquedo de “É o Futuro”",
     setLabel: "Carro voador de brinquedo, jogar",
     setTooltip: "jogar",
   },

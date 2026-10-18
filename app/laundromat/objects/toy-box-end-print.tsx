@@ -1,8 +1,10 @@
+import { toyBoxTitleFont } from "./toy-box-title-font";
+
 const ART = { width: 40, height: 60 };
 const TITLE_LINES = [
-  { text: "BACK", y: 15, size: 9 },
-  { text: "TO THE", y: 24, size: 6 },
-  { text: "FUTURE", y: 33, size: 8 },
+  { text: "IT IS", y: 15, size: 9 },
+  { text: "THE", y: 24, size: 6 },
+  { text: "FUTURE", y: 33, size: 7 },
 ];
 
 function skewAround(point: { x: number; y: number }) {
@@ -16,7 +18,7 @@ type ToyBoxEndPrintProps = {
   height: number;
 };
 
-/** Draw the box end's comic cover print inside the `x`, `y`, `width`, `height` panel: the title stacked in slanted capitals over a lightning bolt and a "1955" plate. */
+/** Draw the box end's comic cover print inside the `x`, `y`, `width`, `height` panel: the title stacked in slanted poster capitals over a lightning bolt and a "1955" plate. */
 export function ToyBoxEndPrint(props: ToyBoxEndPrintProps) {
   const scale = Math.min(props.width / ART.width, props.height / ART.height);
   const offsetX = props.x + (props.width - ART.width * scale) / 2;
@@ -33,9 +35,7 @@ export function ToyBoxEndPrint(props: ToyBoxEndPrintProps) {
         strokeWidth={0.8}
       />
       <g
-        className="fill-[var(--lm-ink-hi)] stroke-none font-[family-name:var(--lm-font-mono)]"
-        fontWeight={700}
-        fontStyle="italic"
+        className={`fill-[var(--lm-ink-hi)] stroke-none ${toyBoxTitleFont.className}`}
         textAnchor="middle"
       >
         {TITLE_LINES.map((line) => (

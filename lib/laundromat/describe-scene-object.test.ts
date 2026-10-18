@@ -63,7 +63,7 @@ test("asks to open the closed toy box and to play the opened set", () => {
   assert.ok(box && set);
   assert.equal(
     describeSceneObject({ object: box, copy: en })?.tooltip,
-    "open the “Back to the Future” toy box"
+    "open the “It is the Future” toy box"
   );
   assert.equal(describeSceneObject({ object: set, copy: en })?.tooltip, "play");
 });

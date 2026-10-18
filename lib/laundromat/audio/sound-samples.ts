@@ -180,6 +180,7 @@ export const SOUND_SAMPLES = {
   "toy-hover-jets": { kind: "synthesized" },
   "camera-shutter": { kind: "synthesized" },
   "camera-eject": { kind: "synthesized" },
+  "crayon-scratch": { kind: "synthesized" },
   "washer-running": {
     kind: "generated",
     prompt:

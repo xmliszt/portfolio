@@ -277,8 +277,8 @@ export const nl = {
   },
   toyBox: {
     closedLabel:
-      "Speelgoeddoos met 1955 erop, de ‘Back to the Future’-speelgoeddoos openen",
-    closedTooltip: "de ‘Back to the Future’-speelgoeddoos openen",
+      "Speelgoeddoos met 1955 erop, de ‘It is the Future’-speelgoeddoos openen",
+    closedTooltip: "de ‘It is the Future’-speelgoeddoos openen",
     setLabel: "Vliegende speelgoedauto, spelen",
     setTooltip: "spelen",
   },

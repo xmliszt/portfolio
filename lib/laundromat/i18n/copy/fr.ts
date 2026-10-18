@@ -311,8 +311,8 @@ export const fr = {
   },
   toyBox: {
     closedLabel:
-      "Boîte à jouet marquée 1955, ouvrir la boîte à jouet « Retour vers le futur »",
-    closedTooltip: "ouvrir la boîte à jouet « Retour vers le futur »",
+      "Boîte à jouet marquée 1955, ouvrir la boîte à jouet « C’est le futur »",
+    closedTooltip: "ouvrir la boîte à jouet « C’est le futur »",
     setLabel: "Voiture volante jouet, jouer",
     setTooltip: "jouer",
   },

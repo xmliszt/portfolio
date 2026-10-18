@@ -1287,6 +1287,7 @@ export function NotebookBook(props: NotebookBookProps) {
         }
       },
       onStroke: handleStroke,
+      onScratch: (volume: number) => sound?.play("crayon-scratch", { volume }),
       onUndo: handleUndo,
       onClear: () => {
         if (!isLeaving) updateStrokes([]);
