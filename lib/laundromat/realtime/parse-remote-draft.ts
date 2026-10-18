@@ -31,7 +31,7 @@ function parseSelection(options: {
   return { start: Math.min(start, end), end: Math.max(start, end) };
 }
 
-/** Return the draft another tab broadcast, or `undefined` when the payload is not one: a doodle draft with its drawing, dropped when malformed, or a text draft (also when `kind` is missing, as older tabs send) with its text cut to `maxChars` with swear words masked and its selection clamped to that text; a missing or malformed selection is dropped. */
+/** Return the draft another tab broadcast, or `undefined` when the payload is not one: a doodle draft with its drawing, dropped when malformed, or a text draft with its text cut to `maxChars` with swear words masked and its selection clamped to that text; a missing or malformed selection is dropped. */
 export function parseRemoteDraft(options: {
   value: unknown;
   maxChars: number;

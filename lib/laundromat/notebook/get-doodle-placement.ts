@@ -1,4 +1,4 @@
-/** Return where a doodle lands after `linesUsed`, as `append_doodle` places it: on the next free line when its drawing space of `spaceLineCount` lines fits on that page, otherwise at the top of the next page, and on page 1 of the next book with `startsNewBook` when the book has no room for that space. */
+/** Return the `page` and `lineStart` where a doodle of `spaceLineCount` lines lands after `linesUsed`, moving to the next page when it does not fit and to the next book (`startsNewBook`) when the book is full. */
 export function getDoodlePlacement(options: {
   linesUsed: number;
   spaceLineCount: number;

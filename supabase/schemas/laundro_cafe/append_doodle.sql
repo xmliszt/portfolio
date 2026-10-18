@@ -11,7 +11,6 @@ as $$
 declare
   v_notebook laundro_cafe.notebooks;
   v_capacity integer;
-  -- The drawing space is 6 rows plus the timestamp line; a doodle is placed where that whole space fits, then keeps only the lines it uses.
   v_space_lines constant integer := 7;
   v_row integer;
   v_skip integer;
@@ -56,7 +55,6 @@ begin
     raise exception 'rate_limited' using errcode = 'P0001';
   end if;
 
-  -- A doodle never splits across pages: when its drawing space does not fit below the last entry, it starts on the next page and the lines in between stay blank.
   v_row := v_notebook.lines_used % v_notebook.lines_per_page;
   v_skip := case
     when v_row + v_space_lines > v_notebook.lines_per_page then v_notebook.lines_per_page - v_row

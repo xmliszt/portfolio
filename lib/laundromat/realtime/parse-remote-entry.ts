@@ -15,7 +15,7 @@ function isPositiveInteger(value: unknown): value is number {
   return Number.isInteger(value) && Number(value) > 0;
 }
 
-/** Return the entry another tab broadcast right after saving it, or `undefined` when the payload is not one: a doodle with its drawing (`undefined` when malformed), or a text entry (also when `kind` is missing, as older tabs send) with its body cut to `maxChars`; swear words are masked in the body and sign-off. */
+/** Return the entry another tab broadcast right after saving it, or `undefined` when the payload is not one: a doodle with its drawing (`undefined` when malformed), or a text entry with its body cut to `maxChars`; swear words are masked in the body and sign-off. */
 export function parseRemoteEntry(options: {
   value: unknown;
   maxChars: number;

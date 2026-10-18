@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 
 const NARROW_SCREEN_QUERY = "(max-width: 719px)";
 
-/** Return `true` while the screen is narrower than 720px, too narrow to draw on both pages of the open notebook; `false` otherwise. */
+/** Return `true` while the screen is narrower than 720px; `false` otherwise. */
 export function useIsNarrowScreen() {
   const [isNarrow, setIsNarrow] = useState(false);
 

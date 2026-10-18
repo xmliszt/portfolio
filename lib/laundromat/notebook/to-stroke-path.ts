@@ -1,4 +1,4 @@
-/** Return an SVG path through `points` that curves through the midpoints between them, so a hand-drawn stroke has no sharp joins. */
+/** Return an SVG path through `points` that curves through the midpoints between them. */
 export function toStrokePath(points: [number, number][]) {
   const first = points.at(0);
   const last = points.at(-1);

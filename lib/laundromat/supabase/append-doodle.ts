@@ -28,7 +28,7 @@ function isAppendEntryRejection(
 }
 
 /**
- * Place a doodle on the next free lines of the current notebook through `append_doodle`, which moves it to the next page when it does not fit on the current one.
+ * Place a doodle on the next free lines of the current notebook through `append_doodle`.
  * Returns `rejected` with the database's reason for validation and rate-limit failures; throws on any other error.
  */
 export async function appendDoodle(
