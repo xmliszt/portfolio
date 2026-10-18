@@ -6,19 +6,19 @@ function isIntegerList(value: unknown): value is number[] {
   return Array.isArray(value) && value.every((item) => Number.isInteger(item));
 }
 
-function isInsideArea(options: {
+function isStrokeWithinLimits(options: {
   stroke: number[];
   widthHalfPx: number;
   heightHalfPx: number;
 }) {
   const [durationMs, ...deltas] = options.stroke;
   if (durationMs < 0 || durationMs > DOODLE_LIMITS.maxStrokeMs) return false;
-  const corners = { x: 0, y: 0 };
+  const point = { x: 0, y: 0 };
   return deltas.every((delta, index) => {
     const axis = index % 2 === 0 ? "x" : "y";
-    corners[axis] += delta;
+    point[axis] += delta;
     const max = axis === "x" ? options.widthHalfPx : options.heightHalfPx;
-    return corners[axis] >= 0 && corners[axis] <= max;
+    return point[axis] >= 0 && point[axis] <= max;
   });
 }
 
@@ -45,7 +45,7 @@ export function parseDoodleDrawing(value: unknown): DoodleDrawing | undefined {
     pointCount > DOODLE_LIMITS.maxPoints ||
     strokes.some((stroke) => stroke.length < 3 || stroke.length % 2 === 0) ||
     !strokes.every((stroke) =>
-      isInsideArea({
+      isStrokeWithinLimits({
         stroke,
         widthHalfPx: area.widthPx * 2,
         heightHalfPx: Math.ceil(area.heightPx * 2),

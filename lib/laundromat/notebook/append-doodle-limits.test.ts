@@ -31,3 +31,13 @@ test("append_doodle allows as many strokes as DOODLE_LIMITS", () => {
     );
   }
 });
+
+test("append_doodle limits the drawing's JSON text, not its stored size", () => {
+  for (const path of SQL_FILES) {
+    assert.match(
+      readFileSync(path, "utf8"),
+      /octet_length\(p_drawing::text\) > 32768/,
+      path
+    );
+  }
+});

@@ -76,7 +76,9 @@ type PageControls = {
 
 type PadControls = {
   disabled: boolean;
+  isEditable: boolean;
   onStrokeStart: () => void;
+  onStrokeCancel: () => void;
   onStroke: (stroke: DoodleStroke) => void;
   onUndo: () => void;
   onClear: () => void;
@@ -140,6 +142,7 @@ export function NotebookPage(props: NotebookPageProps) {
     (settings.height - settings.marginTop - settings.marginBottom) / pitch
   );
   const { pad } = props;
+  const isPadEditable = props.controls?.pad?.isEditable ?? false;
   const textWidthPx = settings.width - settings.marginX * 2;
 
   return (
@@ -222,6 +225,7 @@ export function NotebookPage(props: NotebookPageProps) {
                 simplifyPx={props.doodle.simplifyPx}
                 disabled={props.controls.pad.disabled}
                 onStrokeStart={props.controls.pad.onStrokeStart}
+                onStrokeCancel={props.controls.pad.onStrokeCancel}
                 onStroke={props.controls.pad.onStroke}
               />
             )}
@@ -258,7 +262,7 @@ export function NotebookPage(props: NotebookPageProps) {
                   <button
                     key={action.label}
                     type="button"
-                    disabled={pad.strokes.length === 0}
+                    disabled={pad.strokes.length === 0 || !isPadEditable}
                     onClick={(event) => {
                       event.stopPropagation();
                       action.onClick();

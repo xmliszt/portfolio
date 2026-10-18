@@ -36,8 +36,17 @@ test("rejects payloads that are not drawings", () => {
   }
 });
 
-test("rejects points outside the drawing space and overlong strokes", () => {
+test("accepts points on the edge of the drawing space", () => {
+  const drawing = {
+    w: widthPx,
+    strokes: [[0, widthPx * 2, Math.ceil(heightPx * 2)]],
+  };
+  assert.deepEqual(parseDoodleDrawing(drawing), drawing);
+});
+
+test("rejects points outside the drawing space and bad durations", () => {
   const outside = [
+    [-1, 0, 0],
     [0, widthPx * 2 + 1, 0],
     [0, 0, Math.ceil(heightPx * 2) + 1],
     [0, 10, 10, -11, 0],

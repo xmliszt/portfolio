@@ -1138,6 +1138,10 @@ export function NotebookBook(props: NotebookBookProps) {
     ]);
   }
 
+  function handleUndo() {
+    if (!isLeaving && strokes.length > 0) updateStrokes(strokes.slice(0, -1));
+  }
+
   function handleModeChange(next: PenMode) {
     if (!canWrite || isLeaving || next === mode) return;
     setMode(next);
@@ -1182,7 +1186,7 @@ export function NotebookBook(props: NotebookBookProps) {
       if (mode !== "draw" || !(event.metaKey || event.ctrlKey)) return;
       if (event.key === "z" && !event.shiftKey && strokes.length > 0) {
         event.preventDefault();
-        updateStrokes(strokes.slice(0, -1));
+        handleUndo();
       } else if (event.key === "Enter") {
         event.preventDefault();
         void handleLeaveDoodle();
@@ -1274,10 +1278,18 @@ export function NotebookBook(props: NotebookBookProps) {
     inkSpeed: details.inkSpeed,
     pad: {
       disabled: !canWrite || isLeaving || isInkFull,
+      isEditable: canWrite && !isLeaving,
       onStrokeStart: () => props.onWritingChange(true),
+      onStrokeCancel: () => {
+        if (strokes.length === 0 && draft.trim() === "") {
+          props.onWritingChange(false);
+        }
+      },
       onStroke: handleStroke,
-      onUndo: () => updateStrokes(strokes.slice(0, -1)),
-      onClear: () => updateStrokes([]),
+      onUndo: handleUndo,
+      onClear: () => {
+        if (!isLeaving) updateStrokes([]);
+      },
     },
   };
 
@@ -1353,7 +1365,7 @@ export function NotebookBook(props: NotebookBookProps) {
     );
   }
 
-  const statusText = (() => {
+  const statusMessage = (() => {
     if (failure !== undefined) return describeLeaveFailure({ failure, copy });
     if (result === undefined || !isContentReady) return copy.notebook.opening;
     if (result.kind === "offline") {
@@ -1389,14 +1401,15 @@ export function NotebookBook(props: NotebookBookProps) {
     ) {
       return `${draft.length} / ${config.notebook.maxChars}`;
     }
-    return (
-      <>
-        {copy.notebook.writePromptBeforeKeys}
-        <ShortcutHint keys={["mod", "↵"]} label={undefined} />
-        {copy.notebook.writePromptAfterKeys}
-      </>
-    );
+    return undefined;
   })();
+  const statusText = statusMessage ?? (
+    <>
+      {copy.notebook.writePromptBeforeKeys}
+      <ShortcutHint keys={["mod", "↵"]} label={undefined} />
+      {copy.notebook.writePromptAfterKeys}
+    </>
+  );
   const penHints =
     canWrite && failure === undefined && isContentReady
       ? mode === "draw"
@@ -1407,7 +1420,6 @@ export function NotebookBook(props: NotebookBookProps) {
         : [{ keys: ["⇧", "tab"], label: copy.notebook.penModes.draw }]
       : [];
 
-  const hasShortcutKeys = typeof statusText !== "string";
   const isSaveDisabled =
     isLeaving ||
     (mode === "draw"
@@ -1750,11 +1762,12 @@ export function NotebookBook(props: NotebookBookProps) {
       </div>
       {isNarrowScreen && isLifted && (
         <NotebookPhoneBar
-          status={hasShortcutKeys ? copy.notebook.writePrompt : statusText}
+          status={statusMessage ?? copy.notebook.writePrompt}
           pen={
             canWrite
               ? {
                   mode,
+                  disabled: isLeaving,
                   label: copy.notebook.penModeLabel,
                   modeLabels: copy.notebook.penModes,
                   onModeChange: handleModeChange,
@@ -1777,7 +1790,7 @@ export function NotebookBook(props: NotebookBookProps) {
               ? {
                   label: copy.notebook.undo,
                   disabled: strokes.length === 0 || isLeaving,
-                  onPress: () => updateStrokes(strokes.slice(0, -1)),
+                  onPress: handleUndo,
                 }
               : undefined
           }

@@ -1,7 +1,7 @@
 "use client";
 
 import type { PointerEvent as ReactPointerEvent } from "react";
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
 
 import type { DoodleStroke } from "@/lib/laundromat/notebook/doodle-stroke";
 import { simplifyStroke } from "@/lib/laundromat/notebook/simplify-stroke";
@@ -24,6 +24,7 @@ type DoodlePadProps = {
   simplifyPx: number;
   disabled: boolean;
   onStrokeStart: () => void;
+  onStrokeCancel: () => void;
   onStroke: (stroke: DoodleStroke) => void;
 };
 
@@ -62,10 +63,22 @@ export function DoodlePad(props: DoodlePadProps) {
     ];
   }
 
-  function cancelStroke() {
+  function clearLiveStroke() {
     activeRef.current = undefined;
     livePathRef.current?.setAttribute("d", "");
   }
+
+  function cancelStroke() {
+    if (activeRef.current === undefined) return;
+    clearLiveStroke();
+    props.onStrokeCancel();
+  }
+
+  useEffect(() => {
+    if (!props.disabled) return;
+    activeRef.current = undefined;
+    livePathRef.current?.setAttribute("d", "");
+  }, [props.disabled]);
 
   function handlePointerDown(event: ReactPointerEvent<HTMLDivElement>) {
     if (props.disabled) return;
@@ -111,7 +124,7 @@ export function DoodlePad(props: DoodlePadProps) {
   function handlePointerUp(event: ReactPointerEvent<HTMLDivElement>) {
     const active = activeRef.current;
     if (active === undefined || active.pointerId !== event.pointerId) return;
-    cancelStroke();
+    clearLiveStroke();
     const isDot = getTravelPx(active.points) < DOT_TRAVEL_PX;
     props.onStroke({
       points: roundToHalf(

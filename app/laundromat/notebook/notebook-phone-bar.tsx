@@ -13,6 +13,7 @@ type NotebookPhoneBarProps = {
   pen:
     | {
         mode: PenMode;
+        disabled: boolean;
         label: string;
         modeLabels: { [mode in PenMode]: string };
         onModeChange: (mode: PenMode) => void;
@@ -63,7 +64,7 @@ export function NotebookPhoneBar(props: NotebookPhoneBarProps) {
     >
       <p
         role="status"
-        className="line-clamp-2 text-center text-[12px] text-[var(--lm-ink)] lowercase"
+        className="pointer-events-auto line-clamp-2 text-center text-[12px] text-[var(--lm-ink)] lowercase"
       >
         {props.status}
       </p>
@@ -87,9 +88,10 @@ export function NotebookPhoneBar(props: NotebookPhoneBarProps) {
                 key={mode}
                 type="button"
                 aria-pressed={props.pen?.mode === mode}
+                disabled={props.pen?.disabled}
                 onClick={() => props.pen?.onModeChange(mode)}
                 className={cn(
-                  "h-full cursor-pointer rounded-full px-5 text-[13px] lowercase outline-none focus-visible:text-[var(--lm-ink-hi)]",
+                  "h-full cursor-pointer rounded-full px-5 text-[13px] lowercase outline-none focus-visible:text-[var(--lm-ink-hi)] disabled:cursor-default disabled:opacity-60",
                   props.pen?.mode === mode
                     ? "bg-[var(--lm-edge)] text-[var(--lm-ink-hi)]"
                     : "text-[var(--lm-ink)]"

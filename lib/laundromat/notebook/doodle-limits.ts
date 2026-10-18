@@ -1,4 +1,4 @@
-/** The most one doodle may hold, shared by the drawing pad, every drawing parser, and `append_doodle`. */
+/** The most strokes, points and milliseconds per stroke one doodle may hold. */
 export const DOODLE_LIMITS = {
   maxStrokes: 300,
   maxPoints: 2000,
