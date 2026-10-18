@@ -102,7 +102,8 @@ export function PolaroidSheet(props: PolaroidSheetProps) {
   const isWaitingForPrint =
     canShareFiles && readyPrint?.note !== note && failedNote !== note;
   const isShareDisabled = isWaitingForPrint || isCopying;
-  const noteFont = HANDWRITING_FONT_FAMILIES[detectScript(note)];
+  const shownNote = note === "" ? text.notePlaceholder : note;
+  const noteFont = HANDWRITING_FONT_FAMILIES[detectScript(shownNote)];
   const pasteKeys = /Mac|iPhone|iPad/.test(navigator.userAgent)
     ? "⌘ V"
     : "Ctrl V";
@@ -122,7 +123,7 @@ export function PolaroidSheet(props: PolaroidSheetProps) {
     orientation: props.photo.orientation,
     longPx,
   });
-  const notePx = Math.round(metrics.notePx * getNoteFontScale(note));
+  const notePx = Math.round(metrics.notePx * getNoteFontScale(shownNote));
 
   function getPrint() {
     const current = printRef.current;
