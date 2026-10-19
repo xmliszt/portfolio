@@ -348,6 +348,9 @@ export const it = {
     shareLabel: "Condividi la foto",
     more: "altro",
     moreLabel: "Altri modi per condividere",
+    download: "scarica",
+    downloadLabel: "Scarica la foto",
+    downloaded: "foto scaricata",
     shareText: "scattata su laundro.cafe",
     handoff: {
       copiedTitle: "Foto copiata",
@@ -613,6 +616,9 @@ export const it = {
       `Numero di pagina, da 1 a ${o.pageCount}`,
     report: "segnala",
     reported: "segnalato",
+    beKind: "Siate gentili gli uni con gli altri.",
+    reportRule: (o: { count: number }) =>
+      `Una nota segnalata da ${o.count} persone viene rimossa per sempre.`,
     reportDialog: {
       title: "Segnalare questo biglietto?",
       body: "Le segnalazioni aiutano a mantenere il quaderno un posto gentile.",

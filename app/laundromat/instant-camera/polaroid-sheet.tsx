@@ -337,6 +337,16 @@ export function PolaroidSheet(props: PolaroidSheetProps) {
     handleCopy();
   }
 
+  function handleDownload() {
+    getPrint().then(
+      (blob) => {
+        saveBlobAsFile({ blob, fileName: INSTANT_CAMERA.printFileName });
+        showToast(text.downloaded);
+      },
+      () => showToast(text.snapFailed)
+    );
+  }
+
   function handleCopy() {
     copyImageToClipboard(getPrint()).then((copied) =>
       showToast(copied ? text.copied : text.copyFailed)
@@ -520,6 +530,28 @@ export function PolaroidSheet(props: PolaroidSheetProps) {
                 <path d="M12 3v12M7.5 7.5L12 3l4.5 4.5M5 12v8h14v-8" />
               </svg>
               <span className={SHARE_TIP_CLASS}>{text.more}</span>
+            </button>
+            <button
+              type="button"
+              aria-label={text.downloadLabel}
+              disabled={isShareDisabled}
+              className={cn(
+                SHARE_BUTTON_CLASS,
+                "[@media(pointer:coarse)]:hidden"
+              )}
+              onClick={handleDownload}
+            >
+              <svg
+                aria-hidden
+                viewBox="0 0 24 24"
+                className="size-[19px] fill-none stroke-current"
+                strokeWidth={1.4}
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <path d="M12 3v12M7.5 10.5L12 15l4.5-4.5M5 12v8h14v-8" />
+              </svg>
+              <span className={SHARE_TIP_CLASS}>{text.download}</span>
             </button>
           </div>
         )}

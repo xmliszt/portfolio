@@ -337,6 +337,9 @@ export const en = {
     shareLabel: "Share the photo",
     more: "more",
     moreLabel: "More ways to share",
+    download: "download",
+    downloadLabel: "Download the photo",
+    downloaded: "photo downloaded",
     shareText: "snapped at laundro.cafe",
     handoff: {
       copiedTitle: "Photo copied",
@@ -604,6 +607,9 @@ export const en = {
       `Page number, 1 to ${o.pageCount}`,
     report: "report",
     reported: "reported",
+    beKind: "Please be kind to each other.",
+    reportRule: (o: { count: number }) =>
+      `A note reported by ${o.count} people is removed for good.`,
     reportDialog: {
       title: "Report this note?",
       body: "Reports help keep the notebook a kind place.",

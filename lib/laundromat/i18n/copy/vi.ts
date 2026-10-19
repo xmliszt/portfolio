@@ -332,6 +332,9 @@ export const vi = {
     shareLabel: "Chia sẻ ảnh",
     more: "thêm",
     moreLabel: "Các cách chia sẻ khác",
+    download: "tải về",
+    downloadLabel: "Tải ảnh về",
+    downloaded: "đã tải ảnh về",
     shareText: "chụp tại laundro.cafe",
     handoff: {
       copiedTitle: "Đã sao chép ảnh",
@@ -594,6 +597,9 @@ export const vi = {
       `Số trang, từ 1 đến ${o.pageCount}`,
     report: "báo cáo",
     reported: "đã báo cáo",
+    beKind: "Hãy tử tế với nhau nhé.",
+    reportRule: (o: { count: number }) =>
+      `Ghi chú bị ${o.count} người báo cáo sẽ bị xóa vĩnh viễn.`,
     reportDialog: {
       title: "Báo cáo lời nhắn này?",
       body: "Báo cáo giúp cuốn sổ luôn là một nơi tử tế.",

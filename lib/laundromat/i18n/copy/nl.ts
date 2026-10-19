@@ -310,6 +310,9 @@ export const nl = {
     shareLabel: "Foto delen",
     more: "meer",
     moreLabel: "Meer manieren om te delen",
+    download: "downloaden",
+    downloadLabel: "Foto downloaden",
+    downloaded: "foto gedownload",
     shareText: "gekiekt bij laundro.cafe",
     handoff: {
       copiedTitle: "Foto gekopieerd",
@@ -570,6 +573,9 @@ export const nl = {
     pageInputLabel: (o) => `Paginanummer, 1 tot ${o.pageCount}`,
     report: "melden",
     reported: "gemeld",
+    beKind: "Wees alsjeblieft aardig voor elkaar.",
+    reportRule: (o: { count: number }) =>
+      `Een notitie die door ${o.count} mensen is gemeld, wordt voorgoed verwijderd.`,
     reportDialog: {
       title: "Dit berichtje melden?",
       body: "Meldingen helpen het notitieboek een vriendelijke plek te houden.",

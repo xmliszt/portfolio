@@ -341,6 +341,9 @@ export const es = {
     shareLabel: "Compartir la foto",
     more: "más",
     moreLabel: "Más formas de compartir",
+    download: "descargar",
+    downloadLabel: "Descargar la foto",
+    downloaded: "foto descargada",
     shareText: "foto hecha en laundro.cafe",
     handoff: {
       copiedTitle: "Foto copiada",
@@ -609,6 +612,9 @@ export const es = {
       `Número de página, del 1 al ${o.pageCount}`,
     report: "denunciar",
     reported: "denunciada",
+    beKind: "Por favor, sé amable con los demás.",
+    reportRule: (o: { count: number }) =>
+      `Una nota denunciada por ${o.count} personas se elimina para siempre.`,
     reportDialog: {
       title: "¿Denunciar esta nota?",
       body: "Las denuncias ayudan a que el cuaderno siga siendo un lugar amable.",

@@ -324,6 +324,9 @@ export const ko = {
     shareLabel: "사진 공유",
     more: "더 보기",
     moreLabel: "다른 공유 방법",
+    download: "다운로드",
+    downloadLabel: "사진 다운로드",
+    downloaded: "사진 다운로드됨",
     shareText: "laundro.cafe에서 찍음",
     handoff: {
       copiedTitle: "사진 복사됨",
@@ -588,6 +591,9 @@ export const ko = {
       `쪽 번호, 1부터 ${o.pageCount}까지`,
     report: "신고",
     reported: "신고됨",
+    beKind: "서로 다정하게 대해 주세요.",
+    reportRule: (o: { count: number }) =>
+      `${o.count}명에게 신고된 메모는 영구히 삭제돼요.`,
     reportDialog: {
       title: "이 메모를 신고할까요?",
       body: "신고는 노트를 다정한 곳으로 지키는 데 도움이 돼요.",

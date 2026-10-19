@@ -317,6 +317,9 @@ export const pl = {
     shareLabel: "Udostępnij zdjęcie",
     more: "więcej",
     moreLabel: "Więcej sposobów udostępniania",
+    download: "pobierz",
+    downloadLabel: "Pobierz zdjęcie",
+    downloaded: "pobrano zdjęcie",
     shareText: "zrobione w laundro.cafe",
     handoff: {
       copiedTitle: "Skopiowano zdjęcie",
@@ -582,6 +585,9 @@ export const pl = {
     pageInputLabel: (o) => `Numer strony, od 1 do ${o.pageCount}`,
     report: "zgłoś",
     reported: "zgłoszono",
+    beKind: "Bądźcie dla siebie mili.",
+    reportRule: (o: { count: number }) =>
+      `Notatka zgłoszona przez ${o.count} ${pluralize({ count: o.count, one: "osobę", few: "osoby", many: "osób" })} znika na zawsze.`,
     reportDialog: {
       title: "Zgłosić ten liścik?",
       body: "Zgłoszenia pomagają, by notes pozostał miłym miejscem.",

@@ -328,6 +328,9 @@ export const ja = {
     shareLabel: "写真をシェア",
     more: "その他",
     moreLabel: "ほかのシェア方法",
+    download: "ダウンロード",
+    downloadLabel: "写真をダウンロード",
+    downloaded: "写真をダウンロードした",
     shareText: "laundro.cafe で撮った",
     handoff: {
       copiedTitle: "写真をコピーしました",
@@ -591,6 +594,9 @@ export const ja = {
       `ページ番号、1〜${o.pageCount}`,
     report: "報告",
     reported: "報告済み",
+    beKind: "おたがいにやさしくね。",
+    reportRule: (o: { count: number }) =>
+      `${o.count}人に報告されたメモは完全に削除されます。`,
     reportDialog: {
       title: "このメモを報告しますか？",
       body: "報告があると、ノートをやさしい場所に保てます。",

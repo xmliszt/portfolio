@@ -344,6 +344,9 @@ export const id = {
     shareLabel: "Bagikan foto",
     more: "lainnya",
     moreLabel: "Cara lain untuk berbagi",
+    download: "unduh",
+    downloadLabel: "Unduh foto",
+    downloaded: "foto diunduh",
     shareText: "dipotret di laundro.cafe",
     handoff: {
       copiedTitle: "Foto disalin",
@@ -608,6 +611,9 @@ export const id = {
       `Nomor halaman, 1 sampai ${o.pageCount}`,
     report: "laporkan",
     reported: "dilaporkan",
+    beKind: "Tolong saling bersikap baik, ya.",
+    reportRule: (o: { count: number }) =>
+      `Catatan yang dilaporkan ${o.count} orang akan dihapus selamanya.`,
     reportDialog: {
       title: "Laporkan catatan ini?",
       body: "Laporan membantu buku catatan tetap jadi tempat yang ramah.",
