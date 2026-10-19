@@ -30,8 +30,10 @@ import { getDraftPlacement } from "@/lib/laundromat/notebook/get-draft-placement
 import { getDraftRowMarks } from "@/lib/laundromat/notebook/get-draft-row-marks";
 import { getEntryLineCount } from "@/lib/laundromat/notebook/get-entry-line-count";
 import { getEntrySpreads } from "@/lib/laundromat/notebook/get-entry-spreads";
+import { getLinesUsed } from "@/lib/laundromat/notebook/get-lines-used";
 import { getRestingPlacedAt } from "@/lib/laundromat/notebook/get-resting-placed-at";
 import { getSpreadOfPage } from "@/lib/laundromat/notebook/get-spread-of-page";
+import { isEntryHidden } from "@/lib/laundromat/notebook/is-entry-hidden";
 import { isRtlScript } from "@/lib/laundromat/notebook/is-rtl-script";
 import { keepTrailingSpace } from "@/lib/laundromat/notebook/keep-trailing-space";
 import type { FittedEntry } from "@/lib/laundromat/notebook/layout-page-rows";
@@ -294,17 +296,11 @@ export function NotebookBook(props: NotebookBookProps) {
         ? result.notebook
         : createOfflineNotebook({ number: props.coverNumber, config });
     const entries = [...loaded.entries, ...localEntries];
-    const lastEntry = entries.at(-1);
-    const linesUsed =
-      lastEntry === undefined
-        ? loaded.linesUsed
-        : Math.max(
-            loaded.linesUsed,
-            (lastEntry.page - 1) * loaded.linesPerPage +
-              lastEntry.lineStart -
-              1 +
-              lastEntry.lineCount
-          );
+    const linesUsed = getLinesUsed({
+      linesUsed: loaded.linesUsed,
+      linesPerPage: loaded.linesPerPage,
+      entries,
+    });
     return { ...loaded, entries, linesUsed };
   }, [result, localEntries, props.coverNumber, config]);
 
@@ -380,8 +376,7 @@ export function NotebookBook(props: NotebookBookProps) {
 
   const stored = useMemo(() => {
     return notebook.entries.map((entry) => {
-      const isHidden =
-        entry.kind === "text" ? entry.body === "" : entry.drawing === undefined;
+      const isHidden = isEntryHidden(entry);
       const style = getEntryStyle({
         script: entry.script,
         reportEntryId: isHidden ? undefined : entry.id,

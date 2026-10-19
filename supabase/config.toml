@@ -66,6 +66,7 @@ schema_paths = [
   "./schemas/laundro_cafe/notebooks.sql",
   "./schemas/laundro_cafe/notebook_entries.sql",
   "./schemas/laundro_cafe/notebook_entry_authors.sql",
+  "./schemas/laundro_cafe/reclaim_hidden_lines.sql",
   "./schemas/laundro_cafe/count_entry_report.sql",
   "./schemas/laundro_cafe/entry_reports.sql",
   "./schemas/laundro_cafe/append_entry.sql",
