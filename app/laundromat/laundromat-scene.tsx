@@ -794,6 +794,16 @@ export function LaundromatScene(props: LaundromatSceneProps) {
     });
     scene.style.transition = `transform ${durationMs}ms cubic-bezier(${config.camera.ease.join(",")})`;
     scene.style.transform = toCameraTransform(camera);
+    scene.dataset.lmCameraMoving = "";
+    function handleTransitionEnd(event: TransitionEvent) {
+      if (event.target !== scene || event.propertyName !== "transform") return;
+      delete scene?.dataset.lmCameraMoving;
+    }
+    scene.addEventListener("transitionend", handleTransitionEnd);
+    return () => {
+      scene.removeEventListener("transitionend", handleTransitionEnd);
+      delete scene.dataset.lmCameraMoving;
+    };
   }, [viewport, cameraFocus, layout, config, prefersReducedMotion]);
 
   useEffect(() => {
@@ -1298,8 +1308,10 @@ export function LaundromatScene(props: LaundromatSceneProps) {
         className={cn(
           "absolute top-0 left-0 origin-top-left",
           !isReady && "invisible",
-          // The open book covers every animated object, and each frame of one would re-rasterize the zoomed-in room.
-          cameraFocus === "notebook" && "[&_*]:![animation-play-state:paused]"
+          // Each animation or light-glide frame re-rasterizes the whole room; the open book hides it and a camera move cannot keep up.
+          "data-[lm-camera-moving]:[&_*]:![animation-play-state:paused] data-[lm-camera-moving]:[&_:not([data-lm-dim])]:![transition:none]",
+          cameraFocus === "notebook" &&
+            "[&_*]:![animation-play-state:paused] [&_:not([data-lm-dim])]:![transition:none]"
         )}
         style={{ width: layout.size.width, height: layout.size.height }}
       >
