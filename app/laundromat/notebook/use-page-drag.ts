@@ -12,10 +12,9 @@ type UsePageDragOptions = {
 };
 
 const CLICK_SLOP_PX = 6;
-const FLING_PX_PER_MS = 0.4;
-const VELOCITY_WINDOW_MS = 100;
+const COMMIT_TRAVEL = 0.25;
 
-/** Return a pointer-down handler for a page edge that lifts the leaf where it was grabbed, lets it follow the pointer across and down the spread, and turns it on release past halfway, on a fling, or on a click. */
+/** Return a pointer-down handler for a page edge that lifts the leaf where it was grabbed, lets it follow the pointer across and down the spread, and turns it on release past half a page or on a click. */
 export function usePageDrag(options: UsePageDragOptions) {
   const optionsRef = useRef(options);
   const stopRef = useRef<() => void>(undefined);
@@ -45,7 +44,6 @@ export function usePageDrag(options: UsePageDragOptions) {
     const direction = target.side === "right" ? 1 : -1;
     const startX = event.clientX;
     const startY = event.clientY;
-    let samples = [{ x: startX, t: event.timeStamp }];
     let hasMoved = false;
 
     function getTravel(x: number) {
@@ -59,12 +57,6 @@ export function usePageDrag(options: UsePageDragOptions) {
         return;
       }
       hasMoved ||= Math.abs(moveEvent.clientX - startX) >= CLICK_SLOP_PX;
-      samples = [
-        ...samples.filter(
-          (sample) => moveEvent.timeStamp - sample.t <= VELOCITY_WINDOW_MS
-        ),
-        { x: moveEvent.clientX, t: moveEvent.timeStamp },
-      ];
       optionsRef.current.moveDrag({
         travel: getTravel(moveEvent.clientX),
         drop: (moveEvent.clientY - startY) / rect.height,
@@ -84,17 +76,9 @@ export function usePageDrag(options: UsePageDragOptions) {
       stop();
       const isClick =
         !hasMoved && Math.abs(upEvent.clientX - startX) < CLICK_SLOP_PX;
-      const first = samples.at(0);
-      const elapsedMs = first === undefined ? 0 : upEvent.timeStamp - first.t;
-      const velocity =
-        first === undefined || elapsedMs <= 0
-          ? 0
-          : ((first.x - upEvent.clientX) * direction) / elapsedMs;
       const commit =
         releaseOptions.canCommit &&
-        (isClick ||
-          velocity > FLING_PX_PER_MS ||
-          (getTravel(upEvent.clientX) > 0.5 && velocity > -FLING_PX_PER_MS));
+        (isClick || getTravel(upEvent.clientX) > COMMIT_TRAVEL);
       if (commit) optionsRef.current.onFlip();
       optionsRef.current.endDrag({ commit });
     }
