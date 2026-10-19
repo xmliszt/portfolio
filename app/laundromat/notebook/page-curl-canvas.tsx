@@ -1,26 +1,32 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useId, useLayoutEffect, useRef, useState } from "react";
 import type { MotionValue } from "motion/react";
 import { Mesh, Plane, Program, Renderer, Texture } from "ogl";
 
-import type { NotebookPage as NotebookPageSettings } from "@/lib/laundromat/scene-config";
+import type {
+  NotebookPage as NotebookPageSettings,
+  SceneConfig,
+} from "@/lib/laundromat/scene-config";
 
+import { CrayonFilter } from "./crayon-filter";
 import { NOTEBOOK_PAGE_METRICS } from "./notebook-page-metrics";
 import type { PageSpec } from "./paint-page-texture";
 import { paintPageTexture } from "./paint-page-texture";
 import { readPagePalette } from "./read-page-palette";
 
 const PERSPECTIVE_PX = 2600;
-const FOLD_START_RATIO = 1.15;
 const LIFT_PADDING_RATIO = 0.08;
+const ARC_RATIO = 0.5;
 const WIDTH_SEGMENTS = 64;
-const HEIGHT_SEGMENTS = 16;
+const HEIGHT_SEGMENTS = 48;
 const MAX_RESOLUTION = 3;
 
 const VERTEX = /* glsl */ `
 attribute vec2 uv;
 uniform float uProgress;
+uniform float uDrop;
+uniform float uArc;
 uniform float uWidth;
 uniform float uHeight;
 uniform float uCurl;
@@ -31,34 +37,54 @@ varying vec2 vUv;
 varying vec2 vPoint;
 varying float vShade;
 const float PI = 3.14159265;
+vec2 limitReach(vec2 point, vec2 hinge, float maxDistance) {
+  vec2 offset = point - hinge;
+  float distance = length(offset);
+  return distance > maxDistance ? hinge + offset / distance * maxDistance : point;
+}
 void main() {
   vUv = uv;
-  float x = uv.x * uWidth;
-  float y = (1.0 - uv.y) * uHeight;
-  vPoint = vec2(x, y);
-  float bend = max(sin(uProgress * PI), 0.0);
+  vec2 point = vec2(uv.x * uWidth, (1.0 - uv.y) * uHeight);
+  vPoint = point;
+  vec2 grab = vec2(uWidth, (uGrab * 0.5 + 0.5) * uHeight);
+  float arc = uArc * uWidth * ${ARC_RATIO.toFixed(2)} * uCurl * sin(uProgress * PI);
+  vec2 target = vec2(
+    min(uWidth * (1.0 - 2.0 * uProgress), uWidth),
+    grab.y + uDrop * uHeight - sign(uGrab) * arc
+  );
+  vec2 top = vec2(0.0, 0.0);
+  vec2 bottom = vec2(0.0, uHeight);
+  float margin = 0.5 * PI * uWidth * 0.22 * uCurl * sin(clamp(length(grab - target) / (2.0 * uWidth), 0.0, 1.0) * PI);
+  for (int i = 0; i < 2; i++) {
+    target = limitReach(target, top, length(grab - top) - margin);
+    target = limitReach(target, bottom, length(grab - bottom) - margin);
+  }
+  vec2 pull = grab - target;
+  float reach = length(pull);
+  vec2 normal = reach > 0.001 ? pull / reach : vec2(1.0, 0.0);
+  float bend = sin(clamp(reach / (2.0 * uWidth), 0.0, 1.0) * PI);
   float radius = uWidth * 0.22 * uCurl * bend + 0.001;
-  float tilt = uWidth * 0.3 * uCurl * bend;
-  float lead = uGrab * (y / uHeight - 0.5) + 0.5 * abs(uGrab);
-  float foldX = uWidth * ${FOLD_START_RATIO.toFixed(2)} * (1.0 - uProgress) - tilt * lead;
-  float d = x - foldX;
-  float px = x;
+  vec2 fold = grab - normal * (reach + PI * radius) * 0.5;
+  fold += normal * max(0.0, max(dot(top - fold, normal), dot(bottom - fold, normal)));
+  float d = dot(point - fold, normal);
+  vec2 bent = point;
   float pz = 0.0;
   float angle = 0.0;
   if (d > 0.0) {
+    vec2 base = point - normal * d;
     angle = d / radius;
     if (angle < PI) {
-      px = foldX + radius * sin(angle);
+      bent = base + normal * radius * sin(angle);
       pz = radius * (1.0 - cos(angle));
     } else {
-      px = foldX - (d - PI * radius);
+      bent = base - normal * (d - PI * radius);
       pz = 2.0 * radius;
       angle = PI;
     }
   }
   float scale = ${PERSPECTIVE_PX.toFixed(1)} / (${PERSPECTIVE_PX.toFixed(1)} - pz);
-  float sx = uWidth + px * scale;
-  float sy = uPadding + uHeight * 0.5 + (y - uHeight * 0.5) * scale;
+  float sx = uWidth + bent.x * scale;
+  float sy = uPadding + uHeight * 0.5 + (bent.y - uHeight * 0.5) * scale;
   vShade = 0.72 + 0.28 * abs(cos(angle));
   gl_Position = vec4(sx / uCanvas.x * 2.0 - 1.0, 1.0 - sy / uCanvas.y * 2.0, -pz / 4000.0, 1.0);
 }
@@ -90,15 +116,15 @@ void main() {
 
 export type CurlTurn = { front: PageSpec; back: PageSpec; grab: number };
 
-/** The progress at which the fold first reaches the leaf's outer edge. */
-export const CURL_REST_PROGRESS = 1 - 1 / FOLD_START_RATIO;
-
 type PageCurlCanvasProps = {
   turn: CurlTurn | undefined;
   progress: MotionValue<number>;
+  drop: MotionValue<number>;
+  arc: MotionValue<number>;
   settings: NotebookPageSettings;
   pitch: number;
   strokeWidthPx: number;
+  crayon: SceneConfig["notebook"]["doodle"]["crayon"];
   curlStrength: number;
   onUnsupported: () => void;
 };
@@ -148,6 +174,8 @@ function createCurlScene(options: {
       transparent: true,
       uniforms: {
         uProgress: { value: 0 },
+        uDrop: { value: 0 },
+        uArc: { value: 0 },
         uWidth: { value: options.width / 2 },
         uHeight: { value: options.height - options.padding * 2 },
         uCurl: { value: 0.5 },
@@ -180,12 +208,17 @@ function createCurlScene(options: {
 export function PageCurlCanvas(props: PageCurlCanvasProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const sceneRef = useRef<CurlScene>(undefined);
+  const crayonFilterId = useId();
+  const [resolution, setResolution] = useState(1);
   const {
     settings,
     pitch,
     strokeWidthPx,
+    crayon,
     curlStrength,
     progress,
+    drop,
+    arc,
     turn,
     onUnsupported,
   } = props;
@@ -208,6 +241,19 @@ export function PageCurlCanvas(props: PageCurlCanvasProps) {
     };
   }, [width, height, padding, onUnsupported]);
 
+  const isTurning = turn !== undefined;
+  useLayoutEffect(() => {
+    const canvas = canvasRef.current;
+    if (canvas === null) return;
+    setResolution(
+      Math.min(
+        (window.devicePixelRatio * canvas.getBoundingClientRect().width) /
+          width,
+        MAX_RESOLUTION
+      )
+    );
+  }, [isTurning, width]);
+
   useEffect(() => {
     const scene = sceneRef.current;
     const canvas = canvasRef.current;
@@ -219,10 +265,14 @@ export function PageCurlCanvas(props: PageCurlCanvasProps) {
     }
     const palette = readPagePalette(canvas);
     const { devicePixelRatio } = window;
-    const resolution = Math.min(
-      (devicePixelRatio * canvas.getBoundingClientRect().width) / width,
-      MAX_RESOLUTION
-    );
+    const crayonInk =
+      "filter" in CanvasRenderingContext2D.prototype
+        ? {
+            filter: `url(#${CSS.escape(crayonFilterId)})`,
+            bodyWidthScale: crayon.bodyWidthScale,
+            bodyOpacity: crayon.bodyOpacity,
+          }
+        : undefined;
     if (renderer.dpr !== resolution) {
       renderer.dpr = resolution;
       renderer.setSize(width, height);
@@ -234,6 +284,7 @@ export function PageCurlCanvas(props: PageCurlCanvasProps) {
       settings,
       pitch,
       strokeWidthPx,
+      crayon: crayonInk,
       palette,
       devicePixelRatio,
       resolution,
@@ -245,6 +296,7 @@ export function PageCurlCanvas(props: PageCurlCanvasProps) {
       settings,
       pitch,
       strokeWidthPx,
+      crayon: crayonInk,
       palette,
       devicePixelRatio,
       resolution,
@@ -257,33 +309,59 @@ export function PageCurlCanvas(props: PageCurlCanvasProps) {
     program.uniforms.uGrab.value = turn.grab;
     program.uniforms.uPixel.value = 1 / resolution;
 
-    function draw(value: number) {
-      program.uniforms.uProgress.value = value;
+    function draw() {
+      program.uniforms.uProgress.value = progress.get();
+      program.uniforms.uDrop.value = drop.get();
+      program.uniforms.uArc.value = arc.get();
       renderer.render({ scene: mesh });
     }
-    draw(progress.get());
-    const unsubscribe = progress.on("change", draw);
+    draw();
+    const unsubscribes = [
+      progress.on("change", draw),
+      drop.on("change", draw),
+      arc.on("change", draw),
+    ];
     return () => {
-      unsubscribe();
+      unsubscribes.forEach((unsubscribe) => unsubscribe());
       renderer.gl.clear(renderer.gl.COLOR_BUFFER_BIT);
     };
   }, [
     turn,
     progress,
+    drop,
+    arc,
     settings,
     pitch,
     strokeWidthPx,
+    crayon,
+    crayonFilterId,
     curlStrength,
+    resolution,
     width,
     height,
   ]);
 
   return (
-    <canvas
-      ref={canvasRef}
-      aria-hidden
-      className="pointer-events-none absolute left-0"
-      style={{ top: -padding, width, height }}
-    />
+    <>
+      <svg aria-hidden className="absolute size-0">
+        <CrayonFilter
+          id={crayonFilterId}
+          crayon={{
+            ...crayon,
+            grainFrequency: crayon.grainFrequency / resolution,
+            patchFrequency: crayon.patchFrequency / resolution,
+            wobbleFrequency: crayon.wobbleFrequency / resolution,
+            edgeRoughnessPx: crayon.edgeRoughnessPx * resolution,
+          }}
+          seed={1}
+        />
+      </svg>
+      <canvas
+        ref={canvasRef}
+        aria-hidden
+        className="pointer-events-none absolute left-0"
+        style={{ top: -padding, width, height }}
+      />
+    </>
   );
 }

@@ -72,7 +72,7 @@ import type {
 import { NotebookPage } from "./notebook-page";
 import { NotebookPhoneBar } from "./notebook-phone-bar";
 import type { CurlTurn } from "./page-curl-canvas";
-import { CURL_REST_PROGRESS, PageCurlCanvas } from "./page-curl-canvas";
+import { PageCurlCanvas } from "./page-curl-canvas";
 import { PageLeaf } from "./page-leaf";
 import { PageScrubber } from "./page-scrubber";
 import type { PageSpec } from "./paint-page-texture";
@@ -278,7 +278,6 @@ export function NotebookBook(props: NotebookBookProps) {
   }, [turn, sound, details.riffleSheets, details.riffleStaggerMs]);
   const handleEdgePointerDown = usePageDrag({
     bookRef,
-    restProgress: curlMode === "webgl" ? CURL_REST_PROGRESS : 0,
     startDrag: turns.startDrag,
     moveDrag: turns.moveDrag,
     endDrag: turns.endDrag,
@@ -1488,7 +1487,8 @@ export function NotebookBook(props: NotebookBookProps) {
               <div
                 className={cn(
                   "absolute top-0 left-0 h-full overflow-hidden transition-opacity duration-500",
-                  isSinglePage && padSide !== "left" && "opacity-0"
+                  isSinglePage && padSide !== "left" && "opacity-0",
+                  phase === "opening" && "invisible"
                 )}
                 style={{ width: settings.width }}
               >
@@ -1612,9 +1612,12 @@ export function NotebookBook(props: NotebookBookProps) {
             <PageCurlCanvas
               turn={curlTurn}
               progress={turns.progress}
+              drop={turns.drop}
+              arc={turns.arc}
               settings={settings}
               pitch={pitch}
               strokeWidthPx={doodle.strokeWidthPx}
+              crayon={doodle.crayon}
               curlStrength={details.curlStrength}
               onUnsupported={handleCurlUnsupported}
             />

@@ -28,7 +28,16 @@ export type PageSpec = {
   pad: PadView | undefined;
 };
 
+/** The CSS `filter` for doodle strokes, and the width scale and opacity of the body stroke drawn under each line. */
+export type CrayonInk = {
+  filter: string;
+  bodyWidthScale: number;
+  bodyOpacity: number;
+};
+
 const SPINE_SHADOW_STEP_PX = 2;
+// Canvas text renders heavier than the DOM's `antialiased` text; drawing it larger and scaling down matches the DOM weight.
+const TEXT_SUPERSAMPLE = 3;
 
 function getNormalTail(z: number) {
   const u = Math.abs(z) / Math.SQRT2;
@@ -76,29 +85,129 @@ function getBaselineY(options: {
   });
 }
 
-function paintStrokes(options: {
+/** Draw `text` like `context.fillText`, but rasterised at `TEXT_SUPERSAMPLE` times the canvas resolution on `layer` and scaled down onto `context`. */
+function fillThinText(options: {
+  context: CanvasRenderingContext2D;
+  layer: HTMLCanvasElement;
+  text: string;
+  x: number;
+  y: number;
+}) {
+  const { context, layer } = options;
+  const layerContext = layer.getContext("2d");
+  if (layerContext === null) {
+    context.fillText(options.text, options.x, options.y);
+    return;
+  }
+  const resolution = context.getTransform().a;
+  const scale = resolution * TEXT_SUPERSAMPLE;
+  const metrics = context.measureText(options.text);
+  const top = options.y - metrics.actualBoundingBoxAscent - 2;
+  const height =
+    metrics.actualBoundingBoxAscent + metrics.actualBoundingBoxDescent + 4;
+  layer.width = context.canvas.width * TEXT_SUPERSAMPLE;
+  layer.height = Math.ceil(height * scale);
+  layerContext.setTransform(scale, 0, 0, scale, 0, -top * scale);
+  layerContext.font = context.font;
+  layerContext.fillStyle = context.fillStyle;
+  layerContext.textAlign = context.textAlign;
+  layerContext.textBaseline = context.textBaseline;
+  layerContext.direction = context.direction;
+  layerContext.fillText(options.text, options.x, options.y);
+  context.save();
+  context.resetTransform();
+  context.imageSmoothingQuality = "high";
+  context.drawImage(
+    layer,
+    0,
+    top * resolution,
+    context.canvas.width,
+    layer.height / TEXT_SUPERSAMPLE
+  );
+  context.restore();
+}
+
+function traceStrokes(options: {
   context: CanvasRenderingContext2D;
   strokes: DoodleStroke[];
   left: number;
   top: number;
-  strokeWidthPx: number;
+  lineWidthPx: number;
+  dotRadiusPx: number | undefined;
 }) {
   const { context } = options;
   context.save();
   context.translate(options.left, options.top);
-  context.lineWidth = options.strokeWidthPx;
+  context.lineWidth = options.lineWidthPx;
   context.lineCap = "round";
   context.lineJoin = "round";
   for (const stroke of options.strokes) {
     const [x, y] = stroke.points[0];
-    if (stroke.points.length === 1) {
-      context.beginPath();
-      context.arc(x, y, options.strokeWidthPx * 0.7, 0, Math.PI * 2);
-      context.fill();
-    } else {
+    if (stroke.points.length > 1) {
       context.stroke(new Path2D(toStrokePath(stroke.points)));
+    } else if (options.dotRadiusPx !== undefined) {
+      context.beginPath();
+      context.arc(x, y, options.dotRadiusPx, 0, Math.PI * 2);
+      context.fill();
     }
   }
+  context.restore();
+}
+
+type DoodlePlacement = { strokes: DoodleStroke[]; left: number; top: number };
+
+function paintDoodles(options: {
+  context: CanvasRenderingContext2D;
+  layer: HTMLCanvasElement;
+  doodles: DoodlePlacement[];
+  strokeWidthPx: number;
+  crayon: CrayonInk | undefined;
+  opacity: number;
+}) {
+  const { context, layer, crayon, strokeWidthPx } = options;
+  if (options.doodles.length === 0) return;
+  if (crayon === undefined) {
+    context.globalAlpha = options.opacity;
+    for (const placement of options.doodles) {
+      traceStrokes({
+        context,
+        ...placement,
+        lineWidthPx: strokeWidthPx,
+        dotRadiusPx: strokeWidthPx * 0.7,
+      });
+    }
+    context.globalAlpha = 1;
+    return;
+  }
+  layer.width = context.canvas.width;
+  layer.height = context.canvas.height;
+  const layerContext = layer.getContext("2d");
+  if (layerContext === null) return;
+  layerContext.setTransform(context.getTransform());
+  layerContext.strokeStyle = context.strokeStyle;
+  layerContext.fillStyle = context.fillStyle;
+  const bodyWidthPx = strokeWidthPx * crayon.bodyWidthScale;
+  for (const placement of options.doodles) {
+    layerContext.globalAlpha = crayon.bodyOpacity;
+    traceStrokes({
+      context: layerContext,
+      ...placement,
+      lineWidthPx: bodyWidthPx,
+      dotRadiusPx: undefined,
+    });
+    layerContext.globalAlpha = 1;
+    traceStrokes({
+      context: layerContext,
+      ...placement,
+      lineWidthPx: strokeWidthPx,
+      dotRadiusPx: bodyWidthPx * 0.7,
+    });
+  }
+  context.save();
+  context.resetTransform();
+  context.filter = crayon.filter;
+  context.globalAlpha = options.opacity;
+  context.drawImage(layer, 0, 0);
   context.restore();
 }
 
@@ -139,6 +248,7 @@ type PaintPageTextureOptions = {
   settings: NotebookPageSettings;
   pitch: number;
   strokeWidthPx: number;
+  crayon: CrayonInk | undefined;
   palette: PagePalette;
   devicePixelRatio: number;
   resolution: number;
@@ -153,6 +263,7 @@ export function paintPageTexture(options: PaintPageTextureOptions) {
     settings,
     pitch,
     strokeWidthPx,
+    crayon,
     palette,
     devicePixelRatio,
     resolution,
@@ -162,6 +273,7 @@ export function paintPageTexture(options: PaintPageTextureOptions) {
   const context = canvas.getContext("2d");
   if (context === null) return;
   context.scale(resolution, resolution);
+  const layer = document.createElement("canvas");
   const { content } = page;
   const centerX = settings.width / 2;
   const centerY = settings.height / 2;
@@ -174,7 +286,13 @@ export function paintPageTexture(options: PaintPageTextureOptions) {
       context.font = `28px ${palette.displayFont}`;
       context.textAlign = "center";
       context.textBaseline = "middle";
-      context.fillText(`No. ${content.number}`, centerX, centerY);
+      fillThinText({
+        context,
+        layer,
+        text: `No. ${content.number}`,
+        x: centerX,
+        y: centerY,
+      });
       return;
     case "inside":
       context.fillStyle = palette.paperRule;
@@ -184,10 +302,22 @@ export function paintPageTexture(options: PaintPageTextureOptions) {
       context.font = `22px ${palette.displayFont}`;
       context.textAlign = "center";
       context.textBaseline = "middle";
-      context.fillText(`No. ${content.number}`, centerX, centerY - 10);
+      fillThinText({
+        context,
+        layer,
+        text: `No. ${content.number}`,
+        x: centerX,
+        y: centerY - 10,
+      });
       context.globalAlpha = 0.5;
       context.font = `11px ${palette.displayFont}`;
-      context.fillText(content.span, centerX, centerY + 18);
+      fillThinText({
+        context,
+        layer,
+        text: content.span,
+        x: centerX,
+        y: centerY + 18,
+      });
       return;
     case "blank":
     case "paper":
@@ -252,33 +382,42 @@ export function paintPageTexture(options: PaintPageTextureOptions) {
       lineHeightPx: pitch,
       devicePixelRatio,
     });
-    context.fillText(row.text, x, y);
+    fillThinText({ context, layer, text: row.text, x, y });
   }
   context.globalAlpha = 1;
   context.direction = "ltr";
 
   context.strokeStyle = palette.inkPen;
   context.fillStyle = palette.inkPen;
-  for (const doodle of page.doodles) {
-    if (doodle.ink === "waiting") continue;
-    paintStrokes({
-      context,
-      strokes: doodle.strokes,
-      left: settings.marginX,
-      top: settings.marginTop + doodle.row * pitch,
-      strokeWidthPx,
-    });
-  }
+  paintDoodles({
+    context,
+    layer,
+    doodles: page.doodles
+      .filter((doodle) => doodle.ink !== "waiting")
+      .map((doodle) => ({
+        strokes: doodle.strokes,
+        left: settings.marginX,
+        top: settings.marginTop + doodle.row * pitch,
+      })),
+    strokeWidthPx,
+    crayon,
+    opacity: 1,
+  });
   if (pad !== undefined) {
-    context.globalAlpha = pad.tone === "remote" ? 0.45 : 1;
-    paintStrokes({
+    paintDoodles({
       context,
-      strokes: pad.strokes,
-      left: settings.marginX,
-      top: settings.marginTop + pad.row * pitch,
+      layer,
+      doodles: [
+        {
+          strokes: pad.strokes,
+          left: settings.marginX,
+          top: settings.marginTop + pad.row * pitch,
+        },
+      ],
       strokeWidthPx,
+      crayon,
+      opacity: pad.tone === "remote" ? 0.45 : 1,
     });
-    context.globalAlpha = 1;
   }
 
   if (content.kind === "paper") {
@@ -297,7 +436,13 @@ export function paintPageTexture(options: PaintPageTextureOptions) {
       lineHeightPx: pageNumber.lineHeightPx,
       devicePixelRatio,
     });
-    context.fillText(String(content.page), centerX, y);
+    fillThinText({
+      context,
+      layer,
+      text: String(content.page),
+      x: centerX,
+      y,
+    });
     context.globalAlpha = 1;
   }
 }
