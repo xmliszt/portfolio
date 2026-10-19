@@ -161,6 +161,7 @@ export function RoomDrawing(props: RoomDrawingProps) {
         />
       )}
       <rect
+        data-lm-dim
         width={layout.size.width}
         height={layout.size.height}
         className="fill-[var(--lm-bg)] transition-opacity duration-500"
