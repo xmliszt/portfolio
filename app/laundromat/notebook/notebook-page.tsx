@@ -446,7 +446,8 @@ function PageRowLine(props: PageRowLineProps) {
               (isReported || props.entryHovered) && "opacity-100"
             )}
             style={{
-              right: NOTEBOOK_PAGE_METRICS.turnEdgePx - settings.marginX,
+              [row.isRtl ? "left" : "right"]:
+                NOTEBOOK_PAGE_METRICS.turnEdgePx - settings.marginX,
             }}
           >
             <span className="[@media(pointer:coarse)]:hidden">

@@ -37,6 +37,7 @@ import { keepTrailingSpace } from "@/lib/laundromat/notebook/keep-trailing-space
 import type { FittedEntry } from "@/lib/laundromat/notebook/layout-page-rows";
 import { layoutPageRows } from "@/lib/laundromat/notebook/layout-page-rows";
 import { parseDoodleDrawing } from "@/lib/laundromat/notebook/parse-doodle-drawing";
+import { REPORT_HIDE_THRESHOLD } from "@/lib/laundromat/notebook/report-hide-threshold";
 import { wrapEntryLines } from "@/lib/laundromat/notebook/wrap-entry-lines";
 import { wrapEntryText } from "@/lib/laundromat/notebook/wrap-entry-text";
 import type { NotebookLock } from "@/lib/laundromat/realtime/notebook-lock";
@@ -62,6 +63,7 @@ import {
   loadNotebook,
   reportNotebookEntry,
 } from "./notebook-actions";
+import { NotebookFootnote } from "./notebook-footnote";
 import type {
   DoodleView,
   PadView,
@@ -1459,6 +1461,7 @@ export function NotebookBook(props: NotebookBookProps) {
 
   const width = settings.width * 2;
   const height = settings.height;
+  const footnote = `${copy.notebook.beKind} ${copy.notebook.reportRule({ count: REPORT_HIDE_THRESHOLD })}`;
 
   return (
     <div
@@ -1776,9 +1779,13 @@ export function NotebookBook(props: NotebookBookProps) {
           }
         />
       )}
+      {!isNarrowScreen && (
+        <NotebookFootnote text={footnote} visible={isLifted} />
+      )}
       {isNarrowScreen && isLifted && (
         <NotebookPhoneBar
           status={statusMessage ?? copy.notebook.writePrompt}
+          footnote={footnote}
           pen={
             canWrite
               ? {
