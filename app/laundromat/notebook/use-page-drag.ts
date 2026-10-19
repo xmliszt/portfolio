@@ -5,13 +5,8 @@ import { useEffect, useRef } from "react";
 
 type UsePageDragOptions = {
   bookRef: RefObject<HTMLElement | null>;
-  restProgress: number;
-  startDrag: (options: {
-    to: number;
-    grab: number;
-    restProgress: number;
-  }) => boolean;
-  moveDrag: (travel: number) => void;
+  startDrag: (options: { to: number; grab: number }) => boolean;
+  moveDrag: (options: { travel: number; drop: number }) => void;
   endDrag: (options: { commit: boolean }) => void;
   onFlip: () => void;
 };
@@ -20,7 +15,7 @@ const CLICK_SLOP_PX = 6;
 const FLING_PX_PER_MS = 0.4;
 const VELOCITY_WINDOW_MS = 100;
 
-/** Return a pointer-down handler for a page edge that lifts the leaf where it was grabbed, lets it follow the pointer across the spread, and turns it on release past halfway, on a fling, or on a click. */
+/** Return a pointer-down handler for a page edge that lifts the leaf where it was grabbed, lets it follow the pointer across and down the spread, and turns it on release past halfway, on a fling, or on a click. */
 export function usePageDrag(options: UsePageDragOptions) {
   const optionsRef = useRef(options);
   const stopRef = useRef<() => void>(undefined);
@@ -42,7 +37,6 @@ export function usePageDrag(options: UsePageDragOptions) {
     const isHeld = optionsRef.current.startDrag({
       to: target.to,
       grab: Math.min(Math.max(grab, -1), 1),
-      restProgress: optionsRef.current.restProgress,
     });
     if (!isHeld) return;
     event.preventDefault();
@@ -50,6 +44,7 @@ export function usePageDrag(options: UsePageDragOptions) {
     const { pointerId } = event;
     const direction = target.side === "right" ? 1 : -1;
     const startX = event.clientX;
+    const startY = event.clientY;
     let samples = [{ x: startX, t: event.timeStamp }];
     let hasMoved = false;
 
@@ -70,7 +65,10 @@ export function usePageDrag(options: UsePageDragOptions) {
         ),
         { x: moveEvent.clientX, t: moveEvent.timeStamp },
       ];
-      optionsRef.current.moveDrag(getTravel(moveEvent.clientX));
+      optionsRef.current.moveDrag({
+        travel: getTravel(moveEvent.clientX),
+        drop: (moveEvent.clientY - startY) / rect.height,
+      });
     }
 
     function handleUp(upEvent: PointerEvent) {
