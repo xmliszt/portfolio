@@ -13,9 +13,10 @@ type UsePageDragOptions = {
 
 const CLICK_SLOP_PX = 6;
 const FLING_PX_PER_MS = 0.4;
+const COMMIT_TRAVEL = 0.25;
 const VELOCITY_WINDOW_MS = 100;
 
-/** Return a pointer-down handler for a page edge that lifts the leaf where it was grabbed, lets it follow the pointer across and down the spread, and turns it on release past halfway, on a fling, or on a click. */
+/** Return a pointer-down handler for a page edge that lifts the leaf where it was grabbed, lets it follow the pointer across and down the spread, and turns it on release past half a page, on a fling, or on a click. */
 export function usePageDrag(options: UsePageDragOptions) {
   const optionsRef = useRef(options);
   const stopRef = useRef<() => void>(undefined);
@@ -94,7 +95,8 @@ export function usePageDrag(options: UsePageDragOptions) {
         releaseOptions.canCommit &&
         (isClick ||
           velocity > FLING_PX_PER_MS ||
-          (getTravel(upEvent.clientX) > 0.5 && velocity > -FLING_PX_PER_MS));
+          (getTravel(upEvent.clientX) > COMMIT_TRAVEL &&
+            velocity > -FLING_PX_PER_MS));
       if (commit) optionsRef.current.onFlip();
       optionsRef.current.endDrag({ commit });
     }
