@@ -308,6 +308,9 @@ export const zhHant = {
     shareLabel: "分享照片",
     more: "更多",
     moreLabel: "更多分享方式",
+    download: "下載",
+    downloadLabel: "下載照片",
+    downloaded: "照片已下載",
     shareText: "拍攝於 laundro.cafe",
     handoff: {
       copiedTitle: "照片已複製",
@@ -562,6 +565,9 @@ export const zhHant = {
     pageInputLabel: (o: { pageCount: number }) => `頁碼，1 到 ${o.pageCount}`,
     report: "檢舉",
     reported: "已檢舉",
+    beKind: "請彼此友善。",
+    reportRule: (o: { count: number }) =>
+      `被 ${o.count} 個人檢舉的留言會被永久移除。`,
     reportDialog: {
       title: "檢舉這則留言？",
       body: "檢舉能讓筆記本一直是個友善的地方。",

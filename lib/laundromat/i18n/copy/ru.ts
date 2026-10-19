@@ -324,6 +324,9 @@ export const ru = {
     shareLabel: "Поделиться фото",
     more: "ещё",
     moreLabel: "Другие способы поделиться",
+    download: "скачать",
+    downloadLabel: "Скачать снимок",
+    downloaded: "снимок скачан",
     shareText: "снято в laundro.cafe",
     handoff: {
       copiedTitle: "Снимок скопирован",
@@ -585,6 +588,9 @@ export const ru = {
     pageInputLabel: (o) => `Номер страницы, от 1 до ${o.pageCount}`,
     report: "пожаловаться",
     reported: "жалоба отправлена",
+    beKind: "Пожалуйста, будьте добры друг к другу.",
+    reportRule: (o: { count: number }) =>
+      `Запись, на которую пожаловались ${o.count} ${pluralize({ count: o.count, one: "человек", few: "человека", many: "человек" })}, удаляется навсегда.`,
     reportDialog: {
       title: "Пожаловаться на эту записку?",
       body: "Жалобы помогают сохранить блокнот добрым местом.",

@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 
 import { useLaundromatCopy } from "@/app/laundromat/i18n/use-laundromat-copy";
+import { REPORT_HIDE_THRESHOLD } from "@/lib/laundromat/notebook/report-hide-threshold";
 import { REPORT_REASON_MAX_CHARS } from "@/lib/laundromat/notebook/report-reason-max-chars";
 
 type ReportEntryDialogProps = {
@@ -54,6 +55,8 @@ export function ReportEntryDialog(props: ReportEntryDialogProps) {
         </p>
         <p id="lm-report-body" className="leading-relaxed">
           {text.body}
+          <br />
+          {copy.notebook.reportRule({ count: REPORT_HIDE_THRESHOLD })}
         </p>
         <label className="flex flex-col gap-y-1.5">
           <span className="lowercase">{text.reasonLabel}</span>

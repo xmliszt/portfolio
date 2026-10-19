@@ -304,6 +304,9 @@ export const tr = {
     shareLabel: "Fotoğrafı paylaş",
     more: "daha fazla",
     moreLabel: "Diğer paylaşım yolları",
+    download: "indir",
+    downloadLabel: "Fotoğrafı indir",
+    downloaded: "fotoğraf indirildi",
     shareText: "laundro.cafe'de çekildi",
     handoff: {
       copiedTitle: "Fotoğraf kopyalandı",
@@ -561,6 +564,9 @@ export const tr = {
     pageInputLabel: (o) => `Sayfa numarası, 1 ile ${o.pageCount} arası`,
     report: "bildir",
     reported: "bildirildi",
+    beKind: "Lütfen birbirinize nazik olun.",
+    reportRule: (o: { count: number }) =>
+      `${o.count} kişi tarafından bildirilen not kalıcı olarak kaldırılır.`,
     reportDialog: {
       title: "Bu not bildirilsin mi?",
       body: "Bildirimler defterin nazik bir yer olarak kalmasına yardımcı olur.",

@@ -343,6 +343,9 @@ export const de = {
     shareLabel: "Foto teilen",
     more: "mehr",
     moreLabel: "Weitere Möglichkeiten zum Teilen",
+    download: "herunterladen",
+    downloadLabel: "Foto herunterladen",
+    downloaded: "Foto heruntergeladen",
     shareText: "geknipst bei laundro.cafe",
     handoff: {
       copiedTitle: "Foto kopiert",
@@ -612,6 +615,9 @@ export const de = {
       `Seitenzahl, 1 bis ${o.pageCount}`,
     report: "melden",
     reported: "gemeldet",
+    beKind: "Bitte seid freundlich zueinander.",
+    reportRule: (o: { count: number }) =>
+      `Eine Notiz, die ${o.count} Leute melden, wird endgültig entfernt.`,
     reportDialog: {
       title: "Diese Notiz melden?",
       body: "Meldungen helfen, das Notizbuch freundlich zu halten.",

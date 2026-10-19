@@ -6,6 +6,7 @@ import { useState } from "react";
 import { useLaundromatCopy } from "@/app/laundromat/i18n/use-laundromat-copy";
 import type { DoodleStroke } from "@/lib/laundromat/notebook/doodle-stroke";
 import type { PageRow } from "@/lib/laundromat/notebook/layout-page-rows";
+import { REPORT_HIDE_THRESHOLD } from "@/lib/laundromat/notebook/report-hide-threshold";
 import type {
   NotebookPage as NotebookPageSettings,
   SceneConfig,
@@ -128,13 +129,20 @@ export function NotebookPage(props: NotebookPageProps) {
   if (content.kind === "inside") {
     return (
       <div
-        className="absolute inset-0 flex flex-col items-center justify-center gap-y-2 bg-[var(--lm-paper-rule)] text-[var(--lm-ink-pen)]"
+        className="absolute inset-0 flex flex-col items-center justify-center gap-y-6 bg-[var(--lm-paper-rule)] text-[var(--lm-ink-pen)]"
         style={{ borderRadius, boxShadow: shading }}
       >
-        <span className="font-[family-name:var(--lm-font-display)] text-[22px] opacity-60">
-          {copy.notebook.number({ number: content.number })}
-        </span>
-        <span className="text-[11px] opacity-50">{content.span}</span>
+        <div className="flex flex-col items-center gap-y-2">
+          <span className="font-[family-name:var(--lm-font-display)] text-[22px] opacity-60">
+            {copy.notebook.number({ number: content.number })}
+          </span>
+          <span className="text-[11px] opacity-50">{content.span}</span>
+        </div>
+        <p className="max-w-[80%] text-center text-[11px] leading-relaxed text-balance opacity-60">
+          {copy.notebook.beKind}
+          <br />
+          {copy.notebook.reportRule({ count: REPORT_HIDE_THRESHOLD })}
+        </p>
       </div>
     );
   }
@@ -427,17 +435,36 @@ function PageRowLine(props: PageRowLineProps) {
           <button
             type="button"
             disabled={isReported}
+            aria-label={
+              isReported ? copy.notebook.reported : copy.notebook.report
+            }
             onClick={() => props.controls?.onReport(reportEntryId)}
             className={cn(
               "absolute cursor-pointer px-1.5 py-1 opacity-0 transition-opacity duration-200 outline-none",
               "focus-visible:opacity-100 focus-visible:outline-1 focus-visible:outline-dashed",
+              "[@media(pointer:coarse)]:h-full [@media(pointer:coarse)]:px-2.5 [@media(pointer:coarse)]:opacity-100",
               (isReported || props.entryHovered) && "opacity-100"
             )}
             style={{
               right: NOTEBOOK_PAGE_METRICS.turnEdgePx - settings.marginX,
             }}
           >
-            {isReported ? copy.notebook.reported : copy.notebook.report}
+            <span className="[@media(pointer:coarse)]:hidden">
+              {isReported ? copy.notebook.reported : copy.notebook.report}
+            </span>
+            <svg
+              aria-hidden
+              viewBox="0 0 12 12"
+              className={cn(
+                "hidden size-[1.1em] stroke-current [@media(pointer:coarse)]:block",
+                isReported ? "fill-current" : "fill-none"
+              )}
+              strokeWidth={1}
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <path d="M2.5 11V1.5M2.5 2h7l-1.75 2.5L9.5 7h-7" />
+            </svg>
           </button>
         )}
       </div>

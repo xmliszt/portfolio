@@ -338,6 +338,9 @@ export const hi = {
     shareLabel: "फ़ोटो शेयर करें",
     more: "और",
     moreLabel: "शेयर करने के और तरीके",
+    download: "डाउनलोड",
+    downloadLabel: "फ़ोटो डाउनलोड करो",
+    downloaded: "फ़ोटो डाउनलोड हो गई",
     shareText: "laundro.cafe पर खींची गई",
     handoff: {
       copiedTitle: "फ़ोटो कॉपी हो गई",
@@ -604,6 +607,9 @@ export const hi = {
       `पेज नंबर, 1 से ${o.pageCount}`,
     report: "रिपोर्ट करो",
     reported: "रिपोर्ट हो गया",
+    beKind: "कृपया एक-दूसरे के साथ प्यार से पेश आओ।",
+    reportRule: (o: { count: number }) =>
+      `जिस नोट को ${o.count} लोग रिपोर्ट करें, वह हमेशा के लिए हटा दिया जाता है।`,
     reportDialog: {
       title: "यह नोट रिपोर्ट करो?",
       body: "रिपोर्ट से नोटबुक एक प्यारी जगह बनी रहती है।",

@@ -318,6 +318,9 @@ export const uk = {
     shareLabel: "Поділитися фото",
     more: "ще",
     moreLabel: "Інші способи поділитися",
+    download: "завантажити",
+    downloadLabel: "Завантажити знімок",
+    downloaded: "знімок завантажено",
     shareText: "знято в laundro.cafe",
     handoff: {
       copiedTitle: "Знімок скопійовано",
@@ -582,6 +585,9 @@ export const uk = {
     pageInputLabel: (o) => `Номер сторінки, від 1 до ${o.pageCount}`,
     report: "поскаржитися",
     reported: "скаргу надіслано",
+    beKind: "Будь ласка, будьте добрі одне до одного.",
+    reportRule: (o: { count: number }) =>
+      `Запис, на який поскаржилися ${o.count} ${pluralize({ count: o.count, one: "людина", few: "людини", many: "людей" })}, видаляється назавжди.`,
     reportDialog: {
       title: "Поскаржитися на цю записку?",
       body: "Скарги допомагають зберегти блокнот добрим місцем.",

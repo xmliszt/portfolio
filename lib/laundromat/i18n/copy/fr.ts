@@ -344,6 +344,9 @@ export const fr = {
     shareLabel: "Partager la photo",
     more: "plus",
     moreLabel: "Autres façons de partager",
+    download: "télécharger",
+    downloadLabel: "Télécharger la photo",
+    downloaded: "photo téléchargée",
     shareText: "photo prise à laundro.cafe",
     handoff: {
       copiedTitle: "Photo copiée",
@@ -615,6 +618,9 @@ export const fr = {
       `Numéro de page, de 1 à ${o.pageCount}`,
     report: "signaler",
     reported: "signalé",
+    beKind: "Soyez gentils les uns avec les autres.",
+    reportRule: (o: { count: number }) =>
+      `Une note signalée par ${o.count} personnes est retirée pour de bon.`,
     reportDialog: {
       title: "Signaler ce mot ?",
       body: "Les signalements aident à garder le carnet bienveillant.",

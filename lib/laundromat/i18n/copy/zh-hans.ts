@@ -309,6 +309,9 @@ export const zhHans = {
     shareLabel: "分享照片",
     more: "更多",
     moreLabel: "更多分享方式",
+    download: "下载",
+    downloadLabel: "下载照片",
+    downloaded: "照片已下载",
     shareText: "拍摄于 laundro.cafe",
     handoff: {
       copiedTitle: "照片已复制",
@@ -563,6 +566,9 @@ export const zhHans = {
     pageInputLabel: (o: { pageCount: number }) => `页码，1 到 ${o.pageCount}`,
     report: "举报",
     reported: "已举报",
+    beKind: "请彼此友善。",
+    reportRule: (o: { count: number }) =>
+      `被 ${o.count} 个人举报的留言会被永久移除。`,
     reportDialog: {
       title: "举报这条留言？",
       body: "举报能让笔记本一直是个友善的地方。",
