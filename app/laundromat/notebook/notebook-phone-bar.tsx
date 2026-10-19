@@ -10,7 +10,6 @@ type PenMode = "write" | "draw";
 
 type NotebookPhoneBarProps = {
   status: ReactNode;
-  footnote: string;
   pen:
     | {
         mode: PenMode;
@@ -68,9 +67,6 @@ export function NotebookPhoneBar(props: NotebookPhoneBarProps) {
         className="pointer-events-auto line-clamp-2 text-center text-[12px] text-[var(--lm-ink)] lowercase"
       >
         {props.status}
-      </p>
-      <p className="-mt-2 text-center text-[10px] text-balance text-[var(--lm-ink)] opacity-60">
-        {props.footnote}
       </p>
       <div className="pointer-events-auto flex items-center justify-between gap-x-3">
         <button
