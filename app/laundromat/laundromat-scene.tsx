@@ -49,7 +49,7 @@ import { assignRemoteMachines } from "@/lib/laundromat/realtime/assign-remote-ma
 import { chooseCoffeeGroup } from "@/lib/laundromat/realtime/choose-coffee-group";
 import { chooseNotebookWriter } from "@/lib/laundromat/realtime/choose-notebook-writer";
 import { getClockOffsetMs } from "@/lib/laundromat/realtime/get-clock-offset-ms";
-import { getGoldenWashes } from "@/lib/laundromat/realtime/get-golden-washes";
+import { getGoldenCharges } from "@/lib/laundromat/realtime/get-golden-charges";
 import { getNotebookLock } from "@/lib/laundromat/realtime/get-notebook-lock";
 import { getPeopleHere } from "@/lib/laundromat/realtime/get-people-here";
 import type {
@@ -59,9 +59,9 @@ import type {
 } from "@/lib/laundromat/realtime/room-presence";
 import { shiftRemoteLoad } from "@/lib/laundromat/realtime/shift-remote-load";
 import type { FocusTarget, SceneConfig } from "@/lib/laundromat/scene-config";
-import { GOLDEN_CHARGE_MS } from "@/lib/laundromat/tip/golden-charge-ms";
+import { getChargeChanges } from "@/lib/laundromat/tip/get-charge-changes";
 import { readTokenLinkText } from "@/lib/laundromat/tip/read-token-link-text";
-import type { GoldenWashView } from "@/lib/laundromat/tip/tip-token";
+import type { GoldenChargeView } from "@/lib/laundromat/tip/tip-token";
 import { TOKEN_CODE_HASH_PREFIX } from "@/lib/laundromat/tip/token-code-format";
 import { describeTv } from "@/lib/laundromat/tv/describe-tv";
 import type { TvControl } from "@/lib/laundromat/tv/describe-tv-control";
@@ -348,7 +348,7 @@ export function LaundromatScene(props: LaundromatSceneProps) {
   const { region: ownRegion, isSettled: isOwnRegionSettled } = useVisitorRegion(
     { enabled: roomSource !== undefined }
   );
-  const ownGoldenWash = tip?.goldenWashes.at(-1);
+  const ownGoldenCharges = tip?.goldenCharges;
   const ownPresence = useMemo(() => {
     if (laundry.visitorId === undefined) return undefined;
     const load = ((): RemoteLoad | undefined => {
@@ -395,7 +395,14 @@ export function LaundromatScene(props: LaundromatSceneProps) {
       ...(coffeeGroupId === undefined ? {} : { coffeeGroupId }),
       ...(flask === undefined ? {} : { flask }),
       ...(writingSince === undefined ? {} : { writingSince }),
-      ...(ownGoldenWash === undefined ? {} : { goldenWash: ownGoldenWash }),
+      ...(ownGoldenCharges === undefined || ownGoldenCharges.length === 0
+        ? {}
+        : {
+            goldenCharges: ownGoldenCharges.map(({ machineId, startedAt }) => ({
+              machineId,
+              startedAt,
+            })),
+          }),
     };
   }, [
     laundry.visitorId,
@@ -404,7 +411,7 @@ export function LaundromatScene(props: LaundromatSceneProps) {
     coffeeGroupId,
     ownFlask,
     writingSince,
-    ownGoldenWash,
+    ownGoldenCharges,
   ]);
   const room = useRoom(ownPresence);
   const isRoomSynced = room.isConnected && room.isSynced;
@@ -470,21 +477,24 @@ export function LaundromatScene(props: LaundromatSceneProps) {
     setClockOffsetsMs(room.clockOffsetsMs);
   }, [setClockOffsetsMs, room.clockOffsetsMs]);
   const roomNow = useTickingNow({
-    active: room.peers.some(
-      ({ load, writingSince, goldenWash }) =>
-        load !== undefined ||
-        writingSince !== undefined ||
-        goldenWash !== undefined
-    ),
+    active:
+      room.peers.some(
+        ({ load, writingSince, goldenCharges }) =>
+          load !== undefined ||
+          writingSince !== undefined ||
+          goldenCharges !== undefined
+      ) || (tip?.goldenCharges.length ?? 0) > 0,
   });
   const now = Math.max(laundry.now, roomNow);
-  const goldenWashes = getGoldenWashes({
-    own: tip?.goldenWashes ?? [],
+  const goldenCharges = getGoldenCharges({
+    own: tip?.goldenCharges ?? [],
     peers: room.peers,
     offsetsMs: room.clockOffsetsMs,
     now,
   });
-  const goldenWashMachineIds = goldenWashes.map(({ machineId }) => machineId);
+  const goldenChargeMachineIds = goldenCharges.map(
+    ({ machineId }) => machineId
+  );
   const peopleHere = getPeopleHere({
     isSynced: room.isConnected && room.isSynced,
     peers: room.peers,
@@ -621,8 +631,8 @@ export function LaundromatScene(props: LaundromatSceneProps) {
       const isCycleRunning =
         status.kind === "running" ||
         (status.kind === "occupied" && status.phase === "running");
-      const goldenWash = ((): GoldenWashView => {
-        if (goldenWashMachineIds.includes(object.id)) {
+      const goldenCharge = ((): GoldenChargeView => {
+        if (goldenChargeMachineIds.includes(object.id)) {
           return isCycleRunning ? "charmed" : "charged";
         }
         const canTakeToken =
@@ -670,7 +680,7 @@ export function LaundromatScene(props: LaundromatSceneProps) {
               detentCount: config.machines.cycleMinutes.length,
             }),
             doorOpen: openDoorId === object.id,
-            goldenWash,
+            goldenCharge,
           },
         ],
       ];
@@ -965,7 +975,7 @@ export function LaundromatScene(props: LaundromatSceneProps) {
     window.history.pushState(null, "", toFocusUrl(params));
   }
 
-  const remoteGoldenWashKey = goldenWashes
+  const remoteGoldenWashKey = goldenCharges
     .filter(({ isOwn }) => !isOwn)
     .map(({ machineId, startedAt }) => `${machineId}:${startedAt}`)
     .join(",");
@@ -985,28 +995,23 @@ export function LaundromatScene(props: LaundromatSceneProps) {
     if (hasNewWash) sound?.play("tip-chime");
   }, [remoteGoldenWashKey, isRoomSynced, sound]);
 
-  const ownGoldenWashes = tip?.goldenWashes;
-  const endGoldenWash = tip?.endGoldenWash;
-  const goldenRunsSeenRef = useRef<string[]>([]);
+  const applyChargeChanges = tip?.applyChargeChanges;
+  const ownRunningMachineKey = Object.values(machineViews)
+    .filter(({ status }) => status.kind === "running")
+    .map(({ machine }) => machine.id)
+    .join(",");
   useEffect(() => {
-    if (ownGoldenWashes === undefined || endGoldenWash === undefined) return;
-    ownGoldenWashes.forEach(({ machineId, startedAt }) => {
-      const view = machineViews[machineId];
-      const seen = goldenRunsSeenRef.current;
-      if (view?.goldenWash === "charmed") {
-        if (!seen.includes(machineId)) {
-          goldenRunsSeenRef.current = [...seen, machineId];
-        }
-        return;
-      }
-      if (seen.includes(machineId)) {
-        goldenRunsSeenRef.current = seen.filter((id) => id !== machineId);
-        endGoldenWash(machineId);
-        return;
-      }
-      if (now - startedAt > GOLDEN_CHARGE_MS.idle) endGoldenWash(machineId);
-    });
-  });
+    if (ownGoldenCharges === undefined || applyChargeChanges === undefined) {
+      return;
+    }
+    applyChargeChanges(
+      getChargeChanges({
+        charges: ownGoldenCharges,
+        ownRunningMachineIds: ownRunningMachineKey.split(","),
+        now,
+      })
+    );
+  }, [ownGoldenCharges, applyChargeChanges, ownRunningMachineKey, now]);
 
   const isHoldingToken = tip?.heldTokenCode !== undefined;
   const holdToken = tip?.holdToken;
@@ -1086,7 +1091,7 @@ export function LaundromatScene(props: LaundromatSceneProps) {
 
   function dropHeldToken(objectId: string) {
     if (tip === undefined) return;
-    if (machineViews[objectId]?.goldenWash === "invited") {
+    if (machineViews[objectId]?.goldenCharge === "invited") {
       void tip.dropToken({ machineId: objectId });
       return;
     }

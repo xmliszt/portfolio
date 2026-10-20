@@ -1,12 +1,14 @@
 import type { SpendResult, TokenNotice } from "./tip-token";
 
-/** Return what dropping a token does after the server answers `result`: the spend time to record on the token, whether the machine gets its golden charge, the notice to show when it does not, and whether to keep the token in hand and the attempt for a retry. */
-export function getDropOutcome(result: SpendResult): {
+type DropOutcome = {
   spentAt: string | undefined;
   charge: boolean;
   notice: TokenNotice | undefined;
   retry: boolean;
-} {
+};
+
+/** Return what dropping a token does after the server answers `result`: the spend time to record on the token, whether the machine gets its golden charge, the notice to show when it does not, and whether to keep the token in hand and the attempt for a retry. */
+export function getDropOutcome(result: SpendResult): DropOutcome {
   switch (result.kind) {
     case "spent":
       return {

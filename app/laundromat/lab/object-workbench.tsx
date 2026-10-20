@@ -121,7 +121,7 @@ export function ObjectWorkbench(props: ObjectWorkbenchProps) {
                 detentCount: config.machines.cycleMinutes.length,
               }),
               doorOpen: props.doorOpen,
-              goldenWash: "none",
+              goldenCharge: "none",
             },
           },
     tv: { state: appliances.tv, noSignal: false },

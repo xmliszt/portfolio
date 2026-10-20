@@ -12,7 +12,9 @@ type CharmKind = (typeof CHARM_KINDS)[number];
 
 type Charm = { id: number; kind: CharmKind; driftPx: number; tiltDeg: number };
 
-function CharmShape(props: { kind: CharmKind }) {
+type CharmShapeProps = { kind: CharmKind };
+
+function CharmShape(props: CharmShapeProps) {
   switch (props.kind) {
     case "heart":
       return (

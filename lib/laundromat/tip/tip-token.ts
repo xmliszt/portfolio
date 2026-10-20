@@ -27,4 +27,10 @@ export type TokenNotice =
   | { kind: "unknown" }
   | { kind: "offline" };
 
-export type GoldenWashView = "none" | "invited" | "charged" | "charmed";
+export type GoldenChargeView = "none" | "invited" | "charged" | "charmed";
+
+export type OwnGoldenCharge = {
+  machineId: string;
+  startedAt: number;
+  ranAt?: number;
+};

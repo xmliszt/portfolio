@@ -1,9 +1,9 @@
 import { createContext } from "react";
 
-import type { GoldenWash } from "@/lib/laundromat/realtime/room-presence";
 import type {
   CoinMachinePhase,
   JarCoin,
+  OwnGoldenCharge,
   PendingTip,
   TipToken,
   TokenNotice,
@@ -29,8 +29,8 @@ export type TipState = {
   heldTokenCode: string | undefined;
   holdToken: (code: string | undefined) => void;
   dropToken: (options: { machineId: string }) => Promise<void>;
-  goldenWashes: GoldenWash[];
-  endGoldenWash: (machineId: string) => void;
+  goldenCharges: OwnGoldenCharge[];
+  applyChargeChanges: (changes: { ran: string[]; ended: string[] }) => void;
   tokenNotice: TokenNotice | undefined;
 };
 

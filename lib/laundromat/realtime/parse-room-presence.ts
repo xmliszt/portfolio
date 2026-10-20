@@ -3,7 +3,7 @@ import { GOLDEN_CHARGE_MS } from "@/lib/laundromat/tip/golden-charge-ms";
 import { MAX_WRITING_MS } from "./max-writing-ms";
 import { parseRoomRegion } from "./parse-room-region";
 import type {
-  GoldenWash,
+  GoldenCharge,
   RemoteFlask,
   RemoteLoad,
   RoomPresence,
@@ -14,6 +14,7 @@ const MAX_CYCLE_MS = 2 * 60 * 60_000;
 const MAX_MACHINE_ID_LENGTH = 40;
 const MAX_FLASK_PORTIONS = 20;
 const MAX_ID_LENGTH = 64;
+const MAX_GOLDEN_CHARGES = 4;
 
 function isObject(value: unknown): value is object {
   return typeof value === "object" && value !== null;
@@ -99,10 +100,10 @@ function parseFlask(options: {
   };
 }
 
-function parseGoldenWash(options: {
+function parseGoldenCharge(options: {
   value: unknown;
   now: number;
-}): GoldenWash | undefined {
+}): GoldenCharge | undefined {
   const { value, now } = options;
   if (
     !isObject(value) ||
@@ -117,7 +118,7 @@ function parseGoldenWash(options: {
   return { machineId: value.machineId, startedAt: value.startedAt };
 }
 
-/** Return the presence another tab tracked on the room channel, or `undefined` when it is not one; unknown or malformed fields are dropped, and so is a `flask` changed more than `MAX_CLOCK_SKEW_MS` after `now` or brewing after it changed, a `writingSince` in the future or older than `MAX_WRITING_MS` by `now`, and a `goldenWash` that starts in the future or ended before `now`, each beyond `MAX_CLOCK_SKEW_MS`. */
+/** Return the presence another tab tracked on the room channel, or `undefined` when it is not one; unknown or malformed fields are dropped, and so is a `flask` changed more than `MAX_CLOCK_SKEW_MS` after `now` or brewing after it changed, a `writingSince` in the future or older than `MAX_WRITING_MS` by `now`, and any of the first `MAX_GOLDEN_CHARGES` `goldenCharges` that starts in the future or ended before `now`, each beyond `MAX_CLOCK_SKEW_MS`. */
 export function parseRoomPresence(options: {
   value: unknown;
   now: number;
@@ -149,10 +150,15 @@ export function parseRoomPresence(options: {
     value.writingSince >= now - MAX_WRITING_MS
       ? value.writingSince
       : undefined;
-  const goldenWash =
-    "goldenWash" in value
-      ? parseGoldenWash({ value: value.goldenWash, now })
-      : undefined;
+  const goldenCharges =
+    "goldenCharges" in value && Array.isArray(value.goldenCharges)
+      ? value.goldenCharges
+          .slice(0, MAX_GOLDEN_CHARGES)
+          .flatMap((charge: unknown) => {
+            const parsed = parseGoldenCharge({ value: charge, now });
+            return parsed === undefined ? [] : [parsed];
+          })
+      : [];
   return {
     sessionId: value.sessionId,
     visitorId: value.visitorId,
@@ -161,6 +167,6 @@ export function parseRoomPresence(options: {
     ...(coffeeGroupId === undefined ? {} : { coffeeGroupId }),
     ...(flask === undefined ? {} : { flask }),
     ...(writingSince === undefined ? {} : { writingSince }),
-    ...(goldenWash === undefined ? {} : { goldenWash }),
+    ...(goldenCharges.length === 0 ? {} : { goldenCharges }),
   };
 }

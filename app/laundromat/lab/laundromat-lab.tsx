@@ -334,7 +334,7 @@ const realtimeDials = {
   othersWashing: [0, 0, 5, 1],
   othersDrying: [0, 0, 5, 1],
   someoneWriting: false,
-  someoneGoldenWash: false,
+  someoneGoldenCharge: false,
   writerDraft: {
     type: "text",
     default: "the dryer on the end is my favourite",
@@ -386,10 +386,9 @@ function buildFakePeers(options: {
           {
             sessionId: FAKE_GOLDEN_WASHER_ID,
             visitorId: FAKE_GOLDEN_WASHER_ID,
-            goldenWash: {
-              machineId: "washer-3",
-              startedAt: options.goldenWashStartedAt,
-            },
+            goldenCharges: [
+              { machineId: "washer-3", startedAt: options.goldenWashStartedAt },
+            ],
           },
         ];
   return [...peers, ...writers, ...goldenWashers];
@@ -483,12 +482,12 @@ export default function LaundromatLab() {
     othersWashing,
     othersDrying,
     someoneWriting,
-    someoneGoldenWash,
+    someoneGoldenCharge,
     writerDraft,
   } = realtime;
   const [goldenWashStartedAt, setGoldenWashStartedAt] = useState<number>();
   useEffect(() => {
-    if (!someoneGoldenWash) {
+    if (!someoneGoldenCharge) {
       setGoldenWashStartedAt(undefined);
       return;
     }
@@ -498,7 +497,7 @@ export default function LaundromatLab() {
       GOLDEN_CHARGE_MS.max
     );
     return () => window.clearInterval(timer);
-  }, [someoneGoldenWash]);
+  }, [someoneGoldenCharge]);
   useEffect(() => {
     fakeRoom.setPeers(
       buildFakePeers({

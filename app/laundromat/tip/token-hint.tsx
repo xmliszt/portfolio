@@ -66,7 +66,7 @@ export function TokenHint(props: TokenHintProps) {
           <div className="flex items-center gap-x-3 rounded-[12px] bg-[var(--lm-panel)] py-1.5 pr-1.5 pl-3 text-[13px] text-[var(--lm-ink-hi)] lowercase shadow-[inset_0_0_0_1px_var(--lm-edge),0_12px_32px_rgb(0_0_0/0.5)]">
             <TipCoin metal="brass" label="" sizePx={18} />
             {text}
-            <CloseKey onClose={props.onCancel} />
+            {props.held && <CloseKey onClose={props.onCancel} />}
           </div>
         </motion.div>
       )}

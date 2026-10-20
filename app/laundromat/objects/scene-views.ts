@@ -3,7 +3,7 @@ import type { BasketContents } from "@/lib/laundromat/laundry/get-basket-content
 import type { MachineStatus } from "@/lib/laundromat/laundry/get-machine-status";
 import type {
   CoinMachinePhase,
-  GoldenWashView,
+  GoldenChargeView,
 } from "@/lib/laundromat/tip/tip-token";
 import type { TvState } from "@/lib/laundromat/tv/tv-state";
 import type { WeatherReading } from "@/lib/laundromat/weather/weather-reading";
@@ -13,7 +13,7 @@ export type MachineView = {
   readout: string;
   dialAngleDeg: number;
   doorOpen: boolean;
-  goldenWash: GoldenWashView;
+  goldenCharge: GoldenChargeView;
 };
 
 export type TvView = { state: TvState; noSignal: boolean };
