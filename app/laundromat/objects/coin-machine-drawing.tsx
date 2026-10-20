@@ -15,9 +15,9 @@ import { partStroke } from "./part-stroke";
 const SCREEN_FONT_SIZE = 5.5;
 
 const WALL_PLATE = { margin: 0.06, depth: 0.04 };
-const TRAY = { height: 0.26, inset: 0.14, floorPx: 4 };
+const TRAY = { height: 0.4, inset: 0.14, floorPx: 4 };
+const SLIT = { insetPx: 3, topPx: 1.4, heightPx: 1.3 };
 const PLATE = { depth: 0.2, thickness: 0.03, lip: 0.025, lipHeight: 0.04 };
-const CHUTE_DROP_GAP_PX = 7;
 const COIN_LABELS = TIP_COINS_CENTS.map((cents) => String(cents / 100));
 const SCREW_INSET = 3;
 
@@ -59,7 +59,6 @@ export function CoinMachineDrawing(props: CoinMachineDrawingProps) {
   const coinY = plate.y + plate.height - 6;
   const coinSpacing = (width - 12 - 4 * 2 * coinRadius) / 3 + 2 * coinRadius;
   const floorZ = p.z + TRAY.floorPx / unit;
-  const chuteZ = p.z + size.h - (seamY + CHUTE_DROP_GAP_PX) / unit;
   const tray = {
     x: TRAY.inset * unit,
     y: height - TRAY.height * unit - TRAY.floorPx,
@@ -174,17 +173,18 @@ export function CoinMachineDrawing(props: CoinMachineDrawingProps) {
           />
         ))}
         <rect
-          x={width / 2 - 3}
-          y={seamY + 4}
-          width={6}
-          height={3}
-          rx={1}
-          className="fill-[var(--lm-face)] stroke-[var(--lm-line)]"
-        />
-        <rect
           {...tray}
           rx={1.5}
           className="fill-[var(--lm-recess)] stroke-[var(--lm-line)]"
+        />
+        <rect
+          x={tray.x + SLIT.insetPx}
+          y={tray.y + SLIT.topPx}
+          width={tray.width - 2 * SLIT.insetPx}
+          height={SLIT.heightPx}
+          rx={SLIT.heightPx / 2}
+          className="fill-[#050505] stroke-[var(--lm-detail)]"
+          strokeWidth={0.4}
         />
       </g>
       <g transform={side.transform} strokeWidth={0.75}>
@@ -220,7 +220,9 @@ export function CoinMachineDrawing(props: CoinMachineDrawingProps) {
           },
           projection,
         })}
-        dropPx={chuteZ * unit - floorZ * unit}
+        slitHeightPx={
+          height - TRAY.floorPx - (tray.y + SLIT.topPx + SLIT.heightPx)
+        }
         outFromFacePx={PLATE.depth * 0.35 * unit}
       />
       <IsoBox

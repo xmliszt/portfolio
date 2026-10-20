@@ -21,7 +21,7 @@ const ACROSS = { x: COS_30, y: SIN_30 };
 type CoinMachineTokenProps = {
   phase: CoinMachinePhase;
   rest: ScreenPoint;
-  dropPx: number;
+  slitHeightPx: number;
   outFromFacePx: number;
 };
 
@@ -47,10 +47,11 @@ function useDropMs(options: { phase: CoinMachinePhase; dropPx: number }) {
   return atMs;
 }
 
-/** Draw the dispensed token once `phase` is `dispensing` or `token-in-tray`: a brass coin with a milled edge that drops `dropPx` from the chute, `outFromFacePx` nearer the face at the top, bounces, tips over and wobbles flat onto the tray at `rest`; nothing otherwise. */
+/** Draw the dispensed token once `phase` is `dispensing` or `token-in-tray`: a brass coin with a milled edge that slides out of the slit `slitHeightPx` above the tray, `outFromFacePx` nearer the face at the top, bounces, tips over and wobbles flat onto the tray at `rest`; nothing otherwise. */
 export function CoinMachineToken(props: CoinMachineTokenProps) {
   const { quality } = useRenderQuality();
-  const atMs = useDropMs({ phase: props.phase, dropPx: props.dropPx });
+  const dropPx = props.slitHeightPx - 2 * RADIUS_PX;
+  const atMs = useDropMs({ phase: props.phase, dropPx });
   switch (props.phase.kind) {
     case "idle":
     case "inserting":
@@ -63,7 +64,7 @@ export function CoinMachineToken(props: CoinMachineTokenProps) {
       return unhandled;
     }
   }
-  const pose = getCoinDropPose({ dropPx: props.dropPx, atMs });
+  const pose = getCoinDropPose({ dropPx, atMs });
   const tilt = (pose.tiltDeg * Math.PI) / 180;
   const down = {
     x: Math.sin(tilt) * TOWARD_VIEWER.x,
@@ -73,7 +74,7 @@ export function CoinMachineToken(props: CoinMachineTokenProps) {
     x: Math.cos(tilt) * TOWARD_VIEWER.x,
     y: Math.cos(tilt) * TOWARD_VIEWER.y - Math.sin(tilt),
   };
-  const backFromViewer = (props.outFromFacePx * pose.heightPx) / props.dropPx;
+  const backFromViewer = (props.outFromFacePx * pose.heightPx) / dropPx;
   const contact = {
     x:
       props.rest.x +
