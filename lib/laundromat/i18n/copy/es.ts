@@ -713,6 +713,8 @@ export const es = {
   tip: {
     machineLabel: "Máquina de monedas, deja una propina",
     machineTooltip: "deja una propina",
+    machineScreenIdle: "PROPINA",
+    machineScreenThanks: "GRACIAS",
     jarLoadingLabel: "Frasco de propinas",
     jarLoadingTooltip: "frasco de propinas",
     jarLabel: (o: { count: number }) =>
@@ -772,8 +774,6 @@ export const es = {
     goldenReadout: "ORO",
     viewCoin: (o: { number: number }) => `Mirar la ficha n.º ${o.number}`,
     turnCoin: "Dar la vuelta a la moneda",
-    turnHint: "arrastra para girar",
-    flip: "girar",
     coinNumberCaption: "n.º",
     coinBackNote: "gracias",
     coinRim: "gracias",

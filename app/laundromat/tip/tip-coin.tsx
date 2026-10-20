@@ -5,6 +5,7 @@ import { useReducedMotion } from "motion/react";
 
 import { useLaundromatCopy } from "@/app/laundromat/i18n/use-laundromat-copy";
 import { useRenderQuality } from "@/app/laundromat/settings/use-render-quality";
+import { getCoinRimText } from "@/lib/laundromat/tip/get-coin-rim-text";
 import type { TipCoinMetal } from "@/lib/laundromat/tip/tip-coin-metals";
 import { cn } from "@/lib/utils";
 
@@ -68,7 +69,10 @@ export function TipCoin(props: TipCoinProps) {
         sizePx={props.sizePx}
         rimText={
           props.engraved === true
-            ? `${copy.site.name} · ${copy.tip.coinRim} · `.repeat(2)
+            ? getCoinRimText({
+                siteName: copy.site.name,
+                thanks: copy.tip.coinRim,
+              })
             : undefined
         }
         sheen={isLive ? "follow" : "static"}

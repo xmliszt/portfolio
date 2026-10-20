@@ -10,19 +10,18 @@ import {
 } from "motion/react";
 
 import { useLaundromatCopy } from "@/app/laundromat/i18n/use-laundromat-copy";
-import { PRINTER_KEY_CLASS } from "@/app/laundromat/settings/printer-key-class";
-import { SETTINGS_META_CLASS } from "@/app/laundromat/settings/settings-meta-class";
 import { useRenderQuality } from "@/app/laundromat/settings/use-render-quality";
+import { COIN_LIGHT } from "@/lib/laundromat/tip/coin-light";
 import { formatTipDate } from "@/lib/laundromat/tip/format-tip-date";
+import { getCoinRimText } from "@/lib/laundromat/tip/get-coin-rim-text";
 import { getCoinTones } from "@/lib/laundromat/tip/get-coin-tones";
 import type { TipToken } from "@/lib/laundromat/tip/tip-token";
-import { cn } from "@/lib/utils";
 
 import { TipCoinBlank } from "./tip-coin-blank";
 
 const METAL = "brass";
-const COIN_SIZE_PX = 232;
-const THICKNESS_PX = 14;
+const COIN_SIZE_PX = 280;
+const THICKNESS_PX = 16;
 const EDGE_LAYERS = 14;
 const DEG_PER_PX = { turn: 0.6, tilt: 0.35 };
 const MAX_TILT_DEG = 35;
@@ -32,7 +31,6 @@ const ENTRY_TURN_DEG = -540;
 const SETTLE_SPRING = { type: "spring", stiffness: 110, damping: 17 } as const;
 const ENTRY_SPRING = { type: "spring", duration: 1.4, bounce: 0.12 } as const;
 const SHEEN_SWING_PERCENT = 70;
-const LIGHT_AZIMUTH_DEG = 225;
 
 function nearestFaceDeg(deg: number) {
   return Math.round(deg / 180) * 180;
@@ -40,7 +38,7 @@ function nearestFaceDeg(deg: number) {
 
 type TipCoinViewerProps = { token: TipToken };
 
-/** Show `token` as a large coin that turns in 3D: its number on the front, and on the back a "thank you" engraving with the token's code and date. Dragging turns it, a tap or the flip key turns it over, and it always settles on a face. */
+/** Show `token` as a large coin that turns in 3D: its number on the front, and on the back a "thank you" engraving with the token's code and date. Dragging turns it, a tap or an arrow key turns it over, and it always settles on a face; the lettering is lit metal on full quality. */
 export function TipCoinViewer(props: TipCoinViewerProps) {
   const { copy } = useLaundromatCopy();
   const { token } = props;
@@ -59,7 +57,12 @@ export function TipCoinViewer(props: TipCoinViewerProps) {
     moved: boolean;
   }>(undefined);
   const { ring } = getCoinTones(METAL);
-  const rimText = `${copy.site.name} · ${copy.tip.coinRim} · `.repeat(2);
+  const hasRelief = quality === "full";
+  const lightsRef = useRef<Element[]>([]);
+  const rimText = getCoinRimText({
+    siteName: copy.site.name,
+    thanks: copy.tip.coinRim,
+  });
 
   useMotionValueEvent(rotateY, "change", (deg) => {
     const stage = stageRef.current;
@@ -69,10 +72,19 @@ export function TipCoinViewer(props: TipCoinViewerProps) {
       "--sheen-x",
       `${50 + Math.sin(radians) * SHEEN_SWING_PERCENT}%`
     );
-    stage.querySelectorAll("[data-coin-light]").forEach((light) => {
-      light.setAttribute("azimuth", String(LIGHT_AZIMUTH_DEG + deg));
+    const azimuthDeg = COIN_LIGHT.azimuthDeg + deg - nearestFaceDeg(deg);
+    lightsRef.current.forEach((light) => {
+      light.setAttribute("azimuth", String(azimuthDeg));
     });
   });
+
+  useEffect(() => {
+    lightsRef.current = hasRelief
+      ? Array.from(
+          stageRef.current?.querySelectorAll("[data-coin-light]") ?? []
+        )
+      : [];
+  }, [hasRelief]);
 
   useEffect(() => {
     stageRef.current?.focus({ preventScroll: true });
@@ -158,7 +170,7 @@ export function TipCoinViewer(props: TipCoinViewerProps) {
   const faceClass = "absolute inset-0 [backface-visibility:hidden]";
   const sheen = isRich ? "track" : "static";
   return (
-    <div className="flex flex-col items-center gap-y-4">
+    <div className="flex justify-center px-3 pt-2 pb-10">
       <button
         ref={stageRef}
         type="button"
@@ -205,7 +217,7 @@ export function TipCoinViewer(props: TipCoinViewerProps) {
               metal={METAL}
               sizePx={COIN_SIZE_PX}
               rimText={rimText}
-              relief
+              relief={hasRelief}
               sheen={sheen}
               raised={false}
             >
@@ -213,7 +225,7 @@ export function TipCoinViewer(props: TipCoinViewerProps) {
                 <g
                   className="font-[family-name:var(--lm-font-display)]"
                   textAnchor="middle"
-                  fill={field.base}
+                  fill={raiseFilter === undefined ? field.edge : field.base}
                   filter={raiseFilter}
                 >
                   <text x={50} y={36} fontSize={9}>
@@ -241,12 +253,15 @@ export function TipCoinViewer(props: TipCoinViewerProps) {
               metal={METAL}
               sizePx={COIN_SIZE_PX}
               rimText={undefined}
-              relief
+              relief={hasRelief}
               sheen={sheen}
               raised={false}
             >
               {({ field, cutFilter, fineCutFilter }) => (
-                <g textAnchor="middle" fill={field.base}>
+                <g
+                  textAnchor="middle"
+                  fill={cutFilter === undefined ? field.edge : field.base}
+                >
                   <text
                     x={50}
                     y={32}
@@ -276,10 +291,12 @@ export function TipCoinViewer(props: TipCoinViewerProps) {
                   />
                   <text
                     x={50}
-                    y={67}
+                    y={68}
+                    fill={field.edge}
                     className="font-[family-name:var(--lm-font-mono)]"
-                    fontSize={4.2}
-                    textLength={52}
+                    fontSize={5}
+                    fontWeight={600}
+                    textLength={56}
                     lengthAdjust="spacingAndGlyphs"
                     filter={fineCutFilter}
                   >
@@ -287,9 +304,10 @@ export function TipCoinViewer(props: TipCoinViewerProps) {
                   </text>
                   <text
                     x={50}
-                    y={74}
+                    y={75.5}
+                    fill={field.dark}
                     className="font-[family-name:var(--lm-font-mono)] lowercase"
-                    fontSize={3.6}
+                    fontSize={4}
                     filter={fineCutFilter}
                   >
                     {formatTipDate({
@@ -303,18 +321,6 @@ export function TipCoinViewer(props: TipCoinViewerProps) {
           </span>
         </motion.span>
       </button>
-      <div className="flex items-center gap-x-3">
-        <span className={cn(SETTINGS_META_CLASS, "opacity-60")}>
-          {copy.tip.turnHint}
-        </span>
-        <button
-          type="button"
-          className={cn(PRINTER_KEY_CLASS, "h-8 px-3")}
-          onClick={() => turnOver(1)}
-        >
-          {copy.tip.flip}
-        </button>
-      </div>
     </div>
   );
 }

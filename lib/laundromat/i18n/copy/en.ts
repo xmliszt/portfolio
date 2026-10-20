@@ -709,6 +709,8 @@ export const en = {
   tip: {
     machineLabel: "Coin machine, leave a tip",
     machineTooltip: "leave a tip",
+    machineScreenIdle: "TIPS",
+    machineScreenThanks: "THANKS",
     jarLoadingLabel: "Tip jar",
     jarLoadingTooltip: "tip jar",
     jarLabel: (o: { count: number }) =>
@@ -767,8 +769,6 @@ export const en = {
     goldenReadout: "GOLD",
     viewCoin: (o: { number: number }) => `Look at token no. ${o.number}`,
     turnCoin: "Turn the coin over",
-    turnHint: "drag to turn",
-    flip: "flip",
     coinNumberCaption: "no.",
     coinBackNote: "thank you",
     coinRim: "thank you",

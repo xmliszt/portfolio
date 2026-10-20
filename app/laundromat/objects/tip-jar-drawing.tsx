@@ -85,7 +85,7 @@ export function TipJarDrawing(props: TipJarDrawingProps) {
       </defs>
       <g clipPath={`url(#${clipId})`} strokeWidth={0.4}>
         {getJarCoinPile(props.coinCount)
-          .map((coin) => {
+          .map((coin, pileIndex) => {
             const z = Math.min(
               glassBottom + coin.layer * LAYER_HEIGHT,
               shoulder - LAYER_HEIGHT
@@ -99,18 +99,18 @@ export function TipJarDrawing(props: TipJarDrawingProps) {
               radius: COIN_RADIUS,
               projection,
             });
-            return { coin, face };
+            return { coin, face, pileIndex };
           })
           .toSorted(
             (a, b) => a.coin.layer - b.coin.layer || a.face.cy - b.face.cy
           )
-          .map(({ coin, face }, index) => {
+          .map(({ coin, face, pileIndex }) => {
             const tones = METAL_TONES[coin.metal];
             const ry =
               face.ry * (1 + (Math.abs(coin.tiltDeg) / 25) * MAX_TILT_SQUASH);
             const transform = `rotate(${coin.tiltDeg / 2} ${face.cx} ${face.cy})`;
             return (
-              <g key={index} transform={transform}>
+              <g key={pileIndex} transform={transform}>
                 <ellipse
                   cx={face.cx}
                   cy={face.cy + COIN_THICKNESS_PX}

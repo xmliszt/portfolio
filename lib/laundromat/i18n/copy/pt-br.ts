@@ -709,6 +709,8 @@ export const ptBR = {
   tip: {
     machineLabel: "Máquina de moedas, deixe uma gorjeta",
     machineTooltip: "deixe uma gorjeta",
+    machineScreenIdle: "GORJETA",
+    machineScreenThanks: "OBRIGADO",
     jarLoadingLabel: "Pote de gorjetas",
     jarLoadingTooltip: "pote de gorjetas",
     jarLabel: (o: { count: number }) =>
@@ -768,8 +770,6 @@ export const ptBR = {
     goldenReadout: "OURO",
     viewCoin: (o: { number: number }) => `Ver a ficha nº ${o.number}`,
     turnCoin: "Virar a moeda",
-    turnHint: "arraste para girar",
-    flip: "virar",
     coinNumberCaption: "nº",
     coinBackNote: "obrigado",
     coinRim: "obrigado",

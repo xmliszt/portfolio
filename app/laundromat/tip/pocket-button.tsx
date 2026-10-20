@@ -19,7 +19,7 @@ import { TipReceipt } from "./tip-receipt";
 import { TipSwap } from "./tip-swap";
 import { useTip } from "./use-tip";
 
-/** Show the visitor's newest tip token in the toolbar once they have one, opening the printed ticket of every token they keep, each with its coin to look at up close and a key to drop it in a washer. */
+/** Show the visitor's newest tip token in the toolbar once they have one, opening the printed ticket of every token they keep, each with its coin to look at up close and a key to drop it in a washer or dryer. */
 export function PocketButton() {
   const { copy } = useLaundromatCopy();
   const tip = useTip();

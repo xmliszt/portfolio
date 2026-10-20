@@ -1,5 +1,6 @@
 import { useId } from "react";
 
+import { COIN_LIGHT } from "@/lib/laundromat/tip/coin-light";
 import { getCoinTones } from "@/lib/laundromat/tip/get-coin-tones";
 import type {
   MetalTones,
@@ -7,7 +8,7 @@ import type {
 } from "@/lib/laundromat/tip/tip-coin-metals";
 import { cn } from "@/lib/utils";
 
-const LIGHT = { azimuthDeg: 225, elevationDeg: 38 };
+const RIM_RADIUS = 43.5;
 const RELIEFS = {
   cut: { blur: 0.35, depth: -1.8 },
   fineCut: { blur: 0.12, depth: -0.9 },
@@ -42,6 +43,9 @@ export function TipCoinBlank(props: TipCoinBlankProps) {
   const id = useId().replaceAll(":", "");
   const { ring, field } = getCoinTones(coin.metal);
   const thicknessPx = Math.max(1.5, coin.sizePx * 0.045);
+  function filterUrl(kind: keyof typeof RELIEFS) {
+    return coin.relief === true ? `url(#${id}-${kind})` : undefined;
+  }
   const raisedShadow = coin.raised
     ? `0 ${thicknessPx}px 0 ${ring.edge}, 0 ${thicknessPx * 2}px ${thicknessPx * 4}px rgb(0 0 0 / 0.55), `
     : "";
@@ -79,7 +83,7 @@ export function TipCoinBlank(props: TipCoinBlankProps) {
         <defs>
           <path
             id={`${id}-rim`}
-            d="M 50 50 m -43.5 0 a 43.5 43.5 0 1 1 87 0 a 43.5 43.5 0 1 1 -87 0"
+            d={`M 50 50 m -${RIM_RADIUS} 0 a ${RIM_RADIUS} ${RIM_RADIUS} 0 1 1 ${RIM_RADIUS * 2} 0 a ${RIM_RADIUS} ${RIM_RADIUS} 0 1 1 -${RIM_RADIUS * 2} 0`}
           />
         </defs>
         {coin.relief === true &&
@@ -87,10 +91,11 @@ export function TipCoinBlank(props: TipCoinBlankProps) {
             <filter
               key={kind}
               id={`${id}-${kind}`}
-              x="-10%"
-              y="-10%"
-              width="120%"
-              height="120%"
+              filterUnits="userSpaceOnUse"
+              x={0}
+              y={0}
+              width={100}
+              height={100}
             >
               <feGaussianBlur
                 in="SourceAlpha"
@@ -106,8 +111,8 @@ export function TipCoinBlank(props: TipCoinBlankProps) {
               >
                 <feDistantLight
                   data-coin-light
-                  azimuth={LIGHT.azimuthDeg}
-                  elevation={LIGHT.elevationDeg}
+                  azimuth={COIN_LIGHT.azimuthDeg}
+                  elevation={COIN_LIGHT.elevationDeg}
                 />
               </feDiffuseLighting>
               <feSpecularLighting
@@ -120,8 +125,8 @@ export function TipCoinBlank(props: TipCoinBlankProps) {
               >
                 <feDistantLight
                   data-coin-light
-                  azimuth={LIGHT.azimuthDeg}
-                  elevation={LIGHT.elevationDeg}
+                  azimuth={COIN_LIGHT.azimuthDeg}
+                  elevation={COIN_LIGHT.elevationDeg}
                 />
               </feSpecularLighting>
               <feComposite
@@ -151,20 +156,25 @@ export function TipCoinBlank(props: TipCoinBlankProps) {
             className="font-[family-name:var(--lm-font-mono)] uppercase"
             fontSize={6.4}
             letterSpacing={1.2}
-            fill={coin.relief === true ? ring.base : ring.edge}
-            opacity={coin.relief === true ? 1 : 0.75}
-            filter={coin.relief === true ? `url(#${id}-cut)` : undefined}
+            fill={ring.edge}
+            opacity={coin.relief === true ? 0.9 : 0.75}
+            filter={filterUrl("fineCut")}
           >
-            <textPath href={`#${id}-rim`}>{coin.rimText}</textPath>
+            <textPath
+              href={`#${id}-rim`}
+              textLength={2 * Math.PI * RIM_RADIUS}
+              lengthAdjust="spacing"
+            >
+              {coin.rimText}
+            </textPath>
           </text>
         )}
         {coin.children({
           field,
           rimPathId: `${id}-rim`,
-          cutFilter: coin.relief === true ? `url(#${id}-cut)` : undefined,
-          fineCutFilter:
-            coin.relief === true ? `url(#${id}-fineCut)` : undefined,
-          raiseFilter: coin.relief === true ? `url(#${id}-raise)` : undefined,
+          cutFilter: filterUrl("cut"),
+          fineCutFilter: filterUrl("fineCut"),
+          raiseFilter: filterUrl("raise"),
         })}
       </svg>
       {coin.sheen !== "none" && (

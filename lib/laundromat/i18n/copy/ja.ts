@@ -691,6 +691,8 @@ export const ja = {
   tip: {
     machineLabel: "コインマシン、チップを渡す",
     machineTooltip: "チップを渡す",
+    machineScreenIdle: "チップ",
+    machineScreenThanks: "感謝",
     jarLoadingLabel: "チップの瓶",
     jarLoadingTooltip: "チップの瓶",
     jarLabel: (o: { count: number }) => `チップの瓶、これまで ${o.count} 枚`,
@@ -748,8 +750,6 @@ export const ja = {
     goldenReadout: "金",
     viewCoin: (o: { number: number }) => `トークン No. ${o.number} を見る`,
     turnCoin: "コインを裏返す",
-    turnHint: "ドラッグで回す",
-    flip: "裏返す",
     coinNumberCaption: "No.",
     coinBackNote: "ありがとう",
     coinRim: "ありがとう",

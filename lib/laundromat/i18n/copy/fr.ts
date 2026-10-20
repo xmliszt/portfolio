@@ -719,6 +719,8 @@ export const fr = {
   tip: {
     machineLabel: "Machine à pièces, laisser un pourboire",
     machineTooltip: "laisser un pourboire",
+    machineScreenIdle: "PIÈCES",
+    machineScreenThanks: "MERCI",
     jarLoadingLabel: "Bocal à pourboires",
     jarLoadingTooltip: "bocal à pourboires",
     jarLabel: (o: { count: number }) =>
@@ -778,8 +780,6 @@ export const fr = {
     goldenReadout: "OR",
     viewCoin: (o: { number: number }) => `Regarder le jeton n° ${o.number}`,
     turnCoin: "Retourner la pièce",
-    turnHint: "glisse pour tourner",
-    flip: "retourner",
     coinNumberCaption: "n°",
     coinBackNote: "merci",
     coinRim: "merci",

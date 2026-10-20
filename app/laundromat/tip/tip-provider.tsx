@@ -60,7 +60,7 @@ function forgetPendingTip(sessionId: string) {
 
 type TipProviderProps = { children: React.ReactNode };
 
-/** Provide the visitor's tip tokens, the jar's coins and the coin machine's phase to the scene and the toolbar, open and settle real tips through Stripe whether or not the panel stays open (resuming any still pending from an earlier visit), and hold one token until it is dropped into a washer for a golden wash, as often as the visitor likes. */
+/** Provide the visitor's tip tokens, the jar's coins and the coin machine's phase to the scene and the toolbar, open and settle real tips through Stripe whether or not the panel stays open (resuming any still pending from an earlier visit), and hold one token until it is dropped into a washer or dryer for a golden wash, as often as the visitor likes. */
 export function TipProvider(props: TipProviderProps) {
   const [tokens, setTokens] = useState<TipToken[]>();
   const [jar, setJar] = useState<JarCoin[]>();

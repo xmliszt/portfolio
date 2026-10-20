@@ -658,6 +658,8 @@ export const tr = {
   tip: {
     machineLabel: "Bozuk para makinesi, bahşiş bırak",
     machineTooltip: "bahşiş bırak",
+    machineScreenIdle: "BAHŞİŞ",
+    machineScreenThanks: "TEŞEKKÜR",
     jarLoadingLabel: "Bahşiş kavanozu",
     jarLoadingTooltip: "bahşiş kavanozu",
     jarLabel: (o: { count: number }) =>
@@ -715,8 +717,6 @@ export const tr = {
     goldenReadout: "ALTIN",
     viewCoin: (o: { number: number }) => `${o.number} numaralı jetona bak`,
     turnCoin: "Parayı çevir",
-    turnHint: "döndürmek için sürükle",
-    flip: "çevir",
     coinNumberCaption: "no.",
     coinBackNote: "teşekkürler",
     coinRim: "teşekkürler",

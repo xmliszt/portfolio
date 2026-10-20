@@ -680,6 +680,8 @@ export const uk = {
   tip: {
     machineLabel: "Монетний автомат, залишити чайові",
     machineTooltip: "залишити чайові",
+    machineScreenIdle: "ЧАЙОВІ",
+    machineScreenThanks: "ДЯКУЮ",
     jarLoadingLabel: "Банка для чайових",
     jarLoadingTooltip: "банка для чайових",
     jarLabel: (o: { count: number }) =>
@@ -738,8 +740,6 @@ export const uk = {
     goldenReadout: "ЗОЛОТО",
     viewCoin: (o: { number: number }) => `Переглянути жетон № ${o.number}`,
     turnCoin: "Перевернути монету",
-    turnHint: "потягніть, щоб повернути",
-    flip: "перевернути",
     coinNumberCaption: "№",
     coinBackNote: "дякую",
     coinRim: "дякую",

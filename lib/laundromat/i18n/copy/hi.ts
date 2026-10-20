@@ -707,6 +707,8 @@ export const hi = {
   tip: {
     machineLabel: "सिक्का मशीन, टिप दो",
     machineTooltip: "टिप दो",
+    machineScreenIdle: "टिप",
+    machineScreenThanks: "शुक्रिया",
     jarLoadingLabel: "टिप जार",
     jarLoadingTooltip: "टिप जार",
     jarLabel: (o: { count: number }) =>
@@ -766,8 +768,6 @@ export const hi = {
     goldenReadout: "सोना",
     viewCoin: (o: { number: number }) => `टोकन नं. ${o.number} देखें`,
     turnCoin: "सिक्का पलटें",
-    turnHint: "घुमाने के लिए खींचें",
-    flip: "पलटें",
     coinNumberCaption: "नं.",
     coinBackNote: "धन्यवाद",
     coinRim: "धन्यवाद",

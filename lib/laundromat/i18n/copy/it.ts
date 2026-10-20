@@ -716,6 +716,8 @@ export const it = {
   tip: {
     machineLabel: "Macchina a gettoni, lascia una mancia",
     machineTooltip: "lascia una mancia",
+    machineScreenIdle: "MANCE",
+    machineScreenThanks: "GRAZIE",
     jarLoadingLabel: "Barattolo delle mance",
     jarLoadingTooltip: "barattolo delle mance",
     jarLabel: (o: { count: number }) =>
@@ -775,8 +777,6 @@ export const it = {
     goldenReadout: "ORO",
     viewCoin: (o: { number: number }) => `Guarda il gettone n. ${o.number}`,
     turnCoin: "Gira la moneta",
-    turnHint: "trascina per girare",
-    flip: "gira",
     coinNumberCaption: "n.",
     coinBackNote: "grazie",
     coinRim: "grazie",

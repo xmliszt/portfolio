@@ -713,6 +713,8 @@ export const id = {
   tip: {
     machineLabel: "Mesin koin, beri tip",
     machineTooltip: "beri tip",
+    machineScreenIdle: "TIP",
+    machineScreenThanks: "MAKASIH",
     jarLoadingLabel: "Toples tip",
     jarLoadingTooltip: "toples tip",
     jarLabel: (o: { count: number }) => `Toples tip, sejauh ini ${o.count} tip`,
@@ -769,8 +771,6 @@ export const id = {
     goldenReadout: "EMAS",
     viewCoin: (o: { number: number }) => `Lihat token no. ${o.number}`,
     turnCoin: "Balik koinnya",
-    turnHint: "seret untuk memutar",
-    flip: "balik",
     coinNumberCaption: "no.",
     coinBackNote: "terima kasih",
     coinRim: "terima kasih",

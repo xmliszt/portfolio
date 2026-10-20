@@ -693,6 +693,8 @@ export const vi = {
   tip: {
     machineLabel: "Máy xu, để lại tiền tip",
     machineTooltip: "để lại tiền tip",
+    machineScreenIdle: "TIP",
+    machineScreenThanks: "CẢM ƠN",
     jarLoadingLabel: "Hũ tip",
     jarLoadingTooltip: "hũ tip",
     jarLabel: (o: { count: number }) => `Hũ tip, đã có ${o.count} lượt tip`,
@@ -749,8 +751,6 @@ export const vi = {
     goldenReadout: "VÀNG",
     viewCoin: (o: { number: number }) => `Xem token số ${o.number}`,
     turnCoin: "Lật đồng xu",
-    turnHint: "kéo để xoay",
-    flip: "lật",
     coinNumberCaption: "số",
     coinBackNote: "cảm ơn",
     coinRim: "cảm ơn",

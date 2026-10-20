@@ -684,6 +684,8 @@ export const ru = {
   tip: {
     machineLabel: "Монетный автомат, оставить чаевые",
     machineTooltip: "оставить чаевые",
+    machineScreenIdle: "ЧАЕВЫЕ",
+    machineScreenThanks: "СПАСИБО",
     jarLoadingLabel: "Банка для чаевых",
     jarLoadingTooltip: "банка для чаевых",
     jarLabel: (o: { count: number }) =>
@@ -742,8 +744,6 @@ export const ru = {
     goldenReadout: "ЗОЛОТО",
     viewCoin: (o: { number: number }) => `Посмотреть жетон № ${o.number}`,
     turnCoin: "Перевернуть монету",
-    turnHint: "потяните, чтобы повернуть",
-    flip: "перевернуть",
     coinNumberCaption: "№",
     coinBackNote: "спасибо",
     coinRim: "спасибо",

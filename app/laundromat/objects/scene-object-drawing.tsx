@@ -199,7 +199,13 @@ export function SceneObjectDrawing(props: SceneObjectDrawingProps) {
     case "instant-camera":
       return <InstantCameraDrawing {...shared} />;
     case "coin-machine":
-      return <CoinMachineDrawing {...shared} phase={views.coinMachine} />;
+      return (
+        <CoinMachineDrawing
+          {...shared}
+          phase={views.coinMachine}
+          screenText={views.coinMachineScreen}
+        />
+      );
     case "tip-jar":
       return <TipJarDrawing {...shared} coinCount={views.tipJar.coinCount} />;
     default: {

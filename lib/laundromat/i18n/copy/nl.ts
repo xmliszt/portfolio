@@ -672,6 +672,8 @@ export const nl = {
   tip: {
     machineLabel: "Muntautomaat, geef een fooi",
     machineTooltip: "geef een fooi",
+    machineScreenIdle: "FOOI",
+    machineScreenThanks: "BEDANKT",
     jarLoadingLabel: "Fooienpot",
     jarLoadingTooltip: "fooienpot",
     jarLabel: (o: { count: number }) =>
@@ -731,8 +733,6 @@ export const nl = {
     goldenReadout: "GOUD",
     viewCoin: (o: { number: number }) => `Bekijk penning nr. ${o.number}`,
     turnCoin: "Draai de munt om",
-    turnHint: "sleep om te draaien",
-    flip: "omdraaien",
     coinNumberCaption: "nr.",
     coinBackNote: "dank je",
     coinRim: "dank je",

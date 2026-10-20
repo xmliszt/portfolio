@@ -625,7 +625,12 @@ export function LaundromatScene(props: LaundromatSceneProps) {
         return "none";
       })();
       const readout = (() => {
-        if (goldenWash === "running") return copy.tip.goldenReadout;
+        const isTimerRunning =
+          status.kind === "running" ||
+          (status.kind === "occupied" && status.phase === "running");
+        if (goldenWash === "running" && !isTimerRunning) {
+          return copy.tip.goldenReadout;
+        }
         switch (status.kind) {
           case "running":
             return formatRemainingTime(status.remainingMs);
@@ -705,6 +710,10 @@ export function LaundromatScene(props: LaundromatSceneProps) {
     weather,
     toyBox: toyBox.view,
     coinMachine: tip?.machine ?? { kind: "idle" },
+    coinMachineScreen:
+      (tip?.machine.kind ?? "idle") === "idle"
+        ? copy.tip.machineScreenIdle
+        : copy.tip.machineScreenThanks,
     tipJar: {
       coinCount: tip?.jar?.length ?? 0,
     },

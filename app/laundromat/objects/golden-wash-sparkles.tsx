@@ -21,7 +21,7 @@ type GoldenWashSparklesProps = {
   animated: boolean;
 };
 
-/** Draw four-point stars in and around a washer door of `radius` at `center`, twinkling in turn when `animated` and holding still otherwise. */
+/** Draw four-point stars in and around a machine door of `radius` at `center`, twinkling in turn when `animated` and holding still otherwise. */
 export function GoldenWashSparkles(props: GoldenWashSparklesProps) {
   return (
     <g pointerEvents="none" fill={METAL_TONES.brass.light}>

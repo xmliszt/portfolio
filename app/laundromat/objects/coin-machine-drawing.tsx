@@ -1,12 +1,15 @@
 import type { LaidOutObject } from "@/lib/laundromat/build-scene-layout";
 import { getFacePlane } from "@/lib/laundromat/get-face-plane";
 import type { IsoProjection } from "@/lib/laundromat/project-iso-point";
+import { fitScreenFontSize } from "@/lib/laundromat/tip/fit-screen-font-size";
 import { TIP_COINS_CENTS } from "@/lib/laundromat/tip/tip-amounts";
 import type { CoinMachinePhase } from "@/lib/laundromat/tip/tip-token";
 
 import { CoinMachineToken } from "./coin-machine-token";
 import { IsoBox } from "./iso-box";
 import { partStroke } from "./part-stroke";
+
+const SCREEN_FONT_SIZE = 5.5;
 
 const WALL_PLATE = { margin: 0.06, depth: 0.04 };
 const TRAY = { height: 0.26, lip: 0.1, inset: 0.14 };
@@ -18,6 +21,7 @@ type CoinMachineDrawingProps = {
   projection: IsoProjection;
   highlighted: boolean;
   phase: CoinMachinePhase;
+  screenText: string;
 };
 
 export function CoinMachineDrawing(props: CoinMachineDrawingProps) {
@@ -90,9 +94,13 @@ export function CoinMachineDrawing(props: CoinMachineDrawingProps) {
           textAnchor="middle"
           dominantBaseline="middle"
           className="fill-[var(--lm-accent)] stroke-none font-[family-name:var(--lm-font-mono)]"
-          fontSize={5.5}
+          fontSize={fitScreenFontSize({
+            text: props.screenText,
+            width: screen.width - 3,
+            maxFontSize: SCREEN_FONT_SIZE,
+          })}
         >
-          {props.phase.kind === "idle" ? "TIPS" : "THANKS"}
+          {props.screenText}
         </text>
         <rect
           {...slot}

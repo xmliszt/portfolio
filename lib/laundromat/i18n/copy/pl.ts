@@ -681,6 +681,8 @@ export const pl = {
   tip: {
     machineLabel: "Automat na monety, zostaw napiwek",
     machineTooltip: "zostaw napiwek",
+    machineScreenIdle: "NAPIWEK",
+    machineScreenThanks: "DZIĘKI",
     jarLoadingLabel: "Słoik na napiwki",
     jarLoadingTooltip: "słoik na napiwki",
     jarLabel: (o: { count: number }) =>
@@ -739,8 +741,6 @@ export const pl = {
     goldenReadout: "ZŁOTO",
     viewCoin: (o: { number: number }) => `Obejrzyj żeton nr ${o.number}`,
     turnCoin: "Odwróć monetę",
-    turnHint: "przeciągnij, żeby obrócić",
-    flip: "odwróć",
     coinNumberCaption: "nr",
     coinBackNote: "dziękuję",
     coinRim: "dziękuję",

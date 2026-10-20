@@ -1,7 +1,11 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
 
-import { getJarCoinPile, MAX_PILE_COINS } from "./get-jar-coin-pile";
+import {
+  getJarCoinPile,
+  MAX_PILE_COINS,
+  MAX_PILE_RADIUS,
+} from "./get-jar-coin-pile";
 
 test("lays one coin per tip up to the cap, inside the jar, bottom layer first", () => {
   assert.equal(getJarCoinPile(0).length, 0);
@@ -9,7 +13,10 @@ test("lays one coin per tip up to the cap, inside the jar, bottom layer first", 
   const full = getJarCoinPile(500);
   assert.equal(full.length, MAX_PILE_COINS);
   for (const coin of full) {
-    assert.ok(Math.hypot(coin.u, coin.v) <= 0.8, JSON.stringify(coin));
+    assert.ok(
+      Math.hypot(coin.u, coin.v) <= MAX_PILE_RADIUS,
+      JSON.stringify(coin)
+    );
   }
   assert.deepEqual(
     full.map(({ layer }) => layer),

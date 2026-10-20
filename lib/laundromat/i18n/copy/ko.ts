@@ -688,6 +688,8 @@ export const ko = {
   tip: {
     machineLabel: "코인 머신, 팁 남기기",
     machineTooltip: "팁 남기기",
+    machineScreenIdle: "팁",
+    machineScreenThanks: "감사",
     jarLoadingLabel: "팁 병",
     jarLoadingTooltip: "팁 병",
     jarLabel: (o: { count: number }) => `팁 병, 지금까지 팁 ${o.count}개`,
@@ -744,8 +746,6 @@ export const ko = {
     goldenReadout: "황금",
     viewCoin: (o: { number: number }) => `토큰 No. ${o.number} 보기`,
     turnCoin: "동전 뒤집기",
-    turnHint: "드래그해서 돌리기",
-    flip: "뒤집기",
     coinNumberCaption: "No.",
     coinBackNote: "고마워요",
     coinRim: "고마워요",

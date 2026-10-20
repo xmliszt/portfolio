@@ -661,6 +661,8 @@ export const zhHant = {
   tip: {
     machineLabel: "投幣機，留下小費",
     machineTooltip: "留下小費",
+    machineScreenIdle: "小費",
+    machineScreenThanks: "謝謝",
     jarLoadingLabel: "小費罐",
     jarLoadingTooltip: "小費罐",
     jarLabel: (o: { count: number }) => `小費罐，目前有 ${o.count} 筆小費`,
@@ -717,8 +719,6 @@ export const zhHant = {
     goldenReadout: "金",
     viewCoin: (o: { number: number }) => `查看代幣 No. ${o.number}`,
     turnCoin: "翻轉硬幣",
-    turnHint: "拖曳來轉動",
-    flip: "翻面",
     coinNumberCaption: "No.",
     coinBackNote: "謝謝",
     coinRim: "謝謝你",

@@ -28,14 +28,18 @@ const SYSTEM_FONT =
 
 const { tokens } = sceneConfig;
 
-// Stripe.js must load once per page, and only when someone opens the checkout.
-let stripePromise: ReturnType<typeof loadStripe> | undefined;
+// Stripe.js must load once per page and language, and only when someone opens the checkout.
+const stripeByLocale: {
+  [locale: string]: ReturnType<typeof loadStripe> | undefined;
+} = {};
 
 function getStripe(locale: LaundromatLocale) {
-  stripePromise ??= loadStripe(PUBLISHABLE_KEY, {
-    locale: STRIPE_LOCALES[locale],
-  });
-  return stripePromise;
+  const stripeLocale = STRIPE_LOCALES[locale];
+  const stripe =
+    stripeByLocale[stripeLocale] ??
+    loadStripe(PUBLISHABLE_KEY, { locale: stripeLocale });
+  stripeByLocale[stripeLocale] = stripe;
+  return stripe;
 }
 
 const APPEARANCE: Appearance = {

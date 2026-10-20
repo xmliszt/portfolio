@@ -19,7 +19,7 @@ type TokenHintProps = {
   onCancel: () => void;
 };
 
-/** Show, while `held`, a note at the bottom of the room that the token is in hand and a washer will take it, with a key that calls `onCancel`. */
+/** Show, while `held`, a note at the bottom of the room that the token is in hand and a washer or dryer will take it, with a key that calls `onCancel`. */
 export function TokenHint(props: TokenHintProps) {
   const { copy } = useLaundromatCopy();
   const offscreen = props.reducedMotion

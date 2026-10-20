@@ -662,6 +662,8 @@ export const zhHans = {
   tip: {
     machineLabel: "投币机，留下小费",
     machineTooltip: "留下小费",
+    machineScreenIdle: "小费",
+    machineScreenThanks: "谢谢",
     jarLoadingLabel: "小费罐",
     jarLoadingTooltip: "小费罐",
     jarLabel: (o: { count: number }) => `小费罐，目前有 ${o.count} 笔小费`,
@@ -718,8 +720,6 @@ export const zhHans = {
     goldenReadout: "金",
     viewCoin: (o: { number: number }) => `查看代币 No. ${o.number}`,
     turnCoin: "翻转硬币",
-    turnHint: "拖动来转动",
-    flip: "翻面",
     coinNumberCaption: "No.",
     coinBackNote: "谢谢",
     coinRim: "谢谢你",
