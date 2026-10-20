@@ -391,7 +391,7 @@ export const vi = {
     updates: {
       "tip-coin-machine": {
         title: "để lại tiền tip ở máy xu",
-        body: "Máy xu cạnh quầy nhận những khoản tip nhỏ. Đồng xu của bạn rơi vào hũ và máy in cho bạn một token. Thả nó vào máy giặt hoặc máy sấy và máy sẽ hóa vàng cho mọi người trong phòng.",
+        body: "Máy xu cạnh quầy nhận những khoản tip nhỏ. Đồng xu của bạn rơi vào hũ và máy in cho bạn một token. Thả nó vào máy giặt hoặc máy sấy để mở tiệc giặt hoặc tiệc sấy cho mọi người trong phòng cùng xem.",
       },
       "instant-camera": {
         title: "chụp ảnh căn phòng",
@@ -746,7 +746,7 @@ export const vi = {
     pocketHeading: "token của bạn",
     dropInMachine: "thả vào một máy",
     dropInMachineHint:
-      "Thả nó vào máy giặt hoặc máy sấy và máy sẽ hóa vàng cho mọi người ở đây. Mỗi token chỉ dùng được một lần.",
+      "Thả nó vào máy giặt hoặc máy sấy để mở tiệc giặt hoặc tiệc sấy cho mọi người ở đây cùng xem. Mỗi token chỉ dùng được một lần.",
     usedOn: (o: { date: string }) => `đã dùng trong máy · ${o.date}`,
     holdHint: "chạm vào máy giặt hoặc máy sấy",
     viewCoin: (o: { number: number }) => `Xem token số ${o.number}`,

@@ -362,7 +362,7 @@ export const zhHans = {
     updates: {
       "tip-coin-machine": {
         title: "可以在投币机留下小费",
-        body: "柜台旁的投币机可以留下小费。你的硬币会落进罐子，机器会为你打印一枚代币。把它投进洗衣机或烘干机，机器就会为房间里的每个人变成金色。",
+        body: "柜台旁的投币机可以留下小费。你的硬币会落进罐子，机器会为你打印一枚代币。把它投进洗衣机或烘干机，来场洗衣派对或烘干派对，房间里的每个人都能看见。",
       },
       "instant-camera": {
         title: "给房间拍张照",
@@ -715,7 +715,7 @@ export const zhHans = {
     pocketHeading: "你的代币",
     dropInMachine: "投进一台机器",
     dropInMachineHint:
-      "把它投进洗衣机或烘干机，机器就会为这里的每个人变成金色。每枚代币只能用一次。",
+      "把它投进洗衣机或烘干机，来场洗衣派对或烘干派对，这里的每个人都能看见。每枚代币只能用一次。",
     usedOn: (o: { date: string }) => `已在机器中使用 · ${o.date}`,
     holdHint: "点一台洗衣机或烘干机",
     viewCoin: (o: { number: number }) => `查看代币 No. ${o.number}`,

@@ -363,7 +363,7 @@ export const tr = {
     updates: {
       "tip-coin-machine": {
         title: "bozuk para makinesine bahşiş bırakın",
-        body: "Tezgâhın yanındaki bozuk para makinesi küçük bahşişler alıyor. Paran kavanoza düşüyor ve makine sana bir jeton basıyor. Onu bir çamaşır ya da kurutma makinesine at, odadaki herkes için altın rengine dönsün.",
+        body: "Tezgâhın yanındaki bozuk para makinesi küçük bahşişler alıyor. Paran kavanoza düşüyor ve makine sana bir jeton basıyor. Onu bir çamaşır ya da kurutma makinesine at, odadaki herkesin görebileceği bir yıkama şenliği ya da kurutma şenliği olsun.",
       },
       "instant-camera": {
         title: "odanın fotoğrafını çek",
@@ -712,7 +712,7 @@ export const tr = {
     pocketHeading: "jetonların",
     dropInMachine: "bir makineye at",
     dropInMachineHint:
-      "Onu bir çamaşır ya da kurutma makinesine at, buradaki herkes için altın rengine dönsün. Her jeton bir kez çalışır.",
+      "Onu bir çamaşır ya da kurutma makinesine at, herkesin görebileceği bir yıkama şenliği ya da kurutma şenliği olsun. Her jeton bir kez çalışır.",
     usedOn: (o: { date: string }) => `makinede kullanıldı · ${o.date}`,
     holdHint: "bir çamaşır ya da kurutma makinesine dokun",
     viewCoin: (o: { number: number }) => `${o.number} numaralı jetona bak`,

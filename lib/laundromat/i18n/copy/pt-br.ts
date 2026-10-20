@@ -399,7 +399,7 @@ export const ptBR = {
     updates: {
       "tip-coin-machine": {
         title: "deixe uma gorjeta na máquina de moedas",
-        body: "A máquina de moedas perto do balcão aceita pequenas gorjetas. Sua moeda cai no pote e a máquina imprime uma ficha para você. Coloque-a numa lavadora ou secadora e ela fica dourada para todos na sala.",
+        body: "A máquina de moedas perto do balcão aceita pequenas gorjetas. Sua moeda cai no pote e a máquina imprime uma ficha para você. Coloque-a numa lavadora ou secadora para uma lavagem em festa ou uma secagem em festa que todos na sala possam ver.",
       },
       "instant-camera": {
         title: "tire uma foto do lugar",
@@ -765,7 +765,7 @@ export const ptBR = {
     pocketHeading: "suas fichas",
     dropInMachine: "coloque numa máquina",
     dropInMachineHint:
-      "Coloque-a numa lavadora ou secadora e ela fica dourada para todos aqui. Cada ficha vale uma vez.",
+      "Coloque-a numa lavadora ou secadora para uma lavagem em festa ou uma secagem em festa que todos aqui possam ver. Cada ficha vale uma vez.",
     usedOn: (o: { date: string }) => `usada numa máquina · ${o.date}`,
     holdHint: "toque numa lavadora ou secadora",
     viewCoin: (o: { number: number }) => `Ver a ficha nº ${o.number}`,

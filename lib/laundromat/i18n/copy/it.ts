@@ -407,7 +407,7 @@ export const it = {
     updates: {
       "tip-coin-machine": {
         title: "lascia una mancia alla macchina a gettoni",
-        body: "La macchina a gettoni vicino al bancone accetta piccole mance. La tua moneta cade nel barattolo e la macchina ti stampa un gettone. Infilalo in una lavatrice o in un'asciugatrice e diventa dorata per tutti nella stanza.",
+        body: "La macchina a gettoni vicino al bancone accetta piccole mance. La tua moneta cade nel barattolo e la macchina ti stampa un gettone. Infilalo in una lavatrice o in un'asciugatrice per un lavaggio in festa o un'asciugatura in festa che tutti nella stanza possono vedere.",
       },
       "instant-camera": {
         title: "scatta una foto della stanza",
@@ -772,7 +772,7 @@ export const it = {
     pocketHeading: "i tuoi gettoni",
     dropInMachine: "infilalo in una macchina",
     dropInMachineHint:
-      "Infilalo in una lavatrice o in un'asciugatrice e la macchina diventa dorata per tutti qui. Ogni gettone vale una volta sola.",
+      "Infilalo in una lavatrice o in un'asciugatrice per un lavaggio in festa o un'asciugatura in festa che tutti qui possono vedere. Ogni gettone vale una volta sola.",
     usedOn: (o: { date: string }) => `usato in una macchina · ${o.date}`,
     holdHint: "tocca una lavatrice o un'asciugatrice",
     viewCoin: (o: { number: number }) => `Guarda il gettone n. ${o.number}`,

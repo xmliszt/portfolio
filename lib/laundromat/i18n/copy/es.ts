@@ -400,7 +400,7 @@ export const es = {
     updates: {
       "tip-coin-machine": {
         title: "deja una propina en la máquina de monedas",
-        body: "La máquina de monedas junto al mostrador acepta pequeñas propinas. Tu moneda cae en el frasco y la máquina te imprime una ficha. Échala en una lavadora o secadora y se vuelve dorada para todos en la sala.",
+        body: "La máquina de monedas junto al mostrador acepta pequeñas propinas. Tu moneda cae en el frasco y la máquina te imprime una ficha. Échala en una lavadora o secadora para un lavado de fiesta o un secado de fiesta que todos en la sala puedan ver.",
       },
       "instant-camera": {
         title: "haz una foto del lugar",
@@ -769,7 +769,7 @@ export const es = {
     pocketHeading: "tus fichas",
     dropInMachine: "échala en una máquina",
     dropInMachineHint:
-      "Échala en una lavadora o secadora y se vuelve dorada para todos aquí. Cada ficha sirve una vez.",
+      "Échala en una lavadora o secadora para un lavado de fiesta o un secado de fiesta que todos aquí puedan ver. Cada ficha sirve una vez.",
     usedOn: (o: { date: string }) => `usada en una máquina · ${o.date}`,
     holdHint: "toca una lavadora o secadora",
     viewCoin: (o: { number: number }) => `Mirar la ficha n.º ${o.number}`,

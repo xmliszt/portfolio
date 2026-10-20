@@ -403,7 +403,7 @@ export const id = {
     updates: {
       "tip-coin-machine": {
         title: "beri tip di mesin koin",
-        body: "Mesin koin di dekat meja menerima tip kecil. Koinmu jatuh ke dalam toples dan mesin mencetak token untukmu. Masukkan ke mesin cuci atau pengering dan mesinnya berubah emas bagi semua orang di ruangan.",
+        body: "Mesin koin di dekat meja menerima tip kecil. Koinmu jatuh ke dalam toples dan mesin mencetak token untukmu. Masukkan ke mesin cuci atau pengering untuk pesta cuci atau pesta pengeringan yang bisa dilihat semua orang di ruangan.",
       },
       "instant-camera": {
         title: "memotret ruangan",
@@ -766,7 +766,7 @@ export const id = {
     pocketHeading: "tokenmu",
     dropInMachine: "masukkan ke mesin",
     dropInMachineHint:
-      "Masukkan ke mesin cuci atau pengering dan mesinnya berubah emas bagi semua orang di sini. Tiap token hanya bisa dipakai sekali.",
+      "Masukkan ke mesin cuci atau pengering untuk pesta cuci atau pesta pengeringan yang bisa dilihat semua orang di sini. Tiap token hanya bisa dipakai sekali.",
     usedOn: (o: { date: string }) => `dipakai di mesin · ${o.date}`,
     holdHint: "ketuk mesin cuci atau pengering",
     viewCoin: (o: { number: number }) => `Lihat token no. ${o.number}`,

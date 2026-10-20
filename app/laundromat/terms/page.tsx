@@ -37,9 +37,10 @@ export default function LaundromatTermsPage() {
 
       <LegalSection heading="thank-you tokens">
         <p>
-          A tip gets you a digital thank-you token: a collectible coin with
-          cosmetic effects on the site, such as a golden wash in a washer that
-          others in the room can see.
+          A tip gets you a digital thank-you token: a collectible coin you can
+          use once for a cosmetic &ldquo;party wash&rdquo; in a washer or
+          &ldquo;party dry&rdquo; in a dryer, with a glowing door and floating
+          charms that everyone in the room can see during the cycle.
         </p>
         <ul>
           <li>Tokens have no cash value.</li>
