@@ -14,7 +14,7 @@ const SUPABASE_CLIENT_PRESENCE_LIMIT = 5;
 const TRACK_LIMIT_WITH_SPARE = SUPABASE_CLIENT_PRESENCE_LIMIT - 1;
 const TRACK_WINDOW_MS = 30_000;
 
-/** Return a room source on a Supabase Realtime channel: presence for which tabs are here and what they are doing, sent through a presence tracker limited to `TRACK_LIMIT_WITH_SPARE` per `TRACK_WINDOW_MS` with one kept for a change to `writingSince` or a new golden charge, and broadcast for live notebook drafts and just-saved entries cut to `maxDraftChars`, and for clock readings stamped with when they arrived. */
+/** Return a room source on a Supabase Realtime channel: presence for which tabs are here and what they are doing, sent through a presence tracker limited to `TRACK_LIMIT_WITH_SPARE` per `TRACK_WINDOW_MS` with one kept for a change to `writingSince`, and broadcast for live notebook drafts and just-saved entries cut to `maxDraftChars`, and for clock readings stamped with when they arrived. */
 export function createSupabaseRoomSource(options: {
   url: string;
   anonKey: string;
@@ -55,9 +55,7 @@ export function createSupabaseRoomSource(options: {
           channel.track(presence).then((status) => status === "ok"),
         isUrgent: ({ presence, delivered }) =>
           (presence.writingSince === undefined) !==
-            (delivered?.writingSince === undefined) ||
-          (presence.goldenCharges?.length ?? 0) >
-            (delivered?.goldenCharges?.length ?? 0),
+          (delivered?.writingSince === undefined),
         onUrgentReadyChange,
       });
       channel

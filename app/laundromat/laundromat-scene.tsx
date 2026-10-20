@@ -52,6 +52,7 @@ import { getClockOffsetMs } from "@/lib/laundromat/realtime/get-clock-offset-ms"
 import { getGoldenCharges } from "@/lib/laundromat/realtime/get-golden-charges";
 import { getNotebookLock } from "@/lib/laundromat/realtime/get-notebook-lock";
 import { getPeopleHere } from "@/lib/laundromat/realtime/get-people-here";
+import { MAX_GOLDEN_CHARGES } from "@/lib/laundromat/realtime/max-golden-charges";
 import type {
   DraftContent,
   RemoteEntry,
@@ -115,6 +116,7 @@ import {
 } from "./weather-panel-dialog";
 
 const TIP_SESSION_PARAM = "tip_session";
+const CHARGE_TICK_MS = 15_000;
 const SCENE_UNIT_PX = 40;
 const TOOLTIP_DELAY_MS = 300;
 const TOUCH_TOOLTIP_HOLD_MS = 1500;
@@ -398,10 +400,12 @@ export function LaundromatScene(props: LaundromatSceneProps) {
       ...(ownGoldenCharges === undefined || ownGoldenCharges.length === 0
         ? {}
         : {
-            goldenCharges: ownGoldenCharges.map(({ machineId, startedAt }) => ({
-              machineId,
-              startedAt,
-            })),
+            goldenCharges: ownGoldenCharges
+              .slice(-MAX_GOLDEN_CHARGES)
+              .map(({ machineId, startedAt }) => ({
+                machineId,
+                startedAt,
+              })),
           }),
     };
   }, [
@@ -477,15 +481,18 @@ export function LaundromatScene(props: LaundromatSceneProps) {
     setClockOffsetsMs(room.clockOffsetsMs);
   }, [setClockOffsetsMs, room.clockOffsetsMs]);
   const roomNow = useTickingNow({
-    active:
-      room.peers.some(
-        ({ load, writingSince, goldenCharges }) =>
-          load !== undefined ||
-          writingSince !== undefined ||
-          goldenCharges !== undefined
-      ) || (tip?.goldenCharges.length ?? 0) > 0,
+    active: room.peers.some(
+      ({ load, writingSince, goldenCharges }) =>
+        load !== undefined ||
+        writingSince !== undefined ||
+        goldenCharges !== undefined
+    ),
   });
-  const now = Math.max(laundry.now, roomNow);
+  const chargeNow = useTickingNow({
+    active: (tip?.goldenCharges.length ?? 0) > 0,
+    intervalMs: CHARGE_TICK_MS,
+  });
+  const now = Math.max(laundry.now, roomNow, chargeNow);
   const goldenCharges = getGoldenCharges({
     own: tip?.goldenCharges ?? [],
     peers: room.peers,
@@ -975,25 +982,25 @@ export function LaundromatScene(props: LaundromatSceneProps) {
     window.history.pushState(null, "", toFocusUrl(params));
   }
 
-  const remoteGoldenWashKey = goldenCharges
+  const remoteGoldenChargeKey = goldenCharges
     .filter(({ isOwn }) => !isOwn)
     .map(({ machineId, startedAt }) => `${machineId}:${startedAt}`)
     .join(",");
-  const seenRemoteGoldenWashKeyRef = useRef<string>(undefined);
+  const seenRemoteGoldenChargeKeyRef = useRef<string>(undefined);
   useEffect(() => {
     if (!isRoomSynced) {
-      seenRemoteGoldenWashKeyRef.current = undefined;
+      seenRemoteGoldenChargeKeyRef.current = undefined;
       return;
     }
-    const seen = seenRemoteGoldenWashKeyRef.current;
-    seenRemoteGoldenWashKeyRef.current = remoteGoldenWashKey;
+    const seen = seenRemoteGoldenChargeKeyRef.current;
+    seenRemoteGoldenChargeKeyRef.current = remoteGoldenChargeKey;
     if (seen === undefined) return;
     const seenWashes = seen.split(",");
-    const hasNewWash = remoteGoldenWashKey
+    const hasNewCharge = remoteGoldenChargeKey
       .split(",")
       .some((wash) => wash !== "" && !seenWashes.includes(wash));
-    if (hasNewWash) sound?.play("tip-chime");
-  }, [remoteGoldenWashKey, isRoomSynced, sound]);
+    if (hasNewCharge) sound?.play("tip-chime");
+  }, [remoteGoldenChargeKey, isRoomSynced, sound]);
 
   const applyChargeChanges = tip?.applyChargeChanges;
   const ownRunningMachineKey = Object.values(machineViews)

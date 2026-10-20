@@ -74,6 +74,17 @@ function readStoredCharges() {
   return readStoredList({ key: GOLDEN_CHARGES_KEY, isItem: isGoldenCharge });
 }
 
+function readChargesFromStorage() {
+  try {
+    const stored: unknown = JSON.parse(
+      window.localStorage.getItem(GOLDEN_CHARGES_KEY) ?? "[]"
+    );
+    return Array.isArray(stored) ? stored.filter(isGoldenCharge) : [];
+  } catch {
+    return undefined;
+  }
+}
+
 function readPendingDrops() {
   return readStoredList({ key: PENDING_DROPS_KEY, isItem: isPendingDrop });
 }
@@ -329,9 +340,11 @@ export function TipProvider(props: TipProviderProps) {
 
   const updateCharges = useCallback(
     (change: (charges: OwnGoldenCharge[]) => OwnGoldenCharge[]) => {
-      const next = change(readStoredCharges());
-      writeStoredList({ key: GOLDEN_CHARGES_KEY, items: next });
-      setGoldenCharges(next);
+      setGoldenCharges((current) => {
+        const next = change(readChargesFromStorage() ?? current);
+        writeStoredList({ key: GOLDEN_CHARGES_KEY, items: next });
+        return next;
+      });
     },
     []
   );

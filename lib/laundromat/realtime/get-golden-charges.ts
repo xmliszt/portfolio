@@ -20,7 +20,7 @@ export function getGoldenCharges(options: {
     }));
   });
   return [
-    ...options.own.map((wash) => ({ ...wash, isOwn: true })),
+    ...options.own.map((charge) => ({ ...charge, isOwn: true })),
     ...remote,
   ].filter(({ startedAt }) => options.now < startedAt + GOLDEN_CHARGE_MS.max);
 }

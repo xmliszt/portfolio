@@ -1,5 +1,6 @@
 import { GOLDEN_CHARGE_MS } from "@/lib/laundromat/tip/golden-charge-ms";
 
+import { MAX_GOLDEN_CHARGES } from "./max-golden-charges";
 import { MAX_WRITING_MS } from "./max-writing-ms";
 import { parseRoomRegion } from "./parse-room-region";
 import type {
@@ -14,7 +15,6 @@ const MAX_CYCLE_MS = 2 * 60 * 60_000;
 const MAX_MACHINE_ID_LENGTH = 40;
 const MAX_FLASK_PORTIONS = 20;
 const MAX_ID_LENGTH = 64;
-const MAX_GOLDEN_CHARGES = 4;
 
 function isObject(value: unknown): value is object {
   return typeof value === "object" && value !== null;
@@ -118,7 +118,7 @@ function parseGoldenCharge(options: {
   return { machineId: value.machineId, startedAt: value.startedAt };
 }
 
-/** Return the presence another tab tracked on the room channel, or `undefined` when it is not one; unknown or malformed fields are dropped, and so is a `flask` changed more than `MAX_CLOCK_SKEW_MS` after `now` or brewing after it changed, a `writingSince` in the future or older than `MAX_WRITING_MS` by `now`, and any of the first `MAX_GOLDEN_CHARGES` `goldenCharges` that starts in the future or ended before `now`, each beyond `MAX_CLOCK_SKEW_MS`. */
+/** Return the presence another tab tracked on the room channel, or `undefined` when it is not one; unknown or malformed fields are dropped, and so is a `flask` changed more than `MAX_CLOCK_SKEW_MS` after `now` or brewing after it changed, a `writingSince` in the future or older than `MAX_WRITING_MS` by `now`, and any of the last `MAX_GOLDEN_CHARGES` `goldenCharges` that starts in the future or ended before `now`, each beyond `MAX_CLOCK_SKEW_MS`. */
 export function parseRoomPresence(options: {
   value: unknown;
   now: number;
@@ -153,7 +153,7 @@ export function parseRoomPresence(options: {
   const goldenCharges =
     "goldenCharges" in value && Array.isArray(value.goldenCharges)
       ? value.goldenCharges
-          .slice(0, MAX_GOLDEN_CHARGES)
+          .slice(-MAX_GOLDEN_CHARGES)
           .flatMap((charge: unknown) => {
             const parsed = parseGoldenCharge({ value: charge, now });
             return parsed === undefined ? [] : [parsed];

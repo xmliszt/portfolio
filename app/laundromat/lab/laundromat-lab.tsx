@@ -348,7 +348,7 @@ function buildFakePeers(options: {
   othersWashing: number;
   othersDrying: number;
   someoneWriting: boolean;
-  goldenWashStartedAt: number | undefined;
+  goldenChargeStartedAt: number | undefined;
   now: number;
 }) {
   const loads = [
@@ -379,23 +379,26 @@ function buildFakePeers(options: {
         },
       ]
     : [];
-  const goldenWashers: RoomPresence[] =
-    options.goldenWashStartedAt === undefined
+  const goldenChargers: RoomPresence[] =
+    options.goldenChargeStartedAt === undefined
       ? []
       : [
           {
-            sessionId: FAKE_GOLDEN_WASHER_ID,
-            visitorId: FAKE_GOLDEN_WASHER_ID,
+            sessionId: FAKE_GOLDEN_CHARGER_ID,
+            visitorId: FAKE_GOLDEN_CHARGER_ID,
             goldenCharges: [
-              { machineId: "washer-3", startedAt: options.goldenWashStartedAt },
+              {
+                machineId: "washer-3",
+                startedAt: options.goldenChargeStartedAt,
+              },
             ],
           },
         ];
-  return [...peers, ...writers, ...goldenWashers];
+  return [...peers, ...writers, ...goldenChargers];
 }
 
 const FAKE_WRITER_ID = "fake-writer";
-const FAKE_GOLDEN_WASHER_ID = "fake-golden-washer";
+const FAKE_GOLDEN_CHARGER_ID = "fake-golden-charger";
 
 const exportDials = {
   copyConfig: { type: "action", label: "copy config json" },
@@ -485,15 +488,15 @@ export default function LaundromatLab() {
     someoneGoldenCharge,
     writerDraft,
   } = realtime;
-  const [goldenWashStartedAt, setGoldenWashStartedAt] = useState<number>();
+  const [goldenChargeStartedAt, setGoldenChargeStartedAt] = useState<number>();
   useEffect(() => {
     if (!someoneGoldenCharge) {
-      setGoldenWashStartedAt(undefined);
+      setGoldenChargeStartedAt(undefined);
       return;
     }
-    setGoldenWashStartedAt(Date.now());
+    setGoldenChargeStartedAt(Date.now());
     const timer = window.setInterval(
-      () => setGoldenWashStartedAt(Date.now()),
+      () => setGoldenChargeStartedAt(Date.now()),
       GOLDEN_CHARGE_MS.max
     );
     return () => window.clearInterval(timer);
@@ -504,7 +507,7 @@ export default function LaundromatLab() {
         othersWashing,
         othersDrying,
         someoneWriting,
-        goldenWashStartedAt,
+        goldenChargeStartedAt,
         now: Date.now(),
       })
     );
@@ -513,7 +516,7 @@ export default function LaundromatLab() {
     othersWashing,
     othersDrying,
     someoneWriting,
-    goldenWashStartedAt,
+    goldenChargeStartedAt,
   ]);
   useEffect(() => {
     if (!someoneWriting) return;
