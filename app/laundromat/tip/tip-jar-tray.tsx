@@ -25,6 +25,8 @@ const COIN_SPRING = {
   bounce: 0.2,
 } as const;
 const DROP_IN_PX = 6;
+const GLINT_STAGGER_S = 0.7;
+const GLINT_CYCLE_S = 3.6;
 
 type TipJarTrayProps = {
   tip: TipState;
@@ -32,14 +34,23 @@ type TipJarTrayProps = {
   onClose: () => void;
 };
 
-/** Spread every coin in the tip jar on a tray, newest first, with this visitor's own coins in brass and shining, each opening its coin up close. */
+/** Spread every coin in the tip jar on a tray, newest first, with this visitor's own coins in brass, glinting while unspent, each opening its coin up close, and a hint to tap them under the tray while any is unspent. */
 export function TipJarTray(props: TipJarTrayProps) {
   const { copy } = useLaundromatCopy();
   const prefersReducedMotion = useReducedMotion() ?? false;
   const [viewingCode, setViewingCode] = useState<string>();
   const [lastViewedCode, setLastViewedCode] = useState<string>();
   const leaveCloseUp = useCallback(() => setViewingCode(undefined), []);
-  const coins = (props.tip.jar ?? []).toReversed();
+  const coins = (props.tip.jar ?? []).toReversed().map((coin) => ({
+    coin,
+    own: props.tip.tokens.find(
+      ({ number, createdAt }) =>
+        number === coin.number && createdAt === coin.createdAt
+    ),
+  }));
+  const unspentOwnNumbers = coins.flatMap(({ coin, own }) =>
+    own !== undefined && own.spentAt === undefined ? [coin.number] : []
+  );
   const viewing = props.tip.tokens.find(({ code }) => code === viewingCode);
   const { onClose } = props;
   const close = useCallback(() => {
@@ -71,11 +82,7 @@ export function TipJarTray(props: TipJarTrayProps) {
                 <CloseKey onClose={close} />
               </div>
               <ul className="m-0 grid list-none grid-cols-[repeat(auto-fill,minmax(40px,1fr))] justify-items-center gap-x-1.5 gap-y-2 rounded-[14px] bg-[linear-gradient(180deg,#0d0e0f,#141516)] p-3 shadow-[inset_0_2px_6px_rgb(0_0_0/0.85),0_1px_0_rgb(255_255_255/0.04)]">
-                {coins.map((coin, index) => {
-                  const own = props.tip.tokens.find(
-                    ({ number, createdAt }) =>
-                      number === coin.number && createdAt === coin.createdAt
-                  );
+                {coins.map(({ coin, own }, index) => {
                   const date = formatTipDate({
                     isoDate: coin.createdAt,
                     locale: copy.locale,
@@ -85,13 +92,21 @@ export function TipJarTray(props: TipJarTrayProps) {
                     date,
                     isOwn: own !== undefined,
                   });
+                  const glintIndex = unspentOwnNumbers.indexOf(coin.number);
                   const face = (
                     <TipCoin
                       metal={own === undefined ? "silver" : "brass"}
                       label={String(coin.number)}
                       sizePx={COIN_SIZE_PX}
-                      shine={own !== undefined}
-                      dim={own === undefined}
+                      glint={glintIndex !== -1}
+                      dim={glintIndex === -1}
+                      style={
+                        glintIndex === -1
+                          ? undefined
+                          : {
+                              "--glint-delay": `${(glintIndex * GLINT_STAGGER_S) % GLINT_CYCLE_S}s`,
+                            }
+                      }
                     />
                   );
                   return (
@@ -116,7 +131,11 @@ export function TipJarTray(props: TipJarTrayProps) {
                         <button
                           type="button"
                           aria-label={label}
-                          className="block cursor-zoom-in rounded-full outline-none focus-visible:shadow-[0_0_0_2px_#0d0e0f,0_0_0_3.5px_var(--lm-accent)]"
+                          className={cn(
+                            "block cursor-zoom-in rounded-full outline-none focus-visible:shadow-[0_0_0_2px_#0d0e0f,0_0_0_3.5px_var(--lm-accent)]",
+                            own.spentAt === undefined &&
+                              "shadow-[0_0_10px_2px_rgb(255_190_90/0.28)]"
+                          )}
                           autoFocus={own.code === lastViewedCode}
                           onClick={() => {
                             setViewingCode(own.code);
@@ -130,6 +149,16 @@ export function TipJarTray(props: TipJarTrayProps) {
                   );
                 })}
               </ul>
+              {unspentOwnNumbers.length > 0 && (
+                <p
+                  className={cn(
+                    SETTINGS_META_CLASS,
+                    "m-0 text-center normal-case opacity-60"
+                  )}
+                >
+                  {copy.tip.trayHint}
+                </p>
+              )}
             </div>
           ) : (
             <TipCoinCloseUp

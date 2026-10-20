@@ -130,6 +130,10 @@ const config = {
         sm: "calc(var(--radius) - 4px)",
       },
       keyframes: {
+        "coin-glint": {
+          "0%": { backgroundPosition: "130% 0" },
+          "30%, 100%": { backgroundPosition: "-30% 0" },
+        },
         "accordion-down": {
           from: { height: "0" },
           to: { height: "var(--radix-accordion-content-height)" },
@@ -310,6 +314,7 @@ const config = {
         },
       },
       animation: {
+        "coin-glint": "coin-glint 3.6s cubic-bezier(0.45, 0, 0.25, 1) infinite",
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
         wave: "wave 400ms 2 ease-out",

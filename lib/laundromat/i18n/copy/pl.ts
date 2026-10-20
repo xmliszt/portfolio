@@ -686,9 +686,9 @@ export const pl = {
     jarLoadingLabel: "Słoik na napiwki",
     jarLoadingTooltip: "słoik na napiwki",
     jarLabel: (o: { count: number }) =>
-      `Słoik na napiwki, na razie ${o.count} ${pluralize({ count: o.count, one: "napiwek", few: "napiwki", many: "napiwków" })}`,
+      `Słoik na napiwki, w środku ${o.count} ${pluralize({ count: o.count, one: "żeton", few: "żetony", many: "żetonów" })}`,
     jarTooltip: (o: { count: number }) =>
-      `na razie ${o.count} ${pluralize({ count: o.count, one: "napiwek", few: "napiwki", many: "napiwków" })}`,
+      `${o.count} ${pluralize({ count: o.count, one: "żeton", few: "żetony", many: "żetonów" })} w słoiku`,
     dialogLabel: "Automat na monety",
     close: "Zamknij",
     screen: {
@@ -705,7 +705,7 @@ export const pl = {
       misread: "sprawdź kod",
       offline: "spróbuj później",
     },
-    note: "dobrze, że jesteś",
+    note: "dziękuję za twoją sympatię",
     coinLabel: (o: { amount: string }) => `Napiwek ${o.amount}`,
     other: "inna kwota",
     otherLabel: "Inna kwota",
@@ -724,7 +724,7 @@ export const pl = {
     receiptKind: "żeton za napiwek",
     receiptNumber: (o: { number: string }) => `nr ${o.number}`,
     receiptCode: "kod żetonu",
-    receiptNote: "dziękuję za monetę",
+    receiptNote: "dziękuję za wsparcie",
     keepCode: "Zachowaj kod, żeby przenieść ten żeton na inne urządzenie.",
     copyLink: "kopiuj link",
     copied: "skopiowano",
@@ -746,7 +746,10 @@ export const pl = {
     coinRim: "dziękuję",
     trayHeading: "słoik na napiwki",
     traySummary: (o: { count: number }) =>
-      `${o.count} ${pluralize({ count: o.count, one: "napiwek", few: "napiwki", many: "napiwków" })} · twoje lśnią`,
+      `${o.count} ${pluralize({ count: o.count, one: "żeton", few: "żetony", many: "żetonów" })} w słoiku · twoje lśnią`,
+    trayHint: "dotknij swojego żetonu, żeby go użyć",
+    copyCode: "Kopiuj kod",
+    codeCopied: "Kod skopiowany",
     trayCoinLabel: (o: { number: number; date: string; isOwn: boolean }) =>
       `Moneta ${o.number}, ${o.date}${o.isOwn ? ", twoja, przyjrzyj się z bliska" : ""}`,
   },

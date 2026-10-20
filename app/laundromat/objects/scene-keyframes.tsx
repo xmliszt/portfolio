@@ -61,11 +61,20 @@ ${lampFlickerFrames}
   50% { opacity: 1; transform: scale(1) rotate(45deg); }
 }
 @keyframes lm-gold-in { from { opacity: 0; } }
-@keyframes lm-charm-float {
-  0% { opacity: 0; transform: translate(0, 0) scale(0.2); }
-  14% { opacity: 1; transform: translate(calc(var(--charm-drift) * 0.2), -10px) scale(1.2) rotate(var(--charm-tilt)); }
-  28% { transform: translate(calc(var(--charm-drift) * 0.35), -16px) scale(1) rotate(var(--charm-tilt)); }
-  100% { opacity: 0; transform: translate(var(--charm-drift), -56px) scale(0.85) rotate(calc(var(--charm-tilt) * -1)); }
+@keyframes lm-charm-across { to { transform: translateX(var(--charm-dx)); } }
+@keyframes lm-charm-arc {
+  0% { transform: translateY(0); animation-timing-function: cubic-bezier(0.2, 0.75, 0.4, 1); }
+  40% { transform: translateY(calc(var(--charm-rise) * -1)); animation-timing-function: cubic-bezier(0.55, 0, 0.85, 0.4); }
+  100% { transform: translateY(var(--charm-fall)); }
+}
+@keyframes lm-charm-pop {
+  0% { opacity: 0; transform: rotate(0deg) scale(0.2, 0.2); }
+  9% { opacity: 1; transform: rotate(calc(var(--charm-spin) * 0.15)) scale(1.35, 0.8); }
+  18% { transform: rotate(calc(var(--charm-spin) * 0.3)) scale(0.85, 1.2); }
+  28% { transform: rotate(calc(var(--charm-spin) * 0.45)) scale(1.08, 0.95); }
+  38% { transform: rotate(calc(var(--charm-spin) * 0.55)) scale(1); }
+  78% { opacity: 1; }
+  100% { opacity: 0; transform: rotate(var(--charm-spin)) scale(0.8); }
 }
 @keyframes lm-scan-drift { to { transform: translateY(var(--lm-scan-step)); } }
 @keyframes lm-flicker {

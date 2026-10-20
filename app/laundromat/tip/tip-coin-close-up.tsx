@@ -1,5 +1,7 @@
 "use client";
 
+import { useRef } from "react";
+
 import { useLaundromatCopy } from "@/app/laundromat/i18n/use-laundromat-copy";
 import {
   PRINTER_ICON_CLASS,
@@ -11,6 +13,7 @@ import type { TipToken } from "@/lib/laundromat/tip/tip-token";
 import { cn } from "@/lib/utils";
 
 import { CloseKey } from "./close-key";
+import { CopyCodeButton } from "./copy-code-button";
 import { TIP_HEADING_CLASS } from "./tip-classes";
 import { TipCoin } from "./tip-coin";
 import { TipCoinViewer } from "./tip-coin-viewer";
@@ -23,10 +26,11 @@ type TipCoinCloseUpProps = {
   onClose: () => void;
 };
 
-/** Show `token`'s coin up close under a heading with its number, a back key that calls `onBack`, a close key that calls `onClose`, and below it a key that picks the token up to drop in a machine, or when it was used if it is spent. */
+/** Show `token`'s coin up close under a heading with its number, a back key that calls `onBack`, a close key that calls `onClose`, the token code with a key that copies it, and below them a key that picks the token up to drop in a machine, or when it was used if it is spent. */
 export function TipCoinCloseUp(props: TipCoinCloseUpProps) {
   const { copy } = useLaundromatCopy();
   const tip = useTip();
+  const codeRef = useRef<HTMLElement>(null);
   return (
     <div className="flex flex-col gap-y-5">
       <div className="flex items-center justify-between gap-x-3">
@@ -45,7 +49,22 @@ export function TipCoinCloseUp(props: TipCoinCloseUpProps) {
         </h2>
         <CloseKey onClose={props.onClose} />
       </div>
-      <TipCoinViewer token={props.token} />
+      <div className="flex flex-col gap-y-2">
+        <TipCoinViewer token={props.token} />
+        <div className="flex items-center justify-center gap-x-2">
+          <code
+            ref={codeRef}
+            className="font-[family-name:var(--lm-font-mono)] text-[13px] leading-5 tracking-[0.06em] text-[var(--lm-ink-hi)] select-all"
+          >
+            {props.token.code}
+          </code>
+          <CopyCodeButton
+            code={props.token.code}
+            codeRef={codeRef}
+            tone="panel"
+          />
+        </div>
+      </div>
       {props.token.spentAt === undefined ? (
         <button
           type="button"

@@ -685,9 +685,9 @@ export const uk = {
     jarLoadingLabel: "Банка для чайових",
     jarLoadingTooltip: "банка для чайових",
     jarLabel: (o: { count: number }) =>
-      `Банка для чайових, поки ${o.count} ${pluralize({ count: o.count, one: "монета", few: "монети", many: "монет" })}`,
+      `Банка для чайових, усередині ${o.count} ${pluralize({ count: o.count, one: "жетон", few: "жетони", many: "жетонів" })}`,
     jarTooltip: (o: { count: number }) =>
-      `поки ${o.count} ${pluralize({ count: o.count, one: "монета", few: "монети", many: "монет" })}`,
+      `${o.count} ${pluralize({ count: o.count, one: "жетон", few: "жетони", many: "жетонів" })} у банці`,
     dialogLabel: "Монетний автомат",
     close: "Закрити",
     screen: {
@@ -704,7 +704,7 @@ export const uk = {
       misread: "перевірте код",
       offline: "спробуйте пізніше",
     },
-    note: "добре, що ви тут",
+    note: "дякую за вашу любов",
     coinLabel: (o: { amount: string }) => `Чайові ${o.amount}`,
     other: "інша сума",
     otherLabel: "Інша сума",
@@ -723,13 +723,13 @@ export const uk = {
     receiptKind: "жетон за чайові",
     receiptNumber: (o: { number: string }) => `№ ${o.number}`,
     receiptCode: "код жетона",
-    receiptNote: "дякую за монету",
+    receiptNote: "дякую за підтримку",
     keepCode: "Збережіть код, щоб перенести цей жетон на інший пристрій.",
     copyLink: "копіювати посилання",
     copied: "скопійовано",
     save: "зберегти",
     done: "Готово",
-    restore: "повернути",
+    restore: "відновити",
     back: "назад",
     pocketLabel: (o: { number: number }) => `жетон № ${o.number}`,
     pocketHeading: "ваші жетони",
@@ -745,7 +745,10 @@ export const uk = {
     coinRim: "дякую",
     trayHeading: "банка для чайових",
     traySummary: (o: { count: number }) =>
-      `${o.count} ${pluralize({ count: o.count, one: "монета", few: "монети", many: "монет" })} · ваші сяють`,
+      `${o.count} ${pluralize({ count: o.count, one: "жетон", few: "жетони", many: "жетонів" })} у банці · ваші сяють`,
+    trayHint: "торкніться свого жетона, щоб використати його",
+    copyCode: "Копіювати код",
+    codeCopied: "Код скопійовано",
     trayCoinLabel: (o: { number: number; date: string; isOwn: boolean }) =>
       `Монета ${o.number}, ${o.date}${o.isOwn ? ", ваша, роздивіться ближче" : ""}`,
   },

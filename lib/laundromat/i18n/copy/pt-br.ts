@@ -714,9 +714,9 @@ export const ptBR = {
     jarLoadingLabel: "Pote de gorjetas",
     jarLoadingTooltip: "pote de gorjetas",
     jarLabel: (o: { count: number }) =>
-      `Pote de gorjetas, ${o.count} ${o.count === 1 ? "gorjeta" : "gorjetas"} até agora`,
+      `Pote de gorjetas, ${o.count} ${o.count === 1 ? "ficha" : "fichas"} dentro`,
     jarTooltip: (o: { count: number }) =>
-      `${o.count} ${o.count === 1 ? "gorjeta" : "gorjetas"} até agora`,
+      `${o.count} ${o.count === 1 ? "ficha" : "fichas"} no pote`,
     dialogLabel: "Máquina de moedas",
     close: "Fechar",
     screen: {
@@ -733,7 +733,7 @@ export const ptBR = {
       misread: "confira o código",
       offline: "tente mais tarde",
     },
-    note: "que bom que você veio",
+    note: "obrigado pelo carinho",
     coinLabel: (o: { amount: string }) => `Gorjeta de ${o.amount}`,
     other: "outro valor",
     otherLabel: "Outro valor",
@@ -753,13 +753,13 @@ export const ptBR = {
     receiptKind: "ficha de gorjeta",
     receiptNumber: (o: { number: string }) => `nº ${o.number}`,
     receiptCode: "código da ficha",
-    receiptNote: "obrigado pela moeda",
+    receiptNote: "obrigado pelo apoio",
     keepCode: "Guarde o código para levar esta ficha para outro dispositivo.",
     copyLink: "copiar link",
     copied: "copiado",
     save: "salvar",
     done: "Pronto",
-    restore: "recuperar",
+    restore: "restaurar",
     back: "voltar",
     pocketLabel: (o: { number: number }) => `ficha nº ${o.number}`,
     pocketHeading: "suas fichas",
@@ -775,7 +775,10 @@ export const ptBR = {
     coinRim: "obrigado",
     trayHeading: "pote de gorjetas",
     traySummary: (o: { count: number }) =>
-      `${o.count} ${o.count === 1 ? "gorjeta" : "gorjetas"} · as suas brilham`,
+      `${o.count} ${o.count === 1 ? "ficha" : "fichas"} no pote · as suas brilham`,
+    trayHint: "toque na sua ficha para usar",
+    copyCode: "Copiar código",
+    codeCopied: "Código copiado",
     trayCoinLabel: (o: { number: number; date: string; isOwn: boolean }) =>
       `Moeda ${o.number}, ${o.date}${o.isOwn ? ", sua, olhe de perto" : ""}`,
   },

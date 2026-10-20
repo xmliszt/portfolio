@@ -15,7 +15,7 @@ const RELIEFS = {
   raise: { blur: 0.35, depth: 2.2 },
 };
 
-export type CoinSheen = "static" | "follow" | "track" | "none";
+export type CoinSheen = "static" | "follow" | "track" | "glint" | "none";
 
 type TipCoinBlankProps = {
   metal: TipCoinMetal;
@@ -37,7 +37,7 @@ type TipCoinBlankProps = {
   }) => React.ReactNode;
 };
 
-/** Draw one face of a struck metal coin: a reeded, brushed rim, a recessed field, `rimText` around the rim, and whatever `children` draws into a 100 × 100 SVG over the field, with lit filters for cut and raised lettering when `relief`; the sheen moves with the `--sheen-x` custom property when `follow`, easing after it, or `track`, at once, and the coin casts its edge and shadow below it when `raised`. */
+/** Draw one face of a struck metal coin: a reeded, brushed rim, a recessed field, `rimText` around the rim, and whatever `children` draws into a 100 × 100 SVG over the field, with lit filters for cut and raised lettering when `relief`; the sheen moves with the `--sheen-x` custom property when `follow`, easing after it, or `track`, at once, or sweeps across every few seconds from `--glint-delay` when `glint`, and the coin casts its edge and shadow below it when `raised`. */
 export function TipCoinBlank(props: TipCoinBlankProps) {
   const { ref, ...coin } = props;
   const id = useId().replaceAll(":", "");
@@ -185,7 +185,9 @@ export function TipCoinBlank(props: TipCoinBlankProps) {
               ? "bg-[linear-gradient(135deg,rgb(255_255_255/0.5),transparent_45%)]"
               : "bg-[linear-gradient(110deg,transparent_30%,rgb(255_255_255/0.9)_48%,transparent_66%)] bg-[length:260%_100%] [background-position:var(--sheen-x,120%)_0]",
             coin.sheen === "follow" &&
-              "transition-[background-position] duration-500 ease-out"
+              "transition-[background-position] duration-500 ease-out",
+            coin.sheen === "glint" &&
+              "animate-coin-glint [animation-delay:var(--glint-delay,0s)]"
           )}
         />
       )}

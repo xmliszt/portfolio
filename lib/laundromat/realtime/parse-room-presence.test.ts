@@ -193,3 +193,22 @@ test("keeps a golden charge within its lifetime and drops one that ended or is m
     );
   }
 });
+
+test("keeps a whole positive jarTop and drops any other", () => {
+  assert.deepEqual(
+    parseRoomPresence({
+      value: { sessionId: "s", visitorId: "v", jarTop: 7 },
+      now,
+    }),
+    { sessionId: "s", visitorId: "v", jarTop: 7 }
+  );
+  for (const jarTop of [0, -1, 2.5, "7", 1e9]) {
+    assert.deepEqual(
+      parseRoomPresence({
+        value: { sessionId: "s", visitorId: "v", jarTop },
+        now,
+      }),
+      { sessionId: "s", visitorId: "v" }
+    );
+  }
+});

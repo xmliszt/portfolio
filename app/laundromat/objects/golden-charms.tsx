@@ -1,16 +1,20 @@
 import { useEffect, useRef, useState } from "react";
 
-const CHARM_KINDS = ["heart", "clover", "sun", "smiley", "star"] as const;
-const DELAY_MS = { min: 2000, max: 4200 };
-const FLOAT_S = 2.6;
+import {
+  type CharmFlight,
+  type CharmKind,
+  planCharmBurst,
+} from "@/lib/laundromat/tip/plan-charm-burst";
+
+const BURST_GAP_MS = {
+  full: { min: 2200, max: 4000 },
+  lite: { min: 3500, max: 5500 },
+};
+const MAX_CHARMS = { full: 8, lite: 3 };
 const CHARM_SCALE = 2;
-const MAX_DRIFT_PX = 14;
-const MAX_TILT_DEG = 18;
 const OUTLINE = "var(--lm-recess)";
 
-type CharmKind = (typeof CHARM_KINDS)[number];
-
-type Charm = { id: number; kind: CharmKind; driftPx: number; tiltDeg: number };
+type Charm = CharmFlight & { id: number };
 
 type CharmShapeProps = { kind: CharmKind };
 
@@ -90,41 +94,40 @@ function CharmShape(props: CharmShapeProps) {
   }
 }
 
-type GoldenCharmsProps = { center: { x: number; y: number } };
+type GoldenCharmsProps = {
+  center: { x: number; y: number };
+  tier: "full" | "lite";
+};
 
-/** Pop a small heart, clover, sun, smiley or star out of `center` every few seconds while the tab is visible, each floating up and fading, at most two at a time. */
+/** Pop bursts of hearts, clovers, suns, smileys and stars out of `center` every few seconds while the tab is visible, each flying out on its own arc, squashing and stretching as it pops out, fewer and less often on the `lite` tier. */
 export function GoldenCharms(props: GoldenCharmsProps) {
   const [charms, setCharms] = useState<Charm[]>([]);
   const nextIdRef = useRef(0);
+  const { tier } = props;
 
   useEffect(() => {
     let timer: number | undefined;
-    function schedule() {
-      timer = window.setTimeout(
-        () => {
-          if (document.visibilityState === "visible") {
-            const id = nextIdRef.current;
-            nextIdRef.current = id + 1;
-            setCharms((current) => [
-              ...current.slice(-1),
-              {
-                id,
-                kind: CHARM_KINDS[
-                  Math.floor(Math.random() * CHARM_KINDS.length)
-                ],
-                driftPx: (Math.random() * 2 - 1) * MAX_DRIFT_PX,
-                tiltDeg: (Math.random() * 2 - 1) * MAX_TILT_DEG,
-              },
-            ]);
-          }
-          schedule();
-        },
-        DELAY_MS.min + Math.random() * (DELAY_MS.max - DELAY_MS.min)
-      );
+    function schedule(delayMs: number) {
+      timer = window.setTimeout(() => {
+        if (document.visibilityState === "visible") {
+          const burst = planCharmBurst({ tier, random: Math.random }).map(
+            (flight) => {
+              const id = nextIdRef.current;
+              nextIdRef.current = id + 1;
+              return { ...flight, id };
+            }
+          );
+          setCharms((current) =>
+            [...current, ...burst].slice(-MAX_CHARMS[tier])
+          );
+        }
+        const gap = BURST_GAP_MS[tier];
+        schedule(gap.min + Math.random() * (gap.max - gap.min));
+      }, delayMs);
     }
-    schedule();
+    schedule(0);
     return () => window.clearTimeout(timer);
-  }, []);
+  }, [tier]);
 
   return (
     <g
@@ -134,27 +137,34 @@ export function GoldenCharms(props: GoldenCharmsProps) {
       strokeWidth={0.5}
     >
       {charms.map((charm) => {
+        const timing = `${charm.durationMs}ms ${charm.delayMs}ms both`;
         const style: React.CSSProperties & {
-          "--charm-drift": string;
-          "--charm-tilt": string;
+          "--charm-dx": string;
+          "--charm-rise": string;
+          "--charm-fall": string;
+          "--charm-spin": string;
         } = {
-          "--charm-drift": `${charm.driftPx}px`,
-          "--charm-tilt": `${charm.tiltDeg}deg`,
-          animation: `lm-charm-float ${FLOAT_S}s cubic-bezier(0.2, 0.7, 0.3, 1) forwards`,
+          "--charm-dx": `${charm.dxPx}px`,
+          "--charm-rise": `${charm.risePx}px`,
+          "--charm-fall": `${charm.fallPx}px`,
+          "--charm-spin": `${charm.spinDeg}deg`,
+          animation: `lm-charm-across ${timing} cubic-bezier(0.25, 0.6, 0.4, 1)`,
         };
         return (
-          <g
-            key={charm.id}
-            data-lm-motion
-            style={style}
-            onAnimationEnd={() =>
-              setCharms((current) =>
-                current.filter(({ id }) => id !== charm.id)
-              )
-            }
-          >
-            <g transform={`scale(${CHARM_SCALE})`}>
-              <CharmShape kind={charm.kind} />
+          <g key={charm.id} data-lm-motion style={style}>
+            <g style={{ animation: `lm-charm-arc ${timing}` }}>
+              <g
+                style={{ animation: `lm-charm-pop ${timing} ease-out` }}
+                onAnimationEnd={() =>
+                  setCharms((current) =>
+                    current.filter(({ id }) => id !== charm.id)
+                  )
+                }
+              >
+                <g transform={`scale(${CHARM_SCALE})`}>
+                  <CharmShape kind={charm.kind} />
+                </g>
+              </g>
             </g>
           </g>
         );

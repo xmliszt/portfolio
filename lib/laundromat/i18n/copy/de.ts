@@ -723,9 +723,9 @@ export const de = {
     jarLoadingLabel: "Trinkgeldglas",
     jarLoadingTooltip: "Trinkgeldglas",
     jarLabel: (o: { count: number }) =>
-      `Trinkgeldglas, bisher ${o.count} ${o.count === 1 ? "Trinkgeld" : "Trinkgelder"}`,
+      `Trinkgeldglas, ${o.count} ${o.count === 1 ? "Token" : "Tokens"} darin`,
     jarTooltip: (o: { count: number }) =>
-      `bisher ${o.count} ${o.count === 1 ? "Trinkgeld" : "Trinkgelder"}`,
+      `${o.count} ${o.count === 1 ? "Token" : "Tokens"} im Glas`,
     dialogLabel: "Münzautomat",
     close: "Schließen",
     screen: {
@@ -742,7 +742,7 @@ export const de = {
       misread: "code prüfen",
       offline: "später noch mal",
     },
-    note: "schön, dass du da bist",
+    note: "danke für deine Herzlichkeit",
     coinLabel: (o: { amount: string }) => `Trinkgeld ${o.amount}`,
     other: "anderer Betrag",
     otherLabel: "Anderer Betrag",
@@ -762,14 +762,14 @@ export const de = {
     receiptKind: "Trinkgeld-Token",
     receiptNumber: (o: { number: string }) => `Nr. ${o.number}`,
     receiptCode: "Token-Code",
-    receiptNote: "danke für die Münze",
+    receiptNote: "danke für deine Unterstützung",
     keepCode:
       "Bewahr den Code auf, um diesen Token auf ein anderes Gerät mitzunehmen.",
     copyLink: "Link kopieren",
     copied: "kopiert",
     save: "speichern",
     done: "Fertig",
-    restore: "zurückholen",
+    restore: "wiederherstellen",
     back: "zurück",
     pocketLabel: (o: { number: number }) => `Token Nr. ${o.number}`,
     pocketHeading: "deine Tokens",
@@ -785,7 +785,10 @@ export const de = {
     coinRim: "danke",
     trayHeading: "Trinkgeldglas",
     traySummary: (o: { count: number }) =>
-      `${o.count} ${o.count === 1 ? "Trinkgeld" : "Trinkgelder"} · deine glänzen`,
+      `${o.count} ${o.count === 1 ? "Token" : "Tokens"} im Glas · deine glänzen`,
+    trayHint: "tipp auf deinen Token, um ihn zu benutzen",
+    copyCode: "Code kopieren",
+    codeCopied: "Code kopiert",
     trayCoinLabel: (o: { number: number; date: string; isOwn: boolean }) =>
       `Münze ${o.number}, ${o.date}${o.isOwn ? ", deine, sieh genauer hin" : ""}`,
   },

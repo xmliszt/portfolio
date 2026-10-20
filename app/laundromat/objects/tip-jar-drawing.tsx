@@ -35,6 +35,7 @@ export function TipJarDrawing(props: TipJarDrawingProps) {
   const shoulder = p.z + size.h - LID_HEIGHT - NECK.height;
   const neckRadius = radius * NECK.radiusRatio;
   const clipId = useId();
+  const glintId = useId();
   const base = getIsoCylinder({
     center,
     bottom: p.z,
@@ -65,9 +66,9 @@ export function TipJarDrawing(props: TipJarDrawingProps) {
   });
   const slotHalf = neckRadius * 0.5 * projection.unit;
   const glint = {
-    x: glass.top.cx - glass.top.rx * 0.55,
-    top: glass.top.cy + 3,
-    bottom: glass.base.cy - 3,
+    x: glass.top.cx - glass.top.rx * 0.62,
+    top: glass.top.cy + glass.top.ry * 0.8,
+    bottom: glass.base.cy + glass.base.ry * 0.6,
   };
   return (
     <g className={partStroke(props.highlighted)} strokeLinejoin="round">
@@ -79,6 +80,19 @@ export function TipJarDrawing(props: TipJarDrawingProps) {
         opacity={0.55}
       />
       <defs>
+        <linearGradient
+          id={glintId}
+          gradientUnits="userSpaceOnUse"
+          x1={0}
+          y1={glint.top}
+          x2={0}
+          y2={glint.bottom}
+        >
+          <stop offset={0} stopColor="var(--lm-ink-hi)" stopOpacity={0} />
+          <stop offset={0.3} stopColor="var(--lm-ink-hi)" stopOpacity={0.3} />
+          <stop offset={0.55} stopColor="var(--lm-ink-hi)" stopOpacity={0.12} />
+          <stop offset={1} stopColor="var(--lm-ink-hi)" stopOpacity={0} />
+        </linearGradient>
         <clipPath id={clipId}>
           <path d={glass.body} />
         </clipPath>
@@ -150,10 +164,9 @@ export function TipJarDrawing(props: TipJarDrawingProps) {
         y1={glint.top}
         x2={glint.x}
         y2={glint.bottom}
-        className="stroke-[var(--lm-ink-hi)]"
-        strokeWidth={0.75}
+        stroke={`url(#${glintId})`}
+        strokeWidth={1.4}
         strokeLinecap="round"
-        opacity={0.5}
       />
       <ellipse
         {...glass.top}

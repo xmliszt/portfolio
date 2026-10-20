@@ -147,6 +147,7 @@ export function useRoom(presence: OwnPresence | undefined) {
   const regionLatDeg = presence?.region?.latDeg;
   const regionLonDeg = presence?.region?.lonDeg;
   const goldenCharges = presence?.goldenCharges;
+  const jarTop = presence?.jarTop;
   useEffect(() => {
     if (visitorId === undefined) return;
     const load = ((): RemoteLoad | undefined => {
@@ -194,6 +195,7 @@ export function useRoom(presence: OwnPresence | undefined) {
       ...(goldenCharges === undefined || goldenCharges.length === 0
         ? {}
         : { goldenCharges }),
+      ...(jarTop === undefined ? {} : { jarTop }),
     });
   }, [
     source,
@@ -214,6 +216,7 @@ export function useRoom(presence: OwnPresence | undefined) {
     regionLonDeg,
     writingSince,
     goldenCharges,
+    jarTop,
   ]);
 
   const peerIds = peers.map((peer) => peer.sessionId).join(",");

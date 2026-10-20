@@ -689,9 +689,9 @@ export const ru = {
     jarLoadingLabel: "Банка для чаевых",
     jarLoadingTooltip: "банка для чаевых",
     jarLabel: (o: { count: number }) =>
-      `Банка для чаевых, пока ${o.count} ${pluralize({ count: o.count, one: "монета", few: "монеты", many: "монет" })}`,
+      `Банка для чаевых, внутри ${o.count} ${pluralize({ count: o.count, one: "жетон", few: "жетона", many: "жетонов" })}`,
     jarTooltip: (o: { count: number }) =>
-      `пока ${o.count} ${pluralize({ count: o.count, one: "монета", few: "монеты", many: "монет" })}`,
+      `${o.count} ${pluralize({ count: o.count, one: "жетон", few: "жетона", many: "жетонов" })} в банке`,
     dialogLabel: "Монетный автомат",
     close: "Закрыть",
     screen: {
@@ -708,7 +708,7 @@ export const ru = {
       misread: "проверьте код",
       offline: "попробуйте позже",
     },
-    note: "хорошо, что вы здесь",
+    note: "спасибо за вашу любовь",
     coinLabel: (o: { amount: string }) => `Чаевые ${o.amount}`,
     other: "другая сумма",
     otherLabel: "Другая сумма",
@@ -727,13 +727,13 @@ export const ru = {
     receiptKind: "жетон за чаевые",
     receiptNumber: (o: { number: string }) => `№ ${o.number}`,
     receiptCode: "код жетона",
-    receiptNote: "спасибо за монету",
+    receiptNote: "спасибо за поддержку",
     keepCode: "Сохраните код, чтобы перенести этот жетон на другое устройство.",
     copyLink: "копировать ссылку",
     copied: "скопировано",
     save: "сохранить",
     done: "Готово",
-    restore: "вернуть",
+    restore: "восстановить",
     back: "назад",
     pocketLabel: (o: { number: number }) => `жетон № ${o.number}`,
     pocketHeading: "ваши жетоны",
@@ -749,7 +749,10 @@ export const ru = {
     coinRim: "спасибо",
     trayHeading: "банка для чаевых",
     traySummary: (o: { count: number }) =>
-      `${o.count} ${pluralize({ count: o.count, one: "монета", few: "монеты", many: "монет" })} · ваши блестят`,
+      `${o.count} ${pluralize({ count: o.count, one: "жетон", few: "жетона", many: "жетонов" })} в банке · ваши блестят`,
+    trayHint: "нажмите на свой жетон, чтобы использовать его",
+    copyCode: "Копировать код",
+    codeCopied: "Код скопирован",
     trayCoinLabel: (o: { number: number; date: string; isOwn: boolean }) =>
       `Монета ${o.number}, ${o.date}${o.isOwn ? ", ваша, рассмотрите поближе" : ""}`,
   },

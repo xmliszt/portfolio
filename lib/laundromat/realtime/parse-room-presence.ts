@@ -16,6 +16,7 @@ const MAX_CYCLE_MS = 2 * 60 * 60_000;
 const MAX_MACHINE_ID_LENGTH = 40;
 const MAX_FLASK_PORTIONS = 20;
 const MAX_ID_LENGTH = 64;
+const MAX_JAR_TOP = 10_000_000;
 
 function isObject(value: unknown): value is object {
   return typeof value === "object" && value !== null;
@@ -125,7 +126,7 @@ function parseGoldenCharge(options: {
   };
 }
 
-/** Return the presence another tab tracked on the room channel, or `undefined` when it is not one; unknown or malformed fields are dropped, and so is a `flask` changed more than `MAX_CLOCK_SKEW_MS` after `now` or brewing after it changed, a `writingSince` in the future or older than `MAX_WRITING_MS` by `now`, and any of the last `MAX_GOLDEN_CHARGES` `goldenCharges` that starts in the future or ended before `now`, each beyond `MAX_CLOCK_SKEW_MS`. */
+/** Return the presence another tab tracked on the room channel, or `undefined` when it is not one; unknown or malformed fields are dropped, and so is a `flask` changed more than `MAX_CLOCK_SKEW_MS` after `now` or brewing after it changed, a `writingSince` in the future or older than `MAX_WRITING_MS` by `now`, and any of the last `MAX_GOLDEN_CHARGES` `goldenCharges` that starts in the future or ended before `now`, each beyond `MAX_CLOCK_SKEW_MS`, and a `jarTop` that is not a whole number from 1 to `MAX_JAR_TOP`. */
 export function parseRoomPresence(options: {
   value: unknown;
   now: number;
@@ -166,6 +167,14 @@ export function parseRoomPresence(options: {
             return parsed === undefined ? [] : [parsed];
           })
       : [];
+  const jarTop =
+    "jarTop" in value &&
+    typeof value.jarTop === "number" &&
+    Number.isInteger(value.jarTop) &&
+    value.jarTop > 0 &&
+    value.jarTop <= MAX_JAR_TOP
+      ? value.jarTop
+      : undefined;
   return {
     sessionId: value.sessionId,
     visitorId: value.visitorId,
@@ -175,5 +184,6 @@ export function parseRoomPresence(options: {
     ...(flask === undefined ? {} : { flask }),
     ...(writingSince === undefined ? {} : { writingSince }),
     ...(goldenCharges.length === 0 ? {} : { goldenCharges }),
+    ...(jarTop === undefined ? {} : { jarTop }),
   };
 }

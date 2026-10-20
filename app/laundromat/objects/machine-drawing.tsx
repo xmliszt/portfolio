@@ -535,13 +535,17 @@ export function MachineDrawing(props: MachineDrawingProps) {
             animated={!isLite}
           />
         )}
-        {isCharmed && !isLite && !prefersReducedMotion && (
-          <GoldenCharms
-            center={{ x: doorCenter.x, y: door.y + doorRadius * 0.4 }}
-          />
-        )}
       </g>
       {isCharged && <GoldenMachineGlow faces={faces} halo={!isLite} />}
+      {isCharmed && !prefersReducedMotion && (
+        <GoldenCharms
+          center={face.toScene({
+            x: doorCenter.x,
+            y: door.y + doorRadius * 0.4,
+          })}
+          tier={quality}
+        />
+      )}
     </g>
   );
 }

@@ -170,7 +170,7 @@ export function TipCoinViewer(props: TipCoinViewerProps) {
   const faceClass = "absolute inset-0 [backface-visibility:hidden]";
   const sheen = isRich ? "track" : "static";
   return (
-    <div className="flex justify-center px-3 pt-2 pb-10">
+    <div className="flex justify-center px-3 pt-2 pb-6">
       <button
         ref={stageRef}
         type="button"

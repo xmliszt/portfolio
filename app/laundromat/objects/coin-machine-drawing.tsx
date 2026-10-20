@@ -1,6 +1,9 @@
 import type { LaidOutObject } from "@/lib/laundromat/build-scene-layout";
 import { getFacePlane } from "@/lib/laundromat/get-face-plane";
-import type { IsoProjection } from "@/lib/laundromat/project-iso-point";
+import {
+  type IsoProjection,
+  projectIsoPoint,
+} from "@/lib/laundromat/project-iso-point";
 import { fitScreenFontSize } from "@/lib/laundromat/tip/fit-screen-font-size";
 import { TIP_COINS_CENTS } from "@/lib/laundromat/tip/tip-amounts";
 import type { CoinMachinePhase } from "@/lib/laundromat/tip/tip-token";
@@ -12,7 +15,9 @@ import { partStroke } from "./part-stroke";
 const SCREEN_FONT_SIZE = 5.5;
 
 const WALL_PLATE = { margin: 0.06, depth: 0.04 };
-const TRAY = { height: 0.26, lip: 0.1, inset: 0.14 };
+const TRAY = { height: 0.26, inset: 0.14, floorPx: 4 };
+const PLATE = { depth: 0.2, thickness: 0.03, lip: 0.025, lipHeight: 0.04 };
+const CHUTE_DROP_GAP_PX = 7;
 const COIN_LABELS = TIP_COINS_CENTS.map((cents) => String(cents / 100));
 const SCREW_INSET = 3;
 
@@ -53,9 +58,11 @@ export function CoinMachineDrawing(props: CoinMachineDrawingProps) {
   const coinRadius = 2.1;
   const coinY = plate.y + plate.height - 6;
   const coinSpacing = (width - 12 - 4 * 2 * coinRadius) / 3 + 2 * coinRadius;
+  const floorZ = p.z + TRAY.floorPx / unit;
+  const chuteZ = p.z + size.h - (seamY + CHUTE_DROP_GAP_PX) / unit;
   const tray = {
     x: TRAY.inset * unit,
-    y: height - TRAY.height * unit - 4,
+    y: height - TRAY.height * unit - TRAY.floorPx,
     width: width - 2 * TRAY.inset * unit,
     height: TRAY.height * unit,
   };
@@ -179,7 +186,6 @@ export function CoinMachineDrawing(props: CoinMachineDrawingProps) {
           rx={1.5}
           className="fill-[var(--lm-recess)] stroke-[var(--lm-line)]"
         />
-        <CoinMachineToken phase={props.phase} tray={tray} />
       </g>
       <g transform={side.transform} strokeWidth={0.75}>
         <line x1={0} y1={seamY} x2={depth} y2={seamY} />
@@ -194,12 +200,39 @@ export function CoinMachineDrawing(props: CoinMachineDrawingProps) {
         position={{
           x: p.x + TRAY.inset,
           y: p.y + size.d,
-          z: p.z + 4 / unit,
+          z: floorZ - PLATE.thickness,
         }}
         size={{
           w: size.w - 2 * TRAY.inset,
-          d: TRAY.lip,
-          h: TRAY.height * 0.45,
+          d: PLATE.depth,
+          h: PLATE.thickness,
+        }}
+        projection={projection}
+        bevel={false}
+      />
+      <CoinMachineToken
+        phase={props.phase}
+        rest={projectIsoPoint({
+          point: {
+            x: p.x + size.w / 2,
+            y: p.y + size.d + PLATE.depth * 0.45,
+            z: floorZ,
+          },
+          projection,
+        })}
+        dropPx={chuteZ * unit - floorZ * unit}
+        outFromFacePx={PLATE.depth * 0.35 * unit}
+      />
+      <IsoBox
+        position={{
+          x: p.x + TRAY.inset,
+          y: p.y + size.d + PLATE.depth - PLATE.lip,
+          z: floorZ - PLATE.thickness,
+        }}
+        size={{
+          w: size.w - 2 * TRAY.inset,
+          d: PLATE.lip,
+          h: PLATE.thickness + PLATE.lipHeight,
         }}
         projection={projection}
         bevel={false}

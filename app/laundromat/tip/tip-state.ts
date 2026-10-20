@@ -19,6 +19,7 @@ export type TokenRestoreResult =
 export type TipState = {
   tokens: TipToken[];
   jar: JarCoin[] | undefined;
+  refreshJar: () => void;
   machine: CoinMachinePhase;
   startTip: (options: { cents: number }) => Promise<StartTipResult>;
   rememberTip: (options: { sessionId: string }) => void;

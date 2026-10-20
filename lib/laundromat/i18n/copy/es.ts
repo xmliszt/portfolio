@@ -718,9 +718,9 @@ export const es = {
     jarLoadingLabel: "Frasco de propinas",
     jarLoadingTooltip: "frasco de propinas",
     jarLabel: (o: { count: number }) =>
-      `Frasco de propinas, ${o.count} ${o.count === 1 ? "propina" : "propinas"} hasta ahora`,
+      `Frasco de propinas, ${o.count} ${o.count === 1 ? "ficha" : "fichas"} dentro`,
     jarTooltip: (o: { count: number }) =>
-      `${o.count} ${o.count === 1 ? "propina" : "propinas"} hasta ahora`,
+      `${o.count} ${o.count === 1 ? "ficha" : "fichas"} en el frasco`,
     dialogLabel: "Máquina de monedas",
     close: "Cerrar",
     screen: {
@@ -737,7 +737,7 @@ export const es = {
       misread: "revisa el código",
       offline: "prueba más tarde",
     },
-    note: "qué bien que estés aquí",
+    note: "gracias por tu cariño",
     coinLabel: (o: { amount: string }) => `Propina de ${o.amount}`,
     other: "otro importe",
     otherLabel: "Otro importe",
@@ -757,13 +757,13 @@ export const es = {
     receiptKind: "ficha de propina",
     receiptNumber: (o: { number: string }) => `n.º ${o.number}`,
     receiptCode: "código de ficha",
-    receiptNote: "gracias por la moneda",
+    receiptNote: "gracias por tu apoyo",
     keepCode: "Guarda el código para llevar esta ficha a otro dispositivo.",
     copyLink: "copiar enlace",
     copied: "copiado",
     save: "guardar",
     done: "Listo",
-    restore: "recuperarla",
+    restore: "recuperar",
     back: "volver",
     pocketLabel: (o: { number: number }) => `ficha n.º ${o.number}`,
     pocketHeading: "tus fichas",
@@ -779,7 +779,10 @@ export const es = {
     coinRim: "gracias",
     trayHeading: "frasco de propinas",
     traySummary: (o: { count: number }) =>
-      `${o.count} ${o.count === 1 ? "propina" : "propinas"} · las tuyas brillan`,
+      `${o.count} ${o.count === 1 ? "ficha" : "fichas"} en el frasco · las tuyas brillan`,
+    trayHint: "toca tu ficha para usarla",
+    copyCode: "Copiar código",
+    codeCopied: "Código copiado",
     trayCoinLabel: (o: { number: number; date: string; isOwn: boolean }) =>
       `Moneda ${o.number}, ${o.date}${o.isOwn ? ", la tuya, mírala de cerca" : ""}`,
   },

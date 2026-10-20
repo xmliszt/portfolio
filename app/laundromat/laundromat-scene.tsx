@@ -352,6 +352,7 @@ export function LaundromatScene(props: LaundromatSceneProps) {
     { enabled: roomSource !== undefined }
   );
   const ownGoldenCharges = tip?.goldenCharges;
+  const ownJarTop = tip?.jar?.at(-1)?.number;
   const ownPresence = useMemo(() => {
     if (laundry.visitorId === undefined) return undefined;
     const load = ((): RemoteLoad | undefined => {
@@ -409,6 +410,7 @@ export function LaundromatScene(props: LaundromatSceneProps) {
                 startedAt,
               })),
           }),
+      ...(ownJarTop === undefined ? {} : { jarTop: ownJarTop }),
     };
   }, [
     laundry.visitorId,
@@ -418,6 +420,7 @@ export function LaundromatScene(props: LaundromatSceneProps) {
     ownFlask,
     writingSince,
     ownGoldenCharges,
+    ownJarTop,
   ]);
   const room = useRoom(ownPresence);
   const isRoomSynced = room.isConnected && room.isSynced;
@@ -1005,6 +1008,17 @@ export function LaundromatScene(props: LaundromatSceneProps) {
       .some((wash) => wash !== "" && !seenWashes.includes(wash));
     if (hasNewCharge) sound?.play("tip-chime");
   }, [remoteGoldenChargeKey, isRoomSynced, sound]);
+
+  const refreshJar = tip?.refreshJar;
+  const peersJarTop = Math.max(
+    0,
+    ...room.peers.map(({ jarTop = 0 }) => jarTop)
+  );
+  useEffect(() => {
+    if (refreshJar !== undefined && peersJarTop > (ownJarTop ?? 0)) {
+      refreshJar();
+    }
+  }, [refreshJar, peersJarTop, ownJarTop]);
 
   const applyChargeChanges = tip?.applyChargeChanges;
   const ownRunningMachineKey = Object.values(machineViews)

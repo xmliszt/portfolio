@@ -677,9 +677,9 @@ export const nl = {
     jarLoadingLabel: "Fooienpot",
     jarLoadingTooltip: "fooienpot",
     jarLabel: (o: { count: number }) =>
-      `Fooienpot, tot nu toe ${o.count} ${o.count === 1 ? "fooi" : "fooien"}`,
+      `Fooienpot, ${o.count} ${o.count === 1 ? "penning" : "penningen"} erin`,
     jarTooltip: (o: { count: number }) =>
-      `tot nu toe ${o.count} ${o.count === 1 ? "fooi" : "fooien"}`,
+      `${o.count} ${o.count === 1 ? "penning" : "penningen"} in de pot`,
     dialogLabel: "Muntautomaat",
     close: "Sluiten",
     screen: {
@@ -696,7 +696,7 @@ export const nl = {
       misread: "controleer de code",
       offline: "probeer het later",
     },
-    note: "fijn dat je er bent",
+    note: "bedankt voor je liefde",
     coinLabel: (o: { amount: string }) => `Fooi van ${o.amount}`,
     other: "ander bedrag",
     otherLabel: "Ander bedrag",
@@ -715,14 +715,14 @@ export const nl = {
     receiptKind: "fooipenning",
     receiptNumber: (o: { number: string }) => `nr. ${o.number}`,
     receiptCode: "penningcode",
-    receiptNote: "bedankt voor de munt",
+    receiptNote: "bedankt voor je steun",
     keepCode:
       "Bewaar de code om deze penning mee te nemen naar een ander apparaat.",
     copyLink: "kopieer link",
     copied: "gekopieerd",
     save: "bewaren",
     done: "Klaar",
-    restore: "terughalen",
+    restore: "herstellen",
     back: "terug",
     pocketLabel: (o: { number: number }) => `penning nr. ${o.number}`,
     pocketHeading: "je penningen",
@@ -738,7 +738,10 @@ export const nl = {
     coinRim: "dank je",
     trayHeading: "fooienpot",
     traySummary: (o: { count: number }) =>
-      `${o.count} ${o.count === 1 ? "fooi" : "fooien"} · die van jou glanzen`,
+      `${o.count} ${o.count === 1 ? "penning" : "penningen"} in de pot · die van jou glanzen`,
+    trayHint: "tik op je penning om hem te gebruiken",
+    copyCode: "Kopieer code",
+    codeCopied: "Code gekopieerd",
     trayCoinLabel: (o: { number: number; date: string; isOwn: boolean }) =>
       `Munt ${o.number}, ${o.date}${o.isOwn ? ", van jou, kijk van dichtbij" : ""}`,
   },

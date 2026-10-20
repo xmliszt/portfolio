@@ -38,6 +38,7 @@ export type RoomPresence = {
   flask?: RemoteFlask;
   writingSince?: number;
   goldenCharges?: GoldenCharge[];
+  jarTop?: number;
 };
 
 export type RemoteClock = {

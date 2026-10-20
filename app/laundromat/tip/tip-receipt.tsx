@@ -16,9 +16,11 @@ import type { TipToken } from "@/lib/laundromat/tip/tip-token";
 import { TOKEN_CODE_HASH_PREFIX } from "@/lib/laundromat/tip/token-code-format";
 import { cn } from "@/lib/utils";
 
+import { COPIED_MS } from "./copied-ms";
+import { CopyCodeButton } from "./copy-code-button";
+
 const PRINT = { durationS: 1.1, feedSteps: 9, startPx: -12, fadeS: 0.2 };
 const KEYS_FADE_S = 0.25;
-const COPIED_MS = 1600;
 const DASHED_RULE =
   "h-px bg-[repeating-linear-gradient(90deg,rgb(43_38_32/0.45)_0_3px,transparent_3px_6px)]";
 
@@ -118,12 +120,19 @@ export function TipReceipt(props: TipReceiptProps) {
             <span className={DASHED_RULE} />
             <span className="flex flex-col gap-y-1">
               <span className="opacity-70">{copy.tip.receiptCode}</span>
-              <code
-                ref={codeRef}
-                className="font-[family-name:var(--lm-font-mono)] text-[14px] leading-5 tracking-[0.06em] normal-case select-all"
-              >
-                {token.code}
-              </code>
+              <span className="flex items-center justify-between gap-x-2">
+                <code
+                  ref={codeRef}
+                  className="font-[family-name:var(--lm-font-mono)] text-[14px] leading-5 tracking-[0.06em] normal-case select-all"
+                >
+                  {token.code}
+                </code>
+                <CopyCodeButton
+                  code={token.code}
+                  codeRef={codeRef}
+                  tone="paper"
+                />
+              </span>
             </span>
             <span className={DASHED_RULE} />
             <span

@@ -724,9 +724,9 @@ export const fr = {
     jarLoadingLabel: "Bocal à pourboires",
     jarLoadingTooltip: "bocal à pourboires",
     jarLabel: (o: { count: number }) =>
-      `Bocal à pourboires, ${o.count} ${o.count === 1 ? "pourboire" : "pourboires"} pour l'instant`,
+      `Bocal à pourboires, ${o.count} ${o.count === 1 ? "jeton" : "jetons"} à l'intérieur`,
     jarTooltip: (o: { count: number }) =>
-      `${o.count} ${o.count === 1 ? "pourboire" : "pourboires"} pour l'instant`,
+      `${o.count} ${o.count === 1 ? "jeton" : "jetons"} dans le bocal`,
     dialogLabel: "Machine à pièces",
     close: "Fermer",
     screen: {
@@ -743,7 +743,7 @@ export const fr = {
       misread: "vérifie le code",
       offline: "réessaie plus tard",
     },
-    note: "content que tu sois là",
+    note: "merci pour ton affection",
     coinLabel: (o: { amount: string }) => `Pourboire de ${o.amount}`,
     other: "autre montant",
     otherLabel: "Autre montant",
@@ -763,13 +763,13 @@ export const fr = {
     receiptKind: "jeton de pourboire",
     receiptNumber: (o: { number: string }) => `n° ${o.number}`,
     receiptCode: "code du jeton",
-    receiptNote: "merci pour la pièce",
+    receiptNote: "merci pour ton soutien",
     keepCode: "Garde le code pour retrouver ce jeton sur un autre appareil.",
     copyLink: "copier le lien",
     copied: "copié",
     save: "enregistrer",
     done: "Terminé",
-    restore: "le récupérer",
+    restore: "récupérer",
     back: "retour",
     pocketLabel: (o: { number: number }) => `jeton n° ${o.number}`,
     pocketHeading: "tes jetons",
@@ -785,7 +785,10 @@ export const fr = {
     coinRim: "merci",
     trayHeading: "bocal à pourboires",
     traySummary: (o: { count: number }) =>
-      `${o.count} ${o.count === 1 ? "pourboire" : "pourboires"} · les tiens brillent`,
+      `${o.count} ${o.count === 1 ? "jeton" : "jetons"} dans le bocal · les tiens brillent`,
+    trayHint: "touche ton jeton pour l'utiliser",
+    copyCode: "Copier le code",
+    codeCopied: "Code copié",
     trayCoinLabel: (o: { number: number; date: string; isOwn: boolean }) =>
       `Pièce ${o.number}, ${o.date}${o.isOwn ? ", la tienne, regarde de plus près" : ""}`,
   },

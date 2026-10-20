@@ -714,9 +714,9 @@ export const en = {
     jarLoadingLabel: "Tip jar",
     jarLoadingTooltip: "tip jar",
     jarLabel: (o: { count: number }) =>
-      `Tip jar, ${o.count} ${o.count === 1 ? "tip" : "tips"} so far`,
+      `Tip jar, ${o.count} ${o.count === 1 ? "token" : "tokens"} inside`,
     jarTooltip: (o: { count: number }) =>
-      `${o.count} ${o.count === 1 ? "tip" : "tips"} so far`,
+      `${o.count} ${o.count === 1 ? "token" : "tokens"} in the jar`,
     dialogLabel: "Coin machine",
     close: "Close",
     screen: {
@@ -733,7 +733,7 @@ export const en = {
       misread: "check the code",
       offline: "try again later",
     },
-    note: "glad you're here",
+    note: "thank you for your love",
     coinLabel: (o: { amount: string }) => `Tip ${o.amount}`,
     other: "other amount",
     otherLabel: "Other amount",
@@ -752,13 +752,13 @@ export const en = {
     receiptKind: "tip token",
     receiptNumber: (o: { number: string }) => `no. ${o.number}`,
     receiptCode: "token code",
-    receiptNote: "thank you for the coin",
+    receiptNote: "thank you for the support",
     keepCode: "Keep the code to bring this token to another device.",
     copyLink: "copy link",
     copied: "copied",
     save: "save",
     done: "Done",
-    restore: "bring it back",
+    restore: "restore",
     back: "back",
     pocketLabel: (o: { number: number }) => `token no. ${o.number}`,
     pocketHeading: "your tokens",
@@ -774,7 +774,10 @@ export const en = {
     coinRim: "thank you",
     trayHeading: "tip jar",
     traySummary: (o: { count: number }) =>
-      `${o.count} ${o.count === 1 ? "tip" : "tips"} · yours shine`,
+      `${o.count} ${o.count === 1 ? "token" : "tokens"} in the jar · yours shine`,
+    trayHint: "tap your token to use it",
+    copyCode: "Copy code",
+    codeCopied: "Code copied",
     trayCoinLabel: (o: { number: number; date: string; isOwn: boolean }) =>
       `Coin ${o.number}, ${o.date}${o.isOwn ? ", yours, look closer" : ""}`,
   },

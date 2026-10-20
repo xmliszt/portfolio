@@ -721,9 +721,9 @@ export const it = {
     jarLoadingLabel: "Barattolo delle mance",
     jarLoadingTooltip: "barattolo delle mance",
     jarLabel: (o: { count: number }) =>
-      `Barattolo delle mance, ${o.count} ${o.count === 1 ? "mancia" : "mance"} finora`,
+      `Barattolo delle mance, ${o.count} ${o.count === 1 ? "gettone" : "gettoni"} all'interno`,
     jarTooltip: (o: { count: number }) =>
-      `${o.count} ${o.count === 1 ? "mancia" : "mance"} finora`,
+      `${o.count} ${o.count === 1 ? "gettone" : "gettoni"} nel barattolo`,
     dialogLabel: "Macchina a gettoni",
     close: "Chiudi",
     screen: {
@@ -740,7 +740,7 @@ export const it = {
       misread: "controlla il codice",
       offline: "riprova più tardi",
     },
-    note: "che bello vederti qui",
+    note: "grazie per il tuo affetto",
     coinLabel: (o: { amount: string }) => `Mancia di ${o.amount}`,
     other: "altro importo",
     otherLabel: "Altro importo",
@@ -759,14 +759,14 @@ export const it = {
     receiptKind: "gettone mancia",
     receiptNumber: (o: { number: string }) => `n. ${o.number}`,
     receiptCode: "codice gettone",
-    receiptNote: "grazie per la moneta",
+    receiptNote: "grazie per il sostegno",
     keepCode:
       "Conserva il codice per portare questo gettone su un altro dispositivo.",
     copyLink: "copia link",
     copied: "copiato",
     save: "salva",
     done: "Fatto",
-    restore: "recuperalo",
+    restore: "ripristina",
     back: "indietro",
     pocketLabel: (o: { number: number }) => `gettone n. ${o.number}`,
     pocketHeading: "i tuoi gettoni",
@@ -782,7 +782,10 @@ export const it = {
     coinRim: "grazie",
     trayHeading: "barattolo delle mance",
     traySummary: (o: { count: number }) =>
-      `${o.count} ${o.count === 1 ? "mancia" : "mance"} · le tue brillano`,
+      `${o.count} ${o.count === 1 ? "gettone" : "gettoni"} nel barattolo · i tuoi brillano`,
+    trayHint: "tocca il tuo gettone per usarlo",
+    copyCode: "Copia codice",
+    codeCopied: "Codice copiato",
     trayCoinLabel: (o: { number: number; date: string; isOwn: boolean }) =>
       `Moneta ${o.number}, ${o.date}${o.isOwn ? ", la tua, guarda da vicino" : ""}`,
   },

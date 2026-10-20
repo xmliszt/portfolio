@@ -9,7 +9,12 @@ import { GOLDEN_CHARGE_MS } from "@/lib/laundromat/tip/golden-charge-ms";
 import { hashTokenCode } from "@/lib/laundromat/tip/hash-token-code";
 import { isPendingTip } from "@/lib/laundromat/tip/is-pending-tip";
 import { isTipToken } from "@/lib/laundromat/tip/is-tip-token";
+import { mergeJar } from "@/lib/laundromat/tip/merge-jar";
 import { mergeTokens } from "@/lib/laundromat/tip/merge-tokens";
+import {
+  type JarLoadState,
+  planJarLoad,
+} from "@/lib/laundromat/tip/plan-jar-load";
 import type {
   CoinMachinePhase,
   JarCoin,
@@ -40,6 +45,8 @@ const PENDING_DROPS_KEY = "laundromat:pending-drops";
 const SPEND_TIMEOUT_MS = 12_000;
 const GOLDEN_CHARGES_KEY = "laundromat:golden-charges";
 const NOTICE_MS = 3500;
+const JAR_RETRY_MS = [5000, 15_000, 60_000];
+const JAR_REFRESH_MIN_MS = 5000;
 
 type PendingDrop = { code: string; attempt: string; machineId: string };
 
@@ -158,9 +165,6 @@ export function TipProvider(props: TipProviderProps) {
 
   useEffect(() => {
     setTokens(readStoredTokens());
-    void loadJar()
-      .catch(() => undefined)
-      .then(setJar);
     function handleStorage(event: StorageEvent) {
       if (event.key !== TOKENS_STORAGE_KEY) return;
       setTokens((current = []) => mergeTokens([current, readStoredTokens()]));
@@ -192,6 +196,76 @@ export function TipProvider(props: TipProviderProps) {
   }, []);
 
   const takeToken = useCallback(() => setMachine({ kind: "idle" }), []);
+
+  const jarLoadRef = useRef<JarLoadState>({
+    isLoading: false,
+    isQueued: false,
+  });
+  const refreshJar = useCallback(() => {
+    const plan = planJarLoad({
+      state: jarLoadRef.current,
+      now: Date.now(),
+      minGapMs: JAR_REFRESH_MIN_MS,
+    });
+    switch (plan.kind) {
+      case "skip":
+        return;
+      case "after-load":
+        jarLoadRef.current = { ...jarLoadRef.current, isQueued: true };
+        return;
+      case "later":
+        jarLoadRef.current = { ...jarLoadRef.current, isQueued: true };
+        setTimer({
+          run: () => {
+            jarLoadRef.current = { ...jarLoadRef.current, isQueued: false };
+            refreshJar();
+          },
+          ms: plan.afterMs,
+        });
+        return;
+      case "load":
+        break;
+      default: {
+        const unhandled: never = plan;
+        return unhandled;
+      }
+    }
+    jarLoadRef.current = { ...jarLoadRef.current, isLoading: true };
+    function finish(loadedAt: number | undefined) {
+      const { isQueued } = jarLoadRef.current;
+      jarLoadRef.current = {
+        isLoading: false,
+        isQueued: false,
+        loadedAt: loadedAt ?? jarLoadRef.current.loadedAt,
+      };
+      if (isQueued) refreshJar();
+    }
+    function load(attempt: number) {
+      void loadJar()
+        .catch(() => undefined)
+        .then((loaded) => {
+          if (loaded !== undefined) {
+            setJar((current = []) => mergeJar({ current, loaded }));
+            finish(Date.now());
+            return;
+          }
+          const retryMs = JAR_RETRY_MS.at(attempt);
+          if (retryMs === undefined) finish(undefined);
+          else setTimer({ run: () => load(attempt + 1), ms: retryMs });
+        });
+    }
+    load(0);
+  }, [setTimer]);
+
+  useEffect(() => {
+    refreshJar();
+    function handleVisibilityChange() {
+      if (document.visibilityState === "visible") refreshJar();
+    }
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+    return () =>
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
+  }, [refreshJar]);
 
   const startTip = useCallback(async (options: { cents: number }) => {
     const code = createTokenCode(
@@ -473,6 +547,7 @@ export function TipProvider(props: TipProviderProps) {
     () => ({
       tokens: tokens ?? [],
       jar,
+      refreshJar,
       machine,
       startTip,
       rememberTip,
@@ -490,6 +565,7 @@ export function TipProvider(props: TipProviderProps) {
     [
       tokens,
       jar,
+      refreshJar,
       machine,
       startTip,
       rememberTip,

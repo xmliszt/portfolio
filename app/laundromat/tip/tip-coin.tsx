@@ -22,18 +22,21 @@ type TipCoinProps = {
   sizePx: number;
   engraved?: boolean;
   shine?: boolean;
+  glint?: boolean;
   dim?: boolean;
   flat?: boolean;
   className?: string;
+  style?: React.CSSProperties & { "--glint-delay"?: string };
 };
 
-/** Draw a struck metal coin with a small `caption` above a stamped `label`, the rim text when `engraved`, its edge and shadow unless `flat`, and on full quality without reduced motion a sheen and tilt that follow the mouse while `shine`. */
+/** Draw a struck metal coin with a small `caption` above a stamped `label`, the rim text when `engraved`, its edge and shadow unless `flat`, and on full quality without reduced motion a sheen and tilt that follow the mouse while `shine`, or a sheen that sweeps across on its own while `glint`. */
 export function TipCoin(props: TipCoinProps) {
   const { copy } = useLaundromatCopy();
   const { quality } = useRenderQuality();
   const prefersReducedMotion = useReducedMotion() ?? false;
-  const isLive =
-    props.shine === true && quality === "full" && !prefersReducedMotion;
+  const isAnimated = quality === "full" && !prefersReducedMotion;
+  const isLive = props.shine === true && isAnimated;
+  const isGlinting = props.glint === true && isAnimated;
   const coinRef = useRef<HTMLSpanElement>(null);
 
   function handlePointerMove(event: React.PointerEvent<HTMLSpanElement>) {
@@ -59,7 +62,7 @@ export function TipCoin(props: TipCoinProps) {
     <span
       aria-hidden
       className={cn("inline-block [perspective:400px]", props.className)}
-      style={{ width: props.sizePx, height: props.sizePx }}
+      style={{ ...props.style, width: props.sizePx, height: props.sizePx }}
       onPointerMove={handlePointerMove}
       onPointerLeave={handlePointerLeave}
     >
@@ -75,7 +78,7 @@ export function TipCoin(props: TipCoinProps) {
               })
             : undefined
         }
-        sheen={isLive ? "follow" : "static"}
+        sheen={isGlinting ? "glint" : isLive ? "follow" : "static"}
         raised={props.flat !== true}
         dim={props.dim}
         className="[transform:rotateX(var(--tilt-x,0deg))_rotateY(var(--tilt-y,0deg))] transition-[transform,filter] duration-300 ease-out"
