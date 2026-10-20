@@ -8,6 +8,8 @@ export type GoldenWashView = "none" | "invited" | "running";
 
 export type JarCoin = { number: number; createdAt: string };
 
+export type PendingTip = { sessionId: string; code: string; cents: number };
+
 export type CoinMachinePhase =
   | { kind: "idle" }
   | { kind: "inserting" }

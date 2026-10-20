@@ -25,7 +25,7 @@ import type { TipToken } from "@/lib/laundromat/tip/tip-token";
 import { cn } from "@/lib/utils";
 
 import { CloseKey } from "./close-key";
-import { FakeCheckout } from "./fake-checkout";
+import { StripeCheckout } from "./stripe-checkout";
 import { TIP_FACEPLATE_CLASS } from "./tip-classes";
 import { TipCoin } from "./tip-coin";
 import { TipReceipt } from "./tip-receipt";
@@ -35,11 +35,11 @@ import { useMeasuredHeight } from "./use-measured-height";
 export type CoinPanelStep =
   | { kind: "pick" }
   | { kind: "checkout"; cents: number }
-  | { kind: "dropping"; cents: number }
+  | { kind: "waiting"; cents: number; sessionId: string }
   | { kind: "token"; token: TipToken; fresh: boolean }
   | { kind: "restore" };
 
-type RestoreStatus = "idle" | "checking" | "misread" | "notFound";
+type RestoreStatus = "idle" | "checking" | "misread" | "notFound" | "offline";
 
 const SPRING = { type: "spring", visualDuration: 0.38, bounce: 0.12 } as const;
 const STEP_ENTER = { duration: 0.26, ease: [0.23, 1, 0.32, 1] } as const;
@@ -67,6 +67,7 @@ type CoinMachinePanelProps = {
   tip: TipState;
   step: CoinPanelStep;
   restoreCode: string | undefined;
+  resumeSessionId: string | undefined;
   onStepChange: (step: CoinPanelStep) => void;
   onBusyChange: (isBusy: boolean) => void;
   onClose: () => void;
@@ -77,7 +78,7 @@ function coinLabel(cents: number) {
   return Number.isInteger(dollars) ? String(dollars) : dollars.toFixed(2);
 }
 
-/** Show the coin machine's faceplate: a screen that names each step, a tray of coins to pick from, the checkout, the inserted coin while its token is made, and the printed token, or a field to bring back a token from its code. */
+/** Show the coin machine's faceplate: a screen that names each step, a tray of coins to pick from, the checkout, the coin while the payment settles and its token is made, and the printed token, or a field to bring back a token from its code. */
 export function CoinMachinePanel(props: CoinMachinePanelProps) {
   const { tip, step } = props;
   const prefersReducedMotion = useReducedMotion() ?? false;
@@ -92,19 +93,24 @@ export function CoinMachinePanel(props: CoinMachinePanelProps) {
   const firstCoinRef = useRef<HTMLButtonElement>(null);
   const customCents = parseCustomTip(customText);
   const [isPaying, setIsPaying] = useState(false);
+  const [isNotPaid, setIsNotPaid] = useState(false);
+  const isDispensing =
+    tip.machine.kind === "inserting" || tip.machine.kind === "dispensing";
   const isBusy =
-    (step.kind === "checkout" && isPaying) || step.kind === "dropping";
+    (step.kind === "checkout" && isPaying) ||
+    (step.kind === "waiting" && isDispensing);
   const { onBusyChange } = props;
   useEffect(() => onBusyChange(isBusy), [isBusy, onBusyChange]);
 
   const screen = (() => {
     switch (step.kind) {
       case "pick":
-        return isCustomOpen ? tipCopy.screen.custom : tipCopy.screen.pick;
+        if (isCustomOpen) return tipCopy.screen.custom;
+        return isNotPaid ? tipCopy.screen.notPaid : tipCopy.screen.pick;
       case "checkout":
         return tipCopy.screen.checkout({ cents: step.cents });
-      case "dropping":
-        return tipCopy.screen.dropping;
+      case "waiting":
+        return isDispensing ? tipCopy.screen.dropping : tipCopy.screen.waiting;
       case "token":
         return tipCopy.screen.token;
       case "restore":
@@ -131,13 +137,14 @@ export function CoinMachinePanel(props: CoinMachinePanelProps) {
       return;
     }
     setRestoreStatus("checking");
-    const result = await tip.service.restoreToken({ code });
-    if (result.kind === "unknown") {
-      setRestoreStatus("notFound");
+    const result = await tip
+      .restoreToken({ code })
+      .catch(() => ({ kind: "unavailable" }) as const);
+    if (result.kind !== "restored") {
+      setRestoreStatus(result.kind === "unknown" ? "notFound" : "offline");
       return;
     }
     setRestoreStatus("idle");
-    tip.keepToken(result.token);
     props.onStepChange({ kind: "token", token: result.token, fresh: false });
   }
 
@@ -152,17 +159,32 @@ export function CoinMachinePanel(props: CoinMachinePanelProps) {
   });
 
   async function handlePaid(options: { sessionId: string; cents: number }) {
-    props.onStepChange({ kind: "dropping", cents: options.cents });
-    try {
-      const token = await tip.completeTip({ sessionId: options.sessionId });
-      props.onStepChange({ kind: "token", token, fresh: true });
-    } catch {
-      props.onStepChange({ kind: "pick" });
-    }
+    props.onStepChange({ kind: "waiting", ...options });
+    const token = await tip.settleTip({ sessionId: options.sessionId });
+    setIsNotPaid(token === undefined);
+    props.onStepChange(
+      token === undefined
+        ? { kind: "pick" }
+        : { kind: "token", token, fresh: true }
+    );
   }
+
+  const resumedSessionIdRef = useRef<string>(undefined);
+  useEffect(() => {
+    const sessionId = props.resumeSessionId;
+    if (sessionId === undefined || sessionId === resumedSessionIdRef.current) {
+      return;
+    }
+    resumedSessionIdRef.current = sessionId;
+    const pending = tip.findPendingTip(sessionId);
+    if (pending !== undefined) {
+      void handlePaid({ sessionId, cents: pending.cents });
+    }
+  });
 
   function pickCoin(cents: number) {
     setIsPaying(false);
+    setIsNotPaid(false);
     props.onStepChange({ kind: "checkout", cents });
   }
 
@@ -312,20 +334,46 @@ export function CoinMachinePanel(props: CoinMachinePanelProps) {
                 {tipCopy.change}
               </button>
             </div>
-            <FakeCheckout
+            <StripeCheckout
               cents={step.cents}
-              service={tip.service}
-              onPaying={() => setIsPaying(true)}
+              startTip={tip.startTip}
+              onConfirm={tip.rememberTip}
+              onPayingChange={setIsPaying}
               onPaid={({ sessionId }) =>
                 void handlePaid({ sessionId, cents: step.cents })
               }
             />
           </div>
         );
-      case "dropping":
+      case "waiting":
         return (
-          <div className="flex justify-center pt-2 pb-4">
+          <div className="flex flex-col items-center gap-y-4 pt-2 pb-4">
             {coin({ cents: step.cents, sizePx: COIN_SIZE_PX, rich: false })}
+            {!isDispensing && (
+              <>
+                <p
+                  role="status"
+                  className="m-0 flex items-center gap-x-2 text-[14px] text-[var(--lm-ink-hi)]"
+                >
+                  <span
+                    aria-hidden
+                    className={cn(
+                      "size-3.5 rounded-full border-2 border-current border-t-transparent",
+                      isRich && "animate-spin"
+                    )}
+                  />
+                  {tipCopy.waitingForBank}
+                </p>
+                <p
+                  className={cn(
+                    SETTINGS_META_CLASS,
+                    "m-0 max-w-[260px] text-center normal-case opacity-60"
+                  )}
+                >
+                  {tipCopy.waitingNote}
+                </p>
+              </>
+            )}
           </div>
         );
       case "token":

@@ -24,6 +24,7 @@ type CoinMachineSheetProps = {
   narrow: boolean;
   reducedMotion: boolean;
   restoreCode: string | undefined;
+  resumeSessionId: string | undefined;
   onClose: () => void;
   onBusyChange: (isBusy: boolean) => void;
 };
@@ -33,7 +34,11 @@ export function CoinMachineSheet(props: CoinMachineSheetProps) {
   const [step, setStep] = useState<CoinPanelStep>(
     props.restoreCode === undefined ? { kind: "pick" } : { kind: "restore" }
   );
-  const isHiddenOnPhone = props.narrow && step.kind === "dropping";
+  const isHiddenOnPhone =
+    props.narrow &&
+    step.kind === "waiting" &&
+    (props.tip.machine.kind === "inserting" ||
+      props.tip.machine.kind === "dispensing");
   const offset = props.reducedMotion
     ? {}
     : props.narrow
@@ -45,6 +50,7 @@ export function CoinMachineSheet(props: CoinMachineSheetProps) {
       tip={props.tip}
       step={step}
       restoreCode={props.restoreCode}
+      resumeSessionId={props.resumeSessionId}
       onStepChange={setStep}
       onBusyChange={props.onBusyChange}
       onClose={props.onClose}

@@ -4,91 +4,244 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 import { useSoundBoard } from "@/app/laundromat/sound/use-sound-board";
 import type { GoldenWash } from "@/lib/laundromat/realtime/room-presence";
+import { createTokenCode } from "@/lib/laundromat/tip/create-token-code";
 import { GOLDEN_WASH_MS } from "@/lib/laundromat/tip/golden-wash-ms";
+import { hashTokenCode } from "@/lib/laundromat/tip/hash-token-code";
+import { isPendingTip } from "@/lib/laundromat/tip/is-pending-tip";
 import { isTipToken } from "@/lib/laundromat/tip/is-tip-token";
+import { mergeTokens } from "@/lib/laundromat/tip/merge-tokens";
 import type {
   CoinMachinePhase,
   JarCoin,
+  PendingTip,
   TipToken,
 } from "@/lib/laundromat/tip/tip-token";
 import { wait } from "@/lib/laundromat/wait";
 
-import { createFakeTipService } from "./create-fake-tip-service";
-import { TipContext } from "./tip-state";
+import { PENDING_TIPS_STORAGE_KEY } from "./pending-tips-storage-key";
+import { readStoredList } from "./read-stored-list";
+import {
+  getTipStatus,
+  loadJar,
+  restoreToken as restoreTokenAction,
+  startTip as startTipAction,
+} from "./tip-actions";
+import { TipContext, type TokenRestoreResult } from "./tip-state";
 import { TIP_TIMELINE_MS } from "./tip-timeline";
 
 const TOKENS_STORAGE_KEY = "laundromat:tip-tokens";
 const COIN_DROP_VIBRATION_MS = [15, 40, 25];
+const POLL_MS = { fast: 1500, slow: 5000, fastForMs: 30_000 };
+const TOKEN_CODE_BYTES = 10;
 
-function readStoredTokens(): TipToken[] {
+function writeStoredList(options: { key: string; items: unknown[] }) {
   try {
-    const stored: unknown = JSON.parse(
-      window.localStorage.getItem(TOKENS_STORAGE_KEY) ?? "[]"
-    );
-    return Array.isArray(stored) ? stored.filter(isTipToken) : [];
-  } catch {
-    return [];
-  }
+    window.localStorage.setItem(options.key, JSON.stringify(options.items));
+  } catch {}
+}
+
+function readPendingTips() {
+  return readStoredList({
+    key: PENDING_TIPS_STORAGE_KEY,
+    isItem: isPendingTip,
+  });
+}
+
+function readStoredTokens() {
+  return readStoredList({ key: TOKENS_STORAGE_KEY, isItem: isTipToken });
+}
+
+function forgetPendingTip(sessionId: string) {
+  writeStoredList({
+    key: PENDING_TIPS_STORAGE_KEY,
+    items: readPendingTips().filter((tip) => tip.sessionId !== sessionId),
+  });
 }
 
 type TipProviderProps = { children: React.ReactNode };
 
-/** Provide the visitor's tip tokens, the jar's coins and the coin machine's phase to the scene and the toolbar, run a paid tip through to its token whether or not the panel stays open, and hold one token until it is dropped into a washer for a golden wash, as often as the visitor likes. */
+/** Provide the visitor's tip tokens, the jar's coins and the coin machine's phase to the scene and the toolbar, open and settle real tips through Stripe whether or not the panel stays open (resuming any still pending from an earlier visit), and hold one token until it is dropped into a washer for a golden wash, as often as the visitor likes. */
 export function TipProvider(props: TipProviderProps) {
-  const [service] = useState(createFakeTipService);
   const [tokens, setTokens] = useState<TipToken[]>();
   const [jar, setJar] = useState<JarCoin[]>();
   const [machine, setMachine] = useState<CoinMachinePhase>({ kind: "idle" });
   const [heldTokenCode, holdToken] = useState<string>();
   const [goldenWashes, setGoldenWashes] = useState<GoldenWash[]>([]);
-  const goldenWashTimersRef = useRef<number[]>([]);
+  const timersRef = useRef<number[]>([]);
+  const settlingRef = useRef<{
+    [sessionId: string]: Promise<TipToken | undefined>;
+  }>({});
+  const isActiveRef = useRef(false);
+  const startedTipsRef = useRef<{ [sessionId: string]: PendingTip }>({});
   const sound = useSoundBoard();
 
   useEffect(() => {
     setTokens(readStoredTokens());
-    void service.loadJar().then(setJar);
-  }, [service]);
+    void loadJar()
+      .catch(() => undefined)
+      .then(setJar);
+    function handleStorage(event: StorageEvent) {
+      if (event.key !== TOKENS_STORAGE_KEY) return;
+      setTokens((current = []) => mergeTokens([current, readStoredTokens()]));
+    }
+    window.addEventListener("storage", handleStorage);
+    return () => window.removeEventListener("storage", handleStorage);
+  }, []);
 
-  useEffect(() => {
-    if (tokens === undefined) return;
-    try {
-      window.localStorage.setItem(TOKENS_STORAGE_KEY, JSON.stringify(tokens));
-    } catch {}
-  }, [tokens]);
+  const storeToken = useCallback((token: TipToken) => {
+    const stored = mergeTokens([readStoredTokens(), [token]]);
+    writeStoredList({ key: TOKENS_STORAGE_KEY, items: stored });
+    return stored;
+  }, []);
 
-  const keepToken = useCallback((token: TipToken) => {
-    setTokens((current = []) =>
-      [...current.filter(({ code }) => code !== token.code), token].toSorted(
-        (a, b) => b.number - a.number
-      )
-    );
+  const keepToken = useCallback(
+    (token: TipToken) => {
+      const stored = storeToken(token);
+      setTokens((current = []) => mergeTokens([current, stored]));
+    },
+    [storeToken]
+  );
+
+  const setTimer = useCallback((options: { run: () => void; ms: number }) => {
+    const timer = window.setTimeout(() => {
+      timersRef.current = timersRef.current.filter((id) => id !== timer);
+      options.run();
+    }, options.ms);
+    timersRef.current = [...timersRef.current, timer];
   }, []);
 
   const takeToken = useCallback(() => setMachine({ kind: "idle" }), []);
 
-  const completeTip = useCallback(
-    async (options: { sessionId: string }) => {
-      const token = await service.claimTip(options);
+  const startTip = useCallback(async (options: { cents: number }) => {
+    const code = createTokenCode(
+      crypto.getRandomValues(new Uint8Array(TOKEN_CODE_BYTES))
+    );
+    const result = await startTipAction({
+      cents: options.cents,
+      tokenHash: await hashTokenCode(code),
+    });
+    if (result.kind === "started") {
+      startedTipsRef.current[result.sessionId] = {
+        sessionId: result.sessionId,
+        code,
+        cents: options.cents,
+      };
+    }
+    return result;
+  }, []);
+
+  const rememberTip = useCallback((options: { sessionId: string }) => {
+    const started = startedTipsRef.current[options.sessionId];
+    if (started === undefined) return;
+    writeStoredList({
+      key: PENDING_TIPS_STORAGE_KEY,
+      items: [
+        ...readPendingTips().filter(
+          ({ sessionId }) => sessionId !== options.sessionId
+        ),
+        started,
+      ],
+    });
+  }, []);
+
+  const dispenseToken = useCallback(
+    async (token: TipToken) => {
       setMachine({ kind: "inserting" });
       sound?.play("coin-insert");
       navigator.vibrate?.(COIN_DROP_VIBRATION_MS);
       await wait(TIP_TIMELINE_MS.insert);
       setMachine({ kind: "dispensing" });
       sound?.play("token-drop");
-      window.setTimeout(() => {
-        setJar((coins = []) => [
-          ...coins,
-          { number: token.number, createdAt: token.createdAt },
-        ]);
-        sound?.play("jar-coin");
-      }, TIP_TIMELINE_MS.jarDropDelay);
+      setTimer({
+        run: () => {
+          setJar((coins = []) =>
+            coins.some(({ number }) => number === token.number)
+              ? coins
+              : [...coins, { number: token.number, createdAt: token.createdAt }]
+          );
+          sound?.play("jar-coin");
+        },
+        ms: TIP_TIMELINE_MS.jarDropDelay,
+      });
       await wait(TIP_TIMELINE_MS.dispense);
       setMachine({ kind: "token-in-tray" });
-      keepToken(token);
       sound?.play("tip-chime");
-      return token;
     },
-    [service, sound, keepToken]
+    [sound, setTimer]
+  );
+
+  const findPendingTip = useCallback(
+    (sessionId: string) =>
+      readPendingTips().find((tip) => tip.sessionId === sessionId) ??
+      startedTipsRef.current[sessionId],
+    []
+  );
+
+  const settleTip = useCallback(
+    (options: { sessionId: string }) => {
+      const { sessionId } = options;
+      const settling = settlingRef.current[sessionId];
+      if (settling !== undefined) return settling;
+      const startedAt = Date.now();
+      const promise = (async (): Promise<TipToken | undefined> => {
+        while (isActiveRef.current) {
+          const status = await getTipStatus({ sessionId }).catch(
+            () => ({ kind: "pending" }) as const
+          );
+          if (status.kind === "unavailable") return undefined;
+          if (status.kind === "expired" || status.kind === "failed") {
+            forgetPendingTip(sessionId);
+            return undefined;
+          }
+          if (status.kind === "paid") {
+            const pending = findPendingTip(sessionId);
+            if (pending === undefined) {
+              const settledElsewhere = readStoredTokens().find(
+                ({ number }) => number === status.coin.number
+              );
+              if (settledElsewhere !== undefined) keepToken(settledElsewhere);
+              return settledElsewhere;
+            }
+            const token = { ...status.coin, code: pending.code };
+            storeToken(token);
+            forgetPendingTip(sessionId);
+            await dispenseToken(token);
+            keepToken(token);
+            return token;
+          }
+          await wait(
+            Date.now() - startedAt < POLL_MS.fastForMs
+              ? POLL_MS.fast
+              : POLL_MS.slow
+          );
+        }
+        return undefined;
+      })().finally(() => {
+        delete settlingRef.current[sessionId];
+      });
+      settlingRef.current[sessionId] = promise;
+      return promise;
+    },
+    [dispenseToken, findPendingTip, keepToken, storeToken]
+  );
+
+  useEffect(() => {
+    isActiveRef.current = true;
+    readPendingTips().forEach(({ sessionId }) => void settleTip({ sessionId }));
+    return () => {
+      isActiveRef.current = false;
+    };
+  }, [settleTip]);
+
+  const restoreToken = useCallback(
+    async (options: { code: string }) => {
+      const result = await restoreTokenAction(options);
+      if (result.kind !== "restored") return result;
+      const token = { ...result.coin, code: options.code };
+      keepToken(token);
+      return { kind: "restored", token } satisfies TokenRestoreResult;
+    },
+    [keepToken]
   );
 
   const dropToken = useCallback(
@@ -100,33 +253,31 @@ export function TipProvider(props: TipProviderProps) {
       sound?.play("tip-chime");
       const wash = { machineId: options.machineId, startedAt: Date.now() };
       setGoldenWashes((washes) => [...washes, wash]);
-      const timer = window.setTimeout(() => {
-        setGoldenWashes((washes) => washes.filter((w) => w !== wash));
-        goldenWashTimersRef.current = goldenWashTimersRef.current.filter(
-          (id) => id !== timer
-        );
-      }, GOLDEN_WASH_MS);
-      goldenWashTimersRef.current = [...goldenWashTimersRef.current, timer];
+      setTimer({
+        run: () =>
+          setGoldenWashes((washes) => washes.filter((w) => w !== wash)),
+        ms: GOLDEN_WASH_MS,
+      });
     },
-    [heldTokenCode, sound]
+    [heldTokenCode, sound, setTimer]
   );
 
   useEffect(
     () => () =>
-      goldenWashTimersRef.current.forEach((timer) =>
-        window.clearTimeout(timer)
-      ),
+      timersRef.current.forEach((timer) => window.clearTimeout(timer)),
     []
   );
 
   const value = useMemo(
     () => ({
-      service,
       tokens: tokens ?? [],
       jar,
       machine,
-      completeTip,
-      keepToken,
+      startTip,
+      rememberTip,
+      findPendingTip,
+      settleTip,
+      restoreToken,
       takeToken,
       heldTokenCode,
       holdToken,
@@ -134,12 +285,14 @@ export function TipProvider(props: TipProviderProps) {
       goldenWashes,
     }),
     [
-      service,
       tokens,
       jar,
       machine,
-      completeTip,
-      keepToken,
+      startTip,
+      rememberTip,
+      findPendingTip,
+      settleTip,
+      restoreToken,
       takeToken,
       heldTokenCode,
       dropToken,

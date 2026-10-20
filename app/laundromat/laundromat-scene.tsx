@@ -115,6 +115,7 @@ import {
   WeatherPanelDialog,
 } from "./weather-panel-dialog";
 
+const TIP_SESSION_PARAM = "tip_session";
 const SCENE_UNIT_PX = 40;
 const TOOLTIP_DELAY_MS = 300;
 const TOUCH_TOOLTIP_HOLD_MS = 1500;
@@ -275,7 +276,8 @@ export function LaundromatScene(props: LaundromatSceneProps) {
   const isNarrowScreen = useIsNarrowScreen();
   const [isJarTrayOpen, setIsJarTrayOpen] = useState(false);
   const [tokenRestoreCode, setTokenRestoreCode] = useState<string>();
-  const isTokenLinkPendingRef = useRef(false);
+  const [tipResumeSessionId, setTipResumeSessionId] = useState<string>();
+  const isCoinOpenPendingRef = useRef(false);
   const [isCoinBusy, setIsCoinBusy] = useState(false);
   const { copy } = useLaundromatCopy();
   const { muted: isSoundMuted } = useSoundMuted();
@@ -1279,10 +1281,17 @@ export function LaundromatScene(props: LaundromatSceneProps) {
     }
   }
 
+  const wasCoinFocusRef = useRef(false);
   useEffect(() => {
-    if (focus === "coin") return;
-    setTokenRestoreCode(undefined);
+    if (focus === "coin") {
+      wasCoinFocusRef.current = true;
+      return;
+    }
     setIsCoinBusy(false);
+    if (!wasCoinFocusRef.current) return;
+    wasCoinFocusRef.current = false;
+    setTokenRestoreCode(undefined);
+    setTipResumeSessionId(undefined);
   }, [focus]);
 
   const machineKind = tip?.machine.kind;
@@ -1303,7 +1312,7 @@ export function LaundromatScene(props: LaundromatSceneProps) {
       );
       if (text === "") return;
       setTokenRestoreCode(text);
-      isTokenLinkPendingRef.current = true;
+      isCoinOpenPendingRef.current = true;
     }
     openFromTokenLink();
     window.addEventListener("hashchange", openFromTokenLink);
@@ -1311,8 +1320,18 @@ export function LaundromatScene(props: LaundromatSceneProps) {
   }, []);
 
   useEffect(() => {
-    if (!isTokenLinkPendingRef.current) return;
-    isTokenLinkPendingRef.current = false;
+    const params = new URLSearchParams(window.location.search);
+    const sessionId = params.get(TIP_SESSION_PARAM);
+    if (sessionId === null) return;
+    params.delete(TIP_SESSION_PARAM);
+    window.history.replaceState(window.history.state, "", toFocusUrl(params));
+    setTipResumeSessionId(sessionId);
+    isCoinOpenPendingRef.current = true;
+  }, []);
+
+  useEffect(() => {
+    if (!isCoinOpenPendingRef.current) return;
+    isCoinOpenPendingRef.current = false;
     if (focus !== "coin") setFocus("coin");
   });
 
@@ -1739,6 +1758,7 @@ export function LaundromatScene(props: LaundromatSceneProps) {
               narrow={isNarrowScreen}
               reducedMotion={prefersReducedMotion}
               restoreCode={tokenRestoreCode}
+              resumeSessionId={tipResumeSessionId}
               onClose={() => setFocus("room")}
               onBusyChange={setIsCoinBusy}
             />

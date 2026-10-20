@@ -153,6 +153,33 @@ export type Database = {
         };
         Relationships: [];
       };
+      tips: {
+        Row: {
+          amount_cents: number;
+          created_at: string;
+          currency: string;
+          number: number;
+          session_id: string;
+          token_hash: string;
+        };
+        Insert: {
+          amount_cents: number;
+          created_at?: string;
+          currency?: string;
+          number: number;
+          session_id: string;
+          token_hash: string;
+        };
+        Update: {
+          amount_cents?: number;
+          created_at?: string;
+          currency?: string;
+          number?: number;
+          session_id?: string;
+          token_hash?: string;
+        };
+        Relationships: [];
+      };
     };
     Views: {
       [_ in never]: never;
@@ -212,6 +239,27 @@ export type Database = {
         SetofOptions: {
           from: "*";
           to: "notebook_entries";
+          isOneToOne: true;
+          isSetofReturn: false;
+        };
+      };
+      fulfill_tip: {
+        Args: {
+          p_amount_cents: number;
+          p_session_id: string;
+          p_token_hash: string;
+        };
+        Returns: {
+          amount_cents: number;
+          created_at: string;
+          currency: string;
+          number: number;
+          session_id: string;
+          token_hash: string;
+        };
+        SetofOptions: {
+          from: "*";
+          to: "tips";
           isOneToOne: true;
           isSetofReturn: false;
         };
