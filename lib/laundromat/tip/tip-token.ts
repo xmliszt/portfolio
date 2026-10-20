@@ -29,8 +29,20 @@ export type TokenNotice =
 
 export type GoldenChargeView = "none" | "invited" | "charged" | "charmed";
 
+export type GoldenSpend = {
+  attempt: string;
+  machineId: string;
+  remainingMs: number;
+};
+
+export type ChargeCheck =
+  | { kind: "checking" }
+  | { kind: "spent"; machineId: string; endsAtMs: number }
+  | { kind: "not-spent" };
+
 export type OwnGoldenCharge = {
   machineId: string;
+  attempt: string;
   startedAt: number;
   ranAt?: number;
 };

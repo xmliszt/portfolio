@@ -1,3 +1,4 @@
+import { ATTEMPT_PATTERN } from "@/lib/laundromat/tip/attempt-pattern";
 import { GOLDEN_CHARGE_MS } from "@/lib/laundromat/tip/golden-charge-ms";
 
 import { MAX_GOLDEN_CHARGES } from "./max-golden-charges";
@@ -109,13 +110,19 @@ function parseGoldenCharge(options: {
     !isObject(value) ||
     !("machineId" in value && typeof value.machineId === "string") ||
     value.machineId.length > MAX_MACHINE_ID_LENGTH ||
+    !("attempt" in value && typeof value.attempt === "string") ||
+    !ATTEMPT_PATTERN.test(value.attempt) ||
     !("startedAt" in value && typeof value.startedAt === "number") ||
     value.startedAt > now + MAX_CLOCK_SKEW_MS ||
     value.startedAt < now - GOLDEN_CHARGE_MS.max - MAX_CLOCK_SKEW_MS
   ) {
     return undefined;
   }
-  return { machineId: value.machineId, startedAt: value.startedAt };
+  return {
+    machineId: value.machineId,
+    attempt: value.attempt,
+    startedAt: value.startedAt,
+  };
 }
 
 /** Return the presence another tab tracked on the room channel, or `undefined` when it is not one; unknown or malformed fields are dropped, and so is a `flask` changed more than `MAX_CLOCK_SKEW_MS` after `now` or brewing after it changed, a `writingSince` in the future or older than `MAX_WRITING_MS` by `now`, and any of the last `MAX_GOLDEN_CHARGES` `goldenCharges` that starts in the future or ended before `now`, each beyond `MAX_CLOCK_SKEW_MS`. */

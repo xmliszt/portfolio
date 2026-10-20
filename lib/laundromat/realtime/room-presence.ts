@@ -23,7 +23,11 @@ export type RemoteFlask = {
 
 export type RoomRegion = { latDeg: number; lonDeg: number };
 
-export type GoldenCharge = { machineId: string; startedAt: number };
+export type GoldenCharge = {
+  machineId: string;
+  attempt: string;
+  startedAt: number;
+};
 
 export type RoomPresence = {
   sessionId: string;

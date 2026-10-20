@@ -162,6 +162,7 @@ export type Database = {
           session_id: string;
           spent_at: string | null;
           spent_attempt: string | null;
+          spent_machine_id: string | null;
           token_hash: string;
         };
         Insert: {
@@ -172,6 +173,7 @@ export type Database = {
           session_id: string;
           spent_at?: string | null;
           spent_attempt?: string | null;
+          spent_machine_id?: string | null;
           token_hash: string;
         };
         Update: {
@@ -182,6 +184,7 @@ export type Database = {
           session_id?: string;
           spent_at?: string | null;
           spent_attempt?: string | null;
+          spent_machine_id?: string | null;
           token_hash?: string;
         };
         Relationships: [];
@@ -250,7 +253,7 @@ export type Database = {
         };
       };
       spend_tip: {
-        Args: { p_attempt: string; p_token_hash: string };
+        Args: { p_attempt: string; p_machine_id: string; p_token_hash: string };
         Returns: {
           outcome: string;
           spent_at: string | null;
@@ -270,6 +273,7 @@ export type Database = {
           session_id: string;
           spent_at: string | null;
           spent_attempt: string | null;
+          spent_machine_id: string | null;
           token_hash: string;
         };
         SetofOptions: {

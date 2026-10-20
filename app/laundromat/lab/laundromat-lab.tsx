@@ -11,6 +11,7 @@ import { LocalWeatherProvider } from "@/app/laundromat/local-weather/local-weath
 import { createFakeRoomSource } from "@/app/laundromat/realtime/create-fake-room-source";
 import { RoomSourceContext } from "@/app/laundromat/realtime/room-source-context";
 import { SoundBoardProvider } from "@/app/laundromat/sound/sound-board-provider";
+import { ChargeCheckContext } from "@/app/laundromat/tip/charge-check-context";
 import type { BedroomConfig } from "@/lib/laundromat/first-visit/bedroom-config";
 import { bedroomConfig } from "@/lib/laundromat/first-visit/bedroom-config";
 import { getTimeOfDay } from "@/lib/laundromat/get-time-of-day";
@@ -388,7 +389,8 @@ function buildFakePeers(options: {
             visitorId: FAKE_GOLDEN_CHARGER_ID,
             goldenCharges: [
               {
-                machineId: "washer-3",
+                machineId: FAKE_GOLDEN_SPEND.machineId,
+                attempt: FAKE_GOLDEN_SPEND.attempt,
                 startedAt: options.goldenChargeStartedAt,
               },
             ],
@@ -399,6 +401,16 @@ function buildFakePeers(options: {
 
 const FAKE_WRITER_ID = "fake-writer";
 const FAKE_GOLDEN_CHARGER_ID = "fake-golden-charger";
+const FAKE_GOLDEN_SPEND = {
+  attempt: "00000000-0000-4000-8000-00000000901d",
+  machineId: "washer-3",
+};
+
+async function checkFakeCharges(attempts: string[]) {
+  return attempts.includes(FAKE_GOLDEN_SPEND.attempt)
+    ? [{ ...FAKE_GOLDEN_SPEND, remainingMs: GOLDEN_CHARGE_MS.max }]
+    : [];
+}
 
 const exportDials = {
   copyConfig: { type: "action", label: "copy config json" },
@@ -747,27 +759,29 @@ export default function LaundromatLab() {
         </div>
         <SoundBoardProvider>
           <RoomSourceContext.Provider value={fakeRoom.source}>
-            <div className="min-h-0 min-w-0">
-              {view.room === "hamper room" ? (
-                <LaundromatEntry
-                  key={`${replayCount}-${sceneKey}`}
-                  config={config}
-                  bedroom={bedroom}
-                  hourOverride={
-                    timeValues.override ? timeValues.hour : undefined
-                  }
-                  ignoreArrivedFlag
-                />
-              ) : (
-                <LaundromatScene
-                  key={sceneKey}
-                  config={config}
-                  hourOverride={
-                    timeValues.override ? timeValues.hour : undefined
-                  }
-                />
-              )}
-            </div>
+            <ChargeCheckContext.Provider value={checkFakeCharges}>
+              <div className="min-h-0 min-w-0">
+                {view.room === "hamper room" ? (
+                  <LaundromatEntry
+                    key={`${replayCount}-${sceneKey}`}
+                    config={config}
+                    bedroom={bedroom}
+                    hourOverride={
+                      timeValues.override ? timeValues.hour : undefined
+                    }
+                    ignoreArrivedFlag
+                  />
+                ) : (
+                  <LaundromatScene
+                    key={sceneKey}
+                    config={config}
+                    hourOverride={
+                      timeValues.override ? timeValues.hour : undefined
+                    }
+                  />
+                )}
+              </div>
+            </ChargeCheckContext.Provider>
           </RoomSourceContext.Provider>
         </SoundBoardProvider>
         <DialRoot position="top-right" theme="dark" />

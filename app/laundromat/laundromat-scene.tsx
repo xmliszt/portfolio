@@ -98,6 +98,7 @@ import {
 } from "./tip/coin-machine-sheet";
 import { TipJarTray } from "./tip/tip-jar-tray";
 import { TokenHint } from "./tip/token-hint";
+import { useChargeChecks } from "./tip/use-charge-checks";
 import { useTip } from "./tip/use-tip";
 import { HitTargetButton } from "./hit-target-button";
 import { RoomDrawing } from "./room-drawing";
@@ -402,8 +403,9 @@ export function LaundromatScene(props: LaundromatSceneProps) {
         : {
             goldenCharges: ownGoldenCharges
               .slice(-MAX_GOLDEN_CHARGES)
-              .map(({ machineId, startedAt }) => ({
+              .map(({ machineId, attempt, startedAt }) => ({
                 machineId,
+                attempt,
                 startedAt,
               })),
           }),
@@ -493,9 +495,11 @@ export function LaundromatScene(props: LaundromatSceneProps) {
     intervalMs: CHARGE_TICK_MS,
   });
   const now = Math.max(laundry.now, roomNow, chargeNow);
+  const chargeChecks = useChargeChecks(room.peers);
   const goldenCharges = getGoldenCharges({
     own: tip?.goldenCharges ?? [],
     peers: room.peers,
+    checks: chargeChecks,
     offsetsMs: room.clockOffsetsMs,
     now,
   });
@@ -984,7 +988,7 @@ export function LaundromatScene(props: LaundromatSceneProps) {
 
   const remoteGoldenChargeKey = goldenCharges
     .filter(({ isOwn }) => !isOwn)
-    .map(({ machineId, startedAt }) => `${machineId}:${startedAt}`)
+    .map(({ attempt }) => attempt)
     .join(",");
   const seenRemoteGoldenChargeKeyRef = useRef<string>(undefined);
   useEffect(() => {

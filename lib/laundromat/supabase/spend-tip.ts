@@ -4,15 +4,17 @@ import { SupabaseClient } from "@supabase/supabase-js";
 
 import { LaundromatDatabase } from "@/lib/laundromat/supabase/notebook-types";
 
-/** Spend the tip whose token hash is `tokenHash` through `spend_tip`, which only spends an unspent tip and treats a repeat of the same `attempt` as the same spend; returns `spent` or `already-spent` with the spend time, or `unknown`, and throws on a database error. */
+/** Spend the tip whose token hash is `tokenHash` into `machineId` through `spend_tip`, which only spends an unspent tip and treats a repeat of the same `attempt` as the same spend; returns `spent` or `already-spent` with the spend time, or `unknown`, and throws on a database error. */
 export async function spendTip(options: {
   client: SupabaseClient<LaundromatDatabase>;
   tokenHash: string;
   attempt: string;
+  machineId: string;
 }) {
   const { data, error } = await options.client.rpc("spend_tip", {
     p_token_hash: options.tokenHash,
     p_attempt: options.attempt,
+    p_machine_id: options.machineId,
   });
   if (error) throw error;
   const row = data.at(0);

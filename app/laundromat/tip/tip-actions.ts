@@ -7,20 +7,27 @@ import { createStripeClient } from "@/lib/laundromat/stripe/create-stripe-client
 import { fulfillCheckoutSession } from "@/lib/laundromat/stripe/fulfill-checkout-session";
 import { createLaundromatServiceClient } from "@/lib/laundromat/supabase/create-laundromat-service-client";
 import { findTipByTokenHash } from "@/lib/laundromat/supabase/find-tip-by-token-hash";
+import { listGoldenSpends } from "@/lib/laundromat/supabase/list-golden-spends";
 import { listJarCoins } from "@/lib/laundromat/supabase/list-jar-coins";
 import { spendTip } from "@/lib/laundromat/supabase/spend-tip";
+import { ATTEMPT_PATTERN } from "@/lib/laundromat/tip/attempt-pattern";
+import { GOLDEN_CHARGE_MS } from "@/lib/laundromat/tip/golden-charge-ms";
 import { hashTokenCode } from "@/lib/laundromat/tip/hash-token-code";
+import { isChargeableMachineId } from "@/lib/laundromat/tip/is-chargeable-machine-id";
+import { MAX_CHECKED_ATTEMPTS } from "@/lib/laundromat/tip/max-checked-attempts";
 import { parseTokenCode } from "@/lib/laundromat/tip/parse-token-code";
 import { CUSTOM_TIP_CENTS } from "@/lib/laundromat/tip/tip-amounts";
-import type { JarCoin, SpendResult } from "@/lib/laundromat/tip/tip-token";
+import type {
+  GoldenSpend,
+  JarCoin,
+  SpendResult,
+} from "@/lib/laundromat/tip/tip-token";
 import { TOKEN_HASH_PATTERN } from "@/lib/laundromat/tip/token-hash-pattern";
 
 const TIP_PRODUCT_NAME = "Tip for laundro.cafe";
 const INTEGRATION_IDENTIFIER = "laundro-cafe-coin-machine-qwhmzbtk";
 const SESSION_LIFETIME_S = 31 * 60;
 const FAILED_PAYMENT_STATUSES = ["canceled", "requires_payment_method"];
-const ATTEMPT_PATTERN =
-  /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/;
 const SESSION_ID_PATTERN = /^cs_(test|live)_[A-Za-z0-9]{1,200}$/;
 
 export type StartTipResult =
@@ -152,9 +159,14 @@ export async function restoreToken(options: {
 export async function spendToken(options: {
   code: string;
   attempt: string;
+  machineId: string;
 }): Promise<SpendResult> {
   const code = parseTokenCode(options.code);
-  if (code === undefined || !ATTEMPT_PATTERN.test(options.attempt)) {
+  if (
+    code === undefined ||
+    !ATTEMPT_PATTERN.test(options.attempt) ||
+    !isChargeableMachineId(options.machineId)
+  ) {
     return { kind: "unknown" };
   }
   const client = createLaundromatServiceClient();
@@ -163,7 +175,34 @@ export async function spendToken(options: {
     client,
     tokenHash: await hashTokenCode(code),
     attempt: options.attempt,
+    machineId: options.machineId,
   });
+}
+
+/** Return which of the first `MAX_CHECKED_ATTEMPTS` `attempts` spent a token into a machine within `GOLDEN_CHARGE_MS.max`, with that machine and how long its charge has left, or `undefined` when the database is not configured. */
+export async function checkGoldenCharges(options: {
+  attempts: string[];
+}): Promise<GoldenSpend[] | undefined> {
+  const attempts = (Array.isArray(options?.attempts) ? options.attempts : [])
+    .filter(
+      (attempt): attempt is string =>
+        typeof attempt === "string" && ATTEMPT_PATTERN.test(attempt)
+    )
+    .slice(0, MAX_CHECKED_ATTEMPTS);
+  if (attempts.length === 0) return [];
+  const client = createLaundromatServiceClient();
+  if (client === undefined) return undefined;
+  const now = Date.now();
+  const spends = await listGoldenSpends({
+    client,
+    attempts,
+    since: new Date(now - GOLDEN_CHARGE_MS.max),
+  });
+  return spends.map(({ attempt, machineId, spentAt }) => ({
+    attempt,
+    machineId,
+    remainingMs: Date.parse(spentAt) + GOLDEN_CHARGE_MS.max - now,
+  }));
 }
 
 /** Return every coin in the tip jar, oldest first, or `undefined` when the database is not configured. */

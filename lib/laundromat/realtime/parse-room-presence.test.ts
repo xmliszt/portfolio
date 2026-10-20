@@ -151,26 +151,38 @@ test("reads a coffee group and shared flask, and drops a flask changed too far a
   );
 });
 
+const ATTEMPT = "00000000-0000-4000-8000-000000000001";
+
 test("keeps a golden charge within its lifetime and drops one that ended or is malformed", () => {
   assert.deepEqual(
     parseRoomPresence({
       value: {
         sessionId: "s",
         visitorId: "v",
-        goldenCharges: [{ machineId: "washer-2", startedAt: now - 1000 }],
+        goldenCharges: [
+          { machineId: "washer-2", attempt: ATTEMPT, startedAt: now - 1000 },
+        ],
       },
       now,
     }),
     {
       sessionId: "s",
       visitorId: "v",
-      goldenCharges: [{ machineId: "washer-2", startedAt: now - 1000 }],
+      goldenCharges: [
+        { machineId: "washer-2", attempt: ATTEMPT, startedAt: now - 1000 },
+      ],
     }
   );
   for (const charge of [
-    { machineId: "washer-2", startedAt: now - 3 * 60 * 60_000 },
-    { machineId: "washer-2", startedAt: now + 10 * 60_000 },
-    { machineId: 2, startedAt: now },
+    {
+      machineId: "washer-2",
+      attempt: ATTEMPT,
+      startedAt: now - 3 * 60 * 60_000,
+    },
+    { machineId: "washer-2", attempt: ATTEMPT, startedAt: now + 10 * 60_000 },
+    { machineId: 2, attempt: ATTEMPT, startedAt: now },
+    { machineId: "washer-2", startedAt: now },
+    { machineId: "washer-2", attempt: "not-a-uuid", startedAt: now },
   ]) {
     assert.deepEqual(
       parseRoomPresence({

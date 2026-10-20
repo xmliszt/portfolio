@@ -62,6 +62,8 @@ function isGoldenCharge(value: unknown): value is OwnGoldenCharge {
     value !== null &&
     "machineId" in value &&
     typeof value.machineId === "string" &&
+    "attempt" in value &&
+    typeof value.attempt === "string" &&
     "startedAt" in value &&
     typeof value.startedAt === "number" &&
     (!("ranAt" in value) ||
@@ -350,13 +352,17 @@ export function TipProvider(props: TipProviderProps) {
   );
 
   const chargeMachine = useCallback(
-    (machineId: string) => {
+    (options: { machineId: string; attempt: string }) => {
       soundRef.current?.play("coin-insert");
       soundRef.current?.play("start-button");
       soundRef.current?.play("tip-chime");
       updateCharges((charges) => [
-        ...charges.filter((charge) => charge.machineId !== machineId),
-        { machineId, startedAt: Date.now() },
+        ...charges.filter((charge) => charge.machineId !== options.machineId),
+        {
+          machineId: options.machineId,
+          attempt: options.attempt,
+          startedAt: Date.now(),
+        },
       ]);
     },
     [updateCharges]
@@ -368,7 +374,7 @@ export function TipProvider(props: TipProviderProps) {
       if (settling !== undefined) return settling;
       const promise = (async () => {
         const result = await withTimeout({
-          promise: spendTokenAction({ code: drop.code, attempt: drop.attempt }),
+          promise: spendTokenAction(drop),
           ms: SPEND_TIMEOUT_MS,
         }).catch(() => ({ kind: "unavailable" }) as const);
         const outcome = getDropOutcome(result);
@@ -377,7 +383,7 @@ export function TipProvider(props: TipProviderProps) {
           keepToken({ ...held, spentAt: outcome.spentAt });
         }
         if (!outcome.retry) forgetPendingDrop(drop.code);
-        if (outcome.charge) chargeMachine(drop.machineId);
+        if (outcome.charge) chargeMachine(drop);
         return outcome;
       })().finally(() => {
         delete settlingDropsRef.current[drop.attempt];
