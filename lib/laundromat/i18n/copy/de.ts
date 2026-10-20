@@ -403,6 +403,10 @@ export const de = {
       board: "aushang",
     },
     updates: {
+      "tip-coin-machine": {
+        title: "ein Trinkgeld am Münzautomaten",
+        body: "Der Münzautomat an der Theke nimmt kleine Trinkgelder an. Deine Münze fällt ins Glas, und der Automat druckt dir einen Token, den du jederzeit in eine Waschmaschine werfen kannst, für eine goldene Wäsche, die alle im Raum sehen.",
+      },
       "instant-camera": {
         title: "ein Foto vom Raum machen",
         body: "Nimm die Sofortbildkamera vom Hocker oder vom Bett, wähl einen beliebigen Ausschnitt des Raums und drück ab. Schreib eine kurze Notiz auf den Abzug, dann teil ihn oder kopier ihn, um ihn einem Freund zu schicken.",

@@ -397,6 +397,10 @@ export const ptBR = {
       board: "mural",
     },
     updates: {
+      "tip-coin-machine": {
+        title: "deixe uma gorjeta na máquina de moedas",
+        body: "A máquina de moedas perto do balcão aceita pequenas gorjetas. Sua moeda cai no pote e a máquina imprime uma ficha para você, que você pode colocar numa lavadora quando quiser para uma lavagem dourada que todo mundo na sala vê.",
+      },
       "instant-camera": {
         title: "tire uma foto do lugar",
         body: "Pegue a câmera instantânea no banquinho ou na cama, enquadre qualquer canto do lugar e clique. Escreva um bilhete curto na foto impressa e depois compartilhe ou copie para mandar para um amigo.",

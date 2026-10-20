@@ -361,6 +361,10 @@ export const tr = {
       board: "pano",
     },
     updates: {
+      "tip-coin-machine": {
+        title: "bozuk para makinesine bahşiş bırakın",
+        body: "Tezgâhın yanındaki bozuk para makinesi küçük bahşişler alıyor. Paran kavanoza düşüyor ve makine sana bir jeton basıyor; bu jetonu istediğin zaman bir çamaşır makinesine atıp odadaki herkesin göreceği altın bir yıkama başlatabilirsin.",
+      },
       "instant-camera": {
         title: "odanın fotoğrafını çek",
         body: "Taburedeki ya da yataktaki anlık fotoğraf makinesini al, odanın istediğin bir köşesini çerçevele ve çek. Baskının üzerine kısa bir not yaz, sonra paylaş ya da bir arkadaşına göndermek için kopyala.",

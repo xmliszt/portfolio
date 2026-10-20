@@ -401,6 +401,10 @@ export const id = {
       board: "papan",
     },
     updates: {
+      "tip-coin-machine": {
+        title: "beri tip di mesin koin",
+        body: "Mesin koin di dekat meja menerima tip kecil. Koinmu jatuh ke dalam toples dan mesin mencetak token untukmu, yang bisa kamu masukkan ke mesin cuci kapan saja untuk cucian emas yang dilihat semua orang di ruangan.",
+      },
       "instant-camera": {
         title: "memotret ruangan",
         body: "Ambil kamera instan di kursi bar atau di kasur, bingkai bagian mana pun dari ruangan, lalu jepret. Tulis catatan singkat di cetakan fotonya, lalu bagikan atau salin untuk dikirim ke teman.",

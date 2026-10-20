@@ -397,6 +397,10 @@ export const en = {
       board: "board",
     } satisfies { [tag in BoardTag]: string },
     updates: {
+      "tip-coin-machine": {
+        title: "leave a tip at the coin machine",
+        body: "The coin machine by the counter takes small tips. Your coin drops into the jar and the machine prints you a token, which you can drop into a washer any time for a golden wash that everyone in the room sees.",
+      },
       "instant-camera": {
         title: "take a photo of the room",
         body: "Pick up the instant camera on the stool or the bed, frame any part of the room and snap it. Write a short note on the print, then share it or copy it to send to a friend.",

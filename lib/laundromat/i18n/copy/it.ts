@@ -405,6 +405,10 @@ export const it = {
       board: "bacheca",
     },
     updates: {
+      "tip-coin-machine": {
+        title: "lascia una mancia alla macchina a gettoni",
+        body: "La macchina a gettoni vicino al bancone accetta piccole mance. La tua moneta cade nel barattolo e la macchina ti stampa un gettone, che puoi infilare in una lavatrice quando vuoi per un lavaggio dorato che vedono tutti nella stanza.",
+      },
       "instant-camera": {
         title: "scatta una foto della stanza",
         body: "Prendi la fotocamera istantanea dallo sgabello o dal letto, inquadra un angolo qualsiasi della stanza e scatta. Scrivi una breve nota sulla stampa, poi condividila o copiala per mandarla a un amico.",

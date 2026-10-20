@@ -389,6 +389,10 @@ export const vi = {
       board: "bảng tin",
     },
     updates: {
+      "tip-coin-machine": {
+        title: "để lại tiền tip ở máy xu",
+        body: "Máy xu cạnh quầy nhận những khoản tip nhỏ. Đồng xu của bạn rơi vào hũ và máy in cho bạn một token, bạn có thể thả vào máy giặt bất cứ lúc nào để chạy một mẻ giặt vàng mà mọi người trong phòng đều thấy.",
+      },
       "instant-camera": {
         title: "chụp ảnh căn phòng",
         body: "Cầm chiếc máy ảnh chụp lấy liền trên ghế đẩu hoặc trên giường, căn khung bất kỳ góc nào trong phòng rồi bấm chụp. Viết một ghi chú ngắn lên tấm ảnh in, rồi chia sẻ hoặc sao chép để gửi cho bạn bè.",

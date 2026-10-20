@@ -377,6 +377,10 @@ export const pl = {
       board: "tablica",
     },
     updates: {
+      "tip-coin-machine": {
+        title: "zostaw napiwek w automacie na monety",
+        body: "Automat na monety przy ladzie przyjmuje małe napiwki. Twoja moneta wpada do słoika, a automat drukuje ci żeton, który możesz w każdej chwili wrzucić do pralki, by uruchomić złote pranie widoczne dla wszystkich w sali.",
+      },
       "instant-camera": {
         title: "zrób zdjęcie pokoju",
         body: "Weź aparat natychmiastowy ze stołka albo z łóżka, skadruj dowolny fragment pokoju i pstryknij. Napisz krótką notkę na odbitce, a potem udostępnij ją albo skopiuj, żeby wysłać znajomemu.",

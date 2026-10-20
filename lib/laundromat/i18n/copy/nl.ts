@@ -367,6 +367,10 @@ export const nl = {
       board: "bord",
     },
     updates: {
+      "tip-coin-machine": {
+        title: "geef een fooi bij de muntautomaat",
+        body: "De muntautomaat bij de toonbank neemt kleine fooien aan. Je munt valt in de pot en de automaat print een munt voor je, die je altijd in een wasmachine kunt gooien voor een gouden was die iedereen in de ruimte ziet.",
+      },
       "instant-camera": {
         title: "een foto maken van de kamer",
         body: "Pak de instantcamera van de kruk of het bed, kader een stukje van de kamer in en druk af. Schrijf een kort briefje op de afdruk en deel hem, of kopieer hem om naar een vriend te sturen.",

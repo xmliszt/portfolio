@@ -398,6 +398,10 @@ export const es = {
       board: "tablón",
     },
     updates: {
+      "tip-coin-machine": {
+        title: "deja una propina en la máquina de monedas",
+        body: "La máquina de monedas junto al mostrador acepta pequeñas propinas. Tu moneda cae en el frasco y la máquina te imprime una ficha, que puedes echar en una lavadora cuando quieras para un lavado dorado que ve todo el mundo en la sala.",
+      },
       "instant-camera": {
         title: "haz una foto del lugar",
         body: "Coge la cámara instantánea del taburete o de la cama, encuadra cualquier rincón y dispara. Escribe una nota corta en la foto impresa y luego compártela o cópiala para mandársela a un amigo.",
