@@ -158,6 +158,7 @@ export type Database = {
           amount_cents: number;
           created_at: string;
           currency: string;
+          email: string | null;
           number: number;
           session_id: string;
           spent_at: string | null;
@@ -169,6 +170,7 @@ export type Database = {
           amount_cents: number;
           created_at?: string;
           currency?: string;
+          email?: string | null;
           number: number;
           session_id: string;
           spent_at?: string | null;
@@ -180,6 +182,7 @@ export type Database = {
           amount_cents?: number;
           created_at?: string;
           currency?: string;
+          email?: string | null;
           number?: number;
           session_id?: string;
           spent_at?: string | null;
@@ -262,6 +265,7 @@ export type Database = {
       fulfill_tip: {
         Args: {
           p_amount_cents: number;
+          p_email?: string;
           p_session_id: string;
           p_token_hash: string;
         };
@@ -269,6 +273,7 @@ export type Database = {
           amount_cents: number;
           created_at: string;
           currency: string;
+          email: string | null;
           number: number;
           session_id: string;
           spent_at: string | null;

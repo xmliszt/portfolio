@@ -776,6 +776,8 @@ export const en = {
     traySummary: (o: { count: number; isShining: boolean }) =>
       `${o.count} ${o.count === 1 ? "token" : "tokens"} in the jar${o.isShining ? " · yours shine" : ""}`,
     trayHint: "tap your token to use it",
+    receiptDescription: (o: { code: string; link: string }) =>
+      `Thank you for your tip to laundro.cafe! Your token code: ${o.code}; if you lose your token, restore it on any device at ${o.link}.`,
     copyCode: "Copy code",
     codeCopied: "Code copied",
     trayCoinLabel: (o: { number: number; date: string; isOwn: boolean }) =>

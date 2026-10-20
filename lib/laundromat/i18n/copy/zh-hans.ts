@@ -727,6 +727,8 @@ export const zhHans = {
     traySummary: (o: { count: number; isShining: boolean }) =>
       `罐里有 ${o.count} 枚代币${o.isShining ? " · 你的在发光" : ""}`,
     trayHint: "点一下你的代币，就能使用",
+    receiptDescription: (o: { code: string; link: string }) =>
+      `谢谢你给 laundro.cafe 的小费！你的代币码是 ${o.code}，如果代币丢失，可以在任何设备上通过 ${o.link} 恢复。`,
     copyCode: "复制代币码",
     codeCopied: "已复制代币码",
     trayCoinLabel: (o: { number: number; date: string; isOwn: boolean }) =>

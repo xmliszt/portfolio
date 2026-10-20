@@ -747,6 +747,8 @@ export const uk = {
     traySummary: (o: { count: number; isShining: boolean }) =>
       `${o.count} ${pluralize({ count: o.count, one: "жетон", few: "жетони", many: "жетонів" })} у банці${o.isShining ? " · ваші сяють" : ""}`,
     trayHint: "торкніться свого жетона, щоб використати його",
+    receiptDescription: (o: { code: string; link: string }) =>
+      `Дякую за чайові для laundro.cafe! Ваш код жетона: ${o.code}; якщо загубите жетон, відновіть його на будь-якому пристрої за посиланням ${o.link}.`,
     copyCode: "Копіювати код",
     codeCopied: "Код скопійовано",
     trayCoinLabel: (o: { number: number; date: string; isOwn: boolean }) =>

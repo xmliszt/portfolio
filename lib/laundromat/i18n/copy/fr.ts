@@ -787,6 +787,8 @@ export const fr = {
     traySummary: (o: { count: number; isShining: boolean }) =>
       `${o.count} ${o.count === 1 ? "jeton" : "jetons"} dans le bocal${o.isShining ? " · les tiens brillent" : ""}`,
     trayHint: "touche ton jeton pour l'utiliser",
+    receiptDescription: (o: { code: string; link: string }) =>
+      `Merci pour ton pourboire à laundro.cafe ! Le code de ton jeton : ${o.code} ; si tu perds ton jeton, récupère-le sur tout appareil via ${o.link}.`,
     copyCode: "Copier le code",
     codeCopied: "Code copié",
     trayCoinLabel: (o: { number: number; date: string; isOwn: boolean }) =>

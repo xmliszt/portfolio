@@ -753,6 +753,8 @@ export const ko = {
     traySummary: (o: { count: number; isShining: boolean }) =>
       `병 안에 토큰 ${o.count}개${o.isShining ? " · 내 토큰은 반짝여요" : ""}`,
     trayHint: "내 토큰을 탭해서 사용해 보세요",
+    receiptDescription: (o: { code: string; link: string }) =>
+      `laundro.cafe에 팁을 남겨 줘서 고마워요(토큰 코드: ${o.code})! 토큰을 잃어버려도 어떤 기기에서든 ${o.link}에서 복원할 수 있어요.`,
     copyCode: "코드 복사",
     codeCopied: "코드 복사됨",
     trayCoinLabel: (o: { number: number; date: string; isOwn: boolean }) =>

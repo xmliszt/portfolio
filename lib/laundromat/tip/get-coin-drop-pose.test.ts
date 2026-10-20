@@ -35,7 +35,9 @@ test("falls faster and faster, then bounces lower each time", () => {
     );
   assert.ok(peaks.length >= 2);
   assert.ok(
-    peaks.every((peak, index) => index === 0 || peak < (peaks.at(index - 1) ?? Infinity))
+    peaks.every(
+      (peak, index) => index === 0 || peak < (peaks.at(index - 1) ?? Infinity)
+    )
   );
   assert.ok((peaks.at(0) ?? dropPx) < dropPx / 4);
 });

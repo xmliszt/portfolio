@@ -724,6 +724,8 @@ export const tr = {
     traySummary: (o: { count: number; isShining: boolean }) =>
       `kavanozda ${o.count} jeton${o.isShining ? " · seninkiler parlıyor" : ""}`,
     trayHint: "kullanmak için kendi jetonuna dokun",
+    receiptDescription: (o: { code: string; link: string }) =>
+      `laundro.cafe için bıraktığın bahşişe teşekkürler! Jeton kodun: ${o.code}; jetonunu kaybedersen ${o.link} bağlantısıyla her cihazda geri yükleyebilirsin.`,
     copyCode: "Kodu kopyala",
     codeCopied: "Kod kopyalandı",
     trayCoinLabel: (o: { number: number; date: string; isOwn: boolean }) =>

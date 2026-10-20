@@ -751,6 +751,8 @@ export const ru = {
     traySummary: (o: { count: number; isShining: boolean }) =>
       `${o.count} ${pluralize({ count: o.count, one: "жетон", few: "жетона", many: "жетонов" })} в банке${o.isShining ? " · ваши блестят" : ""}`,
     trayHint: "нажмите на свой жетон, чтобы использовать его",
+    receiptDescription: (o: { code: string; link: string }) =>
+      `Спасибо за чаевые для laundro.cafe! Ваш код жетона: ${o.code}; если потеряете жетон, восстановите его на любом устройстве по ссылке ${o.link}.`,
     copyCode: "Копировать код",
     codeCopied: "Код скопирован",
     trayCoinLabel: (o: { number: number; date: string; isOwn: boolean }) =>

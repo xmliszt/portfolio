@@ -773,6 +773,8 @@ export const hi = {
     traySummary: (o: { count: number; isShining: boolean }) =>
       `जार में ${o.count} टोकन${o.isShining ? " · आपके टोकन चमकते हैं" : ""}`,
     trayHint: "इस्तेमाल करने के लिए अपने टोकन पर टैप करें",
+    receiptDescription: (o: { code: string; link: string }) =>
+      `laundro.cafe को टिप देने के लिए शुक्रिया! आपका टोकन कोड: ${o.code}; टोकन खो जाए तो किसी भी डिवाइस पर ${o.link} से बहाल करें।`,
     copyCode: "कोड कॉपी करें",
     codeCopied: "कोड कॉपी हुआ",
     trayCoinLabel: (o: { number: number; date: string; isOwn: boolean }) =>

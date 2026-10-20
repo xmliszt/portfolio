@@ -784,6 +784,8 @@ export const it = {
     traySummary: (o: { count: number; isShining: boolean }) =>
       `${o.count} ${o.count === 1 ? "gettone" : "gettoni"} nel barattolo${o.isShining ? " · i tuoi brillano" : ""}`,
     trayHint: "tocca il tuo gettone per usarlo",
+    receiptDescription: (o: { code: string; link: string }) =>
+      `Grazie per la tua mancia a laundro.cafe! Il tuo codice gettone: ${o.code}; se perdi il gettone, puoi ripristinarlo su qualsiasi dispositivo da ${o.link}.`,
     copyCode: "Copia codice",
     codeCopied: "Codice copiato",
     trayCoinLabel: (o: { number: number; date: string; isOwn: boolean }) =>

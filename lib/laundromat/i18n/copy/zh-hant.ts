@@ -726,6 +726,8 @@ export const zhHant = {
     traySummary: (o: { count: number; isShining: boolean }) =>
       `罐裡有 ${o.count} 枚代幣${o.isShining ? " · 你的在發光" : ""}`,
     trayHint: "點一下你的代幣，就能使用",
+    receiptDescription: (o: { code: string; link: string }) =>
+      `謝謝你給 laundro.cafe 的小費！你的代幣碼是 ${o.code}，如果代幣遺失，可以在任何裝置上透過 ${o.link} 還原。`,
     copyCode: "複製代幣碼",
     codeCopied: "已複製代幣碼",
     trayCoinLabel: (o: { number: number; date: string; isOwn: boolean }) =>

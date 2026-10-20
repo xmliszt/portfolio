@@ -777,6 +777,8 @@ export const ptBR = {
     traySummary: (o: { count: number; isShining: boolean }) =>
       `${o.count} ${o.count === 1 ? "ficha" : "fichas"} no pote${o.isShining ? " · as suas brilham" : ""}`,
     trayHint: "toque na sua ficha para usar",
+    receiptDescription: (o: { code: string; link: string }) =>
+      `Obrigado pela gorjeta para laundro.cafe! O código da sua ficha: ${o.code}; se perder a ficha, restaure em qualquer dispositivo pelo link ${o.link}.`,
     copyCode: "Copiar código",
     codeCopied: "Código copiado",
     trayCoinLabel: (o: { number: number; date: string; isOwn: boolean }) =>

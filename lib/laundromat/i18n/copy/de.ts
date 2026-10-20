@@ -787,6 +787,8 @@ export const de = {
     traySummary: (o: { count: number; isShining: boolean }) =>
       `${o.count} ${o.count === 1 ? "Token" : "Tokens"} im Glas${o.isShining ? " · deine glänzen" : ""}`,
     trayHint: "tipp auf deinen Token, um ihn zu benutzen",
+    receiptDescription: (o: { code: string; link: string }) =>
+      `Danke für dein Trinkgeld an laundro.cafe! Dein Token-Code: ${o.code}; falls du deinen Token verlierst, kannst du ihn auf jedem Gerät über ${o.link} wiederherstellen.`,
     copyCode: "Code kopieren",
     codeCopied: "Code kopiert",
     trayCoinLabel: (o: { number: number; date: string; isOwn: boolean }) =>

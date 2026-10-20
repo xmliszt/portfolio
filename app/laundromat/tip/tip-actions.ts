@@ -3,6 +3,9 @@
 import { headers } from "next/headers";
 import Stripe from "stripe";
 
+import { getLaundromatCopy } from "@/lib/laundromat/i18n/get-laundromat-copy";
+import { DEFAULT_LAUNDROMAT_LOCALE } from "@/lib/laundromat/i18n/laundromat-locales";
+import { parseLaundromatLocale } from "@/lib/laundromat/i18n/parse-laundromat-locale";
 import { createStripeClient } from "@/lib/laundromat/stripe/create-stripe-client";
 import { fulfillCheckoutSession } from "@/lib/laundromat/stripe/fulfill-checkout-session";
 import { createLaundromatServiceClient } from "@/lib/laundromat/supabase/create-laundromat-service-client";
@@ -22,7 +25,7 @@ import type {
   JarCoin,
   SpendResult,
 } from "@/lib/laundromat/tip/tip-token";
-import { TOKEN_HASH_PATTERN } from "@/lib/laundromat/tip/token-hash-pattern";
+import { TOKEN_CODE_HASH_PREFIX } from "@/lib/laundromat/tip/token-code-format";
 
 const TIP_PRODUCT_NAME = "Tip for laundro.cafe";
 const INTEGRATION_IDENTIFIER = "laundro-cafe-coin-machine-qwhmzbtk";
@@ -47,7 +50,7 @@ export type RestoreResult =
   | { kind: "unknown" }
   | { kind: "unavailable" };
 
-async function getReturnUrl() {
+async function getSiteOrigin() {
   const requestHeaders = await headers();
   const host = requestHeaders.get("host") ?? "laundro.cafe";
   const protocol =
@@ -55,23 +58,32 @@ async function getReturnUrl() {
     (host.endsWith("localhost") || host.includes("localhost:")
       ? "http"
       : "https");
-  return `${protocol}://${host}/?tip_session={CHECKOUT_SESSION_ID}`;
+  return `${protocol}://${host}`;
 }
 
-/** Open a Stripe Checkout Session for a tip of `cents` that carries `tokenHash`, and return its id and client secret; `invalid` when `cents` is out of range or `tokenHash` is not a SHA-256 hex digest, `unavailable` when Stripe is not configured. */
+/** Open a Stripe Checkout Session for a tip of `cents` that carries the hash of token `code` and, on the payment's receipt, the code and its restore link in the visitor's `locale`; return its id and client secret, `invalid` when `cents` is out of range or `code` is not a token code, `unavailable` when Stripe is not configured. */
 export async function startTip(options: {
   cents: number;
-  tokenHash: string;
+  code: string;
+  locale: string;
 }): Promise<StartTipResult> {
-  const { cents, tokenHash } = options;
+  const { cents } = options;
+  const code =
+    typeof options.code === "string" ? parseTokenCode(options.code) : undefined;
   if (
     !Number.isInteger(cents) ||
     cents < CUSTOM_TIP_CENTS.min ||
     cents > CUSTOM_TIP_CENTS.max ||
-    !TOKEN_HASH_PATTERN.test(tokenHash)
+    code === undefined
   ) {
     return { kind: "invalid" };
   }
+  const copy = getLaundromatCopy(
+    (typeof options.locale === "string"
+      ? parseLaundromatLocale(options.locale)
+      : undefined) ?? DEFAULT_LAUNDROMAT_LOCALE
+  );
+  const origin = await getSiteOrigin();
   const stripe = createStripeClient();
   if (stripe === undefined) return { kind: "unavailable" };
   const session = await stripe.checkout.sessions.create({
@@ -88,9 +100,14 @@ export async function startTip(options: {
         quantity: 1,
       },
     ],
-    metadata: { token_hash: tokenHash },
-    payment_intent_data: { description: TIP_PRODUCT_NAME },
-    return_url: await getReturnUrl(),
+    metadata: { token_hash: await hashTokenCode(code) },
+    payment_intent_data: {
+      description: copy.tip.receiptDescription({
+        code,
+        link: `${origin}/${TOKEN_CODE_HASH_PREFIX}${code}`,
+      }),
+    },
+    return_url: `${origin}/?tip_session={CHECKOUT_SESSION_ID}`,
     expires_at: Math.floor(Date.now() / 1000) + SESSION_LIFETIME_S,
     integration_identifier: INTEGRATION_IDENTIFIER,
   });

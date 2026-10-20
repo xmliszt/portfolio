@@ -781,6 +781,8 @@ export const es = {
     traySummary: (o: { count: number; isShining: boolean }) =>
       `${o.count} ${o.count === 1 ? "ficha" : "fichas"} en el frasco${o.isShining ? " · las tuyas brillan" : ""}`,
     trayHint: "toca tu ficha para usarla",
+    receiptDescription: (o: { code: string; link: string }) =>
+      `¡Gracias por tu propina a laundro.cafe! Tu código de ficha: ${o.code}; si pierdes tu ficha, puedes recuperarla en cualquier dispositivo en ${o.link}.`,
     copyCode: "Copiar código",
     codeCopied: "Código copiado",
     trayCoinLabel: (o: { number: number; date: string; isOwn: boolean }) =>

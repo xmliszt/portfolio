@@ -11,6 +11,7 @@ const session = (overrides: object = {}) => ({
   currency: "sgd",
   amount_total: 500,
   metadata: { token_hash: HASH },
+  customer_details: { email: "tipper@example.com" },
   ...overrides,
 });
 
@@ -19,7 +20,15 @@ test("records a paid SGD tip with a token hash", () => {
     sessionId: "cs_test_1",
     amountCents: 500,
     tokenHash: HASH,
+    email: "tipper@example.com",
   });
+});
+
+test("records a tip without an email when Stripe has none", () => {
+  assert.equal(
+    getFulfillableTip(session({ customer_details: null }))?.email,
+    undefined
+  );
 });
 
 test("refuses unpaid, foreign-currency, amountless or hashless sessions", () => {

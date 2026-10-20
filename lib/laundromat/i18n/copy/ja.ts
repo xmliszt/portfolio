@@ -758,6 +758,8 @@ export const ja = {
     traySummary: (o: { count: number; isShining: boolean }) =>
       `瓶の中にトークン ${o.count} 枚${o.isShining ? " · あなたのトークンは光ってる" : ""}`,
     trayHint: "あなたのトークンをタップして使ってね",
+    receiptDescription: (o: { code: string; link: string }) =>
+      `laundro.cafeへのチップ、ありがとう（トークンコード：${o.code}）。トークンをなくしても、${o.link}からどのデバイスでも復元できます。`,
     copyCode: "コードをコピー",
     codeCopied: "コードをコピーしました",
     trayCoinLabel: (o: { number: number; date: string; isOwn: boolean }) =>

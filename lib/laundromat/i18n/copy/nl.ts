@@ -740,6 +740,8 @@ export const nl = {
     traySummary: (o: { count: number; isShining: boolean }) =>
       `${o.count} ${o.count === 1 ? "penning" : "penningen"} in de pot${o.isShining ? " · die van jou glanzen" : ""}`,
     trayHint: "tik op je penning om hem te gebruiken",
+    receiptDescription: (o: { code: string; link: string }) =>
+      `Bedankt voor je fooi aan laundro.cafe! Je penningcode: ${o.code}; als je je penning kwijtraakt, kun je die op elk apparaat herstellen via ${o.link}.`,
     copyCode: "Kopieer code",
     codeCopied: "Code gekopieerd",
     trayCoinLabel: (o: { number: number; date: string; isOwn: boolean }) =>

@@ -758,6 +758,8 @@ export const vi = {
     traySummary: (o: { count: number; isShining: boolean }) =>
       `${o.count} token trong hũ${o.isShining ? " · token của bạn lấp lánh" : ""}`,
     trayHint: "chạm vào token của bạn để dùng",
+    receiptDescription: (o: { code: string; link: string }) =>
+      `Cảm ơn bạn đã gửi tiền tip cho laundro.cafe! Mã token của bạn: ${o.code}; nếu mất token, bạn có thể khôi phục trên bất kỳ thiết bị nào qua ${o.link}.`,
     copyCode: "Sao chép mã",
     codeCopied: "Đã sao chép mã",
     trayCoinLabel: (o: { number: number; date: string; isOwn: boolean }) =>

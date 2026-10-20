@@ -6,9 +6,10 @@ type CheckoutSessionFields = {
   currency: string | null;
   amount_total: number | null;
   metadata: { [key: string]: string } | null;
+  customer_details: { email: string | null } | null;
 };
 
-/** Return the session id, amount and token hash to record for `session` when it is a paid SGD tip carrying a valid token hash, or `undefined` when it is not. */
+/** Return the session id, amount, token hash and payer's email (when Stripe has one) to record for `session` when it is a paid SGD tip carrying a valid token hash, or `undefined` when it is not. */
 export function getFulfillableTip(session: CheckoutSessionFields) {
   const tokenHash = session.metadata?.token_hash;
   if (
@@ -24,5 +25,6 @@ export function getFulfillableTip(session: CheckoutSessionFields) {
     sessionId: session.id,
     amountCents: session.amount_total,
     tokenHash,
+    email: session.customer_details?.email ?? undefined,
   };
 }

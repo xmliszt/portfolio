@@ -779,6 +779,8 @@ export const id = {
     traySummary: (o: { count: number; isShining: boolean }) =>
       `${o.count} token di dalam toples${o.isShining ? " · punyamu berkilau" : ""}`,
     trayHint: "ketuk tokenmu untuk memakainya",
+    receiptDescription: (o: { code: string; link: string }) =>
+      `Terima kasih atas tipmu untuk laundro.cafe! Kode tokenmu: ${o.code}; kalau tokenmu hilang, pulihkan di perangkat mana pun lewat ${o.link}.`,
     copyCode: "Salin kode",
     codeCopied: "Kode disalin",
     trayCoinLabel: (o: { number: number; date: string; isOwn: boolean }) =>

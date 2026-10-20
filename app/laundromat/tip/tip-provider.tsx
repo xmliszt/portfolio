@@ -2,11 +2,11 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
+import { useLaundromatCopy } from "@/app/laundromat/i18n/use-laundromat-copy";
 import { useSoundBoard } from "@/app/laundromat/sound/use-sound-board";
 import { createTokenCode } from "@/lib/laundromat/tip/create-token-code";
 import { getDropOutcome } from "@/lib/laundromat/tip/get-drop-outcome";
 import { GOLDEN_CHARGE_MS } from "@/lib/laundromat/tip/golden-charge-ms";
-import { hashTokenCode } from "@/lib/laundromat/tip/hash-token-code";
 import { isPendingTip } from "@/lib/laundromat/tip/is-pending-tip";
 import { isTipToken } from "@/lib/laundromat/tip/is-tip-token";
 import { mergeJar } from "@/lib/laundromat/tip/merge-jar";
@@ -142,6 +142,7 @@ type TipProviderProps = { children: React.ReactNode };
 
 /** Provide the visitor's tip tokens, the jar's coins and the coin machine's phase to the scene and the toolbar, open and settle real tips through Stripe whether or not the panel stays open (resuming any still pending from an earlier visit), hold one token until it is dropped into a washer or dryer, which spends it on the server (safe to retry after a lost answer) and gives that machine a golden charge kept across reloads, and show what happened to the drop. */
 export function TipProvider(props: TipProviderProps) {
+  const { copy } = useLaundromatCopy();
   const [tokens, setTokens] = useState<TipToken[]>();
   const [jar, setJar] = useState<JarCoin[]>();
   const [machine, setMachine] = useState<CoinMachinePhase>({ kind: "idle" });
@@ -267,23 +268,27 @@ export function TipProvider(props: TipProviderProps) {
       document.removeEventListener("visibilitychange", handleVisibilityChange);
   }, [refreshJar]);
 
-  const startTip = useCallback(async (options: { cents: number }) => {
-    const code = createTokenCode(
-      crypto.getRandomValues(new Uint8Array(TOKEN_CODE_BYTES))
-    );
-    const result = await startTipAction({
-      cents: options.cents,
-      tokenHash: await hashTokenCode(code),
-    });
-    if (result.kind === "started") {
-      startedTipsRef.current[result.sessionId] = {
-        sessionId: result.sessionId,
-        code,
+  const startTip = useCallback(
+    async (options: { cents: number }) => {
+      const code = createTokenCode(
+        crypto.getRandomValues(new Uint8Array(TOKEN_CODE_BYTES))
+      );
+      const result = await startTipAction({
         cents: options.cents,
-      };
-    }
-    return result;
-  }, []);
+        code,
+        locale: copy.locale,
+      });
+      if (result.kind === "started") {
+        startedTipsRef.current[result.sessionId] = {
+          sessionId: result.sessionId,
+          code,
+          cents: options.cents,
+        };
+      }
+      return result;
+    },
+    [copy.locale]
+  );
 
   const rememberTip = useCallback((options: { sessionId: string }) => {
     const started = startedTipsRef.current[options.sessionId];

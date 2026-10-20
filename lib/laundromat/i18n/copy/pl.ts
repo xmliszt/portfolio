@@ -748,6 +748,8 @@ export const pl = {
     traySummary: (o: { count: number; isShining: boolean }) =>
       `${o.count} ${pluralize({ count: o.count, one: "żeton", few: "żetony", many: "żetonów" })} w słoiku${o.isShining ? " · twoje lśnią" : ""}`,
     trayHint: "dotknij swojego żetonu, żeby go użyć",
+    receiptDescription: (o: { code: string; link: string }) =>
+      `Dziękuję za napiwek dla laundro.cafe! Twój kod żetonu: ${o.code}; jeśli zgubisz żeton, możesz go przywrócić na dowolnym urządzeniu przez ${o.link}.`,
     copyCode: "Kopiuj kod",
     codeCopied: "Kod skopiowany",
     trayCoinLabel: (o: { number: number; date: string; isOwn: boolean }) =>
