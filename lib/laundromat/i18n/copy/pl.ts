@@ -379,7 +379,7 @@ export const pl = {
     updates: {
       "tip-coin-machine": {
         title: "zostaw napiwek w automacie na monety",
-        body: "Automat na monety przy ladzie przyjmuje małe napiwki. Twoja moneta wpada do słoika, a automat drukuje ci żeton, który możesz w każdej chwili wrzucić do pralki, by uruchomić złote pranie widoczne dla wszystkich w sali.",
+        body: "Automat na monety przy ladzie przyjmuje małe napiwki. Twoja moneta wpada do słoika, a automat drukuje ci żeton. Wrzuć go kiedy chcesz do pralki lub suszarki, a zrobi się złota dla wszystkich w sali.",
       },
       "instant-camera": {
         title: "zrób zdjęcie pokoju",

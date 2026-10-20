@@ -400,7 +400,7 @@ export const es = {
     updates: {
       "tip-coin-machine": {
         title: "deja una propina en la máquina de monedas",
-        body: "La máquina de monedas junto al mostrador acepta pequeñas propinas. Tu moneda cae en el frasco y la máquina te imprime una ficha, que puedes echar en una lavadora cuando quieras para un lavado dorado que ve todo el mundo en la sala.",
+        body: "La máquina de monedas junto al mostrador acepta pequeñas propinas. Tu moneda cae en el frasco y la máquina te imprime una ficha. Échala en una lavadora o secadora cuando quieras y se vuelve dorada para todos en la sala.",
       },
       "instant-camera": {
         title: "haz una foto del lugar",

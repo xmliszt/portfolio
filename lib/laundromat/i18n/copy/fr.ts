@@ -407,7 +407,7 @@ export const fr = {
     updates: {
       "tip-coin-machine": {
         title: "laisser un pourboire à la machine à pièces",
-        body: "La machine à pièces près du comptoir accepte de petits pourboires. Ta pièce tombe dans le bocal et la machine t’imprime un jeton, que tu peux glisser dans une machine à laver quand tu veux pour un lavage doré que tout le monde dans la salle voit.",
+        body: "La machine à pièces près du comptoir accepte de petits pourboires. Ta pièce tombe dans le bocal et la machine t’imprime un jeton. Glisse-le quand tu veux dans un lave-linge ou un sèche-linge, et il devient doré pour tout le monde dans la salle.",
       },
       "instant-camera": {
         title: "prends une photo de la pièce",

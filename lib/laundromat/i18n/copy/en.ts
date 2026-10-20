@@ -399,7 +399,7 @@ export const en = {
     updates: {
       "tip-coin-machine": {
         title: "leave a tip at the coin machine",
-        body: "The coin machine by the counter takes small tips. Your coin drops into the jar and the machine prints you a token, which you can drop into a washer any time for a golden wash that everyone in the room sees.",
+        body: "The coin machine by the counter takes small tips. Your coin drops into the jar and the machine prints you a token. Drop it into a washer or dryer any time and it turns gold for everyone in the room.",
       },
       "instant-camera": {
         title: "take a photo of the room",

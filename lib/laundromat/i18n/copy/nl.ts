@@ -369,7 +369,7 @@ export const nl = {
     updates: {
       "tip-coin-machine": {
         title: "geef een fooi bij de muntautomaat",
-        body: "De muntautomaat bij de toonbank neemt kleine fooien aan. Je munt valt in de pot en de automaat print een munt voor je, die je altijd in een wasmachine kunt gooien voor een gouden was die iedereen in de ruimte ziet.",
+        body: "De muntautomaat bij de toonbank neemt kleine fooien aan. Je munt valt in de pot en de automaat print een munt voor je. Gooi hem wanneer je wilt in een wasmachine of droger en die wordt goud voor iedereen in de ruimte.",
       },
       "instant-camera": {
         title: "een foto maken van de kamer",

@@ -380,13 +380,34 @@ export function CoinMachinePanel(props: CoinMachinePanelProps) {
         return (
           <div className="flex flex-col gap-y-4">
             <TipReceipt token={step.token} printing={step.fresh} hint />
-            <button
-              type="button"
-              className={WIDE_KEY_CLASS}
-              onClick={props.onClose}
-            >
-              {tipCopy.done}
-            </button>
+            <div className="flex flex-col gap-y-2">
+              <p
+                className={cn(
+                  SETTINGS_META_CLASS,
+                  "m-0 text-center text-pretty text-[var(--lm-accent-hi)] normal-case"
+                )}
+              >
+                {tipCopy.dropInMachineHint}
+              </p>
+              <button
+                type="button"
+                className={cn(WIDE_KEY_CLASS, "text-[var(--lm-accent-hi)]")}
+                onClick={() => {
+                  tip.holdToken(step.token.code);
+                  props.onClose();
+                }}
+              >
+                <TipCoin metal="brass" label="" sizePx={14} />
+                {tipCopy.dropInMachine}
+              </button>
+              <button
+                type="button"
+                className={WIDE_KEY_CLASS}
+                onClick={props.onClose}
+              >
+                {tipCopy.done}
+              </button>
+            </div>
           </div>
         );
       case "restore":

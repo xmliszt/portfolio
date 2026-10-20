@@ -621,7 +621,7 @@ export function LaundromatScene(props: LaundromatSceneProps) {
       });
       const goldenWash = ((): GoldenWashView => {
         if (goldenWashMachineIds.includes(object.id)) return "running";
-        if (tip?.heldTokenCode !== undefined && object.kind === "washer") {
+        if (tip?.heldTokenCode !== undefined) {
           return "invited";
         }
         return "none";
@@ -798,12 +798,16 @@ export function LaundromatScene(props: LaundromatSceneProps) {
       status.kind === "running" ||
       (status.kind === "occupied" && status.phase === "running")
   );
-  const isWasherRunning =
-    goldenWashMachineIds.length > 0 ||
-    runningStatuses.some(({ machine }) => machine.kind === "washer");
-  const isDryerRunning = runningStatuses.some(
-    ({ machine }) => machine.kind === "dryer"
+  const goldenKinds = Object.values(machineViews).flatMap(
+    ({ machine, goldenWash }) =>
+      goldenWash === "running" ? [machine.kind] : []
   );
+  const isWasherRunning =
+    goldenKinds.includes("washer") ||
+    runningStatuses.some(({ machine }) => machine.kind === "washer");
+  const isDryerRunning =
+    goldenKinds.includes("dryer") ||
+    runningStatuses.some(({ machine }) => machine.kind === "dryer");
   const isTvHissing =
     appliances.tv.on && (tvAudioState === "buffering" || isTvNoSignal);
   const lampSwitch = useSceneSounds({
@@ -1052,7 +1056,7 @@ export function LaundromatScene(props: LaundromatSceneProps) {
 
   function dropHeldToken(objectId: string) {
     if (tip === undefined) return;
-    if (machineViews[objectId]?.machine.kind === "washer") {
+    if (machineViews[objectId] !== undefined) {
       tip.dropToken({ machineId: objectId });
       return;
     }

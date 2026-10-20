@@ -67,14 +67,16 @@ export const tipCopy = {
 
   pocketLabel: (o: { number: number }) => `token no. ${o.number}`,
   pocketHeading: "your tokens",
-  dropInWasher: "drop in a washer",
+  dropInMachine: "drop it in a machine",
+  dropInMachineHint:
+    "Drop it in a washer or dryer and it turns gold for everyone here, as often as you like.",
   viewCoin: (o: { number: number }) => `Look at token no. ${o.number}`,
   turnCoin: "Turn the coin over",
   turnHint: "drag to turn",
   flip: "flip",
   coinNumberCaption: "no.",
   coinBackNote: "thank you",
-  holdHint: "tap a washer for a golden wash",
+  holdHint: "tap a washer or dryer",
   goldenReadout: "GOLD",
   trayHeading: "tip jar",
   traySummary: (o: { count: number }) => `${tips(o.count)} · yours shine`,

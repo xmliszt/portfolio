@@ -107,7 +107,7 @@ export function PocketButton() {
                           tip.holdToken(token.code);
                         }}
                       >
-                        {tipCopy.dropInWasher}
+                        {tipCopy.dropInMachine}
                       </button>
                     </div>
                   </div>

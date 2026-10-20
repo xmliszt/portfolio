@@ -403,7 +403,7 @@ export const id = {
     updates: {
       "tip-coin-machine": {
         title: "beri tip di mesin koin",
-        body: "Mesin koin di dekat meja menerima tip kecil. Koinmu jatuh ke dalam toples dan mesin mencetak token untukmu, yang bisa kamu masukkan ke mesin cuci kapan saja untuk cucian emas yang dilihat semua orang di ruangan.",
+        body: "Mesin koin di dekat meja menerima tip kecil. Koinmu jatuh ke dalam toples dan mesin mencetak token untukmu. Masukkan ke mesin cuci atau pengering kapan saja dan mesinnya berubah emas bagi semua orang di ruangan.",
       },
       "instant-camera": {
         title: "memotret ruangan",

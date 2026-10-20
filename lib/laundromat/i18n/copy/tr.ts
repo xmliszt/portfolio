@@ -363,7 +363,7 @@ export const tr = {
     updates: {
       "tip-coin-machine": {
         title: "bozuk para makinesine bahşiş bırakın",
-        body: "Tezgâhın yanındaki bozuk para makinesi küçük bahşişler alıyor. Paran kavanoza düşüyor ve makine sana bir jeton basıyor; bu jetonu istediğin zaman bir çamaşır makinesine atıp odadaki herkesin göreceği altın bir yıkama başlatabilirsin.",
+        body: "Tezgâhın yanındaki bozuk para makinesi küçük bahşişler alıyor. Paran kavanoza düşüyor ve makine sana bir jeton basıyor. Onu istediğin zaman bir çamaşır ya da kurutma makinesine at, odadaki herkes için altın rengine dönsün.",
       },
       "instant-camera": {
         title: "odanın fotoğrafını çek",

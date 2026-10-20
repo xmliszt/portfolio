@@ -399,7 +399,7 @@ export const ptBR = {
     updates: {
       "tip-coin-machine": {
         title: "deixe uma gorjeta na máquina de moedas",
-        body: "A máquina de moedas perto do balcão aceita pequenas gorjetas. Sua moeda cai no pote e a máquina imprime uma ficha para você, que você pode colocar numa lavadora quando quiser para uma lavagem dourada que todo mundo na sala vê.",
+        body: "A máquina de moedas perto do balcão aceita pequenas gorjetas. Sua moeda cai no pote e a máquina imprime uma ficha para você. Coloque-a numa lavadora ou secadora quando quiser e ela fica dourada para todos na sala.",
       },
       "instant-camera": {
         title: "tire uma foto do lugar",
