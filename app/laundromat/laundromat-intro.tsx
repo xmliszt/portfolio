@@ -1,13 +1,17 @@
 "use client";
 
+import { Fragment } from "react";
+import Link from "next/link";
+
 import { INSPIRATION_BOOK } from "@/lib/laundromat/inspiration-book";
+import { LEGAL_PAGES } from "@/lib/laundromat/legal/legal-pages";
 
 import { useLaundromatCopy } from "./i18n/use-laundromat-copy";
 
 const CREDIT_LINK_CLASS =
   "outline-none hover:text-[var(--lm-ink-hi)] focus-visible:text-[var(--lm-ink-hi)] focus-visible:outline-1 focus-visible:outline-[var(--lm-line)] focus-visible:outline-dashed";
 
-/** Render the laundromat's screen-reader heading, introduction and book credit in the visitor's language, showing the credit while one of its links has keyboard focus. */
+/** Render the laundromat's screen-reader heading, introduction, and book credit in the visitor's language followed by the English privacy and terms links, showing the credit while one of its links has keyboard focus. */
 export function LaundromatIntro() {
   const { copy } = useLaundromatCopy();
   return (
@@ -42,6 +46,18 @@ export function LaundromatIntro() {
         >
           @{INSPIRATION_BOOK.authorInstagramHandle}
         </a>
+        {Object.values(LEGAL_PAGES).map((page) => (
+          <Fragment key={page.path}>
+            {" · "}
+            <Link
+              href={page.path}
+              prefetch={false}
+              className={CREDIT_LINK_CLASS}
+            >
+              {page.title}
+            </Link>
+          </Fragment>
+        ))}
       </p>
     </>
   );
