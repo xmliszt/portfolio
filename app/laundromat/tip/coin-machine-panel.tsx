@@ -58,7 +58,10 @@ const SCREWS = [
   "bottom-1.5 right-1.5",
 ];
 
-const SCREEN_CLASS = cn(SETTINGS_LCD_CLASS, "h-8 flex-1 px-3 text-[12px]");
+const SCREEN_CLASS = cn(
+  SETTINGS_LCD_CLASS,
+  "h-8 flex-1 px-3 text-[12px] normal-case"
+);
 const WIDE_KEY_CLASS = cn(PRINTER_KEY_CLASS, "h-10 w-full justify-center px-3");
 const FIELD_CLASS =
   "h-11 w-full min-w-0 rounded-[7px] bg-[#0b0805] px-3 font-[family-name:var(--lm-font-mono)] text-[16px] tracking-[0.04em] text-[var(--lm-accent)] [text-shadow:0_0_6px_color-mix(in_oklab,var(--lm-accent)_60%,transparent)] shadow-[inset_0_1px_3px_rgb(0_0_0/0.9),0_1px_0_rgb(255_255_255/0.04)] outline-none placeholder:text-[color-mix(in_oklab,var(--lm-accent)_35%,transparent)] placeholder:[text-shadow:none] focus-visible:shadow-[inset_0_1px_3px_rgb(0_0_0/0.9),inset_0_0_0_1.5px_color-mix(in_oklab,var(--lm-accent)_60%,transparent)]";
