@@ -1,8 +1,10 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { Fragment, useEffect, useRef } from "react";
+import Link from "next/link";
 
 import { useLaundromatCopy } from "@/app/laundromat/i18n/use-laundromat-copy";
+import { LEGAL_PAGES } from "@/lib/laundromat/legal/legal-pages";
 import type { RenderQualityPreference } from "@/lib/laundromat/render-quality/render-quality";
 import { RENDER_QUALITY_PREFERENCES } from "@/lib/laundromat/render-quality/render-quality";
 import { cn } from "@/lib/utils";
@@ -12,6 +14,8 @@ import { SETTINGS_META_CLASS } from "./settings-meta-class";
 import { SettingsTicketPrinter } from "./settings-ticket-printer";
 import { useRenderQuality } from "./use-render-quality";
 import { WeatherFieldset } from "./weather-fieldset";
+
+const LEGAL_NAV_LABEL = "Privacy and terms";
 
 type SettingsDialogProps = {
   restoreCode: string | undefined;
@@ -140,7 +144,28 @@ export function SettingsDialog(props: SettingsDialogProps) {
           onRestoreRead={props.onRestoreRead}
         />
       </div>
-      <div className="flex justify-end px-2">
+      <div className="flex items-center justify-between gap-x-3 px-2">
+        <nav
+          aria-label={LEGAL_NAV_LABEL}
+          className={cn(SETTINGS_META_CLASS, "flex items-center gap-x-1.5")}
+        >
+          {Object.values(LEGAL_PAGES).map((page, index) => (
+            <Fragment key={page.path}>
+              {index > 0 && (
+                <span aria-hidden className="opacity-40">
+                  ·
+                </span>
+              )}
+              <Link
+                href={page.path}
+                prefetch={false}
+                className="rounded-sm opacity-60 outline-none hover:text-[var(--lm-ink-hi)] hover:opacity-100 focus-visible:opacity-100 focus-visible:ring-1 focus-visible:ring-[var(--lm-edge)]"
+              >
+                {page.title}
+              </Link>
+            </Fragment>
+          ))}
+        </nav>
         <button
           type="button"
           onClick={props.onClose}
