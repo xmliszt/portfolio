@@ -23,6 +23,8 @@ export type RemoteFlask = {
 
 export type RoomRegion = { latDeg: number; lonDeg: number };
 
+export type GoldenWash = { machineId: string; startedAt: number };
+
 export type RoomPresence = {
   sessionId: string;
   visitorId: string;
@@ -31,6 +33,7 @@ export type RoomPresence = {
   coffeeGroupId?: string;
   flask?: RemoteFlask;
   writingSince?: number;
+  goldenWash?: GoldenWash;
 };
 
 export type RemoteClock = {

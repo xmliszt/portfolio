@@ -34,6 +34,7 @@ test("points each camera focus target at an existing object", () => {
     notebook: { objectId: "notebook" },
     board: { objectId: "board" },
     weather: { objectId: "weather-panel" },
+    coin: { objectId: "coin-machine" },
   });
   for (const { objectId } of Object.values(sceneConfig.camera.focusTargets)) {
     assert.ok(ids.has(objectId), objectId);

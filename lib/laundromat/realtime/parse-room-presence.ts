@@ -1,6 +1,13 @@
+import { GOLDEN_WASH_MS } from "@/lib/laundromat/tip/golden-wash-ms";
+
 import { MAX_WRITING_MS } from "./max-writing-ms";
 import { parseRoomRegion } from "./parse-room-region";
-import type { RemoteFlask, RemoteLoad, RoomPresence } from "./room-presence";
+import type {
+  GoldenWash,
+  RemoteFlask,
+  RemoteLoad,
+  RoomPresence,
+} from "./room-presence";
 
 const MAX_CLOCK_SKEW_MS = 60_000;
 const MAX_CYCLE_MS = 2 * 60 * 60_000;
@@ -92,7 +99,25 @@ function parseFlask(options: {
   };
 }
 
-/** Return the presence another tab tracked on the room channel, or `undefined` when it is not one; unknown or malformed fields are dropped, and so is a `flask` changed more than `MAX_CLOCK_SKEW_MS` after `now` or brewing after it changed, and a `writingSince` in the future or older than `MAX_WRITING_MS` by `now`. */
+function parseGoldenWash(options: {
+  value: unknown;
+  now: number;
+}): GoldenWash | undefined {
+  const { value, now } = options;
+  if (
+    !isObject(value) ||
+    !("machineId" in value && typeof value.machineId === "string") ||
+    value.machineId.length > MAX_MACHINE_ID_LENGTH ||
+    !("startedAt" in value && typeof value.startedAt === "number") ||
+    value.startedAt > now + MAX_CLOCK_SKEW_MS ||
+    value.startedAt < now - GOLDEN_WASH_MS - MAX_CLOCK_SKEW_MS
+  ) {
+    return undefined;
+  }
+  return { machineId: value.machineId, startedAt: value.startedAt };
+}
+
+/** Return the presence another tab tracked on the room channel, or `undefined` when it is not one; unknown or malformed fields are dropped, and so is a `flask` changed more than `MAX_CLOCK_SKEW_MS` after `now` or brewing after it changed, a `writingSince` in the future or older than `MAX_WRITING_MS` by `now`, and a `goldenWash` that starts in the future or ended before `now`, each beyond `MAX_CLOCK_SKEW_MS`. */
 export function parseRoomPresence(options: {
   value: unknown;
   now: number;
@@ -124,6 +149,10 @@ export function parseRoomPresence(options: {
     value.writingSince >= now - MAX_WRITING_MS
       ? value.writingSince
       : undefined;
+  const goldenWash =
+    "goldenWash" in value
+      ? parseGoldenWash({ value: value.goldenWash, now })
+      : undefined;
   return {
     sessionId: value.sessionId,
     visitorId: value.visitorId,
@@ -132,5 +161,6 @@ export function parseRoomPresence(options: {
     ...(coffeeGroupId === undefined ? {} : { coffeeGroupId }),
     ...(flask === undefined ? {} : { flask }),
     ...(writingSince === undefined ? {} : { writingSince }),
+    ...(goldenWash === undefined ? {} : { goldenWash }),
   };
 }

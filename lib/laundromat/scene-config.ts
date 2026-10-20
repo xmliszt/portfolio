@@ -29,7 +29,9 @@ export type FurnitureKind =
   | "air-purifier"
   | "toy-box"
   | "toy-set"
-  | "instant-camera";
+  | "instant-camera"
+  | "coin-machine"
+  | "tip-jar";
 
 export type SceneObject =
   | (Placement & { kind: MachineKind; number: number })
@@ -40,6 +42,7 @@ type FocusTargets = {
   notebook: { objectId: string };
   board: { objectId: string };
   weather: { objectId: string };
+  coin: { objectId: string };
 };
 
 export type FocusTarget = keyof FocusTargets;
@@ -348,9 +351,21 @@ export const sceneConfig: SceneConfig = {
       size: { w: 3, d: 1.8, h: 2.8 },
     },
     {
+      id: "coin-machine",
+      kind: "coin-machine",
+      position: { x: 9.6, y: 0, z: 3.1 },
+      size: { w: 0.8, d: 0.45, h: 1.7 },
+    },
+    {
+      id: "tip-jar",
+      kind: "tip-jar",
+      position: { x: 11.05, y: 1.0, z: 2.8 },
+      size: { w: 0.55, d: 0.55, h: 0.75 },
+    },
+    {
       id: "coffee-machine",
       kind: "coffee-machine",
-      position: { x: 11.3, y: 0.2, z: 2.8 },
+      position: { x: 12, y: 0.2, z: 2.8 },
       size: { w: 1.4, d: 1.1, h: 1.6 },
     },
     {
@@ -474,6 +489,7 @@ export const sceneConfig: SceneConfig = {
       notebook: { objectId: "notebook" },
       board: { objectId: "board" },
       weather: { objectId: "weather-panel" },
+      coin: { objectId: "coin-machine" },
     },
     nearDurationMs: 500,
     farDurationMs: 800,

@@ -150,3 +150,34 @@ test("reads a coffee group and shared flask, and drops a flask changed too far a
     { sessionId: "s", visitorId: "v" }
   );
 });
+
+test("keeps a golden wash that is running and drops one that ended or is malformed", () => {
+  assert.deepEqual(
+    parseRoomPresence({
+      value: {
+        sessionId: "s",
+        visitorId: "v",
+        goldenWash: { machineId: "washer-2", startedAt: now - 1000 },
+      },
+      now,
+    }),
+    {
+      sessionId: "s",
+      visitorId: "v",
+      goldenWash: { machineId: "washer-2", startedAt: now - 1000 },
+    }
+  );
+  for (const goldenWash of [
+    { machineId: "washer-2", startedAt: now - 10 * 60_000 },
+    { machineId: "washer-2", startedAt: now + 10 * 60_000 },
+    { machineId: 2, startedAt: now },
+  ]) {
+    assert.deepEqual(
+      parseRoomPresence({
+        value: { sessionId: "s", visitorId: "v", goldenWash },
+        now,
+      }),
+      { sessionId: "s", visitorId: "v" }
+    );
+  }
+});

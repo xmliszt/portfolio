@@ -19,6 +19,7 @@ import { detectScript } from "@/lib/laundromat/notebook/detect-script";
 import type { RoomPresence } from "@/lib/laundromat/realtime/room-presence";
 import type { SceneConfig } from "@/lib/laundromat/scene-config";
 import { sceneConfig } from "@/lib/laundromat/scene-config";
+import { GOLDEN_WASH_MS } from "@/lib/laundromat/tip/golden-wash-ms";
 import { toCssVariables } from "@/lib/laundromat/to-css-variables";
 import type { WeatherReading } from "@/lib/laundromat/weather/weather-reading";
 import { WEATHER_CONDITIONS } from "@/lib/laundromat/weather/weather-reading";
@@ -333,6 +334,7 @@ const realtimeDials = {
   othersWashing: [0, 0, 5, 1],
   othersDrying: [0, 0, 5, 1],
   someoneWriting: false,
+  someoneGoldenWash: false,
   writerDraft: {
     type: "text",
     default: "the dryer on the end is my favourite",
@@ -346,6 +348,7 @@ function buildFakePeers(options: {
   othersWashing: number;
   othersDrying: number;
   someoneWriting: boolean;
+  goldenWashStartedAt: number | undefined;
   now: number;
 }) {
   const loads = [
@@ -367,19 +370,33 @@ function buildFakePeers(options: {
       },
     };
   });
-  return options.someoneWriting
+  const writers: RoomPresence[] = options.someoneWriting
     ? [
-        ...peers,
         {
           sessionId: FAKE_WRITER_ID,
           visitorId: FAKE_WRITER_ID,
           writingSince: options.now - 60_000,
         },
       ]
-    : peers;
+    : [];
+  const goldenWashers: RoomPresence[] =
+    options.goldenWashStartedAt === undefined
+      ? []
+      : [
+          {
+            sessionId: FAKE_GOLDEN_WASHER_ID,
+            visitorId: FAKE_GOLDEN_WASHER_ID,
+            goldenWash: {
+              machineId: "washer-3",
+              startedAt: options.goldenWashStartedAt,
+            },
+          },
+        ];
+  return [...peers, ...writers, ...goldenWashers];
 }
 
 const FAKE_WRITER_ID = "fake-writer";
+const FAKE_GOLDEN_WASHER_ID = "fake-golden-washer";
 
 const exportDials = {
   copyConfig: { type: "action", label: "copy config json" },
@@ -462,17 +479,43 @@ export default function LaundromatLab() {
     ...PANEL_OPTIONS,
   });
   const [fakeRoom] = useState(() => createFakeRoomSource());
-  const { othersWashing, othersDrying, someoneWriting, writerDraft } = realtime;
+  const {
+    othersWashing,
+    othersDrying,
+    someoneWriting,
+    someoneGoldenWash,
+    writerDraft,
+  } = realtime;
+  const [goldenWashStartedAt, setGoldenWashStartedAt] = useState<number>();
+  useEffect(() => {
+    if (!someoneGoldenWash) {
+      setGoldenWashStartedAt(undefined);
+      return;
+    }
+    setGoldenWashStartedAt(Date.now());
+    const timer = window.setInterval(
+      () => setGoldenWashStartedAt(Date.now()),
+      GOLDEN_WASH_MS
+    );
+    return () => window.clearInterval(timer);
+  }, [someoneGoldenWash]);
   useEffect(() => {
     fakeRoom.setPeers(
       buildFakePeers({
         othersWashing,
         othersDrying,
         someoneWriting,
+        goldenWashStartedAt,
         now: Date.now(),
       })
     );
-  }, [fakeRoom, othersWashing, othersDrying, someoneWriting]);
+  }, [
+    fakeRoom,
+    othersWashing,
+    othersDrying,
+    someoneWriting,
+    goldenWashStartedAt,
+  ]);
   useEffect(() => {
     if (!someoneWriting) return;
     fakeRoom.setDraft({

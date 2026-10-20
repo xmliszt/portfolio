@@ -146,6 +146,8 @@ export function useRoom(presence: OwnPresence | undefined) {
   const writingSince = presence?.writingSince;
   const regionLatDeg = presence?.region?.latDeg;
   const regionLonDeg = presence?.region?.lonDeg;
+  const goldenWashMachineId = presence?.goldenWash?.machineId;
+  const goldenWashStartedAt = presence?.goldenWash?.startedAt;
   useEffect(() => {
     if (visitorId === undefined) return;
     const load = ((): RemoteLoad | undefined => {
@@ -182,6 +184,10 @@ export function useRoom(presence: OwnPresence | undefined) {
       regionLatDeg === undefined || regionLonDeg === undefined
         ? undefined
         : { latDeg: regionLatDeg, lonDeg: regionLonDeg };
+    const goldenWash =
+      goldenWashMachineId === undefined || goldenWashStartedAt === undefined
+        ? undefined
+        : { machineId: goldenWashMachineId, startedAt: goldenWashStartedAt };
     connectionRef.current?.update({
       sessionId,
       visitorId,
@@ -190,6 +196,7 @@ export function useRoom(presence: OwnPresence | undefined) {
       ...(coffeeGroupId === undefined ? {} : { coffeeGroupId }),
       ...(flask === undefined ? {} : { flask }),
       ...(writingSince === undefined ? {} : { writingSince }),
+      ...(goldenWash === undefined ? {} : { goldenWash }),
     });
   }, [
     source,
@@ -209,6 +216,8 @@ export function useRoom(presence: OwnPresence | undefined) {
     regionLatDeg,
     regionLonDeg,
     writingSince,
+    goldenWashMachineId,
+    goldenWashStartedAt,
   ]);
 
   const peerIds = peers.map((peer) => peer.sessionId).join(",");

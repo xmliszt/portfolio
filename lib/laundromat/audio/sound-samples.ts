@@ -181,6 +181,38 @@ export const SOUND_SAMPLES = {
   "camera-shutter": { kind: "synthesized" },
   "camera-eject": { kind: "synthesized" },
   "crayon-scratch": { kind: "synthesized" },
+  "coin-insert": {
+    kind: "generated",
+    prompt:
+      "Single coin dropped into a laundromat coin machine slot: a small metallic tick, a quick rattle down a metal chute, a soft mechanical clunk, then a muffled thud into a metal cash box, close-mic, dry",
+    durationSeconds: 1.2,
+    promptInfluence: 0.6,
+    gain: 0.8,
+  },
+  "token-drop": {
+    kind: "generated",
+    prompt:
+      "A single brass token drops from a machine into a metal return tray: a soft mechanical kachunk, a short slide, then two bouncing metallic clinks that ring out and settle, warm and dry, close-up",
+    durationSeconds: 1.2,
+    promptInfluence: 0.6,
+    gain: 0.7,
+  },
+  "jar-coin": {
+    kind: "generated",
+    prompt:
+      "A single coin dropped into a glass jar half full of coins: a soft glassy tink, then a small muffled clatter of coins settling, intimate close-mic, dry",
+    durationSeconds: 0.7,
+    promptInfluence: 0.7,
+    gain: 0.6,
+  },
+  "tip-chime": {
+    kind: "generated",
+    prompt:
+      "Cozy lo-fi thank-you chime: three soft kalimba notes rising gently, warm tape saturation, short airy reverb, calm and sweet, not arcade or casino",
+    durationSeconds: 1.5,
+    promptInfluence: 0.6,
+    gain: 0.45,
+  },
   "washer-running": {
     kind: "generated",
     prompt:

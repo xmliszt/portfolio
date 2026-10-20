@@ -8,6 +8,7 @@ test("reads the focus targets", () => {
   assert.equal(parseCameraFocus("notebook"), "notebook");
   assert.equal(parseCameraFocus("board"), "board");
   assert.equal(parseCameraFocus("weather"), "weather");
+  assert.equal(parseCameraFocus("coin"), "coin");
 });
 
 test("falls back to the room for anything else", () => {

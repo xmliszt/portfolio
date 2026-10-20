@@ -121,6 +121,7 @@ export function ObjectWorkbench(props: ObjectWorkbenchProps) {
                 detentCount: config.machines.cycleMinutes.length,
               }),
               doorOpen: props.doorOpen,
+              goldenWash: "none",
             },
           },
     tv: { state: appliances.tv, noSignal: false },
@@ -139,6 +140,8 @@ export function ObjectWorkbench(props: ObjectWorkbenchProps) {
       object.kind === "toy-box" && isToyBoxOpening
         ? { kind: "opening" }
         : { kind: "open", runStartedAtMs: toyRunStartedAtMs },
+    coinMachine: { kind: "idle" },
+    tipJar: { fillRatio: 0.4 },
     hidden: false,
   };
 

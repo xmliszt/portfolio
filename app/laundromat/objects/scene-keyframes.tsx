@@ -56,6 +56,11 @@ ${lampFlickerFrames}
 @keyframes lm-stream { to { stroke-dashoffset: -6.8; } }
 @keyframes lm-fade-out { 0%, 70% { opacity: 1; } 100% { opacity: 0; } }
 @keyframes lm-pulse { 50% { opacity: 0.35; } }
+@keyframes lm-twinkle {
+  0%, 100% { opacity: 0; transform: scale(0.3) rotate(0deg); }
+  50% { opacity: 1; transform: scale(1) rotate(45deg); }
+}
+@keyframes lm-gold-in { from { opacity: 0; } }
 @keyframes lm-scan-drift { to { transform: translateY(var(--lm-scan-step)); } }
 @keyframes lm-flicker {
   0%, 100% { opacity: 0.3; }

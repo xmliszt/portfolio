@@ -1,6 +1,10 @@
 import type { CoffeePhase } from "@/lib/laundromat/coffee/get-coffee-phase";
 import type { BasketContents } from "@/lib/laundromat/laundry/get-basket-contents";
 import type { MachineStatus } from "@/lib/laundromat/laundry/get-machine-status";
+import type {
+  CoinMachinePhase,
+  GoldenWashView,
+} from "@/lib/laundromat/tip/tip-token";
 import type { TvState } from "@/lib/laundromat/tv/tv-state";
 import type { WeatherReading } from "@/lib/laundromat/weather/weather-reading";
 
@@ -9,6 +13,7 @@ export type MachineView = {
   readout: string;
   dialAngleDeg: number;
   doorOpen: boolean;
+  goldenWash: GoldenWashView;
 };
 
 export type TvView = { state: TvState; noSignal: boolean };
@@ -32,5 +37,7 @@ export type SceneViews = {
   tubeRollCount: number;
   weather: WeatherReading | undefined;
   toyBox: ToyBoxView;
+  coinMachine: CoinMachinePhase;
+  tipJar: { fillRatio: number };
   hidden: boolean;
 };

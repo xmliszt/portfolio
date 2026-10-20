@@ -26,6 +26,8 @@ export function hasFlatFront(kind: SceneObject["kind"]) {
     case "toy-box":
     case "toy-set":
     case "instant-camera":
+    case "coin-machine":
+    case "tip-jar":
       return false;
     default: {
       const unknown: never = kind;
