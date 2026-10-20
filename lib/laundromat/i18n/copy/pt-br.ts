@@ -774,8 +774,8 @@ export const ptBR = {
     coinBackNote: "obrigado",
     coinRim: "obrigado",
     trayHeading: "pote de gorjetas",
-    traySummary: (o: { count: number }) =>
-      `${o.count} ${o.count === 1 ? "ficha" : "fichas"} no pote · as suas brilham`,
+    traySummary: (o: { count: number; isShining: boolean }) =>
+      `${o.count} ${o.count === 1 ? "ficha" : "fichas"} no pote${o.isShining ? " · as suas brilham" : ""}`,
     trayHint: "toque na sua ficha para usar",
     copyCode: "Copiar código",
     codeCopied: "Código copiado",

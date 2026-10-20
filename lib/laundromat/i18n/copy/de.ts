@@ -784,8 +784,8 @@ export const de = {
     coinBackNote: "danke",
     coinRim: "danke",
     trayHeading: "Trinkgeldglas",
-    traySummary: (o: { count: number }) =>
-      `${o.count} ${o.count === 1 ? "Token" : "Tokens"} im Glas · deine glänzen`,
+    traySummary: (o: { count: number; isShining: boolean }) =>
+      `${o.count} ${o.count === 1 ? "Token" : "Tokens"} im Glas${o.isShining ? " · deine glänzen" : ""}`,
     trayHint: "tipp auf deinen Token, um ihn zu benutzen",
     copyCode: "Code kopieren",
     codeCopied: "Code kopiert",

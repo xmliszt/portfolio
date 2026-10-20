@@ -724,8 +724,8 @@ export const zhHans = {
     coinBackNote: "谢谢",
     coinRim: "谢谢你",
     trayHeading: "小费罐",
-    traySummary: (o: { count: number }) =>
-      `罐里有 ${o.count} 枚代币 · 你的在发光`,
+    traySummary: (o: { count: number; isShining: boolean }) =>
+      `罐里有 ${o.count} 枚代币${o.isShining ? " · 你的在发光" : ""}`,
     trayHint: "点一下你的代币，就能使用",
     copyCode: "复制代币码",
     codeCopied: "已复制代币码",

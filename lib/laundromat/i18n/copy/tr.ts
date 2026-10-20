@@ -721,8 +721,8 @@ export const tr = {
     coinBackNote: "teşekkürler",
     coinRim: "teşekkürler",
     trayHeading: "bahşiş kavanozu",
-    traySummary: (o: { count: number }) =>
-      `kavanozda ${o.count} jeton · seninkiler parlıyor`,
+    traySummary: (o: { count: number; isShining: boolean }) =>
+      `kavanozda ${o.count} jeton${o.isShining ? " · seninkiler parlıyor" : ""}`,
     trayHint: "kullanmak için kendi jetonuna dokun",
     copyCode: "Kodu kopyala",
     codeCopied: "Kod kopyalandı",

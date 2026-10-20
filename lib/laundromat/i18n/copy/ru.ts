@@ -748,8 +748,8 @@ export const ru = {
     coinBackNote: "спасибо",
     coinRim: "спасибо",
     trayHeading: "банка для чаевых",
-    traySummary: (o: { count: number }) =>
-      `${o.count} ${pluralize({ count: o.count, one: "жетон", few: "жетона", many: "жетонов" })} в банке · ваши блестят`,
+    traySummary: (o: { count: number; isShining: boolean }) =>
+      `${o.count} ${pluralize({ count: o.count, one: "жетон", few: "жетона", many: "жетонов" })} в банке${o.isShining ? " · ваши блестят" : ""}`,
     trayHint: "нажмите на свой жетон, чтобы использовать его",
     copyCode: "Копировать код",
     codeCopied: "Код скопирован",

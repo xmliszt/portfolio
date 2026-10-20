@@ -755,8 +755,8 @@ export const ja = {
     coinBackNote: "ありがとう",
     coinRim: "ありがとう",
     trayHeading: "チップの瓶",
-    traySummary: (o: { count: number }) =>
-      `瓶の中にトークン ${o.count} 枚 · あなたのトークンは光ってる`,
+    traySummary: (o: { count: number; isShining: boolean }) =>
+      `瓶の中にトークン ${o.count} 枚${o.isShining ? " · あなたのトークンは光ってる" : ""}`,
     trayHint: "あなたのトークンをタップして使ってね",
     copyCode: "コードをコピー",
     codeCopied: "コードをコピーしました",

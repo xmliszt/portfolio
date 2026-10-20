@@ -773,8 +773,8 @@ export const en = {
     coinBackNote: "thank you",
     coinRim: "thank you",
     trayHeading: "tip jar",
-    traySummary: (o: { count: number }) =>
-      `${o.count} ${o.count === 1 ? "token" : "tokens"} in the jar · yours shine`,
+    traySummary: (o: { count: number; isShining: boolean }) =>
+      `${o.count} ${o.count === 1 ? "token" : "tokens"} in the jar${o.isShining ? " · yours shine" : ""}`,
     trayHint: "tap your token to use it",
     copyCode: "Copy code",
     codeCopied: "Code copied",

@@ -770,8 +770,8 @@ export const hi = {
     coinBackNote: "धन्यवाद",
     coinRim: "धन्यवाद",
     trayHeading: "टिप जार",
-    traySummary: (o: { count: number }) =>
-      `जार में ${o.count} टोकन · आपके टोकन चमकते हैं`,
+    traySummary: (o: { count: number; isShining: boolean }) =>
+      `जार में ${o.count} टोकन${o.isShining ? " · आपके टोकन चमकते हैं" : ""}`,
     trayHint: "इस्तेमाल करने के लिए अपने टोकन पर टैप करें",
     copyCode: "कोड कॉपी करें",
     codeCopied: "कोड कॉपी हुआ",

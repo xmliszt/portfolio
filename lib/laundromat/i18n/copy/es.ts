@@ -778,8 +778,8 @@ export const es = {
     coinBackNote: "gracias",
     coinRim: "gracias",
     trayHeading: "frasco de propinas",
-    traySummary: (o: { count: number }) =>
-      `${o.count} ${o.count === 1 ? "ficha" : "fichas"} en el frasco · las tuyas brillan`,
+    traySummary: (o: { count: number; isShining: boolean }) =>
+      `${o.count} ${o.count === 1 ? "ficha" : "fichas"} en el frasco${o.isShining ? " · las tuyas brillan" : ""}`,
     trayHint: "toca tu ficha para usarla",
     copyCode: "Copiar código",
     codeCopied: "Código copiado",

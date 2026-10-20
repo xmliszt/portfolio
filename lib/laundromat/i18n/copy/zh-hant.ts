@@ -723,8 +723,8 @@ export const zhHant = {
     coinBackNote: "謝謝",
     coinRim: "謝謝你",
     trayHeading: "小費罐",
-    traySummary: (o: { count: number }) =>
-      `罐裡有 ${o.count} 枚代幣 · 你的在發光`,
+    traySummary: (o: { count: number; isShining: boolean }) =>
+      `罐裡有 ${o.count} 枚代幣${o.isShining ? " · 你的在發光" : ""}`,
     trayHint: "點一下你的代幣，就能使用",
     copyCode: "複製代幣碼",
     codeCopied: "已複製代幣碼",

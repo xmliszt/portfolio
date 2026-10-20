@@ -745,8 +745,8 @@ export const pl = {
     coinBackNote: "dziękuję",
     coinRim: "dziękuję",
     trayHeading: "słoik na napiwki",
-    traySummary: (o: { count: number }) =>
-      `${o.count} ${pluralize({ count: o.count, one: "żeton", few: "żetony", many: "żetonów" })} w słoiku · twoje lśnią`,
+    traySummary: (o: { count: number; isShining: boolean }) =>
+      `${o.count} ${pluralize({ count: o.count, one: "żeton", few: "żetony", many: "żetonów" })} w słoiku${o.isShining ? " · twoje lśnią" : ""}`,
     trayHint: "dotknij swojego żetonu, żeby go użyć",
     copyCode: "Kopiuj kod",
     codeCopied: "Kod skopiowany",

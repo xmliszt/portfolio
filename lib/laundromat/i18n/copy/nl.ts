@@ -737,8 +737,8 @@ export const nl = {
     coinBackNote: "dank je",
     coinRim: "dank je",
     trayHeading: "fooienpot",
-    traySummary: (o: { count: number }) =>
-      `${o.count} ${o.count === 1 ? "penning" : "penningen"} in de pot · die van jou glanzen`,
+    traySummary: (o: { count: number; isShining: boolean }) =>
+      `${o.count} ${o.count === 1 ? "penning" : "penningen"} in de pot${o.isShining ? " · die van jou glanzen" : ""}`,
     trayHint: "tik op je penning om hem te gebruiken",
     copyCode: "Kopieer code",
     codeCopied: "Code gekopieerd",

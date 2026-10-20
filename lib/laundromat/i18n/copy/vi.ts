@@ -755,8 +755,8 @@ export const vi = {
     coinBackNote: "cảm ơn",
     coinRim: "cảm ơn",
     trayHeading: "hũ tip",
-    traySummary: (o: { count: number }) =>
-      `${o.count} token trong hũ · token của bạn lấp lánh`,
+    traySummary: (o: { count: number; isShining: boolean }) =>
+      `${o.count} token trong hũ${o.isShining ? " · token của bạn lấp lánh" : ""}`,
     trayHint: "chạm vào token của bạn để dùng",
     copyCode: "Sao chép mã",
     codeCopied: "Đã sao chép mã",

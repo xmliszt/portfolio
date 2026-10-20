@@ -784,8 +784,8 @@ export const fr = {
     coinBackNote: "merci",
     coinRim: "merci",
     trayHeading: "bocal à pourboires",
-    traySummary: (o: { count: number }) =>
-      `${o.count} ${o.count === 1 ? "jeton" : "jetons"} dans le bocal · les tiens brillent`,
+    traySummary: (o: { count: number; isShining: boolean }) =>
+      `${o.count} ${o.count === 1 ? "jeton" : "jetons"} dans le bocal${o.isShining ? " · les tiens brillent" : ""}`,
     trayHint: "touche ton jeton pour l'utiliser",
     copyCode: "Copier le code",
     codeCopied: "Code copié",

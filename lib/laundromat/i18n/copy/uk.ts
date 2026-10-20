@@ -744,8 +744,8 @@ export const uk = {
     coinBackNote: "дякую",
     coinRim: "дякую",
     trayHeading: "банка для чайових",
-    traySummary: (o: { count: number }) =>
-      `${o.count} ${pluralize({ count: o.count, one: "жетон", few: "жетони", many: "жетонів" })} у банці · ваші сяють`,
+    traySummary: (o: { count: number; isShining: boolean }) =>
+      `${o.count} ${pluralize({ count: o.count, one: "жетон", few: "жетони", many: "жетонів" })} у банці${o.isShining ? " · ваші сяють" : ""}`,
     trayHint: "торкніться свого жетона, щоб використати його",
     copyCode: "Копіювати код",
     codeCopied: "Код скопійовано",

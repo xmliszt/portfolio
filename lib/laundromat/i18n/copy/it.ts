@@ -781,8 +781,8 @@ export const it = {
     coinBackNote: "grazie",
     coinRim: "grazie",
     trayHeading: "barattolo delle mance",
-    traySummary: (o: { count: number }) =>
-      `${o.count} ${o.count === 1 ? "gettone" : "gettoni"} nel barattolo · i tuoi brillano`,
+    traySummary: (o: { count: number; isShining: boolean }) =>
+      `${o.count} ${o.count === 1 ? "gettone" : "gettoni"} nel barattolo${o.isShining ? " · i tuoi brillano" : ""}`,
     trayHint: "tocca il tuo gettone per usarlo",
     copyCode: "Copia codice",
     codeCopied: "Codice copiato",

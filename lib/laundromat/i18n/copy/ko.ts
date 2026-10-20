@@ -750,8 +750,8 @@ export const ko = {
     coinBackNote: "고마워요",
     coinRim: "고마워요",
     trayHeading: "팁 병",
-    traySummary: (o: { count: number }) =>
-      `병 안에 토큰 ${o.count}개 · 내 토큰은 반짝여요`,
+    traySummary: (o: { count: number; isShining: boolean }) =>
+      `병 안에 토큰 ${o.count}개${o.isShining ? " · 내 토큰은 반짝여요" : ""}`,
     trayHint: "내 토큰을 탭해서 사용해 보세요",
     copyCode: "코드 복사",
     codeCopied: "코드 복사됨",

@@ -776,8 +776,8 @@ export const id = {
     coinBackNote: "terima kasih",
     coinRim: "terima kasih",
     trayHeading: "toples tip",
-    traySummary: (o: { count: number }) =>
-      `${o.count} token di dalam toples · punyamu berkilau`,
+    traySummary: (o: { count: number; isShining: boolean }) =>
+      `${o.count} token di dalam toples${o.isShining ? " · punyamu berkilau" : ""}`,
     trayHint: "ketuk tokenmu untuk memakainya",
     copyCode: "Salin kode",
     codeCopied: "Kode disalin",

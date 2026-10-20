@@ -76,7 +76,10 @@ export function TipJarTray(props: TipJarTrayProps) {
                     {copy.tip.trayHeading}
                   </h2>
                   <span className={cn(SETTINGS_META_CLASS, "opacity-60")}>
-                    {copy.tip.traySummary({ count: coins.length })}
+                    {copy.tip.traySummary({
+                      count: coins.length,
+                      isShining: unspentOwnNumbers.length > 0,
+                    })}
                   </span>
                 </div>
                 <CloseKey onClose={close} />
