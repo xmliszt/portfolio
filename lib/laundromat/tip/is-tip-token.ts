@@ -1,6 +1,6 @@
 import type { TipToken } from "./tip-token";
 
-/** `true` if `value` has a numeric `number` and string `code` and `createdAt`; `false` when any is missing or of another type. */
+/** `true` if `value` has a numeric `number`, string `code` and `createdAt`, and a string `spentAt` when it has one; `false` otherwise. */
 export function isTipToken(value: unknown): value is TipToken {
   return (
     typeof value === "object" &&
@@ -10,6 +10,9 @@ export function isTipToken(value: unknown): value is TipToken {
     "code" in value &&
     typeof value.code === "string" &&
     "createdAt" in value &&
-    typeof value.createdAt === "string"
+    typeof value.createdAt === "string" &&
+    (!("spentAt" in value) ||
+      value.spentAt === undefined ||
+      typeof value.spentAt === "string")
   );
 }

@@ -379,7 +379,7 @@ export const pl = {
     updates: {
       "tip-coin-machine": {
         title: "zostaw napiwek w automacie na monety",
-        body: "Automat na monety przy ladzie przyjmuje małe napiwki. Twoja moneta wpada do słoika, a automat drukuje ci żeton. Wrzuć go kiedy chcesz do pralki lub suszarki, a zrobi się złota dla wszystkich w sali.",
+        body: "Automat na monety przy ladzie przyjmuje małe napiwki. Twoja moneta wpada do słoika, a automat drukuje ci żeton. Wrzuć go do pralki lub suszarki, a zrobi się złota dla wszystkich w sali.",
       },
       "instant-camera": {
         title: "zrób zdjęcie pokoju",
@@ -736,9 +736,9 @@ export const pl = {
     pocketHeading: "twoje żetony",
     dropInMachine: "wrzuć go do maszyny",
     dropInMachineHint:
-      "Wrzuć go do pralki lub suszarki, a zrobi się złota dla wszystkich tutaj, ile razy zechcesz.",
+      "Wrzuć go do pralki lub suszarki, a zrobi się złota dla wszystkich tutaj. Każdy żeton działa raz.",
+    usedOn: (o: { date: string }) => `użyty w maszynie · ${o.date}`,
     holdHint: "dotknij pralki lub suszarki",
-    goldenReadout: "ZŁOTO",
     viewCoin: (o: { number: number }) => `Obejrzyj żeton nr ${o.number}`,
     turnCoin: "Odwróć monetę",
     coinNumberCaption: "nr",

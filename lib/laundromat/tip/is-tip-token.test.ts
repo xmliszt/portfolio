@@ -19,3 +19,9 @@ test("rejects missing or mistyped fields", () => {
   assert.equal(isTipToken({ number: 37, code: "x" }), false);
   assert.equal(isTipToken(null), false);
 });
+
+test("accepts a spent token and rejects a mistyped spend time", () => {
+  const token = { number: 37, code: "x", createdAt: "y" };
+  assert.equal(isTipToken({ ...token, spentAt: "2026-10-20" }), true);
+  assert.equal(isTipToken({ ...token, spentAt: 1 }), false);
+});

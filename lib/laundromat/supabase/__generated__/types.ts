@@ -160,6 +160,7 @@ export type Database = {
           currency: string;
           number: number;
           session_id: string;
+          spent_at: string | null;
           token_hash: string;
         };
         Insert: {
@@ -168,6 +169,7 @@ export type Database = {
           currency?: string;
           number: number;
           session_id: string;
+          spent_at?: string | null;
           token_hash: string;
         };
         Update: {
@@ -176,6 +178,7 @@ export type Database = {
           currency?: string;
           number?: number;
           session_id?: string;
+          spent_at?: string | null;
           token_hash?: string;
         };
         Relationships: [];
@@ -255,6 +258,7 @@ export type Database = {
           currency: string;
           number: number;
           session_id: string;
+          spent_at: string | null;
           token_hash: string;
         };
         SetofOptions: {

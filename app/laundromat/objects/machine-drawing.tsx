@@ -8,6 +8,7 @@ import { cn } from "@/lib/utils";
 
 import { BoxBevel } from "./box-bevel";
 import { DrumLaundry } from "./drum-laundry";
+import { GoldenMachineGlow } from "./golden-machine-glow";
 import { GoldenWashGlow } from "./golden-wash-glow";
 import { GoldenWashSparkles } from "./golden-wash-sparkles";
 import { MachineDoorSwing } from "./machine-door-swing";
@@ -509,6 +510,7 @@ export function MachineDrawing(props: MachineDrawingProps) {
           />
         )}
       </g>
+      {isGolden && <GoldenMachineGlow faces={faces} animated={!isLite} />}
     </g>
   );
 }

@@ -369,7 +369,7 @@ export const nl = {
     updates: {
       "tip-coin-machine": {
         title: "geef een fooi bij de muntautomaat",
-        body: "De muntautomaat bij de toonbank neemt kleine fooien aan. Je munt valt in de pot en de automaat print een munt voor je. Gooi hem wanneer je wilt in een wasmachine of droger en die wordt goud voor iedereen in de ruimte.",
+        body: "De muntautomaat bij de toonbank neemt kleine fooien aan. Je munt valt in de pot en de automaat print een munt voor je. Gooi hem in een wasmachine of droger en die wordt goud voor iedereen in de ruimte.",
       },
       "instant-camera": {
         title: "een foto maken van de kamer",
@@ -728,9 +728,9 @@ export const nl = {
     pocketHeading: "je penningen",
     dropInMachine: "gooi hem in een machine",
     dropInMachineHint:
-      "Gooi hem in een wasmachine of droger en die wordt goud voor iedereen hier, zo vaak als je wilt.",
+      "Gooi hem in een wasmachine of droger en die wordt goud voor iedereen hier. Elke penning werkt één keer.",
+    usedOn: (o: { date: string }) => `gebruikt in een machine · ${o.date}`,
     holdHint: "tik op een wasmachine of droger",
-    goldenReadout: "GOUD",
     viewCoin: (o: { number: number }) => `Bekijk penning nr. ${o.number}`,
     turnCoin: "Draai de munt om",
     coinNumberCaption: "nr.",

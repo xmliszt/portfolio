@@ -407,7 +407,7 @@ export const fr = {
     updates: {
       "tip-coin-machine": {
         title: "laisser un pourboire à la machine à pièces",
-        body: "La machine à pièces près du comptoir accepte de petits pourboires. Ta pièce tombe dans le bocal et la machine t’imprime un jeton. Glisse-le quand tu veux dans un lave-linge ou un sèche-linge, et il devient doré pour tout le monde dans la salle.",
+        body: "La machine à pièces près du comptoir accepte de petits pourboires. Ta pièce tombe dans le bocal et la machine t’imprime un jeton. Glisse-le dans un lave-linge ou un sèche-linge, et il devient doré pour tout le monde dans la salle.",
       },
       "instant-camera": {
         title: "prends une photo de la pièce",
@@ -775,9 +775,9 @@ export const fr = {
     pocketHeading: "tes jetons",
     dropInMachine: "mets-le dans une machine",
     dropInMachineHint:
-      "Glisse-le dans un lave-linge ou un sèche-linge et il devient doré pour tout le monde ici, aussi souvent que tu veux.",
+      "Glisse-le dans un lave-linge ou un sèche-linge et il devient doré pour tout le monde ici. Chaque jeton ne sert qu'une fois.",
+    usedOn: (o: { date: string }) => `utilisé dans une machine · ${o.date}`,
     holdHint: "touche un lave-linge ou un sèche-linge",
-    goldenReadout: "OR",
     viewCoin: (o: { number: number }) => `Regarder le jeton n° ${o.number}`,
     turnCoin: "Retourner la pièce",
     coinNumberCaption: "n°",

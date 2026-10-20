@@ -8,6 +8,7 @@ import { PRINTER_KEY_CLASS } from "@/app/laundromat/settings/printer-key-class";
 import { SETTINGS_META_CLASS } from "@/app/laundromat/settings/settings-meta-class";
 import { TOOLBAR_BUTTON_CLASS } from "@/app/laundromat/toolbar-button-class";
 import { ToolbarLabel } from "@/app/laundromat/toolbar-label";
+import { formatTipDate } from "@/lib/laundromat/tip/format-tip-date";
 import { cn } from "@/lib/utils";
 
 import { CloseKey } from "./close-key";
@@ -94,22 +95,39 @@ export function PocketButton() {
                           metal="brass"
                           label={String(token.number)}
                           sizePx={40}
-                          shine
+                          shine={token.spentAt === undefined}
+                          dim={token.spentAt !== undefined}
                         />
                       </button>
-                      <button
-                        type="button"
-                        className={cn(
-                          PRINTER_KEY_CLASS,
-                          "h-10 flex-1 justify-center px-3"
-                        )}
-                        onClick={() => {
-                          close();
-                          tip.holdToken(token.code);
-                        }}
-                      >
-                        {copy.tip.dropInMachine}
-                      </button>
+                      {token.spentAt === undefined ? (
+                        <button
+                          type="button"
+                          className={cn(
+                            PRINTER_KEY_CLASS,
+                            "h-10 flex-1 justify-center px-3"
+                          )}
+                          onClick={() => {
+                            close();
+                            tip.holdToken(token.code);
+                          }}
+                        >
+                          {copy.tip.dropInMachine}
+                        </button>
+                      ) : (
+                        <p
+                          className={cn(
+                            SETTINGS_META_CLASS,
+                            "m-0 flex-1 text-center opacity-60"
+                          )}
+                        >
+                          {copy.tip.usedOn({
+                            date: formatTipDate({
+                              isoDate: token.spentAt,
+                              locale: copy.locale,
+                            }),
+                          })}
+                        </p>
+                      )}
                     </div>
                   </div>
                 ))}

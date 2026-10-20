@@ -27,7 +27,7 @@ export type TipState = {
   takeToken: () => void;
   heldTokenCode: string | undefined;
   holdToken: (code: string | undefined) => void;
-  dropToken: (options: { machineId: string }) => void;
+  dropToken: (options: { machineId: string }) => Promise<void>;
   goldenWashes: GoldenWash[];
 };
 

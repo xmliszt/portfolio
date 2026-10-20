@@ -399,7 +399,7 @@ export const en = {
     updates: {
       "tip-coin-machine": {
         title: "leave a tip at the coin machine",
-        body: "The coin machine by the counter takes small tips. Your coin drops into the jar and the machine prints you a token. Drop it into a washer or dryer any time and it turns gold for everyone in the room.",
+        body: "The coin machine by the counter takes small tips. Your coin drops into the jar and the machine prints you a token. Drop it into a washer or dryer and it turns gold for everyone in the room.",
       },
       "instant-camera": {
         title: "take a photo of the room",
@@ -764,9 +764,9 @@ export const en = {
     pocketHeading: "your tokens",
     dropInMachine: "drop it in a machine",
     dropInMachineHint:
-      "Drop it in a washer or dryer and it turns gold for everyone here, as often as you like.",
+      "Drop it in a washer or dryer and it turns gold for everyone here. Each token works once.",
+    usedOn: (o: { date: string }) => `used in a machine · ${o.date}`,
     holdHint: "tap a washer or dryer",
-    goldenReadout: "GOLD",
     viewCoin: (o: { number: number }) => `Look at token no. ${o.number}`,
     turnCoin: "Turn the coin over",
     coinNumberCaption: "no.",

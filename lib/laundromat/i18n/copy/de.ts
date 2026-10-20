@@ -405,7 +405,7 @@ export const de = {
     updates: {
       "tip-coin-machine": {
         title: "ein Trinkgeld am Münzautomaten",
-        body: "Der Münzautomat an der Theke nimmt kleine Trinkgelder an. Deine Münze fällt ins Glas, und der Automat druckt dir einen Token. Wirf ihn jederzeit in eine Waschmaschine oder einen Trockner, und sie leuchtet für alle im Raum golden.",
+        body: "Der Münzautomat an der Theke nimmt kleine Trinkgelder an. Deine Münze fällt ins Glas, und der Automat druckt dir einen Token. Wirf ihn in eine Waschmaschine oder einen Trockner, und sie leuchtet für alle im Raum golden.",
       },
       "instant-camera": {
         title: "ein Foto vom Raum machen",
@@ -775,9 +775,9 @@ export const de = {
     pocketHeading: "deine Tokens",
     dropInMachine: "in eine Maschine werfen",
     dropInMachineHint:
-      "Wirf ihn in eine Waschmaschine oder einen Trockner, dann leuchtet die Maschine für alle hier golden, so oft du magst.",
+      "Wirf ihn in eine Waschmaschine oder einen Trockner, dann leuchtet die Maschine für alle hier golden. Jeder Token funktioniert einmal.",
+    usedOn: (o: { date: string }) => `in einer Maschine benutzt · ${o.date}`,
     holdHint: "tipp auf eine Waschmaschine oder einen Trockner",
-    goldenReadout: "GOLD",
     viewCoin: (o: { number: number }) => `Token Nr. ${o.number} ansehen`,
     turnCoin: "Die Münze umdrehen",
     coinNumberCaption: "Nr.",

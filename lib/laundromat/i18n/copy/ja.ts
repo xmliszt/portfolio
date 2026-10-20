@@ -387,7 +387,7 @@ export const ja = {
     updates: {
       "tip-coin-machine": {
         title: "コインマシンでチップを渡せるように",
-        body: "カウンター横のコインマシンで小さなチップを渡せます。コインは瓶に入り、マシンがトークンを印刷します。トークンをいつでも洗濯機か乾燥機に入れると、部屋のみんなにとって金色に光ります。",
+        body: "カウンター横のコインマシンで小さなチップを渡せます。コインは瓶に入り、マシンがトークンを印刷します。トークンを洗濯機か乾燥機に入れると、部屋のみんなにとって金色に光ります。",
       },
       "instant-camera": {
         title: "部屋の写真を撮れるように",
@@ -745,9 +745,9 @@ export const ja = {
     pocketHeading: "あなたのトークン",
     dropInMachine: "マシンに入れる",
     dropInMachineHint:
-      "洗濯機か乾燥機に入れると、ここにいるみんなにとって金色に光ります。何度でもどうぞ。",
+      "洗濯機か乾燥機に入れると、ここにいるみんなにとって金色に光ります。トークンは1枚につき1回使えます。",
+    usedOn: (o: { date: string }) => `マシンで使用済み · ${o.date}`,
     holdHint: "洗濯機か乾燥機をタップ",
-    goldenReadout: "金",
     viewCoin: (o: { number: number }) => `トークン No. ${o.number} を見る`,
     turnCoin: "コインを裏返す",
     coinNumberCaption: "No.",

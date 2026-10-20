@@ -386,7 +386,7 @@ export const ko = {
     updates: {
       "tip-coin-machine": {
         title: "코인 머신에 팁을 남길 수 있어요",
-        body: "카운터 옆 코인 머신에 작은 팁을 남길 수 있어요. 동전은 병에 떨어지고 머신이 토큰을 뽑아 줘요. 토큰을 언제든 세탁기나 건조기에 넣으면 방 안의 모두에게 황금빛으로 바뀌어요.",
+        body: "카운터 옆 코인 머신에 작은 팁을 남길 수 있어요. 동전은 병에 떨어지고 머신이 토큰을 뽑아 줘요. 토큰을 세탁기나 건조기에 넣으면 방 안의 모두에게 황금빛으로 바뀌어요.",
       },
       "instant-camera": {
         title: "방 사진 찍기",
@@ -741,9 +741,9 @@ export const ko = {
     pocketHeading: "내 토큰",
     dropInMachine: "기계에 넣기",
     dropInMachineHint:
-      "세탁기나 건조기에 넣으면 여기 있는 모두에게 황금빛으로 바뀌어요. 몇 번이든 괜찮아요.",
+      "세탁기나 건조기에 넣으면 여기 있는 모두에게 황금빛으로 바뀌어요. 토큰은 한 번만 쓸 수 있어요.",
+    usedOn: (o: { date: string }) => `기계에 사용함 · ${o.date}`,
     holdHint: "세탁기나 건조기를 탭하세요",
-    goldenReadout: "황금",
     viewCoin: (o: { number: number }) => `토큰 No. ${o.number} 보기`,
     turnCoin: "동전 뒤집기",
     coinNumberCaption: "No.",

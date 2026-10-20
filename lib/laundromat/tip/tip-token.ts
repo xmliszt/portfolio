@@ -2,6 +2,7 @@ export type TipToken = {
   number: number;
   code: string;
   createdAt: string;
+  spentAt?: string;
 };
 
 export type GoldenWashView = "none" | "invited" | "running";

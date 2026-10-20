@@ -361,7 +361,7 @@ export const zhHant = {
     updates: {
       "tip-coin-machine": {
         title: "可以在投幣機留下小費",
-        body: "櫃台旁的投幣機可以留下小費。你的硬幣會落進罐子，機器會為你印出一枚代幣。隨時把它投進洗衣機或烘乾機，機器就會為房間裡的每個人變成金色。",
+        body: "櫃台旁的投幣機可以留下小費。你的硬幣會落進罐子，機器會為你印出一枚代幣。把它投進洗衣機或烘乾機，機器就會為房間裡的每個人變成金色。",
       },
       "instant-camera": {
         title: "幫房間拍張照",
@@ -714,9 +714,9 @@ export const zhHant = {
     pocketHeading: "你的代幣",
     dropInMachine: "投進一台機器",
     dropInMachineHint:
-      "把它投進洗衣機或烘乾機，機器就會為這裡的每個人變成金色，想投幾次都可以。",
+      "把它投進洗衣機或烘乾機，機器就會為這裡的每個人變成金色。每枚代幣只能用一次。",
+    usedOn: (o: { date: string }) => `已在機器中使用 · ${o.date}`,
     holdHint: "點一台洗衣機或烘乾機",
-    goldenReadout: "金",
     viewCoin: (o: { number: number }) => `查看代幣 No. ${o.number}`,
     turnCoin: "翻轉硬幣",
     coinNumberCaption: "No.",

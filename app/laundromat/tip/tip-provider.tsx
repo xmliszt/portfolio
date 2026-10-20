@@ -24,6 +24,7 @@ import {
   getTipStatus,
   loadJar,
   restoreToken as restoreTokenAction,
+  spendToken as spendTokenAction,
   startTip as startTipAction,
 } from "./tip-actions";
 import { TipContext, type TokenRestoreResult } from "./tip-state";
@@ -60,7 +61,7 @@ function forgetPendingTip(sessionId: string) {
 
 type TipProviderProps = { children: React.ReactNode };
 
-/** Provide the visitor's tip tokens, the jar's coins and the coin machine's phase to the scene and the toolbar, open and settle real tips through Stripe whether or not the panel stays open (resuming any still pending from an earlier visit), and hold one token until it is dropped into a washer or dryer for a golden wash, as often as the visitor likes. */
+/** Provide the visitor's tip tokens, the jar's coins and the coin machine's phase to the scene and the toolbar, open and settle real tips through Stripe whether or not the panel stays open (resuming any still pending from an earlier visit), and hold one token until it is dropped into a washer or dryer, which spends it on the server and turns the machine gold. */
 export function TipProvider(props: TipProviderProps) {
   const [tokens, setTokens] = useState<TipToken[]>();
   const [jar, setJar] = useState<JarCoin[]>();
@@ -245,9 +246,24 @@ export function TipProvider(props: TipProviderProps) {
   );
 
   const dropToken = useCallback(
-    (options: { machineId: string }) => {
+    async (options: { machineId: string }) => {
       if (heldTokenCode === undefined) return;
+      const code = heldTokenCode;
       holdToken(undefined);
+      const result = await spendTokenAction({ code }).catch(
+        () => ({ kind: "unavailable" }) as const
+      );
+      const held = readStoredTokens().find((token) => token.code === code);
+      if (
+        held !== undefined &&
+        (result.kind === "spent" || result.kind === "already-spent")
+      ) {
+        keepToken({ ...held, spentAt: result.spentAt });
+      }
+      if (result.kind !== "spent") {
+        sound?.play("door-locked");
+        return;
+      }
       sound?.play("coin-insert");
       sound?.play("start-button");
       sound?.play("tip-chime");
@@ -259,7 +275,7 @@ export function TipProvider(props: TipProviderProps) {
         ms: GOLDEN_WASH_MS,
       });
     },
-    [heldTokenCode, sound, setTimer]
+    [heldTokenCode, sound, setTimer, keepToken]
   );
 
   useEffect(

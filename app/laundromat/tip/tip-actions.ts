@@ -8,6 +8,7 @@ import { fulfillCheckoutSession } from "@/lib/laundromat/stripe/fulfill-checkout
 import { createLaundromatServiceClient } from "@/lib/laundromat/supabase/create-laundromat-service-client";
 import { findTipByTokenHash } from "@/lib/laundromat/supabase/find-tip-by-token-hash";
 import { listJarCoins } from "@/lib/laundromat/supabase/list-jar-coins";
+import { spendTip } from "@/lib/laundromat/supabase/spend-tip";
 import { hashTokenCode } from "@/lib/laundromat/tip/hash-token-code";
 import { parseTokenCode } from "@/lib/laundromat/tip/parse-token-code";
 import { CUSTOM_TIP_CENTS } from "@/lib/laundromat/tip/tip-amounts";
@@ -33,7 +34,7 @@ export type TipStatus =
   | { kind: "unavailable" };
 
 export type RestoreResult =
-  | { kind: "restored"; coin: JarCoin }
+  | { kind: "restored"; coin: JarCoin & { spentAt?: string } }
   | { kind: "unknown" }
   | { kind: "unavailable" };
 
@@ -143,6 +144,23 @@ export async function restoreToken(options: {
     tokenHash: await hashTokenCode(code),
   });
   return coin === undefined ? { kind: "unknown" } : { kind: "restored", coin };
+}
+
+export type SpendResult =
+  | { kind: "spent"; spentAt: string }
+  | { kind: "already-spent"; spentAt: string }
+  | { kind: "unknown" }
+  | { kind: "unavailable" };
+
+/** Spend the token whose code is `code`, read leniently, so it cannot be used again on any device; `already-spent` when it was, `unknown` when no tip has it. */
+export async function spendToken(options: {
+  code: string;
+}): Promise<SpendResult> {
+  const code = parseTokenCode(options.code);
+  if (code === undefined) return { kind: "unknown" };
+  const client = createLaundromatServiceClient();
+  if (client === undefined) return { kind: "unavailable" };
+  return spendTip({ client, tokenHash: await hashTokenCode(code) });
 }
 
 /** Return every coin in the tip jar, oldest first, or `undefined` when the database is not configured. */

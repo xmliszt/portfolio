@@ -18,6 +18,7 @@ import { SETTINGS_LCD_CLASS } from "@/app/laundromat/settings/settings-lcd-class
 import { SETTINGS_META_CLASS } from "@/app/laundromat/settings/settings-meta-class";
 import { useRenderQuality } from "@/app/laundromat/settings/use-render-quality";
 import { formatSgd } from "@/lib/laundromat/tip/format-sgd";
+import { formatTipDate } from "@/lib/laundromat/tip/format-tip-date";
 import { parseCustomTip } from "@/lib/laundromat/tip/parse-custom-tip";
 import { parseTokenCode } from "@/lib/laundromat/tip/parse-token-code";
 import {
@@ -390,25 +391,43 @@ export function CoinMachinePanel(props: CoinMachinePanelProps) {
           <div className="flex flex-col gap-y-4">
             <TipReceipt token={step.token} printing={step.fresh} hint />
             <div className="flex flex-col gap-y-2">
-              <p
-                className={cn(
-                  SETTINGS_META_CLASS,
-                  "m-0 text-center text-pretty text-[var(--lm-accent-hi)] normal-case"
-                )}
-              >
-                {copy.tip.dropInMachineHint}
-              </p>
-              <button
-                type="button"
-                className={cn(WIDE_KEY_CLASS, "text-[var(--lm-accent-hi)]")}
-                onClick={() => {
-                  tip.holdToken(step.token.code);
-                  props.onClose();
-                }}
-              >
-                <TipCoin metal="brass" label="" sizePx={14} />
-                {copy.tip.dropInMachine}
-              </button>
+              {step.token.spentAt === undefined ? (
+                <>
+                  <p
+                    className={cn(
+                      SETTINGS_META_CLASS,
+                      "m-0 text-center text-pretty text-[var(--lm-accent-hi)] normal-case"
+                    )}
+                  >
+                    {copy.tip.dropInMachineHint}
+                  </p>
+                  <button
+                    type="button"
+                    className={cn(WIDE_KEY_CLASS, "text-[var(--lm-accent-hi)]")}
+                    onClick={() => {
+                      tip.holdToken(step.token.code);
+                      props.onClose();
+                    }}
+                  >
+                    <TipCoin metal="brass" label="" sizePx={14} />
+                    {copy.tip.dropInMachine}
+                  </button>
+                </>
+              ) : (
+                <p
+                  className={cn(
+                    SETTINGS_META_CLASS,
+                    "m-0 text-center opacity-60"
+                  )}
+                >
+                  {copy.tip.usedOn({
+                    date: formatTipDate({
+                      isoDate: step.token.spentAt,
+                      locale: copy.locale,
+                    }),
+                  })}
+                </p>
+              )}
               <button
                 type="button"
                 className={WIDE_KEY_CLASS}
