@@ -189,9 +189,9 @@ export default function LaundromatPrivacyPage() {
         <p>Fonts are served from laundro.cafe itself.</p>
       </LegalSection>
 
-      <LegalSection heading="tips (coming soon)">
+      <LegalSection heading="tips">
         <p>
-          You will be able to leave a tip. Tips are processed by Stripe.
+          You can leave a tip at the coin machine. Tips are processed by Stripe.
           laundro.cafe never sees your card or bank details. Stripe asks for
           your email address to send a receipt, and handles payment data under{" "}
           <a href="https://stripe.com/privacy" target="_blank" rel="noopener">
@@ -226,7 +226,7 @@ export default function LaundromatPrivacyPage() {
             Open-Meteo: rounded coordinates and city searches, for weather
           </li>
           <li>YouTube: station pictures, and the TV stream when it is on</li>
-          <li>Stripe: tip payments, once tips open</li>
+          <li>Stripe: tip payments</li>
         </ul>
         <p>I do not sell your data or use it for ads.</p>
       </LegalSection>

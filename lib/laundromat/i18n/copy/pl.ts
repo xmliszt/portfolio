@@ -379,7 +379,7 @@ export const pl = {
     updates: {
       "tip-coin-machine": {
         title: "zostaw napiwek w automacie na monety",
-        body: "Automat na monety przy ladzie przyjmuje małe napiwki. Twoja moneta wpada do słoika, a automat drukuje ci żeton. Wrzuć go do pralki lub suszarki na imprezowe pranie lub imprezowe suszenie, które wszyscy w sali zobaczą.",
+        body: "Jeśli chcesz wesprzeć laundro.cafe, zostaw mały napiwek w automacie na monety przy ladzie. Twoja moneta wpada do słoika, a automat drukuje ci żeton. Wrzuć go do pralki lub suszarki, by rozpocząć imprezowe pranie lub imprezowe suszenie, które wszyscy w sali zobaczą. Dziękuję za wsparcie.",
       },
       "instant-camera": {
         title: "zrób zdjęcie pokoju",

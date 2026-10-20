@@ -407,7 +407,7 @@ export const it = {
     updates: {
       "tip-coin-machine": {
         title: "lascia una mancia alla macchina a gettoni",
-        body: "La macchina a gettoni vicino al bancone accetta piccole mance. La tua moneta cade nel barattolo e la macchina ti stampa un gettone. Infilalo in una lavatrice o in un'asciugatrice per un lavaggio in festa o un'asciugatura in festa che tutti nella stanza possono vedere.",
+        body: "Se ti va di sostenere laundro.cafe, lascia una piccola mancia alla macchina a gettoni vicino al bancone. La tua moneta cade nel barattolo e la macchina ti stampa un gettone. Infilalo in una lavatrice o in un'asciugatrice per un lavaggio in festa o un'asciugatura in festa che tutti nella stanza possono vedere. Grazie per il tuo sostegno.",
       },
       "instant-camera": {
         title: "scatta una foto della stanza",

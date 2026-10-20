@@ -27,7 +27,7 @@ export default function LaundromatTermsPage() {
         </p>
       </LegalSection>
 
-      <LegalSection heading="tips (coming soon)">
+      <LegalSection heading="tips">
         <p>
           Tips are voluntary. They are in Singapore dollars, from S$1 to S$500,
           and are processed by Stripe. Stripe&apos;s own terms also apply to the
@@ -62,8 +62,9 @@ export default function LaundromatTermsPage() {
 
       <LegalSection heading="your token code">
         <p>
-          Each token comes with a code. Keep it private. Anyone with the code
-          can restore the token.
+          Each token comes with a code, saved in your browser and printed on
+          your Stripe receipt. Keep it private. Anyone with the code can restore
+          the token. If you lose it, email me from the address you paid with.
         </p>
       </LegalSection>
 

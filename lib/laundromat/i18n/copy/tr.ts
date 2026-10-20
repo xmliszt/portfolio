@@ -362,8 +362,8 @@ export const tr = {
     },
     updates: {
       "tip-coin-machine": {
-        title: "bozuk para makinesine bahşiş bırakın",
-        body: "Tezgâhın yanındaki bozuk para makinesi küçük bahşişler alıyor. Paran kavanoza düşüyor ve makine sana bir jeton basıyor. Onu bir çamaşır ya da kurutma makinesine at, odadaki herkesin görebileceği bir yıkama şenliği ya da kurutma şenliği olsun.",
+        title: "bozuk para makinesine bahşiş bırak",
+        body: "İstersen tezgâhın yanındaki bozuk para makinesine küçük bir bahşiş bırakarak laundro.cafe'ye destek olabilirsin. Paran kavanoza düşüyor ve makine sana bir jeton basıyor. Onu bir çamaşır ya da kurutma makinesine at, odadaki herkesin görebileceği bir yıkama şenliği ya da kurutma şenliği olsun. Desteğin için teşekkürler.",
       },
       "instant-camera": {
         title: "odanın fotoğrafını çek",
@@ -725,7 +725,7 @@ export const tr = {
       `kavanozda ${o.count} jeton${o.isShining ? " · seninkiler parlıyor" : ""}`,
     trayHint: "kullanmak için kendi jetonuna dokun",
     receiptDescription: (o: { code: string; link: string }) =>
-      `laundro.cafe için bıraktığın bahşişe teşekkürler! Jeton kodun: ${o.code}; jetonunu kaybedersen ${o.link} bağlantısıyla her cihazda geri yükleyebilirsin.`,
+      `laundro.cafe için bıraktığın bahşiş için teşekkürler! Jeton kodun: ${o.code}; jetonunu kaybedersen ${o.link} bağlantısıyla her cihazda geri yükleyebilirsin.`,
     copyCode: "Kodu kopyala",
     codeCopied: "Kod kopyalandı",
     trayCoinLabel: (o: { number: number; date: string; isOwn: boolean }) =>

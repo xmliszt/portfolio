@@ -405,7 +405,7 @@ export const de = {
     updates: {
       "tip-coin-machine": {
         title: "ein Trinkgeld am Münzautomaten",
-        body: "Der Münzautomat an der Theke nimmt kleine Trinkgelder an. Deine Münze fällt ins Glas, und der Automat druckt dir einen Token. Wirf ihn in eine Waschmaschine oder einen Trockner für eine Waschparty oder Trockenparty, die alle im Raum sehen können.",
+        body: "Wenn du magst, unterstütze laundro.cafe mit einem kleinen Trinkgeld am Münzautomaten an der Theke. Deine Münze fällt ins Glas, und der Automat druckt dir einen Token. Wirf ihn in eine Waschmaschine oder einen Trockner für eine Waschparty oder Trockenparty, die alle im Raum sehen können. Danke für deine Unterstützung.",
       },
       "instant-camera": {
         title: "ein Foto vom Raum machen",

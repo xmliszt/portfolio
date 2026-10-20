@@ -403,7 +403,7 @@ export const id = {
     updates: {
       "tip-coin-machine": {
         title: "beri tip di mesin koin",
-        body: "Mesin koin di dekat meja menerima tip kecil. Koinmu jatuh ke dalam toples dan mesin mencetak token untukmu. Masukkan ke mesin cuci atau pengering untuk pesta cuci atau pesta pengeringan yang bisa dilihat semua orang di ruangan.",
+        body: "Kalau mau mendukung laundro.cafe, kamu bisa memberi tip kecil di mesin koin dekat meja. Koinmu jatuh ke dalam toples dan mesin mencetak token untukmu. Masukkan ke mesin cuci atau pengering untuk pesta cuci atau pesta pengeringan yang bisa dilihat semua orang di ruangan. Terima kasih atas dukunganmu.",
       },
       "instant-camera": {
         title: "memotret ruangan",

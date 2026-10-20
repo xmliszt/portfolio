@@ -400,7 +400,7 @@ export const es = {
     updates: {
       "tip-coin-machine": {
         title: "deja una propina en la máquina de monedas",
-        body: "La máquina de monedas junto al mostrador acepta pequeñas propinas. Tu moneda cae en el frasco y la máquina te imprime una ficha. Échala en una lavadora o secadora para un lavado de fiesta o un secado de fiesta que todos en la sala puedan ver.",
+        body: "Si te apetece apoyar laundro.cafe, deja una pequeña propina en la máquina de monedas junto al mostrador. Tu moneda cae en el frasco y la máquina te imprime una ficha. Échala en una lavadora o secadora para un lavado de fiesta o un secado de fiesta que todos en la sala puedan ver. Gracias por tu apoyo.",
       },
       "instant-camera": {
         title: "haz una foto del lugar",

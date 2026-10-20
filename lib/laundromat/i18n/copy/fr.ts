@@ -407,7 +407,7 @@ export const fr = {
     updates: {
       "tip-coin-machine": {
         title: "laisser un pourboire à la machine à pièces",
-        body: "La machine à pièces près du comptoir accepte de petits pourboires. Ta pièce tombe dans le bocal et la machine t’imprime un jeton. Glisse-le dans un lave-linge ou un sèche-linge pour un lavage en fête ou un séchage en fête que tout le monde dans la salle peut voir.",
+        body: "Si tu souhaites soutenir laundro.cafe, laisse un petit pourboire à la machine à pièces près du comptoir. Ta pièce tombe dans le bocal et la machine t’imprime un jeton. Glisse-le dans un lave-linge ou un sèche-linge pour un lavage en fête ou un séchage en fête que tout le monde dans la salle peut voir. Merci pour ton soutien.",
       },
       "instant-camera": {
         title: "prends une photo de la pièce",

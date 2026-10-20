@@ -391,7 +391,7 @@ export const vi = {
     updates: {
       "tip-coin-machine": {
         title: "để lại tiền tip ở máy xu",
-        body: "Máy xu cạnh quầy nhận những khoản tip nhỏ. Đồng xu của bạn rơi vào hũ và máy in cho bạn một token. Thả nó vào máy giặt hoặc máy sấy để mở tiệc giặt hoặc tiệc sấy cho mọi người trong phòng cùng xem.",
+        body: "Nếu muốn ủng hộ laundro.cafe, bạn có thể để lại một khoản tip nhỏ ở máy xu cạnh quầy. Đồng xu của bạn rơi vào hũ và máy in cho bạn một token. Thả nó vào máy giặt hoặc máy sấy để mở tiệc giặt hoặc tiệc sấy cho mọi người trong phòng cùng xem. Cảm ơn bạn đã ủng hộ.",
       },
       "instant-camera": {
         title: "chụp ảnh căn phòng",
