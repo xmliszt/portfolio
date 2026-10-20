@@ -39,6 +39,8 @@ function getBlocker(object: SceneObject) {
     case "notebook":
     case "mug":
     case "instant-camera":
+    case "coin-machine":
+    case "tip-jar":
       return undefined;
     case "table":
       return topSlab(TABLE_TOP_THICKNESS);

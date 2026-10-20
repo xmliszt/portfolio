@@ -30,6 +30,10 @@ export const SOUND_NAMES = [
   "camera-shutter",
   "camera-eject",
   "crayon-scratch",
+  "coin-insert",
+  "token-drop",
+  "jar-coin",
+  "tip-chime",
 ] as const;
 
 export type SoundName = (typeof SOUND_NAMES)[number];

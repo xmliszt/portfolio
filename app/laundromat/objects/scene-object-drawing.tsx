@@ -10,6 +10,7 @@ import { BasketDrawing } from "./basket-drawing";
 import { BoardDrawing } from "./board-drawing";
 import { ClockDrawing } from "./clock-drawing";
 import { CoffeeMachineDrawing } from "./coffee-machine-drawing";
+import { CoinMachineDrawing } from "./coin-machine-drawing";
 import { CounterDrawing } from "./counter-drawing";
 import { InstantCameraDrawing } from "./instant-camera-drawing";
 import { MachineDrawing } from "./machine-drawing";
@@ -21,6 +22,7 @@ import type { SceneViews } from "./scene-views";
 import { ShelfDrawing } from "./shelf-drawing";
 import { StoolDrawing } from "./stool-drawing";
 import { TableDrawing } from "./table-drawing";
+import { TipJarDrawing } from "./tip-jar-drawing";
 import { ToyBoxDrawing } from "./toy-box-drawing";
 import { ToySetDrawing } from "./toy-set-drawing";
 import { TubeDisplayDrawing } from "./tube-display-drawing";
@@ -196,6 +198,16 @@ export function SceneObjectDrawing(props: SceneObjectDrawingProps) {
       );
     case "instant-camera":
       return <InstantCameraDrawing {...shared} />;
+    case "coin-machine":
+      return (
+        <CoinMachineDrawing
+          {...shared}
+          phase={views.coinMachine}
+          screenText={views.coinMachineScreen}
+        />
+      );
+    case "tip-jar":
+      return <TipJarDrawing {...shared} coinCount={views.tipJar.coinCount} />;
     default: {
       const unhandled: never = object;
       return unhandled;

@@ -189,10 +189,10 @@ export default function LaundromatPrivacyPage() {
         <p>Fonts are served from laundro.cafe itself.</p>
       </LegalSection>
 
-      <LegalSection heading="tips (coming soon)">
+      <LegalSection heading="tips">
         <p>
-          You will be able to leave a tip. Tips are processed by Stripe.
-          laundro.cafe never sees your card or bank details. Stripe may ask for
+          You can leave a tip at the coin machine. Tips are processed by Stripe.
+          laundro.cafe never sees your card or bank details. Stripe asks for
           your email address to send a receipt, and handles payment data under{" "}
           <a href="https://stripe.com/privacy" target="_blank" rel="noopener">
             its own privacy policy
@@ -205,10 +205,15 @@ export default function LaundromatPrivacyPage() {
           <li>the amount</li>
           <li>the date</li>
           <li>the Stripe Checkout session id</li>
+          <li>the email address you gave Stripe</li>
           <li>a one-way hash of your token code</li>
+          <li>when and in which machine the token was used</li>
         </ul>
         <p>
-          The token code itself stays with you, in your browser. The tip jar
+          The email address is kept so I can help you if you lose your token,
+          and is never shown to anyone or used for anything else. The token code
+          is saved in your browser and printed on your Stripe receipt with a
+          link to restore it; the site itself stores only its hash. The tip jar
           shows other visitors only coin numbers and dates.
         </p>
       </LegalSection>
@@ -221,7 +226,7 @@ export default function LaundromatPrivacyPage() {
             Open-Meteo: rounded coordinates and city searches, for weather
           </li>
           <li>YouTube: station pictures, and the TV stream when it is on</li>
-          <li>Stripe: tip payments, once tips open</li>
+          <li>Stripe: tip payments</li>
         </ul>
         <p>I do not sell your data or use it for ads.</p>
       </LegalSection>

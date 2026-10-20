@@ -27,6 +27,7 @@ import {
   TV_RESTORED_EVENT,
   TV_STORAGE_KEYS,
 } from "@/lib/laundromat/tv/tv-storage";
+import { wait } from "@/lib/laundromat/wait";
 import type { WeatherPlace } from "@/lib/laundromat/weather/weather-place";
 import type {
   TemperatureUnit,
@@ -34,9 +35,11 @@ import type {
 } from "@/lib/laundromat/weather/weather-reading";
 import { cn } from "@/lib/utils";
 
+import { PRINTER_ICON_CLASS, PRINTER_KEY_CLASS } from "./printer-key-class";
 import { SETTINGS_LCD_CLASS } from "./settings-lcd-class";
 import { SETTINGS_META_CLASS } from "./settings-meta-class";
 import { SettingsTicketPaper } from "./settings-ticket-paper";
+import { URL_REVOKE_MS } from "./url-revoke-ms";
 import { useRenderQuality } from "./use-render-quality";
 
 const FEED = { chunkPx: 12, moveMs: 34, restMs: 46, volume: 0.8 };
@@ -47,7 +50,6 @@ const PUSH_REST_MS = 120;
 const LED_FLASHES_MS = [0, 160, 320, 480];
 const REVEAL = { marginPx: 8, scrollMs: 380 };
 const PUSH_CLICK_VOLUME = 0.5;
-const URL_REVOKE_MS = 1_000;
 const LINK_COPIED_AFTER_MS = 1_200;
 const RESTORE_AFTER_OPEN_MS = 420;
 const COPIED_MS = 1_600;
@@ -79,10 +81,6 @@ function readTicketChoice<Choice>(options: {
 }) {
   if (options.value === undefined) return options.current;
   return options.value === "live" ? undefined : options.value;
-}
-
-function wait(ms: number) {
-  return new Promise((resolve) => window.setTimeout(resolve, ms));
 }
 
 function nextFrame() {
@@ -652,9 +650,3 @@ export function SettingsTicketPrinter(props: SettingsTicketPrinterProps) {
     </section>
   );
 }
-
-const PRINTER_KEY_CLASS =
-  "flex h-8 shrink-0 cursor-pointer items-center gap-x-1.5 rounded-[7px] bg-[linear-gradient(180deg,#2e3033,#1c1d1f)] pr-3 pl-2.5 font-[family-name:var(--lm-font-mono)] text-[11px] leading-4 text-[var(--lm-ink-hi)] lowercase shadow-[0_0_0_1px_#000,inset_0_1px_0_rgb(255_255_255/0.08),0_2px_0_#08090a,0_3px_4px_rgb(0_0_0/0.5)] outline-none transition-[translate,box-shadow] duration-75 focus-visible:shadow-[0_0_0_1px_#000,0_0_0_3px_var(--lm-line),0_2px_0_#08090a] active:translate-y-0.5 active:shadow-[0_0_0_1px_#000,inset_0_1px_0_rgb(255_255_255/0.05),0_1px_2px_rgb(0_0_0/0.5)]";
-
-const PRINTER_ICON_CLASS =
-  "size-3 shrink-0 fill-none stroke-current [stroke-linecap:round] [stroke-linejoin:round] [stroke-width:1]";

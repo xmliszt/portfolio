@@ -11,6 +11,7 @@ import { LocalWeatherProvider } from "@/app/laundromat/local-weather/local-weath
 import { createFakeRoomSource } from "@/app/laundromat/realtime/create-fake-room-source";
 import { RoomSourceContext } from "@/app/laundromat/realtime/room-source-context";
 import { SoundBoardProvider } from "@/app/laundromat/sound/sound-board-provider";
+import { ChargeCheckContext } from "@/app/laundromat/tip/charge-check-context";
 import type { BedroomConfig } from "@/lib/laundromat/first-visit/bedroom-config";
 import { bedroomConfig } from "@/lib/laundromat/first-visit/bedroom-config";
 import { getTimeOfDay } from "@/lib/laundromat/get-time-of-day";
@@ -19,6 +20,7 @@ import { detectScript } from "@/lib/laundromat/notebook/detect-script";
 import type { RoomPresence } from "@/lib/laundromat/realtime/room-presence";
 import type { SceneConfig } from "@/lib/laundromat/scene-config";
 import { sceneConfig } from "@/lib/laundromat/scene-config";
+import { GOLDEN_CHARGE_MS } from "@/lib/laundromat/tip/golden-charge-ms";
 import { toCssVariables } from "@/lib/laundromat/to-css-variables";
 import type { WeatherReading } from "@/lib/laundromat/weather/weather-reading";
 import { WEATHER_CONDITIONS } from "@/lib/laundromat/weather/weather-reading";
@@ -333,6 +335,7 @@ const realtimeDials = {
   othersWashing: [0, 0, 5, 1],
   othersDrying: [0, 0, 5, 1],
   someoneWriting: false,
+  someoneGoldenCharge: false,
   writerDraft: {
     type: "text",
     default: "the dryer on the end is my favourite",
@@ -346,6 +349,7 @@ function buildFakePeers(options: {
   othersWashing: number;
   othersDrying: number;
   someoneWriting: boolean;
+  goldenChargeStartedAt: number | undefined;
   now: number;
 }) {
   const loads = [
@@ -367,19 +371,46 @@ function buildFakePeers(options: {
       },
     };
   });
-  return options.someoneWriting
+  const writers: RoomPresence[] = options.someoneWriting
     ? [
-        ...peers,
         {
           sessionId: FAKE_WRITER_ID,
           visitorId: FAKE_WRITER_ID,
           writingSince: options.now - 60_000,
         },
       ]
-    : peers;
+    : [];
+  const goldenChargers: RoomPresence[] =
+    options.goldenChargeStartedAt === undefined
+      ? []
+      : [
+          {
+            sessionId: FAKE_GOLDEN_CHARGER_ID,
+            visitorId: FAKE_GOLDEN_CHARGER_ID,
+            goldenCharges: [
+              {
+                machineId: FAKE_GOLDEN_SPEND.machineId,
+                attempt: FAKE_GOLDEN_SPEND.attempt,
+                startedAt: options.goldenChargeStartedAt,
+              },
+            ],
+          },
+        ];
+  return [...peers, ...writers, ...goldenChargers];
 }
 
 const FAKE_WRITER_ID = "fake-writer";
+const FAKE_GOLDEN_CHARGER_ID = "fake-golden-charger";
+const FAKE_GOLDEN_SPEND = {
+  attempt: "00000000-0000-4000-8000-00000000901d",
+  machineId: "washer-3",
+};
+
+async function checkFakeCharges(attempts: string[]) {
+  return attempts.includes(FAKE_GOLDEN_SPEND.attempt)
+    ? [{ ...FAKE_GOLDEN_SPEND, remainingMs: GOLDEN_CHARGE_MS.max }]
+    : [];
+}
 
 const exportDials = {
   copyConfig: { type: "action", label: "copy config json" },
@@ -462,17 +493,43 @@ export default function LaundromatLab() {
     ...PANEL_OPTIONS,
   });
   const [fakeRoom] = useState(() => createFakeRoomSource());
-  const { othersWashing, othersDrying, someoneWriting, writerDraft } = realtime;
+  const {
+    othersWashing,
+    othersDrying,
+    someoneWriting,
+    someoneGoldenCharge,
+    writerDraft,
+  } = realtime;
+  const [goldenChargeStartedAt, setGoldenChargeStartedAt] = useState<number>();
+  useEffect(() => {
+    if (!someoneGoldenCharge) {
+      setGoldenChargeStartedAt(undefined);
+      return;
+    }
+    setGoldenChargeStartedAt(Date.now());
+    const timer = window.setInterval(
+      () => setGoldenChargeStartedAt(Date.now()),
+      GOLDEN_CHARGE_MS.max
+    );
+    return () => window.clearInterval(timer);
+  }, [someoneGoldenCharge]);
   useEffect(() => {
     fakeRoom.setPeers(
       buildFakePeers({
         othersWashing,
         othersDrying,
         someoneWriting,
+        goldenChargeStartedAt,
         now: Date.now(),
       })
     );
-  }, [fakeRoom, othersWashing, othersDrying, someoneWriting]);
+  }, [
+    fakeRoom,
+    othersWashing,
+    othersDrying,
+    someoneWriting,
+    goldenChargeStartedAt,
+  ]);
   useEffect(() => {
     if (!someoneWriting) return;
     fakeRoom.setDraft({
@@ -702,27 +759,29 @@ export default function LaundromatLab() {
         </div>
         <SoundBoardProvider>
           <RoomSourceContext.Provider value={fakeRoom.source}>
-            <div className="min-h-0 min-w-0">
-              {view.room === "hamper room" ? (
-                <LaundromatEntry
-                  key={`${replayCount}-${sceneKey}`}
-                  config={config}
-                  bedroom={bedroom}
-                  hourOverride={
-                    timeValues.override ? timeValues.hour : undefined
-                  }
-                  ignoreArrivedFlag
-                />
-              ) : (
-                <LaundromatScene
-                  key={sceneKey}
-                  config={config}
-                  hourOverride={
-                    timeValues.override ? timeValues.hour : undefined
-                  }
-                />
-              )}
-            </div>
+            <ChargeCheckContext.Provider value={checkFakeCharges}>
+              <div className="min-h-0 min-w-0">
+                {view.room === "hamper room" ? (
+                  <LaundromatEntry
+                    key={`${replayCount}-${sceneKey}`}
+                    config={config}
+                    bedroom={bedroom}
+                    hourOverride={
+                      timeValues.override ? timeValues.hour : undefined
+                    }
+                    ignoreArrivedFlag
+                  />
+                ) : (
+                  <LaundromatScene
+                    key={sceneKey}
+                    config={config}
+                    hourOverride={
+                      timeValues.override ? timeValues.hour : undefined
+                    }
+                  />
+                )}
+              </div>
+            </ChargeCheckContext.Provider>
           </RoomSourceContext.Provider>
         </SoundBoardProvider>
         <DialRoot position="top-right" theme="dark" />

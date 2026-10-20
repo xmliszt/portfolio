@@ -16,6 +16,8 @@ import { InstantCamera } from "./instant-camera/instant-camera";
 import { SettingsButton } from "./settings/settings-button";
 import { SoundToggle } from "./sound/sound-toggle";
 import { useWeatherSounds } from "./sound/use-weather-sounds";
+import { PocketButton } from "./tip/pocket-button";
+import { TipProvider } from "./tip/tip-provider";
 import { CameraButton } from "./camera-button";
 import { LaundromatScene } from "./laundromat-scene";
 import { PortfolioLink } from "./portfolio-link";
@@ -145,114 +147,118 @@ export function LaundromatEntry(props: LaundromatEntryProps) {
   }
 
   return (
-    <div className="relative size-full">
-      <FirstVisitKeyframes motion={bedroom.motion} />
-      <div
-        data-lm-control
-        className="absolute top-[max(1.25rem,env(safe-area-inset-top))] right-[max(1.25rem,env(safe-area-inset-right))] z-10 flex flex-col items-end gap-y-1"
-      >
-        <UpdateNotice />
-        <LanguagePicker />
-        <SoundToggle />
-        <CameraButton onPickUp={() => setIsCameraOut(true)} />
-        <SettingsButton />
-        <PortfolioLink />
-      </div>
-      {isFirstVisit && (
-        <div ref={bedroomRef} className="absolute inset-0">
-          <FirstVisit
-            scene={props.config}
-            bedroom={bedroom}
+    <TipProvider>
+      <div className="relative size-full">
+        <FirstVisitKeyframes motion={bedroom.motion} />
+        <div
+          data-lm-control
+          className="absolute top-[max(1.25rem,env(safe-area-inset-top))] right-[max(1.25rem,env(safe-area-inset-right))] z-10 flex flex-col items-end gap-y-1"
+        >
+          <UpdateNotice />
+          <LanguagePicker />
+          <SoundToggle />
+          <CameraButton onPickUp={() => setIsCameraOut(true)} />
+          <PocketButton />
+          <SettingsButton />
+          <PortfolioLink />
+        </div>
+        {isFirstVisit && (
+          <div ref={bedroomRef} className="absolute inset-0">
+            <FirstVisit
+              scene={props.config}
+              bedroom={bedroom}
+              hourOverride={props.hourOverride}
+              home={home}
+              cleanPile={hasCleanPile}
+              lampSwitch={lampSwitch}
+              curtainOpen={isCurtainOpen}
+              onLampSwitch={setLampSwitch}
+              onCurtainOpenChange={setIsCurtainOpen}
+              onWalkIn={handleWalkIn}
+              onListen={handleListen}
+              cameraHeld={isCameraOut}
+              onPickUpCamera={() => setIsCameraOut(true)}
+            />
+          </div>
+        )}
+        <div
+          ref={sceneRef}
+          tabIndex={-1}
+          data-lm-arrival={visibleArrival}
+          className="absolute inset-0 outline-none data-[lm-arrival=hidden]:pointer-events-none data-[lm-arrival=hidden]:opacity-0"
+          onAnimationEnd={handleAnimationEnd}
+        >
+          <LaundromatScene
+            config={props.config}
             hourOverride={props.hourOverride}
-            home={home}
-            cleanPile={hasCleanPile}
-            lampSwitch={lampSwitch}
-            curtainOpen={isCurtainOpen}
-            onLampSwitch={setLampSwitch}
-            onCurtainOpenChange={setIsCurtainOpen}
-            onWalkIn={handleWalkIn}
-            onListen={handleListen}
+            onHeadHome={handleHeadHome}
+            hidden={visibleArrival === "hidden"}
             cameraHeld={isCameraOut}
             onPickUpCamera={() => setIsCameraOut(true)}
           />
         </div>
-      )}
-      <div
-        ref={sceneRef}
-        tabIndex={-1}
-        data-lm-arrival={visibleArrival}
-        className="absolute inset-0 outline-none data-[lm-arrival=hidden]:pointer-events-none data-[lm-arrival=hidden]:opacity-0"
-        onAnimationEnd={handleAnimationEnd}
-      >
-        <LaundromatScene
-          config={props.config}
-          hourOverride={props.hourOverride}
-          onHeadHome={handleHeadHome}
-          hidden={visibleArrival === "hidden"}
-          cameraHeld={isCameraOut}
-          onPickUpCamera={() => setIsCameraOut(true)}
-        />
-      </div>
-      {isDoorLit && (
-        <motion.div
-          aria-hidden
-          className="pointer-events-none absolute inset-0 overflow-hidden"
-          initial={{ opacity: 1 }}
-          animate={{ opacity: 0 }}
-          transition={{
-            duration: walkIn.lightOutMs / 1000,
-            delay: lightOutStartMs / 1000,
-            ease: "easeInOut",
-          }}
-        >
+        {isDoorLit && (
           <motion.div
-            className="absolute inset-0 bg-[var(--lm-accent-hi)]"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
+            aria-hidden
+            className="pointer-events-none absolute inset-0 overflow-hidden"
+            initial={{ opacity: 1 }}
+            animate={{ opacity: 0 }}
             transition={{
-              duration: LIGHT_FILL_MS / 1000,
-              delay: (lightCoverMs - LIGHT_FILL_MS) / 1000,
-              ease: "easeIn",
+              duration: walkIn.lightOutMs / 1000,
+              delay: lightOutStartMs / 1000,
+              ease: "easeInOut",
             }}
-          />
+          >
+            <motion.div
+              className="absolute inset-0 bg-[var(--lm-accent-hi)]"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{
+                duration: LIGHT_FILL_MS / 1000,
+                delay: (lightCoverMs - LIGHT_FILL_MS) / 1000,
+                ease: "easeIn",
+              }}
+            />
+            <motion.div
+              className="absolute inset-0"
+              style={{
+                background:
+                  "color-mix(in srgb, var(--lm-accent-hi) 20%, white)",
+              }}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{
+                duration: walkIn.whiteMs / 1000,
+                delay: lightCoverMs / 1000,
+                ease: "easeOut",
+              }}
+            />
+          </motion.div>
+        )}
+        <AnimatePresence>
+          {isCameraOut && (
+            <InstantCamera
+              key="instant-camera"
+              subject={isFirstVisit ? "bedroom" : "laundromat"}
+              background={props.config.tokens.bg}
+              onPutDown={() => setIsCameraOut(false)}
+            />
+          )}
+        </AnimatePresence>
+        {homeVeil !== undefined && (
           <motion.div
-            className="absolute inset-0"
-            style={{
-              background: "color-mix(in srgb, var(--lm-accent-hi) 20%, white)",
-            }}
+            aria-hidden
+            className="absolute inset-0 bg-black"
             initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{
-              duration: walkIn.whiteMs / 1000,
-              delay: lightCoverMs / 1000,
-              ease: "easeOut",
-            }}
-          />
-        </motion.div>
-      )}
-      <AnimatePresence>
-        {isCameraOut && (
-          <InstantCamera
-            key="instant-camera"
-            subject={isFirstVisit ? "bedroom" : "laundromat"}
-            background={props.config.tokens.bg}
-            onPutDown={() => setIsCameraOut(false)}
+            animate={{ opacity: homeVeil === "dimming" ? 1 : 0 }}
+            transition={
+              homeVeil === "dimming"
+                ? { duration: HEAD_HOME_DIM_MS / 1000, ease: "easeIn" }
+                : { duration: HEAD_HOME_REVEAL_MS / 1000, ease: "easeOut" }
+            }
           />
         )}
-      </AnimatePresence>
-      {homeVeil !== undefined && (
-        <motion.div
-          aria-hidden
-          className="absolute inset-0 bg-black"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: homeVeil === "dimming" ? 1 : 0 }}
-          transition={
-            homeVeil === "dimming"
-              ? { duration: HEAD_HOME_DIM_MS / 1000, ease: "easeIn" }
-              : { duration: HEAD_HOME_REVEAL_MS / 1000, ease: "easeOut" }
-          }
-        />
-      )}
-    </div>
+      </div>
+    </TipProvider>
   );
 }

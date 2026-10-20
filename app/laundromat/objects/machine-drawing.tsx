@@ -1,13 +1,20 @@
+import { useReducedMotion } from "motion/react";
+
 import { useRenderQuality } from "@/app/laundromat/settings/use-render-quality";
 import type { LaidOutObject } from "@/lib/laundromat/build-scene-layout";
 import { getDialAngleDeg } from "@/lib/laundromat/laundry/get-dial-angle-deg";
 import { LITE_DRUM_POSES } from "@/lib/laundromat/render-quality/lite-drum-poses";
 import type { SceneConfig } from "@/lib/laundromat/scene-config";
+import { METAL_TONES } from "@/lib/laundromat/tip/tip-coin-metals";
 import { toSvgPoints } from "@/lib/laundromat/to-svg-points";
 import { cn } from "@/lib/utils";
 
 import { BoxBevel } from "./box-bevel";
 import { DrumLaundry } from "./drum-laundry";
+import { GoldenCharms } from "./golden-charms";
+import { GoldenMachineGlow } from "./golden-machine-glow";
+import { GoldenWashGlow } from "./golden-wash-glow";
+import { GoldenWashSparkles } from "./golden-wash-sparkles";
 import { MachineDoorSwing } from "./machine-door-swing";
 import { partStroke } from "./part-stroke";
 import type { MachineView } from "./scene-views";
@@ -40,6 +47,7 @@ type MachineDrawingProps = {
 
 export function MachineDrawing(props: MachineDrawingProps) {
   const { quality } = useRenderQuality();
+  const prefersReducedMotion = useReducedMotion() ?? false;
   const { object, faces, face } = props.laidOut;
   if (face?.target !== "machine") return null;
   const isLite = quality === "lite";
@@ -51,6 +59,10 @@ export function MachineDrawing(props: MachineDrawingProps) {
     view.status.kind === "running" ||
     (view.status.kind === "occupied" && view.status.phase === "running");
   const isLive = view.status.kind === "running" || view.status.kind === "done";
+  const isCharged = view.goldenCharge === "charged";
+  const isCharmed = view.goldenCharge === "charmed";
+  const isGolden = isCharged || isCharmed;
+  const isInvited = view.goldenCharge === "invited";
   const remainingMs =
     view.status.kind === "running" ||
     (view.status.kind === "occupied" && view.status.phase === "running")
@@ -82,7 +94,7 @@ export function MachineDrawing(props: MachineDrawingProps) {
 
   return (
     <g data-machine-status={view.status.kind} strokeLinejoin="round">
-      <g className={partStroke(props.highlightedId === object.id)}>
+      <g className={partStroke(props.highlightedId === object.id || isInvited)}>
         <polygon
           className="fill-[var(--lm-face)]"
           points={toSvgPoints(faces.front)}
@@ -390,6 +402,7 @@ export function MachineDrawing(props: MachineDrawingProps) {
               opacity={details.dryerGlow}
             />
           )}
+          {isCharged && <GoldenWashGlow radius={doorRadius - 6} />}
           {hasLaundry && (
             <DrumLaundry
               radius={doorRadius - 7}
@@ -445,6 +458,23 @@ export function MachineDrawing(props: MachineDrawingProps) {
               strokeWidth={0.75}
             />
           ))}
+          {isGolden && (
+            <circle
+              cx={doorCenter.x}
+              cy={doorCenter.y}
+              r={doorRadius + 1}
+              fill="none"
+              stroke={METAL_TONES.brass.base}
+              strokeWidth={4}
+              opacity={0.35}
+              data-lm-motion
+              style={
+                isLite
+                  ? undefined
+                  : { animation: "lm-pulse 2.4s ease-in-out infinite" }
+              }
+            />
+          )}
           <path
             d={getRingPath({
               center: doorCenter,
@@ -452,14 +482,17 @@ export function MachineDrawing(props: MachineDrawingProps) {
               innerRadius: doorRadius - 4.5,
             })}
             fillRule="evenodd"
+            data-lm-motion
             className={cn(
               "fill-[var(--lm-face-top)]",
-              isLive
-                ? "stroke-[var(--lm-accent)]"
-                : partStroke(isHighlighted("door"))
+              isGolden
+                ? "stroke-[var(--lm-accent-hi)]"
+                : isLive
+                  ? "stroke-[var(--lm-accent)]"
+                  : partStroke(isHighlighted("door") || isInvited)
             )}
             style={
-              view.status.kind === "done" && !isLite
+              (view.status.kind === "done" || isInvited) && !isLite
                 ? { animation: "lm-pulse 2.4s ease-in-out infinite" }
                 : undefined
             }
@@ -495,7 +528,24 @@ export function MachineDrawing(props: MachineDrawingProps) {
             />
           )}
         </MachineDoorSwing>
+        {isCharged && (
+          <GoldenWashSparkles
+            center={doorCenter}
+            radius={doorRadius}
+            animated={!isLite}
+          />
+        )}
       </g>
+      {isCharged && <GoldenMachineGlow faces={faces} halo={!isLite} />}
+      {isCharmed && !prefersReducedMotion && (
+        <GoldenCharms
+          center={face.toScene({
+            x: doorCenter.x,
+            y: door.y + doorRadius * 0.4,
+          })}
+          tier={quality}
+        />
+      )}
     </g>
   );
 }

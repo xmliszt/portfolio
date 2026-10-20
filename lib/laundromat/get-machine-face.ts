@@ -83,6 +83,7 @@ export function getMachineFace(options: {
 
   return {
     transform: plane.transform,
+    toScene: plane.toScene,
     rects,
     sideTransform: side.transform,
     sidePanel,

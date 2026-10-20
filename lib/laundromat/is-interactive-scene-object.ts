@@ -20,6 +20,8 @@ export function isInteractiveSceneObject(object: SceneObject) {
     case "toy-box":
     case "toy-set":
     case "instant-camera":
+    case "coin-machine":
+    case "tip-jar":
       return true;
     case "counter":
     case "window":

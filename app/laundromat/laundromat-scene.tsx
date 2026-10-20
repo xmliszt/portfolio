@@ -49,8 +49,10 @@ import { assignRemoteMachines } from "@/lib/laundromat/realtime/assign-remote-ma
 import { chooseCoffeeGroup } from "@/lib/laundromat/realtime/choose-coffee-group";
 import { chooseNotebookWriter } from "@/lib/laundromat/realtime/choose-notebook-writer";
 import { getClockOffsetMs } from "@/lib/laundromat/realtime/get-clock-offset-ms";
+import { getGoldenCharges } from "@/lib/laundromat/realtime/get-golden-charges";
 import { getNotebookLock } from "@/lib/laundromat/realtime/get-notebook-lock";
 import { getPeopleHere } from "@/lib/laundromat/realtime/get-people-here";
+import { MAX_GOLDEN_CHARGES } from "@/lib/laundromat/realtime/max-golden-charges";
 import type {
   DraftContent,
   RemoteEntry,
@@ -58,6 +60,10 @@ import type {
 } from "@/lib/laundromat/realtime/room-presence";
 import { shiftRemoteLoad } from "@/lib/laundromat/realtime/shift-remote-load";
 import type { FocusTarget, SceneConfig } from "@/lib/laundromat/scene-config";
+import { getChargeChanges } from "@/lib/laundromat/tip/get-charge-changes";
+import { readTokenLinkText } from "@/lib/laundromat/tip/read-token-link-text";
+import type { GoldenChargeView } from "@/lib/laundromat/tip/tip-token";
+import { TOKEN_CODE_HASH_PREFIX } from "@/lib/laundromat/tip/token-code-format";
 import { describeTv } from "@/lib/laundromat/tv/describe-tv";
 import type { TvControl } from "@/lib/laundromat/tv/describe-tv-control";
 import { describeTvControl } from "@/lib/laundromat/tv/describe-tv-control";
@@ -71,6 +77,7 @@ import { useLaundromatCopy } from "./i18n/use-laundromat-copy";
 import { useLocalWeather } from "./local-weather/use-local-weather";
 import { NotebookBook } from "./notebook/notebook-book";
 import { ShelfBookButton } from "./notebook/shelf-book-button";
+import { useIsNarrowScreen } from "./notebook/use-is-narrow-screen";
 import { useNotebookShelf } from "./notebook/use-notebook-shelf";
 import type { SceneViews } from "./objects/scene-views";
 import type { PlantStreakHandle } from "./plant/plant-streak-layer";
@@ -83,6 +90,16 @@ import { useRenderQuality } from "./settings/use-render-quality";
 import { useSceneSounds } from "./sound/use-scene-sounds";
 import { useSoundBoard } from "./sound/use-sound-board";
 import { useSoundMuted } from "./sound/use-sound-muted";
+import {
+  COIN_PANEL_GUTTER_PX,
+  COIN_PANEL_WIDTH_PX,
+  COIN_SHEET_ROOM_SHARE,
+  CoinMachineSheet,
+} from "./tip/coin-machine-sheet";
+import { TipJarTray } from "./tip/tip-jar-tray";
+import { TokenHint } from "./tip/token-hint";
+import { useChargeChecks } from "./tip/use-charge-checks";
+import { useTip } from "./tip/use-tip";
 import { HitTargetButton } from "./hit-target-button";
 import { RoomDrawing } from "./room-drawing";
 import { SceneControlButton } from "./scene-control-button";
@@ -99,6 +116,8 @@ import {
   WeatherPanelDialog,
 } from "./weather-panel-dialog";
 
+const TIP_SESSION_PARAM = "tip_session";
+const CHARGE_TICK_MS = 15_000;
 const SCENE_UNIT_PX = 40;
 const TOOLTIP_DELAY_MS = 300;
 const TOUCH_TOOLTIP_HOLD_MS = 1500;
@@ -107,6 +126,7 @@ const FOCUS_TARGETS = [
   "notebook",
   "board",
   "weather",
+  "coin",
 ] satisfies FocusTarget[];
 const KNOB_CONTROLS: LaidOutControl["control"][] = ["dial", "tuner", "volume"];
 const DOOR_HOLD_OPEN_MS = 700;
@@ -125,6 +145,21 @@ function getFocusedObjectId(options: {
 
 function toCameraTransform(camera: Camera) {
   return `translate(${camera.x}px, ${camera.y}px) scale(${camera.scale})`;
+}
+
+function getViewportUncoveredByPanel(options: {
+  focus: CameraFocus;
+  viewport: Viewport;
+  isNarrowScreen: boolean;
+}) {
+  const { viewport } = options;
+  if (options.focus !== "coin") return viewport;
+  return options.isNarrowScreen
+    ? { width: viewport.width, height: viewport.height * COIN_SHEET_ROOM_SHARE }
+    : {
+        width: viewport.width - COIN_PANEL_WIDTH_PX - 2 * COIN_PANEL_GUTTER_PX,
+        height: viewport.height,
+      };
 }
 
 function jumpCameraTo(options: { scene: HTMLElement; camera: Camera }) {
@@ -212,8 +247,12 @@ export function LaundromatScene(props: LaundromatSceneProps) {
   const { quality } = useRenderQuality();
   const isLite = quality === "lite";
   const isDialogFocus =
-    focus === "notebook" || focus === "board" || focus === "weather";
-  const cameraFocus = isLite && isDialogFocus ? "room" : focus;
+    focus === "notebook" ||
+    focus === "board" ||
+    focus === "weather" ||
+    focus === "coin";
+  const cameraFocus =
+    isLite && isDialogFocus && focus !== "coin" ? "room" : focus;
   const sceneHour = useSceneHour();
   const hour = props.hourOverride ?? sceneHour;
 
@@ -235,6 +274,13 @@ export function LaundromatScene(props: LaundromatSceneProps) {
   );
   const previousFocusRef = useRef(focus);
   const sound = useSoundBoard();
+  const tip = useTip();
+  const isNarrowScreen = useIsNarrowScreen();
+  const [isJarTrayOpen, setIsJarTrayOpen] = useState(false);
+  const [tokenRestoreCode, setTokenRestoreCode] = useState<string>();
+  const [tipResumeSessionId, setTipResumeSessionId] = useState<string>();
+  const isCoinOpenPendingRef = useRef(false);
+  const [isCoinBusy, setIsCoinBusy] = useState(false);
   const { copy } = useLaundromatCopy();
   const { muted: isSoundMuted } = useSoundMuted();
   const laundry = useLaundry();
@@ -305,6 +351,8 @@ export function LaundromatScene(props: LaundromatSceneProps) {
   const { region: ownRegion, isSettled: isOwnRegionSettled } = useVisitorRegion(
     { enabled: roomSource !== undefined }
   );
+  const ownGoldenCharges = tip?.goldenCharges;
+  const ownJarTop = tip?.jar?.at(-1)?.number;
   const ownPresence = useMemo(() => {
     if (laundry.visitorId === undefined) return undefined;
     const load = ((): RemoteLoad | undefined => {
@@ -351,6 +399,18 @@ export function LaundromatScene(props: LaundromatSceneProps) {
       ...(coffeeGroupId === undefined ? {} : { coffeeGroupId }),
       ...(flask === undefined ? {} : { flask }),
       ...(writingSince === undefined ? {} : { writingSince }),
+      ...(ownGoldenCharges === undefined || ownGoldenCharges.length === 0
+        ? {}
+        : {
+            goldenCharges: ownGoldenCharges
+              .slice(-MAX_GOLDEN_CHARGES)
+              .map(({ machineId, attempt, startedAt }) => ({
+                machineId,
+                attempt,
+                startedAt,
+              })),
+          }),
+      ...(ownJarTop === undefined ? {} : { jarTop: ownJarTop }),
     };
   }, [
     laundry.visitorId,
@@ -359,6 +419,8 @@ export function LaundromatScene(props: LaundromatSceneProps) {
     coffeeGroupId,
     ownFlask,
     writingSince,
+    ownGoldenCharges,
+    ownJarTop,
   ]);
   const room = useRoom(ownPresence);
   const isRoomSynced = room.isConnected && room.isSynced;
@@ -425,11 +487,28 @@ export function LaundromatScene(props: LaundromatSceneProps) {
   }, [setClockOffsetsMs, room.clockOffsetsMs]);
   const roomNow = useTickingNow({
     active: room.peers.some(
-      ({ load, writingSince }) =>
-        load !== undefined || writingSince !== undefined
+      ({ load, writingSince, goldenCharges }) =>
+        load !== undefined ||
+        writingSince !== undefined ||
+        goldenCharges !== undefined
     ),
   });
-  const now = Math.max(laundry.now, roomNow);
+  const chargeNow = useTickingNow({
+    active: (tip?.goldenCharges.length ?? 0) > 0,
+    intervalMs: CHARGE_TICK_MS,
+  });
+  const now = Math.max(laundry.now, roomNow, chargeNow);
+  const chargeChecks = useChargeChecks(room.peers);
+  const goldenCharges = getGoldenCharges({
+    own: tip?.goldenCharges ?? [],
+    peers: room.peers,
+    checks: chargeChecks,
+    offsetsMs: room.clockOffsetsMs,
+    now,
+  });
+  const goldenChargeMachineIds = goldenCharges.map(
+    ({ machineId }) => machineId
+  );
   const peopleHere = getPeopleHere({
     isSynced: room.isConnected && room.isSynced,
     peers: room.peers,
@@ -563,6 +642,22 @@ export function LaundromatScene(props: LaundromatSceneProps) {
         machine,
         machines: config.machines,
       });
+      const isCycleRunning =
+        status.kind === "running" ||
+        (status.kind === "occupied" && status.phase === "running");
+      const goldenCharge = ((): GoldenChargeView => {
+        if (goldenChargeMachineIds.includes(object.id)) {
+          return isCycleRunning ? "charmed" : "charged";
+        }
+        const canTakeToken =
+          status.kind === "loadable" ||
+          status.kind === "loaded" ||
+          status.kind === "running";
+        if (tip?.heldTokenCode !== undefined && canTakeToken) {
+          return "invited";
+        }
+        return "none";
+      })();
       const readout = (() => {
         switch (status.kind) {
           case "running":
@@ -599,6 +694,7 @@ export function LaundromatScene(props: LaundromatSceneProps) {
               detentCount: config.machines.cycleMinutes.length,
             }),
             doorOpen: openDoorId === object.id,
+            goldenCharge,
           },
         ],
       ];
@@ -641,6 +737,14 @@ export function LaundromatScene(props: LaundromatSceneProps) {
     tubeRollCount,
     weather,
     toyBox: toyBox.view,
+    coinMachine: tip?.machine ?? { kind: "idle" },
+    coinMachineScreen:
+      (tip?.machine.kind ?? "idle") === "idle"
+        ? copy.tip.machineScreenIdle
+        : copy.tip.machineScreenThanks,
+    tipJar: {
+      coinCount: tip?.jar?.length ?? 0,
+    },
     hidden: isHidden,
   };
 
@@ -707,6 +811,13 @@ export function LaundromatScene(props: LaundromatSceneProps) {
         return describeLaundryBasket({ basket, copy });
       case "shelf":
         return shelfDescription;
+      case "tip-jar":
+        return tip?.jar === undefined
+          ? describeSceneObject({ object: laidOut.object, copy })
+          : {
+              label: copy.tip.jarLabel({ count: tip.jar.length }),
+              tooltip: copy.tip.jarTooltip({ count: tip.jar.length }),
+            };
       default:
         return describeSceneObject({
           object: laidOut.object,
@@ -763,7 +874,11 @@ export function LaundromatScene(props: LaundromatSceneProps) {
     if (viewport === undefined || scene === null) return;
     const camera = computeCamera({
       focus: cameraFocus,
-      viewport,
+      viewport: getViewportUncoveredByPanel({
+        focus: cameraFocus,
+        viewport,
+        isNarrowScreen,
+      }),
       layout,
       config,
     });
@@ -809,7 +924,14 @@ export function LaundromatScene(props: LaundromatSceneProps) {
       scene.removeEventListener("transitionend", handleTransitionEnd);
       delete scene.dataset.lmCameraMoving;
     };
-  }, [viewport, cameraFocus, layout, config, prefersReducedMotion]);
+  }, [
+    viewport,
+    cameraFocus,
+    layout,
+    config,
+    prefersReducedMotion,
+    isNarrowScreen,
+  ]);
 
   useEffect(() => {
     const previousFocus = previousFocusRef.current;
@@ -821,7 +943,12 @@ export function LaundromatScene(props: LaundromatSceneProps) {
     setHighlightedId(undefined);
     const objectId =
       focusedObjectId ?? getFocusedObjectId({ focus: previousFocus, config });
-    if (focus !== "board" && focus !== "weather" && objectId !== undefined) {
+    if (
+      focus !== "board" &&
+      focus !== "weather" &&
+      focus !== "coin" &&
+      objectId !== undefined
+    ) {
       rootRef.current
         ?.querySelector<HTMLButtonElement>(`[data-hit-target="${objectId}"]`)
         ?.focus({ preventScroll: true });
@@ -862,6 +989,73 @@ export function LaundromatScene(props: LaundromatSceneProps) {
     window.history.pushState(null, "", toFocusUrl(params));
   }
 
+  const remoteGoldenChargeKey = goldenCharges
+    .filter(({ isOwn }) => !isOwn)
+    .map(({ attempt }) => attempt)
+    .join(",");
+  const seenRemoteGoldenChargeKeyRef = useRef<string>(undefined);
+  useEffect(() => {
+    if (!isRoomSynced) {
+      seenRemoteGoldenChargeKeyRef.current = undefined;
+      return;
+    }
+    const seen = seenRemoteGoldenChargeKeyRef.current;
+    seenRemoteGoldenChargeKeyRef.current = remoteGoldenChargeKey;
+    if (seen === undefined) return;
+    const seenWashes = seen.split(",");
+    const hasNewCharge = remoteGoldenChargeKey
+      .split(",")
+      .some((wash) => wash !== "" && !seenWashes.includes(wash));
+    if (hasNewCharge) sound?.play("tip-chime");
+  }, [remoteGoldenChargeKey, isRoomSynced, sound]);
+
+  const refreshJar = tip?.refreshJar;
+  const peersJarTop = Math.max(
+    0,
+    ...room.peers.map(({ jarTop = 0 }) => jarTop)
+  );
+  useEffect(() => {
+    if (refreshJar !== undefined && peersJarTop > (ownJarTop ?? 0)) {
+      refreshJar();
+    }
+  }, [refreshJar, peersJarTop, ownJarTop]);
+
+  const applyChargeChanges = tip?.applyChargeChanges;
+  const ownRunningMachineKey = Object.values(machineViews)
+    .filter(({ status }) => status.kind === "running")
+    .map(({ machine }) => machine.id)
+    .join(",");
+  useEffect(() => {
+    if (ownGoldenCharges === undefined || applyChargeChanges === undefined) {
+      return;
+    }
+    applyChargeChanges(
+      getChargeChanges({
+        charges: ownGoldenCharges,
+        ownRunningMachineIds: ownRunningMachineKey.split(","),
+        now,
+      })
+    );
+  }, [ownGoldenCharges, applyChargeChanges, ownRunningMachineKey, now]);
+
+  const isHoldingToken = tip?.heldTokenCode !== undefined;
+  const holdToken = tip?.holdToken;
+  useEffect(() => {
+    if (!isHoldingToken || holdToken === undefined) return;
+    function handleKeyDown(event: KeyboardEvent) {
+      if (event.key !== "Escape") return;
+      event.preventDefault();
+      holdToken?.(undefined);
+    }
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [isHoldingToken, holdToken]);
+
+  useEffect(() => {
+    if (!isHoldingToken || focus === "room" || focus === "coin") return;
+    setFocus("room");
+  });
+
   useEffect(() => {
     if (!isCameraHeld) return;
     const isZoomedIn = new URLSearchParams(window.location.search).has("focus");
@@ -873,6 +1067,7 @@ export function LaundromatScene(props: LaundromatSceneProps) {
     function handleKeyDown(event: KeyboardEvent) {
       if (event.key !== "Escape") return;
       event.preventDefault();
+      if (isCoinBusy) return;
       setFocus("room");
     }
     window.addEventListener("keydown", handleKeyDown);
@@ -919,7 +1114,21 @@ export function LaundromatScene(props: LaundromatSceneProps) {
     );
   }
 
+  function dropHeldToken(objectId: string) {
+    if (tip === undefined) return;
+    if (machineViews[objectId]?.goldenCharge === "invited") {
+      void tip.dropToken({ machineId: objectId });
+      return;
+    }
+    tip.holdToken(undefined);
+  }
+
   function handleActivate(objectId: string) {
+    if (isCoinBusy && objectId !== focusedObjectId) return;
+    if (tip?.heldTokenCode !== undefined) {
+      dropHeldToken(objectId);
+      return;
+    }
     const isMat = layout.objects.some(
       ({ object }) => object.id === objectId && object.kind === "mat"
     );
@@ -961,6 +1170,14 @@ export function LaundromatScene(props: LaundromatSceneProps) {
       if (kind === "toy-set") toyBox.play();
       return;
     }
+    if (kind === "tip-jar") {
+      if (focus !== "room") setFocus("room");
+      window.clearTimeout(tooltipTimerRef.current);
+      setTooltipId(undefined);
+      setIsJarTrayOpen(true);
+      return;
+    }
+    if (kind === "coin-machine" && tip === undefined) return;
     if (kind === "mug" || kind === "plant" || kind === "tube-display") {
       if (focus !== "room") {
         setFocus("room");
@@ -1008,6 +1225,10 @@ export function LaundromatScene(props: LaundromatSceneProps) {
     step: 1 | -1;
   }) {
     const { control, step } = options;
+    if (tip?.heldTokenCode !== undefined) {
+      dropHeldToken(options.objectId);
+      return;
+    }
     if (focus !== "room") {
       setFocus("room");
       return;
@@ -1124,13 +1345,78 @@ export function LaundromatScene(props: LaundromatSceneProps) {
     }
   }
 
+  const wasCoinFocusRef = useRef(false);
+  useEffect(() => {
+    if (focus === "coin") {
+      wasCoinFocusRef.current = true;
+      return;
+    }
+    setIsCoinBusy(false);
+    if (!wasCoinFocusRef.current) return;
+    wasCoinFocusRef.current = false;
+    setTokenRestoreCode(undefined);
+    setTipResumeSessionId(undefined);
+  }, [focus]);
+
+  const machineKind = tip?.machine.kind;
+  const takeToken = tip?.takeToken;
+  useEffect(() => {
+    if (focus !== "coin" && machineKind === "token-in-tray") takeToken?.();
+  }, [focus, machineKind, takeToken]);
+
+  useEffect(() => {
+    function openFromTokenLink() {
+      const { hash } = window.location;
+      if (!hash.startsWith(TOKEN_CODE_HASH_PREFIX)) return;
+      const text = readTokenLinkText(hash);
+      window.history.replaceState(
+        window.history.state,
+        "",
+        toFocusUrl(new URLSearchParams(window.location.search))
+      );
+      if (text === "") return;
+      setTokenRestoreCode(text);
+      isCoinOpenPendingRef.current = true;
+    }
+    openFromTokenLink();
+    window.addEventListener("hashchange", openFromTokenLink);
+    return () => window.removeEventListener("hashchange", openFromTokenLink);
+  }, []);
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const sessionId = params.get(TIP_SESSION_PARAM);
+    if (sessionId === null) return;
+    params.delete(TIP_SESSION_PARAM);
+    window.history.replaceState(window.history.state, "", toFocusUrl(params));
+    setTipResumeSessionId(sessionId);
+    isCoinOpenPendingRef.current = true;
+  }, []);
+
+  useEffect(() => {
+    if (!isCoinOpenPendingRef.current) return;
+    isCoinOpenPendingRef.current = false;
+    if (focus !== "coin") setFocus("coin");
+  });
+
+  const closeJarTray = useCallback(() => setIsJarTrayOpen(false), []);
+
   function handleBackdropClick(event: React.MouseEvent<HTMLDivElement>) {
+    if (
+      tip?.heldTokenCode !== undefined &&
+      event.target instanceof Element &&
+      event.target.closest("[data-hit-target], [data-token-hint]") === null
+    ) {
+      tip.holdToken(undefined);
+      return;
+    }
     if (focus === "room") return;
+    if (isCoinBusy) return;
     if (focus === "notebook" && hasUnsavedNote) return;
     const isOnHitTarget =
       event.target instanceof Element &&
       event.target.closest(
-        "[data-hit-target], [data-notebook], [data-board-dialog], [data-weather-dialog]"
+        "[data-hit-target], [data-notebook], [data-board-dialog], [data-weather-dialog], [data-coin-panel]"
       ) !== null;
     if (!isOnHitTarget) setFocus("room");
   }
@@ -1527,6 +1813,33 @@ export function LaundromatScene(props: LaundromatSceneProps) {
           </motion.div>
         )}
       </AnimatePresence>
+      {tip !== undefined && (
+        <AnimatePresence>
+          {focus === "coin" && (
+            <CoinMachineSheet
+              key="coin"
+              tip={tip}
+              narrow={isNarrowScreen}
+              reducedMotion={prefersReducedMotion}
+              restoreCode={tokenRestoreCode}
+              resumeSessionId={tipResumeSessionId}
+              onClose={() => setFocus("room")}
+              onBusyChange={setIsCoinBusy}
+            />
+          )}
+        </AnimatePresence>
+      )}
+      {tip !== undefined && (
+        <TipJarTray tip={tip} open={isJarTrayOpen} onClose={closeJarTray} />
+      )}
+      {tip !== undefined && (
+        <TokenHint
+          held={tip.heldTokenCode !== undefined}
+          notice={tip.tokenNotice}
+          reducedMotion={prefersReducedMotion}
+          onCancel={() => tip.holdToken(undefined)}
+        />
+      )}
       <SceneTooltip text={tooltip?.text} position={tooltip?.position} />
       {!isHidden && (
         <PlantStreakLayer

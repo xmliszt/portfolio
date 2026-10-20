@@ -6,12 +6,14 @@ import { playCoffeeBrewDone } from "./sounds/play-coffee-brew-done";
 import { playCoffeePour } from "./sounds/play-coffee-pour";
 import { playCoffeeSip } from "./sounds/play-coffee-sip";
 import { playCoffeeSwitch } from "./sounds/play-coffee-switch";
+import { playCoinInsert } from "./sounds/play-coin-insert";
 import { playCollectLaundry } from "./sounds/play-collect-laundry";
 import { playCrayonScratch } from "./sounds/play-crayon-scratch";
 import { playDoneDing } from "./sounds/play-done-ding";
 import { playDoorLatchClose } from "./sounds/play-door-latch-close";
 import { playDoorLatchOpen } from "./sounds/play-door-latch-open";
 import { playDoorLocked } from "./sounds/play-door-locked";
+import { playJarCoin } from "./sounds/play-jar-coin";
 import { playKnobClick } from "./sounds/play-knob-click";
 import { playLampFlicker } from "./sounds/play-lamp-flicker";
 import { playLampOff } from "./sounds/play-lamp-off";
@@ -25,6 +27,8 @@ import { playShopBell } from "./sounds/play-shop-bell";
 import { playSlidingDoor } from "./sounds/play-sliding-door";
 import { playStartButton } from "./sounds/play-start-button";
 import { playThunderRumble } from "./sounds/play-thunder-rumble";
+import { playTipChime } from "./sounds/play-tip-chime";
+import { playTokenDrop } from "./sounds/play-token-drop";
 import { playTouchGrass } from "./sounds/play-touch-grass";
 import { playToyBoxOpen } from "./sounds/play-toy-box-open";
 import { playToyCarLaunch } from "./sounds/play-toy-car-launch";
@@ -86,6 +90,10 @@ const ONE_SHOTS = {
   "camera-shutter": playCameraShutter,
   "camera-eject": playCameraEject,
   "crayon-scratch": playCrayonScratch,
+  "coin-insert": playCoinInsert,
+  "token-drop": playTokenDrop,
+  "jar-coin": playJarCoin,
+  "tip-chime": playTipChime,
 } satisfies { [name in SoundName]: (options: VoiceOptions) => void };
 
 const LOOPS = {

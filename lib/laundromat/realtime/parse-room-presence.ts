@@ -1,12 +1,22 @@
+import { ATTEMPT_PATTERN } from "@/lib/laundromat/tip/attempt-pattern";
+import { GOLDEN_CHARGE_MS } from "@/lib/laundromat/tip/golden-charge-ms";
+
+import { MAX_GOLDEN_CHARGES } from "./max-golden-charges";
 import { MAX_WRITING_MS } from "./max-writing-ms";
 import { parseRoomRegion } from "./parse-room-region";
-import type { RemoteFlask, RemoteLoad, RoomPresence } from "./room-presence";
+import type {
+  GoldenCharge,
+  RemoteFlask,
+  RemoteLoad,
+  RoomPresence,
+} from "./room-presence";
 
 const MAX_CLOCK_SKEW_MS = 60_000;
 const MAX_CYCLE_MS = 2 * 60 * 60_000;
 const MAX_MACHINE_ID_LENGTH = 40;
 const MAX_FLASK_PORTIONS = 20;
 const MAX_ID_LENGTH = 64;
+const MAX_JAR_TOP = 10_000_000;
 
 function isObject(value: unknown): value is object {
   return typeof value === "object" && value !== null;
@@ -92,7 +102,31 @@ function parseFlask(options: {
   };
 }
 
-/** Return the presence another tab tracked on the room channel, or `undefined` when it is not one; unknown or malformed fields are dropped, and so is a `flask` changed more than `MAX_CLOCK_SKEW_MS` after `now` or brewing after it changed, and a `writingSince` in the future or older than `MAX_WRITING_MS` by `now`. */
+function parseGoldenCharge(options: {
+  value: unknown;
+  now: number;
+}): GoldenCharge | undefined {
+  const { value, now } = options;
+  if (
+    !isObject(value) ||
+    !("machineId" in value && typeof value.machineId === "string") ||
+    value.machineId.length > MAX_MACHINE_ID_LENGTH ||
+    !("attempt" in value && typeof value.attempt === "string") ||
+    !ATTEMPT_PATTERN.test(value.attempt) ||
+    !("startedAt" in value && typeof value.startedAt === "number") ||
+    value.startedAt > now + MAX_CLOCK_SKEW_MS ||
+    value.startedAt < now - GOLDEN_CHARGE_MS.max - MAX_CLOCK_SKEW_MS
+  ) {
+    return undefined;
+  }
+  return {
+    machineId: value.machineId,
+    attempt: value.attempt,
+    startedAt: value.startedAt,
+  };
+}
+
+/** Return the presence another tab tracked on the room channel, or `undefined` when it is not one; unknown or malformed fields are dropped, and so is a `flask` changed more than `MAX_CLOCK_SKEW_MS` after `now` or brewing after it changed, a `writingSince` in the future or older than `MAX_WRITING_MS` by `now`, and any of the last `MAX_GOLDEN_CHARGES` `goldenCharges` that starts in the future or ended before `now`, each beyond `MAX_CLOCK_SKEW_MS`, and a `jarTop` that is not a whole number from 1 to `MAX_JAR_TOP`. */
 export function parseRoomPresence(options: {
   value: unknown;
   now: number;
@@ -124,6 +158,23 @@ export function parseRoomPresence(options: {
     value.writingSince >= now - MAX_WRITING_MS
       ? value.writingSince
       : undefined;
+  const goldenCharges =
+    "goldenCharges" in value && Array.isArray(value.goldenCharges)
+      ? value.goldenCharges
+          .slice(-MAX_GOLDEN_CHARGES)
+          .flatMap((charge: unknown) => {
+            const parsed = parseGoldenCharge({ value: charge, now });
+            return parsed === undefined ? [] : [parsed];
+          })
+      : [];
+  const jarTop =
+    "jarTop" in value &&
+    typeof value.jarTop === "number" &&
+    Number.isInteger(value.jarTop) &&
+    value.jarTop > 0 &&
+    value.jarTop <= MAX_JAR_TOP
+      ? value.jarTop
+      : undefined;
   return {
     sessionId: value.sessionId,
     visitorId: value.visitorId,
@@ -132,5 +183,7 @@ export function parseRoomPresence(options: {
     ...(coffeeGroupId === undefined ? {} : { coffeeGroupId }),
     ...(flask === undefined ? {} : { flask }),
     ...(writingSince === undefined ? {} : { writingSince }),
+    ...(goldenCharges.length === 0 ? {} : { goldenCharges }),
+    ...(jarTop === undefined ? {} : { jarTop }),
   };
 }

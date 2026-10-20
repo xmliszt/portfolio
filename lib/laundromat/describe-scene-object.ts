@@ -125,6 +125,13 @@ export function describeSceneObject(options: {
         label: copy.instantCamera.objectLabel,
         tooltip: copy.instantCamera.objectTooltip,
       };
+    case "coin-machine":
+      return { label: copy.tip.machineLabel, tooltip: copy.tip.machineTooltip };
+    case "tip-jar":
+      return {
+        label: copy.tip.jarLoadingLabel,
+        tooltip: copy.tip.jarLoadingTooltip,
+      };
     case "counter":
     case "window":
     case "clock":
