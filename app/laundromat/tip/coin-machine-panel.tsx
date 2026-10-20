@@ -207,13 +207,10 @@ export function CoinMachinePanel(props: CoinMachinePanelProps) {
         return (
           <div className="flex flex-col gap-y-4">
             <p
-              className="m-0 flex items-baseline justify-between gap-x-3 text-[22px] leading-6 text-[var(--lm-ink-hi)]"
+              className="m-0 text-[22px] leading-6 text-pretty text-[var(--lm-ink-hi)]"
               style={{ fontFamily: HANDWRITING_FONT_FAMILIES.latin }}
             >
-              <span>{tipCopy.note}</span>
-              <span className="text-[18px] whitespace-nowrap opacity-60">
-                {tipCopy.signature}
-              </span>
+              {tipCopy.note}
             </p>
             <div className="grid grid-cols-4 justify-items-center gap-x-2 rounded-[14px] bg-[linear-gradient(180deg,#0d0e0f,#141516)] px-3 pt-4 pb-5 shadow-[inset_0_2px_6px_rgb(0_0_0/0.85),inset_0_-1px_0_rgb(255_255_255/0.04),0_1px_0_rgb(255_255_255/0.04)]">
               {TIP_COINS_CENTS.map((cents, index) => (

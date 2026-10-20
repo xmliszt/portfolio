@@ -124,13 +124,10 @@ export function TipReceipt(props: TipReceiptProps) {
             </span>
             <span className={DASHED_RULE} />
             <span
-              className="flex items-baseline justify-between gap-x-2 text-[21px] leading-6 text-[#28406b] normal-case"
+              className="text-[21px] leading-6 text-[#28406b] normal-case"
               style={{ fontFamily: HANDWRITING_FONT_FAMILIES.latin }}
             >
-              <span>{tipCopy.receiptNote}</span>
-              <span className="text-[17px] whitespace-nowrap">
-                {tipCopy.signature}
-              </span>
+              {tipCopy.receiptNote}
             </span>
           </div>
         </motion.div>
