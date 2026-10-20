@@ -11,9 +11,11 @@ import {
 import type { Appearance } from "@stripe/stripe-js";
 import { loadStripe } from "@stripe/stripe-js/pure";
 
+import { useLaundromatCopy } from "@/app/laundromat/i18n/use-laundromat-copy";
 import { SETTINGS_META_CLASS } from "@/app/laundromat/settings/settings-meta-class";
+import type { LaundromatLocale } from "@/lib/laundromat/i18n/laundromat-locales";
 import { sceneConfig } from "@/lib/laundromat/scene-config";
-import { tipCopy } from "@/lib/laundromat/tip/tip-copy";
+import { STRIPE_LOCALES } from "@/lib/laundromat/tip/stripe-locales";
 import { cn } from "@/lib/utils";
 
 import type { StartTipResult } from "./tip-actions";
@@ -29,8 +31,10 @@ const { tokens } = sceneConfig;
 // Stripe.js must load once per page, and only when someone opens the checkout.
 let stripePromise: ReturnType<typeof loadStripe> | undefined;
 
-function getStripe() {
-  stripePromise ??= loadStripe(PUBLISHABLE_KEY);
+function getStripe(locale: LaundromatLocale) {
+  stripePromise ??= loadStripe(PUBLISHABLE_KEY, {
+    locale: STRIPE_LOCALES[locale],
+  });
   return stripePromise;
 }
 
@@ -87,6 +91,7 @@ type Session =
 
 /** Open a Stripe Checkout Session for a tip of `cents` and show its payment form in the room's colours: a wallet button when the browser has one, then email and card or PayNow, calling `onPaid` once Stripe confirms the payment. */
 export function StripeCheckout(props: StripeCheckoutProps) {
+  const { copy } = useLaundromatCopy();
   const [session, setSession] = useState<Session>({ kind: "loading" });
   const startedRef = useRef<{
     cents: number;
@@ -125,14 +130,14 @@ export function StripeCheckout(props: StripeCheckoutProps) {
     case "unavailable":
       return (
         <p role="alert" className="m-0 text-[14px] text-[var(--lm-ink)]">
-          {tipCopy.unavailable}
+          {copy.tip.unavailable}
         </p>
       );
     case "ready":
       return (
         <CheckoutElementsProvider
           key={session.sessionId}
-          stripe={getStripe()}
+          stripe={getStripe(copy.locale)}
           options={{
             clientSecret: session.clientSecret,
             elementsOptions: { appearance: APPEARANCE },
@@ -175,6 +180,7 @@ type CheckoutFormProps = {
 };
 
 function CheckoutForm(props: CheckoutFormProps) {
+  const { copy } = useLaundromatCopy();
   const checkoutState = useCheckoutElements();
   const [isPaying, setIsPaying] = useState(false);
   const isPayingRef = useRef(false);
@@ -185,7 +191,7 @@ function CheckoutForm(props: CheckoutFormProps) {
   if (checkoutState.type === "error") {
     return (
       <p role="alert" className="m-0 text-[14px] text-[var(--lm-ink)]">
-        {tipCopy.unavailable}
+        {copy.tip.unavailable}
       </p>
     );
   }
@@ -232,7 +238,7 @@ function CheckoutForm(props: CheckoutFormProps) {
             "self-start rounded-[4px] bg-[color-mix(in_oklab,var(--lm-accent)_16%,transparent)] px-1.5 py-0.5 text-[var(--lm-accent-hi)]"
           )}
         >
-          {tipCopy.testMode}
+          {copy.tip.testMode}
         </span>
       )}
       <ExpressCheckoutElement
@@ -248,7 +254,7 @@ function CheckoutForm(props: CheckoutFormProps) {
             "flex items-center gap-x-3 opacity-50 before:h-px before:flex-1 before:bg-[var(--lm-edge)] after:h-px after:flex-1 after:bg-[var(--lm-edge)]"
           )}
         >
-          {tipCopy.orPayWith}
+          {copy.tip.orPayWith}
         </div>
       )}
       <ContactDetailsElement />
@@ -265,11 +271,11 @@ function CheckoutForm(props: CheckoutFormProps) {
       >
         {isPaying ? (
           <span
-            aria-label={tipCopy.processing}
+            aria-label={copy.tip.processing}
             className="size-4 animate-spin rounded-full border-2 border-current border-t-transparent motion-reduce:animate-none"
           />
         ) : (
-          tipCopy.pay({ amount: checkout.total.total.amount })
+          copy.tip.pay({ amount: checkout.total.total.amount })
         )}
       </button>
       <p
@@ -278,7 +284,7 @@ function CheckoutForm(props: CheckoutFormProps) {
           "m-0 text-center normal-case opacity-40"
         )}
       >
-        {tipCopy.poweredBy}
+        {copy.tip.poweredBy}
       </p>
     </form>
   );

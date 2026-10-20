@@ -3,9 +3,9 @@
 import { useCallback, useState } from "react";
 import { motion, useReducedMotion } from "motion/react";
 
+import { useLaundromatCopy } from "@/app/laundromat/i18n/use-laundromat-copy";
 import { SETTINGS_META_CLASS } from "@/app/laundromat/settings/settings-meta-class";
 import { formatTipDate } from "@/lib/laundromat/tip/format-tip-date";
-import { tipCopy } from "@/lib/laundromat/tip/tip-copy";
 import { cn } from "@/lib/utils";
 
 import { CloseKey } from "./close-key";
@@ -34,6 +34,7 @@ type TipJarTrayProps = {
 
 /** Spread every coin in the tip jar on a tray, newest first, with this visitor's own coins in brass and shining, each opening its coin up close. */
 export function TipJarTray(props: TipJarTrayProps) {
+  const { copy } = useLaundromatCopy();
   const prefersReducedMotion = useReducedMotion() ?? false;
   const [viewingCode, setViewingCode] = useState<string>();
   const [lastViewedCode, setLastViewedCode] = useState<string>();
@@ -61,10 +62,10 @@ export function TipJarTray(props: TipJarTrayProps) {
               <div className="flex items-start justify-between gap-x-3">
                 <div className="flex flex-col gap-y-1">
                   <h2 id="tip-jar-heading" className={TIP_HEADING_CLASS}>
-                    {tipCopy.trayHeading}
+                    {copy.tip.trayHeading}
                   </h2>
                   <span className={cn(SETTINGS_META_CLASS, "opacity-60")}>
-                    {tipCopy.traySummary({ count: coins.length })}
+                    {copy.tip.traySummary({ count: coins.length })}
                   </span>
                 </div>
                 <CloseKey onClose={close} />
@@ -75,8 +76,11 @@ export function TipJarTray(props: TipJarTrayProps) {
                     ({ number, createdAt }) =>
                       number === coin.number && createdAt === coin.createdAt
                   );
-                  const date = formatTipDate(coin.createdAt);
-                  const label = tipCopy.trayCoinLabel({
+                  const date = formatTipDate({
+                    isoDate: coin.createdAt,
+                    locale: copy.locale,
+                  });
+                  const label = copy.tip.trayCoinLabel({
                     number: coin.number,
                     date,
                     isOwn: own !== undefined,

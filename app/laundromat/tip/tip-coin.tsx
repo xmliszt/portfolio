@@ -3,6 +3,7 @@
 import { useRef } from "react";
 import { useReducedMotion } from "motion/react";
 
+import { useLaundromatCopy } from "@/app/laundromat/i18n/use-laundromat-copy";
 import { useRenderQuality } from "@/app/laundromat/settings/use-render-quality";
 import type { TipCoinMetal } from "@/lib/laundromat/tip/tip-coin-metals";
 import { cn } from "@/lib/utils";
@@ -27,6 +28,7 @@ type TipCoinProps = {
 
 /** Draw a struck metal coin with a small `caption` above a stamped `label`, the rim text when `engraved`, its edge and shadow unless `flat`, and on full quality without reduced motion a sheen and tilt that follow the mouse while `shine`. */
 export function TipCoin(props: TipCoinProps) {
+  const { copy } = useLaundromatCopy();
   const { quality } = useRenderQuality();
   const prefersReducedMotion = useReducedMotion() ?? false;
   const isLive =
@@ -64,7 +66,11 @@ export function TipCoin(props: TipCoinProps) {
         ref={coinRef}
         metal={props.metal}
         sizePx={props.sizePx}
-        engraved={props.engraved === true}
+        rimText={
+          props.engraved === true
+            ? `${copy.site.name} · ${copy.tip.coinRim} · `.repeat(2)
+            : undefined
+        }
         sheen={isLive ? "follow" : "static"}
         raised={props.flat !== true}
         dim={props.dim}

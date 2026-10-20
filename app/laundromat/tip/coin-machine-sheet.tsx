@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { AnimatePresence, motion } from "motion/react";
 
-import { tipCopy } from "@/lib/laundromat/tip/tip-copy";
+import { useLaundromatCopy } from "@/app/laundromat/i18n/use-laundromat-copy";
 import { cn } from "@/lib/utils";
 
 import type { CoinPanelStep } from "./coin-machine-panel";
@@ -31,6 +31,7 @@ type CoinMachineSheetProps = {
 
 /** Hold the coin machine panel beside the zoomed-in machine: a panel at the right edge on wide screens, a bottom sheet on phones that slides away while the coin drops so the machine stays in view. */
 export function CoinMachineSheet(props: CoinMachineSheetProps) {
+  const { copy } = useLaundromatCopy();
   const [step, setStep] = useState<CoinPanelStep>(
     props.restoreCode === undefined ? { kind: "pick" } : { kind: "restore" }
   );
@@ -65,7 +66,7 @@ export function CoinMachineSheet(props: CoinMachineSheetProps) {
             key="sheet"
             data-coin-panel
             role="dialog"
-            aria-label={tipCopy.dialogLabel}
+            aria-label={copy.tip.dialogLabel}
             className={cn(
               TIP_PANEL_CLASS,
               "absolute inset-x-0 bottom-0 z-40 rounded-t-[22px] pb-[max(0.5rem,env(safe-area-inset-bottom))]",
@@ -97,7 +98,7 @@ export function CoinMachineSheet(props: CoinMachineSheetProps) {
       <motion.div
         data-coin-panel
         role="dialog"
-        aria-label={tipCopy.dialogLabel}
+        aria-label={copy.tip.dialogLabel}
         className={cn(
           TIP_PANEL_CLASS,
           "pointer-events-auto max-h-[calc(100dvh-40px)] rounded-[22px]"

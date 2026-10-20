@@ -8,6 +8,7 @@ import {
   useReducedMotion,
 } from "motion/react";
 
+import { useLaundromatCopy } from "@/app/laundromat/i18n/use-laundromat-copy";
 import { HANDWRITING_FONT_FAMILIES } from "@/app/laundromat/notebook/handwriting-fonts";
 import {
   PRINTER_ICON_CLASS,
@@ -16,12 +17,16 @@ import {
 import { SETTINGS_LCD_CLASS } from "@/app/laundromat/settings/settings-lcd-class";
 import { SETTINGS_META_CLASS } from "@/app/laundromat/settings/settings-meta-class";
 import { useRenderQuality } from "@/app/laundromat/settings/use-render-quality";
+import { formatSgd } from "@/lib/laundromat/tip/format-sgd";
 import { parseCustomTip } from "@/lib/laundromat/tip/parse-custom-tip";
 import { parseTokenCode } from "@/lib/laundromat/tip/parse-token-code";
-import { TIP_COINS_CENTS } from "@/lib/laundromat/tip/tip-amounts";
+import {
+  CUSTOM_TIP_CENTS,
+  TIP_COINS_CENTS,
+} from "@/lib/laundromat/tip/tip-amounts";
 import { COIN_METALS } from "@/lib/laundromat/tip/tip-coin-metals";
-import { tipCopy } from "@/lib/laundromat/tip/tip-copy";
 import type { TipToken } from "@/lib/laundromat/tip/tip-token";
+import { TOKEN_CODE_PLACEHOLDER } from "@/lib/laundromat/tip/token-code-format";
 import { cn } from "@/lib/utils";
 
 import { CloseKey } from "./close-key";
@@ -58,6 +63,7 @@ const SCREWS = [
   "bottom-1.5 right-1.5",
 ];
 
+const CUSTOM_TIP_PLACEHOLDER = `S$ ${CUSTOM_TIP_CENTS.min / 100} – ${CUSTOM_TIP_CENTS.max / 100}`;
 const SCREEN_CLASS = cn(
   SETTINGS_LCD_CLASS,
   "h-8 flex-1 px-3 text-[12px] normal-case"
@@ -83,6 +89,7 @@ function coinLabel(cents: number) {
 
 /** Show the coin machine's faceplate: a screen that names each step, a tray of coins to pick from, the checkout, the coin while the payment settles and its token is made, and the printed token, or a field to bring back a token from its code. */
 export function CoinMachinePanel(props: CoinMachinePanelProps) {
+  const { copy } = useLaundromatCopy();
   const { tip, step } = props;
   const prefersReducedMotion = useReducedMotion() ?? false;
   const { quality } = useRenderQuality();
@@ -108,18 +115,20 @@ export function CoinMachinePanel(props: CoinMachinePanelProps) {
   const screen = (() => {
     switch (step.kind) {
       case "pick":
-        if (isCustomOpen) return tipCopy.screen.custom;
-        return isNotPaid ? tipCopy.screen.notPaid : tipCopy.screen.pick;
+        if (isCustomOpen) return copy.tip.screen.custom;
+        return isNotPaid ? copy.tip.screen.notPaid : copy.tip.screen.pick;
       case "checkout":
-        return tipCopy.screen.checkout({ cents: step.cents });
+        return copy.tip.screen.checkout({ amount: formatSgd(step.cents) });
       case "waiting":
-        return isDispensing ? tipCopy.screen.dropping : tipCopy.screen.waiting;
+        return isDispensing
+          ? copy.tip.screen.dropping
+          : copy.tip.screen.waiting;
       case "token":
-        return tipCopy.screen.token;
+        return copy.tip.screen.token;
       case "restore":
         return restoreStatus === "idle"
-          ? tipCopy.screen.restore
-          : tipCopy.screen[restoreStatus];
+          ? copy.tip.screen.restore
+          : copy.tip.screen[restoreStatus];
       default: {
         const unhandled: never = step;
         return unhandled;
@@ -213,7 +222,7 @@ export function CoinMachinePanel(props: CoinMachinePanelProps) {
               className="m-0 text-[22px] leading-6 text-pretty text-[var(--lm-ink-hi)]"
               style={{ fontFamily: HANDWRITING_FONT_FAMILIES.latin }}
             >
-              {tipCopy.note}
+              {copy.tip.note}
             </p>
             <div className="grid grid-cols-4 justify-items-center gap-x-2 rounded-[14px] bg-[linear-gradient(180deg,#0d0e0f,#141516)] px-3 pt-4 pb-5 shadow-[inset_0_2px_6px_rgb(0_0_0/0.85),inset_0_-1px_0_rgb(255_255_255/0.04),0_1px_0_rgb(255_255_255/0.04)]">
               {TIP_COINS_CENTS.map((cents, index) => (
@@ -221,7 +230,7 @@ export function CoinMachinePanel(props: CoinMachinePanelProps) {
                   key={cents}
                   ref={index === 0 ? firstCoinRef : undefined}
                   type="button"
-                  aria-label={tipCopy.coinLabel({ cents })}
+                  aria-label={copy.tip.coinLabel({ amount: formatSgd(cents) })}
                   className="cursor-pointer rounded-full outline-none focus-visible:outline-1 focus-visible:outline-offset-4 focus-visible:outline-[var(--lm-ink-hi)] focus-visible:outline-dashed"
                   whileHover={isRich ? { y: -HOVER_LIFT_PX } : undefined}
                   whileTap={{ scale: TAP_SCALE }}
@@ -247,11 +256,11 @@ export function CoinMachinePanel(props: CoinMachinePanelProps) {
                 }}
               >
                 <label className="flex min-w-0 flex-1">
-                  <span className="sr-only">{tipCopy.otherLabel}</span>
+                  <span className="sr-only">{copy.tip.otherLabel}</span>
                   <input
                     autoFocus
                     inputMode="decimal"
-                    placeholder={tipCopy.customPlaceholder}
+                    placeholder={CUSTOM_TIP_PLACEHOLDER}
                     className={FIELD_CLASS}
                     value={customText}
                     onChange={(event) => setCustomText(event.target.value)}
@@ -265,7 +274,7 @@ export function CoinMachinePanel(props: CoinMachinePanelProps) {
                     "h-11 disabled:cursor-default disabled:opacity-40"
                   )}
                 >
-                  {tipCopy.insert}
+                  {copy.tip.insert}
                 </button>
               </form>
             )}
@@ -278,7 +287,7 @@ export function CoinMachinePanel(props: CoinMachinePanelProps) {
                   className={PRINTER_KEY_CLASS}
                   onClick={() => setIsCustomOpen(true)}
                 >
-                  {tipCopy.other}
+                  {copy.tip.other}
                 </button>
               )}
               <button
@@ -286,7 +295,7 @@ export function CoinMachinePanel(props: CoinMachinePanelProps) {
                 className={PRINTER_KEY_CLASS}
                 onClick={() => props.onStepChange({ kind: "restore" })}
               >
-                {tipCopy.haveCode}
+                {copy.tip.haveCode}
               </button>
             </div>
             <span
@@ -303,7 +312,7 @@ export function CoinMachinePanel(props: CoinMachinePanelProps) {
                 <rect x="2.5" y="5.5" width="7" height="5" rx="1" />
                 <path d="M4 5.5V4a2 2 0 0 1 4 0v1.5" />
               </svg>
-              {tipCopy.secure}
+              {copy.tip.secure}
             </span>
           </div>
         );
@@ -323,7 +332,7 @@ export function CoinMachinePanel(props: CoinMachinePanelProps) {
                 })}
               </motion.span>
               <span className="flex-1 font-[family-name:var(--lm-font-display)] text-[15px] text-[var(--lm-ink-hi)]">
-                {tipCopy.siteName}
+                {copy.site.name}
               </span>
               <button
                 type="button"
@@ -331,7 +340,7 @@ export function CoinMachinePanel(props: CoinMachinePanelProps) {
                 className={cn(PRINTER_KEY_CLASS, "disabled:opacity-40")}
                 onClick={() => props.onStepChange({ kind: "pick" })}
               >
-                {tipCopy.change}
+                {copy.tip.change}
               </button>
             </div>
             <StripeCheckout
@@ -362,7 +371,7 @@ export function CoinMachinePanel(props: CoinMachinePanelProps) {
                       isRich && "animate-spin"
                     )}
                   />
-                  {tipCopy.waitingForBank}
+                  {copy.tip.waitingForBank}
                 </p>
                 <p
                   className={cn(
@@ -370,7 +379,7 @@ export function CoinMachinePanel(props: CoinMachinePanelProps) {
                     "m-0 max-w-[260px] text-center normal-case opacity-60"
                   )}
                 >
-                  {tipCopy.waitingNote}
+                  {copy.tip.waitingNote}
                 </p>
               </>
             )}
@@ -387,7 +396,7 @@ export function CoinMachinePanel(props: CoinMachinePanelProps) {
                   "m-0 text-center text-pretty text-[var(--lm-accent-hi)] normal-case"
                 )}
               >
-                {tipCopy.dropInMachineHint}
+                {copy.tip.dropInMachineHint}
               </p>
               <button
                 type="button"
@@ -398,14 +407,14 @@ export function CoinMachinePanel(props: CoinMachinePanelProps) {
                 }}
               >
                 <TipCoin metal="brass" label="" sizePx={14} />
-                {tipCopy.dropInMachine}
+                {copy.tip.dropInMachine}
               </button>
               <button
                 type="button"
                 className={WIDE_KEY_CLASS}
                 onClick={props.onClose}
               >
-                {tipCopy.done}
+                {copy.tip.done}
               </button>
             </div>
           </div>
@@ -421,7 +430,7 @@ export function CoinMachinePanel(props: CoinMachinePanelProps) {
           >
             <input
               autoFocus
-              aria-label={tipCopy.screen.restore}
+              aria-label={copy.tip.screen.restore}
               aria-invalid={
                 restoreStatus === "misread" || restoreStatus === "notFound"
               }
@@ -429,7 +438,7 @@ export function CoinMachinePanel(props: CoinMachinePanelProps) {
               autoComplete="off"
               spellCheck={false}
               className={cn(FIELD_CLASS, "uppercase placeholder:normal-case")}
-              placeholder={tipCopy.restorePlaceholder}
+              placeholder={TOKEN_CODE_PLACEHOLDER}
               value={restoreText}
               onChange={(event) => {
                 setRestoreText(event.target.value);
@@ -442,14 +451,14 @@ export function CoinMachinePanel(props: CoinMachinePanelProps) {
                 className={PRINTER_KEY_CLASS}
                 onClick={() => props.onStepChange({ kind: "pick" })}
               >
-                {tipCopy.back}
+                {copy.tip.back}
               </button>
               <button
                 type="submit"
                 disabled={restoreStatus === "checking"}
                 className={cn(PRINTER_KEY_CLASS, "disabled:opacity-40")}
               >
-                {tipCopy.restore}
+                {copy.tip.restore}
               </button>
             </div>
           </form>

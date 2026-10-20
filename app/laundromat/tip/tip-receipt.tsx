@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { motion, useReducedMotion } from "motion/react";
 
+import { useLaundromatCopy } from "@/app/laundromat/i18n/use-laundromat-copy";
 import { HANDWRITING_FONT_FAMILIES } from "@/app/laundromat/notebook/handwriting-fonts";
 import {
   PRINTER_ICON_CLASS,
@@ -11,7 +12,6 @@ import {
 import { SETTINGS_META_CLASS } from "@/app/laundromat/settings/settings-meta-class";
 import { URL_REVOKE_MS } from "@/app/laundromat/settings/url-revoke-ms";
 import { formatTipDate } from "@/lib/laundromat/tip/format-tip-date";
-import { tipCopy } from "@/lib/laundromat/tip/tip-copy";
 import type { TipToken } from "@/lib/laundromat/tip/tip-token";
 import { TOKEN_CODE_HASH_PREFIX } from "@/lib/laundromat/tip/token-code-format";
 import { cn } from "@/lib/utils";
@@ -34,14 +34,17 @@ function feedEase(progress: number) {
 
 /** Print a tip token as a paper laundry ticket: its number and date, its code, and a handwritten thank-you, with keys to copy a restore link or save the ticket as a file and, when `hint`, why to keep the code; while `printing` the paper feeds out of a slot line by line. */
 export function TipReceipt(props: TipReceiptProps) {
+  const { copy } = useLaundromatCopy();
   const { token } = props;
   const prefersReducedMotion = useReducedMotion() ?? false;
   const [isCopied, setIsCopied] = useState(false);
   const copiedTimerRef = useRef<number>(undefined);
   useEffect(() => () => window.clearTimeout(copiedTimerRef.current), []);
   const codeRef = useRef<HTMLElement>(null);
-  const numberLabel = tipCopy.receiptNumber({ number: token.number });
-  const date = formatTipDate(token.createdAt);
+  const numberLabel = copy.tip.receiptNumber({
+    number: String(token.number).padStart(3, "0"),
+  });
+  const date = formatTipDate({ isoDate: token.createdAt, locale: copy.locale });
 
   async function copyLink() {
     const link = `${window.location.origin}${window.location.pathname}${TOKEN_CODE_HASH_PREFIX}${token.code}`;
@@ -62,12 +65,12 @@ export function TipReceipt(props: TipReceiptProps) {
 
   function save() {
     const text = [
-      `${tipCopy.siteName} ${tipCopy.receiptKind} ${numberLabel}`,
+      `${copy.site.name} ${copy.tip.receiptKind} ${numberLabel}`,
       date,
       "",
       token.code,
       "",
-      tipCopy.keepCode,
+      copy.tip.keepCode,
     ].join("\n");
     const url = URL.createObjectURL(new Blob([text], { type: "text/plain" }));
     const link = document.createElement("a");
@@ -109,12 +112,12 @@ export function TipReceipt(props: TipReceiptProps) {
               <span>{numberLabel}</span>
             </span>
             <span className="flex justify-between gap-x-2 opacity-70">
-              <span>{tipCopy.receiptKind}</span>
+              <span>{copy.tip.receiptKind}</span>
               <span>{date}</span>
             </span>
             <span className={DASHED_RULE} />
             <span className="flex flex-col gap-y-1">
-              <span className="opacity-70">{tipCopy.receiptCode}</span>
+              <span className="opacity-70">{copy.tip.receiptCode}</span>
               <code
                 ref={codeRef}
                 className="font-[family-name:var(--lm-font-mono)] text-[14px] leading-5 tracking-[0.06em] normal-case select-all"
@@ -127,7 +130,7 @@ export function TipReceipt(props: TipReceiptProps) {
               className="text-[21px] leading-6 text-[#28406b] normal-case"
               style={{ fontFamily: HANDWRITING_FONT_FAMILIES.latin }}
             >
-              {tipCopy.receiptNote}
+              {copy.tip.receiptNote}
             </span>
           </div>
         </motion.div>
@@ -150,13 +153,13 @@ export function TipReceipt(props: TipReceiptProps) {
             <svg aria-hidden viewBox="0 0 12 12" className={PRINTER_ICON_CLASS}>
               <path d="M5 7l2-2M4.5 5.5 3.25 6.75a1.77 1.77 0 0 0 2.5 2.5L7 8M7.5 6.5l1.25-1.25a1.77 1.77 0 0 0-2.5-2.5L5 4" />
             </svg>
-            {isCopied ? tipCopy.copied : tipCopy.copyLink}
+            {isCopied ? copy.tip.copied : copy.tip.copyLink}
           </button>
           <button type="button" className={PRINTER_KEY_CLASS} onClick={save}>
             <svg aria-hidden viewBox="0 0 12 12" className={PRINTER_ICON_CLASS}>
               <path d="M6 2v5.5M3.75 5.25 6 7.5l2.25-2.25M2.5 9.5h7" />
             </svg>
-            {tipCopy.save}
+            {copy.tip.save}
           </button>
         </div>
         {props.hint && (
@@ -166,7 +169,7 @@ export function TipReceipt(props: TipReceiptProps) {
               "m-0 max-w-[260px] text-center normal-case opacity-60"
             )}
           >
-            {tipCopy.keepCode}
+            {copy.tip.keepCode}
           </p>
         )}
       </motion.div>

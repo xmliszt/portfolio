@@ -55,7 +55,6 @@ export function MachineDrawing(props: MachineDrawingProps) {
   const isLive = view.status.kind === "running" || view.status.kind === "done";
   const isGolden = view.goldenWash === "running";
   const isInvited = view.goldenWash === "invited";
-  const isDrumTurning = isRunning || isGolden;
   const remainingMs =
     view.status.kind === "running" ||
     (view.status.kind === "occupied" && view.status.phase === "running")
@@ -399,7 +398,7 @@ export function MachineDrawing(props: MachineDrawingProps) {
           {hasLaundry && (
             <DrumLaundry
               radius={doorRadius - 7}
-              running={isDrumTurning && !isLite}
+              running={isRunning && !isLite}
               wet={!isDryer}
               secondsPerTurn={details.drumSecondsPerTurn}
             />
@@ -407,7 +406,7 @@ export function MachineDrawing(props: MachineDrawingProps) {
           <g
             data-lm-motion
             style={
-              !isDrumTurning
+              !isRunning
                 ? undefined
                 : isLite
                   ? { transform: `rotate(${liteDrumDeg}deg)` }

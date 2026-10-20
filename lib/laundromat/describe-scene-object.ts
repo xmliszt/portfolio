@@ -1,5 +1,4 @@
 import type { LaundromatCopy } from "./i18n/laundromat-copy";
-import { tipCopy } from "./tip/tip-copy";
 import { formatTemperature } from "./weather/format-temperature";
 import { getAqiBand } from "./weather/get-aqi-band";
 import { getWeatherConditionName } from "./weather/get-weather-condition-name";
@@ -127,11 +126,11 @@ export function describeSceneObject(options: {
         tooltip: copy.instantCamera.objectTooltip,
       };
     case "coin-machine":
-      return { label: tipCopy.machineLabel, tooltip: tipCopy.machineTooltip };
+      return { label: copy.tip.machineLabel, tooltip: copy.tip.machineTooltip };
     case "tip-jar":
       return {
-        label: tipCopy.jarLoadingLabel,
-        tooltip: tipCopy.jarLoadingTooltip,
+        label: copy.tip.jarLoadingLabel,
+        tooltip: copy.tip.jarLoadingTooltip,
       };
     case "counter":
     case "window":

@@ -9,12 +9,12 @@ import {
   useReducedMotion,
 } from "motion/react";
 
+import { useLaundromatCopy } from "@/app/laundromat/i18n/use-laundromat-copy";
 import { PRINTER_KEY_CLASS } from "@/app/laundromat/settings/printer-key-class";
 import { SETTINGS_META_CLASS } from "@/app/laundromat/settings/settings-meta-class";
 import { useRenderQuality } from "@/app/laundromat/settings/use-render-quality";
 import { formatTipDate } from "@/lib/laundromat/tip/format-tip-date";
 import { getCoinTones } from "@/lib/laundromat/tip/get-coin-tones";
-import { tipCopy } from "@/lib/laundromat/tip/tip-copy";
 import type { TipToken } from "@/lib/laundromat/tip/tip-token";
 import { cn } from "@/lib/utils";
 
@@ -32,6 +32,7 @@ const ENTRY_TURN_DEG = -540;
 const SETTLE_SPRING = { type: "spring", stiffness: 110, damping: 17 } as const;
 const ENTRY_SPRING = { type: "spring", duration: 1.4, bounce: 0.12 } as const;
 const SHEEN_SWING_PERCENT = 70;
+const LIGHT_AZIMUTH_DEG = 225;
 
 function nearestFaceDeg(deg: number) {
   return Math.round(deg / 180) * 180;
@@ -41,6 +42,7 @@ type TipCoinViewerProps = { token: TipToken };
 
 /** Show `token` as a large coin that turns in 3D: its number on the front, and on the back a "thank you" engraving with the token's code and date. Dragging turns it, a tap or the flip key turns it over, and it always settles on a face. */
 export function TipCoinViewer(props: TipCoinViewerProps) {
+  const { copy } = useLaundromatCopy();
   const { token } = props;
   const prefersReducedMotion = useReducedMotion() ?? false;
   const { quality } = useRenderQuality();
@@ -57,13 +59,19 @@ export function TipCoinViewer(props: TipCoinViewerProps) {
     moved: boolean;
   }>(undefined);
   const { ring } = getCoinTones(METAL);
+  const rimText = `${copy.site.name} · ${copy.tip.coinRim} · `.repeat(2);
 
   useMotionValueEvent(rotateY, "change", (deg) => {
+    const stage = stageRef.current;
+    if (stage === null) return;
     const radians = (deg * Math.PI) / 180;
-    stageRef.current?.style.setProperty(
+    stage.style.setProperty(
       "--sheen-x",
       `${50 + Math.sin(radians) * SHEEN_SWING_PERCENT}%`
     );
+    stage.querySelectorAll("[data-coin-light]").forEach((light) => {
+      light.setAttribute("azimuth", String(LIGHT_AZIMUTH_DEG + deg));
+    });
   });
 
   useEffect(() => {
@@ -154,7 +162,7 @@ export function TipCoinViewer(props: TipCoinViewerProps) {
       <button
         ref={stageRef}
         type="button"
-        aria-label={tipCopy.turnCoin}
+        aria-label={copy.tip.turnCoin}
         className="relative grid cursor-grab touch-none place-items-center rounded-full outline-none select-none [perspective:900px] focus-visible:shadow-[0_0_0_2px_var(--lm-panel),0_0_0_3.5px_var(--lm-accent)] active:cursor-grabbing"
         style={{ width: COIN_SIZE_PX, height: COIN_SIZE_PX }}
         onPointerDown={handlePointerDown}
@@ -196,42 +204,29 @@ export function TipCoinViewer(props: TipCoinViewerProps) {
             <TipCoinBlank
               metal={METAL}
               sizePx={COIN_SIZE_PX}
-              engraved
+              rimText={rimText}
+              relief
               sheen={sheen}
               raised={false}
             >
-              {({ field }) => (
+              {({ field, raiseFilter }) => (
                 <g
                   className="font-[family-name:var(--lm-font-display)]"
                   textAnchor="middle"
+                  fill={field.base}
+                  filter={raiseFilter}
                 >
+                  <text x={50} y={36} fontSize={9}>
+                    {copy.tip.coinNumberCaption}
+                  </text>
                   <text
                     x={50}
-                    y={36}
-                    fontSize={9}
-                    fill={field.dark}
-                    stroke={field.light}
-                    strokeWidth={0.35}
-                    paintOrder="stroke"
+                    y={66}
+                    fontSize={String(token.number).length > 2 ? 30 : 36}
+                    fontWeight={600}
                   >
-                    {tipCopy.coinNumberCaption}
+                    {token.number}
                   </text>
-                  {[
-                    { dy: 1, fill: field.light, opacity: 0.85 },
-                    { dy: 0, fill: field.edge, opacity: 0.9 },
-                  ].map((layer) => (
-                    <text
-                      key={layer.dy}
-                      x={50}
-                      y={66 + layer.dy}
-                      fontSize={String(token.number).length > 2 ? 30 : 36}
-                      fontWeight={600}
-                      fill={layer.fill}
-                      opacity={layer.opacity}
-                    >
-                      {token.number}
-                    </text>
-                  ))}
                 </g>
               )}
             </TipCoinBlank>
@@ -245,46 +240,39 @@ export function TipCoinViewer(props: TipCoinViewerProps) {
             <TipCoinBlank
               metal={METAL}
               sizePx={COIN_SIZE_PX}
-              engraved={false}
+              rimText={undefined}
+              relief
               sheen={sheen}
               raised={false}
             >
-              {({ field }) => (
-                <g textAnchor="middle">
+              {({ field, cutFilter, fineCutFilter }) => (
+                <g textAnchor="middle" fill={field.base}>
                   <text
                     x={50}
                     y={32}
                     className="font-[family-name:var(--lm-font-mono)] uppercase"
                     fontSize={4.4}
                     letterSpacing={0.9}
-                    fill={field.dark}
+                    filter={fineCutFilter}
                   >
-                    {tipCopy.siteName}
+                    {copy.site.name}
                   </text>
-                  {[
-                    { dy: 0.7, fill: field.light, opacity: 0.8 },
-                    { dy: 0, fill: field.edge, opacity: 0.9 },
-                  ].map((layer) => (
-                    <text
-                      key={layer.dy}
-                      x={50}
-                      y={52 + layer.dy}
-                      className="font-[family-name:var(--lm-font-display)]"
-                      fontSize={15}
-                      fill={layer.fill}
-                      opacity={layer.opacity}
-                    >
-                      {tipCopy.coinBackNote}
-                    </text>
-                  ))}
-                  <line
-                    x1={36}
-                    y1={59}
-                    x2={64}
-                    y2={59}
-                    stroke={field.dark}
-                    strokeWidth={0.4}
-                    opacity={0.6}
+                  <text
+                    x={50}
+                    y={52}
+                    className="font-[family-name:var(--lm-font-display)]"
+                    fontSize={15}
+                    filter={cutFilter}
+                  >
+                    {copy.tip.coinBackNote}
+                  </text>
+                  <rect
+                    x={36}
+                    y={58.6}
+                    width={28}
+                    height={0.8}
+                    rx={0.4}
+                    filter={cutFilter}
                   />
                   <text
                     x={50}
@@ -293,7 +281,7 @@ export function TipCoinViewer(props: TipCoinViewerProps) {
                     fontSize={4.2}
                     textLength={52}
                     lengthAdjust="spacingAndGlyphs"
-                    fill={field.edge}
+                    filter={fineCutFilter}
                   >
                     {token.code}
                   </text>
@@ -302,10 +290,12 @@ export function TipCoinViewer(props: TipCoinViewerProps) {
                     y={74}
                     className="font-[family-name:var(--lm-font-mono)] lowercase"
                     fontSize={3.6}
-                    fill={field.dark}
-                    opacity={0.8}
+                    filter={fineCutFilter}
                   >
-                    {formatTipDate(token.createdAt)}
+                    {formatTipDate({
+                      isoDate: token.createdAt,
+                      locale: copy.locale,
+                    })}
                   </text>
                 </g>
               )}
@@ -315,14 +305,14 @@ export function TipCoinViewer(props: TipCoinViewerProps) {
       </button>
       <div className="flex items-center gap-x-3">
         <span className={cn(SETTINGS_META_CLASS, "opacity-60")}>
-          {tipCopy.turnHint}
+          {copy.tip.turnHint}
         </span>
         <button
           type="button"
           className={cn(PRINTER_KEY_CLASS, "h-8 px-3")}
           onClick={() => turnOver(1)}
         >
-          {tipCopy.flip}
+          {copy.tip.flip}
         </button>
       </div>
     </div>

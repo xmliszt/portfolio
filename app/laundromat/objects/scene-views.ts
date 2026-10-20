@@ -38,6 +38,6 @@ export type SceneViews = {
   weather: WeatherReading | undefined;
   toyBox: ToyBoxView;
   coinMachine: CoinMachinePhase;
-  tipJar: { fillRatio: number };
+  tipJar: { coinCount: number };
   hidden: boolean;
 };

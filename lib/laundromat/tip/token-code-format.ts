@@ -10,3 +10,5 @@ export function formatTokenCode(body: string) {
   const checksum = getTicketChecksum(body).slice(0, 2).toUpperCase();
   return `${TOKEN_CODE_PREFIX}${body.slice(0, 5)}-${body.slice(5)}-${checksum}`;
 }
+
+export const TOKEN_CODE_PLACEHOLDER = `${TOKEN_CODE_PREFIX}XXXXX-XXXXX-XX`;

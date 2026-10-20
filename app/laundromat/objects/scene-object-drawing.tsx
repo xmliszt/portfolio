@@ -201,7 +201,7 @@ export function SceneObjectDrawing(props: SceneObjectDrawingProps) {
     case "coin-machine":
       return <CoinMachineDrawing {...shared} phase={views.coinMachine} />;
     case "tip-jar":
-      return <TipJarDrawing {...shared} fillRatio={views.tipJar.fillRatio} />;
+      return <TipJarDrawing {...shared} coinCount={views.tipJar.coinCount} />;
     default: {
       const unhandled: never = object;
       return unhandled;

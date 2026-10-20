@@ -7,14 +7,20 @@ import type {
 } from "@/lib/laundromat/tip/tip-coin-metals";
 import { cn } from "@/lib/utils";
 
-const RIM_TEXT = "laundro.cafe · thank you · laundro.cafe · thank you · ";
+const LIGHT = { azimuthDeg: 225, elevationDeg: 38 };
+const RELIEFS = {
+  cut: { blur: 0.35, depth: -1.8 },
+  fineCut: { blur: 0.12, depth: -0.9 },
+  raise: { blur: 0.35, depth: 2.2 },
+};
 
 export type CoinSheen = "static" | "follow" | "track" | "none";
 
 type TipCoinBlankProps = {
   metal: TipCoinMetal;
   sizePx: number;
-  engraved: boolean;
+  rimText: string | undefined;
+  relief?: boolean;
   sheen: CoinSheen;
   raised: boolean;
   dim?: boolean;
@@ -24,10 +30,13 @@ type TipCoinBlankProps = {
   children: (tones: {
     field: MetalTones;
     rimPathId: string;
+    cutFilter: string | undefined;
+    fineCutFilter: string | undefined;
+    raiseFilter: string | undefined;
   }) => React.ReactNode;
 };
 
-/** Draw one face of a struck metal coin: a reeded, brushed rim, a recessed field, `RIM_TEXT` around the rim when `engraved`, and whatever `children` draws into a 100 × 100 SVG over the field; the sheen moves with the `--sheen-x` custom property when `follow`, easing after it, or `track`, at once, and the coin casts its edge and shadow below it when `raised`. */
+/** Draw one face of a struck metal coin: a reeded, brushed rim, a recessed field, `rimText` around the rim, and whatever `children` draws into a 100 × 100 SVG over the field, with lit filters for cut and raised lettering when `relief`; the sheen moves with the `--sheen-x` custom property when `follow`, easing after it, or `track`, at once, and the coin casts its edge and shadow below it when `raised`. */
 export function TipCoinBlank(props: TipCoinBlankProps) {
   const { ref, ...coin } = props;
   const id = useId().replaceAll(":", "");
@@ -73,18 +82,90 @@ export function TipCoinBlank(props: TipCoinBlankProps) {
             d="M 50 50 m -43.5 0 a 43.5 43.5 0 1 1 87 0 a 43.5 43.5 0 1 1 -87 0"
           />
         </defs>
-        {coin.engraved && (
+        {coin.relief === true &&
+          (["cut", "fineCut", "raise"] as const).map((kind) => (
+            <filter
+              key={kind}
+              id={`${id}-${kind}`}
+              x="-10%"
+              y="-10%"
+              width="120%"
+              height="120%"
+            >
+              <feGaussianBlur
+                in="SourceAlpha"
+                stdDeviation={RELIEFS[kind].blur}
+                result="height"
+              />
+              <feDiffuseLighting
+                in="height"
+                surfaceScale={RELIEFS[kind].depth}
+                diffuseConstant={1}
+                lightingColor="#ffffff"
+                result="shade"
+              >
+                <feDistantLight
+                  data-coin-light
+                  azimuth={LIGHT.azimuthDeg}
+                  elevation={LIGHT.elevationDeg}
+                />
+              </feDiffuseLighting>
+              <feSpecularLighting
+                in="height"
+                surfaceScale={RELIEFS[kind].depth}
+                specularConstant={1.1}
+                specularExponent={20}
+                lightingColor={field.light}
+                result="glint"
+              >
+                <feDistantLight
+                  data-coin-light
+                  azimuth={LIGHT.azimuthDeg}
+                  elevation={LIGHT.elevationDeg}
+                />
+              </feSpecularLighting>
+              <feComposite
+                in="SourceGraphic"
+                in2="shade"
+                operator="arithmetic"
+                k1={1}
+                result="shaded"
+              />
+              <feComposite
+                in="glint"
+                in2="SourceAlpha"
+                operator="in"
+                result="glintInside"
+              />
+              <feComposite
+                in="shaded"
+                in2="glintInside"
+                operator="arithmetic"
+                k2={1}
+                k3={0.8}
+              />
+            </filter>
+          ))}
+        {coin.rimText !== undefined && (
           <text
             className="font-[family-name:var(--lm-font-mono)] uppercase"
             fontSize={6.4}
             letterSpacing={1.2}
-            fill={ring.edge}
-            opacity={0.75}
+            fill={coin.relief === true ? ring.base : ring.edge}
+            opacity={coin.relief === true ? 1 : 0.75}
+            filter={coin.relief === true ? `url(#${id}-cut)` : undefined}
           >
-            <textPath href={`#${id}-rim`}>{RIM_TEXT}</textPath>
+            <textPath href={`#${id}-rim`}>{coin.rimText}</textPath>
           </text>
         )}
-        {coin.children({ field, rimPathId: `${id}-rim` })}
+        {coin.children({
+          field,
+          rimPathId: `${id}-rim`,
+          cutFilter: coin.relief === true ? `url(#${id}-cut)` : undefined,
+          fineCutFilter:
+            coin.relief === true ? `url(#${id}-fineCut)` : undefined,
+          raiseFilter: coin.relief === true ? `url(#${id}-raise)` : undefined,
+        })}
       </svg>
       {coin.sheen !== "none" && (
         <span

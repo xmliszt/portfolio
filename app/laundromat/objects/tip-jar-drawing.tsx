@@ -1,7 +1,11 @@
+import { useId } from "react";
+
 import type { LaidOutObject } from "@/lib/laundromat/build-scene-layout";
 import { getIsoCylinder } from "@/lib/laundromat/get-iso-cylinder";
 import { getIsoEllipse } from "@/lib/laundromat/get-iso-ellipse";
 import type { IsoProjection } from "@/lib/laundromat/project-iso-point";
+import { getJarCoinPile } from "@/lib/laundromat/tip/get-jar-coin-pile";
+import { METAL_TONES } from "@/lib/laundromat/tip/tip-coin-metals";
 
 import { CylinderSides } from "./cylinder-sides";
 import { partStroke } from "./part-stroke";
@@ -9,21 +13,17 @@ import { partStroke } from "./part-stroke";
 const BASE_HEIGHT = 0.06;
 const NECK = { height: 0.08, radiusRatio: 0.8 };
 const LID_HEIGHT = 0.07;
-const COIN_RADIUS = 0.06;
-const COIN_LAYER = 0.045;
-const TOP_COINS = [
-  { u: -0.45, v: 0.1 },
-  { u: 0.05, v: -0.35 },
-  { u: 0.4, v: 0.2 },
-  { u: -0.05, v: 0.45 },
-  { u: 0.5, v: -0.25 },
-];
+const COIN_RADIUS = 0.05;
+const COIN_THICKNESS_PX = 1.1;
+const LAYER_HEIGHT = 0.03;
+const INNER_RADIUS_RATIO = 0.9;
+const MAX_TILT_SQUASH = 0.3;
 
 type TipJarDrawingProps = {
   laidOut: LaidOutObject;
   projection: IsoProjection;
   highlighted: boolean;
-  fillRatio: number;
+  coinCount: number;
 };
 
 export function TipJarDrawing(props: TipJarDrawingProps) {
@@ -34,7 +34,7 @@ export function TipJarDrawing(props: TipJarDrawingProps) {
   const glassBottom = p.z + BASE_HEIGHT;
   const shoulder = p.z + size.h - LID_HEIGHT - NECK.height;
   const neckRadius = radius * NECK.radiusRatio;
-  const coinTop = glassBottom + (shoulder - glassBottom) * props.fillRatio;
+  const clipId = useId();
   const base = getIsoCylinder({
     center,
     bottom: p.z,
@@ -47,13 +47,6 @@ export function TipJarDrawing(props: TipJarDrawingProps) {
     bottom: glassBottom,
     top: shoulder,
     radius,
-    projection,
-  });
-  const coins = getIsoCylinder({
-    center,
-    bottom: glassBottom,
-    top: coinTop,
-    radius: radius * 0.94,
     projection,
   });
   const neck = getIsoCylinder({
@@ -85,60 +78,72 @@ export function TipJarDrawing(props: TipJarDrawingProps) {
         className="fill-[var(--lm-recess)] stroke-none"
         opacity={0.55}
       />
-      {props.fillRatio > 0 && (
-        <g className="stroke-[var(--lm-accent)]" strokeWidth={0.5}>
-          <path
-            d={coins.body}
-            className="fill-[var(--lm-accent)] stroke-none"
-            opacity={0.14}
-          />
-          {Array.from(
-            { length: Math.floor((coinTop - glassBottom) / COIN_LAYER) },
-            (_, index) => {
-              const layer = getIsoEllipse({
-                center: {
-                  ...center,
-                  z: glassBottom + (index + 1) * COIN_LAYER,
-                },
-                radius: radius * 0.94,
-                projection,
-              });
-              return (
-                <path
-                  key={index}
-                  d={`M ${layer.cx - layer.rx} ${layer.cy} A ${layer.rx} ${layer.ry} 0 0 0 ${layer.cx + layer.rx} ${layer.cy}`}
-                  className="fill-none"
-                  opacity={0.55}
-                />
-              );
-            }
-          )}
-          <ellipse
-            {...coins.top}
-            className="fill-[var(--lm-recess)]"
-            opacity={0.9}
-          />
-          {TOP_COINS.map((coin) => {
-            const ellipse = getIsoEllipse({
+      <defs>
+        <clipPath id={clipId}>
+          <path d={glass.body} />
+        </clipPath>
+      </defs>
+      <g clipPath={`url(#${clipId})`} strokeWidth={0.4}>
+        {getJarCoinPile(props.coinCount)
+          .map((coin) => {
+            const z = Math.min(
+              glassBottom + coin.layer * LAYER_HEIGHT,
+              shoulder - LAYER_HEIGHT
+            );
+            const face = getIsoEllipse({
               center: {
-                x: center.x + coin.u * radius * 0.7,
-                y: center.y + coin.v * radius * 0.7,
-                z: coinTop + 0.01,
+                x: center.x + coin.u * radius * INNER_RADIUS_RATIO,
+                y: center.y + coin.v * radius * INNER_RADIUS_RATIO,
+                z,
               },
               radius: COIN_RADIUS,
               projection,
             });
+            return { coin, face };
+          })
+          .toSorted(
+            (a, b) => a.coin.layer - b.coin.layer || a.face.cy - b.face.cy
+          )
+          .map(({ coin, face }, index) => {
+            const tones = METAL_TONES[coin.metal];
+            const ry =
+              face.ry * (1 + (Math.abs(coin.tiltDeg) / 25) * MAX_TILT_SQUASH);
+            const transform = `rotate(${coin.tiltDeg / 2} ${face.cx} ${face.cy})`;
             return (
-              <ellipse
-                key={`${coin.u}-${coin.v}`}
-                {...ellipse}
-                className="fill-[var(--lm-accent)]"
-                opacity={0.8}
-              />
+              <g key={index} transform={transform}>
+                <ellipse
+                  cx={face.cx}
+                  cy={face.cy + COIN_THICKNESS_PX}
+                  rx={face.rx}
+                  ry={ry}
+                  fill={tones.edge}
+                  stroke="none"
+                />
+                <ellipse
+                  cx={face.cx}
+                  cy={face.cy}
+                  rx={face.rx}
+                  ry={ry}
+                  fill={tones.base}
+                  stroke={tones.dark}
+                />
+                <path
+                  d={`M ${face.cx - face.rx * 0.6} ${face.cy - ry * 0.2} A ${face.rx * 0.6} ${ry * 0.6} 0 0 1 ${face.cx + face.rx * 0.2} ${face.cy - ry * 0.6}`}
+                  fill="none"
+                  stroke={tones.light}
+                  strokeWidth={0.5}
+                  strokeLinecap="round"
+                  opacity={0.8}
+                />
+              </g>
             );
           })}
-        </g>
-      )}
+      </g>
+      <path
+        d={glass.body}
+        className="fill-[var(--lm-ink-hi)] stroke-none"
+        opacity={0.04}
+      />
       <path d={glass.body} className="fill-none" strokeWidth={0.75} />
       <line
         x1={glint.x}

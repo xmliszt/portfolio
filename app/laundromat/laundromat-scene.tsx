@@ -59,9 +59,7 @@ import type {
 } from "@/lib/laundromat/realtime/room-presence";
 import { shiftRemoteLoad } from "@/lib/laundromat/realtime/shift-remote-load";
 import type { FocusTarget, SceneConfig } from "@/lib/laundromat/scene-config";
-import { getJarFillRatio } from "@/lib/laundromat/tip/get-jar-fill-ratio";
 import { readTokenLinkText } from "@/lib/laundromat/tip/read-token-link-text";
-import { tipCopy } from "@/lib/laundromat/tip/tip-copy";
 import type { GoldenWashView } from "@/lib/laundromat/tip/tip-token";
 import { TOKEN_CODE_HASH_PREFIX } from "@/lib/laundromat/tip/token-code-format";
 import { describeTv } from "@/lib/laundromat/tv/describe-tv";
@@ -627,7 +625,7 @@ export function LaundromatScene(props: LaundromatSceneProps) {
         return "none";
       })();
       const readout = (() => {
-        if (goldenWash === "running") return tipCopy.goldenReadout;
+        if (goldenWash === "running") return copy.tip.goldenReadout;
         switch (status.kind) {
           case "running":
             return formatRemainingTime(status.remainingMs);
@@ -708,7 +706,7 @@ export function LaundromatScene(props: LaundromatSceneProps) {
     toyBox: toyBox.view,
     coinMachine: tip?.machine ?? { kind: "idle" },
     tipJar: {
-      fillRatio: getJarFillRatio(tip?.jar?.length ?? 0),
+      coinCount: tip?.jar?.length ?? 0,
     },
     hidden: isHidden,
   };
@@ -780,8 +778,8 @@ export function LaundromatScene(props: LaundromatSceneProps) {
         return tip?.jar === undefined
           ? describeSceneObject({ object: laidOut.object, copy })
           : {
-              label: tipCopy.jarLabel({ count: tip.jar.length }),
-              tooltip: tipCopy.jarTooltip({ count: tip.jar.length }),
+              label: copy.tip.jarLabel({ count: tip.jar.length }),
+              tooltip: copy.tip.jarTooltip({ count: tip.jar.length }),
             };
       default:
         return describeSceneObject({
@@ -798,16 +796,12 @@ export function LaundromatScene(props: LaundromatSceneProps) {
       status.kind === "running" ||
       (status.kind === "occupied" && status.phase === "running")
   );
-  const goldenKinds = Object.values(machineViews).flatMap(
-    ({ machine, goldenWash }) =>
-      goldenWash === "running" ? [machine.kind] : []
+  const isWasherRunning = runningStatuses.some(
+    ({ machine }) => machine.kind === "washer"
   );
-  const isWasherRunning =
-    goldenKinds.includes("washer") ||
-    runningStatuses.some(({ machine }) => machine.kind === "washer");
-  const isDryerRunning =
-    goldenKinds.includes("dryer") ||
-    runningStatuses.some(({ machine }) => machine.kind === "dryer");
+  const isDryerRunning = runningStatuses.some(
+    ({ machine }) => machine.kind === "dryer"
+  );
   const isTvHissing =
     appliances.tv.on && (tvAudioState === "buffering" || isTvNoSignal);
   const lampSwitch = useSceneSounds({

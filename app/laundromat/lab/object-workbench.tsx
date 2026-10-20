@@ -141,7 +141,7 @@ export function ObjectWorkbench(props: ObjectWorkbenchProps) {
         ? { kind: "opening" }
         : { kind: "open", runStartedAtMs: toyRunStartedAtMs },
     coinMachine: { kind: "idle" },
-    tipJar: { fillRatio: 0.4 },
+    tipJar: { coinCount: 24 },
     hidden: false,
   };
 
