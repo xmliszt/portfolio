@@ -12,13 +12,15 @@ import { spendTip } from "@/lib/laundromat/supabase/spend-tip";
 import { hashTokenCode } from "@/lib/laundromat/tip/hash-token-code";
 import { parseTokenCode } from "@/lib/laundromat/tip/parse-token-code";
 import { CUSTOM_TIP_CENTS } from "@/lib/laundromat/tip/tip-amounts";
-import type { JarCoin } from "@/lib/laundromat/tip/tip-token";
+import type { JarCoin, SpendResult } from "@/lib/laundromat/tip/tip-token";
 import { TOKEN_HASH_PATTERN } from "@/lib/laundromat/tip/token-hash-pattern";
 
 const TIP_PRODUCT_NAME = "Tip for laundro.cafe";
 const INTEGRATION_IDENTIFIER = "laundro-cafe-coin-machine-qwhmzbtk";
 const SESSION_LIFETIME_S = 31 * 60;
 const FAILED_PAYMENT_STATUSES = ["canceled", "requires_payment_method"];
+const ATTEMPT_PATTERN =
+  /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/;
 const SESSION_ID_PATTERN = /^cs_(test|live)_[A-Za-z0-9]{1,200}$/;
 
 export type StartTipResult =
@@ -146,21 +148,22 @@ export async function restoreToken(options: {
   return coin === undefined ? { kind: "unknown" } : { kind: "restored", coin };
 }
 
-export type SpendResult =
-  | { kind: "spent"; spentAt: string }
-  | { kind: "already-spent"; spentAt: string }
-  | { kind: "unknown" }
-  | { kind: "unavailable" };
-
-/** Spend the token whose code is `code`, read leniently, so it cannot be used again on any device; `already-spent` when it was, `unknown` when no tip has it. */
+/** Spend the token whose code is `code`, read leniently, so it cannot be used again on any device; a repeat of the same `attempt` counts as the same spend, `already-spent` when another attempt spent it, `unknown` when no tip has it. */
 export async function spendToken(options: {
   code: string;
+  attempt: string;
 }): Promise<SpendResult> {
   const code = parseTokenCode(options.code);
-  if (code === undefined) return { kind: "unknown" };
+  if (code === undefined || !ATTEMPT_PATTERN.test(options.attempt)) {
+    return { kind: "unknown" };
+  }
   const client = createLaundromatServiceClient();
   if (client === undefined) return { kind: "unavailable" };
-  return spendTip({ client, tokenHash: await hashTokenCode(code) });
+  return spendTip({
+    client,
+    tokenHash: await hashTokenCode(code),
+    attempt: options.attempt,
+  });
 }
 
 /** Return every coin in the tip jar, oldest first, or `undefined` when the database is not configured. */

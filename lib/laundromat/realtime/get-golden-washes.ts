@@ -1,9 +1,9 @@
-import { GOLDEN_WASH_MS } from "@/lib/laundromat/tip/golden-wash-ms";
+import { GOLDEN_CHARGE_MS } from "@/lib/laundromat/tip/golden-charge-ms";
 
 import { getClockOffsetMs } from "./get-clock-offset-ms";
 import type { GoldenWash, RoomPresence } from "./room-presence";
 
-/** Return the golden washes running at `now`: this tab's `own` ones, then each peer's with its start moved onto the local clock by `offsetsMs` and no later than `now`, each marked `isOwn`. */
+/** Return the golden charges still within `GOLDEN_CHARGE_MS.max` at `now`: this tab's `own` ones, then each peer's with its start moved onto the local clock by `offsetsMs` and no later than `now`, each marked `isOwn`. */
 export function getGoldenWashes(options: {
   own: GoldenWash[];
   peers: RoomPresence[];
@@ -25,5 +25,5 @@ export function getGoldenWashes(options: {
   return [
     ...options.own.map((wash) => ({ ...wash, isOwn: true })),
     ...remote,
-  ].filter(({ startedAt }) => options.now < startedAt + GOLDEN_WASH_MS);
+  ].filter(({ startedAt }) => options.now < startedAt + GOLDEN_CHARGE_MS.max);
 }

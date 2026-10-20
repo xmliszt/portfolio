@@ -1,13 +1,17 @@
+import { useReducedMotion } from "motion/react";
+
 import { useRenderQuality } from "@/app/laundromat/settings/use-render-quality";
 import type { LaidOutObject } from "@/lib/laundromat/build-scene-layout";
 import { getDialAngleDeg } from "@/lib/laundromat/laundry/get-dial-angle-deg";
 import { LITE_DRUM_POSES } from "@/lib/laundromat/render-quality/lite-drum-poses";
 import type { SceneConfig } from "@/lib/laundromat/scene-config";
+import { METAL_TONES } from "@/lib/laundromat/tip/tip-coin-metals";
 import { toSvgPoints } from "@/lib/laundromat/to-svg-points";
 import { cn } from "@/lib/utils";
 
 import { BoxBevel } from "./box-bevel";
 import { DrumLaundry } from "./drum-laundry";
+import { GoldenCharms } from "./golden-charms";
 import { GoldenMachineGlow } from "./golden-machine-glow";
 import { GoldenWashGlow } from "./golden-wash-glow";
 import { GoldenWashSparkles } from "./golden-wash-sparkles";
@@ -43,6 +47,7 @@ type MachineDrawingProps = {
 
 export function MachineDrawing(props: MachineDrawingProps) {
   const { quality } = useRenderQuality();
+  const prefersReducedMotion = useReducedMotion() ?? false;
   const { object, faces, face } = props.laidOut;
   if (face?.target !== "machine") return null;
   const isLite = quality === "lite";
@@ -54,7 +59,9 @@ export function MachineDrawing(props: MachineDrawingProps) {
     view.status.kind === "running" ||
     (view.status.kind === "occupied" && view.status.phase === "running");
   const isLive = view.status.kind === "running" || view.status.kind === "done";
-  const isGolden = view.goldenWash === "running";
+  const isCharged = view.goldenWash === "charged";
+  const isCharmed = view.goldenWash === "charmed";
+  const isGolden = isCharged || isCharmed;
   const isInvited = view.goldenWash === "invited";
   const remainingMs =
     view.status.kind === "running" ||
@@ -395,7 +402,7 @@ export function MachineDrawing(props: MachineDrawingProps) {
               opacity={details.dryerGlow}
             />
           )}
-          {isGolden && <GoldenWashGlow radius={doorRadius - 6} />}
+          {isCharged && <GoldenWashGlow radius={doorRadius - 6} />}
           {hasLaundry && (
             <DrumLaundry
               radius={doorRadius - 7}
@@ -461,15 +468,22 @@ export function MachineDrawing(props: MachineDrawingProps) {
             data-lm-motion
             className={cn(
               "fill-[var(--lm-face-top)]",
-              isLive || isGolden
-                ? "stroke-[var(--lm-accent)]"
-                : partStroke(isHighlighted("door") || isInvited)
+              isGolden
+                ? "stroke-[var(--lm-accent-hi)]"
+                : isLive
+                  ? "stroke-[var(--lm-accent)]"
+                  : partStroke(isHighlighted("door") || isInvited)
             )}
-            style={
-              (view.status.kind === "done" || isInvited) && !isLite
-                ? { animation: "lm-pulse 2.4s ease-in-out infinite" }
-                : undefined
-            }
+            style={{
+              filter: isGolden
+                ? `drop-shadow(0 0 3px ${METAL_TONES.brass.base})`
+                : undefined,
+              animation:
+                (view.status.kind === "done" || isInvited || isGolden) &&
+                !isLite
+                  ? "lm-pulse 2.4s ease-in-out infinite"
+                  : undefined,
+            }}
           />
           <circle
             cx={doorCenter.x}
@@ -502,15 +516,20 @@ export function MachineDrawing(props: MachineDrawingProps) {
             />
           )}
         </MachineDoorSwing>
-        {isGolden && (
+        {isCharged && (
           <GoldenWashSparkles
             center={doorCenter}
             radius={doorRadius}
             animated={!isLite}
           />
         )}
+        {isCharmed && !isLite && !prefersReducedMotion && (
+          <GoldenCharms
+            center={{ x: doorCenter.x, y: door.y + doorRadius * 0.4 }}
+          />
+        )}
       </g>
-      {isGolden && <GoldenMachineGlow faces={faces} animated={!isLite} />}
+      {isCharged && <GoldenMachineGlow faces={faces} halo={!isLite} />}
     </g>
   );
 }

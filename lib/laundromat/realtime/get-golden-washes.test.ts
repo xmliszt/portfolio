@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
 
-import { GOLDEN_WASH_MS } from "@/lib/laundromat/tip/golden-wash-ms";
+import { GOLDEN_CHARGE_MS } from "@/lib/laundromat/tip/golden-charge-ms";
 
 import { getGoldenWashes } from "./get-golden-washes";
 
@@ -37,7 +37,7 @@ test("lists own and peer golden washes still running", () => {
 test("drops washes that have ended, shifting peer starts onto the local clock", () => {
   assert.deepEqual(
     getGoldenWashes({
-      own: [{ machineId: "washer-1", startedAt: now - GOLDEN_WASH_MS }],
+      own: [{ machineId: "washer-1", startedAt: now - GOLDEN_CHARGE_MS.max }],
       peers: [
         {
           sessionId: "a",
@@ -45,7 +45,7 @@ test("drops washes that have ended, shifting peer starts onto the local clock", 
           goldenWash: { machineId: "washer-2", startedAt: now - 1000 },
         },
       ],
-      offsetsMs: { peer: -GOLDEN_WASH_MS },
+      offsetsMs: { peer: -GOLDEN_CHARGE_MS.max },
       now,
     }),
     []

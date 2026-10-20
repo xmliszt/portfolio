@@ -1,4 +1,4 @@
-import { GOLDEN_WASH_MS } from "@/lib/laundromat/tip/golden-wash-ms";
+import { GOLDEN_CHARGE_MS } from "@/lib/laundromat/tip/golden-charge-ms";
 
 import { MAX_WRITING_MS } from "./max-writing-ms";
 import { parseRoomRegion } from "./parse-room-region";
@@ -110,7 +110,7 @@ function parseGoldenWash(options: {
     value.machineId.length > MAX_MACHINE_ID_LENGTH ||
     !("startedAt" in value && typeof value.startedAt === "number") ||
     value.startedAt > now + MAX_CLOCK_SKEW_MS ||
-    value.startedAt < now - GOLDEN_WASH_MS - MAX_CLOCK_SKEW_MS
+    value.startedAt < now - GOLDEN_CHARGE_MS.max - MAX_CLOCK_SKEW_MS
   ) {
     return undefined;
   }

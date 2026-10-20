@@ -5,7 +5,8 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useSoundBoard } from "@/app/laundromat/sound/use-sound-board";
 import type { GoldenWash } from "@/lib/laundromat/realtime/room-presence";
 import { createTokenCode } from "@/lib/laundromat/tip/create-token-code";
-import { GOLDEN_WASH_MS } from "@/lib/laundromat/tip/golden-wash-ms";
+import { getDropOutcome } from "@/lib/laundromat/tip/get-drop-outcome";
+import { GOLDEN_CHARGE_MS } from "@/lib/laundromat/tip/golden-charge-ms";
 import { hashTokenCode } from "@/lib/laundromat/tip/hash-token-code";
 import { isPendingTip } from "@/lib/laundromat/tip/is-pending-tip";
 import { isTipToken } from "@/lib/laundromat/tip/is-tip-token";
@@ -15,6 +16,7 @@ import type {
   JarCoin,
   PendingTip,
   TipToken,
+  TokenNotice,
 } from "@/lib/laundromat/tip/tip-token";
 import { wait } from "@/lib/laundromat/wait";
 
@@ -34,6 +36,56 @@ const TOKENS_STORAGE_KEY = "laundromat:tip-tokens";
 const COIN_DROP_VIBRATION_MS = [15, 40, 25];
 const POLL_MS = { fast: 1500, slow: 5000, fastForMs: 30_000 };
 const TOKEN_CODE_BYTES = 10;
+const PENDING_DROP_KEY = "laundromat:pending-drop";
+const GOLDEN_CHARGES_KEY = "laundromat:golden-charges";
+const NOTICE_MS = 3500;
+
+type PendingDrop = { code: string; attempt: string; machineId: string };
+
+function isPendingDrop(value: unknown): value is PendingDrop {
+  return (
+    typeof value === "object" &&
+    value !== null &&
+    "code" in value &&
+    typeof value.code === "string" &&
+    "attempt" in value &&
+    typeof value.attempt === "string" &&
+    "machineId" in value &&
+    typeof value.machineId === "string"
+  );
+}
+
+function isGoldenWash(value: unknown): value is GoldenWash {
+  return (
+    typeof value === "object" &&
+    value !== null &&
+    "machineId" in value &&
+    typeof value.machineId === "string" &&
+    "startedAt" in value &&
+    typeof value.startedAt === "number"
+  );
+}
+
+function writeStoredValue(options: { key: string; value: unknown }) {
+  try {
+    if (options.value === undefined) {
+      window.localStorage.removeItem(options.key);
+      return;
+    }
+    window.localStorage.setItem(options.key, JSON.stringify(options.value));
+  } catch {}
+}
+
+function readPendingDrop() {
+  try {
+    const stored: unknown = JSON.parse(
+      window.localStorage.getItem(PENDING_DROP_KEY) ?? "null"
+    );
+    return isPendingDrop(stored) ? stored : undefined;
+  } catch {
+    return undefined;
+  }
+}
 
 function writeStoredList(options: { key: string; items: unknown[] }) {
   try {
@@ -61,13 +113,14 @@ function forgetPendingTip(sessionId: string) {
 
 type TipProviderProps = { children: React.ReactNode };
 
-/** Provide the visitor's tip tokens, the jar's coins and the coin machine's phase to the scene and the toolbar, open and settle real tips through Stripe whether or not the panel stays open (resuming any still pending from an earlier visit), and hold one token until it is dropped into a washer or dryer, which spends it on the server and turns the machine gold. */
+/** Provide the visitor's tip tokens, the jar's coins and the coin machine's phase to the scene and the toolbar, open and settle real tips through Stripe whether or not the panel stays open (resuming any still pending from an earlier visit), hold one token until it is dropped into a washer or dryer, which spends it on the server (safe to retry after a lost answer) and gives that machine a golden charge kept across reloads, and show what happened to the drop. */
 export function TipProvider(props: TipProviderProps) {
   const [tokens, setTokens] = useState<TipToken[]>();
   const [jar, setJar] = useState<JarCoin[]>();
   const [machine, setMachine] = useState<CoinMachinePhase>({ kind: "idle" });
   const [heldTokenCode, holdToken] = useState<string>();
   const [goldenWashes, setGoldenWashes] = useState<GoldenWash[]>([]);
+  const [tokenNotice, setTokenNotice] = useState<TokenNotice>();
   const timersRef = useRef<number[]>([]);
   const settlingRef = useRef<{
     [sessionId: string]: Promise<TipToken | undefined>;
@@ -245,38 +298,106 @@ export function TipProvider(props: TipProviderProps) {
     [keepToken]
   );
 
-  const dropToken = useCallback(
-    async (options: { machineId: string }) => {
-      if (heldTokenCode === undefined) return;
-      const code = heldTokenCode;
-      holdToken(undefined);
-      const result = await spendTokenAction({ code }).catch(
-        () => ({ kind: "unavailable" }) as const
-      );
-      const held = readStoredTokens().find((token) => token.code === code);
-      if (
-        held !== undefined &&
-        (result.kind === "spent" || result.kind === "already-spent")
-      ) {
-        keepToken({ ...held, spentAt: result.spentAt });
-      }
-      if (result.kind !== "spent") {
-        sound?.play("door-locked");
-        return;
-      }
+  const showNotice = useCallback(
+    (notice: TokenNotice | undefined) => {
+      setTokenNotice(notice);
+      if (notice === undefined || notice.kind === "checking") return;
+      setTimer({
+        run: () =>
+          setTokenNotice((current) =>
+            current === notice ? undefined : current
+          ),
+        ms: NOTICE_MS,
+      });
+    },
+    [setTimer]
+  );
+
+  const chargeMachine = useCallback(
+    (machineId: string) => {
       sound?.play("coin-insert");
       sound?.play("start-button");
       sound?.play("tip-chime");
-      const wash = { machineId: options.machineId, startedAt: Date.now() };
-      setGoldenWashes((washes) => [...washes, wash]);
-      setTimer({
-        run: () =>
-          setGoldenWashes((washes) => washes.filter((w) => w !== wash)),
-        ms: GOLDEN_WASH_MS,
-      });
+      setGoldenWashes((washes) => [
+        ...washes.filter((wash) => wash.machineId !== machineId),
+        { machineId, startedAt: Date.now() },
+      ]);
     },
-    [heldTokenCode, sound, setTimer, keepToken]
+    [sound]
   );
+
+  const settleDrop = useCallback(
+    async (drop: PendingDrop) => {
+      const result = await spendTokenAction({
+        code: drop.code,
+        attempt: drop.attempt,
+      }).catch(() => ({ kind: "unavailable" }) as const);
+      const outcome = getDropOutcome(result);
+      const held = readStoredTokens().find(({ code }) => code === drop.code);
+      if (held !== undefined && outcome.spentAt !== undefined) {
+        keepToken({ ...held, spentAt: outcome.spentAt });
+      }
+      if (!outcome.retry)
+        writeStoredValue({ key: PENDING_DROP_KEY, value: undefined });
+      return outcome;
+    },
+    [keepToken]
+  );
+
+  const dropToken = useCallback(
+    async (options: { machineId: string }) => {
+      if (heldTokenCode === undefined) return;
+      const stored = readPendingDrop();
+      const drop = {
+        code: heldTokenCode,
+        attempt:
+          stored?.code === heldTokenCode ? stored.attempt : crypto.randomUUID(),
+        machineId: options.machineId,
+      };
+      writeStoredValue({ key: PENDING_DROP_KEY, value: drop });
+      showNotice({ kind: "checking" });
+      const outcome = await settleDrop(drop);
+      showNotice(outcome.notice);
+      if (!outcome.retry) holdToken(undefined);
+      if (outcome.charge) {
+        chargeMachine(options.machineId);
+        return;
+      }
+      sound?.play("door-locked");
+    },
+    [heldTokenCode, settleDrop, showNotice, chargeMachine, sound]
+  );
+
+  useEffect(() => {
+    const drop = readPendingDrop();
+    if (drop === undefined) return;
+    void settleDrop(drop).then((outcome) => {
+      if (outcome.charge) chargeMachine(drop.machineId);
+    });
+  }, [settleDrop, chargeMachine]);
+
+  const endGoldenWash = useCallback((machineId: string) => {
+    setGoldenWashes((washes) =>
+      washes.filter((wash) => wash.machineId !== machineId)
+    );
+  }, []);
+
+  useEffect(() => {
+    setGoldenWashes(
+      readStoredList({ key: GOLDEN_CHARGES_KEY, isItem: isGoldenWash }).filter(
+        ({ startedAt }) => Date.now() < startedAt + GOLDEN_CHARGE_MS.max
+      )
+    );
+  }, []);
+
+  const isGoldenLoadedRef = useRef(false);
+  useEffect(() => {
+    if (!isGoldenLoadedRef.current) {
+      isGoldenLoadedRef.current = true;
+      return;
+    }
+    writeStoredList({ key: GOLDEN_CHARGES_KEY, items: goldenWashes });
+  }, [goldenWashes]);
 
   useEffect(
     () => () =>
@@ -299,6 +420,8 @@ export function TipProvider(props: TipProviderProps) {
       holdToken,
       dropToken,
       goldenWashes,
+      endGoldenWash,
+      tokenNotice,
     }),
     [
       tokens,
@@ -313,6 +436,8 @@ export function TipProvider(props: TipProviderProps) {
       heldTokenCode,
       dropToken,
       goldenWashes,
+      endGoldenWash,
+      tokenNotice,
     ]
   );
 

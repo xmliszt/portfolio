@@ -6,6 +6,7 @@ import type {
   JarCoin,
   PendingTip,
   TipToken,
+  TokenNotice,
 } from "@/lib/laundromat/tip/tip-token";
 
 import type { StartTipResult } from "./tip-actions";
@@ -29,6 +30,8 @@ export type TipState = {
   holdToken: (code: string | undefined) => void;
   dropToken: (options: { machineId: string }) => Promise<void>;
   goldenWashes: GoldenWash[];
+  endGoldenWash: (machineId: string) => void;
+  tokenNotice: TokenNotice | undefined;
 };
 
 export const TipContext = createContext<TipState | undefined>(undefined);

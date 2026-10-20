@@ -59,6 +59,7 @@ import type {
 } from "@/lib/laundromat/realtime/room-presence";
 import { shiftRemoteLoad } from "@/lib/laundromat/realtime/shift-remote-load";
 import type { FocusTarget, SceneConfig } from "@/lib/laundromat/scene-config";
+import { GOLDEN_CHARGE_MS } from "@/lib/laundromat/tip/golden-charge-ms";
 import { readTokenLinkText } from "@/lib/laundromat/tip/read-token-link-text";
 import type { GoldenWashView } from "@/lib/laundromat/tip/tip-token";
 import { TOKEN_CODE_HASH_PREFIX } from "@/lib/laundromat/tip/token-code-format";
@@ -617,9 +618,18 @@ export function LaundromatScene(props: LaundromatSceneProps) {
         machine,
         machines: config.machines,
       });
+      const isCycleRunning =
+        status.kind === "running" ||
+        (status.kind === "occupied" && status.phase === "running");
       const goldenWash = ((): GoldenWashView => {
-        if (goldenWashMachineIds.includes(object.id)) return "running";
-        if (tip?.heldTokenCode !== undefined) {
+        if (goldenWashMachineIds.includes(object.id)) {
+          return isCycleRunning ? "charmed" : "charged";
+        }
+        const canTakeToken =
+          status.kind === "loadable" ||
+          status.kind === "loaded" ||
+          status.kind === "running";
+        if (tip?.heldTokenCode !== undefined && canTakeToken) {
           return "invited";
         }
         return "none";
@@ -975,6 +985,29 @@ export function LaundromatScene(props: LaundromatSceneProps) {
     if (hasNewWash) sound?.play("tip-chime");
   }, [remoteGoldenWashKey, isRoomSynced, sound]);
 
+  const ownGoldenWashes = tip?.goldenWashes;
+  const endGoldenWash = tip?.endGoldenWash;
+  const goldenRunsSeenRef = useRef<string[]>([]);
+  useEffect(() => {
+    if (ownGoldenWashes === undefined || endGoldenWash === undefined) return;
+    ownGoldenWashes.forEach(({ machineId, startedAt }) => {
+      const view = machineViews[machineId];
+      const seen = goldenRunsSeenRef.current;
+      if (view?.goldenWash === "charmed") {
+        if (!seen.includes(machineId)) {
+          goldenRunsSeenRef.current = [...seen, machineId];
+        }
+        return;
+      }
+      if (seen.includes(machineId)) {
+        goldenRunsSeenRef.current = seen.filter((id) => id !== machineId);
+        endGoldenWash(machineId);
+        return;
+      }
+      if (now - startedAt > GOLDEN_CHARGE_MS.idle) endGoldenWash(machineId);
+    });
+  });
+
   const isHoldingToken = tip?.heldTokenCode !== undefined;
   const holdToken = tip?.holdToken;
   useEffect(() => {
@@ -1053,7 +1086,7 @@ export function LaundromatScene(props: LaundromatSceneProps) {
 
   function dropHeldToken(objectId: string) {
     if (tip === undefined) return;
-    if (machineViews[objectId] !== undefined) {
+    if (machineViews[objectId]?.goldenWash === "invited") {
       void tip.dropToken({ machineId: objectId });
       return;
     }
@@ -1772,6 +1805,7 @@ export function LaundromatScene(props: LaundromatSceneProps) {
       {tip !== undefined && (
         <TokenHint
           held={tip.heldTokenCode !== undefined}
+          notice={tip.tokenNotice}
           reducedMotion={prefersReducedMotion}
           onCancel={() => tip.holdToken(undefined)}
         />

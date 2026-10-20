@@ -151,7 +151,7 @@ test("reads a coffee group and shared flask, and drops a flask changed too far a
   );
 });
 
-test("keeps a golden wash that is running and drops one that ended or is malformed", () => {
+test("keeps a golden charge within its lifetime and drops one that ended or is malformed", () => {
   assert.deepEqual(
     parseRoomPresence({
       value: {
@@ -168,7 +168,7 @@ test("keeps a golden wash that is running and drops one that ended or is malform
     }
   );
   for (const goldenWash of [
-    { machineId: "washer-2", startedAt: now - 10 * 60_000 },
+    { machineId: "washer-2", startedAt: now - 3 * 60 * 60_000 },
     { machineId: "washer-2", startedAt: now + 10 * 60_000 },
     { machineId: 2, startedAt: now },
   ]) {

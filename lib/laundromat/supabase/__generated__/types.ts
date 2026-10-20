@@ -161,6 +161,7 @@ export type Database = {
           number: number;
           session_id: string;
           spent_at: string | null;
+          spent_attempt: string | null;
           token_hash: string;
         };
         Insert: {
@@ -170,6 +171,7 @@ export type Database = {
           number: number;
           session_id: string;
           spent_at?: string | null;
+          spent_attempt?: string | null;
           token_hash: string;
         };
         Update: {
@@ -179,6 +181,7 @@ export type Database = {
           number?: number;
           session_id?: string;
           spent_at?: string | null;
+          spent_attempt?: string | null;
           token_hash?: string;
         };
         Relationships: [];
@@ -246,6 +249,13 @@ export type Database = {
           isSetofReturn: false;
         };
       };
+      spend_tip: {
+        Args: { p_attempt: string; p_token_hash: string };
+        Returns: {
+          outcome: string;
+          spent_at: string | null;
+        }[];
+      };
       fulfill_tip: {
         Args: {
           p_amount_cents: number;
@@ -259,6 +269,7 @@ export type Database = {
           number: number;
           session_id: string;
           spent_at: string | null;
+          spent_attempt: string | null;
           token_hash: string;
         };
         SetofOptions: {

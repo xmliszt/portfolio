@@ -4,29 +4,23 @@ import { SupabaseClient } from "@supabase/supabase-js";
 
 import { LaundromatDatabase } from "@/lib/laundromat/supabase/notebook-types";
 
-/** Mark the tip whose token hash is `tokenHash` as spent now, in one update that only touches an unspent tip, and return `spent` with the time, `already-spent` with the earlier time, or `unknown` when no tip has the hash; throws on a database error. */
+/** Spend the tip whose token hash is `tokenHash` through `spend_tip`, which only spends an unspent tip and treats a repeat of the same `attempt` as the same spend; returns `spent` or `already-spent` with the spend time, or `unknown`, and throws on a database error. */
 export async function spendTip(options: {
   client: SupabaseClient<LaundromatDatabase>;
   tokenHash: string;
+  attempt: string;
 }) {
-  const { data: spent, error } = await options.client
-    .from("tips")
-    .update({ spent_at: new Date().toISOString() })
-    .eq("token_hash", options.tokenHash)
-    .is("spent_at", null)
-    .select("spent_at")
-    .maybeSingle();
+  const { data, error } = await options.client.rpc("spend_tip", {
+    p_token_hash: options.tokenHash,
+    p_attempt: options.attempt,
+  });
   if (error) throw error;
-  if (spent?.spent_at) {
-    return { kind: "spent", spentAt: spent.spent_at } as const;
+  const row = data.at(0);
+  if (
+    row?.spent_at &&
+    (row.outcome === "spent" || row.outcome === "already-spent")
+  ) {
+    return { kind: row.outcome, spentAt: row.spent_at } as const;
   }
-  const { data: existing, error: readError } = await options.client
-    .from("tips")
-    .select("spent_at")
-    .eq("token_hash", options.tokenHash)
-    .maybeSingle();
-  if (readError) throw readError;
-  return existing?.spent_at
-    ? ({ kind: "already-spent", spentAt: existing.spent_at } as const)
-    : ({ kind: "unknown" } as const);
+  return { kind: "unknown" } as const;
 }

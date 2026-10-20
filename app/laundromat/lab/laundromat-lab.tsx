@@ -19,7 +19,7 @@ import { detectScript } from "@/lib/laundromat/notebook/detect-script";
 import type { RoomPresence } from "@/lib/laundromat/realtime/room-presence";
 import type { SceneConfig } from "@/lib/laundromat/scene-config";
 import { sceneConfig } from "@/lib/laundromat/scene-config";
-import { GOLDEN_WASH_MS } from "@/lib/laundromat/tip/golden-wash-ms";
+import { GOLDEN_CHARGE_MS } from "@/lib/laundromat/tip/golden-charge-ms";
 import { toCssVariables } from "@/lib/laundromat/to-css-variables";
 import type { WeatherReading } from "@/lib/laundromat/weather/weather-reading";
 import { WEATHER_CONDITIONS } from "@/lib/laundromat/weather/weather-reading";
@@ -495,7 +495,7 @@ export default function LaundromatLab() {
     setGoldenWashStartedAt(Date.now());
     const timer = window.setInterval(
       () => setGoldenWashStartedAt(Date.now()),
-      GOLDEN_WASH_MS
+      GOLDEN_CHARGE_MS.max
     );
     return () => window.clearInterval(timer);
   }, [someoneGoldenWash]);

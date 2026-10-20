@@ -61,6 +61,12 @@ ${lampFlickerFrames}
   50% { opacity: 1; transform: scale(1) rotate(45deg); }
 }
 @keyframes lm-gold-in { from { opacity: 0; } }
+@keyframes lm-charm-float {
+  0% { opacity: 0; transform: translate(0, 0) scale(0.2); }
+  14% { opacity: 1; transform: translate(calc(var(--charm-drift) * 0.2), -10px) scale(1.2) rotate(var(--charm-tilt)); }
+  28% { transform: translate(calc(var(--charm-drift) * 0.35), -16px) scale(1) rotate(var(--charm-tilt)); }
+  100% { opacity: 0; transform: translate(var(--charm-drift), -56px) scale(0.85) rotate(calc(var(--charm-tilt) * -1)); }
+}
 @keyframes lm-scan-drift { to { transform: translateY(var(--lm-scan-step)); } }
 @keyframes lm-flicker {
   0%, 100% { opacity: 0.3; }
