@@ -710,8 +710,18 @@ export const ko = {
       misread: "코드를 확인해 주세요",
       offline: "나중에 다시 해 주세요",
     },
-    note: "사랑을 보내 줘서 고마워요",
-    coinLabel: (o: { amount: string }) => `팁 ${o.amount}`,
+    note: "고마워요!",
+    pitch:
+      "팁마다 토큰이 한 장 인쇄돼요. 세탁기나 건조기에 넣으면 여기 있는 모두가 볼 수 있는 세탁 파티나 건조 파티가 열려요. 큰 동전일수록 더 많이 쓸 수 있어요.",
+    coinLabel: (o: { amount: string; uses: number }) =>
+      `팁 ${o.amount}, ${o.uses}번 쓸 수 있는 토큰`,
+    coinUses: (o: { count: number }) => `${o.count}회`,
+    usesLeft: (o: { left: number; total: number }) =>
+      `${o.total}회 중 ${o.left}회 남음`,
+    leftNotice: (o: { left: number }) =>
+      o.left === 0
+        ? "마지막 한 번이었어요"
+        : `이 토큰은 ${o.left}번 더 쓸 수 있어요`,
     other: "다른 금액",
     otherLabel: "다른 금액",
     insert: "넣기",
@@ -741,7 +751,7 @@ export const ko = {
     pocketHeading: "내 토큰",
     dropInMachine: "기계에 넣기",
     dropInMachineHint:
-      "세탁기나 건조기에 넣으면 여기 있는 모두가 볼 수 있는 세탁 파티나 건조 파티가 열려요. 토큰은 한 번만 쓸 수 있어요.",
+      "세탁기나 건조기에 넣으면 여기 있는 모두가 볼 수 있는 세탁 파티나 건조 파티가 열려요.",
     usedOn: (o: { date: string }) => `기계에 사용함 · ${o.date}`,
     holdHint: "세탁기나 건조기를 탭하세요",
     viewCoin: (o: { number: number }) => `토큰 No. ${o.number} 보기`,
@@ -753,6 +763,9 @@ export const ko = {
     traySummary: (o: { count: number; isShining: boolean }) =>
       `병 안에 토큰 ${o.count}개${o.isShining ? " · 내 토큰은 반짝여요" : ""}`,
     trayHint: "내 토큰을 탭해서 사용해 보세요",
+    trayPitch:
+      "동전 기계에서 팁을 주면 토큰을 받아요. 세탁기나 건조기에 넣으면 모두가 볼 수 있는 세탁 파티가 열려요.",
+    trayLeaveTip: "팁 주기",
     receiptDescription: (o: { code: string; link: string }) =>
       `laundro.cafe에 팁을 남겨 줘서 고마워요(토큰 코드: ${o.code})! 토큰을 잃어버려도 어떤 기기에서든 ${o.link}에서 복원할 수 있어요.`,
     copyCode: "코드 복사",

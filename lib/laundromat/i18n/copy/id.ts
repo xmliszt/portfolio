@@ -736,8 +736,18 @@ export const id = {
       misread: "cek kodenya",
       offline: "coba lagi nanti",
     },
-    note: "terima kasih atas kasih sayangmu",
-    coinLabel: (o: { amount: string }) => `Tip ${o.amount}`,
+    note: "terima kasih!",
+    pitch:
+      "Setiap tip mencetak satu token. Masukkan ke mesin cuci atau pengering untuk pesta cuci atau pesta pengeringan yang bisa dilihat semua orang di sini. Koin lebih besar, lebih banyak pemakaian.",
+    coinLabel: (o: { amount: string; uses: number }) =>
+      `Tip ${o.amount}, token untuk ${o.uses} kali pakai`,
+    coinUses: (o: { count: number }) => `${o.count} kali pakai`,
+    usesLeft: (o: { left: number; total: number }) =>
+      `sisa ${o.left} dari ${o.total}`,
+    leftNotice: (o: { left: number }) =>
+      o.left === 0
+        ? "itu pemakaian terakhirnya"
+        : `token ini masih bisa dipakai ${o.left} kali`,
     other: "jumlah lain",
     otherLabel: "Jumlah lain",
     insert: "masukkan",
@@ -767,7 +777,7 @@ export const id = {
     pocketHeading: "tokenmu",
     dropInMachine: "masukkan ke mesin",
     dropInMachineHint:
-      "Masukkan ke mesin cuci atau pengering untuk pesta cuci atau pesta pengeringan yang bisa dilihat semua orang di sini. Tiap token hanya bisa dipakai sekali.",
+      "Masukkan ke mesin cuci atau pengering untuk pesta cuci atau pesta pengeringan yang bisa dilihat semua orang di sini.",
     usedOn: (o: { date: string }) => `dipakai di mesin · ${o.date}`,
     holdHint: "ketuk mesin cuci atau pengering",
     viewCoin: (o: { number: number }) => `Lihat token no. ${o.number}`,
@@ -779,6 +789,9 @@ export const id = {
     traySummary: (o: { count: number; isShining: boolean }) =>
       `${o.count} token di dalam toples${o.isShining ? " · punyamu berkilau" : ""}`,
     trayHint: "ketuk tokenmu untuk memakainya",
+    trayPitch:
+      "Beri tip di mesin koin untuk mendapat token. Masukkan ke mesin cuci atau pengering untuk pesta cuci yang bisa dilihat semua orang di sini.",
+    trayLeaveTip: "beri tip",
     receiptDescription: (o: { code: string; link: string }) =>
       `Terima kasih atas tipmu untuk laundro.cafe! Kode tokenmu: ${o.code}; kalau tokenmu hilang, pulihkan di perangkat mana pun lewat ${o.link}.`,
     copyCode: "Salin kode",

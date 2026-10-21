@@ -95,11 +95,11 @@ export function PocketButton() {
                           metal="brass"
                           label={String(token.number)}
                           sizePx={40}
-                          shine={token.spentAt === undefined}
-                          dim={token.spentAt !== undefined}
+                          shine={token.usesLeft > 0}
+                          dim={token.usesLeft === 0}
                         />
                       </button>
-                      {token.spentAt === undefined ? (
+                      {token.usesLeft > 0 || token.spentAt === undefined ? (
                         <button
                           type="button"
                           className={cn(

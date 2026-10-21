@@ -2,8 +2,13 @@ export type TipToken = {
   number: number;
   code: string;
   createdAt: string;
+  uses: number;
+  usesLeft: number;
   spentAt?: string;
 };
+
+export type StoredTipToken = Omit<TipToken, "uses" | "usesLeft"> &
+  Partial<Pick<TipToken, "uses" | "usesLeft">>;
 
 export type JarCoin = { number: number; createdAt: string };
 
@@ -16,7 +21,7 @@ export type CoinMachinePhase =
   | { kind: "token-in-tray" };
 
 export type SpendResult =
-  | { kind: "spent"; spentAt: string }
+  | { kind: "spent"; spentAt: string; usesLeft: number }
   | { kind: "already-spent"; spentAt: string }
   | { kind: "unknown" }
   | { kind: "unavailable" };
@@ -24,6 +29,7 @@ export type SpendResult =
 export type TokenNotice =
   | { kind: "checking" }
   | { kind: "used"; spentAt: string }
+  | { kind: "left"; usesLeft: number }
   | { kind: "unknown" }
   | { kind: "offline" };
 

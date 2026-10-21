@@ -733,8 +733,19 @@ export const ptBR = {
       misread: "confira o código",
       offline: "tente mais tarde",
     },
-    note: "obrigado pelo carinho",
-    coinLabel: (o: { amount: string }) => `Gorjeta de ${o.amount}`,
+    note: "obrigado!",
+    pitch:
+      "Cada gorjeta imprime uma ficha. Coloque-a numa lavadora ou secadora para uma lavagem em festa ou uma secagem em festa que todos aqui possam ver. Moedas maiores, mais usos.",
+    coinLabel: (o: { amount: string; uses: number }) =>
+      `Gorjeta de ${o.amount}, uma ficha de ${o.uses} ${o.uses === 1 ? "uso" : "usos"}`,
+    coinUses: (o: { count: number }) =>
+      `${o.count} ${o.count === 1 ? "uso" : "usos"}`,
+    usesLeft: (o: { left: number; total: number }) =>
+      `${o.left === 1 ? "resta" : "restam"} ${o.left} de ${o.total}`,
+    leftNotice: (o: { left: number }) =>
+      o.left === 0
+        ? "esse foi o último uso dela"
+        : `esta ficha ainda tem ${o.left} ${o.left === 1 ? "uso" : "usos"}`,
     other: "outro valor",
     otherLabel: "Outro valor",
     insert: "inserir",
@@ -765,7 +776,7 @@ export const ptBR = {
     pocketHeading: "suas fichas",
     dropInMachine: "coloque numa máquina",
     dropInMachineHint:
-      "Coloque-a numa lavadora ou secadora para uma lavagem em festa ou uma secagem em festa que todos aqui possam ver. Cada ficha vale uma vez.",
+      "Coloque-a numa lavadora ou secadora para uma lavagem em festa ou uma secagem em festa que todos aqui possam ver.",
     usedOn: (o: { date: string }) => `usada numa máquina · ${o.date}`,
     holdHint: "toque numa lavadora ou secadora",
     viewCoin: (o: { number: number }) => `Ver a ficha nº ${o.number}`,
@@ -777,6 +788,9 @@ export const ptBR = {
     traySummary: (o: { count: number; isShining: boolean }) =>
       `${o.count} ${o.count === 1 ? "ficha" : "fichas"} no pote${o.isShining ? " · as suas brilham" : ""}`,
     trayHint: "toque na sua ficha para usar",
+    trayPitch:
+      "Deixe uma gorjeta na máquina de moedas e ganhe uma ficha. Coloque-a numa lavadora ou secadora para uma lavagem em festa que todos aqui possam ver.",
+    trayLeaveTip: "deixar uma gorjeta",
     receiptDescription: (o: { code: string; link: string }) =>
       `Obrigado pela gorjeta para laundro.cafe! O código da sua ficha: ${o.code}; se perder a ficha, restaure em qualquer dispositivo pelo link ${o.link}.`,
     copyCode: "Copiar código",

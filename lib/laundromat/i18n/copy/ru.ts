@@ -708,8 +708,19 @@ export const ru = {
       misread: "проверьте код",
       offline: "попробуйте позже",
     },
-    note: "спасибо за вашу любовь",
-    coinLabel: (o: { amount: string }) => `Чаевые ${o.amount}`,
+    note: "спасибо!",
+    pitch:
+      "За каждые чаевые печатается жетон. Бросьте его в стиральную или сушильную машину для праздничной стирки или сушки, которую увидят все здесь. Чем крупнее монета, тем больше раз он сработает.",
+    coinLabel: (o: { amount: string; uses: number }) =>
+      `Чаевые ${o.amount}, жетон на ${o.uses} ${pluralize({ count: o.uses, one: "раз", few: "раза", many: "раз" })}`,
+    coinUses: (o: { count: number }) =>
+      `${o.count} ${pluralize({ count: o.count, one: "раз", few: "раза", many: "раз" })}`,
+    usesLeft: (o: { left: number; total: number }) =>
+      `осталось ${o.left} из ${o.total}`,
+    leftNotice: (o: { left: number }) =>
+      o.left === 0
+        ? "это был последний раз"
+        : `жетон сработает ещё ${o.left} ${pluralize({ count: o.left, one: "раз", few: "раза", many: "раз" })}`,
     other: "другая сумма",
     otherLabel: "Другая сумма",
     insert: "вставить",
@@ -739,7 +750,7 @@ export const ru = {
     pocketHeading: "ваши жетоны",
     dropInMachine: "бросить в машину",
     dropInMachineHint:
-      "Бросьте его в стиральную или сушильную машину для праздничной стирки или сушки, которую увидят все здесь. Каждый жетон срабатывает один раз.",
+      "Бросьте его в стиральную или сушильную машину для праздничной стирки или сушки, которую увидят все здесь.",
     usedOn: (o: { date: string }) => `использован в машине · ${o.date}`,
     holdHint: "нажмите на стиральную или сушильную машину",
     viewCoin: (o: { number: number }) => `Посмотреть жетон № ${o.number}`,
@@ -751,6 +762,9 @@ export const ru = {
     traySummary: (o: { count: number; isShining: boolean }) =>
       `${o.count} ${pluralize({ count: o.count, one: "жетон", few: "жетона", many: "жетонов" })} в банке${o.isShining ? " · ваши блестят" : ""}`,
     trayHint: "нажмите на свой жетон, чтобы использовать его",
+    trayPitch:
+      "Оставьте чаевые в монетном автомате и получите жетон. Бросьте его в стиральную или сушильную машину для праздничной стирки, которую увидят все здесь.",
+    trayLeaveTip: "оставить чаевые",
     receiptDescription: (o: { code: string; link: string }) =>
       `Спасибо за чаевые для laundro.cafe! Ваш код жетона: ${o.code}; если потеряете жетон, восстановите его на любом устройстве по ссылке ${o.link}.`,
     copyCode: "Копировать код",

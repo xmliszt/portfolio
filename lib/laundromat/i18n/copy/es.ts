@@ -737,8 +737,19 @@ export const es = {
       misread: "revisa el código",
       offline: "prueba más tarde",
     },
-    note: "gracias por tu cariño",
-    coinLabel: (o: { amount: string }) => `Propina de ${o.amount}`,
+    note: "¡gracias!",
+    pitch:
+      "Cada propina imprime una ficha. Échala en una lavadora o secadora para un lavado de fiesta o un secado de fiesta que todos aquí puedan ver. Monedas más grandes, más usos.",
+    coinLabel: (o: { amount: string; uses: number }) =>
+      `Propina de ${o.amount}, una ficha de ${o.uses} ${o.uses === 1 ? "uso" : "usos"}`,
+    coinUses: (o: { count: number }) =>
+      `${o.count} ${o.count === 1 ? "uso" : "usos"}`,
+    usesLeft: (o: { left: number; total: number }) =>
+      `${o.left === 1 ? "queda" : "quedan"} ${o.left} de ${o.total}`,
+    leftNotice: (o: { left: number }) =>
+      o.left === 0
+        ? "ese fue su último uso"
+        : `a esta ficha le ${o.left === 1 ? "queda 1 uso" : `quedan ${o.left} usos`}`,
     other: "otro importe",
     otherLabel: "Otro importe",
     insert: "insertar",
@@ -769,7 +780,7 @@ export const es = {
     pocketHeading: "tus fichas",
     dropInMachine: "échala en una máquina",
     dropInMachineHint:
-      "Échala en una lavadora o secadora para un lavado de fiesta o un secado de fiesta que todos aquí puedan ver. Cada ficha sirve una vez.",
+      "Échala en una lavadora o secadora para un lavado de fiesta o un secado de fiesta que todos aquí puedan ver.",
     usedOn: (o: { date: string }) => `usada en una máquina · ${o.date}`,
     holdHint: "toca una lavadora o secadora",
     viewCoin: (o: { number: number }) => `Mirar la ficha n.º ${o.number}`,
@@ -781,6 +792,9 @@ export const es = {
     traySummary: (o: { count: number; isShining: boolean }) =>
       `${o.count} ${o.count === 1 ? "ficha" : "fichas"} en el frasco${o.isShining ? " · las tuyas brillan" : ""}`,
     trayHint: "toca tu ficha para usarla",
+    trayPitch:
+      "Deja una propina en la máquina de monedas y llévate una ficha. Échala en una lavadora o secadora para un lavado de fiesta que todos aquí puedan ver.",
+    trayLeaveTip: "dejar una propina",
     receiptDescription: (o: { code: string; link: string }) =>
       `¡Gracias por tu propina a laundro.cafe! Tu código de ficha: ${o.code}; si pierdes tu ficha, puedes recuperarla en cualquier dispositivo en ${o.link}.`,
     copyCode: "Copiar código",

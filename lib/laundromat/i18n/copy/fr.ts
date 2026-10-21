@@ -743,8 +743,19 @@ export const fr = {
       misread: "vérifie le code",
       offline: "réessaie plus tard",
     },
-    note: "merci pour ton affection",
-    coinLabel: (o: { amount: string }) => `Pourboire de ${o.amount}`,
+    note: "merci !",
+    pitch:
+      "Chaque pourboire imprime un jeton. Glisse-le dans un lave-linge ou un sèche-linge pour un lavage en fête ou un séchage en fête que tout le monde ici peut voir. Plus la pièce est grosse, plus il sert.",
+    coinLabel: (o: { amount: string; uses: number }) =>
+      `Pourboire de ${o.amount}, un jeton de ${o.uses} ${o.uses === 1 ? "utilisation" : "utilisations"}`,
+    coinUses: (o: { count: number }) =>
+      `${o.count} ${o.count === 1 ? "utilisation" : "utilisations"}`,
+    usesLeft: (o: { left: number; total: number }) =>
+      `encore ${o.left} sur ${o.total}`,
+    leftNotice: (o: { left: number }) =>
+      o.left === 0
+        ? "c'était sa dernière utilisation"
+        : `encore ${o.left} ${o.left === 1 ? "utilisation" : "utilisations"} sur ce jeton`,
     other: "autre montant",
     otherLabel: "Autre montant",
     insert: "insérer",
@@ -775,7 +786,7 @@ export const fr = {
     pocketHeading: "tes jetons",
     dropInMachine: "mets-le dans une machine",
     dropInMachineHint:
-      "Glisse-le dans un lave-linge ou un sèche-linge pour un lavage en fête ou un séchage en fête que tout le monde ici peut voir. Chaque jeton ne sert qu'une fois.",
+      "Glisse-le dans un lave-linge ou un sèche-linge pour un lavage en fête ou un séchage en fête que tout le monde ici peut voir.",
     usedOn: (o: { date: string }) => `utilisé dans une machine · ${o.date}`,
     holdHint: "touche un lave-linge ou un sèche-linge",
     viewCoin: (o: { number: number }) => `Regarder le jeton n° ${o.number}`,
@@ -787,6 +798,9 @@ export const fr = {
     traySummary: (o: { count: number; isShining: boolean }) =>
       `${o.count} ${o.count === 1 ? "jeton" : "jetons"} dans le bocal${o.isShining ? " · les tiens brillent" : ""}`,
     trayHint: "touche ton jeton pour l'utiliser",
+    trayPitch:
+      "Laisse un pourboire à la machine à pièces pour un jeton. Glisse-le dans un lave-linge ou un sèche-linge pour un lavage en fête que tout le monde ici peut voir.",
+    trayLeaveTip: "laisser un pourboire",
     receiptDescription: (o: { code: string; link: string }) =>
       `Merci pour ton pourboire à laundro.cafe ! Le code de ton jeton : ${o.code} ; si tu perds ton jeton, récupère-le sur tout appareil via ${o.link}.`,
     copyCode: "Copier le code",

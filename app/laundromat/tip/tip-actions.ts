@@ -39,14 +39,17 @@ export type StartTipResult =
   | { kind: "unavailable" };
 
 export type TipStatus =
-  | { kind: "paid"; coin: JarCoin }
+  | { kind: "paid"; coin: JarCoin; uses: number }
   | { kind: "pending" }
   | { kind: "expired" }
   | { kind: "failed" }
   | { kind: "unavailable" };
 
 export type RestoreResult =
-  | { kind: "restored"; coin: JarCoin & { spentAt?: string } }
+  | {
+      kind: "restored";
+      coin: JarCoin & { uses: number; usesLeft: number; spentAt?: string };
+    }
   | { kind: "unknown" }
   | { kind: "unavailable" };
 
@@ -119,7 +122,7 @@ export async function startTip(options: {
   };
 }
 
-/** Return whether the tip in Checkout Session `sessionId` is paid, recording its coin in the jar the first time it is, still pending, failed, expired (also when Stripe has no such session), or `unavailable` when Stripe or the database is not configured. */
+/** Return whether the tip in Checkout Session `sessionId` is paid, with its coin and its token's uses, recording the coin in the jar the first time it is, still pending, failed, expired (also when Stripe has no such session), or `unavailable` when Stripe or the database is not configured. */
 export async function getTipStatus(options: {
   sessionId: string;
 }): Promise<TipStatus> {
@@ -145,7 +148,7 @@ export async function getTipStatus(options: {
   }
   const fulfilled = await fulfillCheckoutSession({ client, session });
   if (fulfilled?.kind === "recorded") {
-    return { kind: "paid", coin: fulfilled.coin };
+    return { kind: "paid", coin: fulfilled.coin, uses: fulfilled.uses };
   }
   if (fulfilled?.kind === "duplicate-hash") return { kind: "failed" };
   const paymentIntent = session.payment_intent;
@@ -157,7 +160,7 @@ export async function getTipStatus(options: {
   return isFailed ? { kind: "failed" } : { kind: "pending" };
 }
 
-/** Return the coin of the tip whose token code is `code`, read leniently as typed by hand, or `unknown` when no tip has it. */
+/** Return the coin of the tip whose token code is `code`, read leniently as typed by hand, with its token's uses, how many are left and when it was last spent, or `unknown` when no tip has it. */
 export async function restoreToken(options: {
   code: string;
 }): Promise<RestoreResult> {
@@ -172,7 +175,7 @@ export async function restoreToken(options: {
   return coin === undefined ? { kind: "unknown" } : { kind: "restored", coin };
 }
 
-/** Spend the token whose code is `code`, read leniently, so it cannot be used again on any device; a repeat of the same `attempt` counts as the same spend, `already-spent` when another attempt spent it, `unknown` when no tip has it. */
+/** Spend one use of the token whose code is `code`, read leniently, on every device, returning the uses it has left; a repeat of the same `attempt` counts as the same spend, `already-spent` when it has no uses left, `unknown` when no tip has it. */
 export async function spendToken(options: {
   code: string;
   attempt: string;

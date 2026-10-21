@@ -17,6 +17,7 @@ import { CopyCodeButton } from "./copy-code-button";
 import { TIP_HEADING_CLASS } from "./tip-classes";
 import { TipCoin } from "./tip-coin";
 import { TipCoinViewer } from "./tip-coin-viewer";
+import { TokenUses } from "./token-uses";
 import { useTip } from "./use-tip";
 
 type TipCoinCloseUpProps = {
@@ -26,7 +27,7 @@ type TipCoinCloseUpProps = {
   onClose: () => void;
 };
 
-/** Show `token`'s coin up close under a heading with its number, a back key that calls `onBack`, a close key that calls `onClose`, the token code with a key that copies it, and below them a key that picks the token up to drop in a machine, or when it was used if it is spent. */
+/** Show `token`'s coin up close under a heading with its number, a back key that calls `onBack`, a close key that calls `onClose`, the token code with a key that copies it, and below them how many of its uses are left and a key that picks the token up to drop in a machine, or when it was last used once none are left. */
 export function TipCoinCloseUp(props: TipCoinCloseUpProps) {
   const { copy } = useLaundromatCopy();
   const tip = useTip();
@@ -65,7 +66,13 @@ export function TipCoinCloseUp(props: TipCoinCloseUpProps) {
           />
         </div>
       </div>
-      {props.token.spentAt === undefined ? (
+      <TokenUses
+        uses={props.token.uses}
+        usesLeft={props.token.usesLeft}
+        tone="panel"
+        className={cn(SETTINGS_META_CLASS, "text-[var(--lm-ink-hi)]")}
+      />
+      {props.token.usesLeft > 0 || props.token.spentAt === undefined ? (
         <button
           type="button"
           className={cn(

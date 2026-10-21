@@ -1,7 +1,11 @@
-import type { TipToken } from "./tip-token";
+import type { StoredTipToken } from "./tip-token";
 
-/** `true` if `value` has a numeric `number`, string `code` and `createdAt`, and a string `spentAt` when it has one; `false` otherwise. */
-export function isTipToken(value: unknown): value is TipToken {
+function isOptional(options: { value: unknown; type: "string" | "number" }) {
+  return options.value === undefined || typeof options.value === options.type;
+}
+
+/** `true` if `value` has a numeric `number`, string `code` and `createdAt`, a string `spentAt` and numeric `uses` and `usesLeft` when it has them; `false` otherwise. */
+export function isTipToken(value: unknown): value is StoredTipToken {
   return (
     typeof value === "object" &&
     value !== null &&
@@ -11,8 +15,17 @@ export function isTipToken(value: unknown): value is TipToken {
     typeof value.code === "string" &&
     "createdAt" in value &&
     typeof value.createdAt === "string" &&
-    (!("spentAt" in value) ||
-      value.spentAt === undefined ||
-      typeof value.spentAt === "string")
+    isOptional({
+      value: "spentAt" in value ? value.spentAt : undefined,
+      type: "string",
+    }) &&
+    isOptional({
+      value: "uses" in value ? value.uses : undefined,
+      type: "number",
+    }) &&
+    isOptional({
+      value: "usesLeft" in value ? value.usesLeft : undefined,
+      type: "number",
+    })
   );
 }

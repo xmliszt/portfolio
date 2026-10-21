@@ -1830,7 +1830,15 @@ export function LaundromatScene(props: LaundromatSceneProps) {
         </AnimatePresence>
       )}
       {tip !== undefined && (
-        <TipJarTray tip={tip} open={isJarTrayOpen} onClose={closeJarTray} />
+        <TipJarTray
+          tip={tip}
+          open={isJarTrayOpen}
+          onClose={closeJarTray}
+          onLeaveTip={() => {
+            closeJarTray();
+            setFocus("coin");
+          }}
+        />
       )}
       {tip !== undefined && (
         <TokenHint

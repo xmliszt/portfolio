@@ -4,6 +4,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 import { useLaundromatCopy } from "@/app/laundromat/i18n/use-laundromat-copy";
 import { useSoundBoard } from "@/app/laundromat/sound/use-sound-board";
+import { applySpend } from "@/lib/laundromat/tip/apply-spend";
 import { createTokenCode } from "@/lib/laundromat/tip/create-token-code";
 import { getDropOutcome } from "@/lib/laundromat/tip/get-drop-outcome";
 import { GOLDEN_CHARGE_MS } from "@/lib/laundromat/tip/golden-charge-ms";
@@ -23,6 +24,7 @@ import type {
   TipToken,
   TokenNotice,
 } from "@/lib/laundromat/tip/tip-token";
+import { toTipToken } from "@/lib/laundromat/tip/to-tip-token";
 import { wait } from "@/lib/laundromat/wait";
 
 import { PENDING_TIPS_STORAGE_KEY } from "./pending-tips-storage-key";
@@ -128,7 +130,9 @@ function readPendingTips() {
 }
 
 function readStoredTokens() {
-  return readStoredList({ key: TOKENS_STORAGE_KEY, isItem: isTipToken });
+  return readStoredList({ key: TOKENS_STORAGE_KEY, isItem: isTipToken }).map(
+    toTipToken
+  );
 }
 
 function forgetPendingTip(sessionId: string) {
@@ -362,7 +366,12 @@ export function TipProvider(props: TipProviderProps) {
               if (settledElsewhere !== undefined) keepToken(settledElsewhere);
               return settledElsewhere;
             }
-            const token = { ...status.coin, code: pending.code };
+            const token = {
+              ...status.coin,
+              code: pending.code,
+              uses: status.uses,
+              usesLeft: status.uses,
+            };
             storeToken(token);
             forgetPendingTip(sessionId);
             await dispenseToken(token);
@@ -458,8 +467,18 @@ export function TipProvider(props: TipProviderProps) {
         }).catch(() => ({ kind: "unavailable" }) as const);
         const outcome = getDropOutcome(result);
         const held = readStoredTokens().find(({ code }) => code === drop.code);
-        if (held !== undefined && outcome.spentAt !== undefined) {
-          keepToken({ ...held, spentAt: outcome.spentAt });
+        if (
+          held !== undefined &&
+          outcome.spentAt !== undefined &&
+          outcome.usesLeft !== undefined
+        ) {
+          keepToken(
+            applySpend({
+              token: held,
+              spentAt: outcome.spentAt,
+              usesLeft: outcome.usesLeft,
+            })
+          );
         }
         if (!outcome.retry) forgetPendingDrop(drop.code);
         if (outcome.charge) chargeMachine(drop);

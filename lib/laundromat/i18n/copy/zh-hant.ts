@@ -683,8 +683,16 @@ export const zhHant = {
       misread: "請核對代幣碼",
       offline: "請稍後再試",
     },
-    note: "謝謝你的喜愛",
-    coinLabel: (o: { amount: string }) => `小費 ${o.amount}`,
+    note: "謝謝你！",
+    pitch:
+      "每次打賞都會印出一枚代幣。把它投進洗衣機或烘衣機，來場洗衣派對或烘衣派對，這裡的每個人都能看見。硬幣越大，能用的次數越多。",
+    coinLabel: (o: { amount: string; uses: number }) =>
+      `小費 ${o.amount}，可用 ${o.uses} 次的代幣`,
+    coinUses: (o: { count: number }) => `可用 ${o.count} 次`,
+    usesLeft: (o: { left: number; total: number }) =>
+      `剩 ${o.left}/${o.total} 次`,
+    leftNotice: (o: { left: number }) =>
+      o.left === 0 ? "這是它的最後一次" : `這枚代幣還能用 ${o.left} 次`,
     other: "其他金額",
     otherLabel: "其他金額",
     insert: "投入",
@@ -714,7 +722,7 @@ export const zhHant = {
     pocketHeading: "你的代幣",
     dropInMachine: "投進一台機器",
     dropInMachineHint:
-      "把它投進洗衣機或烘衣機，來場洗衣派對或烘衣派對，這裡的每個人都能看見。每枚代幣只能用一次。",
+      "把它投進洗衣機或烘衣機，來場洗衣派對或烘衣派對，這裡的每個人都能看見。",
     usedOn: (o: { date: string }) => `已在機器中使用 · ${o.date}`,
     holdHint: "點一台洗衣機或烘衣機",
     viewCoin: (o: { number: number }) => `查看代幣 No. ${o.number}`,
@@ -726,6 +734,9 @@ export const zhHant = {
     traySummary: (o: { count: number; isShining: boolean }) =>
       `罐裡有 ${o.count} 枚代幣${o.isShining ? " · 你的在發光" : ""}`,
     trayHint: "點一下你的代幣，就能使用",
+    trayPitch:
+      "在投幣機打賞就能拿到一枚代幣。把它投進洗衣機或烘衣機，來場大家都看得見的洗衣派對。",
+    trayLeaveTip: "去打賞",
     receiptDescription: (o: { code: string; link: string }) =>
       `謝謝你給 laundro.cafe 的小費！你的代幣碼是 ${o.code}，如果代幣遺失，可以在任何裝置上透過 ${o.link} 還原。`,
     copyCode: "複製代幣碼",

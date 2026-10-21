@@ -165,6 +165,7 @@ export type Database = {
           spent_attempt: string | null;
           spent_machine_id: string | null;
           token_hash: string;
+          uses: number;
         };
         Insert: {
           amount_cents: number;
@@ -177,6 +178,7 @@ export type Database = {
           spent_attempt?: string | null;
           spent_machine_id?: string | null;
           token_hash: string;
+          uses?: number;
         };
         Update: {
           amount_cents?: number;
@@ -189,8 +191,38 @@ export type Database = {
           spent_attempt?: string | null;
           spent_machine_id?: string | null;
           token_hash?: string;
+          uses?: number;
         };
         Relationships: [];
+      };
+      tip_spends: {
+        Row: {
+          attempt: string;
+          machine_id: string | null;
+          spent_at: string;
+          tip_number: number;
+        };
+        Insert: {
+          attempt: string;
+          machine_id?: string | null;
+          spent_at?: string;
+          tip_number: number;
+        };
+        Update: {
+          attempt?: string;
+          machine_id?: string | null;
+          spent_at?: string;
+          tip_number?: number;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "tip_spends_tip_number_fkey";
+            columns: ["tip_number"];
+            isOneToOne: false;
+            referencedRelation: "tips";
+            referencedColumns: ["number"];
+          },
+        ];
       };
     };
     Views: {
@@ -260,6 +292,7 @@ export type Database = {
         Returns: {
           outcome: string;
           spent_at: string | null;
+          uses_left: number | null;
         }[];
       };
       fulfill_tip: {
@@ -268,6 +301,7 @@ export type Database = {
           p_email?: string;
           p_session_id: string;
           p_token_hash: string;
+          p_uses?: number;
         };
         Returns: {
           amount_cents: number;
@@ -280,6 +314,7 @@ export type Database = {
           spent_attempt: string | null;
           spent_machine_id: string | null;
           token_hash: string;
+          uses: number;
         };
         SetofOptions: {
           from: "*";
