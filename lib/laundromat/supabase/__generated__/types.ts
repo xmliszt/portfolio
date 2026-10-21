@@ -161,9 +161,6 @@ export type Database = {
           email: string | null;
           number: number;
           session_id: string;
-          spent_at: string | null;
-          spent_attempt: string | null;
-          spent_machine_id: string | null;
           token_hash: string;
           uses: number;
         };
@@ -174,9 +171,6 @@ export type Database = {
           email?: string | null;
           number: number;
           session_id: string;
-          spent_at?: string | null;
-          spent_attempt?: string | null;
-          spent_machine_id?: string | null;
           token_hash: string;
           uses?: number;
         };
@@ -187,9 +181,6 @@ export type Database = {
           email?: string | null;
           number?: number;
           session_id?: string;
-          spent_at?: string | null;
-          spent_attempt?: string | null;
-          spent_machine_id?: string | null;
           token_hash?: string;
           uses?: number;
         };
@@ -310,9 +301,6 @@ export type Database = {
           email: string | null;
           number: number;
           session_id: string;
-          spent_at: string | null;
-          spent_attempt: string | null;
-          spent_machine_id: string | null;
           token_hash: string;
           uses: number;
         };
