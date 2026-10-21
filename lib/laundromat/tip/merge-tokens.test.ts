@@ -3,8 +3,15 @@ import { test } from "node:test";
 
 import { mergeTokens } from "./merge-tokens";
 
-const token = (options: { number: number; code: string; createdAt: string }) =>
-  options;
+const token = (options: {
+  number: number;
+  code: string;
+  createdAt: string;
+}) => ({
+  ...options,
+  uses: 1,
+  usesLeft: 1,
+});
 
 test("keeps each code once, newest coin first, the later list winning", () => {
   const merged = mergeTokens([

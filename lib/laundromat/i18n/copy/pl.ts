@@ -705,8 +705,19 @@ export const pl = {
       misread: "sprawdź kod",
       offline: "spróbuj później",
     },
-    note: "dziękuję za twoją sympatię",
-    coinLabel: (o: { amount: string }) => `Napiwek ${o.amount}`,
+    note: "dziękuję!",
+    pitch:
+      "Każdy napiwek drukuje żeton. Wrzuć go do pralki lub suszarki na imprezowe pranie lub imprezowe suszenie, które wszyscy tutaj zobaczą. Większa moneta, więcej użyć.",
+    coinLabel: (o: { amount: string; uses: number }) =>
+      `Napiwek ${o.amount}, żeton na ${o.uses} ${pluralize({ count: o.uses, one: "użycie", few: "użycia", many: "użyć" })}`,
+    coinUses: (o: { count: number }) =>
+      `${o.count} ${pluralize({ count: o.count, one: "użycie", few: "użycia", many: "użyć" })}`,
+    usesLeft: (o: { left: number; total: number }) =>
+      `zostało ${o.left} z ${o.total}`,
+    leftNotice: (o: { left: number }) =>
+      o.left === 0
+        ? "to było jego ostatnie użycie"
+        : `temu żetonowi zostało ${o.left} ${pluralize({ count: o.left, one: "użycie", few: "użycia", many: "użyć" })}`,
     other: "inna kwota",
     otherLabel: "Inna kwota",
     insert: "wrzuć",
@@ -736,7 +747,7 @@ export const pl = {
     pocketHeading: "twoje żetony",
     dropInMachine: "wrzuć go do maszyny",
     dropInMachineHint:
-      "Wrzuć go do pralki lub suszarki na imprezowe pranie lub imprezowe suszenie, które wszyscy tutaj zobaczą. Każdy żeton działa raz.",
+      "Wrzuć go do pralki lub suszarki na imprezowe pranie lub imprezowe suszenie, które wszyscy tutaj zobaczą.",
     usedOn: (o: { date: string }) => `użyty w maszynie · ${o.date}`,
     holdHint: "dotknij pralki lub suszarki",
     viewCoin: (o: { number: number }) => `Obejrzyj żeton nr ${o.number}`,
@@ -748,6 +759,9 @@ export const pl = {
     traySummary: (o: { count: number; isShining: boolean }) =>
       `${o.count} ${pluralize({ count: o.count, one: "żeton", few: "żetony", many: "żetonów" })} w słoiku${o.isShining ? " · twoje lśnią" : ""}`,
     trayHint: "dotknij swojego żetonu, żeby go użyć",
+    trayPitch:
+      "Zostaw napiwek przy automacie na monety, a dostaniesz żeton. Wrzuć go do pralki lub suszarki na imprezowe pranie, które wszyscy tutaj zobaczą.",
+    trayLeaveTip: "zostaw napiwek",
     receiptDescription: (o: { code: string; link: string }) =>
       `Dziękuję za napiwek dla laundro.cafe! Twój kod żetonu: ${o.code}; jeśli zgubisz żeton, możesz go przywrócić na dowolnym urządzeniu przez ${o.link}.`,
     copyCode: "Kopiuj kod",

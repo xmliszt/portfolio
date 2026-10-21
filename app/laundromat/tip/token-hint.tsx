@@ -22,7 +22,7 @@ type TokenHintProps = {
   onCancel: () => void;
 };
 
-/** Show, while `held` or while there is a `notice`, a note at the bottom of the room: that the token is in hand and a washer or dryer will take it, or what happened to the drop, with a key that calls `onCancel`. */
+/** Show, while `held` or while there is a `notice`, a note at the bottom of the room: that the token is in hand and a washer or dryer will take it, or what happened to the drop and how many uses the token has left, with a key that calls `onCancel`. */
 export function TokenHint(props: TokenHintProps) {
   const { copy } = useLaundromatCopy();
   const text = (() => {
@@ -38,6 +38,8 @@ export function TokenHint(props: TokenHintProps) {
             locale: copy.locale,
           }),
         });
+      case "left":
+        return copy.tip.leftNotice({ left: props.notice.usesLeft });
       case "unknown":
         return copy.tip.screen.notFound;
       case "offline":

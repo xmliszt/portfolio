@@ -18,6 +18,7 @@ import { cn } from "@/lib/utils";
 
 import { COPIED_MS } from "./copied-ms";
 import { CopyCodeButton } from "./copy-code-button";
+import { TokenUses } from "./token-uses";
 
 const PRINT = { durationS: 1.1, feedSteps: 9, startPx: -12, fadeS: 0.2 };
 const KEYS_FADE_S = 0.25;
@@ -34,7 +35,7 @@ function feedEase(progress: number) {
   return Math.ceil(progress * PRINT.feedSteps) / PRINT.feedSteps;
 }
 
-/** Print a tip token as a paper laundry ticket: its number and date, its code, and a handwritten thank-you, with keys to copy a restore link or save the ticket as a file and, when `hint`, why to keep the code; while `printing` the paper feeds out of a slot line by line. */
+/** Print a tip token as a paper laundry ticket: its number and date, its code, how many of its uses are left, and a handwritten thank-you, with keys to copy a restore link or save the ticket as a file and, when `hint`, why to keep the code; while `printing` the paper feeds out of a slot line by line. */
 export function TipReceipt(props: TipReceiptProps) {
   const { copy } = useLaundromatCopy();
   const { token } = props;
@@ -69,6 +70,7 @@ export function TipReceipt(props: TipReceiptProps) {
     const text = [
       `${copy.site.name} ${copy.tip.receiptKind} ${numberLabel}`,
       date,
+      copy.tip.usesLeft({ left: token.usesLeft, total: token.uses }),
       "",
       token.code,
       "",
@@ -134,6 +136,12 @@ export function TipReceipt(props: TipReceiptProps) {
                 />
               </span>
             </span>
+            <span className={DASHED_RULE} />
+            <TokenUses
+              uses={token.uses}
+              usesLeft={token.usesLeft}
+              tone="paper"
+            />
             <span className={DASHED_RULE} />
             <span
               className="text-[21px] leading-6 text-[#28406b] normal-case"

@@ -715,8 +715,18 @@ export const vi = {
       misread: "kiểm tra lại mã",
       offline: "thử lại sau nhé",
     },
-    note: "cảm ơn tình cảm của bạn",
-    coinLabel: (o: { amount: string }) => `Tip ${o.amount}`,
+    note: "cảm ơn bạn!",
+    pitch:
+      "Mỗi lần tip in ra một token. Thả nó vào máy giặt hoặc máy sấy để mở tiệc giặt hoặc tiệc sấy cho mọi người ở đây cùng xem. Đồng xu càng lớn, dùng càng nhiều lần.",
+    coinLabel: (o: { amount: string; uses: number }) =>
+      `Tip ${o.amount}, token dùng được ${o.uses} lần`,
+    coinUses: (o: { count: number }) => `${o.count} lần`,
+    usesLeft: (o: { left: number; total: number }) =>
+      `còn ${o.left}/${o.total} lần`,
+    leftNotice: (o: { left: number }) =>
+      o.left === 0
+        ? "đó là lần dùng cuối của nó"
+        : `token này còn dùng được ${o.left} lần`,
     other: "số tiền khác",
     otherLabel: "Số tiền khác",
     insert: "bỏ vào",
@@ -746,7 +756,7 @@ export const vi = {
     pocketHeading: "token của bạn",
     dropInMachine: "thả vào một máy",
     dropInMachineHint:
-      "Thả nó vào máy giặt hoặc máy sấy để mở tiệc giặt hoặc tiệc sấy cho mọi người ở đây cùng xem. Mỗi token chỉ dùng được một lần.",
+      "Thả nó vào máy giặt hoặc máy sấy để mở tiệc giặt hoặc tiệc sấy cho mọi người ở đây cùng xem.",
     usedOn: (o: { date: string }) => `đã dùng trong máy · ${o.date}`,
     holdHint: "chạm vào máy giặt hoặc máy sấy",
     viewCoin: (o: { number: number }) => `Xem token số ${o.number}`,
@@ -758,6 +768,9 @@ export const vi = {
     traySummary: (o: { count: number; isShining: boolean }) =>
       `${o.count} token trong hũ${o.isShining ? " · token của bạn lấp lánh" : ""}`,
     trayHint: "chạm vào token của bạn để dùng",
+    trayPitch:
+      "Để lại tip ở máy xu để nhận một token. Thả nó vào máy giặt hoặc máy sấy để mở tiệc giặt cho mọi người ở đây cùng xem.",
+    trayLeaveTip: "để lại tip",
     receiptDescription: (o: { code: string; link: string }) =>
       `Cảm ơn bạn đã gửi tiền tip cho laundro.cafe! Mã token của bạn: ${o.code}; nếu mất token, bạn có thể khôi phục trên bất kỳ thiết bị nào qua ${o.link}.`,
     copyCode: "Sao chép mã",

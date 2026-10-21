@@ -714,8 +714,18 @@ export const ja = {
       misread: "コードを確認してください",
       offline: "あとでもう一度",
     },
-    note: "あたたかい気持ちをありがとう",
-    coinLabel: (o: { amount: string }) => `チップ ${o.amount}`,
+    note: "ありがとう！",
+    pitch:
+      "チップごとにトークンが1枚印刷されます。洗濯機か乾燥機に入れると、洗濯パーティーか乾燥パーティーに。ここにいるみんなに見えます。大きなコインほど多く使えます。",
+    coinLabel: (o: { amount: string; uses: number }) =>
+      `チップ ${o.amount}、${o.uses}回使えるトークン`,
+    coinUses: (o: { count: number }) => `${o.count}回`,
+    usesLeft: (o: { left: number; total: number }) =>
+      `残り ${o.left}/${o.total}回`,
+    leftNotice: (o: { left: number }) =>
+      o.left === 0
+        ? "これが最後の1回でした"
+        : `このトークンはあと${o.left}回使えます`,
     other: "ほかの金額",
     otherLabel: "ほかの金額",
     insert: "入れる",
@@ -746,7 +756,7 @@ export const ja = {
     pocketHeading: "あなたのトークン",
     dropInMachine: "マシンに入れる",
     dropInMachineHint:
-      "洗濯機か乾燥機に入れると、洗濯パーティーか乾燥パーティーに。ここにいるみんなに見えます。トークンは1枚につき1回使えます。",
+      "洗濯機か乾燥機に入れると、洗濯パーティーか乾燥パーティーに。ここにいるみんなに見えます。",
     usedOn: (o: { date: string }) => `マシンで使用済み · ${o.date}`,
     holdHint: "洗濯機か乾燥機をタップ",
     viewCoin: (o: { number: number }) => `トークン No. ${o.number} を見る`,
@@ -758,6 +768,9 @@ export const ja = {
     traySummary: (o: { count: number; isShining: boolean }) =>
       `瓶の中にトークン ${o.count} 枚${o.isShining ? " · あなたのトークンは光ってる" : ""}`,
     trayHint: "あなたのトークンをタップして使ってね",
+    trayPitch:
+      "コインマシンでチップを渡すとトークンがもらえます。洗濯機か乾燥機に入れると、みんなに見える洗濯パーティーに。",
+    trayLeaveTip: "チップを渡す",
     receiptDescription: (o: { code: string; link: string }) =>
       `laundro.cafeへのチップ、ありがとう（トークンコード：${o.code}）。トークンをなくしても、${o.link}からどのデバイスでも復元できます。`,
     copyCode: "コードをコピー",

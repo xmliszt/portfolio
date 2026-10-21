@@ -733,8 +733,19 @@ export const en = {
       misread: "check the code",
       offline: "try again later",
     },
-    note: "thank you for your love",
-    coinLabel: (o: { amount: string }) => `Tip ${o.amount}`,
+    note: "thank you!",
+    pitch:
+      "Every tip prints a token. Drop it in a washer or dryer for a party wash or party dry everyone here can see. Bigger coins give more uses.",
+    coinLabel: (o: { amount: string; uses: number }) =>
+      `Tip ${o.amount}, a token with ${o.uses} ${o.uses === 1 ? "use" : "uses"}`,
+    coinUses: (o: { count: number }) =>
+      `${o.count} ${o.count === 1 ? "use" : "uses"}`,
+    usesLeft: (o: { left: number; total: number }) =>
+      `${o.left} of ${o.total} ${o.total === 1 ? "use" : "uses"} left`,
+    leftNotice: (o: { left: number }) =>
+      o.left === 0
+        ? "that was its last use"
+        : `${o.left} ${o.left === 1 ? "use" : "uses"} left on this token`,
     other: "other amount",
     otherLabel: "Other amount",
     insert: "insert",
@@ -764,7 +775,7 @@ export const en = {
     pocketHeading: "your tokens",
     dropInMachine: "drop it in a machine",
     dropInMachineHint:
-      "Drop it in a washer or dryer for a party wash or party dry everyone here can see. Each token works once.",
+      "Drop it in a washer or dryer for a party wash or party dry everyone here can see.",
     usedOn: (o: { date: string }) => `used in a machine · ${o.date}`,
     holdHint: "tap a washer or dryer",
     viewCoin: (o: { number: number }) => `Look at token no. ${o.number}`,
@@ -776,6 +787,9 @@ export const en = {
     traySummary: (o: { count: number; isShining: boolean }) =>
       `${o.count} ${o.count === 1 ? "token" : "tokens"} in the jar${o.isShining ? " · yours shine" : ""}`,
     trayHint: "tap your token to use it",
+    trayPitch:
+      "Leave a tip at the coin machine for a token. Drop it in a washer or dryer for a party wash everyone here can see.",
+    trayLeaveTip: "leave a tip",
     receiptDescription: (o: { code: string; link: string }) =>
       `Thank you for your tip to laundro.cafe! Your token code: ${o.code}; if you lose your token, restore it on any device at ${o.link}.`,
     copyCode: "Copy code",

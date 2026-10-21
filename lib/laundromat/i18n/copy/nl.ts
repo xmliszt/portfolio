@@ -696,8 +696,18 @@ export const nl = {
       misread: "controleer de code",
       offline: "probeer het later",
     },
-    note: "bedankt voor je liefde",
-    coinLabel: (o: { amount: string }) => `Fooi van ${o.amount}`,
+    note: "dank je!",
+    pitch:
+      "Elke fooi drukt een penning. Gooi hem in een wasmachine of droger voor een wasfeestje of droogfeestje dat iedereen hier kan zien. Grotere munten, vaker te gebruiken.",
+    coinLabel: (o: { amount: string; uses: number }) =>
+      `Fooi van ${o.amount}, een penning voor ${o.uses} keer`,
+    coinUses: (o: { count: number }) => `${o.count} keer`,
+    usesLeft: (o: { left: number; total: number }) =>
+      `nog ${o.left} van ${o.total}`,
+    leftNotice: (o: { left: number }) =>
+      o.left === 0
+        ? "dat was de laatste keer"
+        : `deze penning werkt nog ${o.left} keer`,
     other: "ander bedrag",
     otherLabel: "Ander bedrag",
     insert: "inwerpen",
@@ -728,7 +738,7 @@ export const nl = {
     pocketHeading: "je penningen",
     dropInMachine: "gooi hem in een machine",
     dropInMachineHint:
-      "Gooi hem in een wasmachine of droger voor een wasfeestje of droogfeestje dat iedereen hier kan zien. Elke penning werkt één keer.",
+      "Gooi hem in een wasmachine of droger voor een wasfeestje of droogfeestje dat iedereen hier kan zien.",
     usedOn: (o: { date: string }) => `gebruikt in een machine · ${o.date}`,
     holdHint: "tik op een wasmachine of droger",
     viewCoin: (o: { number: number }) => `Bekijk penning nr. ${o.number}`,
@@ -740,6 +750,9 @@ export const nl = {
     traySummary: (o: { count: number; isShining: boolean }) =>
       `${o.count} ${o.count === 1 ? "penning" : "penningen"} in de pot${o.isShining ? " · die van jou glanzen" : ""}`,
     trayHint: "tik op je penning om hem te gebruiken",
+    trayPitch:
+      "Geef een fooi bij de muntautomaat voor een penning. Gooi hem in een wasmachine of droger voor een wasfeestje dat iedereen hier kan zien.",
+    trayLeaveTip: "fooi geven",
     receiptDescription: (o: { code: string; link: string }) =>
       `Bedankt voor je fooi aan laundro.cafe! Je penningcode: ${o.code}; als je je penning kwijtraakt, kun je die op elk apparaat herstellen via ${o.link}.`,
     copyCode: "Kopieer code",

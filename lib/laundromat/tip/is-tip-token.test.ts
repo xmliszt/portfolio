@@ -25,3 +25,10 @@ test("accepts a spent token and rejects a mistyped spend time", () => {
   assert.equal(isTipToken({ ...token, spentAt: "2026-10-20" }), true);
   assert.equal(isTipToken({ ...token, spentAt: 1 }), false);
 });
+
+test("accepts a token's uses and rejects mistyped ones", () => {
+  const token = { number: 37, code: "x", createdAt: "y" };
+  assert.equal(isTipToken({ ...token, uses: 6, usesLeft: 4 }), true);
+  assert.equal(isTipToken({ ...token, uses: "6" }), false);
+  assert.equal(isTipToken({ ...token, usesLeft: null }), false);
+});

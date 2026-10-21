@@ -11,19 +11,17 @@ export async function listGoldenSpends(options: {
   since: Date;
 }) {
   const { data, error } = await options.client
-    .from("tips")
-    .select("spent_attempt, spent_machine_id, spent_at")
-    .in("spent_attempt", options.attempts)
+    .from("tip_spends")
+    .select("attempt, machine_id, spent_at")
+    .in("attempt", options.attempts)
     .gte("spent_at", options.since.toISOString());
   if (error) throw error;
   return data.flatMap((row) =>
-    row.spent_attempt !== null &&
-    row.spent_machine_id !== null &&
-    row.spent_at !== null
+    row.machine_id !== null
       ? [
           {
-            attempt: row.spent_attempt,
-            machineId: row.spent_machine_id,
+            attempt: row.attempt,
+            machineId: row.machine_id,
             spentAt: row.spent_at,
           },
         ]

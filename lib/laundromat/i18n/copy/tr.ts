@@ -681,8 +681,18 @@ export const tr = {
       misread: "kodu kontrol et",
       offline: "sonra tekrar dene",
     },
-    note: "sevgin için teşekkürler",
-    coinLabel: (o: { amount: string }) => `${o.amount} bahşiş`,
+    note: "teşekkürler!",
+    pitch:
+      "Her bahşiş bir jeton basar. Onu bir çamaşır ya da kurutma makinesine at, herkesin görebileceği bir yıkama şenliği ya da kurutma şenliği olsun. Büyük bozuk para, daha çok kullanım.",
+    coinLabel: (o: { amount: string; uses: number }) =>
+      `${o.amount} bahşiş, ${o.uses} kullanımlık jeton`,
+    coinUses: (o: { count: number }) => `${o.count} kullanım`,
+    usesLeft: (o: { left: number; total: number }) =>
+      `${o.total} kullanımdan ${o.left} kaldı`,
+    leftNotice: (o: { left: number }) =>
+      o.left === 0
+        ? "bu son kullanımıydı"
+        : `bu jetonun ${o.left} kullanımı kaldı`,
     other: "başka tutar",
     otherLabel: "Başka tutar",
     insert: "at",
@@ -712,7 +722,7 @@ export const tr = {
     pocketHeading: "jetonların",
     dropInMachine: "bir makineye at",
     dropInMachineHint:
-      "Onu bir çamaşır ya da kurutma makinesine at, herkesin görebileceği bir yıkama şenliği ya da kurutma şenliği olsun. Her jeton bir kez çalışır.",
+      "Onu bir çamaşır ya da kurutma makinesine at, herkesin görebileceği bir yıkama şenliği ya da kurutma şenliği olsun.",
     usedOn: (o: { date: string }) => `makinede kullanıldı · ${o.date}`,
     holdHint: "bir çamaşır ya da kurutma makinesine dokun",
     viewCoin: (o: { number: number }) => `${o.number} numaralı jetona bak`,
@@ -724,6 +734,9 @@ export const tr = {
     traySummary: (o: { count: number; isShining: boolean }) =>
       `kavanozda ${o.count} jeton${o.isShining ? " · seninkiler parlıyor" : ""}`,
     trayHint: "kullanmak için kendi jetonuna dokun",
+    trayPitch:
+      "Bozuk para makinesinde bahşiş bırak, bir jeton al. Onu bir çamaşır ya da kurutma makinesine at, herkesin görebileceği bir yıkama şenliği olsun.",
+    trayLeaveTip: "bahşiş bırak",
     receiptDescription: (o: { code: string; link: string }) =>
       `laundro.cafe için bıraktığın bahşiş için teşekkürler! Jeton kodun: ${o.code}; jetonunu kaybedersen ${o.link} bağlantısıyla her cihazda geri yükleyebilirsin.`,
     copyCode: "Kodu kopyala",

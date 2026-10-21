@@ -4,6 +4,7 @@ import { useCallback, useState } from "react";
 import { motion, useReducedMotion } from "motion/react";
 
 import { useLaundromatCopy } from "@/app/laundromat/i18n/use-laundromat-copy";
+import { PRINTER_KEY_CLASS } from "@/app/laundromat/settings/printer-key-class";
 import { SETTINGS_META_CLASS } from "@/app/laundromat/settings/settings-meta-class";
 import { formatTipDate } from "@/lib/laundromat/tip/format-tip-date";
 import { cn } from "@/lib/utils";
@@ -32,9 +33,10 @@ type TipJarTrayProps = {
   tip: TipState;
   open: boolean;
   onClose: () => void;
+  onLeaveTip: () => void;
 };
 
-/** Spread every coin in the tip jar on a tray, newest first, with this visitor's own coins in brass, glinting while unspent, each opening its coin up close, and a hint to tap them under the tray while any is unspent. */
+/** Spread every coin in the tip jar on a tray, newest first, with this visitor's own coins in brass, glinting while they have uses left, each opening its coin up close, a hint to tap them under the tray while any has uses left, and what a tip gets with a key that calls `onLeaveTip`. */
 export function TipJarTray(props: TipJarTrayProps) {
   const { copy } = useLaundromatCopy();
   const prefersReducedMotion = useReducedMotion() ?? false;
@@ -49,7 +51,7 @@ export function TipJarTray(props: TipJarTrayProps) {
     ),
   }));
   const unspentOwnNumbers = coins.flatMap(({ coin, own }) =>
-    own !== undefined && own.spentAt === undefined ? [coin.number] : []
+    own !== undefined && own.usesLeft > 0 ? [coin.number] : []
   );
   const viewing = props.tip.tokens.find(({ code }) => code === viewingCode);
   const { onClose } = props;
@@ -136,7 +138,7 @@ export function TipJarTray(props: TipJarTrayProps) {
                           aria-label={label}
                           className={cn(
                             "block cursor-zoom-in rounded-full outline-none focus-visible:shadow-[0_0_0_2px_#0d0e0f,0_0_0_3.5px_var(--lm-accent)]",
-                            own.spentAt === undefined &&
+                            own.usesLeft > 0 &&
                               "shadow-[0_0_10px_2px_rgb(255_190_90/0.28)]"
                           )}
                           autoFocus={own.code === lastViewedCode}
@@ -162,6 +164,27 @@ export function TipJarTray(props: TipJarTrayProps) {
                   {copy.tip.trayHint}
                 </p>
               )}
+              <div className="flex flex-col gap-y-2">
+                <p
+                  className={cn(
+                    SETTINGS_META_CLASS,
+                    "m-0 text-center text-pretty normal-case opacity-60"
+                  )}
+                >
+                  {copy.tip.trayPitch}
+                </p>
+                <button
+                  type="button"
+                  className={cn(
+                    PRINTER_KEY_CLASS,
+                    "h-10 w-full justify-center px-3"
+                  )}
+                  onClick={props.onLeaveTip}
+                >
+                  <TipCoin metal="brass" label="" sizePx={14} />
+                  {copy.tip.trayLeaveTip}
+                </button>
+              </div>
             </div>
           ) : (
             <TipCoinCloseUp

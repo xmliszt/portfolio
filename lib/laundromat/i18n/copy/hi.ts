@@ -729,8 +729,18 @@ export const hi = {
       misread: "कोड जाँचें",
       offline: "बाद में कोशिश करें",
     },
-    note: "आपके प्यार के लिए शुक्रिया",
-    coinLabel: (o: { amount: string }) => `${o.amount} की टिप`,
+    note: "धन्यवाद!",
+    pitch:
+      "हर टिप पर एक टोकन छपता है। इसे किसी वॉशर या ड्रायर में डालें और धुलाई पार्टी या सुखाई पार्टी करें, जिसे यहाँ सब देख सकें। बड़ा सिक्का, ज़्यादा बार इस्तेमाल।",
+    coinLabel: (o: { amount: string; uses: number }) =>
+      `${o.amount} की टिप, ${o.uses} बार चलने वाला टोकन`,
+    coinUses: (o: { count: number }) => `${o.count} बार`,
+    usesLeft: (o: { left: number; total: number }) =>
+      `${o.total} में से ${o.left} बाकी`,
+    leftNotice: (o: { left: number }) =>
+      o.left === 0
+        ? "यह इसका आख़िरी इस्तेमाल था"
+        : `इस टोकन में ${o.left} बार और बाकी`,
     other: "दूसरी रकम",
     otherLabel: "दूसरी रकम",
     insert: "डालें",
@@ -761,7 +771,7 @@ export const hi = {
     pocketHeading: "आपके टोकन",
     dropInMachine: "किसी मशीन में डालें",
     dropInMachineHint:
-      "इसे किसी वॉशर या ड्रायर में डालें और धुलाई पार्टी या सुखाई पार्टी करें, जिसे यहाँ सब देख सकें। हर टोकन एक ही बार चलता है।",
+      "इसे किसी वॉशर या ड्रायर में डालें और धुलाई पार्टी या सुखाई पार्टी करें, जिसे यहाँ सब देख सकें।",
     usedOn: (o: { date: string }) => `मशीन में इस्तेमाल हुआ · ${o.date}`,
     holdHint: "किसी वॉशर या ड्रायर पर टैप करें",
     viewCoin: (o: { number: number }) => `टोकन नं. ${o.number} देखें`,
@@ -773,6 +783,9 @@ export const hi = {
     traySummary: (o: { count: number; isShining: boolean }) =>
       `जार में ${o.count} टोकन${o.isShining ? " · आपके टोकन चमकते हैं" : ""}`,
     trayHint: "इस्तेमाल करने के लिए अपने टोकन पर टैप करें",
+    trayPitch:
+      "कॉइन मशीन पर टिप दें और एक टोकन पाएँ। इसे किसी वॉशर या ड्रायर में डालें और धुलाई पार्टी करें, जिसे यहाँ सब देख सकें।",
+    trayLeaveTip: "टिप दें",
     receiptDescription: (o: { code: string; link: string }) =>
       `laundro.cafe को टिप देने के लिए शुक्रिया! आपका टोकन कोड: ${o.code}; टोकन खो जाए तो किसी भी डिवाइस पर ${o.link} से बहाल करें।`,
     copyCode: "कोड कॉपी करें",

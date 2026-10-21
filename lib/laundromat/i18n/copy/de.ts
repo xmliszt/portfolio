@@ -742,8 +742,19 @@ export const de = {
       misread: "code prüfen",
       offline: "später noch mal",
     },
-    note: "danke für deine Herzlichkeit",
-    coinLabel: (o: { amount: string }) => `Trinkgeld ${o.amount}`,
+    note: "danke!",
+    pitch:
+      "Jedes Trinkgeld druckt einen Token. Wirf ihn in eine Waschmaschine oder einen Trockner für eine Waschparty oder Trockenparty, die alle hier sehen können. Größere Münzen, mehr Einsätze.",
+    coinLabel: (o: { amount: string; uses: number }) =>
+      `Trinkgeld ${o.amount}, ein Token für ${o.uses} ${o.uses === 1 ? "Einsatz" : "Einsätze"}`,
+    coinUses: (o: { count: number }) =>
+      `${o.count} ${o.count === 1 ? "Einsatz" : "Einsätze"}`,
+    usesLeft: (o: { left: number; total: number }) =>
+      `noch ${o.left} von ${o.total}`,
+    leftNotice: (o: { left: number }) =>
+      o.left === 0
+        ? "das war sein letzter Einsatz"
+        : `noch ${o.left} ${o.left === 1 ? "Einsatz" : "Einsätze"} auf diesem Token`,
     other: "anderer Betrag",
     otherLabel: "Anderer Betrag",
     insert: "einwerfen",
@@ -775,7 +786,7 @@ export const de = {
     pocketHeading: "deine Tokens",
     dropInMachine: "in eine Maschine werfen",
     dropInMachineHint:
-      "Wirf ihn in eine Waschmaschine oder einen Trockner für eine Waschparty oder Trockenparty, die alle hier sehen können. Jeder Token funktioniert einmal.",
+      "Wirf ihn in eine Waschmaschine oder einen Trockner für eine Waschparty oder Trockenparty, die alle hier sehen können.",
     usedOn: (o: { date: string }) => `in einer Maschine benutzt · ${o.date}`,
     holdHint: "tipp auf eine Waschmaschine oder einen Trockner",
     viewCoin: (o: { number: number }) => `Token Nr. ${o.number} ansehen`,
@@ -787,6 +798,9 @@ export const de = {
     traySummary: (o: { count: number; isShining: boolean }) =>
       `${o.count} ${o.count === 1 ? "Token" : "Tokens"} im Glas${o.isShining ? " · deine glänzen" : ""}`,
     trayHint: "tipp auf deinen Token, um ihn zu benutzen",
+    trayPitch:
+      "Gib an der Münzmaschine ein Trinkgeld für einen Token. Wirf ihn in eine Waschmaschine oder einen Trockner für eine Waschparty, die alle hier sehen können.",
+    trayLeaveTip: "Trinkgeld geben",
     receiptDescription: (o: { code: string; link: string }) =>
       `Danke für dein Trinkgeld an laundro.cafe! Dein Token-Code: ${o.code}; falls du deinen Token verlierst, kannst du ihn auf jedem Gerät über ${o.link} wiederherstellen.`,
     copyCode: "Code kopieren",

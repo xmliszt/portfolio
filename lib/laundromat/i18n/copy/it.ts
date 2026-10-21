@@ -740,8 +740,19 @@ export const it = {
       misread: "controlla il codice",
       offline: "riprova più tardi",
     },
-    note: "grazie per il tuo affetto",
-    coinLabel: (o: { amount: string }) => `Mancia di ${o.amount}`,
+    note: "grazie!",
+    pitch:
+      "Ogni mancia stampa un gettone. Infilalo in una lavatrice o in un'asciugatrice per un lavaggio in festa o un'asciugatura in festa che tutti qui possono vedere. Monete più grandi, più usi.",
+    coinLabel: (o: { amount: string; uses: number }) =>
+      `Mancia di ${o.amount}, un gettone da ${o.uses} ${o.uses === 1 ? "uso" : "usi"}`,
+    coinUses: (o: { count: number }) =>
+      `${o.count} ${o.count === 1 ? "uso" : "usi"}`,
+    usesLeft: (o: { left: number; total: number }) =>
+      `${o.left} su ${o.total} ${o.left === 1 ? "rimasto" : "rimasti"}`,
+    leftNotice: (o: { left: number }) =>
+      o.left === 0
+        ? "era il suo ultimo uso"
+        : `a questo gettone ${o.left === 1 ? "resta 1 uso" : `restano ${o.left} usi`}`,
     other: "altro importo",
     otherLabel: "Altro importo",
     insert: "inserisci",
@@ -772,7 +783,7 @@ export const it = {
     pocketHeading: "i tuoi gettoni",
     dropInMachine: "infilalo in una macchina",
     dropInMachineHint:
-      "Infilalo in una lavatrice o in un'asciugatrice per un lavaggio in festa o un'asciugatura in festa che tutti qui possono vedere. Ogni gettone vale una volta sola.",
+      "Infilalo in una lavatrice o in un'asciugatrice per un lavaggio in festa o un'asciugatura in festa che tutti qui possono vedere.",
     usedOn: (o: { date: string }) => `usato in una macchina · ${o.date}`,
     holdHint: "tocca una lavatrice o un'asciugatrice",
     viewCoin: (o: { number: number }) => `Guarda il gettone n. ${o.number}`,
@@ -784,6 +795,9 @@ export const it = {
     traySummary: (o: { count: number; isShining: boolean }) =>
       `${o.count} ${o.count === 1 ? "gettone" : "gettoni"} nel barattolo${o.isShining ? " · i tuoi brillano" : ""}`,
     trayHint: "tocca il tuo gettone per usarlo",
+    trayPitch:
+      "Lascia una mancia alla macchina delle monete per un gettone. Infilalo in una lavatrice o in un'asciugatrice per un lavaggio in festa che tutti qui possono vedere.",
+    trayLeaveTip: "lascia una mancia",
     receiptDescription: (o: { code: string; link: string }) =>
       `Grazie per la tua mancia a laundro.cafe! Il tuo codice gettone: ${o.code}; se perdi il gettone, puoi ripristinarlo su qualsiasi dispositivo da ${o.link}.`,
     copyCode: "Copia codice",
