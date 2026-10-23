@@ -250,7 +250,7 @@ const webApps: AppsListEntry[] = [
   {
     id: "taboo-ai",
     name: "Taboo AI",
-    subtitle: "Learn English by playing Taboo with AI",
+    subtitle: "Learn English words by describing them to AI",
     icon: {
       light: "/apps/taboo-ai-icon.png",
       dark: "/apps/taboo-ai-icon.png",
