@@ -119,6 +119,6 @@
     "@types/react-dom": "19.0.4"
   },
   "engines": {
-    "node": "22.x"
+    "node": "24.x"
   }
 }
