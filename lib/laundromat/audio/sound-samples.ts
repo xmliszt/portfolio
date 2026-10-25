@@ -15,6 +15,31 @@ export type SoundSample =
 export const SOUND_SAMPLE_BASE_PATH = "/sounds/laundromat";
 
 export const SOUND_SAMPLES = {
+  "skeleton-shy": {
+    kind: "generated",
+    prompt:
+      "A tiny friendly Halloween skeleton bashfully rattling its bones, three delicate dry hollow bone clicks with a small rising wooden squeak, playful and gentle, close-up foley, no music, no speech, no background noise",
+    durationSeconds: 1.2,
+    promptInfluence: 0.6,
+    gain: 0.6,
+  },
+  "pumpkin-tap": {
+    kind: "generated",
+    prompt:
+      "One playful hollow pumpkin knock followed by a soft rubbery wobble and two smaller hollow wooden plops, warm and rounded, cute Halloween prop foley, no music, no speech, no background noise",
+    durationSeconds: 1.1,
+    promptInfluence: 0.6,
+    gain: 0.65,
+  },
+  "ghost-boo": {
+    kind: "generated",
+    prompt:
+      "A tiny friendly cartoon ghost saying one soft breathy woo, airy rising then falling pitch with a delicate cloth flutter, cute and gentle, no scary scream, no music, isolated sound effect",
+    durationSeconds: 1.4,
+    promptInfluence: 0.6,
+    gain: 0.2,
+  },
+
   "door-latch-open": {
     kind: "generated",
     prompt:

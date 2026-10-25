@@ -4,6 +4,11 @@ import type { MachineKind } from "@/lib/laundromat/scene-config";
 
 export const ko = {
   locale: "ko",
+  decorations: {
+    skeleton: { label: "해골: 인사하기" },
+    pumpkin: { label: "호박: 톡 두드리기" },
+    ghost: { label: "유령: 부! 하고 인사하기" },
+  },
   languageName: "한국어",
   site: {
     name: "laundro.cafe",
@@ -394,7 +399,7 @@ export const ko = {
     updates: {
       "halloween-theme": {
         title: "방에 찾아온 할로윈",
-        body: "테마 버튼에서 할로윈을 고르거나 시즌 설정을 켜서 기념일에 맞는 테마를 즐겨 보세요. 할로윈 테마에서 TV를 켜면 할로윈 음악을 실시간으로 들을 수 있어요.",
+        body: "테마 버튼에서 할로윈을 고르거나 시즌 설정을 켜서 기념일에 맞는 테마를 즐겨 보세요. 할로윈 테마에서 TV를 켜면 할로윈 음악을 실시간으로 들을 수 있어요; 장식을 누르면 작은 깜짝 반응을 볼 수 있어요.",
       },
       "light-appearance": {
         title: "리넨 색으로 꾸민 방",

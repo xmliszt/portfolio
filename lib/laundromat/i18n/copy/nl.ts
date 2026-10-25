@@ -3,6 +3,13 @@ import type { LaundromatCopy } from "@/lib/laundromat/i18n/laundromat-copy";
 
 export const nl = {
   locale: "nl",
+  decorations: {
+    skeleton: { label: "Skelet: zeg hallo" },
+    pumpkin: {
+      label: "Pompoen: geef een tikje",
+    },
+    ghost: { label: "Spook: zeg boe" },
+  },
   languageName: "Nederlands",
   site: {
     name: "laundro.cafe",
@@ -377,7 +384,7 @@ export const nl = {
     updates: {
       "halloween-theme": {
         title: "halloween in beide kamers",
-        body: "Kies Halloween via de themaknop of zet Seizoensgebonden aan om speciale gelegenheden te volgen. Zet met het Halloween-thema de tv aan voor een livezender met Halloweenmuziek.",
+        body: "Kies Halloween via de themaknop of zet Seizoensgebonden aan om speciale gelegenheden te volgen. Zet met het Halloween-thema de tv aan voor een livezender met Halloweenmuziek; tik op de versieringen voor een kleine verrassing.",
       },
       "light-appearance": {
         title: "een kamer in linnen",

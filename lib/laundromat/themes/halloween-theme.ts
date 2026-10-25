@@ -61,6 +61,7 @@ export const halloweenTheme = {
     ghost: { cloth: "#e1d9cc", shade: "#a79caa", swaySeconds: 5.5 },
     skeleton: { bone: "#cec4ac", shade: "#85798c", joint: "#9b7851" },
     pumpkin: {
+      bounceMs: 700,
       rind: "#a85224",
       stem: "#69613b",
       glow: "#ffbd55",

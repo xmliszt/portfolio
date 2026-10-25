@@ -9,6 +9,11 @@ type Machine = { kind: MachineKind; number: number };
 
 export const id = {
   locale: "id",
+  decorations: {
+    skeleton: { label: "Kerangka: sapa dia" },
+    pumpkin: { label: "Labu: ketuk pelan" },
+    ghost: { label: "Hantu: bilang bu" },
+  },
   languageName: "Bahasa Indonesia",
   site: {
     name: "laundro.cafe",
@@ -411,7 +416,7 @@ export const id = {
     updates: {
       "halloween-theme": {
         title: "halloween di kedua ruangan",
-        body: "Pilih Halloween dari tombol tema, atau aktifkan Musiman untuk mengikuti perayaan. Saat tema Halloween dipilih, nyalakan TV untuk mendengarkan stasiun musik Halloween secara langsung.",
+        body: "Pilih Halloween dari tombol tema, atau aktifkan Musiman untuk mengikuti perayaan. Saat tema Halloween dipilih, nyalakan TV untuk mendengarkan stasiun musik Halloween secara langsung; ketuk hiasannya untuk kejutan kecil.",
       },
       "light-appearance": {
         title: "ruangan bernuansa linen",

@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { motion, useReducedMotion } from "motion/react";
 
+import { useDecorationReactions } from "@/app/laundromat/decorations/use-decoration-reactions";
 import { useLaundromatCopy } from "@/app/laundromat/i18n/use-laundromat-copy";
 import { useLocalWeather } from "@/app/laundromat/local-weather/use-local-weather";
 import { BasketDrawing } from "@/app/laundromat/objects/basket-drawing";
@@ -35,6 +36,7 @@ import type { SceneConfig, SceneObject } from "@/lib/laundromat/scene-config";
 import { getWindowWeather } from "@/lib/laundromat/weather/get-window-weather";
 import { cn } from "@/lib/utils";
 
+import { BedroomDecorationTargets } from "./bedroom-decoration-targets";
 import { BedroomDoor } from "./bedroom-door";
 import { BedroomDrawing } from "./bedroom-drawing";
 import { CrumpledBall } from "./crumpled-ball";
@@ -128,6 +130,7 @@ export function FirstVisit(props: FirstVisitProps) {
   const [settling, setSettling] = useState<GarmentKind>();
   const [hover, setHover] = useState<Hover>();
   const sound = useSoundBoard();
+  const decorations = useDecorationReactions(props.scene.details);
   const { reading: weather } = useLocalWeather();
   const isLampOn = props.lampSwitch ?? (timeOfDay?.lampIntensity ?? 1) > 0.5;
   const isCurtainOpen = props.curtainOpen;
@@ -848,6 +851,7 @@ export function FirstVisit(props: FirstVisitProps) {
                 strokeWidth={1}
               >
                 <BedroomDrawing
+                  decorationReactions={decorations.reactions}
                   bedroom={bedroom}
                   projection={projection}
                   timeOfDay={timeOfDay}
@@ -1023,6 +1027,11 @@ export function FirstVisit(props: FirstVisitProps) {
                   />
                 );
               })}
+            <BedroomDecorationTargets
+              decorations={bedroom.decorations}
+              projection={projection}
+              onActivate={decorations.activate}
+            />
             {canSleep && (
               <button
                 type="button"

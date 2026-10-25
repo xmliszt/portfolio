@@ -13,6 +13,7 @@ import { playDoneDing } from "./sounds/play-done-ding";
 import { playDoorLatchClose } from "./sounds/play-door-latch-close";
 import { playDoorLatchOpen } from "./sounds/play-door-latch-open";
 import { playDoorLocked } from "./sounds/play-door-locked";
+import { playGhostBoo } from "./sounds/play-ghost-boo";
 import { playJarCoin } from "./sounds/play-jar-coin";
 import { playKnobClick } from "./sounds/play-knob-click";
 import { playLampFlicker } from "./sounds/play-lamp-flicker";
@@ -21,9 +22,11 @@ import { playNotebookFree } from "./sounds/play-notebook-free";
 import { playNotebookOpen } from "./sounds/play-notebook-open";
 import { playPageFlip } from "./sounds/play-page-flip";
 import { playPrinterFeed } from "./sounds/play-printer-feed";
+import { playPumpkinTap } from "./sounds/play-pumpkin-tap";
 import { playRoomDoorOpen } from "./sounds/play-room-door-open";
 import { playSample } from "./sounds/play-sample";
 import { playShopBell } from "./sounds/play-shop-bell";
+import { playSkeletonShy } from "./sounds/play-skeleton-shy";
 import { playSlidingDoor } from "./sounds/play-sliding-door";
 import { playStartButton } from "./sounds/play-start-button";
 import { playThunderRumble } from "./sounds/play-thunder-rumble";
@@ -60,6 +63,9 @@ const GROUP_TIME_CONSTANT_S = 0.04;
 const ANALYSER_FFT_SIZE = 512;
 
 const ONE_SHOTS = {
+  "ghost-boo": playGhostBoo,
+  "pumpkin-tap": playPumpkinTap,
+  "skeleton-shy": playSkeletonShy,
   "door-latch-open": playDoorLatchOpen,
   "door-latch-close": playDoorLatchClose,
   "start-button": playStartButton,

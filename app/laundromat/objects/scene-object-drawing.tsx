@@ -58,6 +58,7 @@ export function SceneObjectDrawing(props: SceneObjectDrawingProps) {
           object={object}
           projection={projection}
           details={details}
+          reaction={views.decorationReactions?.[object.id]}
         />
       );
     case "washer":

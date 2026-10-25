@@ -146,9 +146,15 @@ export type SceneConfig = {
     defaultDryerCycleMinutes: number;
   };
   details: {
+    decorationReaction: {
+      durationMs: number;
+      strength: number;
+      soundVolume: number;
+    };
     ghost: { cloth: string; shade: string; swaySeconds: number };
     skeleton: { bone: string; shade: string; joint: string };
     pumpkin: {
+      bounceMs: number;
       rind: string;
       stem: string;
       glow: string;
@@ -575,9 +581,11 @@ export const sceneConfig: SceneConfig = {
     defaultDryerCycleMinutes: 5,
   },
   details: {
+    decorationReaction: { durationMs: 1800, strength: 1, soundVolume: 0.65 },
     ghost: { cloth: "#e1d9cc", shade: "#a79caa", swaySeconds: 5.5 },
     skeleton: { bone: "#cec4ac", shade: "#85798c", joint: "#9b7851" },
     pumpkin: {
+      bounceMs: 700,
       rind: "#a85224",
       stem: "#69613b",
       glow: "#ffbd55",

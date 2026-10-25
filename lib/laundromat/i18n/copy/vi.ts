@@ -9,6 +9,11 @@ type Machine = { kind: MachineKind; number: number };
 
 export const vi = {
   locale: "vi",
+  decorations: {
+    skeleton: { label: "Bộ xương: chào một tiếng" },
+    pumpkin: { label: "Bí ngô: chạm nhẹ" },
+    ghost: { label: "Ma nhỏ: nói ù" },
+  },
   languageName: "Tiếng Việt",
   site: {
     name: "laundro.cafe",
@@ -399,7 +404,7 @@ export const vi = {
     updates: {
       "halloween-theme": {
         title: "halloween trong hai căn phòng",
-        body: "Chọn Halloween từ nút chủ đề hoặc bật Theo mùa để chủ đề thay đổi theo dịp lễ. Khi chọn chủ đề Halloween, bật TV để nghe đài nhạc Halloween phát trực tiếp.",
+        body: "Chọn Halloween từ nút chủ đề hoặc bật Theo mùa để chủ đề thay đổi theo dịp lễ. Khi chọn chủ đề Halloween, bật TV để nghe đài nhạc Halloween phát trực tiếp; chạm vào đồ trang trí để nhận bất ngờ nho nhỏ.",
       },
       "light-appearance": {
         title: "căn phòng màu vải lanh",

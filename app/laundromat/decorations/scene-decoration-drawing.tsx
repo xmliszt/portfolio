@@ -10,6 +10,7 @@ import { PumpkinDrawing } from "./pumpkin-drawing";
 import { SkeletonDrawing } from "./skeleton-drawing";
 
 type SceneDecorationDrawingProps = {
+  reaction?: number;
   object: SceneDecoration;
   projection: IsoProjection;
   details: SceneConfig["details"];
@@ -24,6 +25,8 @@ export function SceneDecorationDrawing(props: SceneDecorationDrawingProps) {
           object={object}
           projection={projection}
           details={details.ghost}
+          reaction={props.reaction}
+          reactionSettings={details.decorationReaction}
         />
       );
     case "skeleton":
@@ -32,6 +35,8 @@ export function SceneDecorationDrawing(props: SceneDecorationDrawingProps) {
           object={object}
           projection={projection}
           details={details.skeleton}
+          reaction={props.reaction}
+          reactionSettings={details.decorationReaction}
         />
       );
     case "pumpkin":
@@ -40,6 +45,8 @@ export function SceneDecorationDrawing(props: SceneDecorationDrawingProps) {
           object={object}
           projection={projection}
           details={details.pumpkin}
+          reaction={props.reaction}
+          reactionSettings={details.decorationReaction}
         />
       );
     case "cobweb":

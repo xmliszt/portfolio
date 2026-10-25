@@ -22,10 +22,10 @@ export function isInteractiveSceneObject(object: SceneObject) {
     case "instant-camera":
     case "coin-machine":
     case "tip-jar":
-      return true;
     case "ghost":
     case "skeleton":
     case "pumpkin":
+      return true;
     case "cobweb":
     case "counter":
     case "window":

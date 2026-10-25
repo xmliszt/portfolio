@@ -135,6 +135,7 @@ export function describeSceneObject(options: {
     case "ghost":
     case "skeleton":
     case "pumpkin":
+      return { label: copy.decorations[object.kind].label, tooltip: undefined };
     case "cobweb":
     case "counter":
     case "window":

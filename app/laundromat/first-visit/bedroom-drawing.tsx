@@ -35,6 +35,7 @@ const LAMP_FILL_REACH = 5;
 const BED_LIGHT_REACH = 2.2;
 
 type BedroomDrawingProps = {
+  decorationReactions?: { [id: string]: number };
   bedroom: BedroomConfig;
   projection: IsoProjection;
   timeOfDay: TimeOfDay | undefined;
@@ -248,6 +249,7 @@ export function BedroomDrawing(props: BedroomDrawingProps) {
             object={object}
             projection={projection}
             details={scene.details}
+            reaction={props.decorationReactions?.[object.id]}
           />
         ))}
       <WindowDrawing
@@ -293,6 +295,7 @@ export function BedroomDrawing(props: BedroomDrawingProps) {
             object={object}
             projection={projection}
             details={scene.details}
+            reaction={props.decorationReactions?.[object.id]}
           />
         ))}
 
@@ -372,6 +375,7 @@ export function BedroomDrawing(props: BedroomDrawingProps) {
               object={object}
               projection={projection}
               details={scene.details}
+              reaction={props.decorationReactions?.[object.id]}
             />
           ))}
         {box(bedsideTable)}

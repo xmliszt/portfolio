@@ -9,7 +9,7 @@ import { applySceneTheme } from "./apply-scene-theme";
 import { parseThemePreference } from "./parse-theme-preference";
 import { themes } from "./themes";
 
-test("Halloween adds noninteractive decorations in both rooms and preserves furniture identities", () => {
+test("Halloween adds interactive decorations and scenery in both rooms and preserves furniture identities", () => {
   const before = JSON.stringify({ sceneConfig, bedroomConfig });
   const result = applySceneTheme({
     scene: sceneConfig,
@@ -27,7 +27,9 @@ test("Halloween adds noninteractive decorations in both rooms and preserves furn
     ...result.bedroom.decorations,
   ];
   assert.ok(decorations.length > 0);
-  assert.ok(decorations.every((object) => !isInteractiveSceneObject(object)));
+  for (const object of decorations) {
+    assert.equal(isInteractiveSceneObject(object), object.kind !== "cobweb");
+  }
   assert.equal(
     new Set(decorations.map((object) => object.id)).size,
     decorations.length

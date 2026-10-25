@@ -4,6 +4,11 @@ import type { MachineKind } from "@/lib/laundromat/scene-config";
 
 export const zhHans = {
   locale: "zh-Hans",
+  decorations: {
+    skeleton: { label: "骷髅：打个招呼" },
+    pumpkin: { label: "南瓜：轻轻拍一下" },
+    ghost: { label: "小幽灵：吓它一下" },
+  },
   languageName: "简体中文",
   site: {
     name: "laundro.cafe",
@@ -370,7 +375,7 @@ export const zhHans = {
     updates: {
       "halloween-theme": {
         title: "房间里的万圣节",
-        body: "点开主题按钮选择万圣节，或开启季节模式，让主题随节日变化。使用万圣节主题时，打开电视就能收听万圣节音乐直播。",
+        body: "点开主题按钮选择万圣节，或开启季节模式，让主题随节日变化。使用万圣节主题时，打开电视就能收听万圣节音乐直播，点一点装饰，发现小惊喜。",
       },
       "light-appearance": {
         title: "亚麻色的房间",

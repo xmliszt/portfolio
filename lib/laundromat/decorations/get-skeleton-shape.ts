@@ -16,20 +16,27 @@ type Face = {
 export function getSkeletonShape(options: {
   object: Extract<SceneDecoration, { kind: "skeleton" }>;
   projection: IsoProjection;
+  shy?: number;
 }) {
   const { position, size } = options.object;
   const projection = options.projection;
   const faces: Face[] = [];
   const yaw = -Math.PI / 9;
+  const shy = Math.max(0, Math.min(1, options.shy ?? 0));
+  function blend(options: { resting: number; shy: number }) {
+    return options.resting + (options.shy - options.resting) * shy;
+  }
   function world(point: IsoPoint) {
+    const tilt = Math.max(0, point.z - 0.78) * shy;
+    const x = point.x + tilt * 0.75;
     return {
       x:
         position.x +
-        size.w * (0.5 + point.x * Math.cos(yaw) - point.y * Math.sin(yaw)),
+        size.w * (0.5 + x * Math.cos(yaw) - point.y * Math.sin(yaw)),
       y:
         position.y +
-        size.d * (0.5 + point.x * Math.sin(yaw) + point.y * Math.cos(yaw)),
-      z: position.z + size.h * point.z,
+        size.d * (0.5 + x * Math.sin(yaw) + point.y * Math.cos(yaw)),
+      z: position.z + size.h * (point.z - tilt * 0.1),
     };
   }
   function face(options: {
@@ -209,12 +216,20 @@ export function getSkeletonShape(options: {
         bone({ from: point(step), to: point(step + 1), radius: 0.009 });
       }
     }
-    const shoulder = { x: side * 0.22, y: 0, z: 0.73 };
-    const elbow = { x: side * 0.35, y: 0.08, z: side < 0 ? 0.56 : 0.64 };
+    const shoulder = {
+      x: side * blend({ resting: 0.22, shy: 0.19 }),
+      y: shy * 0.04,
+      z: 0.73 + shy * 0.015,
+    };
+    const elbow = {
+      x: side * blend({ resting: 0.35, shy: 0.22 }),
+      y: blend({ resting: 0.08, shy: 0.24 }),
+      z: blend({ resting: side < 0 ? 0.56 : 0.64, shy: 0.57 }),
+    };
     const wrist = {
-      x: side * (side < 0 ? 0.25 : 0.39),
-      y: 0.2,
-      z: side < 0 ? 0.49 : 0.8,
+      x: side * blend({ resting: side < 0 ? 0.25 : 0.39, shy: 0.035 }),
+      y: blend({ resting: 0.2, shy: side < 0 ? 0.35 : 0.4 }),
+      z: blend({ resting: side < 0 ? 0.49 : 0.8, shy: 0.455 }),
     };
     bone({ from: shoulder, to: elbow, radius: 0.022 });
     bone({ from: elbow, to: wrist, radius: 0.016 });
@@ -233,21 +248,29 @@ export function getSkeletonShape(options: {
       const from = {
         x: wrist.x - 0.025 + finger * 0.018,
         y: wrist.y,
-        z: wrist.z + (side < 0 ? -0.02 : 0.02),
+        z: wrist.z + blend({ resting: side < 0 ? -0.02 : 0.02, shy: -0.02 }),
       };
       bone({
         from,
         to: {
           ...from,
           y: from.y + 0.035,
-          z: from.z + (side < 0 ? -0.03 : 0.03),
+          z: from.z + blend({ resting: side < 0 ? -0.03 : 0.03, shy: -0.03 }),
         },
         radius: 0.006,
       });
     }
     const hip = { x: side * 0.1, y: 0.01, z: 0.49 };
-    const knee = { x: side * 0.15, y: 0.03, z: 0.285 };
-    const ankle = { x: side * 0.16, y: 0.06, z: 0.075 };
+    const knee = {
+      x: side * blend({ resting: 0.15, shy: 0.035 }),
+      y: 0.03,
+      z: 0.285,
+    };
+    const ankle = {
+      x: side * blend({ resting: 0.16, shy: 0.12 }),
+      y: 0.06,
+      z: 0.075,
+    };
     bone({ from: hip, to: knee, radius: 0.026 });
     bone({ from: knee, to: ankle, radius: 0.019 });
     bone({
@@ -289,10 +312,5 @@ export function getSkeletonShape(options: {
   });
   return {
     faces: faces.toSorted((a, b) => a.depth - b.depth),
-    hanger: toSvgPoints(
-      [world({ x: 0, y: -0.5, z: 1 }), world({ x: 0, y: 0, z: 0.95 })].map(
-        (point) => projectIsoPoint({ point, projection: options.projection })
-      )
-    ),
   };
 }

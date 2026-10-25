@@ -17,6 +17,15 @@ function minutesFor(count: number) {
 
 export const pl = {
   locale: "pl",
+  decorations: {
+    skeleton: {
+      label: "Szkielet: przywitaj się",
+    },
+    pumpkin: {
+      label: "Dynia: lekko stuknij",
+    },
+    ghost: { label: "Duszek: powiedz bu" },
+  },
   languageName: "Polski",
   site: {
     name: "laundro.cafe",
@@ -387,7 +396,7 @@ export const pl = {
     updates: {
       "halloween-theme": {
         title: "halloween w obu pokojach",
-        body: "Wybierz Halloween przyciskiem motywów lub włącz tryb sezonowy, aby motyw zmieniał się na specjalne okazje. Z motywem Halloween włącz telewizor, aby posłuchać stacji z halloweenową muzyką na żywo.",
+        body: "Wybierz Halloween przyciskiem motywów lub włącz tryb sezonowy, aby motyw zmieniał się na specjalne okazje. Z motywem Halloween włącz telewizor, aby posłuchać stacji z halloweenową muzyką na żywo; dotknij dekoracji, by odkryć małą niespodziankę.",
       },
       "light-appearance": {
         title: "pokój w kolorze lnu",

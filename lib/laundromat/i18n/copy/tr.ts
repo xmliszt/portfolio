@@ -3,6 +3,13 @@ import type { LaundromatCopy } from "@/lib/laundromat/i18n/laundromat-copy";
 
 export const tr = {
   locale: "tr",
+  decorations: {
+    skeleton: { label: "İskelet: merhaba de" },
+    pumpkin: {
+      label: "Balkabağı: hafifçe dokun",
+    },
+    ghost: { label: "Hayalet: bu de" },
+  },
   languageName: "Türkçe",
   site: {
     name: "laundro.cafe",
@@ -375,7 +382,7 @@ export const tr = {
     updates: {
       "halloween-theme": {
         title: "odalarda cadılar bayramı",
-        body: "Tema düğmesinden Cadılar Bayramı’nı seçin veya özel günleri takip etmek için Mevsimsel seçeneğini açın. Cadılar Bayramı teması seçiliyken televizyonu açarak canlı Cadılar Bayramı müzik istasyonunu dinleyin.",
+        body: "Tema düğmesinden Cadılar Bayramı’nı seçin veya özel günleri takip etmek için Mevsimsel seçeneğini açın. Cadılar Bayramı teması seçiliyken televizyonu açarak canlı Cadılar Bayramı müzik istasyonunu dinleyin; küçük bir sürpriz için süslemelere dokun.",
       },
       "light-appearance": {
         title: "keten renkli bir oda",

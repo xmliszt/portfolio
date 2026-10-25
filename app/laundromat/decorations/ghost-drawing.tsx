@@ -10,13 +10,22 @@ import type {
   SceneDecoration,
 } from "@/lib/laundromat/scene-config";
 
+import { useDecorationPose } from "./use-decoration-pose";
+
 type GhostDrawingProps = {
+  reaction?: number;
+  reactionSettings: SceneConfig["details"]["decorationReaction"];
   object: Extract<SceneDecoration, { kind: "ghost" }>;
   projection: IsoProjection;
   details: SceneConfig["details"]["ghost"];
 };
 
 export function GhostDrawing(props: GhostDrawingProps) {
+  const { pose, progress, reducedMotion } = useDecorationPose({
+    reaction: props.reaction,
+    durationMs: props.reactionSettings.durationMs,
+  });
+  const amount = pose * props.reactionSettings.strength;
   const id = useId();
   const { quality } = useRenderQuality();
   const { position, size } = props.object;
@@ -38,6 +47,7 @@ export function GhostDrawing(props: GhostDrawingProps) {
   return (
     <g
       data-lm-decoration={props.object.id}
+      data-reaction={pose > 0 ? "active" : "idle"}
       className="[&_*]:[vector-effect:non-scaling-stroke]"
       stroke="none"
     >
@@ -60,46 +70,60 @@ export function GhostDrawing(props: GhostDrawingProps) {
         transform={`translate(${center.x} ${center.y}) scale(${width} ${height})`}
       >
         <g
-          className={quality === "full" ? "lm-ghost-cloth" : undefined}
-          style={{ animationDuration: `${swaySeconds}s` }}
+          transform={
+            reducedMotion
+              ? undefined
+              : `rotate(${Math.sin(progress * Math.PI * 4) * amount * 7}) scale(${1 + amount * 0.16} ${1 - amount * 0.1})`
+          }
         >
-          <path
-            d="M0,0 C-.17,0 -.24,.13 -.25,.29 C-.27,.5 -.38,.76 -.52,.92 Q-.37,.99 -.24,.85 Q-.14,1.07 0,.9 Q.16,1.05 .27,.87 Q.39,.98 .51,.9 C.33,.67 .25,.47 .24,.28 C.23,.12 .15,0 0,0Z"
-            fill={`url(#${id}-cloth)`}
-          />
-          <path
-            d="M-.17,.36 Q-.19,.65 -.24,.85 Q-.14,.97 -.1,.82 Q-.14,.63 -.17,.36 M.16,.35 Q.14,.63 .27,.87 Q.18,.81 .13,.73Z"
-            fill={shade}
-            opacity="0.55"
-          />
-          <path
-            d="M-.04,.42 Q.02,.66 0,.9 Q.09,.78 .05,.59Z"
-            fill={shade}
-            opacity="0.28"
-          />
-          <path
-            d="M-.52,.92 Q-.37,.99 -.24,.85 Q-.14,1.07 0,.9 Q.16,1.05 .27,.87 Q.39,.98 .51,.9"
-            fill="none"
-            stroke={cloth}
-            strokeWidth="0.75"
-          />
-          <ellipse
-            cx="-.105"
-            cy=".27"
-            rx=".052"
-            ry=".069"
-            fill="#302a39"
-            transform="rotate(-8 -.105 .27)"
-          />
-          <ellipse
-            cx=".095"
-            cy=".27"
-            rx=".049"
-            ry=".067"
-            fill="#302a39"
-            transform="rotate(8 .095 .27)"
-          />
-          <ellipse cx="0" cy=".4" rx=".028" ry=".04" fill="#514654" />
+          <g
+            className={quality === "full" ? "lm-ghost-cloth" : undefined}
+            style={{ animationDuration: `${swaySeconds}s` }}
+          >
+            <path
+              d="M0,0 C-.17,0 -.24,.13 -.25,.29 C-.27,.5 -.38,.76 -.52,.92 Q-.37,.99 -.24,.85 Q-.14,1.07 0,.9 Q.16,1.05 .27,.87 Q.39,.98 .51,.9 C.33,.67 .25,.47 .24,.28 C.23,.12 .15,0 0,0Z"
+              fill={`url(#${id}-cloth)`}
+            />
+            <path
+              d="M-.17,.36 Q-.19,.65 -.24,.85 Q-.14,.97 -.1,.82 Q-.14,.63 -.17,.36 M.16,.35 Q.14,.63 .27,.87 Q.18,.81 .13,.73Z"
+              fill={shade}
+              opacity="0.55"
+            />
+            <path
+              d="M-.04,.42 Q.02,.66 0,.9 Q.09,.78 .05,.59Z"
+              fill={shade}
+              opacity="0.28"
+            />
+            <path
+              d="M-.52,.92 Q-.37,.99 -.24,.85 Q-.14,1.07 0,.9 Q.16,1.05 .27,.87 Q.39,.98 .51,.9"
+              fill="none"
+              stroke={cloth}
+              strokeWidth="0.75"
+            />
+            <ellipse
+              cx="-.105"
+              cy=".27"
+              rx=".052"
+              ry=".069"
+              fill="#302a39"
+              transform="rotate(-8 -.105 .27)"
+            />
+            <ellipse
+              cx=".095"
+              cy=".27"
+              rx=".049"
+              ry=".067"
+              fill="#302a39"
+              transform="rotate(8 .095 .27)"
+            />
+            <ellipse
+              cx="0"
+              cy=".4"
+              rx={0.028 + amount * 0.025}
+              ry={0.04 + amount * 0.035}
+              fill="#514654"
+            />
+          </g>
         </g>
       </g>
       <style>{`@keyframes lm-ghost-cloth { 0%, 100% { transform: rotate(-2deg); } 50% { transform: rotate(2deg); } } @media (prefers-reduced-motion: no-preference) { .lm-ghost-cloth { transform-origin: 0 0; animation: lm-ghost-cloth 5.5s ease-in-out infinite; } }`}</style>

@@ -130,6 +130,12 @@ export function getThemeLabDials(options: {
   } satisfies DialConfig;
 
   const objectDials = {
+    decorationReaction: {
+      durationMs: [details.decorationReaction.durationMs, 600, 3200, 50],
+      strength: [details.decorationReaction.strength, 0, 1, 0.05],
+      soundVolume: [details.decorationReaction.soundVolume, 0, 1, 0.05],
+      _collapsed: true,
+    },
     pumpkinDirections,
     ghost: {
       ...details.ghost,
@@ -139,6 +145,7 @@ export function getThemeLabDials(options: {
     skeleton: { ...details.skeleton, _collapsed: true },
     pumpkin: {
       ...details.pumpkin,
+      bounceMs: [details.pumpkin.bounceMs, 350, 1400, 25],
       glowIntensity: [details.pumpkin.glowIntensity, 0, 1, 0.01],
       flickerSeconds: [details.pumpkin.flickerSeconds, 1, 10, 0.1],
       _collapsed: true,

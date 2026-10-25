@@ -7,17 +7,30 @@ import type {
   SceneDecoration,
 } from "@/lib/laundromat/scene-config";
 
+import { useDecorationPose } from "./use-decoration-pose";
+
 type SkeletonDrawingProps = {
+  reaction?: number;
+  reactionSettings: SceneConfig["details"]["decorationReaction"];
   object: Extract<SceneDecoration, { kind: "skeleton" }>;
   projection: IsoProjection;
   details: SceneConfig["details"]["skeleton"];
 };
 
 export function SkeletonDrawing(props: SkeletonDrawingProps) {
+  const { pose } = useDecorationPose({
+    reaction: props.reaction,
+    durationMs: props.reactionSettings.durationMs,
+  });
+  const amount = pose * props.reactionSettings.strength;
   const shape = useMemo(
     () =>
-      getSkeletonShape({ object: props.object, projection: props.projection }),
-    [props.object, props.projection]
+      getSkeletonShape({
+        object: props.object,
+        projection: props.projection,
+        shy: amount,
+      }),
+    [props.object, props.projection, amount]
   );
   const { bone, shade, joint } = props.details;
   const colors = {
@@ -31,13 +44,11 @@ export function SkeletonDrawing(props: SkeletonDrawingProps) {
     recess: ["#342c3c", "#2c2433", "#241d2b", "#1b1622"],
   };
   return (
-    <g data-lm-decoration={props.object.id} stroke="none">
-      <polyline
-        points={shape.hanger}
-        fill="none"
-        stroke={shade}
-        strokeWidth="0.6"
-      />
+    <g
+      data-lm-decoration={props.object.id}
+      data-reaction={pose > 0 ? "active" : "idle"}
+      stroke="none"
+    >
       {shape.faces.map((face, index) => (
         <polygon
           key={index}

@@ -1,4 +1,8 @@
 export const SOUND_NAMES = [
+  "skeleton-shy",
+  "pumpkin-tap",
+  "ghost-boo",
+
   "door-latch-open",
   "door-latch-close",
   "start-button",

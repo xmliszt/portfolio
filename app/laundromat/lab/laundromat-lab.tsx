@@ -422,6 +422,7 @@ function ThemeWorkbench(props: ThemeWorkbenchProps) {
         timeJumpGlideMs: skyValues.timeJumpGlideMs,
       },
       details: {
+        decorationReaction: objectValues.decorationReaction,
         ghost: objectValues.ghost,
         skeleton: objectValues.skeleton,
         pumpkin: objectValues.pumpkin,

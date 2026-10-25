@@ -4,6 +4,13 @@ import type { MachineKind } from "@/lib/laundromat/scene-config";
 
 export const it = {
   locale: "it",
+  decorations: {
+    skeleton: { label: "Scheletro: saluta" },
+    pumpkin: {
+      label: "Zucca: dai un colpetto",
+    },
+    ghost: { label: "Fantasmino: fai bu" },
+  },
   languageName: "Italiano",
   site: {
     name: "laundro.cafe",
@@ -415,7 +422,7 @@ export const it = {
     updates: {
       "halloween-theme": {
         title: "halloween nelle stanze",
-        body: "Scegli Halloween dal pulsante dei temi oppure attiva Stagionale per seguire le ricorrenze. Con il tema Halloween, accendi la TV per ascoltare una stazione di musica di Halloween in diretta.",
+        body: "Scegli Halloween dal pulsante dei temi oppure attiva Stagionale per seguire le ricorrenze. Con il tema Halloween, accendi la TV per ascoltare una stazione di musica di Halloween in diretta; tocca le decorazioni per una piccola sorpresa.",
       },
       "light-appearance": {
         title: "una stanza color lino",

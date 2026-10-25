@@ -14,6 +14,13 @@ type Machine = { kind: MachineKind; number: number };
 
 export const en = {
   locale: "en",
+  decorations: {
+    skeleton: { label: "Skeleton: say hello" },
+    pumpkin: {
+      label: "Pumpkin: give it a tap",
+    },
+    ghost: { label: "Ghost: say boo" },
+  },
   languageName: "English",
   site: {
     name: "laundro.cafe",
@@ -414,7 +421,7 @@ export const en = {
     updates: {
       "halloween-theme": {
         title: "halloween in the rooms",
-        body: "Choose Halloween from the theme button, or turn on Seasonal to follow the occasion. With Halloween selected, turn on the TV for a live Halloween music station.",
+        body: "Choose Halloween from the theme button, or turn on Seasonal to follow the occasion. With Halloween selected, turn on the TV for a live Halloween music station; tap the decorations for a little surprise.",
       },
       "light-appearance": {
         title: "a linen room theme",

@@ -4,6 +4,11 @@ import type { MachineKind } from "@/lib/laundromat/scene-config";
 
 export const zhHant = {
   locale: "zh-Hant",
+  decorations: {
+    skeleton: { label: "骷髏：打個招呼" },
+    pumpkin: { label: "南瓜：輕輕拍一下" },
+    ghost: { label: "小幽靈：嚇它一下" },
+  },
   languageName: "繁體中文",
   site: {
     name: "laundro.cafe",
@@ -369,7 +374,7 @@ export const zhHant = {
     updates: {
       "halloween-theme": {
         title: "房間裡的萬聖節",
-        body: "點開主題按鈕選擇萬聖節，或開啟季節模式，讓主題隨節日變化。使用萬聖節主題時，打開電視就能收聽萬聖節音樂直播。",
+        body: "點開主題按鈕選擇萬聖節，或開啟季節模式，讓主題隨節日變化。使用萬聖節主題時，打開電視就能收聽萬聖節音樂直播，點一點裝飾，發現小驚喜。",
       },
       "light-appearance": {
         title: "亞麻色的房間",
