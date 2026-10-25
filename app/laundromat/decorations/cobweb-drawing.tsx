@@ -44,23 +44,27 @@ export function CobwebDrawing(props: CobwebDrawingProps) {
     },
     projection: props.projection,
   });
-  function at(angle: number, radius: number) {
+  function at(coordinates: { angle: number; radius: number }) {
+    const { angle, radius } = coordinates;
     return {
       x: Math.cos(angle) * radius * width,
       y: Math.sin(angle) * radius * height,
     };
   }
   const spokes = Array.from({ length: 7 }, (_, index) =>
-    at((index * Math.PI) / 12, 1)
+    at({ angle: (index * Math.PI) / 12, radius: 1 })
   );
   const rings = Array.from({ length: 5 }, (_, ring) => {
     const radius = (ring + 1) / 5;
     return spokes
       .slice(1)
       .map((_, index) => {
-        const from = at((index * Math.PI) / 12, radius);
-        const to = at(((index + 1) * Math.PI) / 12, radius);
-        const control = at(((index + 0.5) * Math.PI) / 12, radius * 0.83);
+        const from = at({ angle: (index * Math.PI) / 12, radius });
+        const to = at({ angle: ((index + 1) * Math.PI) / 12, radius });
+        const control = at({
+          angle: ((index + 0.5) * Math.PI) / 12,
+          radius: radius * 0.83,
+        });
         return `M${from.x},${from.y} Q${control.x},${control.y} ${to.x},${to.y}`;
       })
       .join(" ");

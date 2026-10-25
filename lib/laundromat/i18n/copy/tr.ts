@@ -375,7 +375,7 @@ export const tr = {
     updates: {
       "halloween-theme": {
         title: "odalarda cadılar bayramı",
-        body: "Cadılar Bayramı laundro.cafe’ye geldi. Tema düğmesinden Cadılar Bayramı’nı seçin veya özel günleri takip etmek için Mevsimsel seçeneğini açın.",
+        body: "Tema düğmesinden Cadılar Bayramı’nı seçin veya özel günleri takip etmek için Mevsimsel seçeneğini açın. Cadılar Bayramı teması seçiliyken televizyonu açarak canlı Cadılar Bayramı müzik istasyonunu dinleyin.",
       },
       "light-appearance": {
         title: "keten renkli bir oda",
@@ -527,6 +527,7 @@ export const tr = {
   },
   tv: {
     stations: {
+      halloween: "cadılar bayramı",
       "rainy-cafe": "yağmurlu kafe",
       "piano-night": "piyano gecesi",
       "late-wash": "gece yıkaması",

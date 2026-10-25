@@ -415,7 +415,7 @@ export const it = {
     updates: {
       "halloween-theme": {
         title: "halloween nelle stanze",
-        body: "Halloween è arrivato a laundro.cafe. Scegli Halloween dal pulsante dei temi oppure attiva Stagionale per seguire le ricorrenze.",
+        body: "Scegli Halloween dal pulsante dei temi oppure attiva Stagionale per seguire le ricorrenze. Con il tema Halloween, accendi la TV per ascoltare una stazione di musica di Halloween in diretta.",
       },
       "light-appearance": {
         title: "una stanza color lino",
@@ -567,6 +567,7 @@ export const it = {
   },
   tv: {
     stations: {
+      halloween: "halloween",
       "rainy-cafe": "caffè sotto la pioggia",
       "piano-night": "notte al piano",
       "late-wash": "bucato a tarda ora",

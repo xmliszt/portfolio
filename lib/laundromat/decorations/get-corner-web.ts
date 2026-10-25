@@ -31,7 +31,8 @@ export function getCornerWeb(options: {
     });
     return `${screen.x},${screen.y}`;
   }
-  function along(point: IsoPoint, amount: number) {
+  function along(coordinates: { point: IsoPoint; amount: number }) {
+    const { point, amount } = coordinates;
     return {
       x: hub.x + (point.x - hub.x) * amount,
       y: hub.y + (point.y - hub.y) * amount,
@@ -44,8 +45,8 @@ export function getCornerWeb(options: {
     return anchors
       .map((anchor, index) => {
         const next = anchors.at((index + 1) % anchors.length) ?? anchor;
-        const from = along(anchor, radius);
-        const to = along(next, radius);
+        const from = along({ point: anchor, amount: radius });
+        const to = along({ point: next, amount: radius });
         const midpoint = {
           x: (from.x + to.x) / 2,
           y: (from.y + to.y) / 2,

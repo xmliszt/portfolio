@@ -30,6 +30,7 @@ import { playThunderRumble } from "./sounds/play-thunder-rumble";
 import { playTipChime } from "./sounds/play-tip-chime";
 import { playTokenDrop } from "./sounds/play-token-drop";
 import { playTouchGrass } from "./sounds/play-touch-grass";
+import { playToyBoxLaunch } from "./sounds/play-toy-box-launch";
 import { playToyBoxOpen } from "./sounds/play-toy-box-open";
 import { playToyCarLaunch } from "./sounds/play-toy-car-launch";
 import { playToyHoverJets } from "./sounds/play-toy-hover-jets";
@@ -84,6 +85,7 @@ const ONE_SHOTS = {
   "thunder-rumble": playThunderRumble,
   "printer-feed": playPrinterFeed,
   "toy-box-open": playToyBoxOpen,
+  "toy-box-launch": playToyBoxLaunch,
   "toy-car-launch": playToyCarLaunch,
   "toy-thruster": playToyThruster,
   "toy-hover-jets": playToyHoverJets,

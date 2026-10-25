@@ -47,6 +47,7 @@ export function TvDrawing(props: TvDrawingProps) {
   if (face?.target !== "tv") return null;
   const isGlassMoving = tv.on && quality !== "lite";
   const { projection, details } = props;
+  const tunerDetents = Math.max(TUNER_DETENTS, details.stations.length);
   const { position, size } = object;
   const { screen, grille, tuner, volume, power, body } = face.rects;
   const midY = position.y + size.d / 2;
@@ -449,14 +450,14 @@ export function TvDrawing(props: TvDrawingProps) {
           strokeWidth={0.75}
         />
         <g transform={`translate(${tunerCenter.x} ${tunerCenter.y})`}>
-          {Array.from({ length: TUNER_DETENTS }, (_, index) => (
+          {Array.from({ length: tunerDetents }, (_, index) => (
             <line
               key={index}
               x1={0}
               y1={-tunerRadius - 0.5}
               x2={0}
               y2={-tunerRadius - 2}
-              transform={`rotate(${index * (360 / TUNER_DETENTS)})`}
+              transform={`rotate(${index * (360 / tunerDetents)})`}
               className={
                 index < details.stations.length
                   ? "stroke-[var(--lm-ink)]"
@@ -480,7 +481,7 @@ export function TvDrawing(props: TvDrawingProps) {
           <g
             data-lm-motion
             style={{
-              transform: `rotate(${tv.station * (360 / TUNER_DETENTS)}deg)`,
+              transform: `rotate(${tv.station * (360 / tunerDetents)}deg)`,
               transition: "transform 180ms cubic-bezier(0.2, 0.9, 0.3, 1.15)",
             }}
           >

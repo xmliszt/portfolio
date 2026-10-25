@@ -11,7 +11,8 @@ export function getPumpkinShape(options: {
   projection: IsoProjection;
 }) {
   const { position, size } = options.object;
-  function surface(longitude: number, latitude: number) {
+  function surface(coordinates: { longitude: number; latitude: number }) {
+    const { longitude, latitude } = coordinates;
     const radius =
       Math.sin(latitude) * (0.94 + 0.06 * Math.cos(longitude * 10));
     return {
@@ -26,7 +27,10 @@ export function getPumpkinShape(options: {
   const facets = Array.from({ length: 40 * 16 }, (_, index) => {
     const longitude = ((index % 40) * Math.PI) / 20;
     const latitude = (Math.floor(index / 40) * Math.PI) / 16;
-    const middle = surface(longitude + Math.PI / 40, latitude + Math.PI / 32);
+    const middle = surface({
+      longitude: longitude + Math.PI / 40,
+      latitude: latitude + Math.PI / 32,
+    });
     const normal = {
       x: Math.sin(latitude + Math.PI / 32) * Math.cos(longitude + Math.PI / 40),
       y: Math.sin(latitude + Math.PI / 32) * Math.sin(longitude + Math.PI / 40),
@@ -36,10 +40,13 @@ export function getPumpkinShape(options: {
     return {
       points: toSvgPoints(
         [
-          surface(longitude, latitude),
-          surface(longitude + Math.PI / 20, latitude),
-          surface(longitude + Math.PI / 20, latitude + Math.PI / 16),
-          surface(longitude, latitude + Math.PI / 16),
+          surface({ longitude, latitude }),
+          surface({ longitude: longitude + Math.PI / 20, latitude }),
+          surface({
+            longitude: longitude + Math.PI / 20,
+            latitude: latitude + Math.PI / 16,
+          }),
+          surface({ longitude, latitude: latitude + Math.PI / 16 }),
         ].map(project)
       ),
       depth: middle.x + middle.y + middle.z,
@@ -51,12 +58,13 @@ export function getPumpkinShape(options: {
     .toSorted((a, b) => a.depth - b.depth);
   function facePoint(point: ScreenPoint) {
     return project(
-      surface(
-        Math.PI / 4 +
+      surface({
+        longitude:
+          Math.PI / 4 +
           (options.object.facingDeg * Math.PI) / 180 -
           point.x * 0.8,
-        Math.PI * (0.49 + point.y * 0.2)
-      )
+        latitude: Math.PI * (0.49 + point.y * 0.2),
+      })
     );
   }
   function cutout(points: ScreenPoint[]) {
@@ -109,7 +117,7 @@ export function getPumpkinShape(options: {
         Math.sin(latitude) * (Math.cos(longitude) + Math.sin(longitude)) +
           Math.cos(latitude) >
         0.08;
-      const point = project(surface(longitude, latitude));
+      const point = project(surface({ longitude, latitude }));
       return `${step === 0 || !visible ? "M" : "L"}${point.x},${point.y}`;
     }).join(" ");
   });

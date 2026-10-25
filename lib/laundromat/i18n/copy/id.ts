@@ -411,7 +411,7 @@ export const id = {
     updates: {
       "halloween-theme": {
         title: "halloween di kedua ruangan",
-        body: "Halloween telah tiba di laundro.cafe. Pilih Halloween dari tombol tema, atau aktifkan Musiman untuk mengikuti perayaan.",
+        body: "Pilih Halloween dari tombol tema, atau aktifkan Musiman untuk mengikuti perayaan. Saat tema Halloween dipilih, nyalakan TV untuk mendengarkan stasiun musik Halloween secara langsung.",
       },
       "light-appearance": {
         title: "ruangan bernuansa linen",
@@ -563,6 +563,7 @@ export const id = {
   },
   tv: {
     stations: {
+      halloween: "halloween",
       "rainy-cafe": "kafe saat hujan",
       "piano-night": "malam piano",
       "late-wash": "cucian larut malam",

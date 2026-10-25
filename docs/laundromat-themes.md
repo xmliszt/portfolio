@@ -43,4 +43,8 @@ Halloween adds a pumpkin family, pumpkins on the dryer and coffee machine, a clo
 
 Decorations can specify `paintAfter` to render after their supporting object, while the remaining room retains its depth order. The ghost paints after the window frame. The shipped placements keep the flying-car corridor clear; a regression test samples its entire path.
 
-A Halloween YouTube station is a follow-up. Show it only for Halloween, while preserving any station already playing when the visitor changes themes.
+Themes can add `tvStations` ahead of the regular lineup. The first added station is the starting selection when entering that theme with the TV off, including on a fresh page load. Halloween adds Fireplace Warm’s live Halloween station. A playing TV keeps its current lineup until it is turned off; it then adopts the selected theme’s lineup. Manual tuning within an unchanged theme remains selected across power cycles. Saved volume is preserved, and failed or ended streams advance to the next station.
+
+In the lab, Time of day → Override controls both lighting and the toy-box schedule. Set Hour to 20 to trigger the airdrop, then open the box and play the car. Set Hour to 21 for the full exit animation, then back to 20 to replay the delivery. Animation durations still use elapsed real time, including when the simulated hour jumps past the departure window. Turning Override off restores the device clock.
+
+A toy box already shown to a visitor plays its full exit animation when that visitor returns after closing time, including after midnight. Hidden tabs pause the exit animation. Fresh visits outside the delivery window start without a box. Departure has ignition, hover and launch sound cues through the existing sound board, including mute support.

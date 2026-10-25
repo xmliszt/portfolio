@@ -394,7 +394,7 @@ export const ko = {
     updates: {
       "halloween-theme": {
         title: "방에 찾아온 할로윈",
-        body: "laundro.cafe에 할로윈이 찾아왔어요. 테마 버튼에서 할로윈을 고르거나 시즌 설정을 켜서 기념일에 맞는 테마를 즐겨 보세요.",
+        body: "테마 버튼에서 할로윈을 고르거나 시즌 설정을 켜서 기념일에 맞는 테마를 즐겨 보세요. 할로윈 테마에서 TV를 켜면 할로윈 음악을 실시간으로 들을 수 있어요.",
       },
       "light-appearance": {
         title: "리넨 색으로 꾸민 방",
@@ -546,6 +546,7 @@ export const ko = {
   },
   tv: {
     stations: {
+      halloween: "할로윈",
       "rainy-cafe": "비 오는 카페",
       "piano-night": "피아노의 밤",
       "late-wash": "늦은 빨래",

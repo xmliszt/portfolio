@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 
 import type { SceneConfig } from "@/lib/laundromat/scene-config";
 import { advanceToyBox } from "@/lib/laundromat/toy/advance-toy-box";
+import { getToyBoxDate } from "@/lib/laundromat/toy/get-toy-box-date";
 import { getToyBoxWindow } from "@/lib/laundromat/toy/get-toy-box-window";
 import type { ToyBoxState } from "@/lib/laundromat/toy/toy-box-view";
 import { TOY_FLIGHT } from "@/lib/laundromat/toy/toy-flight-timeline";
@@ -10,6 +11,7 @@ import { TOY_STILL_POSES } from "@/lib/laundromat/toy/toy-still-poses";
 export function useToyBox(options: {
   details: SceneConfig["details"]["toyBox"];
   reducedMotion: boolean;
+  hourOverride?: number;
 }) {
   const [state, setState] = useState<ToyBoxState>({
     windowStartedAtMs: undefined,
@@ -20,6 +22,7 @@ export function useToyBox(options: {
     (options.reducedMotion ? 0 : options.details.lidFallMs) +
     options.details.boxFadeMs;
   const reducedMotion = options.reducedMotion;
+  const { hourOverride } = options;
   const tickMs = ["arriving", "opening", "departing"].includes(state.view.kind)
     ? 100
     : 1000;
@@ -28,7 +31,7 @@ export function useToyBox(options: {
     let timeoutId: number | undefined;
     function synchronize() {
       window.clearTimeout(timeoutId);
-      const now = new Date();
+      const now = getToyBoxDate({ now: new Date(), hourOverride });
       setState((previous) =>
         advanceToyBox({
           state: previous,
@@ -56,10 +59,10 @@ export function useToyBox(options: {
       window.removeEventListener("focus", synchronize);
       window.removeEventListener("pageshow", synchronize);
     };
-  }, [openingMs, reducedMotion, tickMs]);
+  }, [openingMs, reducedMotion, tickMs, hourOverride]);
 
   function open() {
-    const now = new Date();
+    const now = getToyBoxDate({ now: new Date(), hourOverride });
     const window = getToyBoxWindow(now);
     if (!window.active) return;
     setState((previous) =>
@@ -75,7 +78,9 @@ export function useToyBox(options: {
   }
 
   function play() {
-    const window = getToyBoxWindow(new Date());
+    const window = getToyBoxWindow(
+      getToyBoxDate({ now: new Date(), hourOverride })
+    );
     if (!window.active) return;
     const runMs = reducedMotion ? TOY_STILL_POSES.totalMs : TOY_FLIGHT.totalMs;
     const nowMs = performance.now();
@@ -88,5 +93,10 @@ export function useToyBox(options: {
     );
   }
 
-  return { view: state.view, open, play };
+  return {
+    view: state.view,
+    paused: state.suspendedAtMs !== undefined,
+    open,
+    play,
+  };
 }

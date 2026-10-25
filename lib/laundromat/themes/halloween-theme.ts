@@ -2,6 +2,14 @@ import type { ThemeDefinition } from "./theme-definition";
 
 export const halloweenTheme = {
   thumbnail: "/laundromat/themes/halloween.jpg",
+  tvStations: [
+    {
+      id: "halloween",
+      videoId: "XQAqEhO8rZQ",
+      channel: "Fireplace Warm",
+      placeholder: false,
+    },
+  ],
   colorScheme: "dark",
   tokens: {
     bg: "#18141e",

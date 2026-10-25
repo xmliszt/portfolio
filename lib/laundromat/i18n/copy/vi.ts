@@ -399,7 +399,7 @@ export const vi = {
     updates: {
       "halloween-theme": {
         title: "halloween trong hai căn phòng",
-        body: "Halloween đã đến laundro.cafe. Chọn Halloween từ nút chủ đề hoặc bật Theo mùa để chủ đề thay đổi theo dịp lễ.",
+        body: "Chọn Halloween từ nút chủ đề hoặc bật Theo mùa để chủ đề thay đổi theo dịp lễ. Khi chọn chủ đề Halloween, bật TV để nghe đài nhạc Halloween phát trực tiếp.",
       },
       "light-appearance": {
         title: "căn phòng màu vải lanh",
@@ -551,6 +551,7 @@ export const vi = {
   },
   tv: {
     stations: {
+      halloween: "halloween",
       "rainy-cafe": "quán cà phê ngày mưa",
       "piano-night": "đêm piano",
       "late-wash": "mẻ giặt khuya",

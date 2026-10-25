@@ -175,6 +175,7 @@ export const SOUND_SAMPLES = {
   },
   "printer-feed": { kind: "synthesized" },
   "toy-box-open": { kind: "synthesized" },
+  "toy-box-launch": { kind: "synthesized" },
   "toy-car-launch": { kind: "synthesized" },
   "toy-thruster": { kind: "synthesized" },
   "toy-hover-jets": { kind: "synthesized" },

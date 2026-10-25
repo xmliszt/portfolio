@@ -387,7 +387,7 @@ export const pl = {
     updates: {
       "halloween-theme": {
         title: "halloween w obu pokojach",
-        body: "Halloween zawitało do laundro.cafe. Wybierz Halloween przyciskiem motywów lub włącz tryb sezonowy, aby motyw zmieniał się na specjalne okazje.",
+        body: "Wybierz Halloween przyciskiem motywów lub włącz tryb sezonowy, aby motyw zmieniał się na specjalne okazje. Z motywem Halloween włącz telewizor, aby posłuchać stacji z halloweenową muzyką na żywo.",
       },
       "light-appearance": {
         title: "pokój w kolorze lnu",
@@ -542,6 +542,7 @@ export const pl = {
   },
   tv: {
     stations: {
+      halloween: "halloween",
       "rainy-cafe": "deszczowa kawiarnia",
       "piano-night": "nocne pianino",
       "late-wash": "późne pranie",

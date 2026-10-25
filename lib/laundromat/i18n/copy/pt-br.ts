@@ -407,7 +407,7 @@ export const ptBR = {
     updates: {
       "halloween-theme": {
         title: "halloween nos dois cômodos",
-        body: "O Halloween chegou ao laundro.cafe. Escolha Halloween no botão de temas ou ative Sazonal para acompanhar as comemorações.",
+        body: "Escolha Halloween no botão de temas ou ative Sazonal para acompanhar as comemorações. Com o tema Halloween, ligue a TV para ouvir uma estação de música de Halloween ao vivo.",
       },
       "light-appearance": {
         title: "um ambiente em linho",
@@ -559,6 +559,7 @@ export const ptBR = {
   },
   tv: {
     stations: {
+      halloween: "halloween",
       "rainy-cafe": "café na chuva",
       "piano-night": "noite de piano",
       "late-wash": "lavagem tardia",

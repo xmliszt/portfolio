@@ -427,7 +427,7 @@ function ThemeWorkbench(props: ThemeWorkbenchProps) {
         pumpkin: objectValues.pumpkin,
         cobweb: objectValues.cobweb,
         machine: objectValues.machine,
-        tv: { ...objectValues.tv, stations: details.tv.stations },
+        tv: { ...details.tv, ...objectValues.tv },
         coffee: objectValues.coffee,
         clock: objectValues.clock,
         plant: objectValues.plant,

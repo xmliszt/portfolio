@@ -1,5 +1,5 @@
 import type { NotebookScript } from "./supabase/notebook-types";
-import type { TvStation } from "./tv/tv-state";
+import type { TvStation, TvStationId } from "./tv/tv-state";
 
 export type IsoPoint = { x: number; y: number; z: number };
 
@@ -167,6 +167,7 @@ export type SceneConfig = {
     };
     tv: {
       stations: TvStation[];
+      initialStationId?: TvStationId;
       stallSeconds: number;
       noSignalMs: number;
       osdSeconds: number;
@@ -597,32 +598,32 @@ export const sceneConfig: SceneConfig = {
       stations: [
         {
           id: "rainy-cafe",
-          videoId: "c0_ejQQcrwI",
-          channel: "Calmed By Nature",
+          videoId: "DSGyEsJ17cI",
+          channel: "Cafe Music BGM channel",
           placeholder: false,
         },
         {
           id: "piano-night",
-          videoId: "8dFExnve2do",
-          channel: "Smooth Piano Jazz",
+          videoId: "6uddGul0oAc",
+          channel: "Cafe Music BGM channel",
           placeholder: false,
         },
         {
           id: "late-wash",
-          videoId: "zW5wpJY1rgQ",
-          channel: "Mimi Lofi Chill",
+          videoId: "JD-kMIpDfnY",
+          channel: "Lofi Girl",
           placeholder: false,
         },
         {
           id: "tape-hiss",
-          videoId: "tiyuRJthHwc",
-          channel: "chill chill journal",
+          videoId: "5yx6BWlEVcY",
+          channel: "Chillhop Music",
           placeholder: false,
         },
         {
           id: "city-at-3am",
-          videoId: "zsvYVVRAk0c",
-          channel: "Nostalgic Synthwave",
+          videoId: "4xDzrJKXOOY",
+          channel: "Lofi Girl",
           placeholder: false,
         },
         {

@@ -413,7 +413,7 @@ export const de = {
     updates: {
       "halloween-theme": {
         title: "halloween in den räumen",
-        body: "Halloween ist im laundro.cafe angekommen. Wähle Halloween über die Themen-Schaltfläche oder aktiviere Saisonal für den passenden Anlass.",
+        body: "Wähle Halloween über die Themen-Schaltfläche oder aktiviere Saisonal für den passenden Anlass. Mit dem Halloween-Thema startet der Fernseher mit einem Live-Sender für Halloween-Musik.",
       },
       "light-appearance": {
         title: "ein raum in leinen",
@@ -565,6 +565,7 @@ export const de = {
   },
   tv: {
     stations: {
+      halloween: "halloween",
       "rainy-cafe": "café im regen",
       "piano-night": "klaviernacht",
       "late-wash": "späte wäsche",

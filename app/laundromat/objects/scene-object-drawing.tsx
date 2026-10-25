@@ -199,6 +199,8 @@ export function SceneObjectDrawing(props: SceneObjectDrawingProps) {
             {...shared}
             view={views.toyBox}
             details={details.toyBox}
+            paused={views.toyBoxPaused}
+            silent={views.hidden}
           />
         );
       }

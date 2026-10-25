@@ -370,7 +370,7 @@ export const zhHans = {
     updates: {
       "halloween-theme": {
         title: "房间里的万圣节",
-        body: "laundro.cafe迎来了万圣节。点开主题按钮选择万圣节，或开启季节模式，让主题随节日变化。",
+        body: "点开主题按钮选择万圣节，或开启季节模式，让主题随节日变化。使用万圣节主题时，打开电视就能收听万圣节音乐直播。",
       },
       "light-appearance": {
         title: "亚麻色的房间",
@@ -522,6 +522,7 @@ export const zhHans = {
   },
   tv: {
     stations: {
+      halloween: "万圣节",
       "rainy-cafe": "雨天咖啡馆",
       "piano-night": "钢琴之夜",
       "late-wash": "深夜洗衣",

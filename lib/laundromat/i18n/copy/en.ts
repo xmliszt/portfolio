@@ -414,7 +414,7 @@ export const en = {
     updates: {
       "halloween-theme": {
         title: "halloween in the rooms",
-        body: "Halloween has arrived at laundro.cafe. Choose Halloween from the theme button, or turn on Seasonal to follow the occasion.",
+        body: "Choose Halloween from the theme button, or turn on Seasonal to follow the occasion. With Halloween selected, turn on the TV for a live Halloween music station.",
       },
       "light-appearance": {
         title: "a linen room theme",
@@ -566,6 +566,7 @@ export const en = {
   },
   tv: {
     stations: {
+      halloween: "halloween",
       "rainy-cafe": "rainy café",
       "piano-night": "piano night",
       "late-wash": "late wash",

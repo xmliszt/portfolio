@@ -395,7 +395,7 @@ export const ja = {
     updates: {
       "halloween-theme": {
         title: "お部屋もハロウィンに",
-        body: "laundro.cafeにハロウィンがやってきました。テーマボタンからハロウィンを選ぶか、季節に合わせる設定をオンにして行事に合わせた部屋を楽しめます。",
+        body: "テーマボタンからハロウィンを選ぶか、季節に合わせる設定をオンにして行事に合わせた部屋を楽しめます。ハロウィンのテーマでテレビをつけると、ハロウィン音楽のライブ配信が流れます。",
       },
       "light-appearance": {
         title: "リネン色の部屋",
@@ -547,6 +547,7 @@ export const ja = {
   },
   tv: {
     stations: {
+      halloween: "ハロウィン",
       "rainy-cafe": "雨のカフェ",
       "piano-night": "ピアノの夜",
       "late-wash": "夜更けの洗濯",

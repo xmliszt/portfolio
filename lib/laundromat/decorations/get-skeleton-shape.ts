@@ -64,7 +64,8 @@ export function getSkeletonShape(options: {
     radius: IsoPoint;
     material: Material;
   }) {
-    function point(longitude: number, latitude: number) {
+    function point(coordinates: { longitude: number; latitude: number }) {
+      const { longitude, latitude } = coordinates;
       return world({
         x:
           options.center.x +
@@ -88,10 +89,13 @@ export function getSkeletonShape(options: {
       face({
         material: options.material,
         points: [
-          point(longitude, latitude),
-          point(longitude, latitude + latitudeStep),
-          point(longitude + longitudeStep, latitude + latitudeStep),
-          point(longitude + longitudeStep, latitude),
+          point({ longitude, latitude }),
+          point({ longitude, latitude: latitude + latitudeStep }),
+          point({
+            longitude: longitude + longitudeStep,
+            latitude: latitude + latitudeStep,
+          }),
+          point({ longitude: longitude + longitudeStep, latitude }),
         ],
       });
     }
@@ -126,7 +130,8 @@ export function getSkeletonShape(options: {
       y: axis.z * u.x - axis.x * u.z,
       z: axis.x * u.y - axis.y * u.x,
     };
-    function rim(center: IsoPoint, angle: number) {
+    function rim(coordinates: { center: IsoPoint; angle: number }) {
+      const { center, angle } = coordinates;
       return {
         x:
           center.x +
@@ -144,10 +149,10 @@ export function getSkeletonShape(options: {
       face({
         material: options.material ?? "bone",
         points: [
-          rim(from, angle),
-          rim(from, angle + Math.PI / 4),
-          rim(to, angle + Math.PI / 4),
-          rim(to, angle),
+          rim({ center: from, angle }),
+          rim({ center: from, angle: angle + Math.PI / 4 }),
+          rim({ center: to, angle: angle + Math.PI / 4 }),
+          rim({ center: to, angle }),
         ],
       });
     }

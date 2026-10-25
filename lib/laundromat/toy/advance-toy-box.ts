@@ -1,4 +1,5 @@
 import { getToyBoxWindow } from "./get-toy-box-window";
+import { resumeToyBox } from "./resume-toy-box";
 import type { ToyBoxState } from "./toy-box-view";
 import { TOY_DELIVERY_TIMING } from "./toy-delivery-timing";
 
@@ -10,7 +11,14 @@ export function advanceToyBox(options: {
   reducedMotion: boolean;
   visible: boolean;
 }): ToyBoxState {
-  const { state, nowMs } = options;
+  const { nowMs } = options;
+  if (!options.visible) {
+    return options.state.view.kind === "hidden" ||
+      options.state.suspendedAtMs !== undefined
+      ? options.state
+      : { ...options.state, suspendedAtMs: nowMs };
+  }
+  const state = resumeToyBox({ state: options.state, nowMs });
   const window = getToyBoxWindow(options.now);
   const { view } = state;
   if (window.active) {
@@ -47,14 +55,7 @@ export function advanceToyBox(options: {
   }
   if (view.kind === "hidden") return state;
   if (
-    !options.visible ||
-    options.now.getTime() >=
-      window.endMs +
-        (options.reducedMotion
-          ? TOY_DELIVERY_TIMING.reducedDepartureMs
-          : TOY_DELIVERY_TIMING.departureMs) ||
-    state.windowStartedAtMs !== window.startMs ||
-    options.now.getTime() < window.startMs ||
+    options.now.getTime() < (state.windowStartedAtMs ?? window.startMs) ||
     view.kind === "arriving"
   ) {
     return {
@@ -76,7 +77,7 @@ export function advanceToyBox(options: {
     openingStartedAtMs: undefined,
     view: {
       kind: "departing",
-      startedAtMs: nowMs - (options.now.getTime() - window.endMs),
+      startedAtMs: nowMs,
       contents: (() => {
         switch (view.kind) {
           case "closed":

@@ -377,7 +377,7 @@ export const nl = {
     updates: {
       "halloween-theme": {
         title: "halloween in beide kamers",
-        body: "Halloween is aangekomen bij laundro.cafe. Kies Halloween via de themaknop of zet Seizoensgebonden aan om speciale gelegenheden te volgen.",
+        body: "Kies Halloween via de themaknop of zet Seizoensgebonden aan om speciale gelegenheden te volgen. Zet met het Halloween-thema de tv aan voor een livezender met Halloweenmuziek.",
       },
       "light-appearance": {
         title: "een kamer in linnen",
@@ -529,6 +529,7 @@ export const nl = {
   },
   tv: {
     stations: {
+      halloween: "halloween",
       "rainy-cafe": "regenachtig café",
       "piano-night": "pianoavond",
       "late-wash": "late was",

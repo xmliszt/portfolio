@@ -24,6 +24,7 @@ export const SOUND_NAMES = [
   "thunder-rumble",
   "printer-feed",
   "toy-box-open",
+  "toy-box-launch",
   "toy-car-launch",
   "toy-thruster",
   "toy-hover-jets",

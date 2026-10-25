@@ -10,10 +10,28 @@ export function applySceneTheme(options: {
 }) {
   const { scene, bedroom, theme } = options;
   const existingIds = new Set(scene.objects.map((object) => object.id));
+  const details = { ...scene.details, ...theme.details };
+  const themeStations = theme.tvStations ?? [];
   return {
     scene: {
       ...scene,
-      details: { ...scene.details, ...theme.details },
+      details: {
+        ...details,
+        tv:
+          themeStations.length === 0
+            ? details.tv
+            : {
+                ...details.tv,
+                initialStationId: themeStations.at(0)?.id,
+                stations: [
+                  ...themeStations,
+                  ...details.tv.stations.filter(
+                    (station) =>
+                      !themeStations.some((extra) => extra.id === station.id)
+                  ),
+                ],
+              },
+      },
       tokens: { ...scene.tokens, ...theme.tokens },
       light: {
         ...scene.light,
