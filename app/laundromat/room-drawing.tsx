@@ -57,6 +57,15 @@ export function RoomDrawing(props: RoomDrawingProps) {
     ({ object }) => object.id !== props.hiddenObjectId
   );
 
+  const isToyInTransit =
+    props.views.toyBox.kind === "arriving" ||
+    props.views.toyBox.kind === "departing";
+  const stationaryObjects = visibleObjects.filter(
+    ({ object }) => object.kind !== "toy-box" || !isToyInTransit
+  );
+  const movingObjects = visibleObjects.filter(
+    ({ object }) => object.kind === "toy-box" && isToyInTransit
+  );
   const objectProps = {
     projection: layout.projection,
     highlightedId: props.highlightedId,
@@ -124,17 +133,24 @@ export function RoomDrawing(props: RoomDrawingProps) {
       {timeOfDay !== undefined && (
         <RoomLight
           windowLights={windowLights}
-          objects={visibleObjects}
+          objects={stationaryObjects}
           timeOfDay={timeOfDay}
           projection={layout.projection}
           config={config}
         />
       )}
-      {visibleObjects.map((laidOut) => (
+      {stationaryObjects.map((laidOut) => (
         <Fragment key={laidOut.object.id}>
           <SceneObjectDrawing laidOut={laidOut} {...objectProps} />
           {renderFaceLight(laidOut)}
         </Fragment>
+      ))}
+      {movingObjects.map((laidOut) => (
+        <SceneObjectDrawing
+          key={laidOut.object.id}
+          laidOut={laidOut}
+          {...objectProps}
+        />
       ))}
       {timeOfDay !== undefined && windowObject !== undefined && (
         <RoomDaylightFill

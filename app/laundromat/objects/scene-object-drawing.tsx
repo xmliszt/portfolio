@@ -24,6 +24,7 @@ import { StoolDrawing } from "./stool-drawing";
 import { TableDrawing } from "./table-drawing";
 import { TipJarDrawing } from "./tip-jar-drawing";
 import { ToyBoxDrawing } from "./toy-box-drawing";
+import { ToyDeliveryDrawing } from "./toy-delivery-drawing";
 import { ToySetDrawing } from "./toy-set-drawing";
 import { TubeDisplayDrawing } from "./tube-display-drawing";
 import { TvDrawing } from "./tv-drawing";
@@ -176,6 +177,19 @@ export function SceneObjectDrawing(props: SceneObjectDrawingProps) {
       );
     }
     case "toy-box":
+      if (views.toyBox.kind === "hidden") return null;
+      if (
+        views.toyBox.kind === "arriving" ||
+        views.toyBox.kind === "departing"
+      ) {
+        return (
+          <ToyDeliveryDrawing
+            {...shared}
+            view={views.toyBox}
+            details={details.toyBox}
+          />
+        );
+      }
       return (
         <ToyBoxDrawing
           {...shared}

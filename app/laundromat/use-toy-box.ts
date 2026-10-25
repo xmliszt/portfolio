@@ -1,64 +1,92 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 
 import type { SceneConfig } from "@/lib/laundromat/scene-config";
-import { TOY_BOX_STORAGE_KEY } from "@/lib/laundromat/toy/toy-box-storage-key";
+import { advanceToyBox } from "@/lib/laundromat/toy/advance-toy-box";
+import { getToyBoxWindow } from "@/lib/laundromat/toy/get-toy-box-window";
+import type { ToyBoxState } from "@/lib/laundromat/toy/toy-box-view";
 import { TOY_FLIGHT } from "@/lib/laundromat/toy/toy-flight-timeline";
 import { TOY_STILL_POSES } from "@/lib/laundromat/toy/toy-still-poses";
 
-import type { ToyBoxView } from "./objects/scene-views";
-
-const OPENED = "opened";
-
-function readIsOpened() {
-  try {
-    return window.localStorage.getItem(TOY_BOX_STORAGE_KEY) === OPENED;
-  } catch {
-    return false;
-  }
-}
-
-function rememberOpened() {
-  try {
-    window.localStorage.setItem(TOY_BOX_STORAGE_KEY, OPENED);
-  } catch {
-    return;
-  }
-}
-
-/** Return the toy box's view, remembered as opened in `localStorage` once this visitor opens it, with `open` to unbox it and `play` to fly the car, which does nothing while a run is under way. */
 export function useToyBox(options: {
   details: SceneConfig["details"]["toyBox"];
   reducedMotion: boolean;
 }) {
-  const [view, setView] = useState<ToyBoxView>({ kind: "closed" });
-  const timerRef = useRef<number>(undefined);
+  const [state, setState] = useState<ToyBoxState>({
+    windowStartedAtMs: undefined,
+    openingStartedAtMs: undefined,
+    view: { kind: "hidden" },
+  });
+  const openingMs =
+    (options.reducedMotion ? 0 : options.details.lidFallMs) +
+    options.details.boxFadeMs;
+  const reducedMotion = options.reducedMotion;
+  const tickMs = ["arriving", "opening", "departing"].includes(state.view.kind)
+    ? 100
+    : 1000;
 
   useEffect(() => {
-    if (readIsOpened()) setView({ kind: "open", runStartedAtMs: -Infinity });
-  }, []);
-
-  useEffect(() => () => window.clearTimeout(timerRef.current), []);
+    let timeoutId: number | undefined;
+    function synchronize() {
+      window.clearTimeout(timeoutId);
+      const now = new Date();
+      setState((previous) =>
+        advanceToyBox({
+          state: previous,
+          now,
+          nowMs: performance.now(),
+          openingMs,
+          reducedMotion,
+          visible: document.visibilityState === "visible",
+        })
+      );
+      if (document.visibilityState === "visible") {
+        timeoutId = window.setTimeout(
+          synchronize,
+          tickMs - (now.getTime() % tickMs)
+        );
+      }
+    }
+    synchronize();
+    document.addEventListener("visibilitychange", synchronize);
+    window.addEventListener("focus", synchronize);
+    window.addEventListener("pageshow", synchronize);
+    return () => {
+      window.clearTimeout(timeoutId);
+      document.removeEventListener("visibilitychange", synchronize);
+      window.removeEventListener("focus", synchronize);
+      window.removeEventListener("pageshow", synchronize);
+    };
+  }, [openingMs, reducedMotion, tickMs]);
 
   function open() {
-    if (view.kind !== "closed") return;
-    rememberOpened();
-    setView({ kind: "opening" });
-    const { lidFallMs, boxFadeMs } = options.details;
-    timerRef.current = window.setTimeout(
-      () => setView({ kind: "open", runStartedAtMs: -Infinity }),
-      (options.reducedMotion ? 0 : lidFallMs) + boxFadeMs
+    const now = new Date();
+    const window = getToyBoxWindow(now);
+    if (!window.active) return;
+    setState((previous) =>
+      previous.view.kind === "closed" &&
+      previous.windowStartedAtMs === window.startMs
+        ? {
+            ...previous,
+            openingStartedAtMs: performance.now(),
+            view: { kind: "opening" },
+          }
+        : previous
     );
   }
 
   function play() {
-    if (view.kind !== "open") return;
-    const runMs = options.reducedMotion
-      ? TOY_STILL_POSES.totalMs
-      : TOY_FLIGHT.totalMs;
+    const window = getToyBoxWindow(new Date());
+    if (!window.active) return;
+    const runMs = reducedMotion ? TOY_STILL_POSES.totalMs : TOY_FLIGHT.totalMs;
     const nowMs = performance.now();
-    if (nowMs - view.runStartedAtMs < runMs) return;
-    setView({ kind: "open", runStartedAtMs: nowMs });
+    setState((previous) =>
+      previous.view.kind === "open" &&
+      previous.windowStartedAtMs === window.startMs &&
+      nowMs - previous.view.runStartedAtMs >= runMs
+        ? { ...previous, view: { kind: "open", runStartedAtMs: nowMs } }
+        : previous
+    );
   }
 
-  return { view, open, play };
+  return { view: state.view, open, play };
 }

@@ -206,6 +206,8 @@ export function LaundromatScene(props: LaundromatSceneProps) {
     reducedMotion: prefersReducedMotion,
   });
   const isToyBoxOpen = toyBox.view.kind === "open";
+  const isToyBoxVisible = toyBox.view.kind !== "hidden";
+  const isToyBoxInteractive = toyBox.view.kind === "closed" || isToyBoxOpen;
   const isToyBoxFocusedRef = useRef(false);
   const isCameraHeld = props.cameraHeld === true;
   const layout = useMemo(
@@ -218,7 +220,7 @@ export function LaundromatScene(props: LaundromatSceneProps) {
               case "air-purifier":
                 return isPurifierRunning;
               case "toy-box":
-                return !isToyBoxOpen;
+                return isToyBoxVisible && !isToyBoxOpen;
               case "toy-set":
                 return isToyBoxOpen;
               case "instant-camera":
@@ -230,7 +232,7 @@ export function LaundromatScene(props: LaundromatSceneProps) {
         },
         unit: SCENE_UNIT_PX,
       }),
-    [config, isPurifierRunning, isToyBoxOpen, isCameraHeld]
+    [config, isPurifierRunning, isToyBoxOpen, isToyBoxVisible, isCameraHeld]
   );
   const searchParams = useSearchParams();
   const focus = parseCameraFocus(searchParams.get("focus"));
@@ -966,6 +968,36 @@ export function LaundromatScene(props: LaundromatSceneProps) {
   );
 
   useEffect(() => {
+    if (isToyBoxInteractive) return;
+    const toyIds = config.objects
+      .filter(
+        (object) => object.kind === "toy-box" || object.kind === "toy-set"
+      )
+      .map((object) => object.id);
+    if (
+      (tooltipId !== undefined && toyIds.includes(tooltipId)) ||
+      (highlightedId !== undefined && toyIds.includes(highlightedId))
+    ) {
+      window.clearTimeout(tooltipTimerRef.current);
+      window.clearTimeout(touchHoldTimerRef.current);
+      setTooltipId((current) =>
+        current !== undefined && toyIds.includes(current) ? undefined : current
+      );
+      setHighlightedId((current) =>
+        current !== undefined && toyIds.includes(current) ? undefined : current
+      );
+    }
+    if (toyBox.view.kind === "hidden" || toyBox.view.kind === "departing")
+      isToyBoxFocusedRef.current = false;
+  }, [
+    isToyBoxInteractive,
+    config.objects,
+    tooltipId,
+    highlightedId,
+    toyBox.view.kind,
+  ]);
+
+  useEffect(() => {
     if (!isToyBoxOpen || !isToyBoxFocusedRef.current) return;
     isToyBoxFocusedRef.current = false;
     if (
@@ -1424,6 +1456,15 @@ export function LaundromatScene(props: LaundromatSceneProps) {
   const tooltip = (() => {
     if (tooltipId === undefined || viewport === undefined) return undefined;
     if (isDialogFocus) return undefined;
+    if (
+      !isToyBoxInteractive &&
+      config.objects.some(
+        (object) =>
+          object.id === tooltipId &&
+          (object.kind === "toy-box" || object.kind === "toy-set")
+      )
+    )
+      return undefined;
     const target = layout.objects
       .flatMap((laidOut) => [
         {
@@ -1630,7 +1671,12 @@ export function LaundromatScene(props: LaundromatSceneProps) {
           config={config}
         />
         {layout.objects.map((laidOut) => {
-          const { id } = laidOut.object;
+          const { id, kind } = laidOut.object;
+          if (
+            (kind === "toy-box" || kind === "toy-set") &&
+            !isToyBoxInteractive
+          )
+            return null;
           const description = describeObject(id);
           if (description === undefined) return null;
           const focusTarget = findFocusTarget({ objectId: id, config });

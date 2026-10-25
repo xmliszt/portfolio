@@ -5,6 +5,7 @@ import type {
   CoinMachinePhase,
   GoldenChargeView,
 } from "@/lib/laundromat/tip/tip-token";
+import type { ToyBoxView } from "@/lib/laundromat/toy/toy-box-view";
 import type { TvState } from "@/lib/laundromat/tv/tv-state";
 import type { WeatherReading } from "@/lib/laundromat/weather/weather-reading";
 
@@ -19,11 +20,6 @@ export type MachineView = {
 export type TvView = { state: TvState; noSignal: boolean };
 
 export type CupView = { full: boolean; steaming: boolean };
-
-export type ToyBoxView =
-  | { kind: "closed" }
-  | { kind: "opening" }
-  | { kind: "open"; runStartedAtMs: number };
 
 export type SceneViews = {
   machines: { [objectId: string]: MachineView };
