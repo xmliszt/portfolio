@@ -226,6 +226,17 @@ const laundromatEntry: AppsListEntry = {
 
 const webApps: AppsListEntry[] = [
   {
+    id: "taboo-ai",
+    name: "Taboo AI",
+    subtitle: "Learn English words by describing them to AI",
+    icon: {
+      light: "/apps/taboo-ai-icon.png",
+      dark: "/apps/taboo-ai-icon.png",
+      alt: "Taboo AI icon",
+    },
+    href: "https://taboo-ai.com",
+  },
+  {
     id: "moire",
     name: "Moiré",
     subtitle: "A personal system for cultivating taste",
@@ -246,17 +257,6 @@ const webApps: AppsListEntry[] = [
       alt: "Lumon Industries icon",
     },
     href: "https://lumon-industries.liyuxuan.dev/",
-  },
-  {
-    id: "taboo-ai",
-    name: "Taboo AI",
-    subtitle: "Learn English words by describing them to AI",
-    icon: {
-      light: "/apps/taboo-ai-icon.png",
-      dark: "/apps/taboo-ai-icon.png",
-      alt: "Taboo AI icon",
-    },
-    href: "https://taboo-ai.com",
   },
   {
     id: "convo-ai",
