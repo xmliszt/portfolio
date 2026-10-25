@@ -54,7 +54,7 @@ export function BoardDialog(props: BoardDialogProps) {
       data-board-dialog
       role="dialog"
       aria-labelledby="board-dialog-heading"
-      className="flex flex-col gap-y-3 rounded-[22px] bg-[var(--lm-panel)] p-3.5 shadow-[0_1px_0_rgb(255_255_255/0.04)_inset,0_1px_2px_rgb(0_0_0/0.5),0_24px_64px_rgb(0_0_0/0.55)]"
+      className="flex flex-col gap-y-3 rounded-[22px] bg-[var(--lm-panel)] p-3.5 [box-shadow:var(--lm-panel-shadow)]"
       style={{ width: BOARD_DIALOG_SIZE_PX.width }}
     >
       <article

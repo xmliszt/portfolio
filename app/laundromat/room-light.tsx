@@ -14,7 +14,6 @@ import { DaylightPatch } from "./daylight-patch";
 
 const POOL_SEGMENTS = 48;
 const POOL_RADIUS_RATIO = 0.36;
-const POOL_PEAK_OPACITY = 0.14;
 
 type RoomLightProps = {
   windowLights: WindowLight[];
@@ -77,7 +76,7 @@ export function RoomLight(props: RoomLightProps) {
           fill={`url(#${id}-pool)`}
           points={toSvgPoints(pool)}
           style={{
-            opacity: timeOfDay.lampIntensity * POOL_PEAK_OPACITY,
+            opacity: timeOfDay.lampIntensity * config.light.lampPoolOpacity,
             ...glide,
           }}
         />

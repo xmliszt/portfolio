@@ -1,6 +1,7 @@
 import { useId } from "react";
 import type { MotionValue } from "motion/react";
 
+import { SceneDecorationDrawing } from "@/app/laundromat/decorations/scene-decoration-drawing";
 import { useLocalWeather } from "@/app/laundromat/local-weather/use-local-weather";
 import { IsoBox } from "@/app/laundromat/objects/iso-box";
 import { WindowDrawing } from "@/app/laundromat/objects/window-drawing";
@@ -30,10 +31,7 @@ import type { CurtainPose } from "./use-curtain-pose";
 const PLANK_WIDTH = 0.42;
 const PLANK_JOINT_STEP = 1.9;
 const SKIRTING_HEIGHT = 0.12;
-const LAMP_GLOW_OPACITY = 0.14;
-const LAMP_FILL = { opacity: 0.2, reach: 5 };
-const POOL_PEAK_OPACITY = 0.2;
-const BED_LIGHT_PEAK_OPACITY = 0.6;
+const LAMP_FILL_REACH = 5;
 const BED_LIGHT_REACH = 2.2;
 
 type BedroomDrawingProps = {
@@ -152,7 +150,7 @@ export function BedroomDrawing(props: BedroomDrawingProps) {
           gradientUnits="userSpaceOnUse"
           cx={lampGlow.x}
           cy={lampGlow.y}
-          r={LAMP_FILL.reach * unit}
+          r={LAMP_FILL_REACH * unit}
         >
           <stop offset={0} stopColor={scene.light.lampColor} />
           <stop
@@ -240,8 +238,18 @@ export function BedroomDrawing(props: BedroomDrawingProps) {
         className="pointer-events-none"
         fill={`url(#${id}-lamp-fill)`}
         points={toSvgPoints(shell)}
-        style={{ opacity: lampIntensity * LAMP_FILL.opacity, ...glide }}
+        style={{ opacity: lampIntensity * lamp.fillOpacity, ...glide }}
       />
+      {bedroom.decorations
+        .filter((object) => object.kind === "cobweb")
+        .map((object) => (
+          <SceneDecorationDrawing
+            key={object.id}
+            object={object}
+            projection={projection}
+            details={scene.details}
+          />
+        ))}
       <WindowDrawing
         laidOut={{
           object: { id: "bedroom-window", kind: "window", ...bedroom.window },
@@ -275,6 +283,18 @@ export function BedroomDrawing(props: BedroomDrawingProps) {
         />
       )}
       <PhotoFrameDrawing frame={bedroom.photoFrame} projection={projection} />
+      {bedroom.decorations
+        .filter(
+          (object) => object.kind === "ghost" || object.kind === "skeleton"
+        )
+        .map((object) => (
+          <SceneDecorationDrawing
+            key={object.id}
+            object={object}
+            projection={projection}
+            details={scene.details}
+          />
+        ))}
 
       {windowLight?.sources.map((source) => (
         <CurtainDaylight
@@ -291,7 +311,7 @@ export function BedroomDrawing(props: BedroomDrawingProps) {
       <g
         transform={floorPlane}
         className="pointer-events-none"
-        style={{ opacity: lampIntensity * POOL_PEAK_OPACITY, ...glide }}
+        style={{ opacity: lampIntensity * lamp.poolOpacity, ...glide }}
       >
         <ellipse
           fill={`url(#${id}-pool)`}
@@ -344,6 +364,16 @@ export function BedroomDrawing(props: BedroomDrawingProps) {
       </g>
 
       <g className="stroke-[var(--lm-line)]">
+        {bedroom.decorations
+          .filter((object) => object.kind === "pumpkin")
+          .map((object) => (
+            <SceneDecorationDrawing
+              key={object.id}
+              object={object}
+              projection={projection}
+              details={scene.details}
+            />
+          ))}
         {box(bedsideTable)}
         <g
           transform={tableFront.transform}
@@ -363,12 +393,12 @@ export function BedroomDrawing(props: BedroomDrawingProps) {
           />
         </g>
         <circle
-          className="pointer-events-none fill-[var(--lm-accent)]"
+          className="pointer-events-none fill-[var(--lm-glow)]"
           filter={`url(#${id}-bloom)`}
           cx={lampGlow.x}
           cy={lampGlow.y}
           r={60}
-          style={{ opacity: lampIntensity * LAMP_GLOW_OPACITY, ...glide }}
+          style={{ opacity: lampIntensity * lamp.glowOpacity, ...glide }}
         />
         <TableLampDrawing
           shape={lampShape}
@@ -391,7 +421,7 @@ export function BedroomDrawing(props: BedroomDrawingProps) {
             reach: BED_LIGHT_REACH,
             fill: `url(#${id}-pool)`,
             style: {
-              opacity: lampIntensity * BED_LIGHT_PEAK_OPACITY,
+              opacity: lampIntensity * lamp.bedLightOpacity,
               ...glide,
             },
           }}
@@ -400,7 +430,7 @@ export function BedroomDrawing(props: BedroomDrawingProps) {
               transform={headboardFront.transform}
               className="pointer-events-none stroke-none"
               style={{
-                opacity: lampIntensity * BED_LIGHT_PEAK_OPACITY,
+                opacity: lampIntensity * lamp.bedLightOpacity,
                 ...glide,
               }}
             >
@@ -438,7 +468,7 @@ export function BedroomDrawing(props: BedroomDrawingProps) {
       <g
         transform={`translate(0 ${-(bed.headboard.position.z + bed.headboard.size.h) * unit}) ${floorPlane}`}
         className="pointer-events-none"
-        style={{ opacity: lampIntensity * BED_LIGHT_PEAK_OPACITY, ...glide }}
+        style={{ opacity: lampIntensity * lamp.bedLightOpacity, ...glide }}
       >
         <clipPath id={`${id}-headboard-top`}>
           <rect

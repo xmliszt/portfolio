@@ -22,8 +22,12 @@ test("returns the newest `count` updates", () => {
 });
 
 test("formats the day for the copy's locale and keeps the ISO date", () => {
-  const [english] = getBoardEntries({ copy: en, count: 1 });
-  const [japanese] = getBoardEntries({ copy: ja, count: 1 });
+  const [english] = getBoardEntries({ copy: en }).filter(
+    (entry) => entry.id === "tip-coin-machine"
+  );
+  const [japanese] = getBoardEntries({ copy: ja }).filter(
+    (entry) => entry.id === "tip-coin-machine"
+  );
   assert.equal(english?.date, "Oct 20");
   assert.equal(japanese?.date, "10月20日");
   assert.equal(english?.isoDate, "2026-10-20");

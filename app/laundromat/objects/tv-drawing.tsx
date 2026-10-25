@@ -271,7 +271,7 @@ export function TvDrawing(props: TvDrawingProps) {
               {thumbnailUrl === undefined || noSignal ? (
                 <rect
                   {...screenBox}
-                  className="fill-[var(--lm-accent)]"
+                  className="fill-[var(--lm-glow)]"
                   opacity={details.screenGlow}
                 />
               ) : (
@@ -372,7 +372,7 @@ export function TvDrawing(props: TvDrawingProps) {
                   maxWidth: captionWidth,
                   maxFontSize: 5,
                 })}
-                className="fill-[var(--lm-accent-hi)]"
+                className="fill-[var(--lm-glow-hi)]"
                 style={{
                   animation: tv.on
                     ? `lm-fade-out ${details.osdSeconds}s ease-out forwards`
@@ -549,7 +549,7 @@ export function TvDrawing(props: TvDrawingProps) {
             r={1.2}
             className={cn(
               "stroke-none",
-              tv.on ? "fill-[var(--lm-accent)]" : "fill-[var(--lm-detail)]"
+              tv.on ? "fill-[var(--lm-glow)]" : "fill-[var(--lm-detail)]"
             )}
           />
         </g>

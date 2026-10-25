@@ -46,6 +46,14 @@ export const id = {
     },
     updateAvailable: "muat ulang untuk laundry terbaru",
   },
+  themes: {
+    heading: "tema",
+    seasonal: "musiman",
+    seasonalOn: "Berubah pada momen khusus",
+    seasonalOff: "Mempertahankan tema pilihanmu",
+    hint: "Pilih tema",
+    names: { classic: "bawaan", light: "linen", halloween: "halloween" },
+  },
   settings: {
     heading: "pengaturan",
     rendering: "tampilan",
@@ -401,6 +409,14 @@ export const id = {
       board: "papan",
     },
     updates: {
+      "halloween-theme": {
+        title: "halloween di kedua ruangan",
+        body: "Halloween telah tiba di laundro.cafe. Pilih Halloween dari tombol tema, atau aktifkan Musiman untuk mengikuti perayaan.",
+      },
+      "light-appearance": {
+        title: "ruangan bernuansa linen",
+        body: "Pilih Linen lewat tombol tema untuk dinding yang lebih hangat dan tombol berwarna kertas. Aktifkan Musiman untuk mengikuti momen khusus atau pertahankan temamu.",
+      },
       "tip-coin-machine": {
         title: "beri tip di mesin koin",
         body: "Kalau mau mendukung laundro.cafe, kamu bisa memberi tip kecil di mesin koin dekat meja. Koinmu jatuh ke dalam toples dan mesin mencetak token untukmu. Masukkan ke mesin cuci atau pengering untuk pesta cuci atau pesta pengeringan yang bisa dilihat semua orang di ruangan. Terima kasih atas dukunganmu.",

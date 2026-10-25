@@ -202,10 +202,10 @@ export function StreetView(props: StreetViewProps) {
     <g data-street strokeLinejoin="round">
       <defs>
         <radialGradient id={`${id}-lamp`}>
-          <stop offset={0} style={{ stopColor: "var(--lm-accent-hi)" }} />
+          <stop offset={0} style={{ stopColor: "var(--lm-glow-hi)" }} />
           <stop
             offset={1}
-            style={{ stopColor: "var(--lm-accent-hi)", stopOpacity: 0 }}
+            style={{ stopColor: "var(--lm-glow-hi)", stopOpacity: 0 }}
           />
         </radialGradient>
       </defs>

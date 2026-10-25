@@ -38,7 +38,7 @@ Our world unit is about 1 m (`COLUMN_RADIUS = 0.06`), and Anatomy's is about 1 s
 - **Look at 4×.** Set the scene `<svg>`'s `viewBox` to a 160 × 100 window over one object in the browser and screenshot it. Anatomy's owner found most faults this way; at 1× the scene hides them.
 
 ## Rules that do not apply
-- **Light theme first.** Anatomy ships light. We ship dark only.
+- **Room themes.** Default, Linen and Halloween have palettes in `lib/laundromat/themes/themes.ts`. Check scene objects in these themes and in daylight and moonlight.
 - **No text in the drawing.** The washer readouts, `No. 1` and `welcome` are text that the objects show, which Anatomy allows (`craft.md`, section 10).
 - **Monochrome.** The window sky, moon and accent readout are deliberate colour.
 - **The card, legend and caption.** Anatomy draws single figures in a card. Ours is a room.

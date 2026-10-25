@@ -10,6 +10,10 @@ export function hasFlatFront(kind: SceneObject["kind"]) {
       return true;
     case "coffee-machine":
     case "tv":
+    case "ghost":
+    case "skeleton":
+    case "pumpkin":
+    case "cobweb":
     case "window":
     case "clock":
     case "tube-display":

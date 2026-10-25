@@ -58,7 +58,7 @@ export function SettingsTicketPaper(props: SettingsTicketPaperProps) {
         </span>
         <span>{copy.settings.ticket.number({ number: ticketNumber })}</span>
       </span>
-      <span className="flex justify-between gap-x-2 opacity-70">
+      <span className="flex justify-between gap-x-2 opacity-80">
         <span>{copy.settings.ticket.title}</span>
         <span>{printedAt}</span>
       </span>
@@ -104,7 +104,7 @@ export function SettingsTicketPaper(props: SettingsTicketPaperProps) {
             .join(" · ")}
         </span>
       </span>
-      <span className="flex justify-between gap-x-2 opacity-70">
+      <span className="flex justify-between gap-x-2 opacity-80">
         <span>
           {UNIT_SYMBOLS[props.temperatureUnit]} ·{" "}
           {qualityLabels[props.renderQuality]}

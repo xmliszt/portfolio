@@ -196,7 +196,7 @@ export function TubeDisplayDrawing(props: TubeDisplayDrawingProps) {
           r={1.3}
           className={cn(
             "stroke-none",
-            isLit ? "fill-[var(--lm-accent)]" : "fill-[var(--lm-detail)]"
+            isLit ? "fill-[var(--lm-glow)]" : "fill-[var(--lm-detail)]"
           )}
         />
       </g>
@@ -249,7 +249,11 @@ export function TubeDisplayDrawing(props: TubeDisplayDrawingProps) {
             />
             <path
               d={glass}
-              className="fill-[var(--lm-recess)] stroke-none"
+              className={
+                tube.lit
+                  ? "fill-[var(--lm-display)] stroke-none"
+                  : "fill-[var(--lm-recess)] stroke-none"
+              }
               fillOpacity={0.85}
             />
             <g transform={digitPlane.transform}>
@@ -287,7 +291,7 @@ export function TubeDisplayDrawing(props: TubeDisplayDrawingProps) {
                   textAnchor="middle"
                   dominantBaseline="central"
                   fontSize={digitHeight}
-                  className="fill-none stroke-[var(--lm-accent)] font-[family-name:var(--lm-font-display)]"
+                  className="fill-none stroke-[var(--lm-glow)] font-[family-name:var(--lm-font-display)]"
                   strokeWidth={digitHeight * 0.16}
                   opacity={details.digitGlow * 0.45}
                 >
@@ -301,7 +305,7 @@ export function TubeDisplayDrawing(props: TubeDisplayDrawingProps) {
                   textAnchor="middle"
                   dominantBaseline="central"
                   fontSize={digitHeight}
-                  className="fill-[var(--lm-accent-hi)] stroke-none font-[family-name:var(--lm-font-display)]"
+                  className="fill-[var(--lm-glow-hi)] stroke-none font-[family-name:var(--lm-font-display)]"
                 >
                   {tube.shown}
                 </text>

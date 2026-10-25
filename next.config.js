@@ -12,6 +12,7 @@ const withPWA = require("next-pwa")({
   skipWaiting: true,
   disable: isDevelopment,
   runtimeCaching: [
+    { urlPattern: /\/(laundromat\/)?themes(\?|$)/, handler: "NetworkOnly" },
     { urlPattern: /\/laundromat\/version$/, handler: "NetworkOnly" },
     {
       urlPattern: /\/laundromat\/weather(\/places)?(\?|$)/,

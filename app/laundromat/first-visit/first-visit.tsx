@@ -970,6 +970,7 @@ export function FirstVisit(props: FirstVisitProps) {
                   projection={projection}
                   light={windowLight}
                   lampOn={isLampOn}
+                  darknessScale={scene.light.darknessScale}
                 />
               </g>
             </svg>

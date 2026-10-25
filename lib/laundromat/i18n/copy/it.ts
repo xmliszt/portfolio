@@ -41,6 +41,14 @@ export const it = {
     },
     updateAvailable: "ricarica per la lavanderia aggiornata",
   },
+  themes: {
+    heading: "temi",
+    seasonal: "stagionale",
+    seasonalOn: "Cambia per le occasioni speciali",
+    seasonalOff: "Mantiene il tema scelto",
+    hint: "Scegli un tema",
+    names: { classic: "predefinito", light: "lino", halloween: "halloween" },
+  },
   settings: {
     heading: "impostazioni",
     rendering: "resa grafica",
@@ -405,6 +413,14 @@ export const it = {
       board: "bacheca",
     },
     updates: {
+      "halloween-theme": {
+        title: "halloween nelle stanze",
+        body: "Halloween è arrivato a laundro.cafe. Scegli Halloween dal pulsante dei temi oppure attiva Stagionale per seguire le ricorrenze.",
+      },
+      "light-appearance": {
+        title: "una stanza color lino",
+        body: "Scegli Lino dal pulsante dei temi per pareti più calde e comandi color carta. Attiva Stagionale per seguire le occasioni speciali oppure mantieni il tuo tema.",
+      },
       "tip-coin-machine": {
         title: "lascia una mancia alla macchina a gettoni",
         body: "Se ti va di sostenere laundro.cafe, lascia una piccola mancia alla macchina a gettoni vicino al bancone. La tua moneta cade nel barattolo e la macchina ti stampa un gettone. Infilalo in una lavatrice o in un'asciugatrice per un lavaggio in festa o un'asciugatura in festa che tutti nella stanza possono vedere. Grazie per il tuo sostegno.",

@@ -41,6 +41,14 @@ export const fr = {
     },
     updateAvailable: "recharge pour la laverie mise à jour",
   },
+  themes: {
+    heading: "thèmes",
+    seasonal: "saisonnier",
+    seasonalOn: "Change pour les occasions spéciales",
+    seasonalOff: "Garde le thème choisi",
+    hint: "Choisissez un thème",
+    names: { classic: "par défaut", light: "lin", halloween: "halloween" },
+  },
   settings: {
     heading: "réglages",
     rendering: "rendu",
@@ -405,6 +413,14 @@ export const fr = {
       board: "panneau",
     },
     updates: {
+      "halloween-theme": {
+        title: "halloween dans les pièces",
+        body: "Halloween est arrivé à laundro.cafe. Choisissez Halloween dans les thèmes ou activez le mode saisonnier pour suivre les occasions.",
+      },
+      "light-appearance": {
+        title: "une pièce couleur lin",
+        body: "Choisissez Lin avec le bouton des thèmes pour des murs plus chauds et des commandes couleur papier. Activez Saisonnier pour suivre les occasions spéciales, ou gardez votre thème.",
+      },
       "tip-coin-machine": {
         title: "laisser un pourboire à la machine à pièces",
         body: "Si tu souhaites soutenir laundro.cafe, laisse un petit pourboire à la machine à pièces près du comptoir. Ta pièce tombe dans le bocal et la machine t’imprime un jeton. Glisse-le dans un lave-linge ou un sèche-linge pour un lavage en fête ou un séchage en fête que tout le monde dans la salle peut voir. Merci pour ton soutien.",

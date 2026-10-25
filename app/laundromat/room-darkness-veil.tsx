@@ -22,7 +22,10 @@ export function RoomDarknessVeil(props: RoomDarknessVeilProps) {
   }).reduce((sum, light) => sum + light.strength, 0);
   const opacity = getRoomDarkness({
     windowStrength,
-    lampLevel: timeOfDay.lampIntensity / config.light.poolIntensity,
+    lampLevel:
+      config.light.poolIntensity > 0
+        ? timeOfDay.lampIntensity / config.light.poolIntensity
+        : 0,
   });
   const outline = [
     { x: 0, y: depth, z: 0 },
@@ -39,7 +42,7 @@ export function RoomDarknessVeil(props: RoomDarknessVeilProps) {
       fill="black"
       points={toSvgPoints(outline)}
       style={{
-        opacity,
+        opacity: opacity * config.light.darknessScale,
         transition: `opacity ${config.sky.timeJumpGlideMs}ms`,
       }}
     />

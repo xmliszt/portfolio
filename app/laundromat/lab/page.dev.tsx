@@ -3,6 +3,8 @@ import { notFound } from "next/navigation";
 
 import { LabLoader } from "./lab-loader";
 
+import "./dialkit.css";
+
 export default function LaundromatLabPage() {
   if (process.env.NODE_ENV !== "development") notFound();
   return (

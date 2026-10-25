@@ -11,38 +11,39 @@ import { LocalWeatherProvider } from "@/app/laundromat/local-weather/local-weath
 import { createFakeRoomSource } from "@/app/laundromat/realtime/create-fake-room-source";
 import { RoomSourceContext } from "@/app/laundromat/realtime/room-source-context";
 import { SoundBoardProvider } from "@/app/laundromat/sound/sound-board-provider";
+import { SceneThemeContext } from "@/app/laundromat/themes/scene-theme-context";
+import { SceneThemeStyle } from "@/app/laundromat/themes/scene-theme-style";
+import { useThemeSchedules } from "@/app/laundromat/themes/use-theme-schedules";
 import { ChargeCheckContext } from "@/app/laundromat/tip/charge-check-context";
 import type { BedroomConfig } from "@/lib/laundromat/first-visit/bedroom-config";
 import { bedroomConfig } from "@/lib/laundromat/first-visit/bedroom-config";
 import { getTimeOfDay } from "@/lib/laundromat/get-time-of-day";
-import type { BasketContents } from "@/lib/laundromat/laundry/get-basket-contents";
+import { en } from "@/lib/laundromat/i18n/copy/en";
 import { detectScript } from "@/lib/laundromat/notebook/detect-script";
 import type { RoomPresence } from "@/lib/laundromat/realtime/room-presence";
 import type { SceneConfig } from "@/lib/laundromat/scene-config";
 import { sceneConfig } from "@/lib/laundromat/scene-config";
+import { applySceneTheme } from "@/lib/laundromat/themes/apply-scene-theme";
+import { parseThemeId } from "@/lib/laundromat/themes/parse-theme-id";
+import { resolveThemeSchedule } from "@/lib/laundromat/themes/resolve-theme-schedule";
+import type { ThemeId } from "@/lib/laundromat/themes/themes";
+import { themes } from "@/lib/laundromat/themes/themes";
 import { GOLDEN_CHARGE_MS } from "@/lib/laundromat/tip/golden-charge-ms";
-import { toCssVariables } from "@/lib/laundromat/to-css-variables";
 import type { WeatherReading } from "@/lib/laundromat/weather/weather-reading";
 import { WEATHER_CONDITIONS } from "@/lib/laundromat/weather/weather-reading";
 
-import type { WorkbenchMachineState } from "./object-workbench";
+import { formatHour } from "./format-hour";
+import { getThemeLabDials } from "./get-theme-lab-dials";
 import { ObjectWorkbench } from "./object-workbench";
 import { SkyPreview } from "./sky-preview";
-
-import "dialkit/styles.css";
+import {
+  WORKBENCH_BASKETS,
+  WORKBENCH_MACHINE_STATES,
+} from "./workbench-options";
 
 const PANEL_OPTIONS = { persist: true, defaultCollapsed: true };
-const SNAP_OPTIONS = ["0.05", "0.1", "0.25", "0.5", "1"];
 const COPIED_NOTICE_MS = 2000;
 const FAKE_NOTEBOOKS_COOKIE = "laundromat_fake_notebooks";
-const VIEWS = ["laundromat", "hamper room"];
-
-function formatHour(hour: number) {
-  const minutes = Math.round(hour * 60) % (24 * 60);
-  const hh = String(Math.floor(minutes / 60)).padStart(2, "0");
-  const mm = String(minutes % 60).padStart(2, "0");
-  return `${hh}:${mm}`;
-}
 
 function getDeviceHour() {
   const now = new Date();
@@ -55,15 +56,6 @@ function snapTo(options: { value: number; step: number }) {
   );
 }
 
-function isoSlider(options: { value: number; max: number }) {
-  return [options.value, 0, options.max, 0.05] satisfies [
-    number,
-    number,
-    number,
-    number,
-  ];
-}
-
 function toWorkbenchMachineState(value: string) {
   return (
     WORKBENCH_MACHINE_STATES.find((state) => state === value) ?? "loadable"
@@ -73,263 +65,6 @@ function toWorkbenchMachineState(value: string) {
 function toWorkbenchBasket(value: string) {
   return WORKBENCH_BASKETS.find((basket) => basket === value) ?? "empty";
 }
-
-const { room, camera, light, sky, details } = sceneConfig;
-
-const placementDials = {
-  snap: { type: "select", options: SNAP_OPTIONS, default: "0.1" },
-  objects: Object.fromEntries(
-    sceneConfig.objects.map((object) => [
-      object.id,
-      {
-        x: isoSlider({ value: object.position.x, max: room.width }),
-        y: isoSlider({ value: object.position.y, max: room.depth }),
-        z: isoSlider({ value: object.position.z, max: room.wallHeight }),
-        _collapsed: true,
-      },
-    ])
-  ),
-} satisfies DialConfig;
-
-const cameraDials = {
-  nearDurationMs: [camera.nearDurationMs, 100, 2000, 10],
-  farDurationMs: [camera.farDurationMs, 100, 2000, 10],
-  focusPaddingRatio: [camera.focusPaddingRatio, 0, 0.45, 0.01],
-  roomPaddingRatio: [camera.roomPaddingRatio, 0, 0.3, 0.01],
-  maxFocusZoom: [camera.maxFocusZoom, 1, 8, 0.1],
-  unfocusedDim: [camera.unfocusedDim, 0, 1, 0.01],
-  ease: {
-    x1: [camera.ease[0], 0, 1, 0.01],
-    y1: [camera.ease[1], -1, 2, 0.01],
-    x2: [camera.ease[2], 0, 1, 0.01],
-    y2: [camera.ease[3], -1, 2, 0.01],
-  },
-  focusShelf: { type: "action", label: "focus shelf" },
-  focusNotebook: { type: "action", label: "focus notebook" },
-  focusRoom: { type: "action", label: "back to room" },
-} satisfies DialConfig;
-
-const lightDials = {
-  poolIntensity: [light.poolIntensity, 0, 2, 0.01],
-  lampOnDaylight: [light.lampOnDaylight, 0, 1, 0.01],
-  daylightPatchStrength: [light.daylightPatchStrength, 0, 1, 0.01],
-  lampColor: light.lampColor,
-  daylightColor: light.daylightColor,
-  daylightFillOpacity: [light.daylightFillOpacity, 0, 0.3, 0.005],
-} satisfies DialConfig;
-
-const timeDials = {
-  override: false,
-  hour: [12, 0, 24, 0.05],
-  lapseSeconds: [30, 5, 120, 1],
-  playDay: { type: "action", label: "play a day" },
-} satisfies DialConfig;
-
-const weatherDials = {
-  condition: {
-    type: "select",
-    options: ["live", ...WEATHER_CONDITIONS],
-    default: "live",
-  },
-  night: false,
-  temperatureC: [18, -20, 40, 1],
-  aqi: [128, 0, 400, 1],
-  city: { type: "text", default: "Lisbon" },
-} satisfies DialConfig;
-
-const skyDials = {
-  sunriseHour: [sky.sunriseHour, 3, 9, 0.05],
-  sunsetHour: [sky.sunsetHour, 16, 22, 0.05],
-  twilightHours: [sky.twilightHours, 0.25, 4, 0.05],
-  goldenHourElevation: [sky.goldenHourElevation, 0.05, 1, 0.01],
-  sunColor: sky.sunColor,
-  sunWarmColor: sky.sunWarmColor,
-  moonColor: sky.moonColor,
-  starColor: sky.starColor,
-  timeJumpGlideMs: [sky.timeJumpGlideMs, 0, 5000, 50],
-  keys: Object.fromEntries(
-    sky.keys.map((key) => [
-      formatHour(key.hour),
-      { top: key.top, horizon: key.horizon },
-    ])
-  ),
-} satisfies DialConfig;
-
-const objectDials = {
-  machine: {
-    doorOpenDeg: [details.machine.doorOpenDeg, 0, 160, 1],
-    doorSwingMs: [details.machine.doorSwingMs, 0, 1200, 10],
-    drumSecondsPerTurn: [details.machine.drumSecondsPerTurn, 0.5, 8, 0.1],
-    tumbleOpacity: [details.machine.tumbleOpacity, 0, 1, 0.01],
-    displayGlow: [details.machine.displayGlow, 0, 1, 0.01],
-    dryerGlow: [details.machine.dryerGlow, 0, 1, 0.01],
-    dialSettleMs: [details.machine.dialSettleMs, 0, 600, 10],
-    _collapsed: true,
-  },
-  tv: {
-    defaultVolumePercent: [details.tv.defaultVolumePercent, 0, 100, 1],
-    volumeStepPercent: [details.tv.volumeStepPercent, 1, 50, 1],
-    powerMs: [details.tv.powerMs, 0, 1200, 10],
-    screenGlow: [details.tv.screenGlow, 0, 1, 0.01],
-    reflection: [details.tv.reflection, 0, 0.5, 0.01],
-    stallSeconds: [details.tv.stallSeconds, 2, 60, 1],
-    noSignalMs: [details.tv.noSignalMs, 0, 5000, 50],
-    osdSeconds: [details.tv.osdSeconds, 0.5, 6, 0.1],
-    staticMs: [details.tv.staticMs, 0, 600, 10],
-    thumbnailDim: [details.tv.thumbnailDim, 0, 0.8, 0.01],
-    scanlineOpacity: [details.tv.scanlineOpacity, 0, 1, 0.01],
-    scanlineDriftSeconds: [details.tv.scanlineDriftSeconds, 0.5, 20, 0.5],
-    vignette: [details.tv.vignette, 0, 1, 0.01],
-    flicker: [details.tv.flicker, 0, 0.3, 0.01],
-    _collapsed: true,
-  },
-  coffee: {
-    flaskPortions: [details.coffee.flaskPortions, 1, 8, 1],
-    brewSeconds: [details.coffee.brewSeconds, 2, 180, 1],
-    hotMinutes: [details.coffee.hotMinutes, 0.1, 30, 0.1],
-    streamFlowMs: [details.coffee.streamFlowMs, 60, 2000, 10],
-    steamOpacity: [details.coffee.steamOpacity, 0, 1, 0.01],
-    steamRiseSeconds: [details.coffee.steamRiseSeconds, 0.5, 8, 0.1],
-    _collapsed: true,
-  },
-  clock: {
-    hourHandWidth: [details.clock.hourHandWidth, 0.5, 4, 0.05],
-    minuteHandWidth: [details.clock.minuteHandWidth, 0.5, 4, 0.05],
-    glassHighlight: [details.clock.glassHighlight, 0, 0.5, 0.01],
-    _collapsed: true,
-  },
-  plant: {
-    swayDeg: [details.plant.swayDeg, 0, 6, 0.05],
-    swayMinSeconds: [details.plant.swayMinSeconds, 1, 20, 0.5],
-    swayMaxSeconds: [details.plant.swayMaxSeconds, 1, 30, 0.5],
-    wiggleMs: [details.plant.wiggleMs, 200, 3000, 50],
-    streakWindowMs: [details.plant.streakWindowMs, 500, 5000, 100],
-    cloverStreak: [details.plant.cloverStreak, 2, 30, 1],
-    maxStreak: [details.plant.maxStreak, 10, 999, 1],
-    _collapsed: true,
-  },
-  shelf: {
-    bookLean: [details.shelf.bookLean, 0, 0.4, 0.01],
-    spineGlow: [details.shelf.spineGlow, 0, 1, 0.01],
-    bookLift: [details.shelf.bookLift, 0, 0.5, 0.01],
-    _collapsed: true,
-  },
-  window: {
-    litWindowOpacity: [details.window.litWindowOpacity, 0, 1, 0.01],
-    rainFallSeconds: [details.window.rainFallSeconds, 0.2, 4, 0.05],
-    snowFallSeconds: [details.window.snowFallSeconds, 1, 20, 0.5],
-    _collapsed: true,
-  },
-  board: {
-    leanDeg: [details.board.leanDeg, 0, 20, 0.5],
-    dayShade: [details.board.dayShade, 0, 0.8, 0.01],
-    frontlight: [details.board.frontlight, 0, 0.5, 0.01],
-    floorSpill: [details.board.floorSpill, 0, 0.6, 0.01],
-    visibleUpdates: [details.board.visibleUpdates, 1, 3, 1],
-    _collapsed: true,
-  },
-  tubeDisplay: {
-    digitGlow: [details.tubeDisplay.digitGlow, 0, 1, 0.01],
-    ghostOpacity: [details.tubeDisplay.ghostOpacity, 0, 0.5, 0.01],
-    rollMs: [details.tubeDisplay.rollMs, 0, 3000, 50],
-    _collapsed: true,
-  },
-  airPurifier: {
-    minAqi: [details.airPurifier.minAqi, 0, 300, 1],
-    fanSeconds: [details.airPurifier.fanSeconds, 0.2, 5, 0.1],
-    airflowOpacity: [details.airPurifier.airflowOpacity, 0, 1, 0.01],
-    _collapsed: true,
-  },
-  toyBox: {
-    lightColor: details.toyBox.lightColor,
-    lidFallMs: [details.toyBox.lidFallMs, 0, 3000, 10],
-    boxFadeMs: [details.toyBox.boxFadeMs, 0, 3000, 10],
-    plumeOpacity: [details.toyBox.plumeOpacity, 0, 1, 0.01],
-    _collapsed: true,
-  },
-  weatherPanel: {
-    glyphMotionSeconds: [details.weatherPanel.glyphMotionSeconds, 0.4, 6, 0.1],
-    _collapsed: true,
-  },
-  notebook: {
-    coverNumber: [details.notebook.coverNumber, 1, 99, 1],
-    liftMs: [details.notebook.liftMs, 0, 1600, 10],
-    coverOpenMs: [details.notebook.coverOpenMs, 0, 2000, 10],
-    openWaitMaxMs: [
-      details.notebook.openWaitMaxMs,
-      details.notebook.liftMs,
-      6000,
-      50,
-    ],
-    coverCrackDeg: [details.notebook.coverCrackDeg, 0, 30, 1],
-    coverBreathDeg: [details.notebook.coverBreathDeg, 0, 15, 0.5],
-    coverBreathMs: [details.notebook.coverBreathMs, 200, 4000, 50],
-    riffleSheets: [details.notebook.riffleSheets, 1, 8, 1],
-    riffleStaggerMs: [details.notebook.riffleStaggerMs, 0, 300, 5],
-    riffleSheetMs: [details.notebook.riffleSheetMs, 100, 1500, 10],
-    turnMs: [details.notebook.turnMs, 100, 2000, 10],
-    curlStrength: [details.notebook.curlStrength, 0, 1, 0.01],
-    inkSpeed: [details.notebook.inkSpeed, 0.25, 8, 0.05],
-    _collapsed: true,
-  },
-} satisfies DialConfig;
-
-const WORKBENCH_MACHINE_STATES = [
-  "loadable",
-  "loaded",
-  "running",
-  "done",
-] satisfies WorkbenchMachineState[];
-const WORKBENCH_BASKETS = [
-  "empty",
-  "dirty",
-  "wet",
-  "folded",
-] satisfies BasketContents[];
-
-const workbenchDials = {
-  object: {
-    type: "select",
-    options: sceneConfig.objects.map((object) => object.id),
-    default: "washer-1",
-  },
-  framing: { type: "select", options: ["room", "focus"], default: "room" },
-  highlight: false,
-  pinTooltip: false,
-  machine: {
-    type: "select",
-    options: WORKBENCH_MACHINE_STATES,
-    default: "loadable",
-  },
-  doorOpen: false,
-  basket: { type: "select", options: WORKBENCH_BASKETS, default: "dirty" },
-} satisfies DialConfig;
-
-const { garments, stage: _stage, motion, ...bedroomLayout } = bedroomConfig;
-
-const hamperRoomDials = {
-  layout: { ...bedroomLayout, _collapsed: true },
-  garments: Object.fromEntries(
-    garments.map((garment) => [
-      garment.kind,
-      {
-        x: garment.at.x,
-        y: garment.at.y,
-        rotateDeg: garment.rotateDeg,
-        scaleX: garment.scale.x,
-        scaleY: garment.scale.y,
-        _collapsed: true,
-      },
-    ])
-  ),
-  motion: { ...motion, _collapsed: true },
-} satisfies DialConfig;
-
-const viewDials = {
-  room: { type: "select", options: VIEWS, default: "laundromat" },
-  replay: { type: "action", label: "replay hamper room" },
-  fakeNotebooks: false,
-} satisfies DialConfig;
 
 const realtimeDials = {
   othersWashing: [0, 0, 5, 1],
@@ -415,49 +150,130 @@ async function checkFakeCharges(attempts: string[]) {
 const exportDials = {
   copyConfig: { type: "action", label: "copy config json" },
   copyHamperRoom: { type: "action", label: "copy hamper room json" },
+  copyTheme: { type: "action", label: "copy theme json" },
+  resetTheme: { type: "action", label: "reset theme controls" },
 } satisfies DialConfig;
 
 export default function LaundromatLab() {
+  const snapshot = useThemeSchedules();
+  const selection = useDialKit(
+    "Theme",
+    {
+      theme: {
+        type: "select",
+        options: [
+          { value: "automatic", label: "Seasonal" },
+          ...Object.entries(en.themes.names).map(([value, label]) => ({
+            value,
+            label,
+          })),
+        ],
+        default: "classic",
+      },
+      simulateDate: false,
+      date: { type: "text", default: "2026-10-31T12:00:00Z" },
+    },
+    { id: "laundromat-lab-theme", ...PANEL_OPTIONS }
+  );
+  const dateMs = Date.parse(selection.date);
+  const validDate = Number.isFinite(dateMs);
+  const scheduled = resolveThemeSchedule({
+    schedules: snapshot.schedules,
+    nowMs: selection.simulateDate && validDate ? dateMs : snapshot.nowMs,
+    availableThemeIds: Object.keys(themes),
+  });
+  const themeId =
+    parseThemeId(
+      selection.theme === "automatic" ? scheduled.themeId : selection.theme
+    ) ?? "classic";
+  return (
+    <ThemeWorkbench
+      key={themeId}
+      themeId={themeId}
+      invalidDate={selection.simulateDate && !validDate}
+    />
+  );
+}
+
+type ThemeWorkbenchProps = {
+  themeId: ThemeId;
+  invalidDate: boolean;
+};
+
+function ThemeWorkbench(props: ThemeWorkbenchProps) {
+  const base = useMemo(
+    () =>
+      applySceneTheme({
+        scene: sceneConfig,
+        bedroom: bedroomConfig,
+        theme: themes[props.themeId],
+      }),
+    [props.themeId]
+  );
+  const { scene: themedScene, bedroom: themedBedroom } = base;
+  const { details, light, sky } = themedScene;
+  const {
+    placementDials,
+    cameraDials,
+    lightDials,
+    timeDials,
+    weatherDials,
+    skyDials,
+    objectDials,
+    workbenchDials,
+    hamperRoomDials,
+    viewDials,
+  } = useMemo(
+    () => getThemeLabDials({ scene: themedScene, bedroom: themedBedroom }),
+    [themedScene, themedBedroom]
+  );
   const router = useRouter();
   const [deviceHour, setDeviceHour] = useState(getDeviceHour);
   const [isPlayingDay, setIsPlayingDay] = useState(false);
   const [isCopied, setIsCopied] = useState(false);
   const [replayCount, setReplayCount] = useState(0);
 
-  const tokens = useDialKit("Tokens", sceneConfig.tokens, {
-    id: "laundromat-lab-tokens",
+  const tokensControl = useDialKitController("Tokens", themedScene.tokens, {
+    id: `laundromat-lab-${props.themeId}-tokens`,
     ...PANEL_OPTIONS,
   });
-  const lightValues = useDialKit("Light", lightDials, {
-    id: "laundromat-lab-light",
+  const tokens = tokensControl.values;
+  const lightValuesControl = useDialKitController("Light", lightDials, {
+    id: `laundromat-lab-${props.themeId}-light`,
     ...PANEL_OPTIONS,
   });
-  const dayTokens = useDialKit("Day tokens", light.dayTokens, {
-    id: "laundromat-lab-day-tokens",
+  const lightValues = lightValuesControl.values;
+  const dayTokensControl = useDialKitController("Day tokens", light.dayTokens, {
+    id: `laundromat-lab-${props.themeId}-day-tokens`,
     ...PANEL_OPTIONS,
   });
-  const cameraValues = useDialKit("Camera", cameraDials, {
-    id: "laundromat-lab-camera",
+  const dayTokens = dayTokensControl.values;
+  const cameraValuesControl = useDialKitController("Camera", cameraDials, {
+    id: `laundromat-lab-${props.themeId}-camera`,
     ...PANEL_OPTIONS,
     onAction: handleCameraAction,
   });
-  const placement = useDialKit("Placement", placementDials, {
-    id: "laundromat-lab-placement",
+  const cameraValues = cameraValuesControl.values;
+  const placementControl = useDialKitController("Placement", placementDials, {
+    id: `laundromat-lab-${props.themeId}-placement`,
     ...PANEL_OPTIONS,
   });
+  const placement = placementControl.values;
   const time = useDialKitController("Time of day", timeDials, {
     id: "laundromat-lab-time",
     ...PANEL_OPTIONS,
     onAction: () => setIsPlayingDay((isPlaying) => !isPlaying),
   });
-  const skyValues = useDialKit("Sky", skyDials, {
-    id: "laundromat-lab-sky",
+  const skyValuesControl = useDialKitController("Sky", skyDials, {
+    id: `laundromat-lab-${props.themeId}-sky`,
     ...PANEL_OPTIONS,
   });
-  const objectValues = useDialKit("Objects", objectDials, {
-    id: "laundromat-lab-objects",
+  const skyValues = skyValuesControl.values;
+  const objectValuesControl = useDialKitController("Objects", objectDials, {
+    id: `laundromat-lab-${props.themeId}-objects`,
     ...PANEL_OPTIONS,
   });
+  const objectValues = objectValuesControl.values;
   const weatherValues = useDialKit("Weather", weatherDials, {
     id: "laundromat-lab-weather",
     ...PANEL_OPTIONS,
@@ -539,10 +355,15 @@ export default function LaundromatLab() {
       script: detectScript(writerDraft),
     });
   }, [fakeRoom, someoneWriting, writerDraft]);
-  const hamperRoom = useDialKit("Hamper room", hamperRoomDials, {
-    id: "laundromat-lab-hamper-room",
-    ...PANEL_OPTIONS,
-  });
+  const hamperRoomControl = useDialKitController(
+    "Hamper room",
+    hamperRoomDials,
+    {
+      id: `laundromat-lab-${props.themeId}-hamper-room`,
+      ...PANEL_OPTIONS,
+    }
+  );
+  const hamperRoom = hamperRoomControl.values;
   useDialKit("Export", exportDials, {
     id: "laundromat-lab-export",
     defaultCollapsed: true,
@@ -558,12 +379,15 @@ export default function LaundromatLab() {
     const step = Number(placement.snap);
     const { ease } = cameraValues;
     return {
-      ...sceneConfig,
+      ...themedScene,
       tokens,
-      objects: sceneConfig.objects.map((object) => {
+      objects: themedScene.objects.map((object) => {
         const position = placement.objects[object.id];
         return {
           ...object,
+          ...(object.kind === "pumpkin"
+            ? { facingDeg: objectValues.pumpkinDirections[object.id] }
+            : {}),
           position: {
             x: snapTo({ value: position.x, step }),
             y: snapTo({ value: position.y, step }),
@@ -572,7 +396,7 @@ export default function LaundromatLab() {
         };
       }),
       camera: {
-        ...sceneConfig.camera,
+        ...themedScene.camera,
         nearDurationMs: cameraValues.nearDurationMs,
         farDurationMs: cameraValues.farDurationMs,
         focusPaddingRatio: cameraValues.focusPaddingRatio,
@@ -598,6 +422,10 @@ export default function LaundromatLab() {
         timeJumpGlideMs: skyValues.timeJumpGlideMs,
       },
       details: {
+        ghost: objectValues.ghost,
+        skeleton: objectValues.skeleton,
+        pumpkin: objectValues.pumpkin,
+        cobweb: objectValues.cobweb,
         machine: objectValues.machine,
         tv: { ...objectValues.tv, stations: details.tv.stations },
         coffee: objectValues.coffee,
@@ -624,15 +452,26 @@ export default function LaundromatLab() {
     placement,
     skyValues,
     objectValues,
+    themedScene,
+    details,
+    sky,
   ]);
 
   const bedroom = useMemo(() => {
     const { _collapsed, ...layout } = hamperRoom.layout;
     const { _collapsed: _motionCollapsed, ...motionValues } = hamperRoom.motion;
     return {
-      ...bedroomConfig,
+      ...themedBedroom,
       ...layout,
-      garments: bedroomConfig.garments.map((garment) => {
+      decorations: themedBedroom.decorations.map((object) => ({
+        ...object,
+        ...(object.kind === "pumpkin"
+          ? { facingDeg: objectValues.pumpkinDirections[object.id] }
+          : {}),
+        position: hamperRoom.decorations[object.id].position,
+        size: hamperRoom.decorations[object.id].size,
+      })),
+      garments: themedBedroom.garments.map((garment) => {
         const dials = hamperRoom.garments[garment.kind];
         return {
           ...garment,
@@ -643,7 +482,7 @@ export default function LaundromatLab() {
       }),
       motion: motionValues,
     } satisfies BedroomConfig;
-  }, [hamperRoom]);
+  }, [hamperRoom, themedBedroom, objectValues.pumpkinDirections]);
 
   const { fakeNotebooks } = view;
   const [sceneKey, setSceneKey] = useState(0);
@@ -702,7 +541,38 @@ export default function LaundromatLab() {
   }
 
   async function handleCopy(action: string) {
-    const value = action === "copyHamperRoom" ? bedroom : config;
+    if (action === "resetTheme") {
+      [
+        tokensControl,
+        lightValuesControl,
+        dayTokensControl,
+        cameraValuesControl,
+        placementControl,
+        skyValuesControl,
+        objectValuesControl,
+        hamperRoomControl,
+      ].forEach((control) => control.resetValues());
+      return;
+    }
+    const value = (() => {
+      if (action === "copyHamperRoom") return bedroom;
+      if (action === "copyTheme")
+        return {
+          ...themes[props.themeId],
+          tokens,
+          dayTokens,
+          light: lightValues,
+          details: config.details,
+          objects: config.objects.filter(
+            (object) =>
+              !sceneConfig.objects.some(
+                (baseObject) => baseObject.id === object.id
+              )
+          ),
+          bedroom,
+        };
+      return config;
+    })();
     await navigator.clipboard.writeText(JSON.stringify(value, null, 2));
     setIsCopied(true);
   }
@@ -714,78 +584,94 @@ export default function LaundromatLab() {
     config.objects[0];
 
   return (
-    <LocalWeatherProvider reading={labWeather}>
-      <div data-laundromat-lab className="grid size-full grid-cols-[360px_1fr]">
-        <style>{`[data-laundromat-lab] { ${toCssVariables(config.tokens)} }`}</style>
-        <div className="flex min-h-0 flex-col gap-y-3 border-r border-[var(--lm-edge)] p-3">
-          <section className="flex min-h-0 flex-1 flex-col gap-y-2">
-            <h2 className="text-[11px] lowercase">
-              workbench · {workbenchObject.id}
-            </h2>
-            <div className="min-h-0 flex-1 rounded-md border border-[var(--lm-edge)]">
-              <ObjectWorkbench
-                config={config}
-                object={workbenchObject}
-                scale={
-                  workbench.framing === "focus" ? config.camera.maxFocusZoom : 1
-                }
-                highlighted={workbench.highlight}
-                tooltipPinned={workbench.pinTooltip}
-                hour={hour}
-                machineState={toWorkbenchMachineState(workbench.machine)}
-                doorOpen={workbench.doorOpen}
-                basket={toWorkbenchBasket(workbench.basket)}
-              />
-            </div>
-          </section>
-          <section className="flex h-48 flex-col gap-y-2">
-            <h2 className="text-[11px] lowercase">time of day</h2>
-            <SkyPreview
-              top={timeOfDay.skyTop}
-              horizon={timeOfDay.skyHorizon}
-              sunProgress={
-                (hour - config.sky.sunriseHour) /
-                (config.sky.sunsetHour - config.sky.sunriseHour)
-              }
-              label={`${formatHour(hour)} · ${timeValues.override ? "override" : "device"}`}
-            />
-          </section>
-          <p
-            role="status"
-            className="h-4 text-[11px] text-[var(--lm-accent-hi)] lowercase"
-          >
-            {isCopied ? "config copied" : ""}
-          </p>
-        </div>
-        <SoundBoardProvider>
-          <RoomSourceContext.Provider value={fakeRoom.source}>
-            <ChargeCheckContext.Provider value={checkFakeCharges}>
-              <div className="min-h-0 min-w-0">
-                {view.room === "hamper room" ? (
-                  <LaundromatEntry
-                    key={`${replayCount}-${sceneKey}`}
-                    config={config}
-                    bedroom={bedroom}
-                    hourOverride={
-                      timeValues.override ? timeValues.hour : undefined
-                    }
-                    ignoreArrivedFlag
-                  />
-                ) : (
-                  <LaundromatScene
-                    key={sceneKey}
-                    config={config}
-                    hourOverride={
-                      timeValues.override ? timeValues.hour : undefined
-                    }
-                  />
-                )}
+    <SceneThemeContext.Provider
+      value={{ kind: "preview", themeId: props.themeId, tokens: config.tokens }}
+    >
+      <LocalWeatherProvider reading={labWeather}>
+        <div
+          data-laundromat-lab
+          className="grid size-full grid-cols-[360px_1fr]"
+        >
+          <SceneThemeStyle config={config} themeId={props.themeId} />
+          <div className="flex min-h-0 flex-col gap-y-3 border-r border-[var(--lm-edge)] p-3">
+            <section className="flex min-h-0 flex-1 flex-col gap-y-2">
+              <h2 className="text-[11px] lowercase">
+                workbench · {workbenchObject.id}
+              </h2>
+              <div className="min-h-0 flex-1 rounded-md border border-[var(--lm-edge)]">
+                <ObjectWorkbench
+                  config={config}
+                  object={workbenchObject}
+                  scale={
+                    workbench.framing === "focus"
+                      ? config.camera.maxFocusZoom
+                      : 1
+                  }
+                  highlighted={workbench.highlight}
+                  tooltipPinned={workbench.pinTooltip}
+                  hour={hour}
+                  machineState={toWorkbenchMachineState(workbench.machine)}
+                  doorOpen={workbench.doorOpen}
+                  basket={toWorkbenchBasket(workbench.basket)}
+                />
               </div>
-            </ChargeCheckContext.Provider>
-          </RoomSourceContext.Provider>
-        </SoundBoardProvider>
-        <DialRoot position="top-right" theme="dark" />
-      </div>
-    </LocalWeatherProvider>
+            </section>
+            <section className="flex h-48 flex-col gap-y-2">
+              <h2 className="text-[11px] lowercase">time of day</h2>
+              <SkyPreview
+                top={timeOfDay.skyTop}
+                horizon={timeOfDay.skyHorizon}
+                sunProgress={
+                  (hour - config.sky.sunriseHour) /
+                  (config.sky.sunsetHour - config.sky.sunriseHour)
+                }
+                label={`${formatHour(hour)} · ${timeValues.override ? "override" : "device"}`}
+              />
+            </section>
+            <p
+              role="status"
+              className="h-4 text-[11px] text-[var(--lm-accent-hi)] lowercase"
+            >
+              {props.invalidDate
+                ? "enter a valid simulation date"
+                : isCopied
+                  ? "config copied"
+                  : `theme: ${en.themes.names[props.themeId]}`}
+            </p>
+          </div>
+          <SoundBoardProvider>
+            <RoomSourceContext.Provider value={fakeRoom.source}>
+              <ChargeCheckContext.Provider value={checkFakeCharges}>
+                <div className="min-h-0 min-w-0">
+                  {view.room === "hamper room" ? (
+                    <LaundromatEntry
+                      key={`${replayCount}-${sceneKey}`}
+                      config={config}
+                      bedroom={bedroom}
+                      hourOverride={
+                        timeValues.override ? timeValues.hour : undefined
+                      }
+                      ignoreArrivedFlag
+                    />
+                  ) : (
+                    <LaundromatScene
+                      key={sceneKey}
+                      config={config}
+                      hourOverride={
+                        timeValues.override ? timeValues.hour : undefined
+                      }
+                    />
+                  )}
+                </div>
+              </ChargeCheckContext.Provider>
+            </RoomSourceContext.Provider>
+          </SoundBoardProvider>
+          <DialRoot
+            position="top-right"
+            theme={themes[props.themeId].colorScheme}
+          />
+        </div>
+      </LocalWeatherProvider>
+    </SceneThemeContext.Provider>
   );
 }

@@ -41,6 +41,14 @@ export const ja = {
     },
     updateAvailable: "再読み込みで更新されたコインランドリーへ",
   },
+  themes: {
+    heading: "テーマ",
+    seasonal: "季節に合わせる",
+    seasonalOn: "行事に合わせて変わります",
+    seasonalOff: "選んだテーマを維持します",
+    hint: "テーマを選ぶ",
+    names: { classic: "標準", light: "リネン", halloween: "ハロウィン" },
+  },
   settings: {
     heading: "設定",
     rendering: "描画",
@@ -385,6 +393,14 @@ export const ja = {
       board: "掲示板",
     },
     updates: {
+      "halloween-theme": {
+        title: "お部屋もハロウィンに",
+        body: "laundro.cafeにハロウィンがやってきました。テーマボタンからハロウィンを選ぶか、季節に合わせる設定をオンにして行事に合わせた部屋を楽しめます。",
+      },
+      "light-appearance": {
+        title: "リネン色の部屋",
+        body: "テーマボタンからリネンを選ぶと、壁や操作パネルが暖かい紙の色になります。「季節に合わせる」をオンにすると行事に合わせて変わり、オフにすると選んだテーマが続きます。",
+      },
       "tip-coin-machine": {
         title: "コインマシンでチップを渡せるように",
         body: "よかったら、カウンター横のコインマシンでチップを渡してlaundro.cafeを応援してください。コインは瓶に入り、マシンがトークンを印刷します。トークンを洗濯機か乾燥機に入れると、洗濯パーティーか乾燥パーティーになり、部屋のみんなにも見えます。あたたかい応援をありがとう。",

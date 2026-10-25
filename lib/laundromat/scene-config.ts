@@ -33,7 +33,15 @@ export type FurnitureKind =
   | "coin-machine"
   | "tip-jar";
 
+export type SceneDecoration = Placement & { paintAfter?: string } & (
+    | { kind: "pumpkin"; lantern: boolean; facingDeg: number }
+    | { kind: "ghost" }
+    | { kind: "skeleton" }
+    | { kind: "cobweb"; plane: "front" | "side" | "corner" }
+  );
+
 export type SceneObject =
+  | SceneDecoration
   | (Placement & { kind: MachineKind; number: number })
   | (Placement & { kind: FurnitureKind });
 
@@ -71,6 +79,18 @@ export type DaylitToken =
   | "detail";
 
 export type SceneTokens = {
+  housingTop: string;
+  housingBottom: string;
+  keyTop: string;
+  keyBottom: string;
+  controlEdge: string;
+  well: string;
+  glow: string;
+  glowHi: string;
+  display: string;
+  accentInk: string;
+  danger: string;
+
   bg: string;
   panel: string;
   edge: string;
@@ -108,6 +128,10 @@ export type SceneConfig = {
     unfocusedDim: number;
   };
   light: {
+    darknessScale: number;
+    lampGlowOpacity: number;
+    lampFalloffOpacity: number;
+    lampPoolOpacity: number;
     poolIntensity: number;
     lampOnDaylight: number;
     daylightPatchStrength: number;
@@ -122,6 +146,16 @@ export type SceneConfig = {
     defaultDryerCycleMinutes: number;
   };
   details: {
+    ghost: { cloth: string; shade: string; swaySeconds: number };
+    skeleton: { bone: string; shade: string; joint: string };
+    pumpkin: {
+      rind: string;
+      stem: string;
+      glow: string;
+      glowIntensity: number;
+      flickerSeconds: number;
+    };
+    cobweb: { color: string; opacity: number; threadWidth: number };
     machine: {
       doorOpenDeg: number;
       doorSwingMs: number;
@@ -265,6 +299,17 @@ export type SceneConfig = {
 
 export const sceneConfig: SceneConfig = {
   tokens: {
+    housingTop: "#1b1c1e",
+    housingBottom: "#151617",
+    keyTop: "#2e3033",
+    keyBottom: "#1c1d1f",
+    controlEdge: "#000000",
+    well: "#0d0e0f",
+    glow: "#ff9a2e",
+    glowHi: "#ffc77a",
+    display: "#0b0805",
+    accentInk: "#1a1209",
+    danger: "#ff6b5e",
     bg: "#0c0d0e",
     panel: "#141516",
     edge: "#222426",
@@ -500,6 +545,10 @@ export const sceneConfig: SceneConfig = {
     unfocusedDim: 0.35,
   },
   light: {
+    darknessScale: 1,
+    lampGlowOpacity: 0.14,
+    lampFalloffOpacity: 0.3,
+    lampPoolOpacity: 0.14,
     poolIntensity: 0.98,
     lampOnDaylight: 0.5,
     daylightPatchStrength: 0.39,
@@ -525,6 +574,16 @@ export const sceneConfig: SceneConfig = {
     defaultDryerCycleMinutes: 5,
   },
   details: {
+    ghost: { cloth: "#e1d9cc", shade: "#a79caa", swaySeconds: 5.5 },
+    skeleton: { bone: "#cec4ac", shade: "#85798c", joint: "#9b7851" },
+    pumpkin: {
+      rind: "#a85224",
+      stem: "#69613b",
+      glow: "#ffbd55",
+      glowIntensity: 0.85,
+      flickerSeconds: 3.7,
+    },
+    cobweb: { color: "#c5b8cc", opacity: 0.55, threadWidth: 0.65 },
     machine: {
       doorOpenDeg: 100,
       doorSwingMs: 590,

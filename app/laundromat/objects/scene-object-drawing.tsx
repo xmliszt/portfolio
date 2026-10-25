@@ -1,3 +1,4 @@
+import { SceneDecorationDrawing } from "@/app/laundromat/decorations/scene-decoration-drawing";
 import type { LaidOutObject } from "@/lib/laundromat/build-scene-layout";
 import type { TimeOfDay } from "@/lib/laundromat/get-time-of-day";
 import { getShelfBookPlacements } from "@/lib/laundromat/notebook/get-shelf-book-placements";
@@ -48,6 +49,17 @@ export function SceneObjectDrawing(props: SceneObjectDrawingProps) {
   const highlighted = props.highlightedId === object.id;
   const shared = { laidOut, projection, highlighted };
   switch (object.kind) {
+    case "ghost":
+    case "skeleton":
+    case "pumpkin":
+    case "cobweb":
+      return (
+        <SceneDecorationDrawing
+          object={object}
+          projection={projection}
+          details={details}
+        />
+      );
     case "washer":
     case "dryer": {
       const view = views.machines[object.id];

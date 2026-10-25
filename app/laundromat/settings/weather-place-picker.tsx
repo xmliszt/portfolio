@@ -189,7 +189,7 @@ export function WeatherPlacePicker() {
             setActiveIndex(0);
           }}
           onKeyDown={handleKeyDown}
-          className="min-w-0 flex-1 truncate bg-transparent text-[13px] leading-5 text-[var(--lm-ink-hi)] outline-none placeholder:text-[var(--lm-ink)] placeholder:opacity-60 [@media(pointer:coarse)]:text-[16px]"
+          className="min-w-0 flex-1 truncate bg-transparent text-[13px] leading-5 text-[var(--lm-ink-hi)] outline-none placeholder:text-[var(--lm-ink)] placeholder:opacity-80 [@media(pointer:coarse)]:text-[16px]"
         />
         <svg
           aria-hidden
@@ -241,7 +241,7 @@ export function WeatherPlacePicker() {
                   <span
                     className={cn(
                       SETTINGS_META_CLASS,
-                      "min-w-0 flex-1 truncate opacity-60"
+                      "min-w-0 flex-1 truncate opacity-80"
                     )}
                   >
                     {detail}
@@ -259,7 +259,7 @@ export function WeatherPlacePicker() {
           {status !== undefined && (
             <p
               role="status"
-              className={cn(SETTINGS_META_CLASS, "m-0 px-2.5 py-2 opacity-60")}
+              className={cn(SETTINGS_META_CLASS, "m-0 px-2.5 py-2 opacity-80")}
             >
               {status}
             </p>

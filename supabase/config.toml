@@ -63,6 +63,7 @@ schema_paths = [
   "./schemas/portfolio/hobby_item_groups.sql",
   "./schemas/portfolio/hobby_items.sql",
   "./schemas/laundro_cafe/schema.sql",
+  "./schemas/laundro_cafe/theme_schedules.sql",
   "./schemas/laundro_cafe/notebooks.sql",
   "./schemas/laundro_cafe/notebook_entries.sql",
   "./schemas/laundro_cafe/notebook_entry_authors.sql",

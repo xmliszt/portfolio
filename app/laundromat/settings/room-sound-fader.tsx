@@ -154,7 +154,7 @@ export function RoomSoundFader(props: RoomSoundFaderProps) {
         <motion.span
           aria-hidden
           style={{ left: capLeft }}
-          className="pointer-events-none absolute top-1/2 -mt-2.5 h-5 w-3.5 rounded-[4px] bg-[repeating-linear-gradient(90deg,#2e3033_0_2px,#1c1d1f_2px_4px)] shadow-[0_0_0_1px_#000,inset_0_1px_0_rgb(255_255_255/0.08),0_2px_4px_rgb(0_0_0/0.6)] transition-[scale] duration-150 peer-focus-visible:shadow-[0_0_0_1px_#000,0_0_0_3px_var(--lm-edge),0_0_0_4px_var(--lm-line)] peer-active:scale-[0.94]"
+          className="pointer-events-none absolute top-1/2 -mt-2.5 h-5 w-3.5 rounded-[4px] bg-[repeating-linear-gradient(90deg,var(--lm-key-top)_0_2px,var(--lm-key-bottom)_2px_4px)] shadow-[0_0_0_1px_var(--lm-control-edge),inset_0_1px_0_rgb(255_255_255/0.08),0_2px_4px_rgb(0_0_0/0.6)] transition-[scale] duration-150 peer-focus-visible:shadow-[0_0_0_1px_var(--lm-control-edge),0_0_0_3px_var(--lm-edge),0_0_0_4px_var(--lm-line)] peer-active:scale-[0.94]"
         >
           <span
             className={cn(
@@ -169,7 +169,7 @@ export function RoomSoundFader(props: RoomSoundFaderProps) {
         className={cn(
           SETTINGS_META_CLASS,
           "text-right whitespace-nowrap transition-[color,opacity] duration-200",
-          props.live ? "text-[var(--lm-accent)]" : "opacity-60"
+          props.live ? "text-[var(--lm-accent)]" : "opacity-80"
         )}
       >
         {percent}%

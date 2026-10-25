@@ -148,7 +148,7 @@ export function RoomSoundsFieldset() {
     <fieldset className="m-0 flex flex-col gap-y-3 border-0 p-0">
       <legend className="sr-only">{copy.settings.roomSounds}</legend>
       <div className="flex items-baseline justify-between">
-        <span aria-hidden className={cn(SETTINGS_META_CLASS, "opacity-60")}>
+        <span aria-hidden className={cn(SETTINGS_META_CLASS, "opacity-80")}>
           {copy.settings.roomSounds}
         </span>
         <button
@@ -201,7 +201,7 @@ export function RoomSoundsFieldset() {
           />
         ))}
       </div>
-      <p className="m-0 font-[family-name:var(--lm-font-display)] text-[13px] leading-5 text-pretty opacity-60">
+      <p className="m-0 font-[family-name:var(--lm-font-display)] text-[13px] leading-5 text-pretty opacity-80">
         {copy.settings.roomSoundsHint}
       </p>
     </fieldset>

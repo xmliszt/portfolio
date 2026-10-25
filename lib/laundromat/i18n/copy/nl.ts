@@ -40,6 +40,14 @@ export const nl = {
     },
     updateAvailable: "vernieuw voor de bijgewerkte wasserette",
   },
+  themes: {
+    heading: "thema’s",
+    seasonal: "seizoensgebonden",
+    seasonalOn: "Wisselt bij bijzondere gelegenheden",
+    seasonalOff: "Behoudt je gekozen thema",
+    hint: "Kies een thema",
+    names: { classic: "standaard", light: "linnen", halloween: "halloween" },
+  },
   settings: {
     heading: "instellingen",
     rendering: "weergave",
@@ -367,6 +375,14 @@ export const nl = {
       board: "bord",
     },
     updates: {
+      "halloween-theme": {
+        title: "halloween in beide kamers",
+        body: "Halloween is aangekomen bij laundro.cafe. Kies Halloween via de themaknop of zet Seizoensgebonden aan om speciale gelegenheden te volgen.",
+      },
+      "light-appearance": {
+        title: "een kamer in linnen",
+        body: "Kies Linnen via de themaknop voor warmere muren en papierkleurige knoppen. Zet Seizoensgebonden aan voor bijzondere gelegenheden of behoud je eigen thema.",
+      },
       "tip-coin-machine": {
         title: "geef een fooi bij de muntautomaat",
         body: "Wil je laundro.cafe steunen? Geef dan een kleine fooi bij de muntautomaat naast de toonbank. Je munt valt in de pot en de automaat print een penning voor je. Gooi hem in een wasmachine of droger voor een wasfeestje of droogfeestje dat iedereen in de ruimte kan zien. Bedankt voor je steun.",

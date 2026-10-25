@@ -41,6 +41,14 @@ export const ko = {
     },
     updateAvailable: "새로고침하면 새로워진 빨래방이 열려요",
   },
+  themes: {
+    heading: "테마",
+    seasonal: "계절에 맞추기",
+    seasonalOn: "특별한 날에 맞춰 바뀌어요",
+    seasonalOff: "선택한 테마를 유지해요",
+    hint: "테마를 선택하세요",
+    names: { classic: "기본", light: "리넨", halloween: "할로윈" },
+  },
   settings: {
     heading: "설정",
     rendering: "화면 표현",
@@ -384,6 +392,14 @@ export const ko = {
       board: "게시판",
     },
     updates: {
+      "halloween-theme": {
+        title: "방에 찾아온 할로윈",
+        body: "laundro.cafe에 할로윈이 찾아왔어요. 테마 버튼에서 할로윈을 고르거나 시즌 설정을 켜서 기념일에 맞는 테마를 즐겨 보세요.",
+      },
+      "light-appearance": {
+        title: "리넨 색으로 꾸민 방",
+        body: "테마 버튼에서 리넨을 고르면 벽과 조작부가 따뜻한 종이색으로 바뀌어요. 계절에 맞추기를 켜면 특별한 날에 맞춰 바뀌고, 끄면 선택한 테마가 유지돼요.",
+      },
       "tip-coin-machine": {
         title: "코인 머신에 팁을 남길 수 있어요",
         body: "laundro.cafe를 응원하고 싶다면 카운터 옆 코인 머신에 작은 팁을 남겨 주세요. 동전은 병에 떨어지고 머신이 토큰을 뽑아 줘요. 토큰을 세탁기나 건조기에 넣으면 방 안의 모두가 볼 수 있는 세탁 파티나 건조 파티가 열려요. 따뜻한 응원 고마워요.",

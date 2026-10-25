@@ -41,6 +41,14 @@ export const es = {
     },
     updateAvailable: "recarga para la lavandería actualizada",
   },
+  themes: {
+    heading: "temas",
+    seasonal: "estacional",
+    seasonalOn: "Cambia en ocasiones especiales",
+    seasonalOff: "Conserva el tema elegido",
+    hint: "Elige un tema",
+    names: { classic: "predeterminado", light: "lino", halloween: "halloween" },
+  },
   settings: {
     heading: "ajustes",
     rendering: "gráficos",
@@ -398,6 +406,14 @@ export const es = {
       board: "tablón",
     },
     updates: {
+      "halloween-theme": {
+        title: "halloween en las habitaciones",
+        body: "Halloween ha llegado a laundro.cafe. Elige Halloween en el botón de temas o activa Temporada para seguir la celebración.",
+      },
+      "light-appearance": {
+        title: "una habitación de lino",
+        body: "Elige Lino con el botón de temas para paredes más cálidas y controles de color papel. Activa Estacional para seguir las ocasiones especiales o conserva tu tema.",
+      },
       "tip-coin-machine": {
         title: "deja una propina en la máquina de monedas",
         body: "Si te apetece apoyar laundro.cafe, deja una pequeña propina en la máquina de monedas junto al mostrador. Tu moneda cae en el frasco y la máquina te imprime una ficha. Échala en una lavadora o secadora para un lavado de fiesta o un secado de fiesta que todos en la sala puedan ver. Gracias por tu apoyo.",

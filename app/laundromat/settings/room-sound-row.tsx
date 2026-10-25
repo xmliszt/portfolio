@@ -3,11 +3,11 @@
 import { useEffect, useRef } from "react";
 import { useSpring } from "motion/react";
 
+import { RotarySwitchDial } from "@/app/laundromat/rotary-switch-dial";
 import { useSoundBoard } from "@/app/laundromat/sound/use-sound-board";
 import type { RoomSoundGroup } from "@/lib/laundromat/audio/room-sound-groups";
 import { cn } from "@/lib/utils";
 
-import { RoomSoundDial } from "./room-sound-dial";
 import { RoomSoundFader } from "./room-sound-fader";
 import { RoomSoundScope } from "./room-sound-scope";
 import { SETTINGS_META_CLASS } from "./settings-meta-class";
@@ -117,14 +117,14 @@ export function RoomSoundRow(props: RoomSoundRowProps) {
           <span
             className={cn(
               SETTINGS_META_CLASS,
-              "opacity-60 @max-[289px]:self-start @max-[289px]:[grid-area:hint]"
+              "opacity-80 @max-[289px]:self-start @max-[289px]:[grid-area:hint]"
             )}
           >
             {props.hint}
           </span>
         </span>
         <span className="@max-[289px]:[grid-area:dial]">
-          <RoomSoundDial
+          <RotarySwitchDial
             turn={turn}
             on={props.on}
             offLabel={props.offLabel}

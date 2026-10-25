@@ -46,6 +46,14 @@ export const vi = {
     },
     updateAvailable: "tải lại để vào tiệm giặt đã cập nhật",
   },
+  themes: {
+    heading: "chủ đề",
+    seasonal: "theo mùa",
+    seasonalOn: "Đổi vào các dịp đặc biệt",
+    seasonalOff: "Giữ chủ đề bạn đã chọn",
+    hint: "Chọn chủ đề",
+    names: { classic: "mặc định", light: "vải lanh", halloween: "halloween" },
+  },
   settings: {
     heading: "cài đặt",
     rendering: "hiển thị",
@@ -389,6 +397,14 @@ export const vi = {
       board: "bảng tin",
     },
     updates: {
+      "halloween-theme": {
+        title: "halloween trong hai căn phòng",
+        body: "Halloween đã đến laundro.cafe. Chọn Halloween từ nút chủ đề hoặc bật Theo mùa để chủ đề thay đổi theo dịp lễ.",
+      },
+      "light-appearance": {
+        title: "căn phòng màu vải lanh",
+        body: "Chọn Vải lanh bằng nút chủ đề để có tường ấm hơn và các nút màu giấy. Bật Theo mùa để đổi vào các dịp đặc biệt, hoặc giữ chủ đề của bạn.",
+      },
       "tip-coin-machine": {
         title: "để lại tiền tip ở máy xu",
         body: "Nếu muốn ủng hộ laundro.cafe, bạn có thể để lại một khoản tip nhỏ ở máy xu cạnh quầy. Đồng xu của bạn rơi vào hũ và máy in cho bạn một token. Thả nó vào máy giặt hoặc máy sấy để mở tiệc giặt hoặc tiệc sấy cho mọi người trong phòng cùng xem. Cảm ơn bạn đã ủng hộ.",

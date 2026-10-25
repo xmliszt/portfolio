@@ -22,9 +22,9 @@ type RoomDarknessProps = {
   projection: IsoProjection;
   light: BedroomWindowLight | undefined;
   lampOn: boolean;
+  darknessScale: number;
 };
 
-/** Darken the whole room by `DARKNESS.peak` times the share of light missing from the window (its `strength`, cut by the curtains to `DARKNESS.throughCloth` where they cover the glass), and not at all while the lamp is on. */
 export function RoomDarkness(props: RoomDarknessProps) {
   const { layout, projection, room } = props;
   const [leader, setLeader] = useState(props.pose.get().rings.at(-1)!);
@@ -68,7 +68,7 @@ export function RoomDarkness(props: RoomDarknessProps) {
         stroke="black"
         strokeWidth={2}
         strokeLinejoin="round"
-        opacity={DARKNESS.peak * (1 - windowLight)}
+        opacity={DARKNESS.peak * props.darknessScale * (1 - windowLight)}
         points={toSvgPoints(room3d)}
       />
     </g>

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useMemo, useRef, useState } from "react";
 import {
   CheckoutElementsProvider,
   ContactDetailsElement,
@@ -13,8 +13,11 @@ import { loadStripe } from "@stripe/stripe-js/pure";
 
 import { useLaundromatCopy } from "@/app/laundromat/i18n/use-laundromat-copy";
 import { SETTINGS_META_CLASS } from "@/app/laundromat/settings/settings-meta-class";
+import { SceneThemeContext } from "@/app/laundromat/themes/scene-theme-context";
 import type { LaundromatLocale } from "@/lib/laundromat/i18n/laundromat-locales";
+import type { SceneTokens } from "@/lib/laundromat/scene-config";
 import { sceneConfig } from "@/lib/laundromat/scene-config";
+import { themes } from "@/lib/laundromat/themes/themes";
 import { STRIPE_LOCALES } from "@/lib/laundromat/tip/stripe-locales";
 import { cn } from "@/lib/utils";
 
@@ -25,8 +28,6 @@ const IS_TEST_MODE = PUBLISHABLE_KEY.startsWith("pk_test_");
 const SKELETON_HEIGHTS_PX = [48, 14, 44, 96, 48];
 const SYSTEM_FONT =
   'system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", sans-serif';
-
-const { tokens } = sceneConfig;
 
 // Stripe.js must load once per page and language, and only when someone opens the checkout.
 const stripeByLocale: {
@@ -42,43 +43,49 @@ function getStripe(locale: LaundromatLocale) {
   return stripe;
 }
 
-const APPEARANCE: Appearance = {
-  theme: "night",
-  variables: {
-    colorPrimary: tokens.accent,
-    colorBackground: "#0f1011",
-    colorText: tokens.inkHi,
-    colorTextSecondary: tokens.ink,
-    colorTextPlaceholder: "#5b6064",
-    colorDanger: "#ff6b5e",
-    fontFamily: SYSTEM_FONT,
-    fontSizeBase: "15px",
-    borderRadius: "8px",
-    spacingUnit: "3px",
-  },
-  rules: {
-    ".Input": {
-      border: `1px solid ${tokens.edge}`,
-      boxShadow: "none",
+function getCheckoutAppearance(options: {
+  tokens: SceneTokens;
+  colorScheme: "dark" | "light";
+}): Appearance {
+  const { tokens } = options;
+  return {
+    theme: options.colorScheme === "dark" ? "night" : "stripe",
+    variables: {
+      colorPrimary: tokens.accent,
+      colorBackground: tokens.panel,
+      colorText: tokens.inkHi,
+      colorTextSecondary: tokens.ink,
+      colorTextPlaceholder: tokens.ink,
+      colorDanger: tokens.danger,
+      fontFamily: SYSTEM_FONT,
+      fontSizeBase: "15px",
+      borderRadius: "8px",
+      spacingUnit: "3px",
     },
-    ".Input:focus": {
-      border: `1px solid ${tokens.accent}`,
-      boxShadow: "none",
+    rules: {
+      ".Input": {
+        border: `1px solid ${tokens.edge}`,
+        boxShadow: "none",
+      },
+      ".Input:focus": {
+        border: `1px solid ${tokens.accent}`,
+        boxShadow: "none",
+      },
+      ".Tab": {
+        border: `1px solid ${tokens.edge}`,
+        backgroundColor: tokens.panel,
+        boxShadow: "none",
+      },
+      ".Tab--selected": {
+        borderColor: tokens.accent,
+        backgroundColor: tokens.faceTop,
+      },
+      ".TabLabel--selected": { color: tokens.inkHi },
+      ".TabIcon--selected": { fill: tokens.inkHi },
+      ".Label": { color: tokens.ink },
     },
-    ".Tab": {
-      border: `1px solid ${tokens.edge}`,
-      backgroundColor: "#0f1011",
-      boxShadow: "none",
-    },
-    ".Tab--selected": {
-      borderColor: tokens.accent,
-      backgroundColor: "#1c1d1f",
-    },
-    ".TabLabel--selected": { color: tokens.inkHi },
-    ".TabIcon--selected": { fill: tokens.inkHi },
-    ".Label": { color: tokens.ink },
-  },
-};
+  };
+}
 
 type StripeCheckoutProps = {
   cents: number;
@@ -95,6 +102,13 @@ type Session =
 
 /** Open a Stripe Checkout Session for a tip of `cents` and show its payment form in the room's colours: a wallet button when the browser has one, then email and card or PayNow, calling `onPaid` once Stripe confirms the payment. */
 export function StripeCheckout(props: StripeCheckoutProps) {
+  const theme = useContext(SceneThemeContext);
+  const tokens = theme?.tokens ?? sceneConfig.tokens;
+  const colorScheme = themes[theme?.themeId ?? "classic"].colorScheme;
+  const appearance = useMemo(
+    () => getCheckoutAppearance({ tokens, colorScheme }),
+    [tokens, colorScheme]
+  );
   const { copy } = useLaundromatCopy();
   const [session, setSession] = useState<Session>({ kind: "loading" });
   const startedRef = useRef<{
@@ -144,7 +158,7 @@ export function StripeCheckout(props: StripeCheckoutProps) {
           stripe={getStripe(copy.locale)}
           options={{
             clientSecret: session.clientSecret,
-            elementsOptions: { appearance: APPEARANCE },
+            elementsOptions: { appearance },
           }}
         >
           <CheckoutForm
@@ -264,14 +278,14 @@ function CheckoutForm(props: CheckoutFormProps) {
       <ContactDetailsElement />
       <PaymentElement options={{ layout: "tabs" }} />
       {error !== undefined && (
-        <p role="alert" className="m-0 text-[13px] text-[#ff6b5e]">
+        <p role="alert" className="m-0 text-[13px] text-[var(--lm-danger)]">
           {error}
         </p>
       )}
       <button
         type="submit"
         disabled={isPaying}
-        className="flex h-12 w-full cursor-pointer items-center justify-center rounded-[8px] bg-[var(--lm-accent)] text-[16px] font-medium text-[#1a1209] shadow-[inset_0_1px_0_rgb(255_255_255/0.35),0_1px_2px_rgb(0_0_0/0.5)] outline-none focus-visible:shadow-[inset_0_0_0_2px_#1a1209,inset_0_0_0_3.5px_var(--lm-accent-hi)] disabled:cursor-default"
+        className="flex h-12 w-full cursor-pointer items-center justify-center rounded-[8px] bg-[var(--lm-accent)] text-[16px] font-medium text-[var(--lm-accent-ink)] shadow-[inset_0_1px_0_rgb(255_255_255/0.35),0_1px_2px_rgb(0_0_0/0.5)] outline-none focus-visible:shadow-[inset_0_0_0_2px_var(--lm-accent-ink),inset_0_0_0_3.5px_var(--lm-accent-hi)] disabled:cursor-default"
       >
         {isPaying ? (
           <span

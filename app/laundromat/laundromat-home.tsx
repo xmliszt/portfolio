@@ -2,15 +2,14 @@ import { Suspense } from "react";
 
 import { getLaundromatCopy } from "@/lib/laundromat/i18n/get-laundromat-copy";
 import type { LaundromatLocale } from "@/lib/laundromat/i18n/laundromat-locales";
-import { sceneConfig } from "@/lib/laundromat/scene-config";
 
 import { LaundromatCopyProvider } from "./i18n/laundromat-copy-provider";
 import { LocalWeatherProvider } from "./local-weather/local-weather-provider";
 import { SupabaseRoomProvider } from "./realtime/supabase-room-provider";
 import { RenderQualityProvider } from "./settings/render-quality-provider";
 import { SoundBoardProvider } from "./sound/sound-board-provider";
+import { ThemedLaundromat } from "./themes/themed-laundromat";
 import { LaundromatUpdateProvider } from "./update/laundromat-update-provider";
-import { LaundromatEntry } from "./laundromat-entry";
 import { LaundromatIntro } from "./laundromat-intro";
 import { LaundromatJsonLd } from "./laundromat-json-ld";
 
@@ -34,7 +33,7 @@ export function LaundromatHome(props: LaundromatHomeProps) {
               <SupabaseRoomProvider>
                 <LaundromatUpdateProvider>
                   <LocalWeatherProvider>
-                    <LaundromatEntry config={sceneConfig} />
+                    <ThemedLaundromat />
                   </LocalWeatherProvider>
                 </LaundromatUpdateProvider>
               </SupabaseRoomProvider>

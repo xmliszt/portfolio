@@ -41,6 +41,14 @@ export const de = {
     },
     updateAvailable: "neu laden: Waschsalon aktualisiert",
   },
+  themes: {
+    heading: "Themen",
+    seasonal: "saisonal",
+    seasonalOn: "Wechselt zu besonderen Anlässen",
+    seasonalOff: "Behält dein gewähltes Thema",
+    hint: "Wähle ein Thema",
+    names: { classic: "standard", light: "leinen", halloween: "halloween" },
+  },
   settings: {
     heading: "Einstellungen",
     rendering: "Darstellung",
@@ -403,6 +411,14 @@ export const de = {
       board: "aushang",
     },
     updates: {
+      "halloween-theme": {
+        title: "halloween in den räumen",
+        body: "Halloween ist im laundro.cafe angekommen. Wähle Halloween über die Themen-Schaltfläche oder aktiviere Saisonal für den passenden Anlass.",
+      },
+      "light-appearance": {
+        title: "ein raum in leinen",
+        body: "Wähle Leinen über den Themenknopf für wärmere Wände und papierfarbene Bedienelemente. Schalte Saisonal ein, um besonderen Anlässen zu folgen, oder behalte dein Thema.",
+      },
       "tip-coin-machine": {
         title: "ein Trinkgeld am Münzautomaten",
         body: "Wenn du magst, unterstütze laundro.cafe mit einem kleinen Trinkgeld am Münzautomaten an der Theke. Deine Münze fällt ins Glas, und der Automat druckt dir einen Token. Wirf ihn in eine Waschmaschine oder einen Trockner für eine Waschparty oder Trockenparty, die alle im Raum sehen können. Danke für deine Unterstützung.",

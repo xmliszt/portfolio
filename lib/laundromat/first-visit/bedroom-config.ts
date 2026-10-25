@@ -1,4 +1,8 @@
-import type { IsoPoint, IsoSize } from "@/lib/laundromat/scene-config";
+import type {
+  IsoPoint,
+  IsoSize,
+  SceneDecoration,
+} from "@/lib/laundromat/scene-config";
 
 export type GarmentKind =
   | "tee"
@@ -16,6 +20,7 @@ export type Garment = {
 };
 
 export type BedroomConfig = {
+  decorations: SceneDecoration[];
   stage: { width: number; height: number };
   projection: { unit: number; origin: { x: number; y: number } };
   room: { width: number; depth: number; wallHeight: number };
@@ -40,7 +45,14 @@ export type BedroomConfig = {
     nailRise: number;
   };
   bedsideTable: { position: IsoPoint; size: IsoSize };
-  lamp: { center: { x: number; y: number }; shadeRadius: number };
+  lamp: {
+    center: { x: number; y: number };
+    shadeRadius: number;
+    glowOpacity: number;
+    fillOpacity: number;
+    poolOpacity: number;
+    bedLightOpacity: number;
+  };
   instantCamera: { position: IsoPoint; size: IsoSize };
   bed: {
     headboard: { position: IsoPoint; size: IsoSize };
@@ -126,6 +138,7 @@ export type BedroomConfig = {
 };
 
 export const bedroomConfig: BedroomConfig = {
+  decorations: [],
   stage: { width: 1440, height: 900 },
   projection: { unit: 62, origin: { x: 680, y: 380 } },
   room: { width: 7, depth: 5.5, wallHeight: 4 },
@@ -156,7 +169,14 @@ export const bedroomConfig: BedroomConfig = {
     position: { x: 3.7, y: 0.08, z: 0 },
     size: { w: 0.62, d: 0.55, h: 0.62 },
   },
-  lamp: { center: { x: 4, y: 0.36 }, shadeRadius: 0.25 },
+  lamp: {
+    center: { x: 4, y: 0.36 },
+    shadeRadius: 0.25,
+    glowOpacity: 0.14,
+    fillOpacity: 0.2,
+    poolOpacity: 0.2,
+    bedLightOpacity: 0.6,
+  },
   instantCamera: {
     position: { x: 4.8, y: 1.6, z: 0.68 },
     size: { w: 0.42, d: 0.36, h: 0.32 },

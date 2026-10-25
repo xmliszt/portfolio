@@ -54,6 +54,14 @@ export const pl = {
     },
     updateAvailable: "odśwież — pralnia zaktualizowana",
   },
+  themes: {
+    heading: "motywy",
+    seasonal: "sezonowy",
+    seasonalOn: "Zmienia się na specjalne okazje",
+    seasonalOff: "Zachowuje wybrany motyw",
+    hint: "Wybierz motyw",
+    names: { classic: "domyślny", light: "len", halloween: "halloween" },
+  },
   settings: {
     heading: "ustawienia",
     rendering: "renderowanie",
@@ -377,6 +385,14 @@ export const pl = {
       board: "tablica",
     },
     updates: {
+      "halloween-theme": {
+        title: "halloween w obu pokojach",
+        body: "Halloween zawitało do laundro.cafe. Wybierz Halloween przyciskiem motywów lub włącz tryb sezonowy, aby motyw zmieniał się na specjalne okazje.",
+      },
+      "light-appearance": {
+        title: "pokój w kolorze lnu",
+        body: "Wybierz Len przyciskiem motywów, aby ściany nabrały ciepła, a przyciski koloru papieru. Włącz Sezonowy na specjalne okazje albo zachowaj własny motyw.",
+      },
       "tip-coin-machine": {
         title: "zostaw napiwek w automacie na monety",
         body: "Jeśli chcesz wesprzeć laundro.cafe, zostaw mały napiwek w automacie na monety przy ladzie. Twoja moneta wpada do słoika, a automat drukuje ci żeton. Wrzuć go do pralki lub suszarki, by rozpocząć imprezowe pranie lub imprezowe suszenie, które wszyscy w sali zobaczą. Dziękuję za wsparcie.",

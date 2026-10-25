@@ -60,15 +60,15 @@ export function RoomMixDeck(props: RoomMixDeckProps) {
   }, [playing, still]);
 
   return (
-    <div className="grid grid-cols-[auto_minmax(0,1fr)] items-center gap-x-3 rounded-xl bg-[linear-gradient(180deg,#1b1c1e,#151617)] p-2.5 shadow-[inset_0_0_0_1px_#000,inset_0_1px_0_rgb(255_255_255/0.05),0_1px_0_rgb(255_255_255/0.03)]">
+    <div className="grid grid-cols-[auto_minmax(0,1fr)] items-center gap-x-3 rounded-xl bg-[linear-gradient(180deg,var(--lm-housing-top),var(--lm-housing-bottom))] p-2.5 shadow-[inset_0_0_0_1px_var(--lm-control-edge),inset_0_1px_0_rgb(255_255_255/0.05),0_1px_0_rgb(255_255_255/0.03)]">
       <button
         type="button"
         aria-pressed={props.playing}
         aria-label={props.playing ? props.stopLabel : props.playLabel}
         onClick={props.onToggle}
-        className="relative size-10 cursor-pointer rounded-full bg-[repeating-conic-gradient(#2e3033_0_7deg,#1c1d1f_7deg_14deg)] shadow-[0_0_0_1px_#000,0_2px_4px_rgb(0_0_0/0.6)] transition-[scale] duration-150 outline-none focus-visible:shadow-[0_0_0_1px_#000,0_0_0_3px_var(--lm-line)] active:scale-[0.94]"
+        className="relative size-10 cursor-pointer rounded-full bg-[repeating-conic-gradient(var(--lm-key-top)_0_7deg,var(--lm-key-bottom)_7deg_14deg)] shadow-[0_0_0_1px_var(--lm-control-edge),0_2px_4px_rgb(0_0_0/0.6)] transition-[scale] duration-150 outline-none focus-visible:shadow-[0_0_0_1px_var(--lm-control-edge),0_0_0_3px_var(--lm-line)] active:scale-[0.94]"
       >
-        <span className="absolute inset-[5px] rounded-full bg-[radial-gradient(circle_at_40%_30%,#3a3d40,#202224_70%)] shadow-[inset_0_1px_0_rgb(255_255_255/0.06)]" />
+        <span className="absolute inset-[5px] rounded-full bg-[radial-gradient(circle_at_40%_30%,var(--lm-key-top),var(--lm-key-bottom)_70%)] shadow-[inset_0_1px_0_rgb(255_255_255/0.06)]" />
         <svg
           aria-hidden
           viewBox="0 0 12 12"

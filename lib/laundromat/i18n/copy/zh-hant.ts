@@ -40,6 +40,14 @@ export const zhHant = {
     },
     updateAvailable: "重新整理，進入更新後的自助洗衣店",
   },
+  themes: {
+    heading: "主題",
+    seasonal: "時令",
+    seasonalOn: "隨節日更換主題",
+    seasonalOff: "保留你選擇的主題",
+    hint: "選擇主題",
+    names: { classic: "預設", light: "亞麻", halloween: "萬聖節" },
+  },
   settings: {
     heading: "設定",
     rendering: "畫面",
@@ -359,6 +367,14 @@ export const zhHant = {
       board: "告示板",
     },
     updates: {
+      "halloween-theme": {
+        title: "房間裡的萬聖節",
+        body: "laundro.cafe迎來了萬聖節。點開主題按鈕選擇萬聖節，或開啟季節模式，讓主題隨節日變化。",
+      },
+      "light-appearance": {
+        title: "亞麻色的房間",
+        body: "點選主題按鈕，選擇亞麻，換上暖色牆面和紙色控制項。開啟時令可隨節日更換主題，關閉則保留你的選擇。",
+      },
       "tip-coin-machine": {
         title: "可以在投幣機留下小費",
         body: "如果願意，可以在櫃台旁的投幣機留下小費，支持 laundro.cafe。你的硬幣會落進罐子，機器會為你印出一枚代幣。把它投進洗衣機或烘衣機，來場洗衣派對或烘衣派對，房間裡的每個人都能看見。謝謝你的支持。",
