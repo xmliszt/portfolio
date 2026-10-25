@@ -27,7 +27,7 @@ export function HitTargetButton(props: HitTargetButtonProps) {
       data-hit-target={props.laidOut.object.id}
       aria-label={props.label}
       aria-pressed={props.pressed}
-      className="absolute cursor-pointer bg-transparent outline-none"
+      className="absolute cursor-pointer bg-transparent outline-none focus-visible:bg-[var(--lm-shade-1)]/20"
       style={{
         left: bounds.x,
         top: bounds.y,

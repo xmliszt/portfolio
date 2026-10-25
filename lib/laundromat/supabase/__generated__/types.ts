@@ -153,6 +153,42 @@ export type Database = {
         };
         Relationships: [];
       };
+      theme_schedules: {
+        Row: {
+          enabled: boolean;
+          end_day: number;
+          end_month: number;
+          id: string;
+          priority: number;
+          start_day: number;
+          start_month: number;
+          theme_id: string;
+          time_zone: string;
+        };
+        Insert: {
+          enabled?: boolean;
+          end_day: number;
+          end_month: number;
+          id: string;
+          priority?: number;
+          start_day: number;
+          start_month: number;
+          theme_id: string;
+          time_zone?: string;
+        };
+        Update: {
+          enabled?: boolean;
+          end_day?: number;
+          end_month?: number;
+          id?: string;
+          priority?: number;
+          start_day?: number;
+          start_month?: number;
+          theme_id?: string;
+          time_zone?: string;
+        };
+        Relationships: [];
+      };
       tips: {
         Row: {
           amount_cents: number;

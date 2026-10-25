@@ -4,6 +4,11 @@ import type { MachineKind } from "@/lib/laundromat/scene-config";
 
 export const ja = {
   locale: "ja",
+  decorations: {
+    skeleton: { label: "骸骨：挨拶する" },
+    pumpkin: { label: "かぼちゃ：軽くたたく" },
+    ghost: { label: "おばけ：ばあ！と声をかける" },
+  },
   languageName: "日本語",
   site: {
     name: "laundro.cafe",
@@ -40,6 +45,14 @@ export const ja = {
       afterClaude: " が ❤️ をこめて作りました",
     },
     updateAvailable: "再読み込みで更新されたコインランドリーへ",
+  },
+  themes: {
+    heading: "テーマ",
+    seasonal: "季節に合わせる",
+    seasonalOn: "行事に合わせて変わります",
+    seasonalOff: "選んだテーマを維持します",
+    hint: "テーマを選ぶ",
+    names: { classic: "標準", light: "リネン", halloween: "ハロウィン" },
   },
   settings: {
     heading: "設定",
@@ -385,6 +398,14 @@ export const ja = {
       board: "掲示板",
     },
     updates: {
+      "halloween-theme": {
+        title: "お部屋もハロウィンに",
+        body: "テーマボタンからハロウィンを選ぶか、季節に合わせる設定をオンにして行事に合わせた部屋を楽しめます。ハロウィンのテーマでテレビをつけると、ハロウィン音楽のライブ配信が流れます，飾りをタップすると、ちょっとしたお楽しみが。",
+      },
+      "light-appearance": {
+        title: "リネン色の部屋",
+        body: "テーマボタンからリネンを選ぶと、壁や操作パネルが暖かい紙の色になります。「季節に合わせる」をオンにすると行事に合わせて変わり、オフにすると選んだテーマが続きます。",
+      },
       "tip-coin-machine": {
         title: "コインマシンでチップを渡せるように",
         body: "よかったら、カウンター横のコインマシンでチップを渡してlaundro.cafeを応援してください。コインは瓶に入り、マシンがトークンを印刷します。トークンを洗濯機か乾燥機に入れると、洗濯パーティーか乾燥パーティーになり、部屋のみんなにも見えます。あたたかい応援をありがとう。",
@@ -531,6 +552,7 @@ export const ja = {
   },
   tv: {
     stations: {
+      halloween: "ハロウィン",
       "rainy-cafe": "雨のカフェ",
       "piano-night": "ピアノの夜",
       "late-wash": "夜更けの洗濯",

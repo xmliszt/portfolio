@@ -1,4 +1,8 @@
 export const SOUND_NAMES = [
+  "skeleton-shy",
+  "pumpkin-tap",
+  "ghost-boo",
+
   "door-latch-open",
   "door-latch-close",
   "start-button",
@@ -24,6 +28,7 @@ export const SOUND_NAMES = [
   "thunder-rumble",
   "printer-feed",
   "toy-box-open",
+  "toy-box-launch",
   "toy-car-launch",
   "toy-thruster",
   "toy-hover-jets",

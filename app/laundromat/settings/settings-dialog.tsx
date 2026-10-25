@@ -91,7 +91,7 @@ export function SettingsDialog(props: SettingsDialogProps) {
       role="dialog"
       aria-modal
       aria-labelledby="settings-dialog-heading"
-      className="flex max-h-[calc(100dvh-32px)] w-[min(360px,calc(100vw-32px))] flex-col gap-y-3 rounded-[22px] bg-[var(--lm-panel)] p-3.5 shadow-[0_1px_0_rgb(255_255_255/0.04)_inset,0_1px_2px_rgb(0_0_0/0.5),0_24px_64px_rgb(0_0_0/0.55)]"
+      className="flex max-h-[calc(100dvh-32px)] w-[min(360px,calc(100vw-32px))] flex-col gap-y-3 rounded-[22px] bg-[var(--lm-panel)] p-3.5 [box-shadow:var(--lm-panel-shadow)]"
     >
       <div
         data-settings-scroll
@@ -104,7 +104,7 @@ export function SettingsDialog(props: SettingsDialogProps) {
           {copy.settings.heading}
         </h2>
         <fieldset className="m-0 flex flex-col gap-y-3 border-0 p-0">
-          <legend className={cn(SETTINGS_META_CLASS, "p-0 opacity-60")}>
+          <legend className={cn(SETTINGS_META_CLASS, "p-0 opacity-80")}>
             {copy.settings.rendering}
           </legend>
           <div className="flex flex-col gap-y-1">
@@ -126,14 +126,14 @@ export function SettingsDialog(props: SettingsDialogProps) {
                   <span className="text-[13px] leading-5 lowercase">
                     {options[option].label}
                   </span>
-                  <span className={cn(SETTINGS_META_CLASS, "opacity-60")}>
+                  <span className={cn(SETTINGS_META_CLASS, "opacity-80")}>
                     {options[option].hint}
                   </span>
                 </span>
               </label>
             ))}
           </div>
-          <p className="m-0 font-[family-name:var(--lm-font-display)] text-[13px] leading-5 text-pretty opacity-60">
+          <p className="m-0 font-[family-name:var(--lm-font-display)] text-[13px] leading-5 text-pretty opacity-80">
             {copy.settings.renderingHint}
           </p>
         </fieldset>
@@ -159,7 +159,7 @@ export function SettingsDialog(props: SettingsDialogProps) {
               <Link
                 href={page.path}
                 prefetch={false}
-                className="rounded-sm opacity-60 outline-none hover:text-[var(--lm-ink-hi)] hover:opacity-100 focus-visible:opacity-100 focus-visible:ring-1 focus-visible:ring-[var(--lm-edge)]"
+                className="rounded-sm opacity-80 outline-none hover:text-[var(--lm-ink-hi)] hover:opacity-100 focus-visible:opacity-100 focus-visible:ring-1 focus-visible:ring-[var(--lm-edge)]"
               >
                 {page.title}
               </Link>
@@ -174,7 +174,7 @@ export function SettingsDialog(props: SettingsDialogProps) {
           className="flex h-8 cursor-pointer items-center gap-x-2 rounded-md px-3 text-[13px] text-[var(--lm-ink)] lowercase outline-none hover:text-[var(--lm-ink-hi)] focus-visible:text-[var(--lm-ink-hi)] focus-visible:ring-1 focus-visible:ring-[var(--lm-edge)]"
         >
           {copy.settings.close}
-          <kbd className="rounded px-1 font-[family-name:var(--lm-font-mono)] text-[10px] leading-4 opacity-70 shadow-[inset_0_0_0_1px_var(--lm-edge)]">
+          <kbd className="rounded px-1 font-[family-name:var(--lm-font-mono)] text-[10px] leading-4 opacity-80 shadow-[inset_0_0_0_1px_var(--lm-edge)]">
             esc
           </kbd>
         </button>

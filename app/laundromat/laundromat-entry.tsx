@@ -16,6 +16,7 @@ import { InstantCamera } from "./instant-camera/instant-camera";
 import { SettingsButton } from "./settings/settings-button";
 import { SoundToggle } from "./sound/sound-toggle";
 import { useWeatherSounds } from "./sound/use-weather-sounds";
+import { ThemeButton } from "./themes/theme-button";
 import { PocketButton } from "./tip/pocket-button";
 import { TipProvider } from "./tip/tip-provider";
 import { CameraButton } from "./camera-button";
@@ -159,6 +160,7 @@ export function LaundromatEntry(props: LaundromatEntryProps) {
           <SoundToggle />
           <CameraButton onPickUp={() => setIsCameraOut(true)} />
           <PocketButton />
+          <ThemeButton />
           <SettingsButton />
           <PortfolioLink />
         </div>

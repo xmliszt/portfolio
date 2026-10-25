@@ -7,12 +7,20 @@ import type { GarmentKind } from "@/lib/laundromat/first-visit/bedroom-config";
 import type { LaundromatLocale } from "@/lib/laundromat/i18n/laundromat-locales";
 import type { LeaveEntryFailureReason } from "@/lib/laundromat/notebook/describe-leave-failure";
 import type { MachineKind } from "@/lib/laundromat/scene-config";
+import type { ThemeId } from "@/lib/laundromat/themes/themes";
 import type { TvStationId } from "@/lib/laundromat/tv/tv-state";
 
 type Machine = { kind: MachineKind; number: number };
 
 export const en = {
   locale: "en",
+  decorations: {
+    skeleton: { label: "Skeleton: say hello" },
+    pumpkin: {
+      label: "Pumpkin: give it a tap",
+    },
+    ghost: { label: "Ghost: say boo" },
+  },
   languageName: "English",
   site: {
     name: "laundro.cafe",
@@ -49,6 +57,20 @@ export const en = {
       afterClaude: " with ❤️",
     },
     updateAvailable: "refresh for updated laundromat",
+  },
+  themes: {
+    heading: "themes",
+    seasonal: "seasonal",
+    seasonalOn: "Changes for special occasions",
+    seasonalOff: "Keeps your selected theme",
+    hint: "Choose a theme",
+    names: {
+      classic: "default",
+      light: "linen",
+      halloween: "halloween",
+    } satisfies {
+      [id in ThemeId]: string;
+    },
   },
   settings: {
     heading: "settings",
@@ -397,6 +419,14 @@ export const en = {
       board: "board",
     } satisfies { [tag in BoardTag]: string },
     updates: {
+      "halloween-theme": {
+        title: "halloween in the rooms",
+        body: "Choose Halloween from the theme button, or turn on Seasonal to follow the occasion. With Halloween selected, turn on the TV for a live Halloween music station; tap the decorations for a little surprise.",
+      },
+      "light-appearance": {
+        title: "a linen room theme",
+        body: "Choose Linen from the theme button for warmer walls and paper-colored controls. Turn on Seasonal to follow special occasions, or keep a theme of your own.",
+      },
       "tip-coin-machine": {
         title: "leave a tip at the coin machine",
         body: "If you'd like to support laundro.cafe, leave a small tip at the coin machine by the counter. Your coin drops into the jar and the machine prints you a token. Drop it into a washer or dryer for a party wash or party dry everyone in the room can see. Thank you for your support.",
@@ -543,6 +573,7 @@ export const en = {
   },
   tv: {
     stations: {
+      halloween: "halloween",
       "rainy-cafe": "rainy café",
       "piano-night": "piano night",
       "late-wash": "late wash",

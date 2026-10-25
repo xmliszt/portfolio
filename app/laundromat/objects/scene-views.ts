@@ -22,6 +22,7 @@ export type TvView = { state: TvState; noSignal: boolean };
 export type CupView = { full: boolean; steaming: boolean };
 
 export type SceneViews = {
+  decorationReactions?: { [id: string]: number };
   machines: { [objectId: string]: MachineView };
   tv: TvView;
   coffee: CoffeePhase;
@@ -33,6 +34,7 @@ export type SceneViews = {
   tubeRollCount: number;
   weather: WeatherReading | undefined;
   toyBox: ToyBoxView;
+  toyBoxPaused?: boolean;
   coinMachine: CoinMachinePhase;
   coinMachineScreen: string;
   tipJar: { coinCount: number };

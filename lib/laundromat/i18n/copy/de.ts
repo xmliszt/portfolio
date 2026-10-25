@@ -4,6 +4,13 @@ import type { MachineKind } from "@/lib/laundromat/scene-config";
 
 export const de = {
   locale: "de",
+  decorations: {
+    skeleton: { label: "Skelett: Sag Hallo" },
+    pumpkin: {
+      label: "Kürbis: Antippen",
+    },
+    ghost: { label: "Geist: Sag Buh" },
+  },
   languageName: "Deutsch",
   site: {
     name: "laundro.cafe",
@@ -40,6 +47,14 @@ export const de = {
       afterClaude: "",
     },
     updateAvailable: "neu laden: Waschsalon aktualisiert",
+  },
+  themes: {
+    heading: "Themen",
+    seasonal: "saisonal",
+    seasonalOn: "Wechselt zu besonderen Anlässen",
+    seasonalOff: "Behält dein gewähltes Thema",
+    hint: "Wähle ein Thema",
+    names: { classic: "standard", light: "leinen", halloween: "halloween" },
   },
   settings: {
     heading: "Einstellungen",
@@ -403,6 +418,14 @@ export const de = {
       board: "aushang",
     },
     updates: {
+      "halloween-theme": {
+        title: "halloween in den räumen",
+        body: "Wähle Halloween über die Themen-Schaltfläche oder aktiviere Saisonal für den passenden Anlass. Mit dem Halloween-Thema startet der Fernseher mit einem Live-Sender für Halloween-Musik; tippe auf die Dekorationen für eine kleine Überraschung.",
+      },
+      "light-appearance": {
+        title: "ein raum in leinen",
+        body: "Wähle Leinen über den Themenknopf für wärmere Wände und papierfarbene Bedienelemente. Schalte Saisonal ein, um besonderen Anlässen zu folgen, oder behalte dein Thema.",
+      },
       "tip-coin-machine": {
         title: "ein Trinkgeld am Münzautomaten",
         body: "Wenn du magst, unterstütze laundro.cafe mit einem kleinen Trinkgeld am Münzautomaten an der Theke. Deine Münze fällt ins Glas, und der Automat druckt dir einen Token. Wirf ihn in eine Waschmaschine oder einen Trockner für eine Waschparty oder Trockenparty, die alle im Raum sehen können. Danke für deine Unterstützung.",
@@ -549,6 +572,7 @@ export const de = {
   },
   tv: {
     stations: {
+      halloween: "halloween",
       "rainy-cafe": "café im regen",
       "piano-night": "klaviernacht",
       "late-wash": "späte wäsche",

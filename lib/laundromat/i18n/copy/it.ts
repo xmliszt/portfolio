@@ -4,6 +4,13 @@ import type { MachineKind } from "@/lib/laundromat/scene-config";
 
 export const it = {
   locale: "it",
+  decorations: {
+    skeleton: { label: "Scheletro: saluta" },
+    pumpkin: {
+      label: "Zucca: dai un colpetto",
+    },
+    ghost: { label: "Fantasmino: fai bu" },
+  },
   languageName: "Italiano",
   site: {
     name: "laundro.cafe",
@@ -40,6 +47,14 @@ export const it = {
       afterClaude: "",
     },
     updateAvailable: "ricarica per la lavanderia aggiornata",
+  },
+  themes: {
+    heading: "temi",
+    seasonal: "stagionale",
+    seasonalOn: "Cambia per le occasioni speciali",
+    seasonalOff: "Mantiene il tema scelto",
+    hint: "Scegli un tema",
+    names: { classic: "predefinito", light: "lino", halloween: "halloween" },
   },
   settings: {
     heading: "impostazioni",
@@ -405,6 +420,14 @@ export const it = {
       board: "bacheca",
     },
     updates: {
+      "halloween-theme": {
+        title: "halloween nelle stanze",
+        body: "Scegli Halloween dal pulsante dei temi oppure attiva Stagionale per seguire le ricorrenze. Con il tema Halloween, accendi la TV per ascoltare una stazione di musica di Halloween in diretta; tocca le decorazioni per una piccola sorpresa.",
+      },
+      "light-appearance": {
+        title: "una stanza color lino",
+        body: "Scegli Lino dal pulsante dei temi per pareti più calde e comandi color carta. Attiva Stagionale per seguire le occasioni speciali oppure mantieni il tuo tema.",
+      },
       "tip-coin-machine": {
         title: "lascia una mancia alla macchina a gettoni",
         body: "Se ti va di sostenere laundro.cafe, lascia una piccola mancia alla macchina a gettoni vicino al bancone. La tua moneta cade nel barattolo e la macchina ti stampa un gettone. Infilalo in una lavatrice o in un'asciugatrice per un lavaggio in festa o un'asciugatura in festa che tutti nella stanza possono vedere. Grazie per il tuo sostegno.",
@@ -551,6 +574,7 @@ export const it = {
   },
   tv: {
     stations: {
+      halloween: "halloween",
       "rainy-cafe": "caffè sotto la pioggia",
       "piano-night": "notte al piano",
       "late-wash": "bucato a tarda ora",

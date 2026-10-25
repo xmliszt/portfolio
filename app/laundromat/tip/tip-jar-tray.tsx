@@ -86,7 +86,7 @@ export function TipJarTray(props: TipJarTrayProps) {
                 </div>
                 <CloseKey onClose={close} />
               </div>
-              <ul className="m-0 grid list-none grid-cols-[repeat(auto-fill,minmax(40px,1fr))] justify-items-center gap-x-1.5 gap-y-2 rounded-[14px] bg-[linear-gradient(180deg,#0d0e0f,#141516)] p-3 shadow-[inset_0_2px_6px_rgb(0_0_0/0.85),0_1px_0_rgb(255_255_255/0.04)]">
+              <ul className="m-0 grid list-none grid-cols-[repeat(auto-fill,minmax(40px,1fr))] justify-items-center gap-x-1.5 gap-y-2 rounded-[14px] bg-[linear-gradient(180deg,var(--lm-well),var(--lm-panel))] p-3 shadow-[inset_0_2px_6px_rgb(0_0_0/0.85),0_1px_0_rgb(255_255_255/0.04)]">
                 {coins.map(({ coin, own }, index) => {
                   const date = formatTipDate({
                     isoDate: coin.createdAt,
@@ -137,7 +137,7 @@ export function TipJarTray(props: TipJarTrayProps) {
                           type="button"
                           aria-label={label}
                           className={cn(
-                            "block cursor-zoom-in rounded-full outline-none focus-visible:shadow-[0_0_0_2px_#0d0e0f,0_0_0_3.5px_var(--lm-accent)]",
+                            "block cursor-zoom-in rounded-full outline-none focus-visible:shadow-[0_0_0_2px_var(--lm-well),0_0_0_3.5px_var(--lm-accent)]",
                             own.usesLeft > 0 &&
                               "shadow-[0_0_10px_2px_rgb(255_190_90/0.28)]"
                           )}

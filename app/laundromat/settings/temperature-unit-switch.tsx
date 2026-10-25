@@ -31,7 +31,7 @@ export function TemperatureUnitSwitch() {
     <div className="flex items-center justify-between gap-x-3">
       <span
         id="temperature-unit-label"
-        className={cn(SETTINGS_META_CLASS, "opacity-60")}
+        className={cn(SETTINGS_META_CLASS, "opacity-80")}
       >
         {copy.settings.temperature}
       </span>

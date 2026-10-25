@@ -73,6 +73,7 @@ import { isAirPurifierRunning } from "@/lib/laundromat/weather/is-air-purifier-r
 import { cn } from "@/lib/utils";
 
 import { BOARD_DIALOG_SIZE_PX, BoardDialog } from "./board/board-dialog";
+import { useDecorationReactions } from "./decorations/use-decoration-reactions";
 import { useLaundromatCopy } from "./i18n/use-laundromat-copy";
 import { useLocalWeather } from "./local-weather/use-local-weather";
 import { NotebookBook } from "./notebook/notebook-book";
@@ -204,6 +205,7 @@ export function LaundromatScene(props: LaundromatSceneProps) {
   const toyBox = useToyBox({
     details: config.details.toyBox,
     reducedMotion: prefersReducedMotion,
+    hourOverride: props.hourOverride,
   });
   const isToyBoxOpen = toyBox.view.kind === "open";
   const isToyBoxVisible = toyBox.view.kind !== "hidden";
@@ -276,6 +278,7 @@ export function LaundromatScene(props: LaundromatSceneProps) {
   );
   const previousFocusRef = useRef(focus);
   const sound = useSoundBoard();
+  const decorations = useDecorationReactions(config.details);
   const tip = useTip();
   const isNarrowScreen = useIsNarrowScreen();
   const [isJarTrayOpen, setIsJarTrayOpen] = useState(false);
@@ -333,7 +336,17 @@ export function LaundromatScene(props: LaundromatSceneProps) {
             },
           ];
         });
-  const tvSettings = config.details.tv;
+  const tvSettings = appliances.tvDetails;
+  const drawingConfig = useMemo(
+    () => ({
+      ...config,
+      details: {
+        ...config.details,
+        tv: { ...config.details.tv, stations: tvSettings.stations },
+      },
+    }),
+    [config, tvSettings.stations]
+  );
   const {
     setContainer: setTvAudioContainer,
     audioState: tvAudioState,
@@ -725,6 +738,7 @@ export function LaundromatScene(props: LaundromatSceneProps) {
     window.history.replaceState(null, "", toFocusUrl(params));
   }, [isShelfFocusBlocked, searchParams]);
   const views: SceneViews = {
+    decorationReactions: decorations.reactions,
     machines: machineViews,
     tv: { state: appliances.tv, noSignal: isTvNoSignal },
     coffee: appliances.coffee,
@@ -739,6 +753,7 @@ export function LaundromatScene(props: LaundromatSceneProps) {
     tubeRollCount,
     weather,
     toyBox: toyBox.view,
+    toyBoxPaused: toyBox.paused,
     coinMachine: tip?.machine ?? { kind: "idle" },
     coinMachineScreen:
       (tip?.machine.kind ?? "idle") === "idle"
@@ -1179,6 +1194,16 @@ export function LaundromatScene(props: LaundromatSceneProps) {
     }
     const kind = layout.objects.find(({ object }) => object.id === objectId)
       ?.object.kind;
+    if (kind === "skeleton" || kind === "pumpkin" || kind === "ghost") {
+      if (focus !== "room") {
+        setFocus("room");
+        return;
+      }
+      window.clearTimeout(tooltipTimerRef.current);
+      setTooltipId(undefined);
+      decorations.activate({ id: objectId, kind });
+      return;
+    }
     if (kind === "instant-camera") {
       window.clearTimeout(tooltipTimerRef.current);
       setTooltipId(undefined);
@@ -1668,7 +1693,7 @@ export function LaundromatScene(props: LaundromatSceneProps) {
           views={views}
           hour={hour}
           lampSwitch={lampSwitch}
-          config={config}
+          config={drawingConfig}
         />
         {layout.objects.map((laidOut) => {
           const { id, kind } = laidOut.object;

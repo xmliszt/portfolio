@@ -17,6 +17,15 @@ function minutesFor(count: number) {
 
 export const pl = {
   locale: "pl",
+  decorations: {
+    skeleton: {
+      label: "Szkielet: przywitaj się",
+    },
+    pumpkin: {
+      label: "Dynia: lekko stuknij",
+    },
+    ghost: { label: "Duszek: powiedz bu" },
+  },
   languageName: "Polski",
   site: {
     name: "laundro.cafe",
@@ -53,6 +62,14 @@ export const pl = {
       afterClaude: "",
     },
     updateAvailable: "odśwież — pralnia zaktualizowana",
+  },
+  themes: {
+    heading: "motywy",
+    seasonal: "sezonowy",
+    seasonalOn: "Zmienia się na specjalne okazje",
+    seasonalOff: "Zachowuje wybrany motyw",
+    hint: "Wybierz motyw",
+    names: { classic: "domyślny", light: "len", halloween: "halloween" },
   },
   settings: {
     heading: "ustawienia",
@@ -377,6 +394,14 @@ export const pl = {
       board: "tablica",
     },
     updates: {
+      "halloween-theme": {
+        title: "halloween w obu pokojach",
+        body: "Wybierz Halloween przyciskiem motywów lub włącz tryb sezonowy, aby motyw zmieniał się na specjalne okazje. Z motywem Halloween włącz telewizor, aby posłuchać stacji z halloweenową muzyką na żywo; dotknij dekoracji, by odkryć małą niespodziankę.",
+      },
+      "light-appearance": {
+        title: "pokój w kolorze lnu",
+        body: "Wybierz Len przyciskiem motywów, aby ściany nabrały ciepła, a przyciski koloru papieru. Włącz Sezonowy na specjalne okazje albo zachowaj własny motyw.",
+      },
       "tip-coin-machine": {
         title: "zostaw napiwek w automacie na monety",
         body: "Jeśli chcesz wesprzeć laundro.cafe, zostaw mały napiwek w automacie na monety przy ladzie. Twoja moneta wpada do słoika, a automat drukuje ci żeton. Wrzuć go do pralki lub suszarki, by rozpocząć imprezowe pranie lub imprezowe suszenie, które wszyscy w sali zobaczą. Dziękuję za wsparcie.",
@@ -526,6 +551,7 @@ export const pl = {
   },
   tv: {
     stations: {
+      halloween: "halloween",
       "rainy-cafe": "deszczowa kawiarnia",
       "piano-night": "nocne pianino",
       "late-wash": "późne pranie",

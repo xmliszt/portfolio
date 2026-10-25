@@ -4,6 +4,13 @@ import type { MachineKind } from "@/lib/laundromat/scene-config";
 
 export const ptBR = {
   locale: "pt-BR",
+  decorations: {
+    skeleton: { label: "Esqueleto: diga olá" },
+    pumpkin: {
+      label: "Abóbora: dê um toque",
+    },
+    ghost: { label: "Fantasminha: diga bu" },
+  },
   languageName: "Português (Brasil)",
   site: {
     name: "laundro.cafe",
@@ -41,6 +48,14 @@ export const ptBR = {
       afterClaude: "",
     },
     updateAvailable: "recarregue para a lavanderia atualizada",
+  },
+  themes: {
+    heading: "temas",
+    seasonal: "sazonal",
+    seasonalOn: "Muda em ocasiões especiais",
+    seasonalOff: "Mantém o tema escolhido",
+    hint: "Escolha um tema",
+    names: { classic: "padrão", light: "linho", halloween: "halloween" },
   },
   settings: {
     heading: "configurações",
@@ -397,6 +412,14 @@ export const ptBR = {
       board: "mural",
     },
     updates: {
+      "halloween-theme": {
+        title: "halloween nos dois cômodos",
+        body: "Escolha Halloween no botão de temas ou ative Sazonal para acompanhar as comemorações. Com o tema Halloween, ligue a TV para ouvir uma estação de música de Halloween ao vivo; toque nas decorações para uma pequena surpresa.",
+      },
+      "light-appearance": {
+        title: "um ambiente em linho",
+        body: "Escolha Linho no botão de temas para paredes mais quentes e controles cor de papel. Ative Sazonal para acompanhar ocasiões especiais ou mantenha seu tema.",
+      },
       "tip-coin-machine": {
         title: "deixe uma gorjeta na máquina de moedas",
         body: "Se quiser apoiar o laundro.cafe, deixe uma pequena gorjeta na máquina de moedas perto do balcão. Sua moeda cai no pote e a máquina imprime uma ficha para você. Coloque-a numa lavadora ou secadora para uma lavagem em festa ou uma secagem em festa que todos na sala possam ver. Obrigado pelo apoio.",
@@ -543,6 +566,7 @@ export const ptBR = {
   },
   tv: {
     stations: {
+      halloween: "halloween",
       "rainy-cafe": "café na chuva",
       "piano-night": "noite de piano",
       "late-wash": "lavagem tardia",

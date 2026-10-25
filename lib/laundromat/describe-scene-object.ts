@@ -132,6 +132,11 @@ export function describeSceneObject(options: {
         label: copy.tip.jarLoadingLabel,
         tooltip: copy.tip.jarLoadingTooltip,
       };
+    case "ghost":
+    case "skeleton":
+    case "pumpkin":
+      return { label: copy.decorations[object.kind].label, tooltip: undefined };
+    case "cobweb":
     case "counter":
     case "window":
     case "clock":

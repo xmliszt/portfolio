@@ -33,6 +33,10 @@ function getBlocker(object: SceneObject) {
     };
   }
   switch (object.kind) {
+    case "ghost":
+    case "skeleton":
+    case "pumpkin":
+    case "cobweb":
     case "window":
     case "weather-panel":
     case "mat":

@@ -235,13 +235,16 @@ export function MachineDrawing(props: MachineDrawingProps) {
         <rect
           {...readout}
           rx={1}
-          className="fill-[var(--lm-recess)] stroke-[var(--lm-detail)]"
+          className={cn(
+            "stroke-[var(--lm-detail)]",
+            isLive ? "fill-[var(--lm-display)]" : "fill-[var(--lm-recess)]"
+          )}
         />
         {isLive && (
           <rect
             {...readout}
             rx={1}
-            className="fill-[var(--lm-accent)] stroke-none"
+            className="fill-[var(--lm-glow)] stroke-none"
             opacity={details.displayGlow * 0.2}
           />
         )}
@@ -254,7 +257,7 @@ export function MachineDrawing(props: MachineDrawingProps) {
           className={cn(
             "stroke-none font-[family-name:var(--lm-font-mono)] tabular-nums",
             isLive
-              ? "fill-[var(--lm-accent)]"
+              ? "fill-[var(--lm-glow)]"
               : view.status.kind === "loaded" || isSomeoneElses
                 ? "fill-[var(--lm-ink-hi)]"
                 : "fill-[var(--lm-ink)]"
@@ -302,7 +305,7 @@ export function MachineDrawing(props: MachineDrawingProps) {
             r={1.2}
             className={cn(
               "stroke-none",
-              isRunning ? "fill-[var(--lm-accent)]" : "fill-[var(--lm-detail)]"
+              isRunning ? "fill-[var(--lm-glow)]" : "fill-[var(--lm-detail)]"
             )}
           />
         </g>
@@ -398,7 +401,7 @@ export function MachineDrawing(props: MachineDrawingProps) {
           {isDryer && isRunning && (
             <circle
               r={doorRadius - 6}
-              className="fill-[var(--lm-accent)] stroke-none"
+              className="fill-[var(--lm-glow)] stroke-none"
               opacity={details.dryerGlow}
             />
           )}

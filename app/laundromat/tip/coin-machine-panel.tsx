@@ -72,7 +72,7 @@ const SCREEN_CLASS = cn(
 );
 const WIDE_KEY_CLASS = cn(PRINTER_KEY_CLASS, "h-10 w-full justify-center px-3");
 const FIELD_CLASS =
-  "h-11 w-full min-w-0 rounded-[7px] bg-[#0b0805] px-3 font-[family-name:var(--lm-font-mono)] text-[16px] tracking-[0.04em] text-[var(--lm-accent)] [text-shadow:0_0_6px_color-mix(in_oklab,var(--lm-accent)_60%,transparent)] shadow-[inset_0_1px_3px_rgb(0_0_0/0.9),0_1px_0_rgb(255_255_255/0.04)] outline-none placeholder:text-[color-mix(in_oklab,var(--lm-accent)_35%,transparent)] placeholder:[text-shadow:none] focus-visible:shadow-[inset_0_1px_3px_rgb(0_0_0/0.9),inset_0_0_0_1.5px_color-mix(in_oklab,var(--lm-accent)_60%,transparent)]";
+  "h-11 w-full min-w-0 rounded-[7px] bg-[var(--lm-display)] px-3 font-[family-name:var(--lm-font-mono)] text-[16px] tracking-[0.04em] text-[var(--lm-glow)] [text-shadow:0_0_6px_color-mix(in_oklab,var(--lm-glow)_60%,transparent)] shadow-[inset_0_1px_3px_rgb(0_0_0/0.9),0_1px_0_rgb(255_255_255/0.04)] outline-none placeholder:text-[color-mix(in_oklab,var(--lm-glow)_35%,transparent)] placeholder:[text-shadow:none] focus-visible:shadow-[inset_0_1px_3px_rgb(0_0_0/0.9),inset_0_0_0_1.5px_color-mix(in_oklab,var(--lm-glow)_60%,transparent)]";
 
 type CoinMachinePanelProps = {
   tip: TipState;
@@ -230,13 +230,13 @@ export function CoinMachinePanel(props: CoinMachinePanelProps) {
               <p
                 className={cn(
                   SETTINGS_META_CLASS,
-                  "m-0 text-pretty normal-case opacity-70"
+                  "m-0 text-pretty normal-case opacity-80"
                 )}
               >
                 {copy.tip.pitch}
               </p>
             </div>
-            <div className="grid grid-cols-4 justify-items-center gap-x-2 rounded-[14px] bg-[linear-gradient(180deg,#0d0e0f,#141516)] px-3 pt-4 pb-5 shadow-[inset_0_2px_6px_rgb(0_0_0/0.85),inset_0_-1px_0_rgb(255_255_255/0.04),0_1px_0_rgb(255_255_255/0.04)]">
+            <div className="grid grid-cols-4 justify-items-center gap-x-2 rounded-[14px] bg-[linear-gradient(180deg,var(--lm-well),var(--lm-panel))] px-3 pt-4 pb-5 shadow-[inset_0_2px_6px_rgb(0_0_0/0.85),inset_0_-1px_0_rgb(255_255_255/0.04),0_1px_0_rgb(255_255_255/0.04)]">
               {TIP_COINS_CENTS.map((cents, index) => (
                 <motion.button
                   key={cents}
@@ -300,7 +300,7 @@ export function CoinMachinePanel(props: CoinMachinePanelProps) {
                   </button>
                 </form>
                 {customCents !== undefined && (
-                  <p className={cn(SETTINGS_META_CLASS, "m-0 opacity-70")}>
+                  <p className={cn(SETTINGS_META_CLASS, "m-0 opacity-80")}>
                     {copy.tip.coinUses({ count: getTipUses(customCents) })}
                   </p>
                 )}
@@ -329,7 +329,7 @@ export function CoinMachinePanel(props: CoinMachinePanelProps) {
             <span
               className={cn(
                 SETTINGS_META_CLASS,
-                "flex items-center justify-center gap-x-1.5 opacity-45"
+                "flex items-center justify-center gap-x-1.5 opacity-80"
               )}
             >
               <svg
@@ -363,7 +363,7 @@ export function CoinMachinePanel(props: CoinMachinePanelProps) {
                 <span className="font-[family-name:var(--lm-font-display)] text-[15px] text-[var(--lm-ink-hi)]">
                   {copy.site.name}
                 </span>
-                <span className={cn(SETTINGS_META_CLASS, "opacity-70")}>
+                <span className={cn(SETTINGS_META_CLASS, "opacity-80")}>
                   {copy.tip.coinUses({ count: getTipUses(step.cents) })}
                 </span>
               </span>
@@ -409,7 +409,7 @@ export function CoinMachinePanel(props: CoinMachinePanelProps) {
                 <p
                   className={cn(
                     SETTINGS_META_CLASS,
-                    "m-0 max-w-[260px] text-center normal-case opacity-60"
+                    "m-0 max-w-[260px] text-center normal-case opacity-80"
                   )}
                 >
                   {copy.tip.waitingNote}
@@ -451,7 +451,7 @@ export function CoinMachinePanel(props: CoinMachinePanelProps) {
                 <p
                   className={cn(
                     SETTINGS_META_CLASS,
-                    "m-0 text-center opacity-60"
+                    "m-0 text-center opacity-80"
                   )}
                 >
                   {copy.tip.usedOn({
@@ -532,7 +532,7 @@ export function CoinMachinePanel(props: CoinMachinePanelProps) {
             key={corner}
             aria-hidden
             className={cn(
-              "absolute size-1 rounded-full bg-[#2c2e31] shadow-[inset_0_-0.5px_0_#000,0_0.5px_0_rgb(255_255_255/0.06)]",
+              "absolute size-1 rounded-full bg-[var(--lm-detail)] shadow-[inset_0_-0.5px_0_var(--lm-control-edge),0_0.5px_0_rgb(255_255_255/0.06)]",
               corner
             )}
           />

@@ -1,8 +1,9 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useContext, useEffect, useRef } from "react";
 import type { MotionValue } from "motion/react";
 
+import { SceneThemeContext } from "@/app/laundromat/themes/scene-theme-context";
 import { getRoomSoundTrace } from "@/lib/laundromat/audio/get-room-sound-trace";
 import type { RoomSoundGroup } from "@/lib/laundromat/audio/room-sound-groups";
 
@@ -54,6 +55,7 @@ type RoomSoundScopeProps = {
 /** Draw a small amber CRT whose trace is `group`'s waveform scaled by `turn` times `level`, or by `getLiveAmplitude` while that returns a number; it moves with phosphor afterglow unless `still`. */
 export function RoomSoundScope(props: RoomSoundScopeProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const glow = useContext(SceneThemeContext)?.tokens.glow;
   const { group, turn, level, still } = props;
   const getLiveAmplitudeRef = useRef(props.getLiveAmplitude);
   useEffect(() => {
@@ -64,9 +66,8 @@ export function RoomSoundScope(props: RoomSoundScopeProps) {
     const canvas = canvasRef.current;
     const context = canvas?.getContext("2d");
     if (!canvas || !context) return;
-    const accent = getComputedStyle(canvas)
-      .getPropertyValue("--lm-accent")
-      .trim();
+    const accent =
+      glow ?? getComputedStyle(canvas).getPropertyValue("--lm-glow").trim();
 
     const shown = { amplitude: turn.get() * level.get() };
     function draw(timeS: number) {
@@ -135,7 +136,7 @@ export function RoomSoundScope(props: RoomSoundScopeProps) {
     }
     frame.id = requestAnimationFrame(tick);
     return () => cancelAnimationFrame(frame.id);
-  }, [group, turn, level, still]);
+  }, [group, turn, level, still, glow]);
 
   const wasOnRef = useRef(props.on);
   const { on, delayMs } = props;
@@ -161,7 +162,7 @@ export function RoomSoundScope(props: RoomSoundScopeProps) {
   return (
     <span
       aria-hidden
-      className="block h-[42px] w-[68px] rounded-lg bg-[linear-gradient(180deg,#2a2b2e,#17181a)] p-1 shadow-[inset_0_0_0_1px_#000,inset_0_1px_0_rgb(255_255_255/0.06),0_1px_2px_rgb(0_0_0/0.6)]"
+      className="block h-[42px] w-[68px] rounded-lg bg-[linear-gradient(180deg,var(--lm-key-top),var(--lm-key-bottom))] p-1 shadow-[inset_0_0_0_1px_var(--lm-control-edge),inset_0_1px_0_rgb(255_255_255/0.06),0_1px_2px_rgb(0_0_0/0.6)]"
     >
       <span
         className="relative block size-full overflow-hidden shadow-[inset_0_0_10px_rgb(0_0_0/0.95)]"

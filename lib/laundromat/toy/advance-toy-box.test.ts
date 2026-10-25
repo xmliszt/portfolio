@@ -126,25 +126,42 @@ test("closing time cancels an unfinished opening", () => {
   assert.equal(result.openingStartedAtMs, undefined);
 });
 
-test("resuming outside the window removes an old toy immediately", () => {
+test("returning after closing keeps the toy until its exit animation finishes", () => {
   const state = opened(at({ hour: 20, minute: 0 }));
+  const suspended = advance({
+    state,
+    now: at({ hour: 20, minute: 30 }),
+    nowMs: 1000,
+    visible: false,
+  });
+  assert.equal(suspended.view.kind, "open");
   assert.equal(
-    advance({ state, now: at({ hour: 21, minute: 0 }), visible: false }).view
-      .kind,
-    "hidden"
+    advance({
+      state: suspended,
+      now: at({ hour: 21, minute: 0 }),
+      nowMs: 2000,
+      visible: false,
+    }),
+    suspended
   );
-  assert.equal(
-    advance({ state, now: at({ day: 26, hour: 10, minute: 0 }) }).view.kind,
-    "hidden"
-  );
-});
-
-test("resuming an already visible tab long after closing skips the expired departure", () => {
-  const state = opened(at({ hour: 20, minute: 0 }));
-  assert.equal(
-    advance({ state, now: at({ hour: 21, minute: 0 }) }).view.kind,
-    "hidden"
-  );
+  for (const now of [
+    at({ hour: 21, minute: 0 }),
+    at({ day: 26, hour: 0, minute: 0 }),
+    at({ day: 26, hour: 10, minute: 0 }),
+  ]) {
+    const departing = advance({ state: suspended, now, nowMs: 100_000 });
+    assert.equal(departing.view.kind, "departing");
+    if (departing.view.kind === "departing")
+      assert.equal(departing.view.startedAtMs, 100_000);
+    assert.equal(
+      advance({
+        state: departing,
+        now,
+        nowMs: 100_000 + TOY_DELIVERY_TIMING.departureMs,
+      }).view.kind,
+      "hidden"
+    );
+  }
 });
 
 test("a suspended tab returning in the next daily window starts closed again", () => {
@@ -193,14 +210,13 @@ test("an arrival started just before closing never becomes available afterward",
   );
 });
 
-test("resuming during departure seeks to the scheduled closing phase", () => {
+test("returning just after closing starts the full departure", () => {
   const now = at({ hour: 20, minute: 55, second: 6 });
   const state = opened(now);
   const departing = advance({ state, now, nowMs: 10_000 });
   assert.equal(departing.view.kind, "departing");
   if (departing.view.kind === "departing") {
-    assert.equal(departing.view.startedAtMs, 4000);
-    assert.ok(10_000 - departing.view.startedAtMs > TOY_DELIVERY_TIMING.packMs);
+    assert.equal(departing.view.startedAtMs, 10_000);
   }
 });
 
@@ -220,4 +236,73 @@ test("closing preserves the progress of an interrupted opening", () => {
         startedAtMs: openingStartedAtMs,
       });
   }
+});
+
+test("forward time jumps play a full departure from the current animation time", () => {
+  const now = at({ hour: 21, minute: 0 });
+  const state = opened(now);
+  for (const reducedMotion of [false, true]) {
+    const options = { now, reducedMotion };
+    const departing = advance({ ...options, state, nowMs: 1000 });
+    assert.equal(departing.view.kind, "departing");
+    if (departing.view.kind !== "departing") continue;
+    assert.equal(departing.view.startedAtMs, 1000);
+    const durationMs = reducedMotion
+      ? TOY_DELIVERY_TIMING.reducedDepartureMs
+      : TOY_DELIVERY_TIMING.departureMs;
+    assert.equal(
+      advance({ ...options, state: departing, nowMs: 1000 + durationMs - 1 })
+        .view.kind,
+      "departing"
+    );
+    assert.equal(
+      advance({ ...options, state: departing, nowMs: 1000 + durationMs }).view
+        .kind,
+      "hidden"
+    );
+  }
+});
+
+test("hiding during departure pauses its elapsed animation time", () => {
+  const now = at({ hour: 21, minute: 0 });
+  const departing = advance({ state: opened(now), now, nowMs: 1000 });
+  const suspended = advance({
+    state: departing,
+    now,
+    nowMs: 2000,
+    visible: false,
+  });
+  const resumed = advance({ state: suspended, now, nowMs: 100_000 });
+  assert.equal(resumed.view.kind, "departing");
+  if (resumed.view.kind !== "departing") return;
+  assert.equal(resumed.view.startedAtMs, 99_000);
+  assert.equal(
+    advance({
+      state: resumed,
+      now,
+      nowMs: 99_000 + TOY_DELIVERY_TIMING.departureMs - 1,
+    }).view.kind,
+    "departing"
+  );
+  assert.equal(
+    advance({
+      state: resumed,
+      now,
+      nowMs: 99_000 + TOY_DELIVERY_TIMING.departureMs,
+    }).view.kind,
+    "hidden"
+  );
+});
+
+test("returning during the active hour catches up an unfinished opening", () => {
+  const now = at({ hour: 20, minute: 0 });
+  const state: ToyBoxState = {
+    ...opened(now),
+    openingStartedAtMs: 100,
+    view: { kind: "opening" },
+  };
+  const suspended = advance({ state, now, nowMs: 200, visible: false });
+  const resumed = advance({ state: suspended, now, nowMs: 5000 });
+  assert.equal(resumed.view.kind, "open");
+  assert.equal(resumed.openingStartedAtMs, 100);
 });

@@ -9,6 +9,11 @@ type Machine = { kind: MachineKind; number: number };
 
 export const id = {
   locale: "id",
+  decorations: {
+    skeleton: { label: "Kerangka: sapa dia" },
+    pumpkin: { label: "Labu: ketuk pelan" },
+    ghost: { label: "Hantu: bilang bu" },
+  },
   languageName: "Bahasa Indonesia",
   site: {
     name: "laundro.cafe",
@@ -45,6 +50,14 @@ export const id = {
       afterClaude: "",
     },
     updateAvailable: "muat ulang untuk laundry terbaru",
+  },
+  themes: {
+    heading: "tema",
+    seasonal: "musiman",
+    seasonalOn: "Berubah pada momen khusus",
+    seasonalOff: "Mempertahankan tema pilihanmu",
+    hint: "Pilih tema",
+    names: { classic: "bawaan", light: "linen", halloween: "halloween" },
   },
   settings: {
     heading: "pengaturan",
@@ -401,6 +414,14 @@ export const id = {
       board: "papan",
     },
     updates: {
+      "halloween-theme": {
+        title: "halloween di kedua ruangan",
+        body: "Pilih Halloween dari tombol tema, atau aktifkan Musiman untuk mengikuti perayaan. Saat tema Halloween dipilih, nyalakan TV untuk mendengarkan stasiun musik Halloween secara langsung; ketuk hiasannya untuk kejutan kecil.",
+      },
+      "light-appearance": {
+        title: "ruangan bernuansa linen",
+        body: "Pilih Linen lewat tombol tema untuk dinding yang lebih hangat dan tombol berwarna kertas. Aktifkan Musiman untuk mengikuti momen khusus atau pertahankan temamu.",
+      },
       "tip-coin-machine": {
         title: "beri tip di mesin koin",
         body: "Kalau mau mendukung laundro.cafe, kamu bisa memberi tip kecil di mesin koin dekat meja. Koinmu jatuh ke dalam toples dan mesin mencetak token untukmu. Masukkan ke mesin cuci atau pengering untuk pesta cuci atau pesta pengeringan yang bisa dilihat semua orang di ruangan. Terima kasih atas dukunganmu.",
@@ -547,6 +568,7 @@ export const id = {
   },
   tv: {
     stations: {
+      halloween: "halloween",
       "rainy-cafe": "kafe saat hujan",
       "piano-night": "malam piano",
       "late-wash": "cucian larut malam",

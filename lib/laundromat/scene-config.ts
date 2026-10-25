@@ -1,5 +1,5 @@
 import type { NotebookScript } from "./supabase/notebook-types";
-import type { TvStation } from "./tv/tv-state";
+import type { TvStation, TvStationId } from "./tv/tv-state";
 
 export type IsoPoint = { x: number; y: number; z: number };
 
@@ -33,7 +33,15 @@ export type FurnitureKind =
   | "coin-machine"
   | "tip-jar";
 
+export type SceneDecoration = Placement & { paintAfter?: string } & (
+    | { kind: "pumpkin"; lantern: boolean; facingDeg: number }
+    | { kind: "ghost" }
+    | { kind: "skeleton" }
+    | { kind: "cobweb"; plane: "front" | "side" | "corner" }
+  );
+
 export type SceneObject =
+  | SceneDecoration
   | (Placement & { kind: MachineKind; number: number })
   | (Placement & { kind: FurnitureKind });
 
@@ -71,6 +79,18 @@ export type DaylitToken =
   | "detail";
 
 export type SceneTokens = {
+  housingTop: string;
+  housingBottom: string;
+  keyTop: string;
+  keyBottom: string;
+  controlEdge: string;
+  well: string;
+  glow: string;
+  glowHi: string;
+  display: string;
+  accentInk: string;
+  danger: string;
+
   bg: string;
   panel: string;
   edge: string;
@@ -108,6 +128,10 @@ export type SceneConfig = {
     unfocusedDim: number;
   };
   light: {
+    darknessScale: number;
+    lampGlowOpacity: number;
+    lampFalloffOpacity: number;
+    lampPoolOpacity: number;
     poolIntensity: number;
     lampOnDaylight: number;
     daylightPatchStrength: number;
@@ -122,6 +146,22 @@ export type SceneConfig = {
     defaultDryerCycleMinutes: number;
   };
   details: {
+    decorationReaction: {
+      durationMs: number;
+      strength: number;
+      soundVolume: number;
+    };
+    ghost: { cloth: string; shade: string; swaySeconds: number };
+    skeleton: { bone: string; shade: string; joint: string };
+    pumpkin: {
+      bounceMs: number;
+      rind: string;
+      stem: string;
+      glow: string;
+      glowIntensity: number;
+      flickerSeconds: number;
+    };
+    cobweb: { color: string; opacity: number; threadWidth: number };
     machine: {
       doorOpenDeg: number;
       doorSwingMs: number;
@@ -133,6 +173,7 @@ export type SceneConfig = {
     };
     tv: {
       stations: TvStation[];
+      initialStationId?: TvStationId;
       stallSeconds: number;
       noSignalMs: number;
       osdSeconds: number;
@@ -265,6 +306,17 @@ export type SceneConfig = {
 
 export const sceneConfig: SceneConfig = {
   tokens: {
+    housingTop: "#1b1c1e",
+    housingBottom: "#151617",
+    keyTop: "#2e3033",
+    keyBottom: "#1c1d1f",
+    controlEdge: "#000000",
+    well: "#0d0e0f",
+    glow: "#ff9a2e",
+    glowHi: "#ffc77a",
+    display: "#0b0805",
+    accentInk: "#1a1209",
+    danger: "#ff6b5e",
     bg: "#0c0d0e",
     panel: "#141516",
     edge: "#222426",
@@ -500,6 +552,10 @@ export const sceneConfig: SceneConfig = {
     unfocusedDim: 0.35,
   },
   light: {
+    darknessScale: 1,
+    lampGlowOpacity: 0.14,
+    lampFalloffOpacity: 0.3,
+    lampPoolOpacity: 0.14,
     poolIntensity: 0.98,
     lampOnDaylight: 0.5,
     daylightPatchStrength: 0.39,
@@ -525,6 +581,18 @@ export const sceneConfig: SceneConfig = {
     defaultDryerCycleMinutes: 5,
   },
   details: {
+    decorationReaction: { durationMs: 1800, strength: 1, soundVolume: 0.65 },
+    ghost: { cloth: "#e1d9cc", shade: "#a79caa", swaySeconds: 5.5 },
+    skeleton: { bone: "#cec4ac", shade: "#85798c", joint: "#9b7851" },
+    pumpkin: {
+      bounceMs: 700,
+      rind: "#a85224",
+      stem: "#69613b",
+      glow: "#ffbd55",
+      glowIntensity: 0.85,
+      flickerSeconds: 3.7,
+    },
+    cobweb: { color: "#c5b8cc", opacity: 0.55, threadWidth: 0.65 },
     machine: {
       doorOpenDeg: 100,
       doorSwingMs: 590,
@@ -538,32 +606,32 @@ export const sceneConfig: SceneConfig = {
       stations: [
         {
           id: "rainy-cafe",
-          videoId: "c0_ejQQcrwI",
-          channel: "Calmed By Nature",
+          videoId: "DSGyEsJ17cI",
+          channel: "Cafe Music BGM channel",
           placeholder: false,
         },
         {
           id: "piano-night",
-          videoId: "8dFExnve2do",
-          channel: "Smooth Piano Jazz",
+          videoId: "6uddGul0oAc",
+          channel: "Cafe Music BGM channel",
           placeholder: false,
         },
         {
           id: "late-wash",
-          videoId: "zW5wpJY1rgQ",
-          channel: "Mimi Lofi Chill",
+          videoId: "JD-kMIpDfnY",
+          channel: "Lofi Girl",
           placeholder: false,
         },
         {
           id: "tape-hiss",
-          videoId: "tiyuRJthHwc",
-          channel: "chill chill journal",
+          videoId: "5yx6BWlEVcY",
+          channel: "Chillhop Music",
           placeholder: false,
         },
         {
           id: "city-at-3am",
-          videoId: "zsvYVVRAk0c",
-          channel: "Nostalgic Synthwave",
+          videoId: "4xDzrJKXOOY",
+          channel: "Lofi Girl",
           placeholder: false,
         },
         {

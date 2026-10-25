@@ -4,6 +4,11 @@ import type { MachineKind } from "@/lib/laundromat/scene-config";
 
 export const es = {
   locale: "es",
+  decorations: {
+    skeleton: { label: "Esqueleto: saluda" },
+    pumpkin: { label: "Calabaza: toca aquí" },
+    ghost: { label: "Fantasma: di bu" },
+  },
   languageName: "Español",
   site: {
     name: "laundro.cafe",
@@ -40,6 +45,14 @@ export const es = {
       afterClaude: "",
     },
     updateAvailable: "recarga para la lavandería actualizada",
+  },
+  themes: {
+    heading: "temas",
+    seasonal: "estacional",
+    seasonalOn: "Cambia en ocasiones especiales",
+    seasonalOff: "Conserva el tema elegido",
+    hint: "Elige un tema",
+    names: { classic: "predeterminado", light: "lino", halloween: "halloween" },
   },
   settings: {
     heading: "ajustes",
@@ -398,6 +411,14 @@ export const es = {
       board: "tablón",
     },
     updates: {
+      "halloween-theme": {
+        title: "halloween en las habitaciones",
+        body: "Elige Halloween en el botón de temas o activa Temporada para seguir la celebración. Con Halloween seleccionado, enciende la tele para escuchar una emisora de música de Halloween en directo; toca los adornos para descubrir una pequeña sorpresa.",
+      },
+      "light-appearance": {
+        title: "una habitación de lino",
+        body: "Elige Lino con el botón de temas para paredes más cálidas y controles de color papel. Activa Estacional para seguir las ocasiones especiales o conserva tu tema.",
+      },
       "tip-coin-machine": {
         title: "deja una propina en la máquina de monedas",
         body: "Si te apetece apoyar laundro.cafe, deja una pequeña propina en la máquina de monedas junto al mostrador. Tu moneda cae en el frasco y la máquina te imprime una ficha. Échala en una lavadora o secadora para un lavado de fiesta o un secado de fiesta que todos en la sala puedan ver. Gracias por tu apoyo.",
@@ -545,6 +566,7 @@ export const es = {
   },
   tv: {
     stations: {
+      halloween: "halloween",
       "rainy-cafe": "café con lluvia",
       "piano-night": "noche de piano",
       "late-wash": "colada tardía",

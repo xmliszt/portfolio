@@ -81,7 +81,7 @@ export function SettingsButton() {
       <AnimatePresence>
         {isOpen && (
           <motion.div
-            className="fixed inset-0 z-50 flex items-center justify-center bg-[rgb(0_0_0/0.45)]"
+            className="fixed inset-0 z-50 flex items-center justify-center bg-[var(--lm-backdrop)]"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}

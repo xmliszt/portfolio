@@ -7,15 +7,14 @@ import { cn } from "@/lib/utils";
 
 const POINTER_SWEEP_DEG = 60;
 
-type RoomSoundDialProps = {
+type RotarySwitchDialProps = {
   turn: MotionValue<number>;
   on: boolean;
   offLabel: string;
   onLabel: string;
 };
 
-/** Draw a ridged washer-style knob whose pointer follows `turn` from off (0) to on (1), with the on mark lighting up past halfway. */
-export function RoomSoundDial(props: RoomSoundDialProps) {
+export function RotarySwitchDial(props: RotarySwitchDialProps) {
   const rotate = useTransform(
     props.turn,
     [0, 1],
@@ -35,12 +34,12 @@ export function RoomSoundDial(props: RoomSoundDialProps) {
         style={{ opacity: glow }}
         className="absolute top-1/2 right-0.5 -mt-0.5 size-1 rounded-full bg-[var(--lm-accent)] shadow-[0_0_8px_var(--lm-accent)]"
       />
-      <span className="absolute top-1/2 left-1/2 -mt-[13px] -ml-[13px] size-[26px] transition-[scale] duration-150 group-active:scale-[0.94]">
+      <span className="absolute top-1/2 left-1/2 -mt-[13px] -ml-[13px] size-[26px] transition-[scale] duration-150 group-active:scale-[0.94] motion-reduce:transition-none">
         <motion.span
           style={{ rotate }}
-          className="absolute inset-0 rounded-full bg-[repeating-conic-gradient(#2e3033_0_7deg,#1c1d1f_7deg_14deg)] shadow-[0_0_0_1px_#000,0_2px_4px_rgb(0_0_0/0.6)]"
+          className="absolute inset-0 rounded-full bg-[repeating-conic-gradient(var(--lm-key-top)_0_7deg,var(--lm-key-bottom)_7deg_14deg)] shadow-[0_0_0_1px_var(--lm-control-edge),0_2px_4px_rgb(0_0_0/0.6)]"
         >
-          <span className="absolute inset-1 rounded-full bg-[radial-gradient(circle_at_40%_30%,#3a3d40,#202224_70%)] shadow-[inset_0_1px_0_rgb(255_255_255/0.06)]" />
+          <span className="absolute inset-1 rounded-full bg-[radial-gradient(circle_at_40%_30%,var(--lm-key-top),var(--lm-key-bottom)_70%)] shadow-[inset_0_1px_0_rgb(255_255_255/0.06)]" />
           <span
             className={cn(
               "absolute top-[5px] left-1/2 -ml-px h-[7px] w-0.5 rounded-[1px] transition-colors duration-300",

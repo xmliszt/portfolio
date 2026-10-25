@@ -79,7 +79,7 @@ export function WeatherConditionSwitch() {
               "relative flex h-8 cursor-pointer items-center justify-center rounded-full transition-opacity has-[:focus-visible]:ring-1 has-[:focus-visible]:ring-[var(--lm-ink-hi)]",
               isSelected
                 ? "[--lm-thumb:var(--lm-accent)]"
-                : "opacity-60 hover:opacity-100"
+                : "opacity-80 hover:opacity-100"
             )}
           >
             <input

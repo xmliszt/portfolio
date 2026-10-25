@@ -8,7 +8,7 @@ import { getTvFace } from "./get-tv-face";
 import type { IsoProjection, ScreenPoint } from "./project-iso-point";
 import { projectIsoPoint } from "./project-iso-point";
 import type { SceneConfig, SceneObject } from "./scene-config";
-import { sortByDepth } from "./sort-by-depth";
+import { sortSceneObjects } from "./sort-scene-objects";
 
 const MACHINE_CONTROLS = ["dial", "start", "door"] satisfies MachineControl[];
 const TV_CONTROLS = [
@@ -169,7 +169,7 @@ export function buildSceneLayout(options: {
     ],
     projection,
     gridLines,
-    objects: sortByDepth(options.config.objects).map((object) => {
+    objects: sortSceneObjects(options.config.objects).map((object) => {
       const faces = getBoxFaces({
         position: object.position,
         size: object.size,

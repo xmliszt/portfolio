@@ -3,6 +3,13 @@ import type { LaundromatCopy } from "@/lib/laundromat/i18n/laundromat-copy";
 
 export const tr = {
   locale: "tr",
+  decorations: {
+    skeleton: { label: "İskelet: merhaba de" },
+    pumpkin: {
+      label: "Balkabağı: hafifçe dokun",
+    },
+    ghost: { label: "Hayalet: bu de" },
+  },
   languageName: "Türkçe",
   site: {
     name: "laundro.cafe",
@@ -39,6 +46,18 @@ export const tr = {
       afterClaude: " tarafından ❤️ ile yapıldı",
     },
     updateAvailable: "güncel çamaşırhane için yenile",
+  },
+  themes: {
+    heading: "temalar",
+    seasonal: "mevsimsel",
+    seasonalOn: "Özel günlerde değişir",
+    seasonalOff: "Seçtiğin temayı korur",
+    hint: "Bir tema seç",
+    names: {
+      classic: "varsayılan",
+      light: "keten",
+      halloween: "cadılar bayramı",
+    },
   },
   settings: {
     heading: "ayarlar",
@@ -361,6 +380,14 @@ export const tr = {
       board: "pano",
     },
     updates: {
+      "halloween-theme": {
+        title: "odalarda cadılar bayramı",
+        body: "Tema düğmesinden Cadılar Bayramı’nı seçin veya özel günleri takip etmek için Mevsimsel seçeneğini açın. Cadılar Bayramı teması seçiliyken televizyonu açarak canlı Cadılar Bayramı müzik istasyonunu dinleyin; küçük bir sürpriz için süslemelere dokun.",
+      },
+      "light-appearance": {
+        title: "keten renkli bir oda",
+        body: "Daha sıcak duvarlar ve kâğıt renkli kontroller için tema düğmesinden Keten seç. Özel günleri takip etmek için Mevsimsel seçeneğini aç veya kendi temanı koru.",
+      },
       "tip-coin-machine": {
         title: "bozuk para makinesine bahşiş bırak",
         body: "İstersen tezgâhın yanındaki bozuk para makinesine küçük bir bahşiş bırakarak laundro.cafe'ye destek olabilirsin. Paran kavanoza düşüyor ve makine sana bir jeton basıyor. Onu bir çamaşır ya da kurutma makinesine at, odadaki herkesin görebileceği bir yıkama şenliği ya da kurutma şenliği olsun. Desteğin için teşekkürler.",
@@ -507,6 +534,7 @@ export const tr = {
   },
   tv: {
     stations: {
+      halloween: "cadılar bayramı",
       "rainy-cafe": "yağmurlu kafe",
       "piano-night": "piyano gecesi",
       "late-wash": "gece yıkaması",

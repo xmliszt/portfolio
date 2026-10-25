@@ -4,6 +4,13 @@ import type { MachineKind } from "@/lib/laundromat/scene-config";
 
 export const fr = {
   locale: "fr",
+  decorations: {
+    skeleton: { label: "Squelette : dis bonjour" },
+    pumpkin: {
+      label: "Citrouille : tapote-la",
+    },
+    ghost: { label: "Fantôme : fais bouh" },
+  },
   languageName: "Français",
   site: {
     name: "laundro.cafe",
@@ -40,6 +47,14 @@ export const fr = {
       afterClaude: "",
     },
     updateAvailable: "recharge pour la laverie mise à jour",
+  },
+  themes: {
+    heading: "thèmes",
+    seasonal: "saisonnier",
+    seasonalOn: "Change pour les occasions spéciales",
+    seasonalOff: "Garde le thème choisi",
+    hint: "Choisissez un thème",
+    names: { classic: "par défaut", light: "lin", halloween: "halloween" },
   },
   settings: {
     heading: "réglages",
@@ -405,6 +420,14 @@ export const fr = {
       board: "panneau",
     },
     updates: {
+      "halloween-theme": {
+        title: "halloween dans les pièces",
+        body: "Choisissez Halloween dans les thèmes ou activez le mode saisonnier pour suivre les occasions. Avec le thème Halloween, allumez la télé pour écouter une station de musique d’Halloween en direct; touche les décorations pour une petite surprise.",
+      },
+      "light-appearance": {
+        title: "une pièce couleur lin",
+        body: "Choisissez Lin avec le bouton des thèmes pour des murs plus chauds et des commandes couleur papier. Activez Saisonnier pour suivre les occasions spéciales, ou gardez votre thème.",
+      },
       "tip-coin-machine": {
         title: "laisser un pourboire à la machine à pièces",
         body: "Si tu souhaites soutenir laundro.cafe, laisse un petit pourboire à la machine à pièces près du comptoir. Ta pièce tombe dans le bocal et la machine t’imprime un jeton. Glisse-le dans un lave-linge ou un sèche-linge pour un lavage en fête ou un séchage en fête que tout le monde dans la salle peut voir. Merci pour ton soutien.",
@@ -552,6 +575,7 @@ export const fr = {
   },
   tv: {
     stations: {
+      halloween: "halloween",
       "rainy-cafe": "café sous la pluie",
       "piano-night": "nuit au piano",
       "late-wash": "lessive tardive",

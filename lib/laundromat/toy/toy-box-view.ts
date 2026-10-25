@@ -14,6 +14,7 @@ export type ToyBoxView =
     };
 
 export type ToyBoxState = {
+  suspendedAtMs?: number;
   windowStartedAtMs: number | undefined;
   openingStartedAtMs: number | undefined;
   view: ToyBoxView;

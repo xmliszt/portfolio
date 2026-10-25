@@ -8,8 +8,6 @@ import { toSvgPoints } from "@/lib/laundromat/to-svg-points";
 
 const GLOW_CENTER_HEIGHT_RATIO = 0.3;
 const GLOW_RADIUS_RATIO = 0.55;
-const GLOW_PEAK_OPACITY = 0.14;
-const FALLOFF_PEAK_OPACITY = 0.3;
 
 type RoomLampGlowProps = {
   timeOfDay: TimeOfDay;
@@ -84,7 +82,7 @@ export function RoomLampGlow(props: RoomLampGlowProps) {
         clipPath={`url(#${id}-room)`}
         fill={`url(#${id}-glow)`}
         style={{
-          opacity: timeOfDay.lampIntensity * GLOW_PEAK_OPACITY,
+          opacity: timeOfDay.lampIntensity * config.light.lampGlowOpacity,
           transition,
         }}
       />
@@ -94,7 +92,7 @@ export function RoomLampGlow(props: RoomLampGlowProps) {
         clipPath={`url(#${id}-room)`}
         fill={`url(#${id}-falloff)`}
         style={{
-          opacity: timeOfDay.lampIntensity * FALLOFF_PEAK_OPACITY,
+          opacity: timeOfDay.lampIntensity * config.light.lampFalloffOpacity,
           transition,
         }}
       />

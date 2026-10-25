@@ -75,6 +75,13 @@ export function RoomDrawing(props: RoomDrawingProps) {
     config,
   };
   function renderFaceLight(laidOut: LaidOutObject) {
+    if (
+      laidOut.object.kind === "pumpkin" ||
+      laidOut.object.kind === "cobweb" ||
+      laidOut.object.kind === "ghost" ||
+      laidOut.object.kind === "skeleton"
+    )
+      return null;
     return windowLights.map((windowLight) => (
       <WindowFaceLight
         key={windowLight.key}

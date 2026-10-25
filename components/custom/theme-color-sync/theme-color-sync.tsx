@@ -10,7 +10,11 @@ export function ThemeColorSync() {
   const pathname = usePathname();
 
   useEffect(() => {
-    if (resolvedTheme === undefined) return;
+    if (
+      resolvedTheme === undefined ||
+      document.querySelector("[data-laundromat-root]") !== null
+    )
+      return;
     const originals = Array.from(
       document.querySelectorAll<HTMLMetaElement>('meta[name="theme-color"]')
     ).map((meta) => ({ meta, content: meta.content, media: meta.media }));

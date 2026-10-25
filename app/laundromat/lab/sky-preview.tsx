@@ -16,14 +16,14 @@ export function SkyPreview(props: SkyPreviewProps) {
     >
       {isSunUp && (
         <div
-          className="absolute size-3 -translate-x-1/2 translate-y-1/2 rounded-full bg-[var(--lm-accent-hi)]"
+          className="absolute size-3 -translate-x-1/2 translate-y-1/2 rounded-full bg-[var(--lm-glow-hi)]"
           style={{
             left: `${props.sunProgress * 100}%`,
             bottom: `${Math.sin(Math.PI * props.sunProgress) * 80}%`,
           }}
         />
       )}
-      <p className="absolute top-2 left-2 text-[11px] text-[var(--lm-ink-hi)] tabular-nums">
+      <p className="absolute top-2 left-2 rounded bg-[var(--lm-panel)] px-1.5 py-1 text-[11px] text-[var(--lm-ink-hi)] tabular-nums">
         {props.label}
       </p>
     </div>

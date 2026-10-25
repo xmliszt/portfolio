@@ -2,10 +2,13 @@ import { useEffect, useId, useRef } from "react";
 import { useReducedMotion } from "motion/react";
 
 import { useRenderQuality } from "@/app/laundromat/settings/use-render-quality";
+import { useSoundBoard } from "@/app/laundromat/sound/use-sound-board";
+import type { SoundName } from "@/lib/laundromat/audio/sound-names";
 import type { LaidOutObject } from "@/lib/laundromat/build-scene-layout";
 import type { IsoProjection } from "@/lib/laundromat/project-iso-point";
 import { projectIsoPoint } from "@/lib/laundromat/project-iso-point";
 import type { SceneConfig } from "@/lib/laundromat/scene-config";
+import { getToyDepartureSound } from "@/lib/laundromat/toy/get-toy-departure-sound";
 import type { ToyBoxView } from "@/lib/laundromat/toy/toy-box-view";
 import { TOY_DELIVERY_TIMING } from "@/lib/laundromat/toy/toy-delivery-timing";
 
@@ -18,6 +21,8 @@ type ToyDeliveryDrawingProps = {
   projection: IsoProjection;
   details: SceneConfig["details"]["toyBox"];
   view: Extract<ToyBoxView, { kind: "arriving" | "departing" }>;
+  paused?: boolean;
+  silent: boolean;
 };
 
 function progress(options: {
@@ -37,6 +42,8 @@ function smooth(value: number) {
 
 export function ToyDeliveryDrawing(props: ToyDeliveryDrawingProps) {
   const id = useId();
+  const sound = useSoundBoard();
+  const playedCuesRef = useRef<SoundName[]>([]);
   const reducedMotion = useReducedMotion() ?? false;
   const { quality } = useRenderQuality();
   const cargoRef = useRef<SVGGElement>(null);
@@ -46,6 +53,7 @@ export function ToyDeliveryDrawing(props: ToyDeliveryDrawingProps) {
   const { object } = props.laidOut;
   const { position, size } = object;
   const { projection, view } = props;
+  const { paused, silent } = props;
   const origin = projectIsoPoint({ point: position, projection });
   const anchor = projectIsoPoint({
     point: {
@@ -64,6 +72,7 @@ export function ToyDeliveryDrawing(props: ToyDeliveryDrawingProps) {
   );
 
   useEffect(() => {
+    if (paused) return;
     const cargo = cargoRef.current;
     let frameId = 0;
     let lastPaintMs = -Infinity;
@@ -79,6 +88,19 @@ export function ToyDeliveryDrawing(props: ToyDeliveryDrawingProps) {
     function paint(nowMs: number) {
       const ms = Math.max(0, nowMs - view.startedAtMs);
       const done = ms >= durationMs;
+      const cue =
+        view.kind === "departing"
+          ? getToyDepartureSound({ elapsedMs: ms, reducedMotion })
+          : undefined;
+      if (
+        cue !== undefined &&
+        !silent &&
+        document.visibilityState === "visible" &&
+        !playedCuesRef.current.includes(cue)
+      ) {
+        playedCuesRef.current = [...playedCuesRef.current, cue];
+        sound?.play(cue, { volume: 0.7 });
+      }
       if (done || quality !== "lite" || nowMs - lastPaintMs >= 33) {
         lastPaintMs = nowMs;
         const arrival = smooth(
@@ -150,19 +172,24 @@ export function ToyDeliveryDrawing(props: ToyDeliveryDrawingProps) {
       if (!done && document.visibilityState === "visible")
         frameId = requestAnimationFrame(paint);
     }
-    function resume() {
-      cancelAnimationFrame(frameId);
-      if (document.visibilityState === "visible") paint(performance.now());
-    }
-    resume();
-    document.addEventListener("visibilitychange", resume);
+    if (document.visibilityState === "visible") paint(performance.now());
     return () => {
       cancelAnimationFrame(frameId);
-      document.removeEventListener("visibilitychange", resume);
       cargo?.removeAttribute("transform");
       cargo?.setAttribute("opacity", "0");
     };
-  }, [view, quality, reducedMotion, scale, origin.y, anchor.x, anchor.y]);
+  }, [
+    view,
+    quality,
+    reducedMotion,
+    scale,
+    origin.y,
+    anchor.x,
+    anchor.y,
+    sound,
+    paused,
+    silent,
+  ]);
 
   return (
     <g data-toy-delivery={view.kind}>

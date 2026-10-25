@@ -517,7 +517,7 @@ export function SettingsTicketPrinter(props: SettingsTicketPrinterProps) {
     >
       <h3
         id="settings-ticket-heading"
-        className={cn(SETTINGS_META_CLASS, "m-0 font-normal opacity-60")}
+        className={cn(SETTINGS_META_CLASS, "m-0 font-normal opacity-80")}
       >
         {copy.settings.ticket.heading}
       </h3>
@@ -539,23 +539,23 @@ export function SettingsTicketPrinter(props: SettingsTicketPrinterProps) {
         </span>
         <span
           aria-hidden
-          className="relative h-2.5 rounded-t-xl bg-[#1b1c1e] shadow-[inset_0_1px_0_#000,inset_1px_0_0_#000,inset_-1px_0_0_#000]"
+          className="relative h-2.5 rounded-t-xl bg-[var(--lm-housing-top)] shadow-[inset_0_1px_0_var(--lm-control-edge),inset_1px_0_0_var(--lm-control-edge),inset_-1px_0_0_var(--lm-control-edge)]"
         >
           <span
             className={cn(
               "absolute inset-x-3.5 top-[3px] h-1 rounded-[2px] bg-[#050505] transition-shadow duration-200",
               isDropping
-                ? "shadow-[inset_0_1px_2px_#000,0_0_0_1px_var(--lm-accent),0_0_10px_color-mix(in_oklab,var(--lm-accent)_60%,transparent)]"
-                : "shadow-[inset_0_1px_2px_#000,0_1px_0_rgb(255_255_255/0.05)]"
+                ? "shadow-[inset_0_1px_2px_var(--lm-control-edge),0_0_0_1px_var(--lm-accent),0_0_10px_color-mix(in_oklab,var(--lm-accent)_60%,transparent)]"
+                : "shadow-[inset_0_1px_2px_var(--lm-control-edge),0_1px_0_rgb(255_255_255/0.05)]"
             )}
           />
-          <span className="absolute inset-x-0 top-[5px] bottom-0 z-[3] bg-[#1b1c1e] shadow-[inset_1px_0_0_#000,inset_-1px_0_0_#000]">
+          <span className="absolute inset-x-0 top-[5px] bottom-0 z-[3] bg-[var(--lm-housing-top)] shadow-[inset_1px_0_0_var(--lm-control-edge),inset_-1px_0_0_var(--lm-control-edge)]">
             <span className="absolute inset-x-3.5 top-0 h-0.5 rounded-b-[2px] bg-[#050505] shadow-[0_1px_0_rgb(255_255_255/0.05)]" />
           </span>
         </span>
         <div
           ref={plateRef}
-          className="flex items-center gap-x-2 rounded-b-xl bg-[linear-gradient(180deg,#1b1c1e,#151617)] px-2.5 pt-1 pb-2.5 shadow-[inset_0_-1px_0_#000,inset_1px_0_0_#000,inset_-1px_0_0_#000,0_1px_0_rgb(255_255_255/0.03)]"
+          className="flex items-center gap-x-2 rounded-b-xl bg-[linear-gradient(180deg,var(--lm-housing-top),var(--lm-housing-bottom))] px-2.5 pt-1 pb-2.5 shadow-[inset_0_-1px_0_var(--lm-control-edge),inset_1px_0_0_var(--lm-control-edge),inset_-1px_0_0_var(--lm-control-edge),0_1px_0_rgb(255_255_255/0.03)]"
         >
           <span
             aria-hidden
@@ -583,7 +583,7 @@ export function SettingsTicketPrinter(props: SettingsTicketPrinterProps) {
           <label
             className={cn(
               PRINTER_KEY_CLASS,
-              "has-[:focus-visible]:shadow-[0_0_0_1px_#000,0_0_0_3px_var(--lm-line),0_2px_0_#08090a]"
+              "has-[:focus-visible]:shadow-[0_0_0_1px_var(--lm-control-edge),0_0_0_3px_var(--lm-line),0_2px_0_var(--lm-control-edge)]"
             )}
           >
             <input
@@ -639,12 +639,12 @@ export function SettingsTicketPrinter(props: SettingsTicketPrinterProps) {
                 : copy.settings.ticket.copyLink}
             </button>
           </div>
-          <p className={cn(SETTINGS_META_CLASS, "m-0 opacity-60")}>
+          <p className={cn(SETTINGS_META_CLASS, "m-0 opacity-80")}>
             {copy.settings.ticket.linkHint}
           </p>
         </motion.div>
       )}
-      <p className="m-0 font-[family-name:var(--lm-font-display)] text-[13px] leading-5 text-pretty opacity-60">
+      <p className="m-0 font-[family-name:var(--lm-font-display)] text-[13px] leading-5 text-pretty opacity-80">
         {copy.settings.ticket.hint}
       </p>
     </section>

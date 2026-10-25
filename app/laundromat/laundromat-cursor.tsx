@@ -7,12 +7,27 @@ import {
   CLICKABLE_SELECTOR,
   TEXT_SELECTOR,
 } from "@/lib/laundromat/cursor-selectors";
-import { sceneConfig } from "@/lib/laundromat/scene-config";
 
 type CursorKind = "dot" | "ring" | "beam";
 
-const { tokens } = sceneConfig;
-const TRANSPARENT_ACCENT = `${tokens.accent}00`;
+const CURSOR_PAINT = {
+  dot: {
+    borderColor: "transparent",
+    backgroundColor: "var(--lm-ink-hi)",
+    boxShadow: "0 0 0 1.5px color-mix(in srgb, var(--lm-bg) 50%, transparent)",
+  },
+  ring: {
+    borderColor: "var(--lm-accent)",
+    backgroundColor: "transparent",
+    boxShadow: "0 0 0 1px color-mix(in srgb, var(--lm-bg) 33%, transparent)",
+  },
+  beam: {
+    borderColor: "transparent",
+    backgroundColor: "var(--lm-ink-pen)",
+    boxShadow:
+      "0 0 0 1.2px color-mix(in srgb, var(--lm-ink-hi) 60%, transparent)",
+  },
+};
 
 const SHAPES = {
   dot: {
@@ -20,27 +35,18 @@ const SHAPES = {
     height: 7,
     borderRadius: 999,
     borderWidth: 0,
-    borderColor: TRANSPARENT_ACCENT,
-    backgroundColor: tokens.inkHi,
-    boxShadow: `0 0 0 1.5px ${tokens.bg}80`,
   },
   ring: {
     width: 17,
     height: 17,
     borderRadius: 999,
     borderWidth: 1.1,
-    borderColor: tokens.accent,
-    backgroundColor: TRANSPARENT_ACCENT,
-    boxShadow: `0 0 0 1px ${tokens.bg}55`,
   },
   beam: {
     width: 1.5,
     height: 18,
     borderRadius: 1,
     borderWidth: 0,
-    borderColor: TRANSPARENT_ACCENT,
-    backgroundColor: tokens.inkPen,
-    boxShadow: `0 0 0 1.2px ${tokens.inkHi}99`,
   },
 } satisfies { [kind in CursorKind]: object };
 
@@ -115,7 +121,8 @@ export function LaundromatCursor() {
     >
       {isActive && (
         <motion.div
-          className="flex -translate-x-1/2 -translate-y-1/2 items-center justify-center border-solid"
+          className="flex -translate-x-1/2 -translate-y-1/2 items-center justify-center border-solid transition-[background-color,border-color,box-shadow] duration-150 motion-reduce:transition-none"
+          style={CURSOR_PAINT[kind]}
           initial={false}
           animate={{
             ...SHAPES[kind],
@@ -126,7 +133,7 @@ export function LaundromatCursor() {
         >
           <motion.span
             className="block size-[3.6px] rounded-full"
-            style={{ backgroundColor: tokens.accent }}
+            style={{ backgroundColor: "var(--lm-accent)" }}
             initial={false}
             animate={{
               scale: kind === "ring" ? 1 : 0,

@@ -47,7 +47,7 @@ export function TipModal(props: TipModalProps) {
     <AnimatePresence>
       {open && (
         <motion.div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-[rgb(0_0_0/0.45)] px-4"
+          className="fixed inset-0 z-50 flex items-center justify-center bg-[var(--lm-backdrop)] px-4"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
