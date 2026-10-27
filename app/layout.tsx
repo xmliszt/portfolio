@@ -160,6 +160,14 @@ export default function RootLayout({
                         {/* Right side floating TOC tree */}
                         <TOCTree />
                       </div>
+                      {/* Theme switch: rides up with the sheet's bottom edge */}
+                      <SiteChrome>
+                        <div className="pointer-events-none sticky bottom-0 z-50 hidden h-0 md:block">
+                          <div className="pointer-events-auto absolute right-[max(2.5rem,env(safe-area-inset-right))] bottom-10">
+                            <ThemeSwitch showRing />
+                          </div>
+                        </div>
+                      </SiteChrome>
                     </div>
                     <SiteChrome>
                       <SunsetFooter />
@@ -216,10 +224,6 @@ export default function RootLayout({
                     </FloatingNavigationBarContent>
                   </FloatingNavigationBar>
                 </FloatingNavigationProvider>
-                {/* Theme switch */}
-                <div className="fixed right-4 bottom-10 z-50 hidden md:right-[max(2.5rem,env(safe-area-inset-right))] md:block">
-                  <ThemeSwitch showRing />
-                </div>
                 {/* BGM player */}
                 <div
                   className={cn(
