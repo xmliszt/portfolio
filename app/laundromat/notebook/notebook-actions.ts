@@ -205,7 +205,7 @@ export async function leaveEntry(options: {
   const secret = process.env.LAUNDROMAT_VISITOR_SECRET;
   if (client === undefined || !secret) return { kind: "offline" };
   try {
-    const visitorId = await readOrCreateVisitorCookieId(secret);
+    const { visitorId } = await readOrCreateVisitorCookieId(secret);
     const result = await appendEntry({
       client,
       visitorId,
@@ -252,7 +252,7 @@ export async function leaveDoodle(
   const secret = process.env.LAUNDROMAT_VISITOR_SECRET;
   if (client === undefined || !secret) return { kind: "offline" };
   try {
-    const visitorId = await readOrCreateVisitorCookieId(secret);
+    const { visitorId } = await readOrCreateVisitorCookieId(secret);
     const result = await appendDoodle({
       client,
       visitorId,
@@ -291,7 +291,7 @@ export async function reportNotebookEntry(options: {
   const secret = process.env.LAUNDROMAT_VISITOR_SECRET;
   if (client === undefined || !secret) return { kind: "offline" };
   try {
-    const visitorId = await readOrCreateVisitorCookieId(secret);
+    const { visitorId } = await readOrCreateVisitorCookieId(secret);
     await reportEntry({ client, entryId, visitorId, reason });
     return { kind: "reported" };
   } catch {

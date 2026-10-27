@@ -46,7 +46,7 @@ export default function LaundromatPrivacyPage() {
       </LegalSection>
 
       <LegalSection heading="cookies">
-        <p>The site sets two cookies. Both are needed for it to work.</p>
+        <p>The site sets two cookies.</p>
         <ul>
           <li>
             <code>laundromat-locale</code> remembers the language you pick. It
@@ -60,7 +60,9 @@ export default function LaundromatPrivacyPage() {
             year.
           </li>
         </ul>
-        <p>There are no advertising or tracking cookies.</p>
+        <p>
+          There are no advertising cookies, and no cookies from other sites.
+        </p>
       </LegalSection>
 
       <LegalSection heading="sharing the room">
@@ -191,10 +193,10 @@ export default function LaundromatPrivacyPage() {
           your visitor id from the <code>laundromat_visitor</code> cookie, the
           date, the times of your first and last visit that day, how many times
           you opened the site, the language you opened it in, your country and
-          the website you came from. Visits counted before 28 October 2026 under
-          the random visitor id from local storage move to the cookie id the
-          next time you visit. It does not store your IP address or the full
-          address of the page you came from.
+          the website you came from. Visits counted under the random visitor id
+          from local storage move to the cookie id the next time you visit. It
+          does not store your IP address or the full address of the page you
+          came from.
         </p>
         <p>Fonts are served from laundro.cafe itself.</p>
       </LegalSection>
