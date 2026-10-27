@@ -2,6 +2,7 @@
 
 import { cookies } from "next/headers";
 
+import { readOrCreateVisitorCookieId } from "@/app/laundromat/read-or-create-visitor-cookie-id";
 import { decodeDoodle } from "@/lib/laundromat/notebook/decode-doodle";
 import type { DoodleDrawing } from "@/lib/laundromat/notebook/doodle-stroke";
 import { getDoodleArea } from "@/lib/laundromat/notebook/get-doodle-area";
@@ -26,13 +27,9 @@ import type {
 } from "@/lib/laundromat/supabase/notebook-types";
 import { reportEntry } from "@/lib/laundromat/supabase/report-entry";
 import { toNotebookScript } from "@/lib/laundromat/supabase/to-notebook-script";
-import { readVisitorId } from "@/lib/laundromat/visitor/read-visitor-id";
-import { signVisitorId } from "@/lib/laundromat/visitor/sign-visitor-id";
 
 import { createFakeNotebookStore } from "./create-fake-notebook-store";
 
-const VISITOR_COOKIE = "laundromat_visitor";
-const VISITOR_COOKIE_MAX_AGE_S = 60 * 60 * 24 * 365;
 const FAKE_NOTEBOOKS_COOKIE = "laundromat_fake_notebooks";
 
 const devFakeNotebookStore =
@@ -143,24 +140,6 @@ async function readFakeNotebooks() {
     : undefined;
 }
 
-async function readOrCreateVisitorId(secret: string) {
-  const cookieStore = await cookies();
-  const existing = readVisitorId({
-    cookieValue: cookieStore.get(VISITOR_COOKIE)?.value,
-    secret,
-  });
-  if (existing !== undefined) return existing;
-  const visitorId = crypto.randomUUID();
-  cookieStore.set(VISITOR_COOKIE, signVisitorId({ visitorId, secret }), {
-    httpOnly: true,
-    sameSite: "lax",
-    secure: process.env.NODE_ENV === "production",
-    maxAge: VISITOR_COOKIE_MAX_AGE_S,
-    path: "/",
-  });
-  return visitorId;
-}
-
 /** Load the current notebook's number and size and every filled notebook for the shelf, or `offline` when the database is not configured or not reachable. */
 export async function loadShelf(): Promise<ShelfResult> {
   const fake = await readFakeNotebooks();
@@ -226,7 +205,7 @@ export async function leaveEntry(options: {
   const secret = process.env.LAUNDROMAT_VISITOR_SECRET;
   if (client === undefined || !secret) return { kind: "offline" };
   try {
-    const visitorId = await readOrCreateVisitorId(secret);
+    const visitorId = await readOrCreateVisitorCookieId(secret);
     const result = await appendEntry({
       client,
       visitorId,
@@ -273,7 +252,7 @@ export async function leaveDoodle(
   const secret = process.env.LAUNDROMAT_VISITOR_SECRET;
   if (client === undefined || !secret) return { kind: "offline" };
   try {
-    const visitorId = await readOrCreateVisitorId(secret);
+    const visitorId = await readOrCreateVisitorCookieId(secret);
     const result = await appendDoodle({
       client,
       visitorId,
@@ -312,7 +291,7 @@ export async function reportNotebookEntry(options: {
   const secret = process.env.LAUNDROMAT_VISITOR_SECRET;
   if (client === undefined || !secret) return { kind: "offline" };
   try {
-    const visitorId = await readOrCreateVisitorId(secret);
+    const visitorId = await readOrCreateVisitorCookieId(secret);
     await reportEntry({ client, entryId, visitorId, reason });
     return { kind: "reported" };
   } catch {

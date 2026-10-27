@@ -15,7 +15,7 @@ type VisitRecorderProps = {
 export function VisitRecorder(props: VisitRecorderProps) {
   useEffect(() => {
     recordLaundromatVisit({
-      visitorId: readOrCreateVisitorId(),
+      legacyVisitorId: readOrCreateVisitorId(),
       locale: props.locale,
       referrer: document.referrer,
     }).catch(() => undefined);

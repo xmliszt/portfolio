@@ -53,11 +53,11 @@ export default function LaundromatPrivacyPage() {
             lasts one year.
           </li>
           <li>
-            <code>laundromat_visitor</code> is set the first time you save a
-            notebook entry or report one. It holds a random id signed by the
-            server, so the notebook can limit how often one visitor writes and
-            count each report once. Scripts on the page cannot read it. It lasts
-            one year.
+            <code>laundromat_visitor</code> is set the first time you open the
+            site. It holds a random id signed by the server, used to count your
+            visits, limit how often one visitor writes in the notebook and count
+            each report once. Scripts on the page cannot read it. It lasts one
+            year.
           </li>
         </ul>
         <p>There are no advertising or tracking cookies.</p>
@@ -188,11 +188,13 @@ export default function LaundromatPrivacyPage() {
         </p>
         <p>
           The site also counts visits itself. Once a day per visitor, it stores
-          your random visitor id from local storage, the date, the times of your
-          first and last visit that day, how many times you opened the site, the
-          language you opened it in, your country and the website you came from.
-          It does not store your IP address or the full address of the page you
-          came from.
+          your visitor id from the <code>laundromat_visitor</code> cookie, the
+          date, the times of your first and last visit that day, how many times
+          you opened the site, the language you opened it in, your country and
+          the website you came from. Visits counted before 28 October 2026 under
+          the random visitor id from local storage move to the cookie id the
+          next time you visit. It does not store your IP address or the full
+          address of the page you came from.
         </p>
         <p>Fonts are served from laundro.cafe itself.</p>
       </LegalSection>

@@ -2,13 +2,14 @@
 
 import { headers } from "next/headers";
 
+import { readOrCreateVisitorCookieId } from "@/app/laundromat/read-or-create-visitor-cookie-id";
 import { createLaundromatServiceClient } from "@/lib/laundromat/supabase/create-laundromat-service-client";
 import { recordVisit } from "@/lib/laundromat/supabase/record-visit";
 import { parseVisitInput } from "@/lib/laundromat/visit/parse-visit-input";
 
-/** Count a visit by `visitorId` for today, with the country from Vercel's IP header and the host of `referrer`; does nothing outside Vercel production, for a malformed id or locale, or when the database is not configured, and logs a database error. */
+/** Count a visit for today by the visitor in the signed cookie, creating the cookie on first visit and moving rows recorded under `legacyVisitorId` to it, with the country from Vercel's IP header and the host of `referrer`; does nothing outside Vercel production, for a malformed locale, or when the database or visitor secret is not configured, and logs a database error. */
 export async function recordLaundromatVisit(options: {
-  visitorId: string;
+  legacyVisitorId: string;
   locale: string;
   referrer: string;
 }) {
@@ -18,9 +19,11 @@ export async function recordLaundromatVisit(options: {
     countryHeader: (await headers()).get("x-vercel-ip-country"),
   });
   const client = createLaundromatServiceClient();
-  if (visit === undefined || client === undefined) return;
+  const secret = process.env.LAUNDROMAT_VISITOR_SECRET;
+  if (visit === undefined || client === undefined || !secret) return;
   try {
-    await recordVisit({ client, ...visit });
+    const visitorId = await readOrCreateVisitorCookieId(secret);
+    await recordVisit({ client, visitorId, ...visit });
   } catch (error) {
     console.error("Failed to record laundromat visit", error);
   }
