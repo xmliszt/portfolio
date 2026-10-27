@@ -1,3 +1,5 @@
+import { clamp } from "lodash";
+
 import { getSunsetPalette } from "./get-sunset-palette";
 import { SUNSET_FRAGMENT_SHADER } from "./sunset-fragment-shader";
 import { SUNSET_SCENE_CONFIG } from "./sunset-scene-config";
@@ -16,7 +18,12 @@ type SunsetFrame = {
   palette: ReturnType<typeof getSunsetPalette>;
   visibleHeightPx: number;
   ripples: Float32Array;
+  wakes: Float32Array;
+  roll: number;
+  pitch: number;
 };
+
+const RESERVED_UNIFORM_VECTORS = 24;
 
 const VERTEX_SHADER =
   "attribute vec2 a;void main(){gl_Position=vec4(a,0.,1.);}";
@@ -37,6 +44,9 @@ const SCENE_UNIFORMS = {
   uSat: SUNSET_SCENE_CONFIG.saturation,
   uContrast: SUNSET_SCENE_CONFIG.contrast,
   uBloom: SUNSET_SCENE_CONFIG.sunBloom,
+  uSail: SUNSET_SCENE_CONFIG.sailSpeed,
+  uWakeFreq: SUNSET_SCENE_CONFIG.wakeFrequency,
+  uWakeSpeed: SUNSET_SCENE_CONFIG.wakeSpreadSpeed,
 };
 
 /** Create a WebGL renderer that draws the sunset scene into `canvas`; return `undefined` when WebGL is unavailable, or set the canvas size to 0 and return `undefined` when the shader fails to build. */
@@ -50,6 +60,13 @@ export function createSunsetRenderer(options: CreateSunsetRendererOptions) {
   });
   if (!gl) return undefined;
   const context = gl;
+  const wakeRingCount = clamp(
+    Number(gl.getParameter(gl.MAX_FRAGMENT_UNIFORM_VECTORS)) -
+      SUNSET_SCENE_CONFIG.rippleCount -
+      RESERVED_UNIFORM_VECTORS,
+    1,
+    SUNSET_SCENE_CONFIG.wakeRingCount
+  );
 
   let waveIterations = options.waveIterations;
   let buffer: WebGLBuffer | null = null;
@@ -90,7 +107,7 @@ export function createSunsetRenderer(options: CreateSunsetRendererOptions) {
     const vertex = compile(context.VERTEX_SHADER, VERTEX_SHADER);
     const fragment = compile(
       context.FRAGMENT_SHADER,
-      `#define ITER ${waveIterations}\n#define RIPPLES ${SUNSET_SCENE_CONFIG.rippleCount}\n#define RIPPLE_LIFE ${((SUNSET_SCENE_CONFIG.rippleCount * SUNSET_SCENE_CONFIG.rippleIntervalMs) / 1000).toFixed(2)}\n${SUNSET_FRAGMENT_SHADER}`
+      `#define ITER ${waveIterations}\n#define RIPPLES ${SUNSET_SCENE_CONFIG.rippleCount}\n#define RIPPLE_LIFE ${((SUNSET_SCENE_CONFIG.rippleCount * SUNSET_SCENE_CONFIG.rippleIntervalMs) / 1000).toFixed(2)}\n#define WAKES ${wakeRingCount}\n#define WAKE_LIFE ${SUNSET_SCENE_CONFIG.wakeLifeS.toFixed(2)}\n${SUNSET_FRAGMENT_SHADER}`
     );
     const linked = context.createProgram();
     if (!vertex || !fragment || !linked) return undefined;
@@ -134,11 +151,15 @@ export function createSunsetRenderer(options: CreateSunsetRendererOptions) {
       uSunC: uniform("uSunC"),
       uSea: uniform("uSea"),
       uRipples: uniform("uRipples"),
+      uWakes: uniform("uWakes"),
+      uRoll: uniform("uRoll"),
+      uPitch: uniform("uPitch"),
     };
     return { program: linked, uniforms };
   }
 
   return {
+    wakeRingCount,
     setWaveIterations(iterations: number) {
       if (iterations === waveIterations || context.isContextLost()) return;
       waveIterations = iterations;
@@ -165,6 +186,12 @@ export function createSunsetRenderer(options: CreateSunsetRendererOptions) {
       context.uniform3fv(uniforms.uSunC, frame.palette.sun);
       context.uniform3fv(uniforms.uSea, frame.palette.sea);
       context.uniform4fv(uniforms.uRipples, frame.ripples);
+      context.uniform4fv(
+        uniforms.uWakes,
+        frame.wakes.subarray(0, wakeRingCount * 4)
+      );
+      context.uniform1f(uniforms.uRoll, frame.roll);
+      context.uniform1f(uniforms.uPitch, frame.pitch);
       context.drawArrays(context.TRIANGLES, 0, 3);
     },
     dispose() {

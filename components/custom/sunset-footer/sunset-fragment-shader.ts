@@ -1,4 +1,4 @@
-/** GLSL ES 1.0 fragment shader for the sunset scene; the caller prepends `#define ITER <n>` for the wave iteration count and `#define RIPPLES <n>` and `#define RIPPLE_LIFE <seconds>` for `uRipples`. */
+/** GLSL ES 1.0 fragment shader for the sunset scene; the caller prepends `#define ITER <n>` for the wave iteration count and `#define RIPPLES <n>` and `#define RIPPLE_LIFE <seconds>` for `uRipples`, and `#define WAKES <n>` and `#define WAKE_LIFE <seconds>` for `uWakes`. */
 export const SUNSET_FRAGMENT_SHADER = `
 #ifdef GL_FRAGMENT_PRECISION_HIGH
 precision highp float;
@@ -6,9 +6,10 @@ precision highp float;
 precision mediump float;
 #endif
 uniform vec2 uRes;
-uniform float uTime, uSunY, uHorizon, uSunR, uChop, uScale, uSpeed, uRough, uGlint, uIsland, uExpo, uVis, uGlow, uSpread, uHaze, uDof, uSunI, uSat, uContrast, uBloom;
+uniform float uTime, uSunY, uHorizon, uSunR, uChop, uScale, uSpeed, uRough, uGlint, uIsland, uExpo, uVis, uGlow, uSpread, uHaze, uDof, uSunI, uSat, uContrast, uBloom, uSail, uRoll, uPitch, uWakeFreq, uWakeSpeed;
 uniform vec3 uZen, uMid, uHor, uSunC, uSea;
 uniform vec4 uRipples[RIPPLES];
+uniform vec4 uWakes[WAKES];
 
 float hash(vec2 p) { return fract(sin(dot(p, vec2(12.9898, 78.233))) * 43758.5453); }
 
@@ -69,20 +70,23 @@ vec3 agx(vec3 v) {
   return l + uSat * (pow(max(x, 0.0), vec3(uContrast)) - l);
 }
 
+vec2 ring(vec4 r, vec2 p, float footprint, float life, float freq, float speed) {
+  float age = uTime - r.z;
+  if (r.w <= 0.0 || age < 0.0 || age > life) return vec2(0.0);
+  vec2 d = p - r.xy;
+  float dist = length(d) + 1e-4;
+  float front = dist - speed * age;
+  float width = 0.06 + 0.1 * age;
+  if (abs(front) > 3.0 * width) return vec2(0.0);
+  float env = exp(-front * front / (width * width)) * r.w
+    * smoothstep(0.0, 0.15, age) * (1.0 - smoothstep(life * 0.35, life, age));
+  return d / dist * cos(freq * front) * env * (1.0 - smoothstep(0.5, 2.0, freq * footprint));
+}
+
 vec2 ripples(vec2 p, float footprint) {
   vec2 slope = vec2(0.0);
-  for (int i = 0; i < RIPPLES; i++) {
-    vec4 r = uRipples[i];
-    float age = uTime - r.z;
-    if (r.w <= 0.0 || age < 0.0 || age > RIPPLE_LIFE) continue;
-    vec2 d = p - r.xy;
-    float dist = length(d) + 1e-4;
-    float front = dist - 0.4 * age;
-    float width = 0.06 + 0.1 * age;
-    float env = exp(-front * front / (width * width)) * r.w
-      * smoothstep(0.0, 0.15, age) * (1.0 - smoothstep(RIPPLE_LIFE * 0.35, RIPPLE_LIFE, age));
-    slope += d / dist * cos(26.0 * front) * env * (1.0 - smoothstep(0.5, 2.0, 26.0 * footprint));
-  }
+  for (int i = 0; i < RIPPLES; i++) slope += ring(uRipples[i], p, footprint, RIPPLE_LIFE, 26.0, 0.4);
+  for (int i = 0; i < WAKES; i++) slope += ring(uWakes[i], p, footprint, WAKE_LIFE, uWakeFreq, uWakeSpeed);
   return slope * 2.5;
 }
 
@@ -93,7 +97,9 @@ float fresnel(float c) {
 }
 
 void main() {
-  vec2 q = vec2((gl_FragCoord.x - 0.5 * uRes.x) / uRes.y, gl_FragCoord.y / uRes.y);
+  vec2 q = vec2((gl_FragCoord.x - 0.5 * uRes.x) / uRes.y, gl_FragCoord.y / uRes.y - 0.5);
+  q = mat2(cos(uRoll), sin(uRoll), -sin(uRoll), cos(uRoll)) * q;
+  q.y += 0.5 + uPitch;
   vec3 col;
   if (q.y >= uHorizon) {
     col = sky(q);
@@ -111,10 +117,11 @@ void main() {
   } else {
     float dh = max(uHorizon - q.y, 1e-4);
     float z = 1.0 / dh;
-    vec2 wp = vec2(q.x * z, z) * uScale;
+    vec2 sp = vec2(q.x * z, z + uTime * uSail);
+    vec2 wp = sp * uScale;
     float fp = z * z * uScale * (1.0 / uRes.y + uDof * 0.02 * max(dh - 0.06, 0.0));
     vec3 cov;
-    vec2 sl = waves(wp, fp, cov) * uChop + ripples(vec2(q.x * z, z), z * z / uRes.y);
+    vec2 sl = waves(wp, fp, cov) * uChop + ripples(sp, z * z / uRes.y);
     cov *= uChop * uChop;
     float far = smoothstep(0.0, 0.015, cov.x + cov.y);
     float base = uRough * 0.5;

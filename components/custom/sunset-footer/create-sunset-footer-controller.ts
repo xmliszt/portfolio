@@ -66,6 +66,11 @@ export function createSunsetFooterController(
   let lastRippleMs = 0;
   let lastRippleX = 0;
   let lastRippleY = 0;
+  const wakes = new Float32Array(config.wakeRingCount * 4);
+  let wakeIndex = 0;
+  let lastWakeMs = 0;
+  let pointerOnWater: { clientX: number; clientY: number } | undefined;
+  let lastPointerMoveMs = 0;
 
   function revealPx() {
     return viewport.scrollTop + clientHeightPx - sheetBottomPx;
@@ -176,6 +181,8 @@ export function createSunsetFooterController(
   }
 
   function render(nowMs: number) {
+    emitWakes(nowMs);
+    const rock = boatRock(sceneTimeS(nowMs));
     const progress = clamp(revealPx() / maxRevealPx, 0, 1);
     const sunRadius = config.sunRadius;
     const sunY =
@@ -198,6 +205,9 @@ export function createSunsetFooterController(
       ),
       visibleHeightPx,
       ripples,
+      wakes,
+      roll: rock.roll,
+      pitch: rock.pitch,
     });
     const nextShadeOpacity = config.sheetShadow * smoothstep(0, 0.25, progress);
     if (Math.abs(nextShadeOpacity - shadeOpacity) > 0.005) {
@@ -223,25 +233,106 @@ export function createSunsetFooterController(
     return reducedMotion.matches ? 40 : (nowMs / 1000) % 3600;
   }
 
+  function boatRock(timeS: number) {
+    if (reducedMotion.matches) return { roll: 0, pitch: 0 };
+    return {
+      roll:
+        config.boatRock *
+        (0.005 * Math.sin(timeS * 0.53) + 0.002 * Math.sin(timeS * 1.31 + 0.7)),
+      pitch:
+        config.boatRock *
+        (0.004 * Math.sin(timeS * 0.71 + 1.9) +
+          0.0015 * Math.sin(timeS * 1.67)),
+    };
+  }
+
+  function toWater(point: { clientX: number; clientY: number; timeS: number }) {
+    const rect = options.footer.getBoundingClientRect();
+    const rock = boatRock(point.timeS);
+    const screenX = (point.clientX - rect.left - rect.width / 2) / rect.height;
+    const screenY = (rect.bottom - point.clientY) / rect.height - 0.5;
+    const x = Math.cos(rock.roll) * screenX - Math.sin(rock.roll) * screenY;
+    const y =
+      Math.sin(rock.roll) * screenX +
+      Math.cos(rock.roll) * screenY +
+      0.5 +
+      rock.pitch;
+    const depth = config.horizon - y;
+    if (depth < 0.01) return undefined;
+    return { x: x / depth, z: 1 / depth };
+  }
+
+  function addWake(wake: {
+    x: number;
+    z: number;
+    strength: number;
+    timeS: number;
+  }) {
+    wakes.set(
+      [
+        wake.x,
+        wake.z + wake.timeS * config.sailSpeed,
+        wake.timeS,
+        wake.strength,
+      ],
+      wakeIndex * 4
+    );
+    wakeIndex =
+      (wakeIndex + 1) % (renderer?.wakeRingCount ?? config.wakeRingCount);
+  }
+
+  function emitWakes(nowMs: number) {
+    if (reducedMotion.matches || nowMs - lastWakeMs < config.wakeIntervalMs)
+      return;
+    lastWakeMs = nowMs + (Math.random() - 0.5) * config.wakeIntervalMs * 0.4;
+    const timeS = sceneTimeS(nowMs);
+    addWake({
+      x: (Math.random() - 0.5) * 0.12,
+      z: config.bowDistance,
+      strength: config.bowWakeStrength * (0.7 + Math.random() * 0.3),
+      timeS,
+    });
+    if (!pointerOnWater || nowMs - lastPointerMoveMs < config.cursorRestMs)
+      return;
+    if (options.sheet.getBoundingClientRect().bottom > pointerOnWater.clientY)
+      return;
+    const point = toWater({ ...pointerOnWater, timeS });
+    if (point)
+      addWake({ ...point, strength: config.cursorWakeStrength, timeS });
+  }
+
+  function handlePointerLeave() {
+    pointerOnWater = undefined;
+  }
+
   function handlePointerMove(event: PointerEvent) {
     if (event.pointerType === "touch" || reducedMotion.matches) return;
-    if (event.target instanceof Node && options.sheet.contains(event.target))
+    if (event.target instanceof Node && options.sheet.contains(event.target)) {
+      pointerOnWater = undefined;
       return;
+    }
+    pointerOnWater = { clientX: event.clientX, clientY: event.clientY };
     const nowMs = performance.now();
+    lastPointerMoveMs = nowMs;
     if (nowMs - lastRippleMs < config.rippleIntervalMs) return;
-    const rect = options.footer.getBoundingClientRect();
-    const depth = config.horizon - (rect.bottom - event.clientY) / rect.height;
-    if (depth < 0.01) return;
+    const timeS = sceneTimeS(nowMs);
+    const point = toWater({
+      clientX: event.clientX,
+      clientY: event.clientY,
+      timeS,
+    });
+    if (!point) return;
     const speedPxPerMs =
       Math.hypot(event.clientX - lastRippleX, event.clientY - lastRippleY) /
       (nowMs - lastRippleMs);
     lastRippleMs = nowMs;
     lastRippleX = event.clientX;
     lastRippleY = event.clientY;
-    const z = 1 / depth;
-    const x = ((event.clientX - rect.left - rect.width / 2) / rect.height) * z;
     const strength = clamp(speedPxPerMs / 1.5, 0.2, 1);
-    ripples.set([x, z, sceneTimeS(nowMs), strength], rippleIndex * 4);
+    ripples.set(
+      [point.x, point.z + timeS * config.sailSpeed, timeS, strength],
+      rippleIndex * 4
+    );
     rippleIndex = (rippleIndex + 1) % config.rippleCount;
   }
 
@@ -309,6 +400,7 @@ export function createSunsetFooterController(
   viewport.addEventListener("touchend", release);
   viewport.addEventListener("touchcancel", release);
   viewport.addEventListener("pointermove", handlePointerMove);
+  viewport.addEventListener("pointerleave", handlePointerLeave);
   document.addEventListener("visibilitychange", requestFrame);
   reducedMotion.addEventListener("change", requestFrame);
   measure();
@@ -324,6 +416,7 @@ export function createSunsetFooterController(
       viewport.removeEventListener("touchend", release);
       viewport.removeEventListener("touchcancel", release);
       viewport.removeEventListener("pointermove", handlePointerMove);
+      viewport.removeEventListener("pointerleave", handlePointerLeave);
       document.removeEventListener("visibilitychange", requestFrame);
       reducedMotion.removeEventListener("change", requestFrame);
       viewport.style.overscrollBehaviorY = originalOverscroll;
