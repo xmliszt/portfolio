@@ -25,16 +25,18 @@ export function SunsetFooter() {
 
     let isDisposed = false;
     let dispose: (() => void) | undefined;
-    import("./create-sunset-footer-controller").then((module) => {
-      if (isDisposed) return;
-      dispose = module.createSunsetFooterController({
-        viewport,
-        sheet,
-        footer,
-        canvas,
-        shade,
-      }).dispose;
-    });
+    import("./create-sunset-footer-controller")
+      .then((module) => {
+        if (isDisposed) return;
+        dispose = module.createSunsetFooterController({
+          viewport,
+          sheet,
+          footer,
+          canvas,
+          shade,
+        }).dispose;
+      })
+      .catch(() => undefined);
     return () => {
       isDisposed = true;
       dispose?.();
@@ -42,7 +44,7 @@ export function SunsetFooter() {
   }, []);
 
   return (
-    <footer ref={footerRef} className="sticky bottom-0 z-[1] -mt-8 h-[80svh]">
+    <footer ref={footerRef} className="sticky bottom-0 z-[-1] -mt-8 h-[80svh]">
       <canvas
         ref={canvasRef}
         aria-hidden

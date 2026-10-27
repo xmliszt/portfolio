@@ -117,7 +117,7 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <body
         className={cn(
-          "bg-background flex max-h-dvh min-h-dvh w-screen flex-col items-center overflow-hidden antialiased",
+          "flex max-h-dvh min-h-dvh w-screen flex-col items-center overflow-hidden antialiased",
           "selection:bg-neutral-600 selection:text-neutral-100",
           "dark:selection:bg-neutral-100 dark:selection:text-neutral-600",
           fontInter.className
@@ -132,7 +132,7 @@ export default function RootLayout({
                 </SiteChrome>
                 <main className="h-dvh max-h-dvh w-screen overflow-hidden">
                   <ScrollAreaWithTOCTracker>
-                    <div className="bg-background relative z-[2] rounded-b-[32px] bg-[image:var(--background-pattern)]">
+                    <div className="bg-background relative min-h-dvh rounded-b-[32px] bg-[image:var(--background-pattern)] transition-colors duration-500">
                       <div
                         className={cn(
                           "relative mx-auto h-auto w-screen pb-64 [&>article]:mx-auto",
@@ -177,9 +177,11 @@ export default function RootLayout({
                     className="bg-background pointer-events-none fixed inset-x-0 bottom-0 z-40 h-[max(12px,env(safe-area-inset-bottom))] transition-[background-color,opacity] duration-500 [html[data-sunset-revealed]_&]:opacity-0"
                   />
                   <ThemeColorSync />
-                  <div className="transition-opacity duration-500 [html[data-sunset-revealed]_&]:opacity-0">
-                    <GradientBlur placement="bottom" position="fixed" />
-                  </div>
+                  <GradientBlur
+                    placement="bottom"
+                    position="fixed"
+                    className="transition-opacity duration-500 [html[data-sunset-revealed]_&]:opacity-0"
+                  />
                   {/* Right side floating TOC drawer: show when in mobile view port */}
                   <FloatingTOCDrawer>
                     <FloatingTOCDrawerHeader>

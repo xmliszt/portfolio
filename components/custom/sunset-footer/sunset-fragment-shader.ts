@@ -139,7 +139,7 @@ void main() {
     float disc2 = 0.25 * uSunR * uSunR;
     float sx2 = 4.0 * cov.x * (dh * dh + cov.y) + disc2;
     float sy2 = 4.0 * cov.y + disc2;
-    float spec = fresnel(dot(V, n)) * step(0.0, Rs.y) * exp(-0.5 * (sd.x * sd.x / sx2 + sd.y * sd.y / sy2)) * disc2 / sqrt(sx2 * sy2);
+    float spec = fresnel(dot(V, n)) * smoothstep(-0.5 * uSunR, 0.5 * uSunR, Rs.y / max(Rs.z, 0.05)) * exp(-0.5 * (sd.x * sd.x / sx2 + sd.y * sd.y / sy2)) * disc2 / sqrt(sx2 * sy2);
 
     vec3 vh = normalize(vec3(V.x, 0.0, V.z) + vec3(1e-5, 0.0, 0.0));
     float sigV = sqrt(max(vh.x * vh.x * cov.x + vh.z * vh.z * cov.y + 2.0 * vh.x * vh.z * cov.z, 1e-6));

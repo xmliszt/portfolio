@@ -52,8 +52,13 @@ export function createSunsetRenderer(options: CreateSunsetRendererOptions) {
   const context = gl;
 
   let waveIterations = options.waveIterations;
+  let buffer: WebGLBuffer | null = null;
   let program = build();
-  if (!program) return undefined;
+  if (!program) {
+    options.canvas.width = 0;
+    options.canvas.height = 0;
+    return undefined;
+  }
 
   function handleContextLost(event: Event) {
     event.preventDefault();
@@ -77,7 +82,6 @@ export function createSunsetRenderer(options: CreateSunsetRendererOptions) {
     context.compileShader(shader);
     if (context.getShaderParameter(shader, context.COMPILE_STATUS))
       return shader;
-    console.error(context.getShaderInfoLog(shader));
     context.deleteShader(shader);
     return undefined;
   }
@@ -101,7 +105,9 @@ export function createSunsetRenderer(options: CreateSunsetRendererOptions) {
     }
     context.useProgram(linked);
 
-    context.bindBuffer(context.ARRAY_BUFFER, context.createBuffer());
+    context.deleteBuffer(buffer);
+    buffer = context.createBuffer();
+    context.bindBuffer(context.ARRAY_BUFFER, buffer);
     context.bufferData(
       context.ARRAY_BUFFER,
       new Float32Array([-1, -1, 3, -1, -1, 3]),

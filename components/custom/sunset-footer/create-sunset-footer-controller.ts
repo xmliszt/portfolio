@@ -17,6 +17,12 @@ type CreateSunsetFooterControllerOptions = {
 const QUALITY_TIERS = {
   full: { waveIterations: 18, maxPixelRatio: 1.5, fps: 60 },
   lite: { waveIterations: 9, maxPixelRatio: 0.75, fps: 30 },
+} as const satisfies {
+  [tier: string]: {
+    waveIterations: number;
+    maxPixelRatio: number;
+    fps: number;
+  };
 };
 
 /** Map the scroll reveal of `footer` to the sun, run the overscroll spring on `viewport`, and render the scene while it shows; `dispose` removes every listener, attribute and inline style it set. */
@@ -32,9 +38,10 @@ export function createSunsetFooterController(
     damping: config.springDamping,
   });
   const originalOverscroll = viewport.style.overscrollBehaviorY;
-  const originalSheetTransform = options.sheet.style.transform;
+  const originalSheetTop = options.sheet.style.top;
 
-  let tier = QUALITY_TIERS[resolveSunsetQuality()];
+  let tier: (typeof QUALITY_TIERS)[keyof typeof QUALITY_TIERS] =
+    QUALITY_TIERS[resolveSunsetQuality()];
   let renderer: ReturnType<typeof createSunsetRenderer>;
   let isRendererUnavailable = false;
   let clientHeightPx = 0;
@@ -48,7 +55,7 @@ export function createSunsetFooterController(
   let frameId = 0;
   let lastFrameMs = 0;
   let lastRenderMs = 0;
-  let fpsAverage = 0;
+  let frameIntervalMs = 0;
   let slowSinceMs = 0;
   let lastScrollTop = viewport.scrollTop;
   let lastScrollMs = performance.now();
@@ -104,8 +111,16 @@ export function createSunsetFooterController(
     const nextRevealed = reveal > 0 || spring.isActive;
     if (nextRevealed !== isRevealed) {
       isRevealed = nextRevealed;
-      if (isRevealed) document.documentElement.dataset.sunsetRevealed = "";
-      else delete document.documentElement.dataset.sunsetRevealed;
+      if (isRevealed) {
+        document.documentElement.dataset.sunsetRevealed = "";
+        viewport.addEventListener("wheel", handleWheel, { passive: false });
+        viewport.addEventListener("touchmove", handleTouchMove, {
+          passive: false,
+        });
+      } else {
+        delete document.documentElement.dataset.sunsetRevealed;
+        removePullListeners();
+      }
     }
     viewport.style.overscrollBehaviorY =
       reveal > 0 ? "none" : originalOverscroll;
@@ -118,14 +133,21 @@ export function createSunsetFooterController(
 
   function loop(nowMs: number) {
     frameId = 0;
-    spring.step(lastFrameMs ? (nowMs - lastFrameMs) / 1000 : 0);
+    const deltaMs = lastFrameMs ? nowMs - lastFrameMs : 0;
+    if (deltaMs > 0 && deltaMs < 200)
+      frameIntervalMs = lerp(frameIntervalMs || deltaMs, deltaMs, 0.08);
+    spring.step(deltaMs / 1000);
     lastFrameMs = nowMs;
     applySheetOffset();
-    if (isRevealed && nowMs - lastRenderMs >= 1000 / tier.fps - 2) {
-      trackFps(nowMs);
+    const keepLooping = shouldKeepLooping();
+    const isRenderDue =
+      nowMs - lastRenderMs >= 1000 / tier.fps - frameIntervalMs / 2;
+    if (isRevealed && (isRenderDue || !keepLooping)) {
+      lastRenderMs = nowMs;
+      downgradeWhenSlow(nowMs);
       render(nowMs);
     }
-    if (shouldKeepLooping()) frameId = requestAnimationFrame(loop);
+    if (keepLooping) frameId = requestAnimationFrame(loop);
     else lastFrameMs = 0;
   }
 
@@ -135,11 +157,12 @@ export function createSunsetFooterController(
     return isRevealed && !reducedMotion.matches && renderer !== undefined;
   }
 
-  function trackFps(nowMs: number) {
-    if (lastRenderMs && nowMs - lastRenderMs < 200)
-      fpsAverage = lerp(fpsAverage || 60, 1000 / (nowMs - lastRenderMs), 0.08);
-    lastRenderMs = nowMs;
-    if (tier !== QUALITY_TIERS.full || fpsAverage === 0 || fpsAverage >= 40) {
+  function downgradeWhenSlow(nowMs: number) {
+    if (
+      tier !== QUALITY_TIERS.full ||
+      frameIntervalMs === 0 ||
+      1000 / frameIntervalMs >= 40
+    ) {
       slowSinceMs = 0;
       return;
     }
@@ -188,12 +211,10 @@ export function createSunsetFooterController(
     );
     if (Math.abs(offsetPx - sheetOffsetPx) < 0.01) return;
     sheetOffsetPx = Math.abs(offsetPx) < 0.01 ? 0 : offsetPx;
-    const transform =
-      sheetOffsetPx === 0
-        ? ""
-        : `translate3d(0,${sheetOffsetPx.toFixed(2)}px,0)`;
-    options.sheet.style.transform = transform || originalSheetTransform;
-    options.shade.style.transform = transform;
+    options.sheet.style.top =
+      sheetOffsetPx === 0 ? originalSheetTop : `${sheetOffsetPx.toFixed(2)}px`;
+    options.shade.style.transform =
+      sheetOffsetPx === 0 ? "" : `translateY(${sheetOffsetPx.toFixed(2)}px)`;
   }
 
   function sceneTimeS(nowMs: number) {
@@ -202,6 +223,8 @@ export function createSunsetFooterController(
 
   function handlePointerMove(event: PointerEvent) {
     if (event.pointerType === "touch" || reducedMotion.matches) return;
+    if (event.target instanceof Node && options.sheet.contains(event.target))
+      return;
     const nowMs = performance.now();
     if (nowMs - lastRippleMs < config.rippleIntervalMs) return;
     const rect = options.footer.getBoundingClientRect();
@@ -262,7 +285,8 @@ export function createSunsetFooterController(
       isAtBottom() &&
       !wasAtBottom &&
       velocityPxPerMs > 0.4 &&
-      !spring.isDragging
+      !spring.isDragging &&
+      !reducedMotion.matches
     )
       spring.push(Math.min(velocityPxPerMs * 1000 * config.flingDip, 1600));
     lastScrollTop = top;
@@ -270,16 +294,19 @@ export function createSunsetFooterController(
     update();
   }
 
+  function removePullListeners() {
+    viewport.removeEventListener("wheel", handleWheel);
+    viewport.removeEventListener("touchmove", handleTouchMove);
+  }
+
   const resizeObserver = new ResizeObserver(measure);
   resizeObserver.observe(viewport);
   resizeObserver.observe(options.sheet);
   viewport.addEventListener("scroll", handleScroll, { passive: true });
-  viewport.addEventListener("wheel", handleWheel, { passive: false });
   viewport.addEventListener("touchstart", handleTouchStart, { passive: true });
-  viewport.addEventListener("touchmove", handleTouchMove, { passive: false });
   viewport.addEventListener("touchend", release);
   viewport.addEventListener("touchcancel", release);
-  options.footer.addEventListener("pointermove", handlePointerMove);
+  viewport.addEventListener("pointermove", handlePointerMove);
   document.addEventListener("visibilitychange", requestFrame);
   reducedMotion.addEventListener("change", requestFrame);
   measure();
@@ -290,16 +317,15 @@ export function createSunsetFooterController(
       clearTimeout(wheelTimer);
       resizeObserver.disconnect();
       viewport.removeEventListener("scroll", handleScroll);
-      viewport.removeEventListener("wheel", handleWheel);
+      removePullListeners();
       viewport.removeEventListener("touchstart", handleTouchStart);
-      viewport.removeEventListener("touchmove", handleTouchMove);
       viewport.removeEventListener("touchend", release);
       viewport.removeEventListener("touchcancel", release);
-      options.footer.removeEventListener("pointermove", handlePointerMove);
+      viewport.removeEventListener("pointermove", handlePointerMove);
       document.removeEventListener("visibilitychange", requestFrame);
       reducedMotion.removeEventListener("change", requestFrame);
       viewport.style.overscrollBehaviorY = originalOverscroll;
-      options.sheet.style.transform = originalSheetTransform;
+      options.sheet.style.top = originalSheetTop;
       options.shade.style.transform = "";
       options.shade.style.opacity = "";
       delete document.documentElement.dataset.sunsetRevealed;
