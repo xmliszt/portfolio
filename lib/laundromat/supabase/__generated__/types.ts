@@ -7,6 +7,11 @@ export type Json =
   | Json[];
 
 export type Database = {
+  // Allows to automatically instantiate createClient with right options
+  // instead of createClient<Database, { PostgrestVersion: 'XX' }>(URL, KEY)
+  __InternalSupabase: {
+    PostgrestVersion: "12.0.2";
+  };
   laundro_cafe: {
     Tables: {
       entry_reports: {
@@ -189,6 +194,35 @@ export type Database = {
         };
         Relationships: [];
       };
+      tip_spends: {
+        Row: {
+          attempt: string;
+          machine_id: string | null;
+          spent_at: string;
+          tip_number: number;
+        };
+        Insert: {
+          attempt: string;
+          machine_id?: string | null;
+          spent_at?: string;
+          tip_number: number;
+        };
+        Update: {
+          attempt?: string;
+          machine_id?: string | null;
+          spent_at?: string;
+          tip_number?: number;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "tip_spends_tip_number_fkey";
+            columns: ["tip_number"];
+            isOneToOne: false;
+            referencedRelation: "tips";
+            referencedColumns: ["number"];
+          },
+        ];
+      };
       tips: {
         Row: {
           amount_cents: number;
@@ -222,34 +256,38 @@ export type Database = {
         };
         Relationships: [];
       };
-      tip_spends: {
+      visits: {
         Row: {
-          attempt: string;
-          machine_id: string | null;
-          spent_at: string;
-          tip_number: number;
+          country: string | null;
+          first_seen_at: string;
+          last_seen_at: string;
+          locale: string;
+          referrer_host: string | null;
+          visit_count: number;
+          visited_on: string;
+          visitor_id: string;
         };
         Insert: {
-          attempt: string;
-          machine_id?: string | null;
-          spent_at?: string;
-          tip_number: number;
+          country?: string | null;
+          first_seen_at?: string;
+          last_seen_at?: string;
+          locale: string;
+          referrer_host?: string | null;
+          visit_count?: number;
+          visited_on: string;
+          visitor_id: string;
         };
         Update: {
-          attempt?: string;
-          machine_id?: string | null;
-          spent_at?: string;
-          tip_number?: number;
+          country?: string | null;
+          first_seen_at?: string;
+          last_seen_at?: string;
+          locale?: string;
+          referrer_host?: string | null;
+          visit_count?: number;
+          visited_on?: string;
+          visitor_id?: string;
         };
-        Relationships: [
-          {
-            foreignKeyName: "tip_spends_tip_number_fkey";
-            columns: ["tip_number"];
-            isOneToOne: false;
-            referencedRelation: "tips";
-            referencedColumns: ["number"];
-          },
-        ];
+        Relationships: [];
       };
     };
     Views: {
@@ -257,11 +295,7 @@ export type Database = {
     };
     Functions: {
       append_doodle: {
-        Args: {
-          p_drawing: Json;
-          p_line_count: number;
-          p_visitor_id: string;
-        };
+        Args: { p_drawing: Json; p_line_count: number; p_visitor_id: string };
         Returns: {
           body: string;
           created_at: string;
@@ -314,14 +348,6 @@ export type Database = {
           isSetofReturn: false;
         };
       };
-      spend_tip: {
-        Args: { p_attempt: string; p_machine_id: string; p_token_hash: string };
-        Returns: {
-          outcome: string;
-          spent_at: string | null;
-          uses_left: number | null;
-        }[];
-      };
       fulfill_tip: {
         Args: {
           p_amount_cents: number;
@@ -346,6 +372,23 @@ export type Database = {
           isOneToOne: true;
           isSetofReturn: false;
         };
+      };
+      record_visit: {
+        Args: {
+          p_country?: string;
+          p_locale: string;
+          p_referrer_host?: string;
+          p_visitor_id: string;
+        };
+        Returns: undefined;
+      };
+      spend_tip: {
+        Args: { p_attempt: string; p_machine_id: string; p_token_hash: string };
+        Returns: {
+          outcome: string;
+          spent_at: string;
+          uses_left: number;
+        }[];
       };
     };
     Enums: {

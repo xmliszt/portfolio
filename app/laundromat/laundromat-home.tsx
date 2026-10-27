@@ -10,6 +10,7 @@ import { RenderQualityProvider } from "./settings/render-quality-provider";
 import { SoundBoardProvider } from "./sound/sound-board-provider";
 import { ThemedLaundromat } from "./themes/themed-laundromat";
 import { LaundromatUpdateProvider } from "./update/laundromat-update-provider";
+import { VisitRecorder } from "./visit/visit-recorder";
 import { LaundromatIntro } from "./laundromat-intro";
 import { LaundromatJsonLd } from "./laundromat-json-ld";
 
@@ -41,6 +42,7 @@ export function LaundromatHome(props: LaundromatHomeProps) {
           </SoundBoardProvider>
         </Suspense>
         <LaundromatIntro />
+        <VisitRecorder locale={props.locale} />
       </LaundromatCopyProvider>
     </div>
   );
