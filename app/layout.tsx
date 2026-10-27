@@ -135,7 +135,7 @@ export default function RootLayout({
                     <div className="bg-background relative flex min-h-dvh flex-col rounded-b-[32px] bg-[image:var(--background-pattern)] transition-colors duration-500">
                       <div
                         className={cn(
-                          "relative mx-auto h-auto w-screen pb-64 [&>article]:mx-auto",
+                          "relative mx-auto h-auto w-screen grow pb-64 [&>article]:mx-auto",
                           "px-8 pt-24 pb-44", // phone
                           "md:max-w-md md:pb-24", // tablet
                           "lg:max-w-xl lg:pb-24", // laptop

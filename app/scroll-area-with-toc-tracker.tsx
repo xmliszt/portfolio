@@ -16,11 +16,14 @@ export function ScrollAreaWithTOCTracker(props: ScrollAreaWithTOCTrackerProps) {
   const targetHashRef = useRef<string | null>(null);
   const router = useRouter();
   const pathname = usePathname();
+  const previousPathnameRef = useRef(pathname);
 
   useEffect(() => {
-    if (scrollerRef.current?.scrollTop ?? 0 > 0) {
-      scrollerRef.current?.scrollTo({ top: 0, behavior: "smooth" });
-    }
+    if (previousPathnameRef.current === pathname) return;
+    previousPathnameRef.current = pathname;
+    scrollerRef.current
+      ?.querySelector('[data-slot="scroll-area-viewport"]')
+      ?.scrollTo({ top: 0 });
   }, [pathname]);
 
   useEffect(() => {
@@ -88,7 +91,8 @@ export function ScrollAreaWithTOCTracker(props: ScrollAreaWithTOCTrackerProps) {
 
         const viewport = event.currentTarget as HTMLElement;
         const scrollTop = viewport.scrollTop;
-        const remaining = viewport.scrollHeight - scrollTop - viewport.clientHeight;
+        const remaining =
+          viewport.scrollHeight - scrollTop - viewport.clientHeight;
         if (scrollTop <= 1) {
           const firstAnchorId = anchors[0]?.getAttribute("id") ?? "";
           if (!firstAnchorId || firstAnchorId === hash) return;
