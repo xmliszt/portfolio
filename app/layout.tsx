@@ -16,6 +16,7 @@ import {
   NavigationBarItem,
 } from "@/components/custom/navigation-bar";
 import { SiteChrome } from "@/components/custom/site-chrome/site-chrome";
+import { SunsetFooter } from "@/components/custom/sunset-footer/sunset-footer";
 import { ThemeColorSync } from "@/components/custom/theme-color-sync/theme-color-sync";
 import { ThemeSwitch } from "@/components/custom/theme-switch";
 import { FloatingTOCDrawer } from "@/components/custom/toc/floating-toc-drawer";
@@ -131,33 +132,38 @@ export default function RootLayout({
                 </SiteChrome>
                 <main className="h-dvh max-h-dvh w-screen overflow-hidden">
                   <ScrollAreaWithTOCTracker>
-                    <div
-                      className={cn(
-                        "relative mx-auto h-auto w-screen pb-64 [&>article]:mx-auto",
-                        "px-8 pt-24 pb-44", // phone
-                        "md:max-w-md md:pb-24", // tablet
-                        "lg:max-w-xl lg:pb-24", // laptop
-                        "xl:max-w-2xl xl:pb-24" // large desktop
-                      )}
-                    >
-                      {/* Show when in desktop view port */}
-                      <SiteChrome>
-                        <NavigationBar>
-                          {ROUTES.map((route) => (
-                            <NavigationBarItem
-                              key={route.path}
-                              href={route.path}
-                            >
-                              {route.name}
-                            </NavigationBarItem>
-                          ))}
-                        </NavigationBar>
-                      </SiteChrome>
-                      {/* Main content area */}
-                      {children}
-                      {/* Right side floating TOC tree */}
-                      <TOCTree />
+                    <div className="bg-background relative z-[2] rounded-b-[32px] bg-[image:var(--background-pattern)]">
+                      <div
+                        className={cn(
+                          "relative mx-auto h-auto w-screen pb-64 [&>article]:mx-auto",
+                          "px-8 pt-24 pb-44", // phone
+                          "md:max-w-md md:pb-24", // tablet
+                          "lg:max-w-xl lg:pb-24", // laptop
+                          "xl:max-w-2xl xl:pb-24" // large desktop
+                        )}
+                      >
+                        {/* Show when in desktop view port */}
+                        <SiteChrome>
+                          <NavigationBar>
+                            {ROUTES.map((route) => (
+                              <NavigationBarItem
+                                key={route.path}
+                                href={route.path}
+                              >
+                                {route.name}
+                              </NavigationBarItem>
+                            ))}
+                          </NavigationBar>
+                        </SiteChrome>
+                        {/* Main content area */}
+                        {children}
+                        {/* Right side floating TOC tree */}
+                        <TOCTree />
+                      </div>
                     </div>
+                    <SiteChrome>
+                      <SunsetFooter />
+                    </SiteChrome>
                   </ScrollAreaWithTOCTracker>
                 </main>
                 <SiteChrome>
@@ -168,10 +174,12 @@ export default function RootLayout({
                   />
                   <div
                     aria-hidden
-                    className="bg-background pointer-events-none fixed inset-x-0 bottom-0 z-40 h-[max(12px,env(safe-area-inset-bottom))] transition-colors duration-500"
+                    className="bg-background pointer-events-none fixed inset-x-0 bottom-0 z-40 h-[max(12px,env(safe-area-inset-bottom))] transition-[background-color,opacity] duration-500 [html[data-sunset-revealed]_&]:opacity-0"
                   />
                   <ThemeColorSync />
-                  <GradientBlur placement="bottom" position="fixed" />
+                  <div className="transition-opacity duration-500 [html[data-sunset-revealed]_&]:opacity-0">
+                    <GradientBlur placement="bottom" position="fixed" />
+                  </div>
                   {/* Right side floating TOC drawer: show when in mobile view port */}
                   <FloatingTOCDrawer>
                     <FloatingTOCDrawerHeader>
