@@ -38,7 +38,7 @@ export function TOCTree() {
   return (
     <div
       className={cn(
-        "prose prose-stone dark:prose-invert absolute top-0 h-full text-sm",
+        "prose prose-stone dark:prose-invert absolute top-0 bottom-10 text-sm",
         "-right-28 md:-right-40 lg:-right-56 xl:-right-64",
         "w-48 lg:w-52 xl:w-64",
         "hidden md:block"
