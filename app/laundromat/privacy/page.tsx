@@ -186,6 +186,14 @@ export default function LaundromatPrivacyPage() {
           </a>
           .
         </p>
+        <p>
+          The site also counts visits itself. Once a day per visitor, it stores
+          your random visitor id from local storage, the date, the times of your
+          first and last visit that day, how many times you opened the site, the
+          language you opened it in, your country and the website you came from.
+          It does not store your IP address or the full address of the page you
+          came from.
+        </p>
         <p>Fonts are served from laundro.cafe itself.</p>
       </LegalSection>
 
@@ -221,7 +229,9 @@ export default function LaundromatPrivacyPage() {
       <LegalSection heading="who receives data">
         <ul>
           <li>Vercel: hosting, IP location, page view counts</li>
-          <li>Supabase: the notebook database and the live room</li>
+          <li>
+            Supabase: the notebook database, visit counts and the live room
+          </li>
           <li>
             Open-Meteo: rounded coordinates and city searches, for weather
           </li>
@@ -239,8 +249,8 @@ export default function LaundromatPrivacyPage() {
           <li>
             Email{" "}
             <a href={`mailto:${LEGAL_CONTACT_EMAIL}`}>{LEGAL_CONTACT_EMAIL}</a>{" "}
-            to ask what is stored about you, or to have a notebook entry or tip
-            record removed.
+            to ask what is stored about you, or to have a notebook entry, tip
+            record or visit records removed.
           </li>
         </ul>
       </LegalSection>

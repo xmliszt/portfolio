@@ -13,19 +13,11 @@ import { transitionLaundry } from "@/lib/laundromat/laundry/transition-laundry";
 import { sceneConfig } from "@/lib/laundromat/scene-config";
 
 import { useLaundromatCopy } from "./i18n/use-laundromat-copy";
+import { readOrCreateVisitorId } from "./read-or-create-visitor-id";
 import { showNotification } from "./show-notification";
 
-const VISITOR_ID_STORAGE_KEY = "laundromat:visitor-id";
 const LAUNDRY_STORAGE_KEY_PREFIX = "laundromat:laundry:";
 const TICK_MS = 1000;
-
-function readOrCreateVisitorId() {
-  const stored = window.localStorage.getItem(VISITOR_ID_STORAGE_KEY);
-  if (stored !== null) return stored;
-  const visitorId = window.crypto.randomUUID();
-  window.localStorage.setItem(VISITOR_ID_STORAGE_KEY, visitorId);
-  return visitorId;
-}
 
 function readNotificationAvailability(): NotificationAvailability {
   return "Notification" in window ? Notification.permission : "unsupported";
