@@ -132,7 +132,7 @@ export default function RootLayout({
                 </SiteChrome>
                 <main className="h-dvh max-h-dvh w-screen overflow-hidden">
                   <ScrollAreaWithTOCTracker>
-                    <div className="bg-background relative min-h-dvh rounded-b-[32px] bg-[image:var(--background-pattern)] transition-colors duration-500">
+                    <div className="bg-background relative flex min-h-dvh flex-col rounded-b-[32px] bg-[image:var(--background-pattern)] transition-colors duration-500">
                       <div
                         className={cn(
                           "relative mx-auto h-auto w-screen pb-64 [&>article]:mx-auto",
@@ -162,7 +162,7 @@ export default function RootLayout({
                       </div>
                       {/* Theme switch: rides up with the sheet's bottom edge */}
                       <SiteChrome>
-                        <div className="pointer-events-none sticky bottom-0 z-50 hidden h-0 md:block">
+                        <div className="pointer-events-none sticky bottom-0 z-50 mt-auto hidden h-0 md:block">
                           <div className="pointer-events-auto absolute right-[max(2.5rem,env(safe-area-inset-right))] bottom-10">
                             <ThemeSwitch showRing />
                           </div>
