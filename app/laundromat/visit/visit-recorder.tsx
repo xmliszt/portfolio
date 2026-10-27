@@ -2,7 +2,7 @@
 
 import { useEffect } from "react";
 
-import { readOrCreateVisitorId } from "@/app/laundromat/read-or-create-visitor-id";
+import { readOrCreateLocalVisitorId } from "@/app/laundromat/read-or-create-local-visitor-id";
 import type { LaundromatLocale } from "@/lib/laundromat/i18n/laundromat-locales";
 
 import { recordLaundromatVisit } from "./visit-actions";
@@ -15,7 +15,7 @@ type VisitRecorderProps = {
 export function VisitRecorder(props: VisitRecorderProps) {
   useEffect(() => {
     recordLaundromatVisit({
-      visitorId: readOrCreateVisitorId(),
+      legacyVisitorId: readOrCreateLocalVisitorId(),
       locale: props.locale,
       referrer: document.referrer,
     }).catch(() => undefined);

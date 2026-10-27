@@ -13,7 +13,7 @@ import { transitionLaundry } from "@/lib/laundromat/laundry/transition-laundry";
 import { sceneConfig } from "@/lib/laundromat/scene-config";
 
 import { useLaundromatCopy } from "./i18n/use-laundromat-copy";
-import { readOrCreateVisitorId } from "./read-or-create-visitor-id";
+import { readOrCreateLocalVisitorId } from "./read-or-create-local-visitor-id";
 import { showNotification } from "./show-notification";
 
 const LAUNDRY_STORAGE_KEY_PREFIX = "laundromat:laundry:";
@@ -72,7 +72,7 @@ export function useLaundry() {
   }, []);
 
   useEffect(() => {
-    const id = readOrCreateVisitorId();
+    const id = readOrCreateLocalVisitorId();
     setVisitorId(id);
     const key = `${LAUNDRY_STORAGE_KEY_PREFIX}${id}`;
     const restored = parseLaundryState(window.localStorage.getItem(key));

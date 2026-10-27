@@ -376,6 +376,7 @@ export type Database = {
       record_visit: {
         Args: {
           p_country?: string;
+          p_legacy_visitor_id?: string;
           p_locale: string;
           p_referrer_host?: string;
           p_visitor_id: string;
