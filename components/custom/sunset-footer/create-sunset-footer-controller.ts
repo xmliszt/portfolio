@@ -136,9 +136,11 @@ export function createSunsetFooterController(
     const deltaMs = lastFrameMs ? nowMs - lastFrameMs : 0;
     if (deltaMs > 0 && deltaMs < 200)
       frameIntervalMs = lerp(frameIntervalMs || deltaMs, deltaMs, 0.08);
+    const wasSpringActive = spring.isActive;
     spring.step(deltaMs / 1000);
     lastFrameMs = nowMs;
     applySheetOffset();
+    if (wasSpringActive && !spring.isActive) update();
     const keepLooping = shouldKeepLooping();
     const isRenderDue =
       nowMs - lastRenderMs >= 1000 / tier.fps - frameIntervalMs / 2;

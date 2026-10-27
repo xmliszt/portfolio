@@ -38,7 +38,7 @@ export default async function PostsPage() {
 
   return (
     <article className="prose prose-stone dark:prose-invert flex flex-col gap-12">
-      <h1 className="group relative">
+      <h1 className="group relative isolate">
         posts ({pluralize("post", posts.length, true)})
         <ShadowSubtitle>碎碎念</ShadowSubtitle>
       </h1>

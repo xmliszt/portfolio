@@ -26,8 +26,9 @@ export function SunsetFooter() {
     let isDisposed = false;
     let dispose: (() => void) | undefined;
     import("./create-sunset-footer-controller")
+      .catch(() => undefined)
       .then((module) => {
-        if (isDisposed) return;
+        if (!module || isDisposed) return;
         dispose = module.createSunsetFooterController({
           viewport,
           sheet,
@@ -35,8 +36,7 @@ export function SunsetFooter() {
           canvas,
           shade,
         }).dispose;
-      })
-      .catch(() => undefined);
+      });
     return () => {
       isDisposed = true;
       dispose?.();

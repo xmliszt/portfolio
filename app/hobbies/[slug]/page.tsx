@@ -55,7 +55,7 @@ export default async function HobbyPage(props: HobbyProps) {
 
   return (
     <article className="prose prose-stone dark:prose-invert">
-      <h1 className="group relative">
+      <h1 className="group relative isolate">
         <a id="top" className="invisible relative -top-16 block"></a>
         {hobby.title}
         {hobby.subtitle && <ShadowSubtitle>{hobby.subtitle}</ShadowSubtitle>}

@@ -39,7 +39,7 @@ const SCENE_UNIFORMS = {
   uBloom: SUNSET_SCENE_CONFIG.sunBloom,
 };
 
-/** Create a WebGL renderer that draws the sunset scene into `canvas`, or return `undefined` when WebGL is unavailable or the shader fails to build. */
+/** Create a WebGL renderer that draws the sunset scene into `canvas`; return `undefined` when WebGL is unavailable, or set the canvas size to 0 and return `undefined` when the shader fails to build. */
 export function createSunsetRenderer(options: CreateSunsetRendererOptions) {
   const gl = options.canvas.getContext("webgl", {
     antialias: false,
