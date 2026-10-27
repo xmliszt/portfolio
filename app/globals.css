@@ -89,9 +89,7 @@
   }
 
   body {
-    @apply bg-background text-foreground transition-colors duration-500;
-
-    background-image: var(--background-pattern);
+    @apply text-foreground transition-colors duration-500;
   }
 
   button,

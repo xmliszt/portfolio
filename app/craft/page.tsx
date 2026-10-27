@@ -22,7 +22,7 @@ export default function CraftPage() {
   return (
     <div className="flex flex-col gap-y-8">
       <article className="prose prose-stone dark:prose-invert">
-        <h1 className="group relative">
+        <h1 className="group relative isolate">
           craft
           <ShadowSubtitle>作坊</ShadowSubtitle>
         </h1>

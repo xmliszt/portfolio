@@ -24,7 +24,7 @@ export function generateMetadata(): Metadata {
 export default function HobbiesPage() {
   return (
     <article className="prose prose-stone dark:prose-invert">
-      <h1 className="group relative">
+      <h1 className="group relative isolate">
         hobbies
         <ShadowSubtitle>兴趣爱好</ShadowSubtitle>
       </h1>

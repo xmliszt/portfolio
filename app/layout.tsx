@@ -16,6 +16,7 @@ import {
   NavigationBarItem,
 } from "@/components/custom/navigation-bar";
 import { SiteChrome } from "@/components/custom/site-chrome/site-chrome";
+import { SunsetFooter } from "@/components/custom/sunset-footer/sunset-footer";
 import { ThemeColorSync } from "@/components/custom/theme-color-sync/theme-color-sync";
 import { ThemeSwitch } from "@/components/custom/theme-switch";
 import { FloatingTOCDrawer } from "@/components/custom/toc/floating-toc-drawer";
@@ -116,7 +117,7 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <body
         className={cn(
-          "bg-background flex max-h-dvh min-h-dvh w-screen flex-col items-center overflow-hidden antialiased",
+          "flex max-h-dvh min-h-dvh w-screen flex-col items-center overflow-hidden antialiased",
           "selection:bg-neutral-600 selection:text-neutral-100",
           "dark:selection:bg-neutral-100 dark:selection:text-neutral-600",
           fontInter.className
@@ -131,33 +132,46 @@ export default function RootLayout({
                 </SiteChrome>
                 <main className="h-dvh max-h-dvh w-screen overflow-hidden">
                   <ScrollAreaWithTOCTracker>
-                    <div
-                      className={cn(
-                        "relative mx-auto h-auto w-screen pb-64 [&>article]:mx-auto",
-                        "px-8 pt-24 pb-44", // phone
-                        "md:max-w-md md:pb-24", // tablet
-                        "lg:max-w-xl lg:pb-24", // laptop
-                        "xl:max-w-2xl xl:pb-24" // large desktop
-                      )}
-                    >
-                      {/* Show when in desktop view port */}
+                    <div className="bg-background relative flex min-h-dvh flex-col rounded-b-[32px] bg-[image:var(--background-pattern)] transition-colors duration-500">
+                      <div
+                        className={cn(
+                          "relative mx-auto h-auto w-screen grow pb-64 [&>article]:mx-auto",
+                          "px-8 pt-24 pb-44", // phone
+                          "md:max-w-md md:pb-24", // tablet
+                          "lg:max-w-xl lg:pb-24", // laptop
+                          "xl:max-w-2xl xl:pb-24" // large desktop
+                        )}
+                      >
+                        {/* Show when in desktop view port */}
+                        <SiteChrome>
+                          <NavigationBar>
+                            {ROUTES.map((route) => (
+                              <NavigationBarItem
+                                key={route.path}
+                                href={route.path}
+                              >
+                                {route.name}
+                              </NavigationBarItem>
+                            ))}
+                          </NavigationBar>
+                        </SiteChrome>
+                        {/* Main content area */}
+                        {children}
+                        {/* Right side floating TOC tree */}
+                        <TOCTree />
+                      </div>
+                      {/* Theme switch: rides up with the sheet's bottom edge */}
                       <SiteChrome>
-                        <NavigationBar>
-                          {ROUTES.map((route) => (
-                            <NavigationBarItem
-                              key={route.path}
-                              href={route.path}
-                            >
-                              {route.name}
-                            </NavigationBarItem>
-                          ))}
-                        </NavigationBar>
+                        <div className="pointer-events-none sticky bottom-0 z-50 mt-auto hidden h-0 md:block">
+                          <div className="pointer-events-auto absolute right-[max(2.5rem,env(safe-area-inset-right))] bottom-10">
+                            <ThemeSwitch showRing />
+                          </div>
+                        </div>
                       </SiteChrome>
-                      {/* Main content area */}
-                      {children}
-                      {/* Right side floating TOC tree */}
-                      <TOCTree />
                     </div>
+                    <SiteChrome>
+                      <SunsetFooter />
+                    </SiteChrome>
                   </ScrollAreaWithTOCTracker>
                 </main>
                 <SiteChrome>
@@ -168,10 +182,14 @@ export default function RootLayout({
                   />
                   <div
                     aria-hidden
-                    className="bg-background pointer-events-none fixed inset-x-0 bottom-0 z-40 h-[max(12px,env(safe-area-inset-bottom))] transition-colors duration-500"
+                    className="bg-background pointer-events-none fixed inset-x-0 bottom-0 z-40 h-[max(12px,env(safe-area-inset-bottom))] transition-[background-color,opacity] duration-500 [html[data-sunset-revealed]_&]:opacity-0"
                   />
                   <ThemeColorSync />
-                  <GradientBlur placement="bottom" position="fixed" />
+                  <GradientBlur
+                    placement="bottom"
+                    position="fixed"
+                    className="transition-opacity duration-500 [html[data-sunset-revealed]_&]:opacity-0"
+                  />
                   {/* Right side floating TOC drawer: show when in mobile view port */}
                   <FloatingTOCDrawer>
                     <FloatingTOCDrawerHeader>
@@ -206,10 +224,6 @@ export default function RootLayout({
                     </FloatingNavigationBarContent>
                   </FloatingNavigationBar>
                 </FloatingNavigationProvider>
-                {/* Theme switch */}
-                <div className="fixed right-4 bottom-10 z-50 hidden md:right-[max(2.5rem,env(safe-area-inset-right))] md:block">
-                  <ThemeSwitch showRing />
-                </div>
                 {/* BGM player */}
                 <div
                   className={cn(

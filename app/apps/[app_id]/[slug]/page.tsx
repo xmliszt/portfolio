@@ -96,7 +96,7 @@ export default async function AppDocumentPage(props: Props) {
 
   return (
     <article className="prose prose-stone dark:prose-invert relative">
-      <h1 className="group relative">
+      <h1 className="group relative isolate">
         <a id="top" className="invisible relative -top-16 block"></a>
         {document.title}
         <ShadowSubtitle>{document.subtitle}</ShadowSubtitle>

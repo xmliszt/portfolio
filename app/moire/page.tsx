@@ -27,7 +27,7 @@ export default async function MoirePage() {
     <>
       <BackToAppsLink />
       <article className="prose prose-stone dark:prose-invert relative">
-        <h1 className="group relative">
+        <h1 className="group relative isolate">
           <a
             id="top"
             className="[visibility:hidden] relative -top-16 block"

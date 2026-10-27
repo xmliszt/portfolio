@@ -48,7 +48,7 @@ export default async function PagePage(props: Props) {
 
   return (
     <article className="prose prose-stone dark:prose-invert relative">
-      <h1 className="group relative">
+      <h1 className="group relative isolate">
         <a id="top" className="[visibility:hidden] relative -top-16 block"></a>
         {page.title}
         {page.subtitle && <ShadowSubtitle>{page.subtitle}</ShadowSubtitle>}

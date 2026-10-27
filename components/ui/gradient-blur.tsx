@@ -3,6 +3,7 @@ import { cn } from "@/lib/utils";
 type GradientBlurProps = {
   placement: "top" | "bottom" | "left" | "right";
   position: "absolute" | "fixed" | "sticky";
+  className?: string;
 };
 
 export function GradientBlur(props: GradientBlurProps) {
@@ -22,7 +23,8 @@ export function GradientBlur(props: GradientBlurProps) {
             case "right":
               return "right-0 h-full w-28 [mask:linear-gradient(to_left,black_20%,transparent_80%)]";
           }
-        })()
+        })(),
+        props.className
       )}
     ></div>
   );
