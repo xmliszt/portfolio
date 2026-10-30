@@ -7,18 +7,22 @@ import { usePawsCopy } from "@/app/paws/_i18n/use-paws-copy";
 import { usePawsSession } from "@/app/paws/_session/use-paws-session";
 import { FOCUS_RING_CLASS } from "@/app/paws/_ui/focus-ring-class";
 import { PawsOnboarding } from "@/app/paws/_ui/paws-onboarding";
+import { COAT_INKS } from "@/lib/paws/cat-look";
+import { getRevealSteps } from "@/lib/paws/chat/get-reveal-steps";
 import { createRoomEngine } from "@/lib/paws/client/create-room-engine";
 import { shuffleCatLook } from "@/lib/paws/maker/shuffle-cat-look";
 import { getBorrowedMeowUrl } from "@/lib/paws/profile/get-borrowed-meow-url";
 import { createSceneResources } from "@/lib/paws/render/create-scene-resources";
 import { drawScene } from "@/lib/paws/render/draw-scene";
 import { getWorldView } from "@/lib/paws/render/get-world-view";
+import { RISO } from "@/lib/paws/riso-inks";
 import { ROOM_LIMITS } from "@/lib/paws/room-limits";
 import type { DerivedCat } from "@/lib/paws/sim/derive-cat";
 import { createPawsSoundPlayer } from "@/lib/paws/sound/create-paws-sound-player";
 import type { ChatMessage } from "@/lib/paws/wire-types";
 import { cn } from "@/lib/utils";
 
+import type { ChatBubble } from "./chat-bubble";
 import { ChatLayer } from "./chat-layer";
 import { COMPOSE_ANCHOR_PREFIX } from "./compose-anchor-prefix";
 import { postChat } from "./post-chat";
@@ -28,9 +32,8 @@ import { useSavedCat } from "./use-saved-cat";
 const MAX_DPR = 2;
 const MAX_DT_SECONDS = 0.05;
 const FAKE_VOICE = { age: "adult", voice: "soft", mood: "chatty" } as const;
-const BUBBLE_BASE_MS = 2500;
-const BUBBLE_PER_CHARACTER_MS = 70;
-const MAX_BUBBLE_MS = 8000;
+const BUBBLE_HOLD_MS = 2500;
+const MAX_BUBBLE_MS = 12000;
 const BUBBLE_GAP_PX = 10;
 const BUBBLE_EDGE_PX = 8;
 
@@ -54,7 +57,7 @@ export function PawsRoom() {
   const bubbleTimersRef = useRef<{ [userId: string]: number | undefined }>({});
   const spokenIdsRef = useRef<string[]>([]);
   const lastCatsRef = useRef<DerivedCat[]>([]);
-  const [bubbles, setBubbles] = useState<ChatMessage[]>([]);
+  const [bubbles, setBubbles] = useState<ChatBubble[]>([]);
   const [isComposing, setIsComposing] = useState(false);
   const [hasOwnCatInRoom, setHasOwnCatInRoom] = useState(false);
   const ownUserId = session.kind === "loading" ? undefined : session.userId;
@@ -91,14 +94,20 @@ export function PawsRoom() {
   function sayLine(message: ChatMessage) {
     if (spokenIdsRef.current.includes(message.id)) return;
     spokenIdsRef.current = [...spokenIdsRef.current, message.id].slice(-20);
-    showBubble(message);
     const player = playersRef.current.find(
       (candidate) => candidate.userId === message.userId
     );
+    if (player === undefined) return;
+    const reveal = getRevealSteps({
+      text: message.text,
+      voice: player.voice,
+      size: player.look.size,
+      userId: message.userId,
+    });
+    showBubble({ message, accent: COAT_INKS[player.look.coat], reveal });
     const cat = lastCatsRef.current.find(
       (candidate) => candidate.userId === message.userId
     );
-    if (player === undefined) return;
     sound.speak({
       userId: message.userId,
       text: message.text,
@@ -108,27 +117,23 @@ export function PawsRoom() {
     });
   }
 
-  function showBubble(message: ChatMessage) {
-    window.clearTimeout(bubbleTimersRef.current[message.userId]);
-    setBubbles((current) =>
-      current.some((bubble) => bubble.id === message.id)
-        ? current
-        : [
-            ...current.filter((bubble) => bubble.userId !== message.userId),
-            message,
-          ]
-    );
-    bubbleTimersRef.current[message.userId] = window.setTimeout(
+  function showBubble(bubble: ChatBubble) {
+    const { userId, id } = bubble.message;
+    window.clearTimeout(bubbleTimersRef.current[userId]);
+    setBubbles((current) => [
+      ...current.filter((shown) => shown.message.userId !== userId),
+      bubble,
+    ]);
+    bubbleTimersRef.current[userId] = window.setTimeout(
       () => {
-        delete bubbleTimersRef.current[message.userId];
+        delete bubbleTimersRef.current[userId];
         setBubbles((current) =>
-          current.filter((bubble) => bubble.id !== message.id)
+          current.filter((shown) => shown.message.id !== id)
         );
       },
       Math.min(
         MAX_BUBBLE_MS,
-        BUBBLE_BASE_MS +
-          Array.from(message.text).length * BUBBLE_PER_CHARACTER_MS
+        (bubble.reveal.at(-1)?.atMs ?? 0) + BUBBLE_HOLD_MS
       )
     );
   }
@@ -257,7 +262,7 @@ export function PawsRoom() {
           : key;
         const cat = room.cats.find((candidate) => candidate.userId === userId);
         if (cat === undefined) {
-          element.style.opacity = "0";
+          element.style.visibility = "hidden";
           continue;
         }
         const halfWidth = element.offsetWidth / 2 + BUBBLE_EDGE_PX;
@@ -270,7 +275,7 @@ export function PawsRoom() {
           view.offsetY -
           BUBBLE_GAP_PX;
         element.style.transform = `translate(${x}px, ${y}px) translate(-50%, -100%)`;
-        element.style.opacity = "1";
+        element.style.visibility = "visible";
       }
       drawScene({
         g,
@@ -399,6 +404,7 @@ export function PawsRoom() {
       <ChatLayer
         bubbles={bubbles}
         ownUserId={ownUserId}
+        ownAccent={self === undefined ? RISO.pink : COAT_INKS[self.look.coat]}
         composing={isComposing && hasOwnCatInRoom}
         anchors={anchorsRef}
         onSend={handleSend}

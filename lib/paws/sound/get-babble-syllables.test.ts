@@ -38,7 +38,7 @@ test("babbles any script, the same way each time", () => {
 
 test("drops symbols, merges pauses and stops at the syllable cap", () => {
   assert.deepEqual(getBabbleSyllables("@@  "), [
-    { kind: "pause", long: false },
+    { kind: "pause", long: false, characters: 4 },
   ]);
   assert.equal(getBabbleSyllables("a".repeat(200)).length, 48);
 });
@@ -47,5 +47,19 @@ test("merged pauses keep the longer one", () => {
   assert.deepEqual(getBabbleSyllables("hi .").at(-1), {
     kind: "pause",
     long: true,
+    characters: 2,
   });
+});
+
+test("every character of the line is covered by one syllable", () => {
+  for (const text of ["hi, @friend!", "こんにちは 🐱", "a  b"]) {
+    assert.equal(
+      getBabbleSyllables(text).reduce(
+        (sum, syllable) => sum + syllable.characters,
+        0
+      ),
+      Array.from(text).length,
+      text
+    );
+  }
 });

@@ -1,22 +1,25 @@
 "use client";
 
 import { useEffect, useId, useRef, useState } from "react";
+import { AnimatePresence, motion } from "motion/react";
 
 import { usePawsCopy } from "@/app/paws/_i18n/use-paws-copy";
-import { FOCUS_RING_CLASS } from "@/app/paws/_ui/focus-ring-class";
 import type { ChatResponse } from "@/lib/paws/chat/chat-api-types";
 import { WIRE_LIMITS } from "@/lib/paws/wire/wire-limits";
-import type { ChatMessage } from "@/lib/paws/wire-types";
 import { cn } from "@/lib/utils";
 
+import { BubbleFrame } from "./bubble-frame";
+import type { ChatBubble } from "./chat-bubble";
 import { COMPOSE_ANCHOR_PREFIX } from "./compose-anchor-prefix";
+import { RevealedText } from "./revealed-text";
 
-const BUBBLE_CLASS =
-  "pointer-events-none absolute top-0 left-0 opacity-0 max-w-[220px] border-[1.5px] border-[var(--pw-ink)] bg-[var(--pw-paper)] px-2 py-1 text-[13px] leading-snug text-[var(--pw-ink)] after:absolute after:top-full after:left-1/2 after:-ml-[5px] after:border-x-[5px] after:border-t-[6px] after:border-x-transparent after:border-t-[var(--pw-ink)]";
+const ANCHOR_CLASS = "absolute top-0 left-0 w-max max-w-[220px]";
+const FADE_OUT = { opacity: 0, transition: { duration: 0.2 } } as const;
 
 type ChatLayerProps = {
-  bubbles: ChatMessage[];
+  bubbles: ChatBubble[];
   ownUserId: string | undefined;
+  ownAccent: string;
   composing: boolean;
   anchors: React.RefObject<{ [key: string]: HTMLElement | undefined }>;
   onSend: (text: string) => Promise<ChatResponse["kind"]>;
@@ -27,7 +30,7 @@ type ChatLayerProps = {
 export function ChatLayer(props: ChatLayerProps) {
   const { copy } = usePawsCopy();
   const inputId = useId();
-  const inputRef = useRef<HTMLInputElement>(null);
+  const inputRef = useRef<HTMLTextAreaElement>(null);
   const [text, setText] = useState("");
   const [isSending, setIsSending] = useState(false);
   const [notice, setNotice] = useState<string | undefined>(undefined);
@@ -78,74 +81,94 @@ export function ChatLayer(props: ChatLayerProps) {
     }
   }
 
-  function handleKeyDown(event: React.KeyboardEvent<HTMLInputElement>) {
+  function handleKeyDown(event: React.KeyboardEvent<HTMLTextAreaElement>) {
     if (event.key === "Escape") close();
+    if (event.key === "Enter" && !event.nativeEvent.isComposing) {
+      event.preventDefault();
+      event.currentTarget.form?.requestSubmit();
+    }
   }
 
   function handleBlur() {
     if (text.trim() === "" && !isSending) close();
   }
 
-  function handleChange(event: React.ChangeEvent<HTMLInputElement>) {
-    setText(event.target.value);
+  function handleChange(event: React.ChangeEvent<HTMLTextAreaElement>) {
+    setText(event.target.value.replace(/\n/g, " "));
     setNotice(undefined);
   }
 
   return (
     <div className="pointer-events-none absolute inset-0 overflow-hidden">
-      {props.bubbles
-        .filter(
-          (bubble) => !(props.composing && bubble.userId === props.ownUserId)
-        )
-        .map((bubble) => (
-          <p
-            key={bubble.id}
-            ref={anchor(bubble.userId)}
-            className={cn(BUBBLE_CLASS, "break-words")}
-          >
-            {bubble.text}
-          </p>
-        ))}
+      <AnimatePresence>
+        {props.bubbles
+          .filter(
+            (bubble) =>
+              !(props.composing && bubble.message.userId === props.ownUserId)
+          )
+          .map((bubble) => (
+            <motion.div
+              key={bubble.message.id}
+              ref={anchor(bubble.message.userId)}
+              exit={FADE_OUT}
+              className={ANCHOR_CLASS}
+            >
+              <BubbleFrame accent={bubble.accent} className="px-2 py-1">
+                <p className="break-words">
+                  <RevealedText
+                    text={bubble.message.text}
+                    steps={bubble.reveal}
+                  />
+                </p>
+              </BubbleFrame>
+            </motion.div>
+          ))}
+      </AnimatePresence>
       {props.composing && props.ownUserId !== undefined && (
-        <form
+        <div
           ref={anchor(`${COMPOSE_ANCHOR_PREFIX}${props.ownUserId}`)}
-          onSubmit={handleSubmit}
-          className={cn(
-            BUBBLE_CLASS,
-            "pointer-events-auto flex w-[220px] flex-col gap-y-1 p-1"
-          )}
+          className={cn(ANCHOR_CLASS, "pointer-events-auto")}
         >
-          <label htmlFor={inputId} className="sr-only">
-            {copy.room.chatLabel}
-          </label>
-          <input
-            ref={inputRef}
-            id={inputId}
-            type="text"
-            autoComplete="off"
-            enterKeyHint="send"
-            maxLength={WIRE_LIMITS.maxChatLength}
-            placeholder={copy.room.chatPlaceholder}
-            value={text}
-            readOnly={isSending}
-            onChange={handleChange}
-            onKeyDown={handleKeyDown}
-            onBlur={handleBlur}
-            className={cn(
-              FOCUS_RING_CLASS,
-              "h-8 w-full min-w-0 bg-transparent px-1 text-[16px] text-[var(--pw-ink)] placeholder:text-[var(--pw-ink-soft)]/70 sm:h-6 sm:text-[13px]"
-            )}
-          />
-          <p
-            role="status"
-            aria-live="polite"
-            className={
-              notice ? "px-1 text-[12px] text-[var(--pw-pink)]" : "sr-only"
-            }
-          >
-            {notice ?? ""}
-          </p>
-        </form>
+          <BubbleFrame accent={props.ownAccent} className="px-2 py-1.5">
+            <form onSubmit={handleSubmit} className="flex flex-col gap-y-1">
+              <label htmlFor={inputId} className="sr-only">
+                {copy.room.chatLabel}
+              </label>
+              <div className="grid min-w-[140px] *:col-start-1 *:row-start-1">
+                <span
+                  aria-hidden
+                  className="invisible border-b border-dashed px-0.5 pb-0.5 text-[16px] break-words whitespace-pre-wrap sm:text-[13px]"
+                >
+                  {`${text || copy.room.chatPlaceholder} `}
+                </span>
+                <textarea
+                  ref={inputRef}
+                  id={inputId}
+                  rows={1}
+                  autoComplete="off"
+                  enterKeyHint="send"
+                  maxLength={WIRE_LIMITS.maxChatLength}
+                  placeholder={copy.room.chatPlaceholder}
+                  value={text}
+                  readOnly={isSending}
+                  onChange={handleChange}
+                  onKeyDown={handleKeyDown}
+                  onBlur={handleBlur}
+                  className="resize-none overflow-hidden border-b border-dashed border-[var(--pw-ink-soft)] bg-transparent px-0.5 pb-0.5 text-[16px] break-words text-[var(--pw-ink)] outline-none placeholder:text-[var(--pw-ink-soft)]/70 focus-visible:border-[var(--pw-ink)] sm:text-[13px]"
+                />
+              </div>
+              <p
+                role="status"
+                aria-live="polite"
+                className={
+                  notice ? "text-[12px] text-[var(--pw-pink)]" : "sr-only"
+                }
+              >
+                {notice ?? ""}
+              </p>
+            </form>
+          </BubbleFrame>
+        </div>
       )}
     </div>
   );
