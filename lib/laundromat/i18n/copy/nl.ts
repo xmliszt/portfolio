@@ -382,6 +382,10 @@ export const nl = {
       board: "bord",
     },
     updates: {
+      "dreamcore-station": {
+        title: "een dreamcore-zender op de tv",
+        body: "Draai de afstemknop voorbij diepe ruimte voor een dreamcore-radio met zachte, galmende ambient.",
+      },
       "halloween-theme": {
         title: "halloween in beide kamers",
         body: "Kies Halloween via de themaknop of zet Seizoensgebonden aan om speciale gelegenheden te volgen. Zet met het Halloween-thema de tv aan voor een livezender met Halloweenmuziek; tik op de versieringen voor een kleine verrassing.",
@@ -549,6 +553,7 @@ export const nl = {
       "string-quartet": "strijkkwartet",
       "porch-guitar": "gitaar op de veranda",
       "deep-space": "diepe ruimte",
+      dreamcore: "dreamcore",
     },
     station: (o) => `kan. ${o.channel} · ${o.name}`,
     offLabel: "Tv, uit",

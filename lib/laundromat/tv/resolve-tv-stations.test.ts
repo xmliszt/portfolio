@@ -98,8 +98,8 @@ test("the Halloween tuner reaches all stations and skips to the regular lineup",
     event: { type: "tune", step: -1 },
     settings: halloween,
   });
-  assert.equal(previous.station, 12);
-  assert.equal(halloween.stations[previous.station]?.id, "deep-space");
+  assert.equal(previous.station, 13);
+  assert.equal(halloween.stations[previous.station]?.id, "dreamcore");
   assert.equal(
     transitionTv({
       state: previous,

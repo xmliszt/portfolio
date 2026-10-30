@@ -380,6 +380,10 @@ export const tr = {
       board: "pano",
     },
     updates: {
+      "dreamcore-station": {
+        title: "televizyonda dreamcore kanalı",
+        body: "Ayar düğmesini derin uzayın ötesine çevirin ve yumuşak, yankılanan ambient müzikli dreamcore radyosunu dinleyin.",
+      },
       "halloween-theme": {
         title: "odalarda cadılar bayramı",
         body: "Tema düğmesinden Cadılar Bayramı’nı seçin veya özel günleri takip etmek için Mevsimsel seçeneğini açın. Cadılar Bayramı teması seçiliyken televizyonu açarak canlı Cadılar Bayramı müzik istasyonunu dinleyin; küçük bir sürpriz için süslemelere dokun.",
@@ -547,6 +551,7 @@ export const tr = {
       "string-quartet": "yaylı dörtlüsü",
       "porch-guitar": "verandada gitar",
       "deep-space": "derin uzay",
+      dreamcore: "dreamcore",
     },
     station: (o) => `kanal ${o.channel} · ${o.name}`,
     offLabel: "Televizyon, kapalı",

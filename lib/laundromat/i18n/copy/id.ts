@@ -414,6 +414,10 @@ export const id = {
       board: "papan",
     },
     updates: {
+      "dreamcore-station": {
+        title: "saluran dreamcore di tv",
+        body: "Putar tombol tuner melewati luar angkasa untuk radio dreamcore berisi musik ambient yang lembut dan bergema.",
+      },
       "halloween-theme": {
         title: "halloween di kedua ruangan",
         body: "Pilih Halloween dari tombol tema, atau aktifkan Musiman untuk mengikuti perayaan. Saat tema Halloween dipilih, nyalakan TV untuk mendengarkan stasiun musik Halloween secara langsung; ketuk hiasannya untuk kejutan kecil.",
@@ -581,6 +585,7 @@ export const id = {
       "string-quartet": "kuartet gesek",
       "porch-guitar": "gitar di teras",
       "deep-space": "luar angkasa",
+      dreamcore: "dreamcore",
     } satisfies { [id in TvStationId]: string },
     station: (o: { channel: string; name: string }) =>
       `ch ${o.channel} · ${o.name}`,

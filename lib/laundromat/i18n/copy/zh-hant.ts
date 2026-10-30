@@ -372,6 +372,10 @@ export const zhHant = {
       board: "告示板",
     },
     updates: {
+      "dreamcore-station": {
+        title: "電視有了夢核頻道",
+        body: "把調台旋鈕轉過深空，就能收聽夢核電台，柔和的氛圍音樂在空曠中迴響。",
+      },
       "halloween-theme": {
         title: "房間裡的萬聖節",
         body: "點開主題按鈕選擇萬聖節，或開啟季節模式，讓主題隨節日變化。使用萬聖節主題時，打開電視就能收聽萬聖節音樂直播，點一點裝飾，發現小驚喜。",
@@ -539,6 +543,7 @@ export const zhHant = {
       "string-quartet": "弦樂四重奏",
       "porch-guitar": "門廊吉他",
       "deep-space": "深空",
+      dreamcore: "夢核",
     },
     station: (o: { channel: string; name: string }) =>
       `${o.channel} 台 · ${o.name}`,

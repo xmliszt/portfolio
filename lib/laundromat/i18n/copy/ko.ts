@@ -397,6 +397,10 @@ export const ko = {
       board: "게시판",
     },
     updates: {
+      "dreamcore-station": {
+        title: "tv에 드림코어 채널",
+        body: "깊은 우주 다음으로 다이얼을 돌리면 잔잔하게 울려 퍼지는 앰비언트 드림코어 라디오를 들을 수 있어요.",
+      },
       "halloween-theme": {
         title: "방에 찾아온 할로윈",
         body: "테마 버튼에서 할로윈을 고르거나 시즌 설정을 켜서 기념일에 맞는 테마를 즐겨 보세요. 할로윈 테마에서 TV를 켜면 할로윈 음악을 실시간으로 들을 수 있어요; 장식을 누르면 작은 깜짝 반응을 볼 수 있어요.",
@@ -564,6 +568,7 @@ export const ko = {
       "string-quartet": "현악 사중주",
       "porch-guitar": "현관의 기타",
       "deep-space": "깊은 우주",
+      dreamcore: "드림코어",
     },
     station: (o: { channel: string; name: string }) =>
       `ch ${o.channel} · ${o.name}`,

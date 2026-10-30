@@ -394,6 +394,10 @@ export const pl = {
       board: "tablica",
     },
     updates: {
+      "dreamcore-station": {
+        title: "stacja dreamcore w telewizorze",
+        body: "Przekręć pokrętło za głęboki kosmos, aby posłuchać radia dreamcore z miękką, rozbrzmiewającą muzyką ambient.",
+      },
       "halloween-theme": {
         title: "halloween w obu pokojach",
         body: "Wybierz Halloween przyciskiem motywów lub włącz tryb sezonowy, aby motyw zmieniał się na specjalne okazje. Z motywem Halloween włącz telewizor, aby posłuchać stacji z halloweenową muzyką na żywo; dotknij dekoracji, by odkryć małą niespodziankę.",
@@ -564,6 +568,7 @@ export const pl = {
       "string-quartet": "kwartet smyczkowy",
       "porch-guitar": "gitara na ganku",
       "deep-space": "głęboki kosmos",
+      dreamcore: "dreamcore",
     },
     station: (o) => `kan. ${o.channel} · ${o.name}`,
     offLabel: "Telewizor, wyłączony",

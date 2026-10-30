@@ -398,6 +398,10 @@ export const ja = {
       board: "掲示板",
     },
     updates: {
+      "dreamcore-station": {
+        title: "テレビにドリームコアのチャンネル",
+        body: "深宇宙の先までダイヤルを回すと、やわらかく響くアンビエントのドリームコアラジオが流れます。",
+      },
       "halloween-theme": {
         title: "お部屋もハロウィンに",
         body: "テーマボタンからハロウィンを選ぶか、季節に合わせる設定をオンにして行事に合わせた部屋を楽しめます。ハロウィンのテーマでテレビをつけると、ハロウィン音楽のライブ配信が流れます，飾りをタップすると、ちょっとしたお楽しみが。",
@@ -565,6 +569,7 @@ export const ja = {
       "string-quartet": "弦楽四重奏",
       "porch-guitar": "縁側のギター",
       "deep-space": "深宇宙",
+      dreamcore: "ドリームコア",
     },
     station: (o: { channel: string; name: string }) =>
       `ch ${o.channel} · ${o.name}`,
