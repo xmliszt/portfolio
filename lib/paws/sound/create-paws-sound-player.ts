@@ -1,17 +1,21 @@
 import type { Step } from "@/lib/paws/cat-look";
-import type { Age } from "@/lib/paws/voice-settings";
+import type { Age, VoiceSettings } from "@/lib/paws/voice-settings";
 
+import { getBabbleSyllables } from "./get-babble-syllables";
+import { getBabbleVoice } from "./get-babble-voice";
 import { getCatPlaybackRate } from "./get-cat-playback-rate";
 import { getPanFromWorldX } from "./get-pan-from-world-x";
 import { getPawsSoundUrl } from "./get-paws-sound-url";
 import { getRmsGain } from "./get-rms-gain";
 import type { PawsSound } from "./paws-sound";
+import { scheduleBabble } from "./schedule-babble";
 
 const MASTER_LEVEL = 0.7;
 const MUTE_TIME_CONSTANT_S = 0.03;
 const CAT_COOLDOWN_MS = 900;
 const MAX_CLIP_S = 2;
 const FADE_OUT_S = 0.12;
+const BABBLE_LEVEL = 0.6;
 
 export type PawsSoundCue = {
   userId: string;
@@ -166,6 +170,46 @@ export function createPawsSoundPlayer(options: {
     });
   }
 
+  /** Babble `text` in the cat's voice, panned to world `x`, unless sound is muted, the cat is muted, or the player is not unlocked. */
+  function speak(line: {
+    userId: string;
+    text: string;
+    x: number;
+    voice: VoiceSettings;
+    size: Step;
+  }) {
+    const graph = state.graph;
+    if (graph === undefined || state.muted || state.mutedCats[line.userId])
+      return;
+    const { context } = graph;
+    const level = context.createGain();
+    level.gain.value = BABBLE_LEVEL;
+    const panner = context.createStereoPanner();
+    panner.pan.value = getPanFromWorldX(line.x);
+    level.connect(panner);
+    panner.connect(graph.compressor);
+    const endsAt = scheduleBabble({
+      context,
+      destination: level,
+      syllables: getBabbleSyllables(line.text),
+      voice: getBabbleVoice({
+        voice: line.voice,
+        size: line.size,
+        userId: line.userId,
+      }),
+      startAt: context.currentTime + 0.02,
+      random: Math.random,
+    });
+    const cleanup = context.createConstantSource();
+    cleanup.onended = () => {
+      cleanup.disconnect();
+      level.disconnect();
+      panner.disconnect();
+    };
+    cleanup.start();
+    cleanup.stop(endsAt + 0.1);
+  }
+
   /** Mute or unmute every cat. */
   function setMuted(muted: boolean) {
     state.muted = muted;
@@ -190,5 +234,5 @@ export function createPawsSoundPlayer(options: {
     state.graph = undefined;
   }
 
-  return { unlock, preload, play, setMuted, setCatMuted, dispose };
+  return { unlock, preload, play, speak, setMuted, setCatMuted, dispose };
 }

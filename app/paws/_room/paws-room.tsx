@@ -13,6 +13,8 @@ import { getBorrowedMeowUrl } from "@/lib/paws/profile/get-borrowed-meow-url";
 import { createSceneResources } from "@/lib/paws/render/create-scene-resources";
 import { drawScene } from "@/lib/paws/render/draw-scene";
 import { getWorldView } from "@/lib/paws/render/get-world-view";
+import { ROOM_LIMITS } from "@/lib/paws/room-limits";
+import type { DerivedCat } from "@/lib/paws/sim/derive-cat";
 import { createPawsSoundPlayer } from "@/lib/paws/sound/create-paws-sound-player";
 import type { ChatMessage } from "@/lib/paws/wire-types";
 import { cn } from "@/lib/utils";
@@ -48,6 +50,8 @@ export function PawsRoom() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const anchorsRef = useRef<{ [key: string]: HTMLElement | undefined }>({});
   const bubbleTimersRef = useRef<{ [userId: string]: number | undefined }>({});
+  const spokenIdsRef = useRef<string[]>([]);
+  const lastCatsRef = useRef<DerivedCat[]>([]);
   const [bubbles, setBubbles] = useState<ChatMessage[]>([]);
   const [isComposing, setIsComposing] = useState(false);
   const [hasOwnCatInRoom, setHasOwnCatInRoom] = useState(false);
@@ -82,6 +86,26 @@ export function PawsRoom() {
     }
     return undefined;
   })();
+  function sayLine(message: ChatMessage) {
+    showBubble(message);
+    if (spokenIdsRef.current.includes(message.id)) return;
+    spokenIdsRef.current = [...spokenIdsRef.current, message.id].slice(-20);
+    const player = playersRef.current.find(
+      (candidate) => candidate.userId === message.userId
+    );
+    const cat = lastCatsRef.current.find(
+      (candidate) => candidate.userId === message.userId
+    );
+    if (player === undefined) return;
+    sound.speak({
+      userId: message.userId,
+      text: message.text,
+      x: cat?.x ?? ROOM_LIMITS.worldWidth / 2,
+      voice: player.voice,
+      size: player.look.size,
+    });
+  }
+
   function showBubble(message: ChatMessage) {
     window.clearTimeout(bubbleTimersRef.current[message.userId]);
     setBubbles((current) =>
@@ -118,7 +142,7 @@ export function PawsRoom() {
     engine,
     useFakeRoom,
     isReady: isChecked || useFakeRoom,
-    onChat: showBubble,
+    onChat: sayLine,
   });
 
   useEffect(() => {
@@ -213,6 +237,7 @@ export function PawsRoom() {
         });
       }
       const view = getWorldView({ width, height });
+      lastCatsRef.current = room.cats;
       const ownCatId = ownCatIdRef.current;
       const isOwnCatHere =
         ownCatId !== undefined &&
@@ -303,7 +328,7 @@ export function PawsRoom() {
       roomId,
       text,
     });
-    if (result.kind === "sent") showBubble(result.message);
+    if (result.kind === "sent") sayLine(result.message);
     return result.kind;
   }
 

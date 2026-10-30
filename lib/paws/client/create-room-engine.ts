@@ -10,7 +10,6 @@ import { toScenePrint } from "@/lib/paws/render/to-scene-print";
 import { ROOM_LIMITS } from "@/lib/paws/room-limits";
 import type { RoomRole } from "@/lib/paws/room-source";
 import { chooseHost } from "@/lib/paws/rooms/choose-host";
-import { WIRE_LIMITS } from "@/lib/paws/wire/wire-limits";
 import { createSnapshotBuffer } from "@/lib/paws/sim/create-snapshot-buffer";
 import { createWorld } from "@/lib/paws/sim/create-world";
 import { createWorldFromSnapshots } from "@/lib/paws/sim/create-world-from-snapshots";
@@ -19,6 +18,7 @@ import { deriveCat } from "@/lib/paws/sim/derive-cat";
 import { getCatSnapshots } from "@/lib/paws/sim/get-cat-snapshots";
 import type { FingerInput, World } from "@/lib/paws/sim/sim-types";
 import { stepWorld } from "@/lib/paws/sim/step-world";
+import { WIRE_LIMITS } from "@/lib/paws/wire/wire-limits";
 import type {
   CatsMessage,
   CatSnapshot,
