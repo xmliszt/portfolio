@@ -1,0 +1,21 @@
+/** Words the paws interface shows that `COPY` does not have yet. */
+export const PENDING_COPY = {
+  close: "Close",
+  bringYourCat: "Bring your cat",
+  sending: "Sending…",
+  verifying: "Signing in…",
+  sendFailed: "Couldn't send the code just now. Try again in a bit.",
+  verifyFailed: "Couldn't sign you in just now. Try again in a bit.",
+  changeEmail: "Use another email",
+  loadingCat: "Finding your cat…",
+  loadCatFailed: "Couldn't find your cat just now.",
+  saving: "Saving…",
+  saveFailed: "Couldn't save your cat just now. Try again in a bit.",
+  signInAgain: "Your sign-in ran out. Sign in again to keep your cat.",
+  previewLabel: "Your cat, sitting under the glass",
+  playSound: "Play the sound",
+  back: "Back",
+  tryAgain: "Try again",
+  meowUnreachable: "Couldn't reach the sound maker. Try again.",
+  bringInFailed: "Couldn't bring your cat in just now. Try again.",
+} as const;
