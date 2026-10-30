@@ -1,0 +1,231 @@
+import type { Vec4 } from "@/lib/paws/sim/cat-poses";
+import type { DerivedCat } from "@/lib/paws/sim/derive-cat";
+import { lerp } from "@/lib/paws/sim/lerp";
+import { valueNoise } from "@/lib/paws/sim/value-noise";
+
+import { blurOf } from "./blur-of";
+import { drawNose } from "./draw-nose";
+import { drawPads } from "./draw-pads";
+import { drawWhiskers, WHISKER_FADE_HEIGHT } from "./draw-whiskers";
+import type { CoatPalette } from "./get-coat-palette";
+import type { DrawContext } from "./render-types";
+import { sampleCurve } from "./sample-curve";
+import { softCapsule } from "./soft-capsule";
+import { softOutline } from "./soft-outline";
+
+type Part = { h: number; draw: () => void };
+
+/** Draw `cat` from below the glass in `palette`, its parts ordered farthest from the glass first so nearer parts sit on top. */
+export function drawCat(options: {
+  draw: DrawContext;
+  cat: DerivedCat;
+  palette: CoatPalette;
+}) {
+  const { draw, cat, palette } = options;
+  const k = cat.k;
+  const fluff = cat.build.fluff * 0.9 * k;
+  const parts: Part[] = [];
+  const capsule = (a: Vec4, b: Vec4, color: string, alpha = 1) => {
+    const h = (a[3] + b[3]) / 2;
+    parts.push({
+      h,
+      draw: () =>
+        softCapsule({
+          draw,
+          ax: a[0],
+          ay: a[1],
+          bx: b[0],
+          by: b[1],
+          r: (a[2] + b[2]) / 2,
+          blur: blurOf(h, k) + fluff,
+          color,
+          alpha,
+        }),
+    });
+  };
+  const disc = (point: Vec4, color: string) => capsule(point, point, color);
+
+  const head = cat.head;
+  const body = sampleCurve({
+    points: [...cat.spine, [head[0], head[1], head[2] * 0.8, head[3]]],
+    perSegment: 4,
+  });
+  const colorAt = (i: number) => {
+    const section = Math.min(5, Math.floor(i / 4));
+    return section < 4 ? palette.spine[section] : palette.neck;
+  };
+  const mergeGap = 1.2 * k + 0.6 / draw.unitPx;
+  const runs = body
+    .slice(0, -1)
+    .reduce<
+      { start: number; end: number; color: string }[]
+    >((list, point, i) => {
+      const run = list.at(-1);
+      const color = colorAt(i);
+      if (
+        run !== undefined &&
+        run.color === color &&
+        Math.abs(blurOf(point[3], k) - blurOf(body[run.start][3], k)) < mergeGap
+      ) {
+        run.end = i + 1;
+        return list;
+      }
+      return [
+        ...list,
+        {
+          start: Math.max(0, i - (run === undefined ? 0 : 1)),
+          end: i + 1,
+          color,
+        },
+      ];
+    }, []);
+  for (const run of runs) {
+    const samples = body.slice(run.start, run.end + 1);
+    const h =
+      samples.reduce((sum, point) => sum + point[3], 0) / samples.length;
+    parts.push({
+      h,
+      draw: () =>
+        softOutline({
+          draw,
+          samples,
+          blur: blurOf(h, k) + fluff,
+          color: run.color,
+        }),
+    });
+  }
+  const belly = palette.belly;
+  if (belly !== undefined) {
+    const patch = body
+      .slice(0, -2)
+      .map(
+        (point, i): Vec4 => [
+          point[0],
+          point[1],
+          point[2] * (0.34 + 0.16 * valueNoise(i * 0.45, cat.phase)),
+          point[3],
+        ]
+      );
+    const h = patch.reduce((sum, point) => sum + point[3], 0) / patch.length;
+    const lowest =
+      Math.min(...cat.spine.map((point) => point[3]), head[3]) - 0.01;
+    parts.push({
+      h: lowest,
+      draw: () =>
+        softOutline({
+          draw,
+          samples: patch,
+          blur: blurOf(h, k) + fluff + 7 * k,
+          color: belly,
+          alpha: 0.95,
+        }),
+    });
+  }
+
+  const cos = Math.cos(cat.headDir);
+  const sin = Math.sin(cat.headDir);
+  const onHead = (
+    forward: number,
+    side: number,
+    r: number,
+    h: number
+  ): Vec4 => [
+    head[0] + (cos * forward - sin * side) * k,
+    head[1] + (sin * forward + cos * side) * k,
+    r * k,
+    h,
+  ];
+  const earH = head[3] + 8 + 14 * (1 - cat.sleepWeight);
+  for (const side of [-1, 1])
+    disc(onHead(-10, side * 20, 12 * cat.build.earScale, earH), palette.ears);
+  disc(head, palette.head);
+  disc(onHead(6, -15, 21, head[3] + 1), palette.cheeks[0]);
+  disc(onHead(6, 15, 21, head[3] + 1), palette.cheeks[1]);
+  for (const side of [-1, 1])
+    disc(onHead(20, side * 6, 7.5, head[3] + 2), palette.muzzle);
+  disc(onHead(12, 0, 8, head[3] + 3), palette.muzzle);
+  const noseH = Math.max(0, cat.headH - 4);
+  parts.push({
+    h: noseH - 0.2,
+    draw: () =>
+      drawNose({
+        g: draw.g,
+        x: cat.nose.x,
+        y: cat.nose.y,
+        angle: cat.headDir,
+        k,
+        h: noseH,
+        color: palette.nose,
+        alpha: 1,
+      }),
+  });
+  disc(cat.thighs[0], palette.thighs[0]);
+  disc(cat.thighs[1], palette.thighs[1]);
+
+  cat.legs.forEach((leg, legIndex) => {
+    const [attachX, attachY, attachH] = leg.attach;
+    const low: Vec4 = [leg.x, leg.y, 9.5 * k, leg.h + 3];
+    const mid: Vec4 = [
+      lerp(leg.x, attachX, 0.5),
+      lerp(leg.y, attachY, 0.5),
+      11 * k,
+      lerp(leg.h + 3, attachH + 9, 0.5),
+    ];
+    capsule(low, mid, palette.lowerLeg);
+    capsule(
+      mid,
+      [attachX, attachY, (leg.front ? 12 : 15) * k, attachH + 9],
+      palette.leg
+    );
+    if (leg.hock !== undefined)
+      capsule(
+        leg.hock,
+        [leg.x, leg.y, 9 * k, leg.h + 1],
+        palette.sock,
+        cat.soleWeight
+      );
+    disc(
+      [
+        leg.x + Math.cos(leg.pawAngle) * 2.5 * k,
+        leg.y + Math.sin(leg.pawAngle) * 2.5 * k,
+        12.5 * k,
+        leg.h + 1.5,
+      ],
+      palette.sock
+    );
+    if (leg.padVisibility > 0.02) {
+      parts.push({
+        h: leg.h - 0.5,
+        draw: () =>
+          drawPads({
+            draw,
+            x: leg.x,
+            y: leg.y,
+            angle: leg.pawAngle,
+            k,
+            h: leg.h,
+            color: palette.pads[legIndex],
+            alpha: leg.padVisibility,
+          }),
+      });
+    }
+  });
+
+  const segments = cat.tail.length - 1;
+  for (let i = 0; i < segments; i++) {
+    const [x0, y0] = cat.tail[i];
+    const [x1, y1] = cat.tail[i + 1];
+    const r0 = cat.build.tailRadius - i * 0.4;
+    const r1 = cat.build.tailRadius - (i + 1) * 0.4;
+    const { base, tip } = cat.tailHeights;
+    capsule(
+      [x0, y0, r0 * k, lerp(base, tip, i / segments)],
+      [x1, y1, r1 * k, lerp(base, tip, (i + 1) / segments)],
+      palette.tail[i] ?? palette.tail[0]
+    );
+  }
+
+  if (cat.headH < WHISKER_FADE_HEIGHT)
+    parts.push({ h: 0, draw: () => drawWhiskers({ draw, cat }) });
+  for (const part of parts.toSorted((a, b) => b.h - a.h)) part.draw();
+}
