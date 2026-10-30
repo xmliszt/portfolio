@@ -9,6 +9,11 @@ import { isCatLeaving } from "./is-cat-leaving";
 import { isCatOnstage } from "./is-cat-onstage";
 import type { Point, SimCat, Tick } from "./sim-types";
 import { toCatSnapshot } from "./to-cat-snapshot";
+
+const GLANCE_SPEED = 150;
+const GLANCE_RANGE = 360;
+const GLANCE_TEMPO = 1.3;
+const GLANCE_SHARE = 0.6;
 import { wrapAngle } from "./wrap-angle";
 
 const RESTING_STATES = new Set(["sit", "sleep", "paw", "sniff", "bat"]);
@@ -75,11 +80,31 @@ export function updateCatPose(options: { tick: Tick; cat: SimCat }) {
     if (cat.social.kind === "bat") return partner.derived.tailTip;
     return { x: partner.derived.head[0], y: partner.derived.head[1] };
   })();
+  const glanced = Object.values(world.fingers)
+    .filter(
+      (finger) =>
+        focus?.present === true &&
+        finger.present &&
+        finger.userId !== cat.focusId &&
+        finger.speed > GLANCE_SPEED &&
+        Math.hypot(finger.x - cat.x, finger.y - cat.y) <
+          GLANCE_RANGE * cat.build.scale
+    )
+    .toSorted(
+      (a, b) =>
+        Math.hypot(a.x - cat.x, a.y - cat.y) -
+        Math.hypot(b.x - cat.x, b.y - cat.y)
+    )
+    .at(0);
+  const isGlancing =
+    glanced !== undefined &&
+    Math.sin(world.time * GLANCE_TEMPO + cat.derived.phase) > GLANCE_SHARE;
+  const looked = isGlancing ? glanced : watched;
   const yawTarget =
-    watched !== undefined && !isCatLeaving(cat)
+    looked !== undefined && !isCatLeaving(cat)
       ? clamp(
           wrapAngle(
-            Math.atan2(watched.y - neckY, watched.x - neckX) -
+            Math.atan2(looked.y - neckY, looked.x - neckX) -
               cat.heading -
               cat.pose.headDir
           ),

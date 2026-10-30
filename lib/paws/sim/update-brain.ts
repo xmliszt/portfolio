@@ -4,6 +4,7 @@ import { damp } from "./damp";
 import { emitCatSound } from "./emit-cat-sound";
 import { endSocial } from "./end-social";
 import { faceToward } from "./face-toward";
+import { FLEE_SPEED } from "./flee-speed";
 import { getCatFrame } from "./get-cat-frame";
 import { holdStill } from "./hold-still";
 import { isCatLeaving } from "./is-cat-leaving";
@@ -37,7 +38,10 @@ const NO_FINGER: FingerView = {
   speed: 0,
   stillSeconds: 0,
 };
-const FLEE_SPEED = 2200;
+const CROWD_RANGE = 240;
+const CROWD_SIZE = 3;
+const SHY_STEP = 260;
+const SHY_SECONDS = 6;
 const PURR_RANGE = 160;
 
 const approachGoal = (cat: SimCat, finger: FingerView): Point => {
@@ -208,6 +212,43 @@ export function updateBrain(options: { tick: Tick; cat: SimCat }) {
   );
   if (scare !== undefined && cat.state !== "flee") {
     startLeaving({ world, cat, fleeFrom: scare });
+    return;
+  }
+
+  const crowd = Object.values(world.fingers).filter(
+    (candidate) =>
+      candidate.present &&
+      Math.hypot(cat.x - candidate.x, cat.y - candidate.y) < CROWD_RANGE * k
+  );
+  if (
+    crowd.length >= CROWD_SIZE &&
+    world.time >= cat.curiousCooldownUntil &&
+    !isCatLeaving(cat) &&
+    cat.state !== "sleep"
+  ) {
+    const centre = {
+      x: crowd.reduce((sum, candidate) => sum + candidate.x, 0) / crowd.length,
+      y: crowd.reduce((sum, candidate) => sum + candidate.y, 0) / crowd.length,
+    };
+    const gap = Math.max(1, Math.hypot(cat.x - centre.x, cat.y - centre.y));
+    releasePaws(cat);
+    cat.pawFingerIds = [];
+    cat.focusId = undefined;
+    cat.rest = undefined;
+    cat.curiousCooldownUntil = world.time + SHY_SECONDS;
+    cat.wander = {
+      x: clamp(
+        cat.x + ((cat.x - centre.x) / gap) * SHY_STEP * k,
+        world.width * 0.08,
+        world.width * 0.92
+      ),
+      y: clamp(
+        cat.y + ((cat.y - centre.y) / gap) * SHY_STEP * k,
+        world.height * 0.1,
+        world.height * 0.9
+      ),
+    };
+    setCatState(cat, "approach");
     return;
   }
   const partner =

@@ -2,6 +2,7 @@ import { ROOM_LIMITS } from "@/lib/paws/room-limits";
 
 import { endCuriosity } from "./end-curiosity";
 import { findSharedFingers } from "./find-shared-fingers";
+import { FLEE_SPEED } from "./flee-speed";
 import { getCuriosityRate } from "./get-curiosity-rate";
 import { isCatLeaving } from "./is-cat-leaving";
 import { isCatOnstage } from "./is-cat-onstage";
@@ -10,6 +11,9 @@ import type { SimCat, Tick } from "./sim-types";
 
 const PAW_RANGE = 220;
 const FORGET_ABSENT_SECONDS = 3;
+const WIGGLE_SPEED = 300;
+const WIGGLE_RANGE = 300;
+const SWITCH_RATE = 0.8;
 
 const dropFinger = (cat: SimCat, fingerId: string) => {
   cat.pawFingerIds = cat.pawFingerIds.filter((id) => id !== fingerId);
@@ -101,6 +105,28 @@ export function updateAttention(tick: Tick) {
     ) {
       endCuriosity({ world, cat });
     }
+  }
+
+  for (const cat of cats.filter(
+    (candidate) =>
+      isAvailable(candidate) &&
+      candidate.focusId !== undefined &&
+      candidate.pawFingerIds.length === 0
+  )) {
+    const focus =
+      cat.focusId === undefined ? undefined : world.fingers[cat.focusId];
+    const wiggler = fingers.find(
+      (finger) =>
+        finger.present &&
+        finger.userId !== cat.focusId &&
+        finger.speed > WIGGLE_SPEED &&
+        finger.speed < FLEE_SPEED &&
+        finger.speed > (focus?.speed ?? 0) * 2 &&
+        Math.hypot(cat.x - finger.x, cat.y - finger.y) <
+          WIGGLE_RANGE * cat.build.scale
+    );
+    if (wiggler !== undefined && world.random() < SWITCH_RATE * dtSeconds)
+      makeCurious({ world, cat, fingerId: wiggler.userId });
   }
 
   const curiousCount = cats.filter((cat) => cat.focusId !== undefined).length;
