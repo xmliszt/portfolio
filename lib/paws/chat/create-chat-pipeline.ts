@@ -1,4 +1,3 @@
-import type { ModerationCheck } from "@/lib/paws/profile/meow-pipeline-types";
 import { ROOM_TIMING } from "@/lib/paws/rooms/room-timing";
 import type { RequestUser } from "@/lib/paws/supabase/read-request-user";
 import type { ChatMessage } from "@/lib/paws/wire-types";
@@ -21,20 +20,16 @@ export type ChatPipelineDependencies = {
   }) => Promise<number>;
   insertLine: (options: { roomId: string; userId: string }) => Promise<string>;
   deleteLine: (id: string) => Promise<void>;
-  markLine: (options: {
-    id: string;
-    status: "sent" | "refused";
-  }) => Promise<void>;
+  markLine: (options: { id: string; status: "sent" }) => Promise<void>;
   broadcast: (options: {
     roomId: string;
     message: ChatMessage;
   }) => Promise<void>;
-  moderation: ModerationCheck;
   clock: { now: () => Date };
   log: (message: string, details: unknown) => void;
 };
 
-/** Return a chat pipeline that sends one line from a player in a room to everyone in it, after the room, rate and moderation checks; each attempt is recorded, without its text, before the rate check counts it, so parallel attempts and refused lines count too. */
+/** Return a chat pipeline that sends one line from a player in a room to everyone in it, after the room and rate checks; each attempt is recorded, without its text, before the rate check counts it, so parallel attempts count too. */
 export function createChatPipeline(deps: ChatPipelineDependencies) {
   async function sendChat(options: {
     user: RequestUser | undefined;
@@ -65,10 +60,6 @@ export function createChatPipeline(deps: ChatPipelineDependencies) {
       if (burst > BURST.max || minute > MINUTE.max) {
         await deps.deleteLine(id);
         return { kind: "tooFast" };
-      }
-      if (await deps.moderation.isFlagged(request.text)) {
-        await deps.markLine({ id, status: "refused" });
-        return { kind: "refused" };
       }
       const message = { id, userId, text: request.text };
       await deps.broadcast({ roomId: request.roomId, message });

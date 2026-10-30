@@ -4,6 +4,7 @@ export const ROOM_LIMITS = {
   worldHeight: 1000,
   maxPlayers: 8,
   maxWatchers: 4,
+  residentCats: 3,
   fingerSendsPerSecond: 2,
   catSnapshotsPerSecond: 4,
   renderDelayMs: 350,

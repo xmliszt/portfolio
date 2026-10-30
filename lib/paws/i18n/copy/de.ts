@@ -63,40 +63,17 @@ export const de = {
   voice: {
     title: "Gib deiner Katze eine Stimme",
     eyebrow: "Stimme · 2 von 2",
-    textLabel: "Wie klingt deine Katze?",
-    textPlaceholder: "miau",
     age: "Alter",
     voice: "Stimme",
     mood: "Laune",
-    make: "Laut erstellen",
-    making: "Laut wird erstellt…",
-    oneOnly:
-      "Dieser Laut bleibt bei deiner Katze. Du kannst ihn später nicht ändern.",
     play: "Laut abspielen",
-    playBlocked: "Dein Laut ist fertig. Tippe auf Abspielen, um ihn zu hören.",
-    unreachable: "Der Laut konnte nicht angefragt werden. Versuch es nochmal.",
     bringIn: "Katze reinbringen",
     bringing: "Deine Katze kommt rein…",
-    bringInFailed: "Deine Katze konnte nicht reinkommen. Versuch es nochmal.",
-  },
-  meowResult: {
-    refusedByUs:
-      "Das kann deine Katze nicht sagen. Versuch einen anderen Laut.",
-    refusedByProvider: "Das hat nicht geklappt. Beschreib einen anderen Laut.",
-    failed:
-      "Der Laut konnte gerade nicht erstellt werden. Deine Katze leiht sich ein Miau. Versuch es später nochmal.",
-    borrowed:
-      "Für heute sind alle eigenen Laute aufgebraucht. Deine Katze leiht sich erst mal ein Miau. Komm morgen wieder und gib ihr eine eigene Stimme.",
-    tooManyAttempts:
-      "Für heute hast du genug Versuche gemacht. Komm morgen wieder.",
-    inProgress:
-      "Die Stimme deiner Katze wird noch erstellt. Versuch es in einer Minute nochmal.",
   },
   room: {
     mute: "Ton aus",
     unmute: "Ton an",
     muteCat: "Katze stummschalten",
-    report: "Laut melden",
     reconnecting: "Verbindung wird hergestellt…",
     language: "Sprache",
     rooms: "Räume",
@@ -110,9 +87,11 @@ export const de = {
     talk: "Sprechen",
     chatLabel: "Was deine Katze sagt",
     chatPlaceholder: "Sag etwas …",
-    chatRefused: "Bleib freundlich.",
     chatTooFast: "Etwas langsamer.",
     chatFailed: "Nicht gesendet. Versuch es noch mal.",
+    lookAround: "Im Raum umsehen",
+    roomEntered: "Du bist in {room}",
+    roomMoved: "Jetzt in {room}",
   },
   options: {
     coat: {

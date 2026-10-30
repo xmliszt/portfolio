@@ -3,6 +3,7 @@ import { test } from "node:test";
 
 import { ROOM_LIMITS } from "@/lib/paws/room-limits";
 import { createSeededRandom } from "@/lib/paws/sim/create-seeded-random";
+import { parseCatsMessage } from "@/lib/paws/wire/parse-cats-message";
 import type { PlayerPresence } from "@/lib/paws/wire-types";
 
 import { createRoomEngine } from "./create-room-engine";
@@ -28,7 +29,6 @@ function buildPlayer(options: {
       ears: "small",
     },
     voice: { age: "adult", voice: "soft", mood: "chatty" },
-    meowUrl: "/m.mp3",
   };
 }
 
@@ -38,7 +38,12 @@ function buildFollower() {
     buildPlayer({ userId: "host", joinedAt: 1 }),
     buildPlayer({ userId: "me", joinedAt: 2 }),
   ]);
-  engine.setSelf({ userId: "me", connectionId: "me-tab", role: "player" });
+  engine.setSelf({
+    userId: "me",
+    connectionId: "me-tab",
+    role: "player",
+    roomId: "room-1",
+  });
   return engine;
 }
 
@@ -118,7 +123,12 @@ test("resends a still fingertip every second", () => {
 
 test("a watcher sends its fingertip with the trail since its last message", () => {
   const engine = buildFollower();
-  engine.setSelf({ userId: "me", connectionId: "me-tab", role: "watcher" });
+  engine.setSelf({
+    userId: "me",
+    connectionId: "me-tab",
+    role: "watcher",
+    roomId: "room-1",
+  });
   const sent = Array.from({ length: 31 }, (_, index) => index * 20).flatMap(
     (nowMs) => {
       engine.setOwnPointer({
@@ -268,6 +278,7 @@ test("a guest alone in the room plays with the resident cats", () => {
       userId: "guest",
       connectionId: "guest-tab",
       role: "watcher",
+      roomId: "room-1",
     });
     const cats: string[] = [];
     for (let frame = 0; frame < 900; frame++) {
@@ -310,4 +321,93 @@ test("a visitor who is not signed in still plays with the resident cats", () => 
     return cats;
   };
   assert.notDeepEqual(run(true), run(false));
+});
+
+test("the host runs the room's resident cats alongside the players' cats and sends them", () => {
+  const engine = createRoomEngine({ random: createSeededRandom({ seed: 3 }) });
+  engine.setPlayers([buildPlayer({ userId: "me", joinedAt: 1 })]);
+  engine.setSelf({
+    userId: "me",
+    connectionId: "me-tab",
+    role: "player",
+    roomId: "room-1",
+  });
+  const room = engine.frame({ nowMs: 0, dtSeconds: DT_SECONDS });
+  assert.equal(room.isHost, true);
+  assert.deepEqual(
+    room.outgoing.cats?.cats.map((cat) => cat.userId).toSorted(),
+    ["me", "resident-1", "resident-2", "resident-3"],
+    "the residents stay when a player brings a cat"
+  );
+});
+
+test("every screen in a room gets the same residents, and another room gets different ones", () => {
+  const residentsOf = (options: { seed: number; roomId: string }) => {
+    const engine = createRoomEngine({
+      random: createSeededRandom({ seed: options.seed }),
+    });
+    engine.setSelf({
+      userId: "guest",
+      connectionId: "guest-tab",
+      role: "watcher",
+      roomId: options.roomId,
+    });
+    return engine.frame({ nowMs: 0, dtSeconds: DT_SECONDS }).residents;
+  };
+  assert.deepEqual(
+    residentsOf({ seed: 1, roomId: "room-1" }),
+    residentsOf({ seed: 2, roomId: "room-1" })
+  );
+  assert.notDeepEqual(
+    residentsOf({ seed: 1, roomId: "room-1" }),
+    residentsOf({ seed: 1, roomId: "room-2" })
+  );
+});
+
+test("other screens receive every cat of a full room, residents included", () => {
+  const engine = createRoomEngine({ random: createSeededRandom({ seed: 4 }) });
+  engine.setSelf({
+    userId: "p1",
+    connectionId: "p1-tab",
+    role: "player",
+    roomId: "room-1",
+  });
+  engine.frame({ nowMs: 0, dtSeconds: DT_SECONDS });
+  engine.setPlayers(
+    Array.from({ length: ROOM_LIMITS.maxPlayers }, (_, index) =>
+      buildPlayer({ userId: `p${index + 1}`, joinedAt: index + 1 })
+    )
+  );
+  const sent = Array.from({ length: 600 }, (_, frame) =>
+    engine.frame({ nowMs: (frame + 1) * 16, dtSeconds: DT_SECONDS })
+  ).findLast((room) => room.outgoing.cats !== undefined)?.outgoing.cats;
+  const received = parseCatsMessage(JSON.parse(JSON.stringify(sent)));
+  assert.equal(
+    received?.cats.length,
+    ROOM_LIMITS.maxPlayers + ROOM_LIMITS.residentCats
+  );
+});
+
+test("resident cats make sounds that resolve to a resident's voice", () => {
+  const engine = createRoomEngine({ random: createSeededRandom({ seed: 2 }) });
+  engine.setSelf({
+    userId: "guest",
+    connectionId: "guest-tab",
+    role: "watcher",
+    roomId: "room-1",
+  });
+  const isResidentSoundHeard = Array.from({ length: 3600 }, (_, frame) => {
+    engine.setOwnPointer({
+      x: 800,
+      y: 500,
+      present: true,
+      pressed: Math.floor(frame / 60) % 2 === 0,
+    });
+    return engine.frame({ nowMs: frame * 16, dtSeconds: DT_SECONDS });
+  }).some((room) =>
+    room.sounds.some((sound) =>
+      room.residents.some((resident) => resident.userId === sound.userId)
+    )
+  );
+  assert.equal(isResidentSoundHeard, true);
 });

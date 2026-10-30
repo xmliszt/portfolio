@@ -216,7 +216,7 @@ export function RoomPicker(props: RoomPickerProps) {
             exit={{ opacity: 0, transition: { duration: 0.1 } }}
             transition={{ type: "spring", stiffness: 520, damping: 34 }}
             style={{ transformOrigin: "100% 0%" }}
-            className="absolute top-full right-0 z-20 mt-2 flex w-72 max-w-[calc(100vw-32px)] flex-col border-[1.5px] border-[var(--pw-ink)] bg-[var(--pw-paper)] text-[12px] text-[var(--pw-ink)] shadow-[3px_2px_0_var(--pw-pink)]"
+            className="fixed inset-x-4 top-16 z-20 flex flex-col border-[1.5px] border-[var(--pw-ink)] bg-[var(--pw-paper)] text-[12px] text-[var(--pw-ink)] shadow-[3px_2px_0_var(--pw-pink)] sm:absolute sm:inset-x-auto sm:top-full sm:right-0 sm:mt-2 sm:w-72"
           >
             <ul
               ref={listRef}

@@ -43,10 +43,9 @@ const BABBLE_CUT_S = 0.03;
 export type PawsSoundCue = {
   userId: string;
   sound: PawsSound;
-  meowUrl: string;
+  voice: VoiceSettings;
   x: number;
   size: Step;
-  age: Age;
 };
 
 type Clip = { buffer: AudioBuffer; gain: number };
@@ -134,7 +133,12 @@ export function createPawsSoundPlayer(options: {
     const { context } = graph;
     const source = context.createBufferSource();
     source.buffer = clip.buffer;
-    source.playbackRate.value = getCatPlaybackRate(cue);
+    source.playbackRate.value = getCatPlaybackRate({
+      sound: cue.sound,
+      size: cue.size,
+      age: cue.voice.age,
+      userId: cue.userId,
+    });
     const gain = context.createGain();
     const startAt = context.currentTime;
     const playedS = Math.min(
@@ -148,7 +152,7 @@ export function createPawsSoundPlayer(options: {
       Math.max(startAt, startAt + playedS - FADE_OUT_S)
     );
     const vibrato =
-      cue.age === "old" && cue.sound !== "meow"
+      cue.voice.age === "old" && cue.sound !== "meow"
         ? context.createOscillator()
         : undefined;
     const vibratoDepth =
@@ -258,6 +262,15 @@ export function createPawsSoundPlayer(options: {
         ),
       });
     });
+  }
+
+  /** Fade out the cat's line in progress, if it has one. */
+  function hush(userId: string) {
+    const level = state.babbles[userId];
+    const graph = state.graph;
+    if (level === undefined || graph === undefined) return;
+    level.gain.setTargetAtTime(0, graph.context.currentTime, BABBLE_CUT_S);
+    state.babbles[userId] = undefined;
   }
 
   function startBabble(options: {
@@ -379,6 +392,7 @@ export function createPawsSoundPlayer(options: {
     preload,
     play,
     speak,
+    hush,
     playUi,
     setMuted,
     setCatMuted,

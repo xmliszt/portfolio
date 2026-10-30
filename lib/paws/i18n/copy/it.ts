@@ -61,39 +61,17 @@ export const it = {
   voice: {
     title: "Dai una voce al tuo gatto",
     eyebrow: "Voce · 2 di 2",
-    textLabel: "Che suono fa il tuo gatto?",
-    textPlaceholder: "miao",
     age: "Età",
     voice: "Voce",
     mood: "Umore",
-    make: "Crea il suono",
-    making: "Creazione del suono…",
-    oneOnly:
-      "Questo suono resterà con il tuo gatto. Non potrai cambiarlo dopo.",
     play: "Ascolta il suono",
-    playBlocked: "Il tuo suono è pronto. Tocca Ascolta il suono per sentirlo.",
-    unreachable:
-      "Non siamo riusciti a contattare il creatore di suoni. Riprova.",
     bringIn: "Fai entrare il gatto",
     bringing: "Il tuo gatto sta entrando…",
-    bringInFailed: "Non siamo riusciti a far entrare il tuo gatto. Riprova.",
-  },
-  meowResult: {
-    refusedByUs: "Il tuo gatto non può fare quel suono. Provane un altro.",
-    refusedByProvider: "Non ha funzionato. Prova a descrivere un altro suono.",
-    failed:
-      "Non siamo riusciti a creare il suono adesso. Il tuo gatto prende in prestito un miao. Riprova tra poco.",
-    borrowed:
-      "I suoni personalizzati di oggi sono finiti. Il tuo gatto prende in prestito un miao per ora. Torna domani per dargli una voce tutta sua.",
-    tooManyAttempts: "Hai fatto abbastanza tentativi per oggi. Torna domani.",
-    inProgress:
-      "Il suono del tuo gatto è ancora in preparazione. Riprova tra un minuto.",
   },
   room: {
     mute: "Silenzia",
     unmute: "Attiva audio",
     muteCat: "Silenzia il gatto",
-    report: "Segnala il suono",
     reconnecting: "Riconnessione…",
     language: "Lingua",
     rooms: "Stanze",
@@ -107,9 +85,11 @@ export const it = {
     talk: "Parla",
     chatLabel: "Cosa dice il tuo gatto",
     chatPlaceholder: "Di' qualcosa…",
-    chatRefused: "Restiamo gentili.",
     chatTooFast: "Un po' più piano.",
     chatFailed: "Non inviato. Riprova.",
+    lookAround: "Guarda nella stanza",
+    roomEntered: "Sei in {room}",
+    roomMoved: "Ora in {room}",
   },
   options: {
     coat: {

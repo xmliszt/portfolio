@@ -24,7 +24,6 @@ function buildPlayer(options: {
       ears: "small",
     },
     voice: { age: "adult", voice: "soft", mood: "chatty" },
-    meowUrl: "/m",
   };
 }
 

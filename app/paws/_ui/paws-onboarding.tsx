@@ -13,7 +13,6 @@ import type { VoiceSettings } from "@/lib/paws/voice-settings";
 import { CatMaker } from "./cat-maker";
 import { fetchSavedCat } from "./fetch-saved-cat";
 import { FloatingCard } from "./floating-card";
-import { putCat } from "./put-cat";
 import { RisoButton } from "./riso-button";
 import { SignInPanel } from "./sign-in-panel";
 import { VoiceStep } from "./voice-step";
@@ -32,9 +31,6 @@ type OnboardingStep =
       kind: "maker";
       look: CatLook;
       voice: VoiceSettings;
-      hasOwnMeow: boolean;
-      busy: boolean;
-      notice: string | undefined;
     }
   | { kind: "voice"; look: CatLook; voice: VoiceSettings };
 
@@ -45,7 +41,7 @@ type PawsOnboardingProps = {
   onBringCatIn: (cat: SavedCat) => void;
 };
 
-/** Render the corner flow that takes a watcher through sign-in, making a cat and giving it a sound, then hands the saved cat over; with `hasCat`, it reopens the same flow so a member can change the look or give a borrowed meow its own sound. */
+/** Render the corner flow that takes a watcher through sign-in, making a cat and picking its voice, then hands the saved cat over; with `hasCat`, it reopens the same flow so a member can change the look and the voice. */
 export function PawsOnboarding(props: PawsOnboardingProps) {
   const playUi = useUiSound();
   const { copy } = usePawsCopy();
@@ -94,9 +90,6 @@ export function PawsOnboarding(props: PawsOnboardingProps) {
               kind: "maker",
               look: response.cat.look,
               voice: response.cat.voice,
-              hasOwnMeow: response.cat.hasOwnMeow,
-              busy: false,
-              notice: undefined,
             });
             return;
           case "none":
@@ -104,9 +97,6 @@ export function PawsOnboarding(props: PawsOnboardingProps) {
               kind: "maker",
               look: shuffleCatLook({ random: Math.random }),
               voice: DEFAULT_VOICE,
-              hasOwnMeow: false,
-              busy: false,
-              notice: undefined,
             });
             return;
           case "unreachable":
@@ -160,66 +150,14 @@ export function PawsOnboarding(props: PawsOnboardingProps) {
     setStep({ kind: "loadingCat", failed: false });
   }
 
-  async function keepLookAndBringIn(options: {
-    look: CatLook;
-    voice: VoiceSettings;
-    accessToken: string;
-  }) {
-    const flow = flowRef.current;
-    setStep({
-      kind: "maker",
-      look: options.look,
-      voice: options.voice,
-      hasOwnMeow: true,
-      busy: true,
-      notice: undefined,
-    });
-    const response = await putCat({
-      accessToken: options.accessToken,
-      cat: { look: options.look, voice: options.voice },
-    });
-    if (flow !== flowRef.current) return;
-    switch (response.kind) {
-      case "saved":
-        finish(response.cat);
-        return;
-      case "signInRequired":
-        await requireSignIn();
-        return;
-      case "invalid":
-      case "unreachable":
-        playUi("refused");
-        setStep({
-          kind: "maker",
-          look: options.look,
-          voice: options.voice,
-          hasOwnMeow: true,
-          busy: false,
-          notice: copy.maker.saveFailed,
-        });
-        return;
-      default: {
-        const unhandled: never = response;
-        return unhandled;
-      }
-    }
-  }
-
   function handleLookChange(look: CatLook) {
-    if (step.kind === "maker") setStep({ ...step, look, notice: undefined });
+    if (step.kind === "maker") setStep({ ...step, look });
   }
 
   function handleMakerPrimary() {
     if (step.kind !== "maker") return;
-    if (!step.hasOwnMeow) {
-      playUi("stepNext");
-      setStep({ kind: "voice", look: step.look, voice: step.voice });
-    } else if (accessToken)
-      void keepLookAndBringIn({
-        look: step.look,
-        voice: step.voice,
-        accessToken,
-      });
+    playUi("stepNext");
+    setStep({ kind: "voice", look: step.look, voice: step.voice });
   }
 
   function handleVoiceChange(voice: VoiceSettings) {
@@ -234,9 +172,6 @@ export function PawsOnboarding(props: PawsOnboardingProps) {
       kind: "maker",
       look: step.look,
       voice: step.voice,
-      hasOwnMeow: false,
-      busy: false,
-      notice: undefined,
     });
   }
 
@@ -300,9 +235,6 @@ export function PawsOnboarding(props: PawsOnboardingProps) {
       return (
         <CatMaker
           look={step.look}
-          primaryLabel={step.hasOwnMeow ? copy.voice.bringIn : copy.maker.next}
-          busy={step.busy}
-          notice={step.notice}
           onLookChange={handleLookChange}
           onPrimary={handleMakerPrimary}
           onClose={close}

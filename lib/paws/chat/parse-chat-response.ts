@@ -3,7 +3,6 @@ import { parseChatMessage } from "@/lib/paws/wire/parse-chat-message";
 import type { ChatResponse } from "./chat-api-types";
 
 const PLAIN_KINDS = [
-  "refused",
   "tooFast",
   "notPlaying",
   "signInRequired",

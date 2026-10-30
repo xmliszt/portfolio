@@ -8,7 +8,6 @@ export const dynamic = "force-dynamic";
 
 const STATUS = {
   sent: 200,
-  refused: 200,
   tooFast: 429,
   notPlaying: 403,
   signInRequired: 401,

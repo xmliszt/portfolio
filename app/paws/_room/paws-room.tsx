@@ -12,12 +12,12 @@ import { COAT_INKS } from "@/lib/paws/cat-look";
 import { getRevealSteps } from "@/lib/paws/chat/get-reveal-steps";
 import { createRoomEngine } from "@/lib/paws/client/create-room-engine";
 import { shuffleCatLook } from "@/lib/paws/maker/shuffle-cat-look";
-import { getBorrowedMeowUrl } from "@/lib/paws/profile/get-borrowed-meow-url";
 import { createSceneResources } from "@/lib/paws/render/create-scene-resources";
 import { drawScene } from "@/lib/paws/render/draw-scene";
 import { getWorldView } from "@/lib/paws/render/get-world-view";
 import { RISO } from "@/lib/paws/riso-inks";
 import { ROOM_LIMITS } from "@/lib/paws/room-limits";
+import { getRoomNumber } from "@/lib/paws/rooms/get-room-number";
 import type { DerivedCat } from "@/lib/paws/sim/derive-cat";
 import { createPawsSoundPlayer } from "@/lib/paws/sound/create-paws-sound-player";
 import type { ChatMessage } from "@/lib/paws/wire-types";
@@ -26,7 +26,9 @@ import { cn } from "@/lib/utils";
 import type { ChatBubble } from "./chat-bubble";
 import { ChatLayer } from "./chat-layer";
 import { COMPOSE_ANCHOR_PREFIX } from "./compose-anchor-prefix";
+import { PanBar, type PanBarHandle } from "./pan-bar";
 import { postChat } from "./post-chat";
+import { RoomBanner } from "./room-banner";
 import { RoomPicker } from "./room-picker";
 import { SoundSwitch } from "./sound-switch";
 import { UiSoundContext } from "./ui-sound-context";
@@ -41,6 +43,7 @@ const MAX_BUBBLE_MS = 12000;
 const BUBBLE_GAP_PX = 10;
 const BUBBLE_EDGE_PX = 8;
 const SETTLE_BEFORE_ARRIVALS_MS = 3000;
+const ROOM_BANNER_MS = 2600;
 
 function isTypingTarget(target: EventTarget | null) {
   return (
@@ -61,7 +64,15 @@ export function PawsRoom() {
   const anchorsRef = useRef<{ [key: string]: HTMLElement | undefined }>({});
   const bubbleTimersRef = useRef<{ [userId: string]: number | undefined }>({});
   const spokenIdsRef = useRef<string[]>([]);
+  const latestOwnLineIdRef = useRef<string | undefined>(undefined);
   const lastCatsRef = useRef<DerivedCat[]>([]);
+  const centerXRef = useRef(ROOM_LIMITS.worldWidth / 2);
+  const touchesRef = useRef<{ [pointerId: number]: number | undefined }>({});
+  const pinchRef = useRef<
+    { startMidX: number; startCenterX: number } | undefined
+  >(undefined);
+  const panBarRef = useRef<PanBarHandle | undefined>(undefined);
+  const [isPannable, setIsPannable] = useState(false);
   const [bubbles, setBubbles] = useState<ChatBubble[]>([]);
   const [isComposing, setIsComposing] = useState(false);
   const [hasOwnCatInRoom, setHasOwnCatInRoom] = useState(false);
@@ -83,7 +94,6 @@ export function PawsRoom() {
         userId: session.userId,
         look: savedCat.look,
         voice: savedCat.voice,
-        meowUrl: savedCat.meowUrl,
       };
     }
     if (useFakeRoom && "userId" in session) {
@@ -91,7 +101,6 @@ export function PawsRoom() {
         userId: session.userId,
         look: fakeLook,
         voice: FAKE_VOICE,
-        meowUrl: getBorrowedMeowUrl(FAKE_VOICE),
       };
     }
     return undefined;
@@ -120,6 +129,19 @@ export function PawsRoom() {
       voice: player.voice,
       size: player.look.size,
     });
+  }
+
+  function handleChat(message: ChatMessage) {
+    if (message.userId !== ownUserId) sayLine(message);
+  }
+
+  function retractLine(message: ChatMessage) {
+    const { userId, id } = message;
+    if (latestOwnLineIdRef.current !== id) return;
+    window.clearTimeout(bubbleTimersRef.current[userId]);
+    delete bubbleTimersRef.current[userId];
+    setBubbles((current) => current.filter((shown) => shown.message.id !== id));
+    sound.hush(userId);
   }
 
   function showBubble(bubble: ChatBubble) {
@@ -156,8 +178,25 @@ export function PawsRoom() {
       engine,
       useFakeRoom,
       isReady: isChecked || useFakeRoom,
-      onChat: sayLine,
+      onChat: handleChat,
     });
+
+  const [enteredRoomId, setEnteredRoomId] = useState<string | undefined>(
+    undefined
+  );
+  const [banner, setBanner] = useState<
+    { roomId: string; isMove: boolean } | undefined
+  >(undefined);
+  if (roomId !== undefined && roomId !== "local" && roomId !== enteredRoomId) {
+    setEnteredRoomId(roomId);
+    setBanner({ roomId, isMove: enteredRoomId !== undefined });
+  }
+
+  useEffect(() => {
+    if (banner === undefined) return;
+    const timer = window.setTimeout(() => setBanner(undefined), ROOM_BANNER_MS);
+    return () => window.clearTimeout(timer);
+  }, [banner]);
 
   useEffect(() => {
     const timers = bubbleTimersRef.current;
@@ -203,6 +242,7 @@ export function PawsRoom() {
       paperSeed: Math.random(),
     });
     const ownCat = { isHere: false };
+    const pan = { isPannable: false };
     const arrivals: {
       roomId: string | undefined;
       since: number;
@@ -254,7 +294,7 @@ export function PawsRoom() {
         for (const event of room.outgoing.events) connection.sendEvent(event);
       }
       for (const event of room.sounds) {
-        const player = playersRef.current.find(
+        const player = [...playersRef.current, ...room.residents].find(
           (candidate) => candidate.userId === event.userId
         );
         const cat = room.cats.find(
@@ -264,22 +304,39 @@ export function PawsRoom() {
         sound.play({
           userId: event.userId,
           sound: event.sound,
-          meowUrl: player.meowUrl,
+          voice: player.voice,
           x: cat.x,
           size: player.look.size,
-          age: player.voice.age,
         });
       }
-      const view = getWorldView({ width, height });
       lastCatsRef.current = room.cats;
       const ownCatId = ownCatIdRef.current;
-      const isOwnCatHere =
-        ownCatId !== undefined &&
-        room.cats.some((cat) => cat.userId === ownCatId);
+      const ownCatNow = room.cats.find((cat) => cat.userId === ownCatId);
+      const isOwnCatHere = ownCatId !== undefined && ownCatNow !== undefined;
       if (isOwnCatHere !== ownCat.isHere) {
         ownCat.isHere = isOwnCatHere;
         setHasOwnCatInRoom(isOwnCatHere);
+        if (ownCatNow !== undefined) centerXRef.current = ownCatNow.x;
       }
+      const view = getWorldView({
+        width,
+        height,
+        centerX: centerXRef.current,
+      });
+      centerXRef.current = (width / 2 - view.offsetX) / view.scale;
+      const visibleWidth = width / view.scale;
+      const isPannableNow = visibleWidth < ROOM_LIMITS.worldWidth;
+      if (isPannableNow !== pan.isPannable) {
+        pan.isPannable = isPannableNow;
+        setIsPannable(isPannableNow);
+      }
+      if (isPannableNow)
+        panBarRef.current?.draw({
+          cats: room.cats,
+          ownCatId,
+          fromX: -view.offsetX / view.scale,
+          visibleWidth,
+        });
       for (const [key, element] of Object.entries(anchorsRef.current)) {
         if (element === undefined) continue;
         const userId = key.startsWith(COMPOSE_ANCHOR_PREFIX)
@@ -323,14 +380,34 @@ export function PawsRoom() {
 
   function toWorld(event: React.PointerEvent<HTMLCanvasElement>) {
     const bounds = event.currentTarget.getBoundingClientRect();
-    const view = getWorldView({ width: bounds.width, height: bounds.height });
+    const view = getWorldView({
+      width: bounds.width,
+      height: bounds.height,
+      centerX: centerXRef.current,
+    });
     return {
       x: (event.clientX - bounds.left - view.offsetX) / view.scale,
       y: (event.clientY - bounds.top - view.offsetY) / view.scale,
     };
   }
 
+  function touchMidX() {
+    const xs = Object.values(touchesRef.current).flatMap((x) =>
+      x === undefined ? [] : [x]
+    );
+    return xs.reduce((sum, x) => sum + x, 0) / Math.max(1, xs.length);
+  }
+
   function handlePointerMove(event: React.PointerEvent<HTMLCanvasElement>) {
+    if (event.pointerType === "touch" && event.pointerId in touchesRef.current)
+      touchesRef.current[event.pointerId] = event.clientX;
+    const pinch = pinchRef.current;
+    if (pinch !== undefined) {
+      const scale = event.currentTarget.clientHeight / ROOM_LIMITS.worldHeight;
+      centerXRef.current =
+        pinch.startCenterX - (touchMidX() - pinch.startMidX) / scale;
+      return;
+    }
     const isTouch = event.pointerType !== "mouse";
     const pressed = (event.buttons & 1) === 1;
     engine.setOwnPointer({
@@ -342,11 +419,35 @@ export function PawsRoom() {
 
   function handlePointerDown(event: React.PointerEvent<HTMLCanvasElement>) {
     void sound.unlock();
+    if (event.pointerType === "touch")
+      touchesRef.current[event.pointerId] = event.clientX;
+    if (Object.keys(touchesRef.current).length >= 2) {
+      pinchRef.current ??= {
+        startMidX: touchMidX(),
+        startCenterX: centerXRef.current,
+      };
+      engine.setOwnPointer({
+        ...toWorld(event),
+        present: false,
+        pressed: false,
+      });
+      return;
+    }
+    if (pinchRef.current !== undefined) return;
     event.currentTarget.setPointerCapture(event.pointerId);
     engine.setOwnPointer({ ...toWorld(event), present: true, pressed: true });
   }
 
+  function releaseTouch(pointerId: number) {
+    delete touchesRef.current[pointerId];
+    const isPinching = pinchRef.current !== undefined;
+    if (Object.keys(touchesRef.current).length === 0)
+      pinchRef.current = undefined;
+    return isPinching;
+  }
+
   function handlePointerUp(event: React.PointerEvent<HTMLCanvasElement>) {
+    if (releaseTouch(event.pointerId)) return;
     engine.setOwnPointer({
       ...toWorld(event),
       present: event.pointerType === "mouse",
@@ -355,25 +456,27 @@ export function PawsRoom() {
   }
 
   function handlePointerLeave(event: React.PointerEvent<HTMLCanvasElement>) {
+    if (releaseTouch(event.pointerId)) return;
     engine.setOwnPointer({ ...toWorld(event), present: false, pressed: false });
   }
 
   async function handleSend(text: string) {
     const roomId = roomIdRef.current;
     if (!("userId" in session) || roomId === undefined) return "failed";
-    if (useFakeRoom) {
-      sayLine({ id: crypto.randomUUID(), userId: session.userId, text });
-      return "sent";
-    }
+    const line = { id: crypto.randomUUID(), userId: session.userId, text };
+    latestOwnLineIdRef.current = line.id;
+    sound.playUi("chatSend");
+    sayLine(line);
+    if (useFakeRoom) return "sent";
     const result = await postChat({
       accessToken: session.accessToken,
       roomId,
       text,
     });
-    if (result.kind === "sent") {
-      sound.playUi("chatSend");
-      sayLine(result.message);
-    } else sound.playUi("refused");
+    if (result.kind !== "sent") {
+      retractLine(line);
+      sound.playUi("refused");
+    }
     return result.kind;
   }
 
@@ -451,6 +554,34 @@ export function PawsRoom() {
             onToggle={handleToggleMute}
           />
         </div>
+        {isPannable && (
+          <div className="absolute right-4 bottom-4 group-has-[[aria-modal=true]]/room:hidden max-[379px]:bottom-16 sm:right-6 sm:bottom-6">
+            <PanBar
+              label={copy.room.lookAround}
+              centerX={() => centerXRef.current}
+              handleRef={panBarRef}
+              onPan={(centerX) => {
+                centerXRef.current = centerX;
+              }}
+            />
+          </div>
+        )}
+        <RoomBanner
+          text={
+            banner === undefined
+              ? undefined
+              : (banner.isMove
+                  ? copy.room.roomMoved
+                  : copy.room.roomEntered
+                ).replace(
+                  "{room}",
+                  copy.room.roomName.replace(
+                    "{number}",
+                    String(getRoomNumber(banner.roomId))
+                  )
+                )
+          }
+        />
         <ChatLayer
           bubbles={bubbles}
           ownUserId={ownUserId}
@@ -459,6 +590,7 @@ export function PawsRoom() {
           anchors={anchorsRef}
           onSend={handleSend}
           onCloseCompose={handleCloseCompose}
+          onReopenCompose={() => setIsComposing(true)}
         />
         <PawsOnboarding
           session={session}

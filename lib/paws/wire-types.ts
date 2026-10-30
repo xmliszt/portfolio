@@ -6,7 +6,6 @@ export type PlayerPresence = {
   connectionId: string;
   look: CatLook;
   voice: VoiceSettings;
-  meowUrl: string;
   joinedAt: number;
 };
 

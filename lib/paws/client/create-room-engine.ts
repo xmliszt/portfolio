@@ -1,4 +1,3 @@
-import { shuffleCatLook } from "@/lib/paws/maker/shuffle-cat-look";
 import { pruneScenePrints } from "@/lib/paws/render/prune-scene-prints";
 import type {
   FingertipState,
@@ -29,6 +28,7 @@ import type {
   RoomEvent,
 } from "@/lib/paws/wire-types";
 
+import { getResidentCats } from "./get-resident-cats";
 import { type FingerSample, sampleFingerPath } from "./sample-finger-path";
 
 const REMOTE_FINGER_TIMEOUT_MS = 2000;
@@ -43,8 +43,8 @@ const MAX_REMOTE_SAMPLES =
   2 * CLOCK_OFFSET_WINDOW * (WIRE_LIMITS.maxTrailPoints + 1);
 const MIN_FINGER_MOVE = 0.5;
 const MIN_FINGERPRINT_PRESS = 0.2;
-const RESIDENT_CATS = 3;
 const LOCAL_VISITOR_ID = "visitor";
+const LOCAL_ROOM_ID = "local";
 const MAX_QUEUED_PRINTS = 160;
 const MAX_QUEUED_EVENTS = 200;
 
@@ -61,6 +61,7 @@ export type RoomFrame = {
   prints: ScenePrint[];
   fingers: SceneFinger[];
   sounds: Extract<RoomEvent, { kind: "sound" }>[];
+  residents: Resident[];
   outgoing: {
     cats: CatsMessage | undefined;
     events: RoomEvent[];
@@ -68,6 +69,8 @@ export type RoomFrame = {
   };
   isHost: boolean;
 };
+
+type Resident = ReturnType<typeof getResidentCats>[number];
 
 type RemoteFinger = {
   userId: string;
@@ -88,9 +91,9 @@ export function createRoomEngine(options: { random: () => number }) {
     selfConnectionId: string | undefined;
     role: RoomRole;
     world: World | undefined;
-    residents:
-      | { world: World; players: Pick<PlayerPresence, "userId" | "look">[] }
-      | undefined;
+    roomId: string | undefined;
+    residents: Resident[];
+    residentWorld: World | undefined;
     buffer: ReturnType<typeof createSnapshotBuffer>;
     remoteFingers: { [userId: string]: RemoteFinger | undefined };
     ownPointer: OwnPointer;
@@ -113,7 +116,9 @@ export function createRoomEngine(options: { random: () => number }) {
     selfConnectionId: undefined,
     role: "watcher",
     world: undefined,
-    residents: undefined,
+    roomId: undefined,
+    residents: getResidentCats({ roomId: LOCAL_ROOM_ID }),
+    residentWorld: undefined,
     buffer: createSnapshotBuffer(),
     remoteFingers: {},
     ownPointer: { x: 0, y: 0, present: false, pressed: false },
@@ -131,7 +136,7 @@ export function createRoomEngine(options: { random: () => number }) {
   };
 
   function lookOf(userId: string) {
-    const players = [...state.players, ...(state.residents?.players ?? [])];
+    const players = [...state.players, ...state.residents];
     return players.find((player) => player.userId === userId)?.look;
   }
 
@@ -250,7 +255,13 @@ export function createRoomEngine(options: { random: () => number }) {
       userId: string | undefined;
       connectionId: string | undefined;
       role: RoomRole;
+      roomId: string | undefined;
     }) => {
+      if (self.roomId !== undefined && self.roomId !== state.roomId) {
+        state.roomId = self.roomId;
+        state.residents = getResidentCats({ roomId: self.roomId });
+        state.residentWorld = undefined;
+      }
       state.selfId = self.userId;
       state.selfConnectionId = self.connectionId;
       state.role = self.role;
@@ -340,25 +351,22 @@ export function createRoomEngine(options: { random: () => number }) {
             ? createWorldFromSnapshots({
                 random: options.random,
                 snapshots: latest,
-                players: state.players,
+                players: [...state.players, ...state.residents],
               })
-            : createWorld({ random: options.random });
+            : (state.residentWorld ?? createWorld({ random: options.random }));
       }
       if (!isHost) {
         state.world = undefined;
         state.unsentPrints = [];
       }
       if (isHost || hostId === undefined) state.incomingPrints = [];
-      if (hostId !== undefined) state.residents = undefined;
-      if (hostId === undefined && state.residents === undefined) {
-        state.residents = {
-          world: createWorld({ random: options.random }),
-          players: Array.from({ length: RESIDENT_CATS }, (_, index) => ({
-            userId: `resident-${index + 1}`,
-            look: shuffleCatLook({ random: options.random }),
-          })),
-        };
-      }
+      if (hostId !== undefined) state.residentWorld = undefined;
+      if (hostId === undefined && state.residentWorld === undefined)
+        state.residentWorld = createWorldFromSnapshots({
+          random: options.random,
+          snapshots: state.buffer.latest(),
+          players: state.residents,
+        });
 
       const events: RoomEvent[] = state.received
         .filter((received) => received.showAtMs <= nowMs)
@@ -371,16 +379,16 @@ export function createRoomEngine(options: { random: () => number }) {
         cats: CatsMessage | undefined;
         events: RoomEvent[];
       } = (() => {
-        if (state.world === undefined && state.residents !== undefined) {
+        if (state.world === undefined && state.residentWorld !== undefined) {
           const result = stepWorld({
-            world: state.residents.world,
-            players: state.residents.players,
+            world: state.residentWorld,
+            players: state.residents,
             fingers: simFingers(nowMs),
             dtSeconds,
           });
           events.push(...result.events);
           return {
-            snapshots: getCatSnapshots(state.residents.world),
+            snapshots: getCatSnapshots(state.residentWorld),
             cats: undefined,
             events: [],
           };
@@ -401,7 +409,7 @@ export function createRoomEngine(options: { random: () => number }) {
         }
         const result = stepWorld({
           world: state.world,
-          players: state.players,
+          players: [...state.players, ...state.residents],
           fingers: simFingers(nowMs),
           dtSeconds,
         });
@@ -522,6 +530,7 @@ export function createRoomEngine(options: { random: () => number }) {
           (event): event is Extract<RoomEvent, { kind: "sound" }> =>
             event.kind === "sound"
         ),
+        residents: state.residents,
         outgoing: {
           cats: stepped.cats,
           events: outgoingEvents,

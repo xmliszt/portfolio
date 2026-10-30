@@ -62,39 +62,17 @@ export const es = {
   voice: {
     title: "Dale una voz a tu gato",
     eyebrow: "Voz · 2 de 2",
-    textLabel: "¿Qué sonido hace tu gato?",
-    textPlaceholder: "miau",
     age: "Edad",
     voice: "Voz",
     mood: "Ánimo",
-    make: "Crear sonido",
-    making: "Creando sonido…",
-    oneOnly: "Este sonido se queda con tu gato. No podrás cambiarlo después.",
     play: "Oír sonido",
-    playBlocked: "Tu sonido está listo. Pulsa Oír sonido para escucharlo.",
-    unreachable:
-      "No se pudo conectar para crear el sonido. Vuelve a intentarlo.",
     bringIn: "Trae a tu gato",
     bringing: "Tu gato está entrando…",
-    bringInFailed: "Tu gato no pudo entrar. Vuelve a intentarlo.",
-  },
-  meowResult: {
-    refusedByUs: "Tu gato no puede hacer ese sonido. Prueba con otro.",
-    refusedByProvider: "Ese sonido no funcionó. Prueba a describir otro.",
-    failed:
-      "No se pudo crear el sonido ahora. Tu gato tiene un miau prestado. Vuelve a intentarlo en un rato.",
-    borrowed:
-      "Se han agotado los sonidos propios de hoy. Tu gato tiene un miau prestado por ahora. Vuelve mañana para darle su propia voz.",
-    tooManyAttempts:
-      "Ya has hecho suficientes intentos por hoy. Vuelve mañana.",
-    inProgress:
-      "El sonido de tu gato aún se está creando. Vuelve a intentarlo en un minuto.",
   },
   room: {
     mute: "Silenciar",
     unmute: "Activar sonido",
     muteCat: "Silenciar gato",
-    report: "Denunciar sonido",
     reconnecting: "Reconectando…",
     language: "Idioma",
     rooms: "Salas",
@@ -108,9 +86,11 @@ export const es = {
     talk: "Hablar",
     chatLabel: "Lo que dice tu gato",
     chatPlaceholder: "Di algo…",
-    chatRefused: "Seamos amables.",
     chatTooFast: "Un poco más despacio.",
     chatFailed: "No se envió. Inténtalo de nuevo.",
+    lookAround: "Mirar por la sala",
+    roomEntered: "Estás en {room}",
+    roomMoved: "Ahora en {room}",
   },
   options: {
     coat: {

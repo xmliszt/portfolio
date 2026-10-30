@@ -61,39 +61,17 @@ export const pl = {
   voice: {
     title: "Daj swojemu kotu głos",
     eyebrow: "Głos · 2 z 2",
-    textLabel: "Jaki dźwięk wydaje twój kot?",
-    textPlaceholder: "miau",
     age: "Wiek",
     voice: "Głos",
     mood: "Nastrój",
-    make: "Stwórz dźwięk",
-    making: "Tworzenie dźwięku…",
-    oneOnly:
-      "Ten dźwięk zostanie z twoim kotem. Później nie da się go zmienić.",
     play: "Odtwórz dźwięk",
-    playBlocked:
-      "Twój dźwięk jest gotowy. Naciśnij Odtwórz dźwięk, by go usłyszeć.",
-    unreachable:
-      "Nie udało się połączyć z usługą tworzenia dźwięków. Spróbuj ponownie.",
     bringIn: "Wpuść kota",
     bringing: "Twój kot wchodzi…",
-    bringInFailed: "Nie udało się wpuścić twojego kota. Spróbuj ponownie.",
-  },
-  meowResult: {
-    refusedByUs: "Twój kot nie może wydać tego dźwięku. Spróbuj innego.",
-    refusedByProvider: "Nie udało się. Spróbuj opisać inny dźwięk.",
-    failed:
-      "Nie udało się teraz stworzyć dźwięku. Twój kot pożycza sobie miauknięcie. Spróbuj za chwilę.",
-    borrowed:
-      "Dzisiejsze własne dźwięki już się wyczerpały. Twój kot na razie pożycza sobie miauknięcie. Wróć jutro, by dać mu własny głos.",
-    tooManyAttempts: "Na dziś wystarczy prób. Wróć jutro.",
-    inProgress: "Dźwięk twojego kota jeszcze powstaje. Spróbuj za minutę.",
   },
   room: {
     mute: "Wycisz",
     unmute: "Włącz dźwięk",
     muteCat: "Wycisz kota",
-    report: "Zgłoś dźwięk",
     reconnecting: "Łączenie ponownie…",
     language: "Język",
     rooms: "Pokoje",
@@ -107,9 +85,11 @@ export const pl = {
     talk: "Mów",
     chatLabel: "Co mówi twój kot",
     chatPlaceholder: "Powiedz coś…",
-    chatRefused: "Bądźmy mili.",
     chatTooFast: "Trochę wolniej.",
     chatFailed: "Nie wysłano. Spróbuj ponownie.",
+    lookAround: "Rozejrzyj się po pokoju",
+    roomEntered: "Jesteś w: {room}",
+    roomMoved: "Teraz w: {room}",
   },
   options: {
     coat: {

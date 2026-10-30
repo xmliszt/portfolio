@@ -14,13 +14,11 @@ const PLAYER = { userId: "u", isAnonymous: false };
 function buildRig(options: {
   isPlaying?: boolean;
   sent?: Date[];
-  isFlagged?: boolean;
   broadcastFails?: boolean;
 }) {
   const rig: {
     lines: { id: string; at: Date; status: string }[];
     broadcast: ChatMessage[];
-    moderated: number;
   } = {
     lines: (options.sent ?? []).map((at, index) => ({
       id: `old${index}`,
@@ -28,7 +26,6 @@ function buildRig(options: {
       status: "sent",
     })),
     broadcast: [],
-    moderated: 0,
   };
   const deps: ChatPipelineDependencies = {
     isPlaying: async () => options.isPlaying ?? true,
@@ -51,12 +48,6 @@ function buildRig(options: {
     broadcast: async ({ message }) => {
       if (options.broadcastFails) throw new Error("realtime down");
       rig.broadcast = [...rig.broadcast, message];
-    },
-    moderation: {
-      isFlagged: async () => {
-        rig.moderated += 1;
-        return options.isFlagged ?? false;
-      },
     },
     clock: { now: () => NOW },
     log: () => {},
@@ -127,29 +118,6 @@ test("limits a burst and a minute of lines", async () => {
     ).kind,
     "tooFast"
   );
-});
-
-test("refuses a flagged line without sending it, and counts it toward the limit", async () => {
-  const { rig, pipeline } = buildRig({ isFlagged: true });
-  const kinds: string[] = [];
-  for (let attempt = 0; attempt < 5; attempt++)
-    kinds.push(
-      (
-        await pipeline.sendChat({
-          user: PLAYER,
-          body: { roomId: "r", text: "hi" },
-        })
-      ).kind
-    );
-  assert.deepEqual(kinds, [
-    "refused",
-    "refused",
-    "refused",
-    "tooFast",
-    "tooFast",
-  ]);
-  assert.equal(rig.moderated, 3);
-  assert.deepEqual(rig.broadcast, []);
 });
 
 test("parallel lines cannot get past the burst limit", async () => {

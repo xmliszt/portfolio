@@ -61,38 +61,17 @@ export const nl = {
   voice: {
     title: "Geef je kat een stem",
     eyebrow: "Stem · 2 van 2",
-    textLabel: "Welk geluid maakt je kat?",
-    textPlaceholder: "miauw",
     age: "Leeftijd",
     voice: "Stem",
     mood: "Humeur",
-    make: "Maak geluid",
-    making: "Geluid maken…",
-    oneOnly: "Dit geluid blijft bij je kat. Je kunt het later niet veranderen.",
     play: "Speel geluid af",
-    playBlocked: "Je geluid is klaar. Tik op Speel geluid af om het te horen.",
-    unreachable: "De geluidsmaker is niet bereikbaar. Probeer het opnieuw.",
     bringIn: "Laat je kat binnen",
     bringing: "Je kat komt binnen…",
-    bringInFailed: "Je kat kon niet binnenkomen. Probeer het opnieuw.",
-  },
-  meowResult: {
-    refusedByUs: "Je kat kan dat geluid niet maken. Probeer een ander geluid.",
-    refusedByProvider: "Dat is niet gelukt. Beschrijf eens een ander geluid.",
-    failed:
-      "Het geluid kon nu niet worden gemaakt. Je kat leent een miauw. Probeer het straks opnieuw.",
-    borrowed:
-      "Alle eigen geluiden voor vandaag zijn op. Je kat leent voorlopig een miauw. Kom morgen terug om je kat een eigen stem te geven.",
-    tooManyAttempts:
-      "Je hebt het genoeg geprobeerd voor vandaag. Kom morgen terug.",
-    inProgress:
-      "Het geluid van je kat wordt nog gemaakt. Probeer het over een minuut opnieuw.",
   },
   room: {
     mute: "Stil",
     unmute: "Geluid aan",
     muteCat: "Kat dempen",
-    report: "Geluid melden",
     reconnecting: "Opnieuw verbinden…",
     language: "Taal",
     rooms: "Kamers",
@@ -106,9 +85,11 @@ export const nl = {
     talk: "Praten",
     chatLabel: "Wat je kat zegt",
     chatPlaceholder: "Zeg iets…",
-    chatRefused: "Hou het vriendelijk.",
     chatTooFast: "Iets rustiger aan.",
     chatFailed: "Niet verstuurd. Probeer het opnieuw.",
+    lookAround: "Rondkijken in de kamer",
+    roomEntered: "Je bent in {room}",
+    roomMoved: "Nu in {room}",
   },
   options: {
     coat: {

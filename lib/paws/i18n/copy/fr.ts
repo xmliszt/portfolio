@@ -62,37 +62,17 @@ export const fr = {
   voice: {
     title: "Donne une voix à ton chat",
     eyebrow: "Voix · 2 sur 2",
-    textLabel: "Quel son fait ton chat ?",
-    textPlaceholder: "miaou",
     age: "Âge",
     voice: "Voix",
     mood: "Humeur",
-    make: "Créer le son",
-    making: "Création du son…",
-    oneOnly: "Ce son reste avec ton chat. Tu ne pourras plus le changer.",
     play: "Écouter le son",
-    playBlocked: "Ton son est prêt. Appuie sur Écouter le son pour l'entendre.",
-    unreachable: "On n'a pas pu joindre le créateur de sons. Réessaie.",
     bringIn: "Faire entrer ton chat",
     bringing: "Ton chat entre…",
-    bringInFailed: "Ton chat n'a pas pu entrer. Réessaie.",
-  },
-  meowResult: {
-    refusedByUs: "Ton chat ne peut pas faire ce son. Essaie un autre son.",
-    refusedByProvider: "Ça n'a pas marché. Essaie de décrire un autre son.",
-    failed:
-      "Le son n'a pas pu être créé pour le moment. Ton chat emprunte un miaou. Réessaie dans un moment.",
-    borrowed:
-      "Tous les sons personnalisés du jour ont été utilisés. Ton chat emprunte un miaou pour le moment. Reviens demain pour lui donner sa propre voix.",
-    tooManyAttempts: "Tu as assez essayé pour aujourd'hui. Reviens demain.",
-    inProgress:
-      "Le son de ton chat est encore en cours de création. Réessaie dans une minute.",
   },
   room: {
     mute: "Couper le son",
     unmute: "Activer le son",
     muteCat: "Couper sa voix",
-    report: "Signaler ce son",
     reconnecting: "Reconnexion…",
     language: "Langue",
     rooms: "Salles",
@@ -106,9 +86,11 @@ export const fr = {
     talk: "Parler",
     chatLabel: "Ce que dit ton chat",
     chatPlaceholder: "Dis quelque chose…",
-    chatRefused: "Restons gentils.",
     chatTooFast: "Un peu plus doucement.",
     chatFailed: "Pas envoyé. Réessaie.",
+    lookAround: "Parcourir la pièce",
+    roomEntered: "Vous êtes dans {room}",
+    roomMoved: "Maintenant dans {room}",
   },
   options: {
     coat: {

@@ -24,6 +24,7 @@ type ChatLayerProps = {
   anchors: React.RefObject<{ [key: string]: HTMLElement | undefined }>;
   onSend: (text: string) => Promise<ChatResponse["kind"]>;
   onCloseCompose: () => void;
+  onReopenCompose: () => void;
 };
 
 /** Render each cat's speech bubble and the visitor's compose bubble, placed over the canvas by whoever writes positions into `anchors`. */
@@ -32,12 +33,11 @@ export function ChatLayer(props: ChatLayerProps) {
   const inputId = useId();
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const [text, setText] = useState("");
-  const [isSending, setIsSending] = useState(false);
   const [notice, setNotice] = useState<string | undefined>(undefined);
 
   useEffect(() => {
-    if (props.composing && !isSending) inputRef.current?.focus();
-  }, [props.composing, isSending]);
+    if (props.composing) inputRef.current?.focus();
+  }, [props.composing]);
 
   function anchor(key: string) {
     return (element: HTMLElement | null) => {
@@ -52,27 +52,29 @@ export function ChatLayer(props: ChatLayerProps) {
     props.onCloseCompose();
   }
 
+  function reopen(options: { line: string; notice: string }) {
+    setText(options.line);
+    setNotice(options.notice);
+    props.onReopenCompose();
+  }
+
   async function handleSubmit(event: React.FormEvent) {
     event.preventDefault();
-    if (isSending || text.trim() === "") return;
-    setIsSending(true);
-    const kind = await props.onSend(text);
-    setIsSending(false);
+    if (text.trim() === "") return;
+    const line = text;
+    close();
+    const kind = await props.onSend(line);
     switch (kind) {
       case "sent":
       case "signInRequired":
-        close();
-        return;
-      case "refused":
-        setNotice(copy.room.chatRefused);
         return;
       case "tooFast":
-        setNotice(copy.room.chatTooFast);
+        reopen({ line, notice: copy.room.chatTooFast });
         return;
       case "notPlaying":
       case "invalid":
       case "failed":
-        setNotice(copy.room.chatFailed);
+        reopen({ line, notice: copy.room.chatFailed });
         return;
       default: {
         const unhandled: never = kind;
@@ -90,7 +92,7 @@ export function ChatLayer(props: ChatLayerProps) {
   }
 
   function handleBlur() {
-    if (text.trim() === "" && !isSending) close();
+    if (text.trim() === "") close();
   }
 
   function handleChange(event: React.ChangeEvent<HTMLTextAreaElement>) {
@@ -150,7 +152,6 @@ export function ChatLayer(props: ChatLayerProps) {
                   maxLength={WIRE_LIMITS.maxChatLength}
                   placeholder={copy.room.chatPlaceholder}
                   value={text}
-                  readOnly={isSending}
                   onChange={handleChange}
                   onKeyDown={handleKeyDown}
                   onBlur={handleBlur}

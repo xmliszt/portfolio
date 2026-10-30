@@ -40,9 +40,6 @@ type Tab = (typeof TABS)[number];
 
 type CatMakerProps = {
   look: CatLook;
-  primaryLabel: string;
-  busy: boolean;
-  notice: string | undefined;
   onLookChange: (look: CatLook) => void;
   onPrimary: () => void;
   onClose: () => void;
@@ -86,9 +83,9 @@ export function CatMaker(props: CatMakerProps) {
   const isReduced = useReducedMotion() ?? false;
 
   useEffect(() => {
-    if (!props.busy && document.activeElement === document.body)
+    if (document.activeElement === document.body)
       document.getElementById(primaryId)?.focus();
-  }, [props.busy, primaryId]);
+  }, [primaryId]);
 
   useEffect(() => () => window.clearInterval(rollRef.current), []);
 
@@ -130,13 +127,8 @@ export function CatMaker(props: CatMakerProps) {
       reactKey={JSON.stringify(props.look)}
       onClose={props.onClose}
       footer={
-        <RisoButton
-          variant="primary"
-          id={primaryId}
-          disabled={props.busy}
-          onClick={props.onPrimary}
-        >
-          {props.primaryLabel}
+        <RisoButton variant="primary" id={primaryId} onClick={props.onPrimary}>
+          {copy.maker.next}
         </RisoButton>
       }
     >
@@ -174,7 +166,6 @@ export function CatMaker(props: CatMakerProps) {
         </div>
         <button
           type="button"
-          disabled={props.busy}
           onClick={handleShuffle}
           className={cn(
             FOCUS_RING_CLASS,
@@ -200,7 +191,6 @@ export function CatMaker(props: CatMakerProps) {
                   name="coat"
                   options={COAT_OPTIONS}
                   value={props.look.coat}
-                  disabled={props.busy}
                   onChange={(coat) => change({ coat })}
                 />
               );
@@ -212,7 +202,6 @@ export function CatMaker(props: CatMakerProps) {
                   columns={3}
                   options={PATTERN_OPTIONS}
                   value={props.look.pattern}
-                  disabled={props.busy}
                   onChange={(pattern) => change({ pattern })}
                 />
               );
@@ -224,7 +213,6 @@ export function CatMaker(props: CatMakerProps) {
                   columns={BELLY_OPTIONS.length}
                   options={BELLY_OPTIONS}
                   value={props.look.belly}
-                  disabled={props.busy}
                   onChange={(belly) => change({ belly })}
                 />
               );
@@ -235,7 +223,6 @@ export function CatMaker(props: CatMakerProps) {
                   name="pads"
                   options={PAD_OPTIONS}
                   value={props.look.pads}
-                  disabled={props.busy}
                   onChange={(pads) => change({ pads })}
                 />
               );
@@ -250,7 +237,6 @@ export function CatMaker(props: CatMakerProps) {
                       columns={3}
                       options={STEP_OPTIONS}
                       value={props.look[field]}
-                      disabled={props.busy}
                       onChange={(step) => change({ [field]: step })}
                     />
                   ))}
@@ -263,12 +249,6 @@ export function CatMaker(props: CatMakerProps) {
           }
         })()}
       </div>
-
-      {props.notice && (
-        <p role="alert" className="border-l-[3px] border-[var(--pw-pink)] pl-2">
-          {props.notice}
-        </p>
-      )}
     </StudioFrame>
   );
 }

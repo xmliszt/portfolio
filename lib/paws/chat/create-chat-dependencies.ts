@@ -1,19 +1,16 @@
 import "server-only";
 
-import { createModerationCheck } from "@/lib/paws/profile/create-moderation-check";
 import type { PawsServiceClient } from "@/lib/paws/profile/paws-service-client";
-import { readMeowProvidersConfig } from "@/lib/paws/profile/read-meow-providers-config";
 
 import type { ChatPipelineDependencies } from "./create-chat-pipeline";
 import { getChatTopic } from "./get-chat-topic";
 
 const KEEP_LINES_MS = 60 * 60_000;
 
-/** Return the chat pipeline's dependencies on `client`, with real moderation when `process.env` has its key and a fake one otherwise; lines are counted but their text is never saved, and a user's rows older than `KEEP_LINES_MS` are deleted when they send another. */
+/** Return the chat pipeline's dependencies on `client`; lines are counted but their text is never saved, and a user's rows older than `KEEP_LINES_MS` are deleted when they send another. */
 export function createChatDependencies(
   client: PawsServiceClient
 ): ChatPipelineDependencies {
-  const config = readMeowProvidersConfig(process.env);
   return {
     isPlaying: async ({ roomId, userId, seenSince }) => {
       const { data, error } = await client
@@ -74,7 +71,6 @@ export function createChatDependencies(
         await client.removeChannel(channel);
       }
     },
-    moderation: createModerationCheck({ config: config.moderation, fetch }),
     clock: { now: () => new Date() },
     log: (message, details) => console.warn(message, details),
   };

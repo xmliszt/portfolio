@@ -61,37 +61,17 @@ export const tr = {
   voice: {
     title: "Kedine bir ses ver",
     eyebrow: "Ses · 2 / 2",
-    textLabel: "Kedin nasıl bir ses çıkarıyor?",
-    textPlaceholder: "miyav",
     age: "Yaş",
     voice: "Ses",
     mood: "Hâl",
-    make: "Sesi oluştur",
-    making: "Ses oluşturuluyor…",
-    oneOnly: "Bu ses kedinle kalacak. Sonradan değiştiremezsin.",
     play: "Sesi dinle",
-    playBlocked: "Sesin hazır. Duymak için Sesi dinle'ye dokun.",
-    unreachable: "Ses oluşturucuya ulaşılamadı. Tekrar dene.",
     bringIn: "Kedini içeri al",
     bringing: "Kedin içeri giriyor…",
-    bringInFailed: "Kedin içeri alınamadı. Tekrar dene.",
-  },
-  meowResult: {
-    refusedByUs: "Kedin bu sesi çıkaramaz. Başka bir ses dene.",
-    refusedByProvider: "Bu olmadı. Farklı bir ses tarif etmeyi dene.",
-    failed:
-      "Ses şu an oluşturulamadı. Kedin ödünç bir miyav kullanıyor. Biraz sonra tekrar dene.",
-    borrowed:
-      "Bugün için özel seslerin hepsi tükendi. Kedin şimdilik ödünç bir miyav kullanıyor. Ona kendi sesini vermek için yarın tekrar gel.",
-    tooManyAttempts: "Bugünlük bu kadar deneme yeter. Yarın tekrar gel.",
-    inProgress:
-      "Kedinin sesi hâlâ oluşturuluyor. Bir dakika sonra tekrar dene.",
   },
   room: {
     mute: "Sesi kapat",
     unmute: "Sesi aç",
     muteCat: "Kediyi sustur",
-    report: "Sesi bildir",
     reconnecting: "Yeniden bağlanıyor…",
     language: "Dil",
     rooms: "Odalar",
@@ -105,9 +85,11 @@ export const tr = {
     talk: "Konuş",
     chatLabel: "Kedinin söyledikleri",
     chatPlaceholder: "Bir şey söyle…",
-    chatRefused: "Nazik kalalım.",
     chatTooFast: "Biraz yavaş.",
     chatFailed: "Gönderilemedi. Tekrar dene.",
+    lookAround: "Odada gezin",
+    roomEntered: "{room} içindesin",
+    roomMoved: "Şimdi {room} içinde",
   },
   options: {
     coat: {

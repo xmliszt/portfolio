@@ -135,7 +135,7 @@ function parseCat(value: unknown): CatSnapshot | undefined {
   };
 }
 
-/** Return the cat snapshots and paw prints the host broadcast, keeping the first `ROOM_LIMITS.maxPlayers` cats and `MAX_PRINTS` prints, dropping malformed ones and clamping every number to its range, or `undefined` when the payload is not one. */
+/** Return the cat snapshots and paw prints the host broadcast, keeping the first `ROOM_LIMITS.maxPlayers + ROOM_LIMITS.residentCats` cats and `MAX_PRINTS` prints, dropping malformed ones and clamping every number to its range, or `undefined` when the payload is not one. */
 export function parseCatsMessage(value: unknown): CatsMessage | undefined {
   if (typeof value !== "object" || value === null) return undefined;
   const hostId = "hostId" in value ? parseWireId(value.hostId) : undefined;
@@ -151,7 +151,7 @@ export function parseCatsMessage(value: unknown): CatsMessage | undefined {
     return undefined;
   }
   const cats = value.cats
-    .slice(0, ROOM_LIMITS.maxPlayers)
+    .slice(0, ROOM_LIMITS.maxPlayers + ROOM_LIMITS.residentCats)
     .flatMap((cat: unknown) => {
       const parsed = parseCat(cat);
       return parsed === undefined ? [] : [parsed];

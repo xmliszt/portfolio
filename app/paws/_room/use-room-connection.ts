@@ -4,7 +4,6 @@ import { useEffect, useMemo, useRef, useState } from "react";
 
 import type { createRoomEngine } from "@/lib/paws/client/create-room-engine";
 import { parseJoinRoomResponse } from "@/lib/paws/client/parse-join-room-response";
-import { getBorrowedMeowUrl } from "@/lib/paws/profile/get-borrowed-meow-url";
 import type { RoomConnection } from "@/lib/paws/room-source";
 import { createFakeRoomSource } from "@/lib/paws/rooms/create-fake-room-source";
 import { createSupabaseRoomSource } from "@/lib/paws/rooms/create-supabase-room-source";
@@ -16,7 +15,6 @@ import type { ChatMessage, PlayerPresence } from "@/lib/paws/wire-types";
 import { postRoomApi } from "./post-room-api";
 
 const FAKE_REMOTE_PLAYERS = 4;
-const FAKE_VOICE = { age: "adult", voice: "soft", mood: "chatty" } as const;
 const REJOIN_DELAY_MS = 4000;
 const FULL_REJOIN_DELAY_MS = 30_000;
 
@@ -50,17 +48,10 @@ export function useRoomConnection(options: {
     if (useFakeRoom)
       return createFakeRoomSource({
         remotePlayerCount: FAKE_REMOTE_PLAYERS,
-        meowUrl: getBorrowedMeowUrl(FAKE_VOICE),
         random: Math.random,
       });
     if (client === undefined) return undefined;
-    return createSupabaseRoomSource({
-      client,
-      meowOrigins: [
-        new URL(process.env.NEXT_PUBLIC_SUPABASE_URL ?? "https://invalid.local")
-          .origin,
-      ],
-    });
+    return createSupabaseRoomSource({ client });
   }, [client, useFakeRoom]);
 
   useEffect(() => () => source?.dispose(), [source]);
@@ -150,7 +141,12 @@ export function useRoomConnection(options: {
       run.roomId = joined.roomId;
       roomIdRef.current = joined.roomId;
       setRoomId(joined.roomId);
-      engine.setSelf({ userId, connectionId, role: joined.role });
+      engine.setSelf({
+        userId,
+        connectionId,
+        role: joined.role,
+        roomId: joined.roomId,
+      });
       connectionRef.current = roomSource.join({
         roomId: joined.roomId,
         userId: visitorId,
@@ -202,6 +198,7 @@ export function useRoomConnection(options: {
         userId: undefined,
         connectionId: undefined,
         role: "watcher",
+        roomId: undefined,
       });
       const token = tokenRef.current;
       if (run.roomId !== undefined && token !== undefined && !useFakeRoom) {

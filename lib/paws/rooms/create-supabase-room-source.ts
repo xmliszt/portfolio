@@ -25,7 +25,6 @@ const RECEIVE_LIMITS = {
 /** Return a room source that joins private Supabase Realtime room channels on `client`, reading players and watchers from presence and passing on only parsed messages from present visitors within `RECEIVE_LIMITS`. */
 export function createSupabaseRoomSource(options: {
   client: ReturnType<typeof createPawsBrowserClient>;
-  meowOrigins: string[];
 }): RoomSource {
   const { client } = options;
   const shared: { lastLeave: Promise<unknown> } = {
@@ -112,10 +111,7 @@ export function createSupabaseRoomSource(options: {
               ([key, metas]) => {
                 const earliest = metas
                   .flatMap((meta) => {
-                    const presence = parsePlayerPresence({
-                      value: meta,
-                      meowOrigins: options.meowOrigins,
-                    });
+                    const presence = parsePlayerPresence(meta);
                     return presence === undefined || presence.userId !== key
                       ? []
                       : [presence];

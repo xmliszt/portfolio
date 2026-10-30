@@ -79,15 +79,7 @@ schema_paths = [
   "./schemas/paws/room_joins.sql",
   "./schemas/paws/chat_messages.sql",
   "./schemas/paws/room_role.sql",
-  "./schemas/paws/meows.sql",
   "./schemas/paws/cats.sql",
-  "./schemas/paws/meow_reports.sql",
-  "./schemas/paws/meow_attempts.sql",
-  "./schemas/paws/daily_credits.sql",
-  "./schemas/paws/count_meow_report.sql",
-  "./schemas/paws/reserve_credits.sql",
-  "./schemas/paws/claim_meow.sql",
-  "./schemas/paws/release_credits.sql",
 ]
 
 [db.seed]

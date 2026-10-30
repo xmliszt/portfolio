@@ -61,37 +61,17 @@ export const id = {
   voice: {
     title: "Beri kucingmu suara",
     eyebrow: "Suara · 2 dari 2",
-    textLabel: "Seperti apa suara kucingmu?",
-    textPlaceholder: "meong",
     age: "Usia",
     voice: "Suara",
     mood: "Suasana hati",
-    make: "Buat suara",
-    making: "Membuat suara…",
-    oneOnly:
-      "Suara ini akan terus bersama kucingmu. Kamu tidak bisa mengubahnya nanti.",
     play: "Putar suara",
-    playBlocked: "Suaramu sudah siap. Ketuk Putar suara untuk mendengarnya.",
-    unreachable: "Pembuat suara belum bisa dihubungi. Coba lagi.",
     bringIn: "Ajak kucing masuk",
     bringing: "Kucingmu sedang masuk…",
-    bringInFailed: "Kucingmu belum bisa masuk. Coba lagi.",
-  },
-  meowResult: {
-    refusedByUs: "Kucingmu tidak bisa membuat suara itu. Coba suara lain.",
-    refusedByProvider: "Suara itu belum berhasil. Coba jelaskan suara lain.",
-    failed:
-      "Suaranya belum bisa dibuat saat ini. Kucingmu meminjam suara meong. Coba lagi sebentar nanti.",
-    borrowed:
-      "Jatah suara khusus hari ini sudah habis. Kucingmu meminjam suara meong dulu. Kembali besok untuk memberinya suara sendiri.",
-    tooManyAttempts: "Cukup mencoba untuk hari ini. Kembali lagi besok.",
-    inProgress: "Suara kucingmu masih dibuat. Coba lagi dalam satu menit.",
   },
   room: {
     mute: "Senyapkan",
     unmute: "Bunyikan",
     muteCat: "Senyapkan kucing",
-    report: "Laporkan suara",
     reconnecting: "Menyambung lagi…",
     language: "Bahasa",
     rooms: "Ruang",
@@ -105,9 +85,11 @@ export const id = {
     talk: "Bicara",
     chatLabel: "Yang dikatakan kucingmu",
     chatPlaceholder: "Katakan sesuatu…",
-    chatRefused: "Tetap ramah, ya.",
     chatTooFast: "Pelan-pelan sedikit.",
     chatFailed: "Tidak terkirim. Coba lagi.",
+    lookAround: "Lihat sekeliling ruangan",
+    roomEntered: "Kamu di {room}",
+    roomMoved: "Sekarang di {room}",
   },
   options: {
     coat: {

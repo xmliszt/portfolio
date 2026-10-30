@@ -65,37 +65,17 @@ export const en = {
   voice: {
     title: "Give your cat a voice",
     eyebrow: "Voice · 2 of 2",
-    textLabel: "What sound does your cat make?",
-    textPlaceholder: "meow",
     age: "Age",
     voice: "Voice",
     mood: "Mood",
-    make: "Make the sound",
-    making: "Making the sound…",
-    oneOnly: "This sound stays with your cat. You can't change it later.",
     play: "Play the sound",
-    playBlocked: "Your sound is ready. Tap Play to hear it.",
-    unreachable: "Couldn't reach the sound maker. Try again.",
     bringIn: "Bring your cat in",
     bringing: "Bringing your cat in…",
-    bringInFailed: "Couldn't bring your cat in. Try again.",
-  },
-  meowResult: {
-    refusedByUs: "Your cat can't make that one. Try another sound.",
-    refusedByProvider:
-      "That one didn't work. Try describing a different sound.",
-    failed:
-      "Couldn't make the sound just now. Your cat is borrowing a meow. Try again in a bit.",
-    borrowed:
-      "Today's custom sounds are all used up. Your cat is borrowing a meow for now. Come back tomorrow to give it its own voice.",
-    tooManyAttempts: "That's enough tries for today. Come back tomorrow.",
-    inProgress: "Your cat's sound is still being made. Try again in a minute.",
   },
   room: {
     mute: "Mute",
     unmute: "Unmute",
     muteCat: "Mute this cat",
-    report: "Report this sound",
     reconnecting: "Reconnecting…",
     language: "Language",
     rooms: "Rooms",
@@ -109,9 +89,11 @@ export const en = {
     talk: "Talk",
     chatLabel: "What your cat says",
     chatPlaceholder: "Say something…",
-    chatRefused: "Let's keep it friendly.",
     chatTooFast: "Slow down a little.",
     chatFailed: "That didn't send. Try again.",
+    lookAround: "Look around the room",
+    roomEntered: "You're in {room}",
+    roomMoved: "Now in {room}",
   },
   options: {
     coat: {

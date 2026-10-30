@@ -4,8 +4,6 @@ import type { VoiceSettings } from "./voice-settings";
 export type SavedCat = {
   look: CatLook;
   voice: VoiceSettings;
-  meowUrl: string;
-  hasOwnMeow: boolean;
 };
 
 export type GetCatResponse =

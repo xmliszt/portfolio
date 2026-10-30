@@ -73,13 +73,13 @@ test("clamps numbers and drops malformed cats", () => {
   assert.deepEqual(parsed?.cats.at(0)?.pose, { stand: 1, sit: 0, sleep: 0 });
 });
 
-test("keeps at most one cat per player slot", () => {
+test("keeps at most one cat per player slot and resident", () => {
   const cats = Array.from({ length: 50 }, (_, index) =>
     buildCat({ userId: `u${index}` })
   );
   assert.equal(
     parseCatsMessage({ hostId: "h", sentAt: 1, cats })?.cats.length,
-    ROOM_LIMITS.maxPlayers
+    ROOM_LIMITS.maxPlayers + ROOM_LIMITS.residentCats
   );
 });
 

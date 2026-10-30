@@ -61,37 +61,17 @@ export const ptBR = {
   voice: {
     title: "Dê uma voz ao seu gato",
     eyebrow: "Voz · 2 de 2",
-    textLabel: "Que som seu gato faz?",
-    textPlaceholder: "miau",
     age: "Idade",
     voice: "Voz",
     mood: "Humor",
-    make: "Criar som",
-    making: "Criando som…",
-    oneOnly: "Esse som fica com seu gato. Você não poderá mudar depois.",
     play: "Ouvir som",
-    playBlocked: "Seu som está pronto. Toque em Ouvir som para escutar.",
-    unreachable: "Não foi possível acessar o criador de sons. Tente de novo.",
     bringIn: "Trazer seu gato",
     bringing: "Seu gato está entrando…",
-    bringInFailed: "Não foi possível trazer seu gato. Tente de novo.",
-  },
-  meowResult: {
-    refusedByUs: "Seu gato não pode fazer esse som. Tente outro.",
-    refusedByProvider: "Esse não deu certo. Tente descrever outro som.",
-    failed:
-      "Não foi possível criar o som agora. Seu gato está usando um miado emprestado. Tente de novo daqui a pouco.",
-    borrowed:
-      "Os sons personalizados de hoje acabaram. Seu gato está usando um miado emprestado por enquanto. Volte amanhã para dar uma voz só dele.",
-    tooManyAttempts: "Já foram tentativas suficientes por hoje. Volte amanhã.",
-    inProgress:
-      "O som do seu gato ainda está sendo criado. Tente de novo em um minuto.",
   },
   room: {
     mute: "Silenciar",
     unmute: "Ativar som",
     muteCat: "Silenciar gato",
-    report: "Denunciar som",
     reconnecting: "Reconectando…",
     language: "Idioma",
     rooms: "Salas",
@@ -105,9 +85,11 @@ export const ptBR = {
     talk: "Falar",
     chatLabel: "O que seu gato diz",
     chatPlaceholder: "Diga algo…",
-    chatRefused: "Vamos manter a gentileza.",
     chatTooFast: "Mais devagar.",
     chatFailed: "Não foi enviado. Tente de novo.",
+    lookAround: "Olhar pela sala",
+    roomEntered: "Você está na {room}",
+    roomMoved: "Agora na {room}",
   },
   options: {
     coat: {

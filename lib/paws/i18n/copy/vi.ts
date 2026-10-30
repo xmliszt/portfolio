@@ -61,37 +61,17 @@ export const vi = {
   voice: {
     title: "Cho mèo của bạn một giọng riêng",
     eyebrow: "Giọng · 2 trên 2",
-    textLabel: "Mèo của bạn kêu thế nào?",
-    textPlaceholder: "meo",
     age: "Tuổi",
     voice: "Giọng",
     mood: "Tâm trạng",
-    make: "Tạo tiếng kêu",
-    making: "Đang tạo tiếng kêu…",
-    oneOnly: "Tiếng kêu này sẽ ở lại với mèo. Bạn không thể đổi về sau.",
     play: "Nghe tiếng kêu",
-    playBlocked: "Tiếng kêu đã sẵn sàng. Chạm Nghe tiếng kêu để nghe nhé.",
-    unreachable: "Chưa kết nối được với nơi tạo tiếng kêu. Thử lại nhé.",
     bringIn: "Đưa mèo vào",
     bringing: "Mèo đang vào…",
-    bringInFailed: "Chưa đưa được mèo vào. Thử lại nhé.",
-  },
-  meowResult: {
-    refusedByUs: "Mèo của bạn không kêu được như vậy. Thử tiếng khác nhé.",
-    refusedByProvider: "Chưa tạo được tiếng này. Thử mô tả tiếng khác nhé.",
-    failed:
-      "Lúc này chưa tạo được tiếng kêu. Mèo đang mượn tạm một tiếng meo. Lát nữa thử lại nhé.",
-    borrowed:
-      "Đã hết lượt tạo tiếng kêu riêng hôm nay. Mèo đang mượn tạm một tiếng meo. Mai quay lại để cho mèo giọng riêng nhé.",
-    tooManyAttempts: "Hôm nay thử vậy là đủ rồi. Mai quay lại nhé.",
-    inProgress:
-      "Tiếng kêu của mèo vẫn đang được tạo. Một phút nữa thử lại nhé.",
   },
   room: {
     mute: "Tắt tiếng",
     unmute: "Bật tiếng",
     muteCat: "Tắt tiếng mèo này",
-    report: "Báo cáo tiếng kêu",
     reconnecting: "Đang kết nối lại…",
     language: "Ngôn ngữ",
     rooms: "Phòng",
@@ -105,9 +85,11 @@ export const vi = {
     talk: "Nói",
     chatLabel: "Lời mèo của bạn",
     chatPlaceholder: "Nói gì đó…",
-    chatRefused: "Hãy nói thân thiện nhé.",
     chatTooFast: "Chậm lại một chút.",
     chatFailed: "Chưa gửi được. Thử lại nhé.",
+    lookAround: "Nhìn quanh phòng",
+    roomEntered: "Bạn đang ở {room}",
+    roomMoved: "Giờ ở {room}",
   },
   options: {
     coat: {

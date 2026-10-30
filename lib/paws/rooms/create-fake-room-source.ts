@@ -41,7 +41,6 @@ function stepToward(options: {
 /** Return a room source without a server for local development: joining adds `remotePlayerCount` made-up players who joined after `self`, so `self` hosts, and moves their fingertips toward random points `ROOM_LIMITS.fingerSendsPerSecond` times a second, pressing now and then, and has one of them say a line from `FAKE_LINES` now and then; sends go nowhere. */
 export function createFakeRoomSource(options: {
   remotePlayerCount: number;
-  meowUrl: string;
   random: () => number;
 }): RoomSource {
   const pick = <T>(items: readonly T[]) =>
@@ -81,7 +80,6 @@ export function createFakeRoomSource(options: {
           connectionId: `fake-${index + 1}`,
           look: buildLook(),
           voice: { age: pick(AGES), voice: pick(VOICES), mood: pick(MOODS) },
-          meowUrl: options.meowUrl,
           joinedAt: (self?.joinedAt ?? startedAt) + LATER_THAN_SELF_MS + index,
         })
       );
