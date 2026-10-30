@@ -1,0 +1,11 @@
+/** Size of the shared world every screen scales to fit, and the limits and send rates of one room. */
+export const ROOM_LIMITS = {
+  worldWidth: 1600,
+  worldHeight: 1000,
+  maxPlayers: 10,
+  maxWatchers: 5,
+  fingerSendsPerSecond: 3,
+  catSnapshotsPerSecond: 4,
+  renderDelayMs: 150,
+  maxCuriousCats: 3,
+} as const;

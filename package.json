@@ -9,6 +9,7 @@
     "lint": "eslint . --ignore-pattern public --ignore-pattern .next",
     "lint:fix": "eslint . --fix --ignore-pattern public --ignore-pattern .next",
     "test:laundromat": "node --import ./lib/laundromat/testing/register-ts-resolution.mjs --test \"lib/laundromat/**/*.test.ts\"",
+    "test:glass-paws": "node --import ./lib/laundromat/testing/register-ts-resolution.mjs --test \"lib/glass-paws/**/*.test.ts\"",
     "format:fix": "prettier . --write",
     "prepare": "husky install",
     "velite:build": "velite --clean",
