@@ -18,13 +18,13 @@ export function SwatchPicker<T extends string>(props: SwatchPickerProps<T>) {
 
   return (
     <fieldset disabled={props.disabled} className="flex min-w-0 flex-col">
-      <legend className="mb-1 flex gap-x-2 text-[11px] text-[var(--pw-ink-soft)]">
+      <legend className="mb-1 flex gap-x-2 text-[12px] text-[var(--pw-ink-soft)]">
         <span>{props.legend}</span>
         <span aria-hidden className="text-[var(--pw-ink)]">
           {chosen?.label}
         </span>
       </legend>
-      <div className="flex flex-wrap gap-x-1.5 gap-y-1.5">
+      <div className="flex flex-wrap gap-x-1 gap-y-1 sm:gap-x-1.5 sm:gap-y-1.5">
         {props.options.map((option) => {
           const optionId = `${id}-${option.value}`;
           const isChecked = option.value === props.value;
@@ -34,7 +34,7 @@ export function SwatchPicker<T extends string>(props: SwatchPickerProps<T>) {
               htmlFor={optionId}
               title={option.label}
               className={cn(
-                "grid size-7 cursor-pointer place-items-center rounded-full border-[1.5px]",
+                "grid size-9 cursor-pointer place-items-center rounded-full border-[1.5px] sm:size-7",
                 "has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-offset-2 has-[:focus-visible]:outline-[var(--pw-blue)] has-[:focus-visible]:outline-solid",
                 isChecked
                   ? "border-[var(--pw-ink)]"

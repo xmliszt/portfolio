@@ -12,7 +12,6 @@ import type { VoiceSettings } from "@/lib/paws/voice-settings";
 import { CatMaker } from "./cat-maker";
 import { fetchSavedCat } from "./fetch-saved-cat";
 import { FloatingCard } from "./floating-card";
-import { PENDING_COPY } from "./pending-copy";
 import { putCat } from "./put-cat";
 import { RisoButton } from "./riso-button";
 import { SignInPanel } from "./sign-in-panel";
@@ -113,7 +112,7 @@ export function PawsOnboarding(props: PawsOnboardingProps) {
           case "signInRequired":
             void signOutRef.current().then(() => {
               if (!controller.signal.aborted)
-                setStep({ kind: "signIn", message: PENDING_COPY.signInAgain });
+                setStep({ kind: "signIn", message: COPY.signIn.signInAgain });
             });
             return;
           default: {
@@ -130,7 +129,7 @@ export function PawsOnboarding(props: PawsOnboardingProps) {
     const flow = flowRef.current;
     await signOutRef.current();
     if (flow === flowRef.current)
-      setStep({ kind: "signIn", message: PENDING_COPY.signInAgain });
+      setStep({ kind: "signIn", message: COPY.signIn.signInAgain });
   }
 
   function close() {
@@ -191,7 +190,7 @@ export function PawsOnboarding(props: PawsOnboardingProps) {
           voice: options.voice,
           hasOwnMeow: true,
           busy: false,
-          notice: PENDING_COPY.saveFailed,
+          notice: COPY.maker.saveFailed,
         });
         return;
       default: {
@@ -249,7 +248,7 @@ export function PawsOnboarding(props: PawsOnboardingProps) {
             onClick={handleStart}
           >
             {session.kind === "member"
-              ? PENDING_COPY.bringYourCat
+              ? COPY.watch.bringYourCat
               : COPY.watch.signInToBring}
           </RisoButton>
         </div>
@@ -269,12 +268,9 @@ export function PawsOnboarding(props: PawsOnboardingProps) {
           onClose={close}
           footer={
             step.failed && (
-              <>
-                <span />
-                <RisoButton variant="primary" onClick={handleRetryLoad}>
-                  {PENDING_COPY.tryAgain}
-                </RisoButton>
-              </>
+              <RisoButton variant="primary" onClick={handleRetryLoad}>
+                {COPY.common.tryAgain}
+              </RisoButton>
             )
           }
         >
@@ -282,11 +278,11 @@ export function PawsOnboarding(props: PawsOnboardingProps) {
             role="status"
             className={
               step.failed
-                ? "text-[var(--pw-pink)]"
+                ? "border-l-[3px] border-[var(--pw-pink)] pl-2"
                 : "text-[var(--pw-ink-soft)]"
             }
           >
-            {step.failed ? PENDING_COPY.loadCatFailed : PENDING_COPY.loadingCat}
+            {step.failed ? COPY.maker.loadFailed : COPY.maker.loading}
           </p>
         </FloatingCard>
       );

@@ -1,9 +1,9 @@
 import { useEffect, useId, useRef } from "react";
 
+import { COPY } from "@/lib/paws/copy";
 import { cn } from "@/lib/utils";
 
 import { FOCUS_RING_CLASS } from "./focus-ring-class";
-import { PENDING_COPY } from "./pending-copy";
 import { SCROLL_FADE_CLASS } from "./scroll-fade-class";
 
 const PAPER_GRAIN =
@@ -53,11 +53,11 @@ export function FloatingCard(props: FloatingCardProps) {
         </h2>
         <button
           type="button"
-          aria-label={PENDING_COPY.close}
+          aria-label={COPY.common.close}
           onClick={props.onClose}
           className={cn(
             FOCUS_RING_CLASS,
-            "grid size-7 shrink-0 cursor-pointer place-items-center text-[var(--pw-ink-soft)] hover:text-[var(--pw-ink)]"
+            "grid size-10 shrink-0 cursor-pointer place-items-center text-[var(--pw-ink-soft)] hover:text-[var(--pw-ink)] sm:size-8"
           )}
         >
           <svg
@@ -81,7 +81,7 @@ export function FloatingCard(props: FloatingCardProps) {
         {props.children}
       </div>
       {props.footer && (
-        <footer className="flex shrink-0 items-center justify-between gap-x-3 border-t-[1.5px] border-[var(--pw-rule)] p-3">
+        <footer className="flex shrink-0 items-center justify-between gap-x-3 border-t-[1.5px] border-[var(--pw-rule)] p-3 [&>:only-child]:ml-auto">
           {props.footer}
         </footer>
       )}

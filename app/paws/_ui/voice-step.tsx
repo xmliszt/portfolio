@@ -22,8 +22,6 @@ import {
 import { cn } from "@/lib/utils";
 
 import { fetchSavedCat } from "./fetch-saved-cat";
-import { FOCUS_RING_CLASS } from "./focus-ring-class";
-import { PENDING_COPY } from "./pending-copy";
 import { putCat } from "./put-cat";
 import { requestMeow } from "./request-meow";
 import { RisoButton } from "./riso-button";
@@ -69,7 +67,7 @@ type VoiceStepProps = {
 export function VoiceStep(props: VoiceStepProps) {
   const textId = useId();
   const formId = useId();
-  const [text, setText] = useState("");
+  const [text, setText] = useState<string>(COPY.voice.textPlaceholder);
   const [playCount, setPlayCount] = useState(0);
   const [phase, setPhase] = useState<Phase>({
     kind: "editing",
@@ -78,14 +76,16 @@ export function VoiceStep(props: VoiceStepProps) {
   const audioRef = useRef<HTMLAudioElement | undefined>(undefined);
   const controllerRef = useRef<AbortController>(new AbortController());
   const textRef = useRef<HTMLInputElement>(null);
-  const playRef = useRef<HTMLButtonElement>(null);
+  const playId = useId();
   const bringInId = useId();
 
   useEffect(() => {
     if (phase.kind === "ready")
-      (playRef.current ?? document.getElementById(bringInId))?.focus();
+      (
+        document.getElementById(playId) ?? document.getElementById(bringInId)
+      )?.focus();
     if (phase.kind === "editing" && phase.notice) textRef.current?.focus();
-  }, [phase, bringInId]);
+  }, [phase, playId, bringInId]);
 
   useEffect(() => {
     const controller = new AbortController();
@@ -110,8 +110,16 @@ export function VoiceStep(props: VoiceStepProps) {
     const audio = readyAudio();
     audio.src = meowUrl;
     audio.currentTime = 0;
-    audio.play().catch(() => {});
-    setPlayCount((count) => count + 1);
+    audio
+      .play()
+      .then(() => setPlayCount((count) => count + 1))
+      .catch(() =>
+        setPhase((current) =>
+          current.kind === "ready"
+            ? { ...current, notice: COPY.voice.playBlocked }
+            : current
+        )
+      );
   }
 
   async function makeSound() {
@@ -131,7 +139,7 @@ export function VoiceStep(props: VoiceStepProps) {
         return;
       case "invalid":
       case "unreachable":
-        setPhase({ kind: "editing", notice: PENDING_COPY.saveFailed });
+        setPhase({ kind: "editing", notice: COPY.maker.saveFailed });
         return;
       default: {
         const unhandled: never = saved;
@@ -148,7 +156,7 @@ export function VoiceStep(props: VoiceStepProps) {
     });
     if (signal.aborted) return;
     if (response.kind === "unreachable") {
-      setPhase({ kind: "editing", notice: PENDING_COPY.meowUnreachable });
+      setPhase({ kind: "editing", notice: COPY.voice.unreachable });
       return;
     }
     const outcome = readMeowOutcome(response);
@@ -190,7 +198,7 @@ export function VoiceStep(props: VoiceStepProps) {
         setPhase({
           kind: "ready",
           outcome,
-          notice: PENDING_COPY.bringInFailed,
+          notice: COPY.voice.bringInFailed,
         });
         return;
       default: {
@@ -208,6 +216,10 @@ export function VoiceStep(props: VoiceStepProps) {
 
   function handleTextChange(event: React.ChangeEvent<HTMLInputElement>) {
     setText(event.target.value);
+  }
+
+  function handleTextFocus(event: React.FocusEvent<HTMLInputElement>) {
+    event.currentTarget.select();
   }
 
   function handleAgeChange(age: Age) {
@@ -260,6 +272,13 @@ export function VoiceStep(props: VoiceStepProps) {
       look={props.look}
       reactKey={String(playCount)}
       onClose={props.onClose}
+      note={
+        (phase.kind === "editing" || phase.kind === "making") && (
+          <p className="border-l-[3px] border-[var(--pw-orange)] pl-2">
+            {COPY.voice.oneOnly}
+          </p>
+        )
+      }
       footer={(() => {
         switch (phase.kind) {
           case "editing":
@@ -271,7 +290,7 @@ export function VoiceStep(props: VoiceStepProps) {
                   disabled={isBusy}
                   onClick={props.onBack}
                 >
-                  {PENDING_COPY.back}
+                  {COPY.common.back}
                 </RisoButton>
                 <RisoButton
                   variant="primary"
@@ -296,7 +315,7 @@ export function VoiceStep(props: VoiceStepProps) {
                     form={formId}
                     disabled={isBusy}
                   >
-                    {PENDING_COPY.tryAgain}
+                    {COPY.common.tryAgain}
                   </RisoButton>
                 ) : (
                   <span />
@@ -308,7 +327,7 @@ export function VoiceStep(props: VoiceStepProps) {
                   onClick={handleBringIn}
                 >
                   {phase.kind === "bringing"
-                    ? PENDING_COPY.saving
+                    ? COPY.voice.bringing
                     : COPY.voice.bringIn}
                 </RisoButton>
               </>
@@ -328,7 +347,7 @@ export function VoiceStep(props: VoiceStepProps) {
         <div className="flex flex-col gap-y-1">
           <label
             htmlFor={textId}
-            className="text-[11px] text-[var(--pw-ink-soft)]"
+            className="text-[12px] text-[var(--pw-ink-soft)]"
           >
             {COPY.voice.textLabel}
           </label>
@@ -336,13 +355,13 @@ export function VoiceStep(props: VoiceStepProps) {
             ref={textRef}
             id={textId}
             type="text"
-            autoFocus
             autoComplete="off"
             maxLength={MAX_MEOW_TEXT_LENGTH}
             placeholder={COPY.voice.textPlaceholder}
             value={text}
             disabled={isLocked}
             onChange={handleTextChange}
+            onFocus={handleTextFocus}
             className={TEXT_FIELD_CLASS}
           />
         </div>
@@ -373,36 +392,31 @@ export function VoiceStep(props: VoiceStepProps) {
           disabled={isLocked}
           onChange={handleMoodChange}
         />
-        <p className="border-l-[3px] border-[var(--pw-orange)] pl-2 text-[var(--pw-ink-soft)]">
-          {COPY.voice.oneOnly}
-        </p>
       </form>
       {(phase.kind === "ready" || phase.kind === "bringing") &&
         phase.outcome.meowUrl && (
-          <button
-            ref={playRef}
-            type="button"
-            onClick={handlePlay}
-            className={cn(
-              FOCUS_RING_CLASS,
-              "flex h-8 cursor-pointer items-center gap-x-2 self-start border-[1.5px] border-[var(--pw-ink)] bg-[var(--pw-blue)] px-3 text-[12px] text-[var(--pw-paper)]"
-            )}
-          >
-            <svg
-              aria-hidden
-              viewBox="0 0 10 10"
-              className="size-2.5"
-              fill="currentColor"
-            >
-              <path d="M2 1l7 4-7 4z" />
-            </svg>
-            {PENDING_COPY.playSound}
-          </button>
+          <div className="self-start">
+            <RisoButton variant="quiet" id={playId} onClick={handlePlay}>
+              <span className="flex items-center gap-x-2">
+                <svg
+                  aria-hidden
+                  viewBox="0 0 10 10"
+                  className="size-2.5"
+                  fill="currentColor"
+                >
+                  <path d="M2 1l7 4-7 4z" />
+                </svg>
+                {COPY.voice.play}
+              </span>
+            </RisoButton>
+          </div>
         )}
       <p
         role="status"
         aria-live="polite"
-        className={cn(notice ? "text-[var(--pw-pink)]" : "sr-only")}
+        className={cn(
+          notice ? "border-l-[3px] border-[var(--pw-pink)] pl-2" : "sr-only"
+        )}
       >
         {notice ?? (phase.kind === "making" ? COPY.voice.making : "")}
       </p>

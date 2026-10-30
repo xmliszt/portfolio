@@ -3,6 +3,7 @@
 import { useEffect, useRef } from "react";
 
 import type { CatLook } from "@/lib/paws/cat-look";
+import { COPY } from "@/lib/paws/copy";
 import { createSceneResources } from "@/lib/paws/render/create-scene-resources";
 import { drawScene } from "@/lib/paws/render/draw-scene";
 import { pruneScenePrints } from "@/lib/paws/render/prune-scene-prints";
@@ -19,10 +20,8 @@ import { deriveCat } from "@/lib/paws/sim/derive-cat";
 import { getCatSnapshots } from "@/lib/paws/sim/get-cat-snapshots";
 import { stepWorld } from "@/lib/paws/sim/step-world";
 
-import { PENDING_COPY } from "./pending-copy";
-
 const CAT_ID = "playground";
-const VIEW_SPAN = 560;
+const VIEW_SPAN = 420;
 const CAMERA_RATE = 2.5;
 const MAX_DT_SECONDS = 0.05;
 const MAX_DPR = 2;
@@ -204,7 +203,7 @@ export function CatPlayground(props: CatPlaygroundProps) {
     <canvas
       ref={canvasRef}
       role="img"
-      aria-label={PENDING_COPY.previewLabel}
+      aria-label={COPY.maker.previewLabel}
       onPointerMove={handlePointerMove}
       onPointerDown={handlePointerDown}
       onPointerUp={handlePointerUp}

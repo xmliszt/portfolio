@@ -21,7 +21,7 @@ export function SegmentedControl<T extends string>(
 
   return (
     <fieldset disabled={props.disabled} className="flex min-w-0 flex-col">
-      <legend className="mb-1 text-[11px] text-[var(--pw-ink-soft)]">
+      <legend className="mb-1 text-[12px] text-[var(--pw-ink-soft)]">
         {props.legend}
       </legend>
       <div
@@ -44,7 +44,7 @@ export function SegmentedControl<T extends string>(
                   : undefined
               }
               className={cn(
-                "relative flex h-7 min-w-0 cursor-pointer items-center justify-center px-0.5 text-[10px] leading-none",
+                "relative flex h-9 min-w-0 cursor-pointer items-center justify-center px-0.5 text-[12px] leading-none sm:h-7",
                 "has-[:focus-visible]:z-10 has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-offset-2 has-[:focus-visible]:outline-[var(--pw-blue)] has-[:focus-visible]:outline-solid",
                 isChecked
                   ? "bg-[var(--pw-ink)] text-[var(--pw-paper)]"

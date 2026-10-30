@@ -10,7 +10,6 @@ import { cn } from "@/lib/utils";
 
 import { FloatingCard } from "./floating-card";
 import { FOCUS_RING_CLASS } from "./focus-ring-class";
-import { PENDING_COPY } from "./pending-copy";
 import { RisoButton } from "./riso-button";
 import { TEXT_FIELD_CLASS } from "./text-field-class";
 
@@ -29,11 +28,11 @@ function noticeText(notice: Notice) {
     case "tooSoon":
       return COPY.signIn.tooSoon;
     case "sendFailed":
-      return PENDING_COPY.sendFailed;
+      return COPY.signIn.sendFailed;
     case "wrongCode":
       return COPY.signIn.wrongCode;
     case "verifyFailed":
-      return PENDING_COPY.verifyFailed;
+      return COPY.signIn.verifyFailed;
     default: {
       const unhandled: never = notice;
       return unhandled;
@@ -52,6 +51,7 @@ export function SignInPanel(props: SignInPanelProps) {
   const emailId = useId();
   const codeId = useId();
   const noticeId = useId();
+  const formId = useId();
   const [email, setEmail] = useState("");
   const [code, setCode] = useState("");
   const [step, setStep] = useState<SignInStep>({
@@ -146,13 +146,43 @@ export function SignInPanel(props: SignInPanelProps) {
   }
 
   const notice = step.notice && (
-    <p id={noticeId} role="alert" className="text-[var(--pw-pink)]">
+    <p
+      id={noticeId}
+      role="alert"
+      className="border-l-[3px] border-[var(--pw-pink)] pl-2"
+    >
       {noticeText(step.notice)}
     </p>
   );
 
   return (
-    <FloatingCard title={COPY.signIn.title} onClose={props.onClose}>
+    <FloatingCard
+      title={COPY.signIn.title}
+      onClose={props.onClose}
+      footer={
+        step.kind === "email" ? (
+          <RisoButton
+            variant="primary"
+            type="submit"
+            form={formId}
+            disabled={step.busy}
+          >
+            {step.busy ? COPY.signIn.sending : COPY.signIn.sendCode}
+          </RisoButton>
+        ) : (
+          <RisoButton
+            variant="primary"
+            type="submit"
+            form={formId}
+            disabled={step.busy !== undefined || code.length !== CODE_LENGTH}
+          >
+            {step.busy === "verifying"
+              ? COPY.signIn.verifying
+              : COPY.signIn.verify}
+          </RisoButton>
+        )
+      }
+    >
       {props.message && (
         <p className="text-[var(--pw-ink-soft)]">{props.message}</p>
       )}
@@ -161,13 +191,15 @@ export function SignInPanel(props: SignInPanelProps) {
           case "email":
             return (
               <form
+                id={formId}
                 onSubmit={handleEmailSubmit}
                 className="flex flex-col gap-y-3"
               >
+                <p className="text-[var(--pw-ink-soft)]">{COPY.signIn.hint}</p>
                 <div className="flex flex-col gap-y-1">
                   <label
                     htmlFor={emailId}
-                    className="text-[11px] text-[var(--pw-ink-soft)]"
+                    className="text-[12px] text-[var(--pw-ink-soft)]"
                   >
                     {COPY.signIn.emailLabel}
                   </label>
@@ -188,20 +220,12 @@ export function SignInPanel(props: SignInPanelProps) {
                   />
                 </div>
                 {notice}
-                <div className="flex justify-end">
-                  <RisoButton
-                    variant="primary"
-                    type="submit"
-                    disabled={step.busy}
-                  >
-                    {step.busy ? PENDING_COPY.sending : COPY.signIn.sendCode}
-                  </RisoButton>
-                </div>
               </form>
             );
           case "code":
             return (
               <form
+                id={formId}
                 onSubmit={handleCodeSubmit}
                 className="flex flex-col gap-y-3"
               >
@@ -214,7 +238,7 @@ export function SignInPanel(props: SignInPanelProps) {
                 <div className="flex flex-col gap-y-1">
                   <label
                     htmlFor={codeId}
-                    className="text-[11px] text-[var(--pw-ink-soft)]"
+                    className="text-[12px] text-[var(--pw-ink-soft)]"
                   >
                     {COPY.signIn.codeLabel}
                   </label>
@@ -239,44 +263,34 @@ export function SignInPanel(props: SignInPanelProps) {
                   />
                 </div>
                 {notice}
-                <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-2">
-                  <div className="flex flex-col items-start gap-y-1">
-                    <button
-                      type="button"
-                      onClick={handleResend}
-                      disabled={step.busy !== undefined}
-                      className={cn(
-                        FOCUS_RING_CLASS,
-                        "cursor-pointer text-[11px] underline underline-offset-2 disabled:opacity-50"
-                      )}
-                    >
-                      {step.busy === "sending"
-                        ? PENDING_COPY.sending
-                        : COPY.signIn.resend}
-                    </button>
-                    <button
-                      type="button"
-                      onClick={handleChangeEmail}
-                      disabled={step.busy !== undefined}
-                      className={cn(
-                        FOCUS_RING_CLASS,
-                        "cursor-pointer text-[11px] text-[var(--pw-ink-soft)] underline underline-offset-2 disabled:opacity-50"
-                      )}
-                    >
-                      {PENDING_COPY.changeEmail}
-                    </button>
-                  </div>
-                  <RisoButton
-                    variant="primary"
-                    type="submit"
-                    disabled={
-                      step.busy !== undefined || code.length !== CODE_LENGTH
-                    }
+                <div className="flex flex-wrap items-center gap-x-2 text-[12px]">
+                  <button
+                    type="button"
+                    onClick={handleResend}
+                    disabled={step.busy !== undefined}
+                    className={cn(
+                      FOCUS_RING_CLASS,
+                      "cursor-pointer py-2 underline underline-offset-2 disabled:opacity-50"
+                    )}
                   >
-                    {step.busy === "verifying"
-                      ? PENDING_COPY.verifying
-                      : COPY.signIn.verify}
-                  </RisoButton>
+                    {step.busy === "sending"
+                      ? COPY.signIn.sending
+                      : COPY.signIn.resend}
+                  </button>
+                  <span aria-hidden className="text-[var(--pw-ink-soft)]">
+                    ·
+                  </span>
+                  <button
+                    type="button"
+                    onClick={handleChangeEmail}
+                    disabled={step.busy !== undefined}
+                    className={cn(
+                      FOCUS_RING_CLASS,
+                      "cursor-pointer py-2 text-[var(--pw-ink-soft)] underline underline-offset-2 disabled:opacity-50"
+                    )}
+                  >
+                    {COPY.signIn.changeEmail}
+                  </button>
                 </div>
               </form>
             );

@@ -3,9 +3,8 @@
 import { useEffect, useRef } from "react";
 
 import type { CatLook } from "@/lib/paws/cat-look";
+import { COPY } from "@/lib/paws/copy";
 import { drawCatPreview } from "@/lib/paws/render/draw-cat-preview";
-
-import { PENDING_COPY } from "./pending-copy";
 
 const STILL_TIME = 0;
 
@@ -89,7 +88,7 @@ export function CatPreview(props: CatPreviewProps) {
     <canvas
       ref={canvasRef}
       role="img"
-      aria-label={PENDING_COPY.previewLabel}
+      aria-label={COPY.maker.previewLabel}
       className="block size-full border-[1.5px] border-[var(--pw-ink)] bg-[var(--pw-paper-deep)]"
     />
   );

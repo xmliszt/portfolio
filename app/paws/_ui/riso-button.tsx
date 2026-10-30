@@ -23,7 +23,7 @@ export function RisoButton(props: RisoButtonProps) {
       onClick={props.onClick}
       className={cn(
         FOCUS_RING_CLASS,
-        "relative isolate inline-flex h-8 cursor-pointer items-center justify-center px-3 text-[12px] leading-none transition-transform duration-150 disabled:cursor-default disabled:opacity-50 motion-reduce:transition-none",
+        "relative isolate inline-flex h-10 cursor-pointer items-center justify-center px-3 text-[12px] leading-none transition-transform duration-150 disabled:cursor-default disabled:opacity-50 motion-reduce:transition-none sm:h-8",
         props.variant === "primary"
           ? "border-[1.5px] border-[var(--pw-ink)] bg-[var(--pw-yellow)] font-medium text-[var(--pw-ink)] enabled:hover:-translate-x-px enabled:hover:-translate-y-px enabled:active:translate-x-0 enabled:active:translate-y-0"
           : "border-[1.5px] border-[var(--pw-ink)] bg-[var(--pw-paper)] text-[var(--pw-ink)] enabled:hover:bg-[var(--pw-paper-deep)]"

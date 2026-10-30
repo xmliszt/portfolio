@@ -126,55 +126,59 @@ export function CatMaker(props: CatMakerProps) {
       reactKey={JSON.stringify(props.look)}
       onClose={props.onClose}
       footer={
-        <>
-          <RisoButton
-            variant="quiet"
-            disabled={props.busy}
-            onClick={handleShuffle}
-          >
-            {COPY.maker.shuffle}
-          </RisoButton>
-          <RisoButton
-            variant="primary"
-            id={primaryId}
-            disabled={props.busy}
-            onClick={props.onPrimary}
-          >
-            {props.primaryLabel}
-          </RisoButton>
-        </>
+        <RisoButton
+          variant="primary"
+          id={primaryId}
+          disabled={props.busy}
+          onClick={props.onPrimary}
+        >
+          {props.primaryLabel}
+        </RisoButton>
       }
     >
-      <div
-        role="tablist"
-        aria-label={COPY.maker.title}
-        onKeyDown={handleTabKeyDown}
-        className="flex gap-x-4 overflow-x-auto"
-      >
-        {TABS.map((name) => {
-          const isActive = name === tab;
-          return (
-            <button
-              key={name}
-              id={`${tabsId}-${name}`}
-              type="button"
-              role="tab"
-              aria-selected={isActive}
-              aria-controls={`${tabsId}-panel`}
-              tabIndex={isActive ? 0 : -1}
-              onClick={() => setTab(name)}
-              className={cn(
-                FOCUS_RING_CLASS,
-                "shrink-0 cursor-pointer border-b-[1.5px] pb-1 text-[12px] leading-none",
-                isActive
-                  ? "border-[var(--pw-orange)] text-[var(--pw-ink)]"
-                  : "border-transparent text-[var(--pw-ink-soft)] hover:text-[var(--pw-ink)]"
-              )}
-            >
-              {COPY.maker.tabs[name]}
-            </button>
-          );
-        })}
+      <div className="flex items-center gap-x-3">
+        <div
+          role="tablist"
+          aria-label={COPY.maker.title}
+          onKeyDown={handleTabKeyDown}
+          className="flex min-w-0 gap-x-4 overflow-x-auto"
+        >
+          {TABS.map((name) => {
+            const isActive = name === tab;
+            return (
+              <button
+                key={name}
+                id={`${tabsId}-${name}`}
+                type="button"
+                role="tab"
+                aria-selected={isActive}
+                aria-controls={`${tabsId}-panel`}
+                tabIndex={isActive ? 0 : -1}
+                onClick={() => setTab(name)}
+                className={cn(
+                  FOCUS_RING_CLASS,
+                  "shrink-0 cursor-pointer border-b-[1.5px] py-2.5 text-[12px] leading-none sm:py-1",
+                  isActive
+                    ? "border-[var(--pw-orange)] text-[var(--pw-ink)]"
+                    : "border-transparent text-[var(--pw-ink-soft)] hover:text-[var(--pw-ink)]"
+                )}
+              >
+                {COPY.maker.tabs[name]}
+              </button>
+            );
+          })}
+        </div>
+        <button
+          type="button"
+          disabled={props.busy}
+          onClick={handleShuffle}
+          className={cn(
+            FOCUS_RING_CLASS,
+            "ml-auto shrink-0 cursor-pointer py-2.5 text-[12px] leading-none underline underline-offset-2 disabled:opacity-50 sm:py-1"
+          )}
+        >
+          {COPY.maker.shuffle}
+        </button>
       </div>
 
       <div
@@ -201,7 +205,7 @@ export function CatMaker(props: CatMakerProps) {
                 <SegmentedControl
                   legend={COPY.maker.pattern}
                   name="pattern"
-                  columns={PATTERN_OPTIONS.length}
+                  columns={3}
                   options={PATTERN_OPTIONS}
                   value={props.look.pattern}
                   disabled={props.busy}
@@ -233,7 +237,7 @@ export function CatMaker(props: CatMakerProps) {
               );
             case "shape":
               return (
-                <div className="grid grid-cols-2 gap-x-3 gap-y-2">
+                <div className="grid grid-cols-1 gap-x-3 gap-y-2 sm:grid-cols-2">
                   {SHAPE_FIELDS.map((field) => (
                     <SegmentedControl<Step>
                       key={field}
@@ -257,7 +261,7 @@ export function CatMaker(props: CatMakerProps) {
       </div>
 
       {props.notice && (
-        <p role="alert" className="text-[var(--pw-pink)]">
+        <p role="alert" className="border-l-[3px] border-[var(--pw-pink)] pl-2">
           {props.notice}
         </p>
       )}
