@@ -159,7 +159,7 @@ export function CatPlayground(props: CatPlaygroundProps) {
         view: viewRef.current,
         cats,
         prints: scene.prints,
-        fingers: [{ ...scene.tip, kind: "own" }],
+        fingers: [{ ...scene.tip, kind: "own", userId: "studio" }],
         time: world.time,
         resources,
       });

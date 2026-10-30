@@ -3,6 +3,7 @@ import { lerp } from "@/lib/paws/sim/lerp";
 import type { SceneResources } from "./create-scene-resources";
 import { drawFingertip } from "./draw-fingertip";
 import { drawRidges } from "./draw-ridges";
+import { getFingerprintStyle } from "./get-fingerprint-style";
 import type { DrawContext, FingertipKind, SceneFinger } from "./render-types";
 
 const getStrength = (kind: FingertipKind) => {
@@ -30,6 +31,7 @@ export function drawFingers(options: {
     if (finger.visibility < 0.01) continue;
     const strength = getStrength(finger.kind) * finger.visibility;
     const press = finger.press;
+    const style = getFingerprintStyle(finger.userId);
     drawFingertip({
       draw,
       x: finger.x,
@@ -48,6 +50,7 @@ export function drawFingers(options: {
       y: finger.y,
       reach,
       alpha: strength,
+      style,
     });
     if (drag > 0.05) {
       drawRidges({
@@ -57,6 +60,7 @@ export function drawFingers(options: {
         y: finger.y - finger.dy * 1.5,
         reach: reach * 0.85,
         alpha: drag * strength,
+        style,
       });
     }
   }

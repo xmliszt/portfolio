@@ -499,9 +499,19 @@ export function createRoomEngine(options: { random: () => number }) {
         ...Object.values(state.remoteFingers).flatMap((finger) =>
           finger?.tip === undefined
             ? []
-            : [{ ...finger.tip, kind: "remote" as const }]
+            : [
+                {
+                  ...finger.tip,
+                  kind: "remote" as const,
+                  userId: finger.userId,
+                },
+              ]
         ),
-        { ...state.ownTip, kind: "own" },
+        {
+          ...state.ownTip,
+          kind: "own",
+          userId: state.selfId ?? LOCAL_VISITOR_ID,
+        },
       ];
       return {
         time: state.time,

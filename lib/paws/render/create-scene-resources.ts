@@ -7,8 +7,10 @@ export type SceneResources = {
   grain: AnyCanvas;
   /** Paw print masks, made the first time a paw print is drawn. */
   pawMasks: AnyCanvas[] | undefined;
-  /** The fingerprint and the scratch canvas it is cut to the pressed area on, made the first time ridges are drawn. */
-  ridges: { fingerprint: AnyCanvas; mask: Surface } | undefined;
+  /** Each fingerprint pattern, made the first time it is drawn, and the scratch canvas a print is cut and inked on. */
+  ridges:
+    | { fingerprints: (AnyCanvas | undefined)[]; mask: Surface }
+    | undefined;
   /** Paw prints already tinted, by `color:variant`. */
   tintedPrints: { [key: string]: AnyCanvas };
   /** Picks where the paper's palettes start, from 0 to 1. */

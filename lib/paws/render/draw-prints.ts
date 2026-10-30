@@ -2,6 +2,7 @@ import type { SceneResources } from "./create-scene-resources";
 import { drawFingertip } from "./draw-fingertip";
 import { drawNose } from "./draw-nose";
 import { drawRidges } from "./draw-ridges";
+import { getFingerprintStyle } from "./get-fingerprint-style";
 import { getTintedPrint } from "./get-tinted-print";
 import { PAW_PRINT_BOX } from "./paw-print-box";
 import { PRINT_LIFE_SECONDS } from "./print-life-seconds";
@@ -69,6 +70,7 @@ export function drawPrints(options: {
           y: print.y,
           reach: print.pressure * Math.pow(left, 0.6),
           alpha: 0.6 * left,
+          style: getFingerprintStyle(print.userId),
         });
         break;
       default: {

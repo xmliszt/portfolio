@@ -20,6 +20,7 @@ export function toScenePrint(options: {
     case "fingerPrint":
       return {
         kind: "finger",
+        userId: event.userId,
         x: event.x,
         y: event.y,
         pressure: event.pressure,

@@ -2,9 +2,10 @@ import { createFingerprintTexture } from "./create-fingerprint-texture";
 import type { SceneResources } from "./create-scene-resources";
 import { createSurface } from "./create-surface";
 import { FINGERTIP_SHAPE } from "./fingertip-shape";
+import type { FingerprintStyle } from "./get-fingerprint-style";
 import type { AnyContext } from "./render-types";
 
-/** Draw the fingerprint at `x, y` out to `reach` (0–1 of the fingertip) from its centre, fading at that edge. */
+/** Draw the fingerprint in `style` at `x, y` out to `reach` (0–1 of the fingertip) from its centre, fading at that edge, its ridges inked as a split fountain from the style's first ink to its second. */
 export function drawRidges(options: {
   g: AnyContext;
   resources: SceneResources;
@@ -12,29 +13,39 @@ export function drawRidges(options: {
   y: number;
   reach: number;
   alpha: number;
+  style: FingerprintStyle;
 }) {
-  const { g, resources, reach, alpha } = options;
+  const { g, resources, reach, alpha, style } = options;
   if (alpha < 0.01 || reach < 0.03) return;
-  const ridges =
-    resources.ridges ??
-    (() => {
-      const fingerprint = createFingerprintTexture({
-        createCanvas: resources.createCanvas,
-      });
-      const surface = createSurface({
-        createCanvas: resources.createCanvas,
-        width: fingerprint.width,
-        height: fingerprint.height,
-      });
-      return { fingerprint, mask: surface };
-    })();
+  const ridges = resources.ridges ?? {
+    fingerprints: [],
+    mask: createSurface({
+      createCanvas: resources.createCanvas,
+      width: FINGERTIP_SHAPE.rx * 10,
+      height: FINGERTIP_SHAPE.ry * 10,
+    }),
+  };
   resources.ridges = ridges;
+  const fingerprint =
+    ridges.fingerprints[style.pattern] ??
+    createFingerprintTexture({
+      createCanvas: resources.createCanvas,
+      pattern: style.pattern,
+    });
+  ridges.fingerprints[style.pattern] = fingerprint;
+  if (
+    ridges.mask.canvas.width !== fingerprint.width ||
+    ridges.mask.canvas.height !== fingerprint.height
+  ) {
+    ridges.mask.canvas.width = fingerprint.width;
+    ridges.mask.canvas.height = fingerprint.height;
+  }
   const { canvas, g: mask } = ridges.mask;
   const { width, height } = canvas;
   mask.setTransform(1, 0, 0, 1, 0, 0);
   mask.globalCompositeOperation = "source-over";
   mask.clearRect(0, 0, width, height);
-  mask.drawImage(ridges.fingerprint, 0, 0);
+  mask.drawImage(fingerprint, 0, 0);
   mask.globalCompositeOperation = "destination-in";
   mask.setTransform(1, 0, 0, height / width, width / 2, height / 2);
   const radius = reach * (width / 2) * 1.05;
@@ -44,10 +55,17 @@ export function drawRidges(options: {
   gradient.addColorStop(1, "rgba(0,0,0,0)");
   mask.fillStyle = gradient;
   mask.fillRect(-width, -height, width * 2, height * 2);
+  mask.setTransform(1, 0, 0, 1, 0, 0);
+  mask.globalCompositeOperation = "source-in";
+  const fountain = mask.createLinearGradient(0, 0, width * 0.4, height);
+  fountain.addColorStop(0.15, style.inks[0]);
+  fountain.addColorStop(0.85, style.inks[1]);
+  mask.fillStyle = fountain;
+  mask.fillRect(0, 0, width, height);
   mask.globalCompositeOperation = "source-over";
   g.save();
   g.translate(options.x, options.y);
-  g.rotate(FINGERTIP_SHAPE.angle);
+  g.rotate(FINGERTIP_SHAPE.angle + style.tilt);
   g.globalAlpha = alpha;
   g.drawImage(
     canvas,

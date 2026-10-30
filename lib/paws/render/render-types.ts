@@ -36,7 +36,14 @@ export type ScenePrint =
       color: string;
       bornAt: number;
     }
-  | { kind: "finger"; x: number; y: number; pressure: number; bornAt: number };
+  | {
+      kind: "finger";
+      userId: string;
+      x: number;
+      y: number;
+      pressure: number;
+      bornAt: number;
+    };
 
 /** A fingertip under the glass as one screen sees it, eased so it fades in, lowers and presses smoothly. */
 export type FingertipState = {
@@ -57,4 +64,7 @@ export type FingertipState = {
 /** Whose fingertip it is: the viewer's or another visitor's. */
 export type FingertipKind = "own" | "remote";
 
-export type SceneFinger = FingertipState & { kind: FingertipKind };
+export type SceneFinger = FingertipState & {
+  kind: FingertipKind;
+  userId: string;
+};
