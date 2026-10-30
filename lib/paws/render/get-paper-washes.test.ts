@@ -42,3 +42,8 @@ test("washes drift slowly and stay near their places", () => {
     assert.ok(edge.x > 400 && edge.x < 600 && edge.y > 200 && edge.y < 330);
   }
 });
+
+test("a time before zero still picks a palette", () => {
+  for (const wash of getPaperWashes({ seed: 0, time: -0.01, ...size }))
+    assert.match(wash.ink, /^#[0-9a-f]{6}$/);
+});

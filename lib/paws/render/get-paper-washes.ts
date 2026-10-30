@@ -35,8 +35,10 @@ export function getPaperWashes(options: {
     (time - turn * PALETTE_SECONDS - (PALETTE_SECONDS - BLEND_SECONDS)) /
       BLEND_SECONDS
   );
-  const from = PAPER_PALETTES[(start + turn) % count];
-  const to = PAPER_PALETTES[(start + turn + 1) % count];
+  const paletteAt = (offset: number) =>
+    PAPER_PALETTES[(((start + turn + offset) % count) + count) % count];
+  const from = paletteAt(0);
+  const to = paletteAt(1);
   const ink = (key: keyof (typeof PAPER_PALETTES)[number]) =>
     mixHex({ from: from[key], to: to[key], amount: blend });
   const phase = seed * Math.PI * 2;

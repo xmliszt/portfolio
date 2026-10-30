@@ -73,7 +73,10 @@ export function CatPlayground(props: CatPlaygroundProps) {
 
     function tick(nowMs: number) {
       if (canvas === null || g === null || g === undefined) return;
-      const dtSeconds = Math.min(MAX_DT_SECONDS, (nowMs - scene.lastMs) / 1000);
+      const dtSeconds = Math.min(
+        MAX_DT_SECONDS,
+        Math.max(0, (nowMs - scene.lastMs) / 1000)
+      );
       scene.lastMs = nowMs;
       const dpr = Math.min(window.devicePixelRatio || 1, MAX_DPR);
       const width = canvas.clientWidth;
