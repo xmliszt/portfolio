@@ -2,9 +2,9 @@
 
 import { useEffect, useId, useRef, useState } from "react";
 
+import { usePawsCopy } from "@/app/paws/_i18n/use-paws-copy";
 import type { SavedCat } from "@/lib/paws/cat-api-types";
 import type { CatLook } from "@/lib/paws/cat-look";
-import { COPY } from "@/lib/paws/copy";
 import { shuffleCatLook } from "@/lib/paws/maker/shuffle-cat-look";
 import type { PawsSession, PawsSessionActions } from "@/lib/paws/session-types";
 import type { VoiceSettings } from "@/lib/paws/voice-settings";
@@ -46,6 +46,8 @@ type PawsOnboardingProps = {
 
 /** Render the corner flow that takes a watcher through sign-in, making a cat and giving it a sound, then hands the saved cat over; with `hasCat`, it reopens the same flow so a member can change the look or give a borrowed meow its own sound. */
 export function PawsOnboarding(props: PawsOnboardingProps) {
+  const { copy } = usePawsCopy();
+
   const [step, setStep] = useState<OnboardingStep>({ kind: "watching" });
   const startButtonId = useId();
   const shouldFocusStartRef = useRef(false);
@@ -111,7 +113,7 @@ export function PawsOnboarding(props: PawsOnboardingProps) {
           case "signInRequired":
             void signOutRef.current().then(() => {
               if (!controller.signal.aborted)
-                setStep({ kind: "signIn", message: COPY.signIn.signInAgain });
+                setStep({ kind: "signIn", message: copy.signIn.signInAgain });
             });
             return;
           default: {
@@ -128,7 +130,7 @@ export function PawsOnboarding(props: PawsOnboardingProps) {
     const flow = flowRef.current;
     await signOutRef.current();
     if (flow === flowRef.current)
-      setStep({ kind: "signIn", message: COPY.signIn.signInAgain });
+      setStep({ kind: "signIn", message: copy.signIn.signInAgain });
   }
 
   function close() {
@@ -190,7 +192,7 @@ export function PawsOnboarding(props: PawsOnboardingProps) {
           voice: options.voice,
           hasOwnMeow: true,
           busy: false,
-          notice: COPY.maker.saveFailed,
+          notice: copy.maker.saveFailed,
         });
         return;
       default: {
@@ -248,10 +250,10 @@ export function PawsOnboarding(props: PawsOnboardingProps) {
             onClick={handleStart}
           >
             {session.kind !== "member"
-              ? COPY.watch.signInToBring
+              ? copy.watch.signInToBring
               : props.hasCat
-                ? COPY.watch.yourCat
-                : COPY.watch.bringYourCat}
+                ? copy.watch.yourCat
+                : copy.watch.bringYourCat}
           </RisoButton>
         </div>
       );
@@ -266,12 +268,12 @@ export function PawsOnboarding(props: PawsOnboardingProps) {
     case "loadingCat":
       return (
         <FloatingCard
-          title={COPY.maker.title}
+          title={copy.maker.title}
           onClose={close}
           footer={
             step.failed && (
               <RisoButton variant="primary" onClick={handleRetryLoad}>
-                {COPY.common.tryAgain}
+                {copy.common.tryAgain}
               </RisoButton>
             )
           }
@@ -284,7 +286,7 @@ export function PawsOnboarding(props: PawsOnboardingProps) {
                 : "text-[var(--pw-ink-soft)]"
             }
           >
-            {step.failed ? COPY.maker.loadFailed : COPY.maker.loading}
+            {step.failed ? copy.maker.loadFailed : copy.maker.loading}
           </p>
         </FloatingCard>
       );
@@ -292,7 +294,7 @@ export function PawsOnboarding(props: PawsOnboardingProps) {
       return (
         <CatMaker
           look={step.look}
-          primaryLabel={step.hasOwnMeow ? COPY.voice.bringIn : COPY.maker.next}
+          primaryLabel={step.hasOwnMeow ? copy.voice.bringIn : copy.maker.next}
           busy={step.busy}
           notice={step.notice}
           onLookChange={handleLookChange}

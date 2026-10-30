@@ -3,8 +3,8 @@
 import { useEffect, useId, useRef } from "react";
 import { motion, useAnimate, useReducedMotion } from "motion/react";
 
+import { usePawsCopy } from "@/app/paws/_i18n/use-paws-copy";
 import type { CatLook } from "@/lib/paws/cat-look";
-import { COPY } from "@/lib/paws/copy";
 import { cn } from "@/lib/utils";
 
 import { CatPlayground } from "./cat-playground";
@@ -41,6 +41,8 @@ type StudioFrameProps = {
 
 /** Render the full-screen studio over the room: the visitor's cat large in a square playground that bounces on every `reactKey` change, and a dock of fixed height with scrolling controls and a footer. */
 export function StudioFrame(props: StudioFrameProps) {
+  const { copy } = usePawsCopy();
+
   const titleId = useId();
   const dialogRef = useRef<HTMLElement>(null);
   const bouncedKeyRef = useRef(props.reactKey);
@@ -107,7 +109,7 @@ export function StudioFrame(props: StudioFrameProps) {
     >
       <button
         type="button"
-        aria-label={COPY.common.close}
+        aria-label={copy.common.close}
         onClick={props.onClose}
         className={cn(
           FOCUS_RING_CLASS,
@@ -136,7 +138,7 @@ export function StudioFrame(props: StudioFrameProps) {
         >
           {props.title}
         </h2>
-        <p className="flex items-center gap-x-1.5 text-[11px] tracking-[0.12em] whitespace-nowrap text-[var(--pw-ink-soft)] uppercase before:size-1.5 before:bg-[var(--pw-orange)] before:content-['']">
+        <p className="flex items-center gap-x-1.5 text-[11px] tracking-[0.12em] whitespace-nowrap text-[var(--pw-ink-soft)] uppercase before:size-1.5 before:bg-[var(--pw-orange)] before:content-[''] [[lang=hi]_&]:tracking-normal">
           {props.eyebrow}
         </p>
       </motion.header>

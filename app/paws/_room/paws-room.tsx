@@ -2,11 +2,12 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 
+import { LanguagePicker } from "@/app/paws/_i18n/language-picker";
+import { usePawsCopy } from "@/app/paws/_i18n/use-paws-copy";
 import { usePawsSession } from "@/app/paws/_session/use-paws-session";
 import { FOCUS_RING_CLASS } from "@/app/paws/_ui/focus-ring-class";
 import { PawsOnboarding } from "@/app/paws/_ui/paws-onboarding";
 import { createRoomEngine } from "@/lib/paws/client/create-room-engine";
-import { COPY } from "@/lib/paws/copy";
 import { shuffleCatLook } from "@/lib/paws/maker/shuffle-cat-look";
 import { getBorrowedMeowUrl } from "@/lib/paws/profile/get-borrowed-meow-url";
 import { createSceneResources } from "@/lib/paws/render/create-scene-resources";
@@ -24,6 +25,8 @@ const FAKE_VOICE = { age: "adult", voice: "soft", mood: "chatty" } as const;
 
 /** Render the room: the shared cats, every fingertip and print on a full-screen canvas, the visitor's own fingertip from the pointer, sounds, and the corner flow for bringing a cat in. */
 export function PawsRoom() {
+  const { copy } = usePawsCopy();
+
   const { session, actions, client } = usePawsSession();
   const { savedCat, setSavedCat, isChecked } = useSavedCat(session);
   const [isMuted, setIsMuted] = useState(false);
@@ -195,7 +198,7 @@ export function PawsRoom() {
     <div className="group/room absolute inset-0">
       <canvas
         ref={canvasRef}
-        aria-label={COPY.site.description}
+        aria-label={copy.site.description}
         className="absolute inset-0 size-full touch-none [@media(pointer:fine)]:cursor-none"
         onPointerMove={handlePointerMove}
         onPointerDown={handlePointerDown}
@@ -203,16 +206,19 @@ export function PawsRoom() {
         onPointerCancel={handlePointerLeave}
         onPointerLeave={handlePointerLeave}
       />
-      <button
-        type="button"
-        onClick={handleToggleMute}
-        className={cn(
-          FOCUS_RING_CLASS,
-          "absolute top-4 right-4 h-10 border-[1.5px] border-[var(--pw-ink)] bg-[var(--pw-paper)] px-3 text-[12px] text-[var(--pw-ink)] group-has-[[aria-modal=true]]/room:hidden hover:bg-[var(--pw-paper-deep)] sm:top-6 sm:right-6 sm:h-8"
-        )}
-      >
-        {isMuted ? COPY.room.unmute : COPY.room.mute}
-      </button>
+      <div className="absolute top-4 right-4 flex items-center gap-x-2 group-has-[[aria-modal=true]]/room:hidden sm:top-6 sm:right-6">
+        <LanguagePicker />
+        <button
+          type="button"
+          onClick={handleToggleMute}
+          className={cn(
+            FOCUS_RING_CLASS,
+            "h-10 border-[1.5px] border-[var(--pw-ink)] bg-[var(--pw-paper)] px-3 text-[12px] text-[var(--pw-ink)] hover:bg-[var(--pw-paper-deep)] sm:h-8"
+          )}
+        >
+          {isMuted ? copy.room.unmute : copy.room.mute}
+        </button>
+      </div>
       <PawsOnboarding
         session={session}
         actions={actions}

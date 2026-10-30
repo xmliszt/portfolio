@@ -30,16 +30,7 @@ export function createSupabaseRoomSource(options: {
     lastLeave: Promise.resolve(),
   };
   return {
-    join({
-      roomId,
-      role,
-      self,
-      onPlayers,
-      onFinger,
-      onCats,
-      onEvent,
-      onConnectedChange,
-    }) {
+    join({ roomId, role, self, onPlayers, onFinger, onCats, onEvent }) {
       const state: {
         channel?: RealtimeChannel;
         isSubscribed: boolean;
@@ -154,7 +145,6 @@ export function createSupabaseRoomSource(options: {
           })
           .subscribe((status) => {
             state.isSubscribed = status === "SUBSCRIBED";
-            onConnectedChange(state.isSubscribed);
             if (state.isSubscribed && isTracking) void channel.track(self);
           });
       }

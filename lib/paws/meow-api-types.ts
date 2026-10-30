@@ -11,4 +11,5 @@ export type MeowResponse =
   | { kind: "failed"; meowUrl: string }
   | { kind: "alreadyHasMeow"; meowUrl: string }
   | { kind: "tooManyAttempts" }
+  | { kind: "inProgress" }
   | { kind: "signInRequired" };

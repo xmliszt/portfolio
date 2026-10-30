@@ -19,6 +19,8 @@ function toResponse(result: MeowPipelineResult) {
       return Response.json(result satisfies MeowResponse, { status: 401 });
     case "tooManyAttempts":
       return Response.json(result satisfies MeowResponse, { status: 429 });
+    case "inProgress":
+      return Response.json(result satisfies MeowResponse, { status: 409 });
     case "generated":
     case "reused":
     case "borrowed":

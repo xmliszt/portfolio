@@ -32,6 +32,8 @@ const FINGER_REFRESH_MS = 1000;
 const MIN_FINGER_MOVE = 0.5;
 const MIN_FINGERPRINT_PRESS = 0.2;
 const RESIDENT_CATS = 3;
+const MAX_QUEUED_PRINTS = 160;
+const MAX_QUEUED_EVENTS = 200;
 
 export type OwnPointer = {
   x: number;
@@ -240,10 +242,10 @@ export function createRoomEngine(options: { random: () => number }) {
           print,
           showAtMs: options.receivedAtMs + ROOM_LIMITS.renderDelayMs,
         })),
-      ];
+      ].slice(-MAX_QUEUED_PRINTS);
     },
     receiveEvent: (event: RoomEvent) => {
-      state.received = [...state.received, event];
+      state.received = [...state.received, event].slice(-MAX_QUEUED_EVENTS);
     },
     /** Advance the room by `dtSeconds` at local time `nowMs` and return what to draw, play and send. */
     frame: (frameOptions: { nowMs: number; dtSeconds: number }): RoomFrame => {
@@ -266,7 +268,11 @@ export function createRoomEngine(options: { random: () => number }) {
               })
             : createWorld({ random: options.random });
       }
-      if (!isHost) state.world = undefined;
+      if (!isHost) {
+        state.world = undefined;
+        state.unsentPrints = [];
+      }
+      if (isHost || hostId === undefined) state.incomingPrints = [];
       if (hostId !== undefined) state.residents = undefined;
       if (hostId === undefined && state.residents === undefined) {
         state.residents = {

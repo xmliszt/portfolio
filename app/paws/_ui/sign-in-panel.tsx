@@ -2,7 +2,8 @@
 
 import { useEffect, useId, useRef, useState } from "react";
 
-import { COPY } from "@/lib/paws/copy";
+import { usePawsCopy } from "@/app/paws/_i18n/use-paws-copy";
+import type { PawsCopy } from "@/lib/paws/i18n/paws-copy";
 import { fillCopy } from "@/lib/paws/maker/fill-copy";
 import { CODE_LENGTH, readCodeInput } from "@/lib/paws/maker/read-code-input";
 import type { PawsSessionActions } from "@/lib/paws/session-types";
@@ -23,16 +24,17 @@ type SignInStep =
       notice: Notice | undefined;
     };
 
-function noticeText(notice: Notice) {
+function noticeText(options: { copy: PawsCopy; notice: Notice }) {
+  const { copy, notice } = options;
   switch (notice) {
     case "tooSoon":
-      return COPY.signIn.tooSoon;
+      return copy.signIn.tooSoon;
     case "sendFailed":
-      return COPY.signIn.sendFailed;
+      return copy.signIn.sendFailed;
     case "wrongCode":
-      return COPY.signIn.wrongCode;
+      return copy.signIn.wrongCode;
     case "verifyFailed":
-      return COPY.signIn.verifyFailed;
+      return copy.signIn.verifyFailed;
     default: {
       const unhandled: never = notice;
       return unhandled;
@@ -48,6 +50,8 @@ type SignInPanelProps = {
 
 /** Render the corner card that signs a visitor in with a 6-digit code sent to their email. */
 export function SignInPanel(props: SignInPanelProps) {
+  const { copy } = usePawsCopy();
+
   const emailId = useId();
   const codeId = useId();
   const noticeId = useId();
@@ -151,13 +155,13 @@ export function SignInPanel(props: SignInPanelProps) {
       role="alert"
       className="border-l-[3px] border-[var(--pw-pink)] pl-2"
     >
-      {noticeText(step.notice)}
+      {noticeText({ copy, notice: step.notice })}
     </p>
   );
 
   return (
     <FloatingCard
-      title={COPY.signIn.title}
+      title={copy.signIn.title}
       onClose={props.onClose}
       footer={
         step.kind === "email" ? (
@@ -167,7 +171,7 @@ export function SignInPanel(props: SignInPanelProps) {
             form={formId}
             disabled={step.busy}
           >
-            {step.busy ? COPY.signIn.sending : COPY.signIn.sendCode}
+            {step.busy ? copy.signIn.sending : copy.signIn.sendCode}
           </RisoButton>
         ) : (
           <RisoButton
@@ -177,8 +181,8 @@ export function SignInPanel(props: SignInPanelProps) {
             disabled={step.busy !== undefined || code.length !== CODE_LENGTH}
           >
             {step.busy === "verifying"
-              ? COPY.signIn.verifying
-              : COPY.signIn.verify}
+              ? copy.signIn.verifying
+              : copy.signIn.verify}
           </RisoButton>
         )
       }
@@ -195,13 +199,13 @@ export function SignInPanel(props: SignInPanelProps) {
                 onSubmit={handleEmailSubmit}
                 className="flex flex-col gap-y-3"
               >
-                <p className="text-[var(--pw-ink-soft)]">{COPY.signIn.hint}</p>
+                <p className="text-[var(--pw-ink-soft)]">{copy.signIn.hint}</p>
                 <div className="flex flex-col gap-y-1">
                   <label
                     htmlFor={emailId}
                     className="text-[12px] text-[var(--pw-ink-soft)]"
                   >
-                    {COPY.signIn.emailLabel}
+                    {copy.signIn.emailLabel}
                   </label>
                   <input
                     ref={inputRef}
@@ -211,7 +215,7 @@ export function SignInPanel(props: SignInPanelProps) {
                     autoFocus
                     autoComplete="email"
                     spellCheck={false}
-                    placeholder={COPY.signIn.emailPlaceholder}
+                    placeholder={copy.signIn.emailPlaceholder}
                     value={email}
                     disabled={step.busy}
                     aria-describedby={step.notice ? noticeId : undefined}
@@ -231,7 +235,7 @@ export function SignInPanel(props: SignInPanelProps) {
               >
                 <p role="status" className="break-words">
                   {fillCopy({
-                    template: COPY.signIn.codeSent,
+                    template: copy.signIn.codeSent,
                     values: { email: email.trim() },
                   })}
                 </p>
@@ -240,7 +244,7 @@ export function SignInPanel(props: SignInPanelProps) {
                     htmlFor={codeId}
                     className="text-[12px] text-[var(--pw-ink-soft)]"
                   >
-                    {COPY.signIn.codeLabel}
+                    {copy.signIn.codeLabel}
                   </label>
                   <input
                     ref={inputRef}
@@ -274,8 +278,8 @@ export function SignInPanel(props: SignInPanelProps) {
                     )}
                   >
                     {step.busy === "sending"
-                      ? COPY.signIn.sending
-                      : COPY.signIn.resend}
+                      ? copy.signIn.sending
+                      : copy.signIn.resend}
                   </button>
                   <span aria-hidden className="text-[var(--pw-ink-soft)]">
                     ·
@@ -289,7 +293,7 @@ export function SignInPanel(props: SignInPanelProps) {
                       "cursor-pointer py-2 text-[var(--pw-ink-soft)] underline underline-offset-2 disabled:opacity-50"
                     )}
                   >
-                    {COPY.signIn.changeEmail}
+                    {copy.signIn.changeEmail}
                   </button>
                 </div>
               </form>

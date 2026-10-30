@@ -3,6 +3,7 @@
 import { useEffect, useId, useRef, useState } from "react";
 import { useReducedMotion } from "motion/react";
 
+import { usePawsCopy } from "@/app/paws/_i18n/use-paws-copy";
 import {
   BELLIES,
   type CatLook,
@@ -12,7 +13,6 @@ import {
   type Step,
   STEPS,
 } from "@/lib/paws/cat-look";
-import { COPY } from "@/lib/paws/copy";
 import { coatInkOptions } from "@/lib/paws/maker/coat-ink-options";
 import { padInkOptions } from "@/lib/paws/maker/pad-ink-options";
 import { shuffleCatLook } from "@/lib/paws/maker/shuffle-cat-look";
@@ -26,34 +26,6 @@ import { SwatchPicker } from "./swatch-picker";
 
 const SHUFFLE_ROLLS = 6;
 const SHUFFLE_ROLL_MS = 70;
-
-const COAT_OPTIONS = coatInkOptions().map((coat) => ({
-  value: coat,
-  label: COPY.options.coat[coat],
-  fill: COAT_INKS[coat],
-}));
-
-const PAD_OPTIONS = padInkOptions().map((pads) => ({
-  value: pads,
-  label: COPY.options.pads[pads],
-  fill:
-    pads === "mixed"
-      ? `linear-gradient(90deg, ${PAD_INKS.pink} 50%, ${PAD_INKS.black} 50%)`
-      : PAD_INKS[pads],
-}));
-
-const PATTERN_OPTIONS = PATTERNS.map((pattern) => ({
-  value: pattern,
-  label: COPY.options.pattern[pattern],
-}));
-const BELLY_OPTIONS = BELLIES.map((belly) => ({
-  value: belly,
-  label: COPY.options.belly[belly],
-}));
-const STEP_OPTIONS = STEPS.map((step) => ({
-  value: step,
-  label: COPY.options.step[step],
-}));
 
 const TABS = ["coat", "pattern", "belly", "pads", "shape"] as const;
 const SHAPE_FIELDS = [
@@ -77,6 +49,34 @@ type CatMakerProps = {
 
 /** Render the studio where a member picks their cat's look one group at a time while the cat, large in the middle, reacts to every change. */
 export function CatMaker(props: CatMakerProps) {
+  const { copy } = usePawsCopy();
+  const COAT_OPTIONS = coatInkOptions().map((coat) => ({
+    value: coat,
+    label: copy.options.coat[coat],
+    fill: COAT_INKS[coat],
+  }));
+
+  const PAD_OPTIONS = padInkOptions().map((pads) => ({
+    value: pads,
+    label: copy.options.pads[pads],
+    fill:
+      pads === "mixed"
+        ? `linear-gradient(90deg, ${PAD_INKS.pink} 50%, ${PAD_INKS.black} 50%)`
+        : PAD_INKS[pads],
+  }));
+
+  const PATTERN_OPTIONS = PATTERNS.map((pattern) => ({
+    value: pattern,
+    label: copy.options.pattern[pattern],
+  }));
+  const BELLY_OPTIONS = BELLIES.map((belly) => ({
+    value: belly,
+    label: copy.options.belly[belly],
+  }));
+  const STEP_OPTIONS = STEPS.map((step) => ({
+    value: step,
+    label: copy.options.step[step],
+  }));
   const [tab, setTab] = useState<Tab>("coat");
   const tabsId = useId();
   const primaryId = useId();
@@ -120,8 +120,8 @@ export function CatMaker(props: CatMakerProps) {
 
   return (
     <StudioFrame
-      eyebrow={COPY.maker.eyebrow}
-      title={COPY.maker.title}
+      eyebrow={copy.maker.eyebrow}
+      title={copy.maker.title}
       look={props.look}
       reactKey={JSON.stringify(props.look)}
       onClose={props.onClose}
@@ -139,7 +139,7 @@ export function CatMaker(props: CatMakerProps) {
       <div className="flex items-center gap-x-3">
         <div
           role="tablist"
-          aria-label={COPY.maker.title}
+          aria-label={copy.maker.title}
           onKeyDown={handleTabKeyDown}
           className="flex min-w-0 gap-x-4 overflow-x-auto"
         >
@@ -163,7 +163,7 @@ export function CatMaker(props: CatMakerProps) {
                     : "border-transparent text-[var(--pw-ink-soft)] hover:text-[var(--pw-ink)]"
                 )}
               >
-                {COPY.maker.tabs[name]}
+                {copy.maker.tabs[name]}
               </button>
             );
           })}
@@ -177,7 +177,7 @@ export function CatMaker(props: CatMakerProps) {
             "ml-auto shrink-0 cursor-pointer py-2.5 text-[12px] leading-none underline underline-offset-2 disabled:opacity-50 sm:py-1"
           )}
         >
-          {COPY.maker.shuffle}
+          {copy.maker.shuffle}
         </button>
       </div>
 
@@ -192,7 +192,7 @@ export function CatMaker(props: CatMakerProps) {
             case "coat":
               return (
                 <SwatchPicker
-                  legend={COPY.maker.coat}
+                  legend={copy.maker.coat}
                   name="coat"
                   options={COAT_OPTIONS}
                   value={props.look.coat}
@@ -203,7 +203,7 @@ export function CatMaker(props: CatMakerProps) {
             case "pattern":
               return (
                 <SegmentedControl
-                  legend={COPY.maker.pattern}
+                  legend={copy.maker.pattern}
                   name="pattern"
                   columns={3}
                   options={PATTERN_OPTIONS}
@@ -215,7 +215,7 @@ export function CatMaker(props: CatMakerProps) {
             case "belly":
               return (
                 <SegmentedControl
-                  legend={COPY.maker.belly}
+                  legend={copy.maker.belly}
                   name="belly"
                   columns={BELLY_OPTIONS.length}
                   options={BELLY_OPTIONS}
@@ -227,7 +227,7 @@ export function CatMaker(props: CatMakerProps) {
             case "pads":
               return (
                 <SwatchPicker
-                  legend={COPY.maker.pads}
+                  legend={copy.maker.pads}
                   name="pads"
                   options={PAD_OPTIONS}
                   value={props.look.pads}
@@ -241,7 +241,7 @@ export function CatMaker(props: CatMakerProps) {
                   {SHAPE_FIELDS.map((field) => (
                     <SegmentedControl<Step>
                       key={field}
-                      legend={COPY.maker[field]}
+                      legend={copy.maker[field]}
                       name={field}
                       columns={3}
                       options={STEP_OPTIONS}

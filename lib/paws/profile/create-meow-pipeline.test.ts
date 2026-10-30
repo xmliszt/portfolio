@@ -32,7 +32,7 @@ function buildWorld(options: {
   hasCat?: boolean;
   catMeow?: StoredMeow;
   meows?: StoredMeow[];
-  refusalsToday?: number;
+  refusalsToday?: number | Error;
   generationsToday?: number;
   isFlagged?: boolean | Error;
   isSuitable?: boolean;
@@ -73,6 +73,7 @@ function buildWorld(options: {
       countRefusalsSince: async (query: { since: Date }) => {
         calls.push("countRefusals");
         counted.push({ since: query.since });
+        if (options.refusalsToday instanceof Error) throw options.refusalsToday;
         return options.refusalsToday ?? 0;
       },
       countGenerationsSince: async () => {
@@ -442,7 +443,7 @@ test("stops a second request while the account's first one is still running", as
   const world = buildWorld({ isClaimTaken: true });
   const pipeline = createMeowPipeline(world.deps);
   assert.deepEqual(await pipeline.requestMeow(request()), {
-    kind: "tooManyAttempts",
+    kind: "inProgress",
   });
   assert.equal(world.calls.includes("generate"), false);
   assert.equal(world.claim.releases, 0);
@@ -454,4 +455,11 @@ test("releases the account's claim after a request finishes", async () => {
   await pipeline.requestMeow(request());
   assert.equal(world.claim.isHeld, false);
   assert.equal(world.claim.releases, 1);
+});
+
+test("releases the account's claim when a later step throws", async () => {
+  const world = buildWorld({ refusalsToday: new Error("store down") });
+  const pipeline = createMeowPipeline(world.deps);
+  await assert.rejects(pipeline.requestMeow(request()), /store down/);
+  assert.equal(world.claim.isHeld, false);
 });

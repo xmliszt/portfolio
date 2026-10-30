@@ -62,7 +62,7 @@ export function createFakeRoomSource(options: {
 
   const state: { stops: (() => void)[] } = { stops: [] };
   return {
-    join({ self, onPlayers, onFinger, onConnectedChange }) {
+    join({ self, onPlayers, onFinger }) {
       const startedAt = Date.now();
       const fakes = Array.from(
         { length: options.remotePlayerCount },
@@ -107,7 +107,6 @@ export function createFakeRoomSource(options: {
       }, 1000 / ROOM_LIMITS.fingerSendsPerSecond);
       const stop = () => window.clearInterval(timer);
       state.stops = [...state.stops, stop];
-      onConnectedChange(true);
       onPlayers(self === undefined ? fakes : [self, ...fakes]);
       return {
         sendFinger: () => {},

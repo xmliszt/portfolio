@@ -1,5 +1,8 @@
-/** Every word the visitor reads on the paws page, kept in one place so it can be proofread together. */
-export const COPY = {
+import type { PawsLocale } from "@/lib/paws/i18n/paws-locales";
+
+export const en = {
+  locale: "en",
+  languageName: "English",
   common: {
     close: "Close",
     back: "Back",
@@ -86,6 +89,7 @@ export const COPY = {
     borrowed:
       "Today's custom sounds are all used up. Your cat is borrowing a meow for now. Come back tomorrow to give it its own voice.",
     tooManyAttempts: "That's enough tries for today. Come back tomorrow.",
+    inProgress: "Your cat's sound is still being made. Try again in a minute.",
   },
   room: {
     mute: "Mute",
@@ -93,6 +97,7 @@ export const COPY = {
     muteCat: "Mute this cat",
     report: "Report this sound",
     reconnecting: "Reconnecting…",
+    language: "Language",
   },
   options: {
     coat: {
@@ -126,4 +131,4 @@ export const COPY = {
     voice: { squeaky: "Squeaky", soft: "Soft", raspy: "Raspy", deep: "Deep" },
     mood: { chatty: "Chatty", sleepy: "Sleepy", grumpy: "Grumpy" },
   },
-} as const;
+} satisfies { locale: PawsLocale; [key: string]: unknown };

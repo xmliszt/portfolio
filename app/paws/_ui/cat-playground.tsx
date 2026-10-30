@@ -2,8 +2,8 @@
 
 import { useEffect, useRef } from "react";
 
+import { usePawsCopy } from "@/app/paws/_i18n/use-paws-copy";
 import type { CatLook } from "@/lib/paws/cat-look";
-import { COPY } from "@/lib/paws/copy";
 import { createSceneResources } from "@/lib/paws/render/create-scene-resources";
 import { drawScene } from "@/lib/paws/render/draw-scene";
 import { pruneScenePrints } from "@/lib/paws/render/prune-scene-prints";
@@ -32,6 +32,8 @@ type CatPlaygroundProps = {
 
 /** Render a small private room with only the visitor's cat in it, running the real cat behaviour: it walks, sits, sleeps, sniffs and reaches for the visitor's fingertip, while the view follows it. */
 export function CatPlayground(props: CatPlaygroundProps) {
+  const { copy } = usePawsCopy();
+
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const lookRef = useRef(props.look);
   const pointerRef = useRef({ x: 0, y: 0, present: false, pressed: false });
@@ -203,7 +205,7 @@ export function CatPlayground(props: CatPlaygroundProps) {
     <canvas
       ref={canvasRef}
       role="img"
-      aria-label={COPY.maker.previewLabel}
+      aria-label={copy.maker.previewLabel}
       onPointerMove={handlePointerMove}
       onPointerDown={handlePointerDown}
       onPointerUp={handlePointerUp}

@@ -24,7 +24,6 @@ export type RoomSource = {
     onFinger: (finger: FingerMessage) => void;
     onCats: (cats: CatsMessage) => void;
     onEvent: (event: RoomEvent) => void;
-    onConnectedChange: (isConnected: boolean) => void;
   }) => RoomConnection;
   dispose: () => void;
 };

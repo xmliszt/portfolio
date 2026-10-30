@@ -1,6 +1,6 @@
 import { useEffect, useId, useRef } from "react";
 
-import { COPY } from "@/lib/paws/copy";
+import { usePawsCopy } from "@/app/paws/_i18n/use-paws-copy";
 import { cn } from "@/lib/utils";
 
 import { FOCUS_RING_CLASS } from "./focus-ring-class";
@@ -18,6 +18,8 @@ type FloatingCardProps = {
 
 /** Render a small paper card in the bottom-left corner of the page, titled and closable, with its body scrolling between header and footer. */
 export function FloatingCard(props: FloatingCardProps) {
+  const { copy } = usePawsCopy();
+
   const titleId = useId();
   const cardRef = useRef<HTMLElement>(null);
 
@@ -53,7 +55,7 @@ export function FloatingCard(props: FloatingCardProps) {
         </h2>
         <button
           type="button"
-          aria-label={COPY.common.close}
+          aria-label={copy.common.close}
           onClick={props.onClose}
           className={cn(
             FOCUS_RING_CLASS,

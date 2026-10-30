@@ -181,20 +181,24 @@ export function createMeowPipeline(deps: MeowPipelineDependencies) {
       now,
       staleBefore: new Date(now.getTime() - CLAIM_STALE_MS),
     });
-    if (!isClaimed) return { kind: "tooManyAttempts" };
+    if (!isClaimed) return { kind: "inProgress" };
     try {
-      return await requestUnclaimedMeow({
+      return await runClaimedMeowRequest({
         userId,
         ip: options.ip,
         request,
         now,
       });
     } finally {
-      await deps.store.releaseMeowClaim({ userId });
+      await deps.store
+        .releaseMeowClaim({ userId })
+        .catch((error: unknown) =>
+          deps.log("paws meow claim release failed", error)
+        );
     }
   }
 
-  async function requestUnclaimedMeow(options: {
+  async function runClaimedMeowRequest(options: {
     userId: string;
     ip: string;
     request: MeowRequest;

@@ -18,6 +18,7 @@ export function parseMeowResponse(value: unknown): MeowResponse | undefined {
     case "refusedByUs":
     case "refusedByProvider":
     case "tooManyAttempts":
+    case "inProgress":
     case "signInRequired":
       return { kind: value.kind };
     default:

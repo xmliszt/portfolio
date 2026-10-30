@@ -1,7 +1,7 @@
 import { Metadata, Viewport } from "next";
 import { IBM_Plex_Mono, Instrument_Serif } from "next/font/google";
 
-import { COPY } from "@/lib/paws/copy";
+import { en } from "@/lib/paws/i18n/copy/en";
 import { RISO, RISO_CSS_VARIABLES } from "@/lib/paws/riso-inks";
 import { cn } from "@/lib/utils";
 
@@ -18,8 +18,8 @@ const fontMono = IBM_Plex_Mono({
 });
 
 export const metadata: Metadata = {
-  title: COPY.site.title,
-  description: COPY.site.description,
+  title: en.site.title,
+  description: en.site.description,
   robots: { index: false, follow: false },
 };
 

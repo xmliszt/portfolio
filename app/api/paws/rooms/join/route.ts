@@ -44,10 +44,6 @@ export async function POST(request: Request) {
   if (joins.error !== null) return respond({ kind: "failed" }, 500);
   if ((joins.count ?? 0) >= ROOM_TIMING.maxJoinsPerWindow)
     return respond({ kind: "tooManyJoins" }, 429);
-  const recorded = await client
-    .from("room_joins")
-    .insert({ user_id: user.userId });
-  if (recorded.error !== null) return respond({ kind: "failed" }, 500);
 
   const freshCutoff = new Date(now - ROOM_TIMING.memberFreshMs).toISOString();
   await client.from("room_members").delete().lt("last_seen_at", freshCutoff);
@@ -68,6 +64,10 @@ export async function POST(request: Request) {
     createRoomId: () => crypto.randomUUID(),
   });
   if (picked.kind === "full") return respond({ kind: "full" }, 200);
+  const recorded = await client
+    .from("room_joins")
+    .insert({ user_id: user.userId });
+  if (recorded.error !== null) return respond({ kind: "failed" }, 500);
 
   const left = await client
     .from("room_members")

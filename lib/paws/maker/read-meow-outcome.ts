@@ -1,4 +1,4 @@
-import { COPY } from "@/lib/paws/copy";
+import type { PawsCopy } from "@/lib/paws/i18n/paws-copy";
 import type { MeowResponse } from "@/lib/paws/meow-api-types";
 
 export type MeowOutcome =
@@ -11,8 +11,12 @@ export type MeowOutcome =
   | { kind: "tryAnother"; message: string }
   | { kind: "signInRequired" };
 
-/** Return what the voice step shows and allows next for a `/api/paws/meow` response. */
-export function readMeowOutcome(response: MeowResponse): MeowOutcome {
+/** Return what the voice step shows and allows next for a `/api/paws/meow` response, with messages from `copy`. */
+export function readMeowOutcome(options: {
+  response: MeowResponse;
+  copy: PawsCopy;
+}): MeowOutcome {
+  const { response, copy } = options;
   switch (response.kind) {
     case "generated":
     case "reused":
@@ -27,27 +31,29 @@ export function readMeowOutcome(response: MeowResponse): MeowOutcome {
       return {
         kind: "ready",
         meowUrl: response.meowUrl,
-        message: COPY.meowResult.borrowed,
+        message: copy.meowResult.borrowed,
         canTryAgain: false,
       };
     case "failed":
       return {
         kind: "ready",
         meowUrl: response.meowUrl,
-        message: COPY.meowResult.failed,
+        message: copy.meowResult.failed,
         canTryAgain: true,
       };
     case "tooManyAttempts":
       return {
         kind: "ready",
         meowUrl: undefined,
-        message: COPY.meowResult.tooManyAttempts,
+        message: copy.meowResult.tooManyAttempts,
         canTryAgain: false,
       };
+    case "inProgress":
+      return { kind: "tryAnother", message: copy.meowResult.inProgress };
     case "refusedByUs":
-      return { kind: "tryAnother", message: COPY.meowResult.refusedByUs };
+      return { kind: "tryAnother", message: copy.meowResult.refusedByUs };
     case "refusedByProvider":
-      return { kind: "tryAnother", message: COPY.meowResult.refusedByProvider };
+      return { kind: "tryAnother", message: copy.meowResult.refusedByProvider };
     case "signInRequired":
       return { kind: "signInRequired" };
     default: {

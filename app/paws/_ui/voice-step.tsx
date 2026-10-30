@@ -2,9 +2,9 @@
 
 import { useEffect, useId, useRef, useState } from "react";
 
+import { usePawsCopy } from "@/app/paws/_i18n/use-paws-copy";
 import type { SavedCat } from "@/lib/paws/cat-api-types";
 import type { CatLook } from "@/lib/paws/cat-look";
-import { COPY } from "@/lib/paws/copy";
 import {
   type MeowOutcome,
   readMeowOutcome,
@@ -29,19 +29,6 @@ import { SegmentedControl } from "./segmented-control";
 import { StudioFrame } from "./studio-frame";
 import { TEXT_FIELD_CLASS } from "./text-field-class";
 
-const AGE_OPTIONS = AGES.map((age) => ({
-  value: age,
-  label: COPY.options.age[age],
-}));
-const VOICE_OPTIONS = VOICES.map((voice) => ({
-  value: voice,
-  label: COPY.options.voice[voice],
-}));
-const MOOD_OPTIONS = MOODS.map((mood) => ({
-  value: mood,
-  label: COPY.options.mood[mood],
-}));
-
 type Phase =
   | { kind: "editing"; notice: string | undefined }
   | { kind: "making" }
@@ -65,9 +52,22 @@ type VoiceStepProps = {
 
 /** Render the corner card that saves the cat, makes its one sound, plays it back, and brings the cat in. */
 export function VoiceStep(props: VoiceStepProps) {
+  const { copy } = usePawsCopy();
+  const AGE_OPTIONS = AGES.map((age) => ({
+    value: age,
+    label: copy.options.age[age],
+  }));
+  const VOICE_OPTIONS = VOICES.map((voice) => ({
+    value: voice,
+    label: copy.options.voice[voice],
+  }));
+  const MOOD_OPTIONS = MOODS.map((mood) => ({
+    value: mood,
+    label: copy.options.mood[mood],
+  }));
   const textId = useId();
   const formId = useId();
-  const [text, setText] = useState<string>(COPY.voice.textPlaceholder);
+  const [text, setText] = useState<string>(copy.voice.textPlaceholder);
   const [playCount, setPlayCount] = useState(0);
   const [phase, setPhase] = useState<Phase>({
     kind: "editing",
@@ -116,7 +116,7 @@ export function VoiceStep(props: VoiceStepProps) {
       .catch(() =>
         setPhase((current) =>
           current.kind === "ready"
-            ? { ...current, notice: COPY.voice.playBlocked }
+            ? { ...current, notice: copy.voice.playBlocked }
             : current
         )
       );
@@ -139,7 +139,7 @@ export function VoiceStep(props: VoiceStepProps) {
         return;
       case "invalid":
       case "unreachable":
-        setPhase({ kind: "editing", notice: COPY.maker.saveFailed });
+        setPhase({ kind: "editing", notice: copy.maker.saveFailed });
         return;
       default: {
         const unhandled: never = saved;
@@ -149,17 +149,17 @@ export function VoiceStep(props: VoiceStepProps) {
     const response = await requestMeow({
       accessToken: props.accessToken,
       meow: {
-        text: text.trim() || COPY.voice.textPlaceholder,
+        text: text.trim() || copy.voice.textPlaceholder,
         voice: props.voice,
       },
       signal,
     });
     if (signal.aborted) return;
     if (response.kind === "unreachable") {
-      setPhase({ kind: "editing", notice: COPY.voice.unreachable });
+      setPhase({ kind: "editing", notice: copy.voice.unreachable });
       return;
     }
-    const outcome = readMeowOutcome(response);
+    const outcome = readMeowOutcome({ response, copy });
     switch (outcome.kind) {
       case "ready":
         setPhase({ kind: "ready", outcome, notice: undefined });
@@ -198,7 +198,7 @@ export function VoiceStep(props: VoiceStepProps) {
         setPhase({
           kind: "ready",
           outcome,
-          notice: COPY.voice.bringInFailed,
+          notice: copy.voice.bringInFailed,
         });
         return;
       default: {
@@ -267,8 +267,8 @@ export function VoiceStep(props: VoiceStepProps) {
 
   return (
     <StudioFrame
-      eyebrow={COPY.voice.eyebrow}
-      title={COPY.voice.title}
+      eyebrow={copy.voice.eyebrow}
+      title={copy.voice.title}
       look={props.look}
       reactKey={String(playCount)}
       onClose={props.onClose}
@@ -283,7 +283,7 @@ export function VoiceStep(props: VoiceStepProps) {
                   disabled={isBusy}
                   onClick={props.onBack}
                 >
-                  {COPY.common.back}
+                  {copy.common.back}
                 </RisoButton>
                 <RisoButton
                   variant="primary"
@@ -292,8 +292,8 @@ export function VoiceStep(props: VoiceStepProps) {
                   disabled={isBusy}
                 >
                   {phase.kind === "making"
-                    ? COPY.voice.making
-                    : COPY.voice.make}
+                    ? copy.voice.making
+                    : copy.voice.make}
                 </RisoButton>
               </>
             );
@@ -308,7 +308,7 @@ export function VoiceStep(props: VoiceStepProps) {
                     form={formId}
                     disabled={isBusy}
                   >
-                    {COPY.common.tryAgain}
+                    {copy.common.tryAgain}
                   </RisoButton>
                 ) : (
                   <span />
@@ -320,8 +320,8 @@ export function VoiceStep(props: VoiceStepProps) {
                   onClick={handleBringIn}
                 >
                   {phase.kind === "bringing"
-                    ? COPY.voice.bringing
-                    : COPY.voice.bringIn}
+                    ? copy.voice.bringing
+                    : copy.voice.bringIn}
                 </RisoButton>
               </>
             );
@@ -342,7 +342,7 @@ export function VoiceStep(props: VoiceStepProps) {
             htmlFor={textId}
             className="text-[12px] text-[var(--pw-ink-soft)]"
           >
-            {COPY.voice.textLabel}
+            {copy.voice.textLabel}
           </label>
           <input
             ref={textRef}
@@ -350,7 +350,7 @@ export function VoiceStep(props: VoiceStepProps) {
             type="text"
             autoComplete="off"
             maxLength={MAX_MEOW_TEXT_LENGTH}
-            placeholder={COPY.voice.textPlaceholder}
+            placeholder={copy.voice.textPlaceholder}
             value={text}
             disabled={isLocked}
             onChange={handleTextChange}
@@ -359,7 +359,7 @@ export function VoiceStep(props: VoiceStepProps) {
           />
         </div>
         <SegmentedControl
-          legend={COPY.voice.age}
+          legend={copy.voice.age}
           name="age"
           columns={3}
           options={AGE_OPTIONS}
@@ -368,7 +368,7 @@ export function VoiceStep(props: VoiceStepProps) {
           onChange={handleAgeChange}
         />
         <SegmentedControl
-          legend={COPY.voice.voice}
+          legend={copy.voice.voice}
           name="voice"
           columns={4}
           options={VOICE_OPTIONS}
@@ -377,7 +377,7 @@ export function VoiceStep(props: VoiceStepProps) {
           onChange={handleVoiceChange}
         />
         <SegmentedControl
-          legend={COPY.voice.mood}
+          legend={copy.voice.mood}
           name="mood"
           columns={3}
           options={MOOD_OPTIONS}
@@ -387,7 +387,7 @@ export function VoiceStep(props: VoiceStepProps) {
         />
         {(phase.kind === "editing" || phase.kind === "making") && (
           <p className="border-l-[3px] border-[var(--pw-orange)] pl-2">
-            {COPY.voice.oneOnly}
+            {copy.voice.oneOnly}
           </p>
         )}
       </form>
@@ -404,7 +404,7 @@ export function VoiceStep(props: VoiceStepProps) {
                 >
                   <path d="M2 1l7 4-7 4z" />
                 </svg>
-                {COPY.voice.play}
+                {copy.voice.play}
               </span>
             </RisoButton>
           </div>
@@ -416,7 +416,7 @@ export function VoiceStep(props: VoiceStepProps) {
           notice ? "border-l-[3px] border-[var(--pw-pink)] pl-2" : "sr-only"
         )}
       >
-        {notice ?? (phase.kind === "making" ? COPY.voice.making : "")}
+        {notice ?? (phase.kind === "making" ? copy.voice.making : "")}
       </p>
     </StudioFrame>
   );

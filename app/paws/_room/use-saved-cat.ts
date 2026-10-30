@@ -6,7 +6,8 @@ import { fetchSavedCat } from "@/app/paws/_ui/fetch-saved-cat";
 import type { SavedCat } from "@/lib/paws/cat-api-types";
 import type { PawsSession } from "@/lib/paws/session-types";
 
-const RETRY_DELAY_MS = 3000;
+const FIRST_RETRY_DELAY_MS = 3000;
+const MAX_RETRY_DELAY_MS = 60_000;
 
 /** Return the signed-in member's saved cat (loaded once per account and retried until the server answers, `undefined` until found or for guests), whether the lookup is done (`true` at once for guests), and a setter for a cat just made. */
 export function useSavedCat(session: PawsSession) {
@@ -33,7 +34,7 @@ export function useSavedCat(session: PawsSession) {
         if (answer.kind === "unreachable") {
           retry.timer = window.setTimeout(
             () => setAttempt((value) => value + 1),
-            RETRY_DELAY_MS
+            Math.min(FIRST_RETRY_DELAY_MS * 2 ** attempt, MAX_RETRY_DELAY_MS)
           );
           return;
         }
