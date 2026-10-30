@@ -15,12 +15,20 @@ export type ChatPipelineDependencies = {
     userId: string;
     seenSince: Date;
   }) => Promise<boolean>;
-  countSentSince: (options: { userId: string; since: Date }) => Promise<number>;
-  insertMessage: (options: {
+  countLinesSince: (options: {
+    userId: string;
+    since: Date;
+  }) => Promise<number>;
+  insertLine: (options: {
     roomId: string;
     userId: string;
     text: string;
   }) => Promise<string>;
+  deleteLine: (id: string) => Promise<void>;
+  markLine: (options: {
+    id: string;
+    status: "sent" | "refused";
+  }) => Promise<void>;
   broadcast: (options: {
     roomId: string;
     message: ChatMessage;
@@ -30,7 +38,7 @@ export type ChatPipelineDependencies = {
   log: (message: string, details: unknown) => void;
 };
 
-/** Return a chat pipeline that sends one line from a player in a room to everyone in it, after the room, rate and moderation checks. */
+/** Return a chat pipeline that sends one line from a player in a room to everyone in it, after the room, rate and moderation checks; each attempt is saved before the rate check counts it, so parallel attempts and refused lines count too. */
 export function createChatPipeline(deps: ChatPipelineDependencies) {
   async function sendChat(options: {
     user: RequestUser | undefined;
@@ -49,22 +57,30 @@ export function createChatPipeline(deps: ChatPipelineDependencies) {
         seenSince: new Date(now - ROOM_TIMING.memberFreshMs),
       });
       if (!isPlaying) return { kind: "notPlaying" };
-      const [burst, minute] = await Promise.all(
-        [BURST, MINUTE].map((limit) =>
-          deps.countSentSince({ userId, since: new Date(now - limit.windowMs) })
-        )
-      );
-      if (burst >= BURST.max || minute >= MINUTE.max)
-        return { kind: "tooFast" };
-      if (await deps.moderation.isFlagged(request.text))
-        return { kind: "refused" };
-      const id = await deps.insertMessage({
+      const id = await deps.insertLine({
         roomId: request.roomId,
         userId,
         text: request.text,
       });
+      const [burst, minute] = await Promise.all(
+        [BURST, MINUTE].map((limit) =>
+          deps.countLinesSince({
+            userId,
+            since: new Date(now - limit.windowMs),
+          })
+        )
+      );
+      if (burst > BURST.max || minute > MINUTE.max) {
+        await deps.deleteLine(id);
+        return { kind: "tooFast" };
+      }
+      if (await deps.moderation.isFlagged(request.text)) {
+        await deps.markLine({ id, status: "refused" });
+        return { kind: "refused" };
+      }
       const message = { id, userId, text: request.text };
       await deps.broadcast({ roomId: request.roomId, message });
+      await deps.markLine({ id, status: "sent" });
       return { kind: "sent", message };
     } catch (error) {
       deps.log("paws chat failed", error);

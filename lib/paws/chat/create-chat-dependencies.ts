@@ -24,7 +24,7 @@ export function createChatDependencies(
       if (error) throw error;
       return data.length > 0;
     },
-    countSentSince: async ({ userId, since }) => {
+    countLinesSince: async ({ userId, since }) => {
       const { count, error } = await client
         .from("chat_messages")
         .select("id", { count: "exact", head: true })
@@ -33,7 +33,7 @@ export function createChatDependencies(
       if (error) throw error;
       return count ?? 0;
     },
-    insertMessage: async ({ roomId, userId, text }) => {
+    insertLine: async ({ roomId, userId, text }) => {
       const { data, error } = await client
         .from("chat_messages")
         .insert({ room_id: roomId, user_id: userId, text })
@@ -41,6 +41,20 @@ export function createChatDependencies(
         .single();
       if (error) throw error;
       return String(data.id);
+    },
+    deleteLine: async (id) => {
+      const { error } = await client
+        .from("chat_messages")
+        .delete()
+        .eq("id", id);
+      if (error) throw error;
+    },
+    markLine: async ({ id, status }) => {
+      const { error } = await client
+        .from("chat_messages")
+        .update({ status })
+        .eq("id", id);
+      if (error) throw error;
     },
     broadcast: async ({ roomId, message }) => {
       const channel = client.channel(getChatTopic(roomId), {

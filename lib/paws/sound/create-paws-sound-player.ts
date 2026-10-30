@@ -16,6 +16,7 @@ const CAT_COOLDOWN_MS = 900;
 const MAX_CLIP_S = 2;
 const FADE_OUT_S = 0.12;
 const BABBLE_LEVEL = 0.6;
+const BABBLE_CUT_S = 0.03;
 
 export type PawsSoundCue = {
   userId: string;
@@ -57,11 +58,13 @@ export function createPawsSoundPlayer(options: {
     mutedCats: { [userId: string]: true | undefined };
     lastPlayedAtMs: { [userId: string]: number | undefined };
     clips: { [url: string]: Promise<Clip | undefined> | undefined };
+    babbles: { [userId: string]: GainNode | undefined };
   } = {
     muted: false,
     mutedCats: {},
     lastPlayedAtMs: {},
     clips: {},
+    babbles: {},
   };
 
   function createGraph() {
@@ -170,7 +173,7 @@ export function createPawsSoundPlayer(options: {
     });
   }
 
-  /** Babble `text` in the cat's voice, panned to world `x`, unless sound is muted, the cat is muted, or the player is not unlocked. */
+  /** Babble `text` in the cat's voice, panned to world `x`, cutting off that cat's previous line, unless `text` has nothing to say, sound or the cat is muted, or the player is not unlocked. */
   function speak(line: {
     userId: string;
     text: string;
@@ -181,9 +184,17 @@ export function createPawsSoundPlayer(options: {
     const graph = state.graph;
     if (graph === undefined || state.muted || state.mutedCats[line.userId])
       return;
+    const syllables = getBabbleSyllables(line.text);
+    if (!syllables.some((syllable) => syllable.kind === "voiced")) return;
     const { context } = graph;
+    const previous = state.babbles[line.userId];
+    if (previous !== undefined) {
+      previous.gain.setTargetAtTime(0, context.currentTime, BABBLE_CUT_S);
+      window.setTimeout(() => previous.disconnect(), BABBLE_CUT_S * 5000);
+    }
     const level = context.createGain();
     level.gain.value = BABBLE_LEVEL;
+    state.babbles[line.userId] = level;
     const panner = context.createStereoPanner();
     panner.pan.value = getPanFromWorldX(line.x);
     level.connect(panner);
@@ -191,7 +202,7 @@ export function createPawsSoundPlayer(options: {
     const endsAt = scheduleBabble({
       context,
       destination: level,
-      syllables: getBabbleSyllables(line.text),
+      syllables,
       voice: getBabbleVoice({
         voice: line.voice,
         size: line.size,
@@ -200,14 +211,18 @@ export function createPawsSoundPlayer(options: {
       startAt: context.currentTime + 0.02,
       random: Math.random,
     });
-    const cleanup = context.createConstantSource();
-    cleanup.onended = () => {
-      cleanup.disconnect();
-      level.disconnect();
+    const ender = context.createConstantSource();
+    ender.offset.value = 0;
+    ender.connect(level);
+    ender.onended = () => {
+      ender.disconnect();
       panner.disconnect();
+      level.disconnect();
+      if (state.babbles[line.userId] === level)
+        state.babbles[line.userId] = undefined;
     };
-    cleanup.start();
-    cleanup.stop(endsAt + 0.1);
+    ender.start();
+    ender.stop(endsAt + 0.1);
   }
 
   /** Mute or unmute every cat. */
@@ -230,6 +245,7 @@ export function createPawsSoundPlayer(options: {
   /** Close the audio context and drop every cached clip; a later `unlock` opens a new context. */
   function dispose() {
     state.clips = {};
+    state.babbles = {};
     void state.graph?.context.close();
     state.graph = undefined;
   }

@@ -9,7 +9,7 @@ import { WIRE_LIMITS } from "@/lib/paws/wire/wire-limits";
 import type { ChatMessage } from "@/lib/paws/wire-types";
 import { cn } from "@/lib/utils";
 
-export const COMPOSE_ANCHOR_PREFIX = "compose:";
+import { COMPOSE_ANCHOR_PREFIX } from "./compose-anchor-prefix";
 
 const BUBBLE_CLASS =
   "pointer-events-none absolute top-0 left-0 opacity-0 max-w-[220px] border-[1.5px] border-[var(--pw-ink)] bg-[var(--pw-paper)] px-2 py-1 text-[13px] leading-snug text-[var(--pw-ink)] after:absolute after:top-full after:left-1/2 after:-ml-[5px] after:border-x-[5px] after:border-t-[6px] after:border-x-transparent after:border-t-[var(--pw-ink)]";
@@ -17,7 +17,7 @@ const BUBBLE_CLASS =
 type ChatLayerProps = {
   bubbles: ChatMessage[];
   ownUserId: string | undefined;
-  isComposing: boolean;
+  composing: boolean;
   anchors: React.RefObject<{ [key: string]: HTMLElement | undefined }>;
   onSend: (text: string) => Promise<ChatResponse["kind"]>;
   onCloseCompose: () => void;
@@ -33,12 +33,13 @@ export function ChatLayer(props: ChatLayerProps) {
   const [notice, setNotice] = useState<string | undefined>(undefined);
 
   useEffect(() => {
-    if (props.isComposing) inputRef.current?.focus();
-  }, [props.isComposing]);
+    if (props.composing && !isSending) inputRef.current?.focus();
+  }, [props.composing, isSending]);
 
   function anchor(key: string) {
     return (element: HTMLElement | null) => {
-      props.anchors.current[key] = element ?? undefined;
+      if (element === null) delete props.anchors.current[key];
+      else props.anchors.current[key] = element;
     };
   }
 
@@ -56,7 +57,6 @@ export function ChatLayer(props: ChatLayerProps) {
     setIsSending(false);
     switch (kind) {
       case "sent":
-      case "notPlaying":
       case "signInRequired":
         close();
         return;
@@ -66,6 +66,7 @@ export function ChatLayer(props: ChatLayerProps) {
       case "tooFast":
         setNotice(copy.room.chatTooFast);
         return;
+      case "notPlaying":
       case "invalid":
       case "failed":
         setNotice(copy.room.chatFailed);
@@ -94,7 +95,7 @@ export function ChatLayer(props: ChatLayerProps) {
     <div className="pointer-events-none absolute inset-0 overflow-hidden">
       {props.bubbles
         .filter(
-          (bubble) => !(props.isComposing && bubble.userId === props.ownUserId)
+          (bubble) => !(props.composing && bubble.userId === props.ownUserId)
         )
         .map((bubble) => (
           <p
@@ -105,7 +106,7 @@ export function ChatLayer(props: ChatLayerProps) {
             {bubble.text}
           </p>
         ))}
-      {props.isComposing && props.ownUserId !== undefined && (
+      {props.composing && props.ownUserId !== undefined && (
         <form
           ref={anchor(`${COMPOSE_ANCHOR_PREFIX}${props.ownUserId}`)}
           onSubmit={handleSubmit}
@@ -126,7 +127,7 @@ export function ChatLayer(props: ChatLayerProps) {
             maxLength={WIRE_LIMITS.maxChatLength}
             placeholder={copy.room.chatPlaceholder}
             value={text}
-            disabled={isSending}
+            readOnly={isSending}
             onChange={handleChange}
             onKeyDown={handleKeyDown}
             onBlur={handleBlur}

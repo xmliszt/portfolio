@@ -19,7 +19,8 @@ import { createPawsSoundPlayer } from "@/lib/paws/sound/create-paws-sound-player
 import type { ChatMessage } from "@/lib/paws/wire-types";
 import { cn } from "@/lib/utils";
 
-import { ChatLayer, COMPOSE_ANCHOR_PREFIX } from "./chat-layer";
+import { ChatLayer } from "./chat-layer";
+import { COMPOSE_ANCHOR_PREFIX } from "./compose-anchor-prefix";
 import { postChat } from "./post-chat";
 import { useRoomConnection } from "./use-room-connection";
 import { useSavedCat } from "./use-saved-cat";
@@ -31,6 +32,7 @@ const BUBBLE_BASE_MS = 2500;
 const BUBBLE_PER_CHARACTER_MS = 70;
 const MAX_BUBBLE_MS = 8000;
 const BUBBLE_GAP_PX = 10;
+const BUBBLE_EDGE_PX = 8;
 
 function isTypingTarget(target: EventTarget | null) {
   return (
@@ -87,9 +89,9 @@ export function PawsRoom() {
     return undefined;
   })();
   function sayLine(message: ChatMessage) {
-    showBubble(message);
     if (spokenIdsRef.current.includes(message.id)) return;
     spokenIdsRef.current = [...spokenIdsRef.current, message.id].slice(-20);
+    showBubble(message);
     const player = playersRef.current.find(
       (candidate) => candidate.userId === message.userId
     );
@@ -118,6 +120,7 @@ export function PawsRoom() {
     );
     bubbleTimersRef.current[message.userId] = window.setTimeout(
       () => {
+        delete bubbleTimersRef.current[message.userId];
         setBubbles((current) =>
           current.filter((bubble) => bubble.id !== message.id)
         );
@@ -162,11 +165,12 @@ export function PawsRoom() {
       )
         return;
       event.preventDefault();
+      void sound.unlock();
       setIsComposing(true);
     }
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [hasOwnCatInRoom]);
+  }, [hasOwnCatInRoom, sound]);
 
   useEffect(() => {
     sound.setMuted(isMuted);
@@ -256,7 +260,11 @@ export function PawsRoom() {
           element.style.opacity = "0";
           continue;
         }
-        const x = cat.head[0] * view.scale + view.offsetX;
+        const halfWidth = element.offsetWidth / 2 + BUBBLE_EDGE_PX;
+        const x = Math.min(
+          Math.max(cat.head[0] * view.scale + view.offsetX, halfWidth),
+          width - halfWidth
+        );
         const y =
           (cat.head[1] - cat.head[2]) * view.scale +
           view.offsetY -
@@ -323,6 +331,10 @@ export function PawsRoom() {
   async function handleSend(text: string) {
     const roomId = roomIdRef.current;
     if (session.kind === "loading" || roomId === undefined) return "failed";
+    if (useFakeRoom) {
+      sayLine({ id: crypto.randomUUID(), userId: session.userId, text });
+      return "sent";
+    }
     const result = await postChat({
       accessToken: session.accessToken,
       roomId,
@@ -387,7 +399,7 @@ export function PawsRoom() {
       <ChatLayer
         bubbles={bubbles}
         ownUserId={ownUserId}
-        isComposing={isComposing && hasOwnCatInRoom}
+        composing={isComposing && hasOwnCatInRoom}
         anchors={anchorsRef}
         onSend={handleSend}
         onCloseCompose={handleCloseCompose}

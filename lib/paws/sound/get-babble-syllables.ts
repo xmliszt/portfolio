@@ -72,7 +72,7 @@ function toVoiced(options: { character: string; isUpper: boolean }) {
   };
 }
 
-/** Return the syllables a cat babbles for `text`: one per letter or other character, a short pause for whitespace, a long pause for punctuation such as `.`, `,` or `?`, a rise over the last syllables before `?`, louder syllables after `!` or in capitals, and at most `MAX_SYLLABLES`. */
+/** Return the syllables a cat babbles for `text`: one per letter or other character, a short pause for whitespace, a long pause for punctuation such as `.`, `,` or `?`, a rise over the last syllables before `?`, louder syllables in capitals or throughout a line ending in `!`, and at most `MAX_SYLLABLES`. */
 export function getBabbleSyllables(text: string): BabbleSyllable[] {
   const syllables = Array.from(text).flatMap((character): BabbleSyllable[] => {
     if (/\s/u.test(character)) return [{ kind: "pause", long: false }];
@@ -90,10 +90,15 @@ export function getBabbleSyllables(text: string): BabbleSyllable[] {
   });
   const trimmed = syllables
     .slice(0, MAX_SYLLABLES)
-    .filter(
-      (syllable, index, list) =>
-        syllable.kind === "voiced" || list[index - 1]?.kind !== "pause"
-    );
+    .reduce<BabbleSyllable[]>((kept, syllable) => {
+      const last = kept.at(-1);
+      if (syllable.kind !== "pause" || last?.kind !== "pause")
+        return [...kept, syllable];
+      return [
+        ...kept.slice(0, -1),
+        { kind: "pause", long: last.long || syllable.long },
+      ];
+    }, []);
   const isQuestion = /[?？]\s*$/u.test(text);
   const isExclaimed = /[!！]\s*$/u.test(text);
   const voicedIndexes = trimmed.flatMap((syllable, index) =>

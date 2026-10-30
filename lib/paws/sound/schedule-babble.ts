@@ -1,4 +1,8 @@
-import type { BabbleSyllable, BabbleVowel } from "./get-babble-syllables";
+import type {
+  BabbleOnset,
+  BabbleSyllable,
+  BabbleVowel,
+} from "./get-babble-syllables";
 import type { BabbleVoice } from "./get-babble-voice";
 
 /** First and second formants of each vowel, in hertz, for a small voice. */
@@ -10,11 +14,19 @@ const FORMANTS = {
   u: [380, 900],
 } as const satisfies { [vowel in BabbleVowel]: readonly [number, number] };
 
-const ATTACK_SECONDS = 0.008;
+/** How each onset starts a syllable: its attack time in seconds and the pitch it slides down (or up) from, as a multiple. */
+const ONSETS = {
+  none: { attack: 0.008, fromPitch: 1.04 },
+  stop: { attack: 0.003, fromPitch: 1.15 },
+  hiss: { attack: 0.01, fromPitch: 1.08 },
+  hum: { attack: 0.018, fromPitch: 0.94 },
+} as const satisfies {
+  [onset in BabbleOnset]: { attack: number; fromPitch: number };
+};
+const BREATH_SHARE = 0.25;
 const GAP_SHARE = 0.25;
 const SHORT_PAUSE_SHARE = 1.2;
 const LONG_PAUSE_SHARE = 2.5;
-const ONSET_SECONDS = 0.018;
 const PEAK = 0.5;
 const LOUD_PEAK = 0.75;
 
@@ -61,12 +73,13 @@ export function scheduleBabble(options: {
 
       const source = context.createOscillator();
       source.type = "sawtooth";
-      source.frequency.setValueAtTime(pitch * 1.04, at);
+      const onset = ONSETS[syllable.onset];
+      source.frequency.setValueAtTime(pitch * onset.fromPitch, at);
       source.frequency.exponentialRampToValueAtTime(pitch, at + length * 0.6);
       const envelope = context.createGain();
       const peak = syllable.loud ? LOUD_PEAK : PEAK;
       envelope.gain.setValueAtTime(0, at);
-      envelope.gain.linearRampToValueAtTime(peak, at + ATTACK_SECONDS);
+      envelope.gain.linearRampToValueAtTime(peak, at + onset.attack);
       envelope.gain.exponentialRampToValueAtTime(0.001, at + length);
       const [first, second] = FORMANTS[syllable.vowel];
       const formants = [first, second].map((frequency, index) => {
@@ -82,39 +95,19 @@ export function scheduleBabble(options: {
         filter.connect(destination);
       }
 
-      const breath = voice.rasp > 0 || syllable.onset !== "none";
-      const noiseSource = breath ? context.createBufferSource() : undefined;
+      const noiseSource =
+        voice.rasp > 0 ? context.createBufferSource() : undefined;
       if (noiseSource !== undefined) {
         noiseSource.buffer = noise;
         const shape = context.createBiquadFilter();
+        shape.type = "bandpass";
+        shape.frequency.value = second * voice.formantScale;
+        shape.Q.value = 2;
         const noiseGain = context.createGain();
-        switch (syllable.onset) {
-          case "hiss":
-            shape.type = "highpass";
-            shape.frequency.value = 4000;
-            break;
-          case "stop":
-            shape.type = "bandpass";
-            shape.frequency.value = 2500;
-            break;
-          case "hum":
-            shape.type = "lowpass";
-            shape.frequency.value = 600;
-            break;
-          case "none":
-            shape.type = "bandpass";
-            shape.frequency.value = first * voice.formantScale * 2;
-            break;
-          default: {
-            const unknown: never = syllable.onset;
-            throw new Error(`Unknown onset ${String(unknown)}`);
-          }
-        }
-        const onsetPeak = syllable.onset === "none" ? 0 : peak * 0.6;
-        noiseGain.gain.setValueAtTime(onsetPeak, at);
+        noiseGain.gain.setValueAtTime(0, at);
         noiseGain.gain.linearRampToValueAtTime(
-          peak * voice.rasp * 0.5,
-          at + ONSET_SECONDS
+          peak * voice.rasp * BREATH_SHARE,
+          at + onset.attack
         );
         noiseGain.gain.exponentialRampToValueAtTime(0.001, at + length);
         noiseSource.connect(shape);

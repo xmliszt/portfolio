@@ -42,3 +42,10 @@ test("drops symbols, merges pauses and stops at the syllable cap", () => {
   ]);
   assert.equal(getBabbleSyllables("a".repeat(200)).length, 48);
 });
+
+test("merged pauses keep the longer one", () => {
+  assert.deepEqual(getBabbleSyllables("hi .").at(-1), {
+    kind: "pause",
+    long: true,
+  });
+});
