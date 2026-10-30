@@ -4,7 +4,7 @@ import { clampNumber } from "./clamp-number";
 import { parseWireId } from "./parse-wire-id";
 import { WIRE_LIMITS } from "./wire-limits";
 
-const SOUNDS = ["meow", "trill", "purr"] as const;
+const SOUNDS = ["meow", "trill", "purr", "lick"] as const;
 const MAX_ANGLE = 4 * Math.PI;
 const LAST_LEG = 3;
 

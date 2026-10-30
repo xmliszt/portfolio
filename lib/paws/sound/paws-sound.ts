@@ -1,1 +1,1 @@
-export type PawsSound = "meow" | "trill" | "purr";
+export type PawsSound = "meow" | "trill" | "purr" | "lick";

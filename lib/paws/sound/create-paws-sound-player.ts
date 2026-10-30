@@ -20,6 +20,15 @@ const MUTE_TIME_CONSTANT_S = 0.03;
 const CAT_COOLDOWN_MS = 900;
 const MAX_CLIP_S = 2;
 const FADE_OUT_S = 0.12;
+/** Each sound's level in decibels after its loudness is matched to the others, set by ear. */
+const SOUND_LEVEL_DB = {
+  meow: 0,
+  trill: 0,
+  purr: 0,
+  lick: 0,
+} as const satisfies { [sound in PawsSound]: number };
+const OLD_VIBRATO_CENTS = 35;
+const OLD_VIBRATO_HZ = 5.5;
 const BABBLE_LEVEL = 0.6;
 const getLetterUrl = (letter: RecordedLetter) => `/paws/letters/${letter}.mp3`;
 const BABBLE_CUT_S = 0.03;
@@ -124,11 +133,26 @@ export function createPawsSoundPlayer(options: {
       clip.buffer.duration / source.playbackRate.value,
       MAX_CLIP_S
     );
-    gain.gain.setValueAtTime(clip.gain, startAt);
+    const level = clip.gain * 10 ** (SOUND_LEVEL_DB[cue.sound] / 20);
+    gain.gain.setValueAtTime(level, startAt);
     gain.gain.setValueAtTime(
-      clip.gain,
+      level,
       Math.max(startAt, startAt + playedS - FADE_OUT_S)
     );
+    const vibrato =
+      cue.age === "old" && cue.sound !== "meow"
+        ? context.createOscillator()
+        : undefined;
+    const vibratoDepth =
+      vibrato === undefined ? undefined : context.createGain();
+    if (vibrato !== undefined && vibratoDepth !== undefined) {
+      vibrato.frequency.value = OLD_VIBRATO_HZ;
+      vibratoDepth.gain.value = OLD_VIBRATO_CENTS;
+      vibrato.connect(vibratoDepth);
+      vibratoDepth.connect(source.detune);
+      vibrato.start(startAt);
+      vibrato.stop(startAt + playedS);
+    }
     gain.gain.linearRampToValueAtTime(0, startAt + playedS);
     const panner = context.createStereoPanner();
     panner.pan.value = getPanFromWorldX(cue.x);
@@ -139,6 +163,8 @@ export function createPawsSoundPlayer(options: {
       source.disconnect();
       gain.disconnect();
       panner.disconnect();
+      vibrato?.disconnect();
+      vibratoDepth?.disconnect();
     };
     source.start(startAt);
     source.stop(startAt + playedS);

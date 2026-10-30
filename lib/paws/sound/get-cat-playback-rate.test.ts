@@ -50,7 +50,15 @@ test("adds a small fixed offset per user and stays in range", () => {
       size: "small",
       age: "kitten",
       userId: "a",
-    }) <= 1.35,
+    }) <= 1.6,
     true
+  );
+});
+
+test("a lick follows age like the other shared sounds", () => {
+  const options = { sound: "lick", size: "medium", userId: "a" } as const;
+  assert.ok(
+    getCatPlaybackRate({ ...options, age: "kitten" }) >
+      getCatPlaybackRate({ ...options, age: "adult" })
   );
 });

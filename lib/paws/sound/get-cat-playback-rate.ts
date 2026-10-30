@@ -7,14 +7,14 @@ import type { PawsSound } from "./paws-sound";
 const SIZE_RATE = { small: 1.1, medium: 1, large: 0.9 } satisfies {
   [size in Step]: number;
 };
-const AGE_RATE = { kitten: 1.12, adult: 1, old: 0.9 } satisfies {
+const AGE_RATE = { kitten: 1.3, adult: 1, old: 0.8 } satisfies {
   [age in Age]: number;
 };
 const MAX_OFFSET = 0.04;
-const MIN_RATE = 0.75;
-const MAX_RATE = 1.35;
+const MIN_RATE = 0.65;
+const MAX_RATE = 1.6;
 
-/** Return the playback rate for one cat's sound from its size, its age (shared trill and purr only, since meows are made for their age) and a small fixed offset from `userId`. */
+/** Return the playback rate for one cat's sound from its size, its age (shared trill, purr and lick only, since meows are made for their age) and a small fixed offset from `userId`. */
 export function getCatPlaybackRate(options: {
   sound: PawsSound;
   size: Step;
