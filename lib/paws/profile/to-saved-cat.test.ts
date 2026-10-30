@@ -18,7 +18,11 @@ const getPublicUrl = (path: string) => `https://cdn.test/${path}`;
 
 test("uses the own meow's public URL", () => {
   const cat = toSavedCat({
-    row: { look: LOOK, voice: VOICE, meows: { storage_path: "meows/k.mp3", blocked: false } },
+    row: {
+      look: LOOK,
+      voice: VOICE,
+      meows: { storage_path: "meows/k.mp3", blocked: false },
+    },
     getPublicUrl,
   });
   assert.equal(cat?.meowUrl, "https://cdn.test/meows/k.mp3");
@@ -27,14 +31,24 @@ test("uses the own meow's public URL", () => {
 
 test("borrows a meow when the own one is missing or blocked", () => {
   const borrowed = "/paws/sounds/meow-kitten-squeaky-chatty.mp3";
-  assert.deepEqual(toSavedCat({ row: { look: LOOK, voice: VOICE, meows: null }, getPublicUrl }), {
-    look: LOOK,
-    voice: VOICE,
-    meowUrl: borrowed,
-    hasOwnMeow: false,
-  });
+  assert.deepEqual(
+    toSavedCat({
+      row: { look: LOOK, voice: VOICE, meows: null },
+      getPublicUrl,
+    }),
+    {
+      look: LOOK,
+      voice: VOICE,
+      meowUrl: borrowed,
+      hasOwnMeow: false,
+    }
+  );
   const blocked = toSavedCat({
-    row: { look: LOOK, voice: VOICE, meows: { storage_path: "meows/k.mp3", blocked: true } },
+    row: {
+      look: LOOK,
+      voice: VOICE,
+      meows: { storage_path: "meows/k.mp3", blocked: true },
+    },
     getPublicUrl,
   });
   assert.equal(blocked?.meowUrl, borrowed);
@@ -42,6 +56,12 @@ test("borrows a meow when the own one is missing or blocked", () => {
 });
 
 test("drops a malformed row", () => {
-  assert.equal(toSavedCat({ row: { look: { coat: "plaid" }, voice: VOICE }, getPublicUrl }), undefined);
+  assert.equal(
+    toSavedCat({
+      row: { look: { coat: "plaid" }, voice: VOICE },
+      getPublicUrl,
+    }),
+    undefined
+  );
   assert.equal(toSavedCat({ row: null, getPublicUrl }), undefined);
 });

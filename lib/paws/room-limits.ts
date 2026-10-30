@@ -6,6 +6,6 @@ export const ROOM_LIMITS = {
   maxWatchers: 5,
   fingerSendsPerSecond: 3,
   catSnapshotsPerSecond: 4,
-  renderDelayMs: 150,
+  renderDelayMs: 350,
   maxCuriousCats: 3,
 } as const;

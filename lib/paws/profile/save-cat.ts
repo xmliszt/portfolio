@@ -26,7 +26,10 @@ export async function saveCat(options: {
     .select("look, voice, meows(storage_path, blocked)")
     .single();
   if (error) throw error;
-  const saved = toSavedCat({ row: data, getPublicUrl: createMeowStorage(options.client).getPublicUrl });
+  const saved = toSavedCat({
+    row: data,
+    getPublicUrl: createMeowStorage(options.client).getPublicUrl,
+  });
   if (saved === undefined) throw new Error("Saved cat row did not parse");
   return saved;
 }

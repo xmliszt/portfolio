@@ -50,10 +50,27 @@ export type CatSnapshot = {
   activity: CatActivity;
 };
 
-export type CatsMessage = { hostId: string; sentAt: number; cats: CatSnapshot[] };
+export type CatsMessage = {
+  hostId: string;
+  sentAt: number;
+  cats: CatSnapshot[];
+};
 
 export type RoomEvent =
   | { kind: "sound"; userId: string; sound: "meow" | "trill" | "purr" }
-  | { kind: "pawPrint"; userId: string; x: number; y: number; angle: number; leg: number }
+  | {
+      kind: "pawPrint";
+      userId: string;
+      x: number;
+      y: number;
+      angle: number;
+      leg: number;
+    }
   | { kind: "nosePrint"; userId: string; x: number; y: number; angle: number }
-  | { kind: "fingerPrint"; userId: string; x: number; y: number; pressure: number };
+  | {
+      kind: "fingerPrint";
+      userId: string;
+      x: number;
+      y: number;
+      pressure: number;
+    };

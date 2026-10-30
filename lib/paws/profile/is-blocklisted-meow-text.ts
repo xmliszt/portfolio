@@ -94,6 +94,7 @@ export function isBlocklistedMeowText(normalizedText: string) {
   const words = letters.split(/[^a-z]+/).filter((word) => word !== "");
   const squashed = words.join("");
   return (
-    words.some((word) => BLOCKED_WORDS.includes(word)) || SPACED_OUT_WORDS.some((word) => squashed.includes(word))
+    words.some((word) => BLOCKED_WORDS.includes(word)) ||
+    SPACED_OUT_WORDS.some((word) => squashed.includes(word))
   );
 }

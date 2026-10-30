@@ -13,11 +13,20 @@ import type {
   StoredMeow,
 } from "./meow-pipeline-types";
 
-const VOICE = { age: "adult", voice: "soft", mood: "chatty" } satisfies VoiceSettings;
+const VOICE = {
+  age: "adult",
+  voice: "soft",
+  mood: "chatty",
+} satisfies VoiceSettings;
 const MEMBER = { userId: "user-1", isAnonymous: false };
 const BORROWED_URL = "/paws/sounds/meow-adult-soft-chatty.mp3";
 
-type Attempt = { userId: string; ipHash: string; outcome: MeowAttemptOutcome; credits: number };
+type Attempt = {
+  userId: string;
+  ipHash: string;
+  outcome: MeowAttemptOutcome;
+  credits: number;
+};
 
 function buildWorld(options: {
   hasCat?: boolean;
@@ -45,7 +54,9 @@ function buildWorld(options: {
     store: {
       findCatMeow: async (): Promise<CatMeowLookup> => {
         calls.push("findCatMeow");
-        return options.hasCat === false ? { kind: "noCat" } : { kind: "cat", voice: VOICE, meow: options.catMeow };
+        return options.hasCat === false
+          ? { kind: "noCat" }
+          : { kind: "cat", voice: VOICE, meow: options.catMeow };
       },
       countRefusalsSince: async (query: { since: Date }) => {
         calls.push("countRefusals");
@@ -60,11 +71,22 @@ function buildWorld(options: {
         calls.push("findMeow");
         return meows.find((meow) => meow.key === query.key);
       },
-      insertMeow: async (meow: { key: string; storagePath: string; text: string }) => {
-        inserted.push({ key: meow.key, storagePath: meow.storagePath, text: meow.text });
+      insertMeow: async (meow: {
+        key: string;
+        storagePath: string;
+        text: string;
+      }) => {
+        inserted.push({
+          key: meow.key,
+          storagePath: meow.storagePath,
+          text: meow.text,
+        });
       },
       assignMeow: async (assignment: { userId: string; meowKey: string }) => {
-        assigned.push({ userId: assignment.userId, meowKey: assignment.meowKey });
+        assigned.push({
+          userId: assignment.userId,
+          meowKey: assignment.meowKey,
+        });
       },
       recordAttempt: async (attempt: Attempt) => {
         attempts.push(attempt);
@@ -86,7 +108,12 @@ function buildWorld(options: {
     generator: {
       generate: async () => {
         calls.push("generate");
-        return options.generated ?? { kind: "audio", bytes: new Uint8Array([1, 2, 3]) };
+        return (
+          options.generated ?? {
+            kind: "audio",
+            bytes: new Uint8Array([1, 2, 3]),
+          }
+        );
       },
     },
     storage: {
@@ -114,7 +141,17 @@ function buildWorld(options: {
     },
   } satisfies MeowPipelineDependencies;
 
-  return { deps, calls, attempts, assigned, inserted, uploads, credits, counted, logs };
+  return {
+    deps,
+    calls,
+    attempts,
+    assigned,
+    inserted,
+    uploads,
+    credits,
+    counted,
+    logs,
+  };
 }
 
 function request(text = "Tiny  Fart") {
@@ -124,10 +161,19 @@ function request(text = "Tiny  Fart") {
 test("asks guests and anonymous visitors to sign in without touching the store", async () => {
   const world = buildWorld({});
   const pipeline = createMeowPipeline(world.deps);
-  assert.deepEqual(await pipeline.requestMeow({ ...request(), user: undefined }), { kind: "signInRequired" });
-  assert.deepEqual(await pipeline.requestMeow({ ...request(), user: { userId: "a", isAnonymous: true } }), {
-    kind: "signInRequired",
-  });
+  assert.deepEqual(
+    await pipeline.requestMeow({ ...request(), user: undefined }),
+    { kind: "signInRequired" }
+  );
+  assert.deepEqual(
+    await pipeline.requestMeow({
+      ...request(),
+      user: { userId: "a", isAnonymous: true },
+    }),
+    {
+      kind: "signInRequired",
+    }
+  );
   assert.deepEqual(world.calls, []);
 });
 
@@ -142,7 +188,10 @@ test("rejects a body without valid text and voice", async () => {
 
 test("needs a saved cat first", async () => {
   const world = buildWorld({ hasCat: false });
-  assert.deepEqual(await createMeowPipeline(world.deps).requestMeow(request()), { kind: "catNotSaved" });
+  assert.deepEqual(
+    await createMeowPipeline(world.deps).requestMeow(request()),
+    { kind: "catNotSaved" }
+  );
 });
 
 test("returns the cat's own meow when it already has one, before any attempt counting", async () => {
@@ -150,44 +199,75 @@ test("returns the cat's own meow when it already has one, before any attempt cou
     catMeow: { key: "k", storagePath: "meows/k.mp3", blocked: false },
     refusalsToday: 9,
   });
-  assert.deepEqual(await createMeowPipeline(world.deps).requestMeow(request()), {
-    kind: "alreadyHasMeow",
-    meowUrl: "https://cdn.test/meows/k.mp3",
-  });
+  assert.deepEqual(
+    await createMeowPipeline(world.deps).requestMeow(request()),
+    {
+      kind: "alreadyHasMeow",
+      meowUrl: "https://cdn.test/meows/k.mp3",
+    }
+  );
   assert.deepEqual(world.calls, ["findCatMeow"]);
   assert.deepEqual(world.attempts, []);
 });
 
 test("points a cat whose own meow was blocked at the borrowed meow", async () => {
-  const world = buildWorld({ catMeow: { key: "k", storagePath: "meows/k.mp3", blocked: true } });
-  assert.deepEqual(await createMeowPipeline(world.deps).requestMeow(request()), {
-    kind: "alreadyHasMeow",
-    meowUrl: BORROWED_URL,
+  const world = buildWorld({
+    catMeow: { key: "k", storagePath: "meows/k.mp3", blocked: true },
   });
+  assert.deepEqual(
+    await createMeowPipeline(world.deps).requestMeow(request()),
+    {
+      kind: "alreadyHasMeow",
+      meowUrl: BORROWED_URL,
+    }
+  );
 });
 
 test("stops after five refusals today, counted from UTC midnight, before the cache", async () => {
   const world = buildWorld({ refusalsToday: 5 });
-  assert.deepEqual(await createMeowPipeline(world.deps).requestMeow(request()), { kind: "tooManyAttempts" });
+  assert.deepEqual(
+    await createMeowPipeline(world.deps).requestMeow(request()),
+    { kind: "tooManyAttempts" }
+  );
   assert.deepEqual(world.calls, ["findCatMeow", "countRefusals"]);
-  assert.equal(world.counted.at(0)?.since.toISOString(), "2026-10-30T00:00:00.000Z");
+  assert.equal(
+    world.counted.at(0)?.since.toISOString(),
+    "2026-10-30T00:00:00.000Z"
+  );
   assert.deepEqual(world.attempts, []);
 });
 
 test("stops after three generations from one address today, before the cache", async () => {
   const world = buildWorld({ refusalsToday: 4, generationsToday: 3 });
-  assert.deepEqual(await createMeowPipeline(world.deps).requestMeow(request()), { kind: "tooManyAttempts" });
-  assert.deepEqual(world.calls, ["findCatMeow", "countRefusals", "countGenerations"]);
+  assert.deepEqual(
+    await createMeowPipeline(world.deps).requestMeow(request()),
+    { kind: "tooManyAttempts" }
+  );
+  assert.deepEqual(world.calls, [
+    "findCatMeow",
+    "countRefusals",
+    "countGenerations",
+  ]);
 });
 
 test("reuses a cached clip for free without running any check", async () => {
   const key = getMeowKey({ normalizedText: "tiny fart", voice: VOICE });
-  const world = buildWorld({ meows: [{ key, storagePath: `meows/${key}.mp3`, blocked: false }] });
-  assert.deepEqual(await createMeowPipeline(world.deps).requestMeow(request()), {
-    kind: "reused",
-    meowUrl: `https://cdn.test/meows/${key}.mp3`,
+  const world = buildWorld({
+    meows: [{ key, storagePath: `meows/${key}.mp3`, blocked: false }],
   });
-  assert.deepEqual(world.calls, ["findCatMeow", "countRefusals", "countGenerations", "findMeow"]);
+  assert.deepEqual(
+    await createMeowPipeline(world.deps).requestMeow(request()),
+    {
+      kind: "reused",
+      meowUrl: `https://cdn.test/meows/${key}.mp3`,
+    }
+  );
+  assert.deepEqual(world.calls, [
+    "findCatMeow",
+    "countRefusals",
+    "countGenerations",
+    "findMeow",
+  ]);
   assert.deepEqual(world.assigned, [{ userId: "user-1", meowKey: key }]);
   assert.equal(world.attempts.at(0)?.outcome, "reused");
   assert.equal(world.credits.reserved, 0);
@@ -195,17 +275,25 @@ test("reuses a cached clip for free without running any check", async () => {
 
 test("refuses a cached clip that was blocked by reports", async () => {
   const key = getMeowKey({ normalizedText: "tiny fart", voice: VOICE });
-  const world = buildWorld({ meows: [{ key, storagePath: `meows/${key}.mp3`, blocked: true }] });
-  assert.deepEqual(await createMeowPipeline(world.deps).requestMeow(request()), { kind: "refusedByUs" });
+  const world = buildWorld({
+    meows: [{ key, storagePath: `meows/${key}.mp3`, blocked: true }],
+  });
+  assert.deepEqual(
+    await createMeowPipeline(world.deps).requestMeow(request()),
+    { kind: "refusedByUs" }
+  );
   assert.deepEqual(world.assigned, []);
   assert.equal(world.attempts.at(0)?.outcome, "refusedByUs");
 });
 
 test("refuses blocklisted words before calling moderation", async () => {
   const world = buildWorld({});
-  assert.deepEqual(await createMeowPipeline(world.deps).requestMeow(request("loud SCREAM")), {
-    kind: "refusedByUs",
-  });
+  assert.deepEqual(
+    await createMeowPipeline(world.deps).requestMeow(request("loud SCREAM")),
+    {
+      kind: "refusedByUs",
+    }
+  );
   assert.equal(world.calls.includes("moderation"), false);
   assert.deepEqual(
     world.attempts.map((attempt) => attempt.outcome),
@@ -215,23 +303,32 @@ test("refuses blocklisted words before calling moderation", async () => {
 
 test("refuses text flagged by moderation before the suitability check", async () => {
   const world = buildWorld({ isFlagged: true });
-  assert.deepEqual(await createMeowPipeline(world.deps).requestMeow(request()), { kind: "refusedByUs" });
+  assert.deepEqual(
+    await createMeowPipeline(world.deps).requestMeow(request()),
+    { kind: "refusedByUs" }
+  );
   assert.equal(world.calls.at(-1), "moderation");
 });
 
 test("refuses text the suitability check rejects before reserving credits", async () => {
   const world = buildWorld({ isSuitable: false });
-  assert.deepEqual(await createMeowPipeline(world.deps).requestMeow(request()), { kind: "refusedByUs" });
+  assert.deepEqual(
+    await createMeowPipeline(world.deps).requestMeow(request()),
+    { kind: "refusedByUs" }
+  );
   assert.equal(world.calls.at(-1), "suitability");
   assert.equal(world.attempts.at(0)?.outcome, "refusedByUs");
 });
 
 test("borrows a meow when today's credits are used up and keeps the cat eligible", async () => {
   const world = buildWorld({ hasCredits: false });
-  assert.deepEqual(await createMeowPipeline(world.deps).requestMeow(request()), {
-    kind: "borrowed",
-    meowUrl: BORROWED_URL,
-  });
+  assert.deepEqual(
+    await createMeowPipeline(world.deps).requestMeow(request()),
+    {
+      kind: "borrowed",
+      meowUrl: BORROWED_URL,
+    }
+  );
   assert.equal(world.calls.includes("generate"), false);
   assert.deepEqual(world.assigned, []);
   assert.equal(world.attempts.at(0)?.outcome, "borrowed");
@@ -240,10 +337,13 @@ test("borrows a meow when today's credits are used up and keeps the cat eligible
 test("generates, stores and assigns a new clip in check order", async () => {
   const world = buildWorld({});
   const key = getMeowKey({ normalizedText: "tiny fart", voice: VOICE });
-  assert.deepEqual(await createMeowPipeline(world.deps).requestMeow(request()), {
-    kind: "generated",
-    meowUrl: `https://cdn.test/meows/${key}.mp3`,
-  });
+  assert.deepEqual(
+    await createMeowPipeline(world.deps).requestMeow(request()),
+    {
+      kind: "generated",
+      meowUrl: `https://cdn.test/meows/${key}.mp3`,
+    }
+  );
   assert.deepEqual(world.calls, [
     "findCatMeow",
     "countRefusals",
@@ -255,7 +355,9 @@ test("generates, stores and assigns a new clip in check order", async () => {
     "generate",
   ]);
   assert.deepEqual(world.uploads, [`meows/${key}.mp3`]);
-  assert.deepEqual(world.inserted, [{ key, storagePath: `meows/${key}.mp3`, text: "tiny fart" }]);
+  assert.deepEqual(world.inserted, [
+    { key, storagePath: `meows/${key}.mp3`, text: "tiny fart" },
+  ]);
   assert.deepEqual(world.assigned, [{ userId: "user-1", meowKey: key }]);
   assert.deepEqual(world.credits, { reserved: 60, released: 0 });
   assert.equal(world.attempts.at(0)?.outcome, "generated");
@@ -264,8 +366,13 @@ test("generates, stores and assigns a new clip in check order", async () => {
 });
 
 test("releases credits and logs the body when the provider refuses", async () => {
-  const world = buildWorld({ generated: { kind: "refused", status: 400, body: "policy" } });
-  assert.deepEqual(await createMeowPipeline(world.deps).requestMeow(request()), { kind: "refusedByProvider" });
+  const world = buildWorld({
+    generated: { kind: "refused", status: 400, body: "policy" },
+  });
+  assert.deepEqual(
+    await createMeowPipeline(world.deps).requestMeow(request()),
+    { kind: "refusedByProvider" }
+  );
   assert.deepEqual(world.credits, { reserved: 60, released: 60 });
   assert.deepEqual(world.assigned, []);
   assert.deepEqual(world.logs, ["paws meow refused by provider"]);
@@ -273,11 +380,16 @@ test("releases credits and logs the body when the provider refuses", async () =>
 });
 
 test("releases credits and borrows a meow when generation fails", async () => {
-  const world = buildWorld({ generated: { kind: "failed", detail: "timeout" } });
-  assert.deepEqual(await createMeowPipeline(world.deps).requestMeow(request()), {
-    kind: "failed",
-    meowUrl: BORROWED_URL,
+  const world = buildWorld({
+    generated: { kind: "failed", detail: "timeout" },
   });
+  assert.deepEqual(
+    await createMeowPipeline(world.deps).requestMeow(request()),
+    {
+      kind: "failed",
+      meowUrl: BORROWED_URL,
+    }
+  );
   assert.deepEqual(world.credits, { reserved: 60, released: 60 });
   assert.deepEqual(world.assigned, []);
   assert.equal(world.attempts.at(0)?.outcome, "failed");
@@ -285,20 +397,26 @@ test("releases credits and borrows a meow when generation fails", async () => {
 
 test("fails without reserving when a check errors", async () => {
   const world = buildWorld({ isFlagged: new Error("network") });
-  assert.deepEqual(await createMeowPipeline(world.deps).requestMeow(request()), {
-    kind: "failed",
-    meowUrl: BORROWED_URL,
-  });
+  assert.deepEqual(
+    await createMeowPipeline(world.deps).requestMeow(request()),
+    {
+      kind: "failed",
+      meowUrl: BORROWED_URL,
+    }
+  );
   assert.equal(world.calls.includes("reserve"), false);
   assert.equal(world.attempts.at(0)?.outcome, "failed");
 });
 
 test("keeps spent credits but borrows a meow when saving the clip fails", async () => {
   const world = buildWorld({ uploadError: new Error("storage down") });
-  assert.deepEqual(await createMeowPipeline(world.deps).requestMeow(request()), {
-    kind: "failed",
-    meowUrl: BORROWED_URL,
-  });
+  assert.deepEqual(
+    await createMeowPipeline(world.deps).requestMeow(request()),
+    {
+      kind: "failed",
+      meowUrl: BORROWED_URL,
+    }
+  );
   assert.deepEqual(world.credits, { reserved: 60, released: 0 });
   assert.deepEqual(world.assigned, []);
   assert.equal(world.attempts.at(0)?.credits, 60);

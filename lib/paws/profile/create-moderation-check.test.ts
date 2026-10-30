@@ -19,7 +19,10 @@ test("the OpenAI check posts the text and reads the first result", async () => {
     });
     return Response.json({ results: [{ flagged: true }] });
   };
-  const check = createModerationCheck({ config: { kind: "openai", apiKey: "sk" }, fetch: fakeFetch });
+  const check = createModerationCheck({
+    config: { kind: "openai", apiKey: "sk" },
+    fetch: fakeFetch,
+  });
   assert.equal(await check.isFlagged("meow"), true);
   assert.deepEqual(sent, [
     {

@@ -25,16 +25,20 @@ function isRecord(value: unknown): value is { [key: string]: unknown } {
 }
 
 function readOutputText(body: unknown) {
-  const output = isRecord(body) && Array.isArray(body.output) ? body.output : [];
+  const output =
+    isRecord(body) && Array.isArray(body.output) ? body.output : [];
   const texts = output
     .filter(isRecord)
     .filter((item) => item.type === "message" && Array.isArray(item.content))
     .flatMap((item) => (Array.isArray(item.content) ? item.content : []))
     .filter(isRecord)
-    .filter((part) => part.type === "output_text" && typeof part.text === "string")
+    .filter(
+      (part) => part.type === "output_text" && typeof part.text === "string"
+    )
     .map((part) => String(part.text));
   const text = texts.at(0);
-  if (text === undefined) throw new Error("Suitability response had no output text");
+  if (text === undefined)
+    throw new Error("Suitability response had no output text");
   return text;
 }
 
@@ -58,7 +62,10 @@ export function createSuitabilityCheck(options: {
         isSuitable: async (text) => {
           const response = await options.fetch(RESPONSES_URL, {
             method: "POST",
-            headers: { Authorization: `Bearer ${config.apiKey}`, "Content-Type": "application/json" },
+            headers: {
+              Authorization: `Bearer ${config.apiKey}`,
+              "Content-Type": "application/json",
+            },
             body: JSON.stringify({
               model: config.model,
               instructions: INSTRUCTIONS,
@@ -68,12 +75,18 @@ export function createSuitabilityCheck(options: {
             }),
             signal: AbortSignal.timeout(TIMEOUT_MS),
           });
-          if (!response.ok) throw new Error(`Suitability ${response.status}: ${await response.text()}`);
+          if (!response.ok)
+            throw new Error(
+              `Suitability ${response.status}: ${await response.text()}`
+            );
           return readHarmless(readOutputText(await response.json()));
         },
       };
     case "fake":
-      return { isSuitable: async (text) => !FAKE_UNSUITABLE_WORDS.some((word) => text.includes(word)) };
+      return {
+        isSuitable: async (text) =>
+          !FAKE_UNSUITABLE_WORDS.some((word) => text.includes(word)),
+      };
     default: {
       const unknownConfig: never = config;
       throw new Error(`Unknown suitability config ${String(unknownConfig)}`);

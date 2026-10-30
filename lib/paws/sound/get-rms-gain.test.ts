@@ -4,7 +4,10 @@ import { test } from "node:test";
 import { getRmsGain } from "./get-rms-gain";
 
 test("scales a clip's RMS level to the target", () => {
-  const gain = getRmsGain([new Float32Array([0.06, -0.06]), new Float32Array([0.06, -0.06])]);
+  const gain = getRmsGain([
+    new Float32Array([0.06, -0.06]),
+    new Float32Array([0.06, -0.06]),
+  ]);
   assert.ok(Math.abs(gain - 2) < 1e-6);
 });
 

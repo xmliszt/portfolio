@@ -2,7 +2,8 @@
 export const COPY = {
   site: {
     title: "Paws",
-    description: "Cats walk on a pane of frosted glass. Bring yours, and touch the glass with strangers.",
+    description:
+      "Cats walk on a pane of frosted glass. Bring yours, and touch the glass with strangers.",
   },
   watch: {
     signInToBring: "Sign in to bring your cat",
@@ -49,9 +50,12 @@ export const COPY = {
   },
   meowResult: {
     refusedByUs: "Your cat can't make that one. Try another sound.",
-    refusedByProvider: "The sound maker turned that one down. Try describing a different sound.",
-    failed: "Couldn't make the sound just now. Your cat is borrowing a meow. Try again in a bit.",
-    borrowed: "Today's custom sounds are all used up. Your cat is borrowing a meow for now. Come back tomorrow to give it its own voice.",
+    refusedByProvider:
+      "The sound maker turned that one down. Try describing a different sound.",
+    failed:
+      "Couldn't make the sound just now. Your cat is borrowing a meow. Try again in a bit.",
+    borrowed:
+      "Today's custom sounds are all used up. Your cat is borrowing a meow for now. Come back tomorrow to give it its own voice.",
     tooManyAttempts: "That's enough tries for today. Come back tomorrow.",
   },
   room: {
@@ -74,8 +78,19 @@ export const COPY = {
       charcoal: "Charcoal",
       black: "Black",
     },
-    pattern: { solid: "Solid", tabby: "Tabby", tuxedo: "Tuxedo", calico: "Calico", colorpoint: "Colorpoint" },
-    belly: { cream: "Cream", white: "White", coat: "Same as coat", light: "Lighter" },
+    pattern: {
+      solid: "Solid",
+      tabby: "Tabby",
+      tuxedo: "Tuxedo",
+      calico: "Calico",
+      colorpoint: "Colorpoint",
+    },
+    belly: {
+      cream: "Cream",
+      white: "White",
+      coat: "Same as coat",
+      light: "Lighter",
+    },
     pads: { pink: "Pink", black: "Black", mauve: "Mauve", mixed: "Mixed" },
     step: { small: "Small", medium: "Medium", large: "Large" },
     age: { kitten: "Kitten", adult: "Grown", old: "Old" },

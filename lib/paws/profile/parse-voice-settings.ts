@@ -1,7 +1,14 @@
-import { AGES, MOODS, VOICES, type VoiceSettings } from "@/lib/paws/voice-settings";
+import {
+  AGES,
+  MOODS,
+  VOICES,
+  type VoiceSettings,
+} from "@/lib/paws/voice-settings";
 
-const isOneOf = <T extends string>(options: readonly T[], value: unknown): value is T =>
-  options.some((option) => option === value);
+const isOneOf = <T extends string>(
+  options: readonly T[],
+  value: unknown
+): value is T => options.some((option) => option === value);
 
 /** Return the voice settings in `value`, or `undefined` when any field is missing or not one of the offered options. */
 export function parseVoiceSettings(value: unknown): VoiceSettings | undefined {

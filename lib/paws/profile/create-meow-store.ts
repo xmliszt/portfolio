@@ -14,12 +14,21 @@ function parseStoredMeow(value: unknown): StoredMeow | undefined {
   ) {
     return undefined;
   }
-  return { key: value.key, storagePath: value.storage_path, blocked: value.blocked };
+  return {
+    key: value.key,
+    storagePath: value.storage_path,
+    blocked: value.blocked,
+  };
 }
 
 /** Return the meow pipeline's database operations on the `paws` tables. */
 export function createMeowStore(client: PawsServiceClient): MeowStore {
-  async function countAttempts(query: { column: "user_id" | "ip_hash"; value: string; outcomes: string[]; since: Date }) {
+  async function countAttempts(query: {
+    column: "user_id" | "ip_hash";
+    value: string;
+    outcomes: string[];
+    since: Date;
+  }) {
     const { count, error } = await client
       .from("meow_attempts")
       .select("id", { count: "exact", head: true })
@@ -50,7 +59,12 @@ export function createMeowStore(client: PawsServiceClient): MeowStore {
         since: query.since,
       }),
     countGenerationsSince: (query) =>
-      countAttempts({ column: "ip_hash", value: query.ipHash, outcomes: ["generated"], since: query.since }),
+      countAttempts({
+        column: "ip_hash",
+        value: query.ipHash,
+        outcomes: ["generated"],
+        since: query.since,
+      }),
     findMeow: async (query) => {
       const { data, error } = await client
         .from("meows")
@@ -76,7 +90,11 @@ export function createMeowStore(client: PawsServiceClient): MeowStore {
     assignMeow: async (assignment) => {
       const { error } = await client
         .from("cats")
-        .update({ meow_key: assignment.meowKey, voice: assignment.voice, updated_at: new Date().toISOString() })
+        .update({
+          meow_key: assignment.meowKey,
+          voice: assignment.voice,
+          updated_at: new Date().toISOString(),
+        })
         .eq("user_id", assignment.userId);
       if (error) throw error;
     },

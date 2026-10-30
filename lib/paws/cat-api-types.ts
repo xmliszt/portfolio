@@ -8,8 +8,14 @@ export type SavedCat = {
   hasOwnMeow: boolean;
 };
 
-export type GetCatResponse = { kind: "found"; cat: SavedCat } | { kind: "none" } | { kind: "signInRequired" };
+export type GetCatResponse =
+  | { kind: "found"; cat: SavedCat }
+  | { kind: "none" }
+  | { kind: "signInRequired" };
 
 export type PutCatRequest = { look: CatLook; voice: VoiceSettings };
 
-export type PutCatResponse = { kind: "saved"; cat: SavedCat } | { kind: "invalid" } | { kind: "signInRequired" };
+export type PutCatResponse =
+  | { kind: "saved"; cat: SavedCat }
+  | { kind: "invalid" }
+  | { kind: "signInRequired" };

@@ -1,16 +1,18 @@
 import {
   BELLIES,
+  type CatLook,
   COAT_INKS,
+  type CoatInk,
   PAD_INKS,
+  type PadInk,
   PATTERNS,
   STEPS,
-  type CatLook,
-  type CoatInk,
-  type PadInk,
 } from "./cat-look";
 
-const isOneOf = <T extends string>(options: readonly T[], value: unknown): value is T =>
-  options.some((option) => option === value);
+const isOneOf = <T extends string>(
+  options: readonly T[],
+  value: unknown
+): value is T => options.some((option) => option === value);
 const isCoatInk = (value: unknown): value is CoatInk =>
   typeof value === "string" && Object.hasOwn(COAT_INKS, value);
 const isPadInk = (value: unknown): value is PadInk =>

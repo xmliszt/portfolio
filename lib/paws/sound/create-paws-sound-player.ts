@@ -24,7 +24,11 @@ export type PawsSoundCue = {
 
 type Clip = { buffer: AudioBuffer; gain: number };
 
-type Graph = { context: AudioContext; master: GainNode; compressor: DynamicsCompressorNode };
+type Graph = {
+  context: AudioContext;
+  master: GainNode;
+  compressor: DynamicsCompressorNode;
+};
 
 async function fetchClipBytes(url: string) {
   try {
@@ -50,7 +54,13 @@ export function createPawsSoundPlayer(options: {
     mutedCats: { [userId: string]: true | undefined };
     lastPlayedAtMs: { [userId: string]: number | undefined };
     clips: { [url: string]: Promise<Clip | undefined> | undefined };
-  } = { muted: false, disposed: false, mutedCats: {}, lastPlayedAtMs: {}, clips: {} };
+  } = {
+    muted: false,
+    disposed: false,
+    mutedCats: {},
+    lastPlayedAtMs: {},
+    clips: {},
+  };
 
   function createGraph() {
     const context = options.createContext();
@@ -71,10 +81,15 @@ export function createPawsSoundPlayer(options: {
     const cached = state.clips[url];
     if (cached !== undefined) return cached;
     const loading = fetchClip(url)
-      .then((bytes) => (bytes === undefined ? undefined : graph.context.decodeAudioData(bytes)))
+      .then((bytes) =>
+        bytes === undefined ? undefined : graph.context.decodeAudioData(bytes)
+      )
       .then((buffer) => {
         if (buffer === undefined) return undefined;
-        const channels = Array.from({ length: buffer.numberOfChannels }, (_, index) => buffer.getChannelData(index));
+        const channels = Array.from(
+          { length: buffer.numberOfChannels },
+          (_, index) => buffer.getChannelData(index)
+        );
         return { buffer, gain: getRmsGain(channels) };
       })
       .catch(() => undefined);
@@ -89,9 +104,15 @@ export function createPawsSoundPlayer(options: {
     source.playbackRate.value = getCatPlaybackRate(cue);
     const gain = context.createGain();
     const startAt = context.currentTime;
-    const playedS = Math.min(clip.buffer.duration / source.playbackRate.value, MAX_CLIP_S);
+    const playedS = Math.min(
+      clip.buffer.duration / source.playbackRate.value,
+      MAX_CLIP_S
+    );
     gain.gain.setValueAtTime(clip.gain, startAt);
-    gain.gain.setValueAtTime(clip.gain, Math.max(startAt, startAt + playedS - FADE_OUT_S));
+    gain.gain.setValueAtTime(
+      clip.gain,
+      Math.max(startAt, startAt + playedS - FADE_OUT_S)
+    );
     gain.gain.linearRampToValueAtTime(0, startAt + playedS);
     const panner = context.createStereoPanner();
     panner.pan.value = getPanFromWorldX(cue.x);
@@ -111,7 +132,8 @@ export function createPawsSoundPlayer(options: {
   async function unlock() {
     if (state.disposed) return;
     state.graph ??= createGraph();
-    if (state.graph.context.state === "suspended") await state.graph.context.resume();
+    if (state.graph.context.state === "suspended")
+      await state.graph.context.resume();
   }
 
   /** Fetch and decode `url` ahead of its first play. */
@@ -123,13 +145,26 @@ export function createPawsSoundPlayer(options: {
   /** Play one cat's sound unless sound is muted, the cat is muted, it played within the cooldown, or the player is not unlocked. */
   function play(cue: PawsSoundCue) {
     const graph = state.graph;
-    if (graph === undefined || state.disposed || state.muted || state.mutedCats[cue.userId]) return;
+    if (
+      graph === undefined ||
+      state.disposed ||
+      state.muted ||
+      state.mutedCats[cue.userId]
+    )
+      return;
     const now = nowMs();
     const lastPlayedAtMs = state.lastPlayedAtMs[cue.userId];
-    if (lastPlayedAtMs !== undefined && now - lastPlayedAtMs < CAT_COOLDOWN_MS) return;
+    if (lastPlayedAtMs !== undefined && now - lastPlayedAtMs < CAT_COOLDOWN_MS)
+      return;
     state.lastPlayedAtMs[cue.userId] = now;
     void loadClip(graph, getPawsSoundUrl(cue)).then((clip) => {
-      if (clip === undefined || state.disposed || state.muted || state.mutedCats[cue.userId]) return;
+      if (
+        clip === undefined ||
+        state.disposed ||
+        state.muted ||
+        state.mutedCats[cue.userId]
+      )
+        return;
       startClip(graph, clip, cue);
     });
   }
@@ -139,7 +174,11 @@ export function createPawsSoundPlayer(options: {
     state.muted = muted;
     const graph = state.graph;
     if (graph === undefined) return;
-    graph.master.gain.setTargetAtTime(muted ? 0 : MASTER_LEVEL, graph.context.currentTime, MUTE_TIME_CONSTANT_S);
+    graph.master.gain.setTargetAtTime(
+      muted ? 0 : MASTER_LEVEL,
+      graph.context.currentTime,
+      MUTE_TIME_CONSTANT_S
+    );
   }
 
   /** Mute or unmute one cat's sounds. */

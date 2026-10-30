@@ -4,8 +4,8 @@ import { test } from "node:test";
 import { isBlocklistedMeowText } from "./is-blocklisted-meow-text";
 
 test("allows ordinary and silly sounds", () => {
-  ["meow", "tiny fart", "sneeze then purr", "mrrp?", "a little burp"].forEach((text) =>
-    assert.equal(isBlocklistedMeowText(text), false, text)
+  ["meow", "tiny fart", "sneeze then purr", "mrrp?", "a little burp"].forEach(
+    (text) => assert.equal(isBlocklistedMeowText(text), false, text)
   );
 });
 

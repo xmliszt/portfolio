@@ -11,7 +11,13 @@ export const COAT_INKS = {
   black: "#26262f",
 } as const;
 
-export const PATTERNS = ["solid", "tabby", "tuxedo", "calico", "colorpoint"] as const;
+export const PATTERNS = [
+  "solid",
+  "tabby",
+  "tuxedo",
+  "calico",
+  "colorpoint",
+] as const;
 export const BELLIES = ["cream", "white", "coat", "light"] as const;
 export const PAD_INKS = {
   pink: "#e2758f",

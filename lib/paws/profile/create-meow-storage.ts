@@ -11,9 +11,14 @@ export function createMeowStorage(client: PawsServiceClient): MeowStorage {
     upload: async (upload) => {
       const { error } = await client.storage
         .from(BUCKET)
-        .upload(upload.path, upload.bytes, { contentType: "audio/mpeg", upsert: true, cacheControl: "31536000" });
+        .upload(upload.path, upload.bytes, {
+          contentType: "audio/mpeg",
+          upsert: true,
+          cacheControl: "31536000",
+        });
       if (error) throw error;
     },
-    getPublicUrl: (path) => client.storage.from(BUCKET).getPublicUrl(path).data.publicUrl,
+    getPublicUrl: (path) =>
+      client.storage.from(BUCKET).getPublicUrl(path).data.publicUrl,
   };
 }

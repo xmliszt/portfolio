@@ -9,7 +9,10 @@ export async function readRequestUser(options: {
   request: Request;
   client: { auth: SupabaseClient["auth"] };
 }): Promise<RequestUser | undefined> {
-  const token = options.request.headers.get("authorization")?.match(/^Bearer (.+)$/)?.at(1);
+  const token = options.request.headers
+    .get("authorization")
+    ?.match(/^Bearer (.+)$/)
+    ?.at(1);
   if (token === undefined) return undefined;
   const { data, error } = await options.client.auth.getUser(token);
   if (error || data.user === null) return undefined;

@@ -10,7 +10,11 @@ export async function reportMeow(options: {
   catUserId: string;
 }): Promise<ReportMeowResponse> {
   if (options.reporterId === options.catUserId) return { kind: "invalid" };
-  const cat = await options.client.from("cats").select("meow_key").eq("user_id", options.catUserId).maybeSingle();
+  const cat = await options.client
+    .from("cats")
+    .select("meow_key")
+    .eq("user_id", options.catUserId)
+    .maybeSingle();
   if (cat.error) throw cat.error;
   const meowKey: unknown = cat.data?.meow_key;
   if (typeof meowKey !== "string") return { kind: "nothingToReport" };
@@ -22,5 +26,7 @@ export async function reportMeow(options: {
     )
     .select("meow_key");
   if (inserted.error) throw inserted.error;
-  return inserted.data.length === 0 ? { kind: "alreadyReported" } : { kind: "reported" };
+  return inserted.data.length === 0
+    ? { kind: "alreadyReported" }
+    : { kind: "reported" };
 }

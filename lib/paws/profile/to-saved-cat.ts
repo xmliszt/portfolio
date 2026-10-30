@@ -5,9 +5,18 @@ import { getBorrowedMeowUrl } from "./get-borrowed-meow-url";
 import { parseVoiceSettings } from "./parse-voice-settings";
 
 /** Return the saved cat in a `cats` row joined with its `meows` row, or `undefined` when the row is malformed; a missing or blocked meow gives the borrowed meow URL. */
-export function toSavedCat(options: { row: unknown; getPublicUrl: (path: string) => string }): SavedCat | undefined {
+export function toSavedCat(options: {
+  row: unknown;
+  getPublicUrl: (path: string) => string;
+}): SavedCat | undefined {
   const row = options.row;
-  if (typeof row !== "object" || row === null || !("look" in row) || !("voice" in row)) return undefined;
+  if (
+    typeof row !== "object" ||
+    row === null ||
+    !("look" in row) ||
+    !("voice" in row)
+  )
+    return undefined;
   const look = parseCatLook(row.look);
   const voice = parseVoiceSettings(row.voice);
   if (look === undefined || voice === undefined) return undefined;
@@ -18,8 +27,16 @@ export function toSavedCat(options: { row: unknown; getPublicUrl: (path: string)
     !("storage_path" in meow && typeof meow.storage_path === "string") ||
     !("blocked" in meow)
   ) {
-    return { look, voice, meowUrl: getBorrowedMeowUrl(voice), hasOwnMeow: false };
+    return {
+      look,
+      voice,
+      meowUrl: getBorrowedMeowUrl(voice),
+      hasOwnMeow: false,
+    };
   }
-  const meowUrl = meow.blocked === true ? getBorrowedMeowUrl(voice) : options.getPublicUrl(meow.storage_path);
+  const meowUrl =
+    meow.blocked === true
+      ? getBorrowedMeowUrl(voice)
+      : options.getPublicUrl(meow.storage_path);
   return { look, voice, meowUrl, hasOwnMeow: true };
 }

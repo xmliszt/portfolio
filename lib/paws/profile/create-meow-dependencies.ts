@@ -15,7 +15,9 @@ import type { PawsServiceClient } from "./paws-service-client";
 import { readMeowProvidersConfig } from "./read-meow-providers-config";
 
 /** Return the meow pipeline's dependencies for this server: real providers where `process.env` has their keys, fake ones otherwise. */
-export function createMeowDependencies(client: PawsServiceClient): MeowPipelineDependencies {
+export function createMeowDependencies(
+  client: PawsServiceClient
+): MeowPipelineDependencies {
   const config = readMeowProvidersConfig(process.env);
   return {
     store: createMeowStore(client),
@@ -24,7 +26,8 @@ export function createMeowDependencies(client: PawsServiceClient): MeowPipelineD
     generator: createSoundGenerator({
       config: config.generator,
       fetch,
-      readFallbackClip: async (voice) => readFile(join(process.cwd(), "public", getBorrowedMeowUrl(voice))),
+      readFallbackClip: async (voice) =>
+        readFile(join(process.cwd(), "public", getBorrowedMeowUrl(voice))),
     }),
     storage: createMeowStorage(client),
     budget: createCreditBudget({ client, dailyCredits: config.dailyCredits }),
