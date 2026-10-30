@@ -38,7 +38,7 @@ test("age changes the shared purr but not the meow", () => {
 
 test("adds a small fixed offset per user and stays in range", () => {
   const rates = ["a", "b", "c", "d", "e"].map((userId) =>
-    getCatPlaybackRate({ sound: "trill", size: "medium", age: "adult", userId })
+    getCatPlaybackRate({ sound: "purr", size: "medium", age: "adult", userId })
   );
   rates.forEach((rate) =>
     assert.ok(rate >= 0.96 && rate <= 1.04, String(rate))
@@ -46,7 +46,7 @@ test("adds a small fixed offset per user and stays in range", () => {
   assert.ok(new Set(rates).size > 1);
   assert.equal(
     getCatPlaybackRate({
-      sound: "trill",
+      sound: "purr",
       size: "small",
       age: "kitten",
       userId: "a",

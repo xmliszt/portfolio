@@ -5,7 +5,9 @@ import { resolveReachTarget } from "./resolve-reach-target";
 import type { Reach, SimCat, SimLeg, Tick } from "./sim-types";
 import { startReach } from "./start-reach";
 
-/** Move `leg` one step along its paw movement: keep a planted paw on its target, re-reach when the target slides away, and knead now and then. */
+const MEOW_ON_TOUCH_CHANCE = 0.5;
+
+/** Move `leg` one step along its paw movement: keep a planted paw on its target, re-reach when the target slides away, knead now and then, and sometimes meow when a paw lands on a finger. */
 export function updateReach(options: {
   tick: Tick;
   cat: SimCat;
@@ -96,8 +98,12 @@ export function updateReach(options: {
     angle: cat.heading,
     leg: options.legIndex,
   });
-  if (reach.phase === "extend" && reach.target.kind === "finger") {
-    emitCatSound({ tick, cat, sound: "trill" });
+  if (
+    (reach.phase === "extend" || reach.phase === "pat") &&
+    reach.target.kind === "finger" &&
+    tick.world.random() < MEOW_ON_TOUCH_CHANCE
+  ) {
+    emitCatSound({ tick, cat, sound: "meow" });
   }
   Object.assign(reach, {
     phase: "planted",

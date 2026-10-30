@@ -25,7 +25,6 @@ const FADE_OUT_S = 0.12;
 /** Each sound's level in decibels after its loudness is matched to the others, set by ear. */
 const SOUND_LEVEL_DB = {
   meow: -6,
-  trill: -6,
   purr: -6,
   lick: -6,
 } as const satisfies { [sound in PawsSound]: number };
@@ -65,7 +64,7 @@ async function fetchClipBytes(url: string) {
   }
 }
 
-/** Return a player for the cats' meows, trills and purrs that creates its `AudioContext` on the first `unlock`, which the page calls from a user gesture. */
+/** Return a player for the cats' meows, purrs and licks that creates its `AudioContext` on the first `unlock`, which the page calls from a user gesture. */
 export function createPawsSoundPlayer(options: {
   createContext: () => AudioContext;
   fetchClip?: (url: string) => Promise<ArrayBuffer | undefined>;

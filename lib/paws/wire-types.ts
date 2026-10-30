@@ -68,7 +68,7 @@ export type CatsMessage = {
 export type PawPrintEvent = Extract<RoomEvent, { kind: "pawPrint" }>;
 
 export type RoomEvent =
-  | { kind: "sound"; userId: string; sound: "meow" | "trill" | "purr" | "lick" }
+  | { kind: "sound"; userId: string; sound: "meow" | "purr" | "lick" }
   | {
       kind: "pawPrint";
       userId: string;

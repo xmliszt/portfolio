@@ -4,7 +4,7 @@ import { getMeowUrl } from "./get-meow-url";
 import { hashUserId } from "./hash-user-id";
 import type { PawsSound } from "./paws-sound";
 
-/** Return the clip URL for a cat's sound: the recorded meow for its `voice`, the shared lick clip, or one of the two shared trill or purr clips picked by `userId`. */
+/** Return the clip URL for a cat's sound: the recorded meow for its `voice`, the shared lick clip, or one of the two shared purr clips picked by `userId`. */
 export function getPawsSoundUrl(options: {
   sound: PawsSound;
   userId: string;
@@ -15,9 +15,8 @@ export function getPawsSoundUrl(options: {
       return getMeowUrl(options.voice);
     case "lick":
       return "/paws/sounds/lick.mp3";
-    case "trill":
     case "purr":
-      return `/paws/sounds/${options.sound}-${hashUserId(options.userId) < 0.5 ? 1 : 2}.mp3`;
+      return `/paws/sounds/purr-${hashUserId(options.userId) < 0.5 ? 1 : 2}.mp3`;
     default: {
       const unknownSound: never = options.sound;
       throw new Error(`Unknown paws sound ${String(unknownSound)}`);

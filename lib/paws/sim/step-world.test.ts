@@ -124,10 +124,6 @@ test("a press puts a paw on that finger, not on another one", () => {
     Math.hypot(reaching[0].x - pressing.x, reaching[0].y - pressing.y) < 12,
     "paw rests on the finger"
   );
-  assert.ok(
-    events.some((event) => event.kind === "sound" && event.sound === "trill"),
-    "trills when the paw lands"
-  );
 });
 
 test("two players pressing in reach of one cat each get a front paw", () => {

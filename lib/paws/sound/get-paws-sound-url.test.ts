@@ -19,8 +19,8 @@ test("picks one of two shared clips per user, the same every time", () => {
   urls.forEach((url) => assert.match(url, /^\/paws\/sounds\/purr-[12]\.mp3$/));
   assert.equal(new Set(urls).size, 2);
   assert.equal(
-    getPawsSoundUrl({ sound: "trill", userId: "a", voice: VOICE }),
-    getPawsSoundUrl({ sound: "trill", userId: "a", voice: VOICE })
+    getPawsSoundUrl({ sound: "purr", userId: "a", voice: VOICE }),
+    getPawsSoundUrl({ sound: "purr", userId: "a", voice: VOICE })
   );
 });
 
