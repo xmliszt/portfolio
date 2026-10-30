@@ -53,7 +53,12 @@ export function useRoomConnection(options: {
   }, [session]);
 
   useEffect(() => {
-    if (!isReady || userId === undefined || (client === undefined && !useFakeRoom)) return;
+    if (
+      !isReady ||
+      userId === undefined ||
+      (client === undefined && !useFakeRoom)
+    )
+      return;
     const run: {
       isCancelled: boolean;
       heartbeat?: number;

@@ -35,17 +35,16 @@ type OnboardingStep =
       busy: boolean;
       notice: string | undefined;
     }
-  | { kind: "voice"; look: CatLook; voice: VoiceSettings }
-  | { kind: "done" };
+  | { kind: "voice"; look: CatLook; voice: VoiceSettings };
 
 type PawsOnboardingProps = {
   session: PawsSession;
   actions: PawsSessionActions;
+  hasCat: boolean;
   onBringCatIn: (cat: SavedCat) => void;
-  onClose: () => void;
 };
 
-/** Render the corner flow that takes a watcher through sign-in, making a cat and giving it a sound, then hands the saved cat over. */
+/** Render the corner flow that takes a watcher through sign-in, making a cat and giving it a sound, then hands the saved cat over; with `hasCat`, it reopens the same flow so a member can change the look or give a borrowed meow its own sound. */
 export function PawsOnboarding(props: PawsOnboardingProps) {
   const [step, setStep] = useState<OnboardingStep>({ kind: "watching" });
   const startButtonId = useId();
@@ -136,11 +135,12 @@ export function PawsOnboarding(props: PawsOnboardingProps) {
     flowRef.current += 1;
     shouldFocusStartRef.current = true;
     setStep({ kind: "watching" });
-    props.onClose();
   }
 
   function finish(cat: SavedCat) {
-    setStep({ kind: "done" });
+    flowRef.current += 1;
+    shouldFocusStartRef.current = true;
+    setStep({ kind: "watching" });
     props.onBringCatIn(cat);
   }
 
@@ -247,9 +247,11 @@ export function PawsOnboarding(props: PawsOnboardingProps) {
             id={startButtonId}
             onClick={handleStart}
           >
-            {session.kind === "member"
-              ? COPY.watch.bringYourCat
-              : COPY.watch.signInToBring}
+            {session.kind !== "member"
+              ? COPY.watch.signInToBring
+              : props.hasCat
+                ? COPY.watch.yourCat
+                : COPY.watch.bringYourCat}
           </RisoButton>
         </div>
       );
@@ -312,8 +314,6 @@ export function PawsOnboarding(props: PawsOnboardingProps) {
           onClose={close}
         />
       );
-    case "done":
-      return null;
     default: {
       const unhandled: never = step;
       return unhandled;

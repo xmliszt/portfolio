@@ -27,7 +27,6 @@ export function PawsRoom() {
   const { session, actions, client } = usePawsSession();
   const { savedCat, setSavedCat, isChecked } = useSavedCat(session);
   const [isMuted, setIsMuted] = useState(false);
-  const [onboardingKey, setOnboardingKey] = useState(0);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const engine = useMemo(() => createRoomEngine({ random: Math.random }), []);
   const [sound] = useState(() =>
@@ -209,20 +208,17 @@ export function PawsRoom() {
         onClick={handleToggleMute}
         className={cn(
           FOCUS_RING_CLASS,
-          "absolute top-4 right-4 h-8 border-[1.5px] border-[var(--pw-ink)] bg-[var(--pw-paper)] px-3 text-[12px] text-[var(--pw-ink)] group-has-[[aria-modal=true]]/room:hidden hover:bg-[var(--pw-paper-deep)] sm:top-6 sm:right-6"
+          "absolute top-4 right-4 h-10 border-[1.5px] border-[var(--pw-ink)] bg-[var(--pw-paper)] px-3 text-[12px] text-[var(--pw-ink)] group-has-[[aria-modal=true]]/room:hidden hover:bg-[var(--pw-paper-deep)] sm:top-6 sm:right-6 sm:h-8"
         )}
       >
         {isMuted ? COPY.room.unmute : COPY.room.mute}
       </button>
-      {savedCat === undefined || session.kind !== "member" ? (
-        <PawsOnboarding
-          key={onboardingKey}
-          session={session}
-          actions={actions}
-          onBringCatIn={(cat) => setSavedCat(cat)}
-          onClose={() => setOnboardingKey((key) => key + 1)}
-        />
-      ) : null}
+      <PawsOnboarding
+        session={session}
+        actions={actions}
+        hasCat={savedCat !== undefined}
+        onBringCatIn={(cat) => setSavedCat(cat)}
+      />
     </div>
   );
 }

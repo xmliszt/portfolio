@@ -12,6 +12,7 @@ export const COPY = {
   watch: {
     signInToBring: "Sign in to bring your cat",
     bringYourCat: "Bring your cat",
+    yourCat: "Your cat",
     roomFull: "Every room is full right now. You're watching from the window.",
   },
   signIn: {
@@ -78,7 +79,8 @@ export const COPY = {
   },
   meowResult: {
     refusedByUs: "Your cat can't make that one. Try another sound.",
-    refusedByProvider: "That one didn't work. Try describing a different sound.",
+    refusedByProvider:
+      "That one didn't work. Try describing a different sound.",
     failed:
       "Couldn't make the sound just now. Your cat is borrowing a meow. Try again in a bit.",
     borrowed:
