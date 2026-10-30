@@ -46,7 +46,7 @@ export function FloatingCard(props: FloatingCardProps) {
         "sm:bottom-6 sm:left-6"
       )}
     >
-      <header className="flex shrink-0 items-center justify-between gap-x-3 py-2 pr-1.5 pl-3">
+      <header className="flex shrink-0 items-center justify-between gap-x-3 pt-1 pr-1 pl-3">
         <h2
           id={titleId}
           className="font-[family-name:var(--pw-font-display)] text-[22px] leading-none"
@@ -59,7 +59,7 @@ export function FloatingCard(props: FloatingCardProps) {
           onClick={props.onClose}
           className={cn(
             FOCUS_RING_CLASS,
-            "grid size-10 shrink-0 cursor-pointer place-items-center text-[var(--pw-ink-soft)] hover:text-[var(--pw-ink)] sm:size-8"
+            "relative grid size-8 shrink-0 cursor-pointer place-items-center text-[var(--pw-ink-soft)] after:absolute after:-inset-1 hover:text-[var(--pw-ink)]"
           )}
         >
           <svg

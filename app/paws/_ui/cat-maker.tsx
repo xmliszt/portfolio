@@ -126,6 +126,51 @@ export function CatMaker(props: CatMakerProps) {
       look={props.look}
       reactKey={JSON.stringify(props.look)}
       fixedHeight
+      toolbar={
+        <div className="flex items-center gap-x-3">
+          <div
+            role="tablist"
+            aria-label={copy.maker.title}
+            onKeyDown={handleTabKeyDown}
+            className="flex min-w-0 gap-x-4 overflow-x-auto"
+          >
+            {TABS.map((name) => {
+              const isActive = name === tab;
+              return (
+                <button
+                  key={name}
+                  id={`${tabsId}-${name}`}
+                  type="button"
+                  role="tab"
+                  aria-selected={isActive}
+                  aria-controls={`${tabsId}-panel`}
+                  tabIndex={isActive ? 0 : -1}
+                  onClick={() => setTab(name)}
+                  className={cn(
+                    FOCUS_RING_CLASS,
+                    "shrink-0 cursor-pointer border-b-[1.5px] py-2.5 text-[12px] leading-none sm:py-1",
+                    isActive
+                      ? "border-[var(--pw-orange)] text-[var(--pw-ink)]"
+                      : "border-transparent text-[var(--pw-ink-soft)] hover:text-[var(--pw-ink)]"
+                  )}
+                >
+                  {copy.maker.tabs[name]}
+                </button>
+              );
+            })}
+          </div>
+          <button
+            type="button"
+            onClick={handleShuffle}
+            className={cn(
+              FOCUS_RING_CLASS,
+              "ml-auto shrink-0 cursor-pointer py-2.5 text-[12px] leading-none underline underline-offset-2 disabled:opacity-50 sm:py-1"
+            )}
+          >
+            {copy.maker.shuffle}
+          </button>
+        </div>
+      }
       onClose={props.onClose}
       footer={
         <RisoButton variant="primary" id={primaryId} onClick={props.onPrimary}>
@@ -133,50 +178,6 @@ export function CatMaker(props: CatMakerProps) {
         </RisoButton>
       }
     >
-      <div className="flex items-center gap-x-3">
-        <div
-          role="tablist"
-          aria-label={copy.maker.title}
-          onKeyDown={handleTabKeyDown}
-          className="flex min-w-0 gap-x-4 overflow-x-auto"
-        >
-          {TABS.map((name) => {
-            const isActive = name === tab;
-            return (
-              <button
-                key={name}
-                id={`${tabsId}-${name}`}
-                type="button"
-                role="tab"
-                aria-selected={isActive}
-                aria-controls={`${tabsId}-panel`}
-                tabIndex={isActive ? 0 : -1}
-                onClick={() => setTab(name)}
-                className={cn(
-                  FOCUS_RING_CLASS,
-                  "shrink-0 cursor-pointer border-b-[1.5px] py-2.5 text-[12px] leading-none sm:py-1",
-                  isActive
-                    ? "border-[var(--pw-orange)] text-[var(--pw-ink)]"
-                    : "border-transparent text-[var(--pw-ink-soft)] hover:text-[var(--pw-ink)]"
-                )}
-              >
-                {copy.maker.tabs[name]}
-              </button>
-            );
-          })}
-        </div>
-        <button
-          type="button"
-          onClick={handleShuffle}
-          className={cn(
-            FOCUS_RING_CLASS,
-            "ml-auto shrink-0 cursor-pointer py-2.5 text-[12px] leading-none underline underline-offset-2 disabled:opacity-50 sm:py-1"
-          )}
-        >
-          {copy.maker.shuffle}
-        </button>
-      </div>
-
       <div
         id={`${tabsId}-panel`}
         role="tabpanel"

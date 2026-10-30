@@ -35,12 +35,13 @@ type StudioFrameProps = {
   look: CatLook;
   reactKey: string;
   fixedHeight: boolean;
+  toolbar?: React.ReactNode;
   footer: React.ReactNode;
   children: React.ReactNode;
   onClose: () => void;
 };
 
-/** Render the full-screen studio over the room: the visitor's cat large in a square playground that bounces on every `reactKey` change, and a dock with scrolling controls and a footer, of fixed height when `fixedHeight` and as tall as its controls otherwise. */
+/** Render the full-screen studio over the room: the visitor's cat large in a square playground that bounces on every `reactKey` change, and a dock with an optional `toolbar` pinned above scrolling controls and a footer, of fixed height when `fixedHeight` and as tall as its controls otherwise. */
 export function StudioFrame(props: StudioFrameProps) {
   const { copy } = usePawsCopy();
 
@@ -167,9 +168,12 @@ export function StudioFrame(props: StudioFrameProps) {
               : "max-h-[min(28dvh,300px)]"
           )}
         >
+          {props.toolbar && (
+            <div className="shrink-0 px-3 pt-3">{props.toolbar}</div>
+          )}
           <div
             className={cn(
-              "flex min-h-0 min-w-0 flex-1 flex-col gap-y-3 overflow-y-auto p-3",
+              "flex min-h-0 min-w-0 flex-1 flex-col gap-y-3 overflow-y-auto p-3 pb-5",
               SCROLL_FADE_CLASS
             )}
           >

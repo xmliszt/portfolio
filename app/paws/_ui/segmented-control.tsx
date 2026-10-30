@@ -60,7 +60,9 @@ export function SegmentedControl<T extends string>(
                 onChange={() => props.onChange(option.value)}
                 className="sr-only"
               />
-              <span className="truncate">{option.label}</span>
+              <span className="truncate py-0.5 leading-normal">
+                {option.label}
+              </span>
             </label>
           );
         })}
