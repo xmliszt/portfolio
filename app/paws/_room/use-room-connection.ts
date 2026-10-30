@@ -68,6 +68,7 @@ export function useRoomConnection(options: {
   useEffect(() => {
     if (!isReady || userId === undefined || source === undefined) return;
     const roomSource = source;
+    const visitorId = userId;
     const run: {
       isCancelled: boolean;
       heartbeat?: number;
@@ -134,6 +135,7 @@ export function useRoomConnection(options: {
       engine.setSelf({ userId, connectionId, role: joined.role });
       connectionRef.current = roomSource.join({
         roomId: joined.roomId,
+        userId: visitorId,
         role: joined.role,
         self: joined.role === "player" ? presence : undefined,
         onPlayers: (players) => {

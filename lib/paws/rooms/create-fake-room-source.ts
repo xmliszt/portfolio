@@ -80,6 +80,8 @@ export function createFakeRoomSource(options: {
           finger: {
             userId: fake.userId,
             ...randomPoint(),
+            t: performance.now(),
+            trail: [],
             pressed: false,
             seq: 0,
           },
@@ -94,6 +96,8 @@ export function createFakeRoomSource(options: {
             finger: {
               userId: finger.userId,
               ...stepToward({ from: finger, to: target }),
+              t: performance.now(),
+              trail: [],
               pressed:
                 options.random() < PRESS_CHANCE
                   ? !finger.pressed

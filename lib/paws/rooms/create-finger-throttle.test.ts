@@ -46,6 +46,8 @@ function buildFinger(options: {
     userId: "u",
     x: options.seq,
     y: 0,
+    t: options.seq,
+    trail: [],
     pressed: options.pressed,
     seq: options.seq,
   };

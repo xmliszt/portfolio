@@ -1,6 +1,8 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
 
+import { ROOM_LIMITS } from "@/lib/paws/room-limits";
+
 import { parseCatsMessage } from "./parse-cats-message";
 
 function buildCat(options: { userId: string }) {
@@ -77,7 +79,7 @@ test("keeps at most one cat per player slot", () => {
   );
   assert.equal(
     parseCatsMessage({ hostId: "h", sentAt: 1, cats })?.cats.length,
-    10
+    ROOM_LIMITS.maxPlayers
   );
 });
 

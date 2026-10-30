@@ -20,7 +20,7 @@ const RECEIVE_LIMITS = {
   eventsPerSecond: 20,
 } as const;
 
-/** Return a room source that joins private Supabase Realtime room channels on `client`, reading players from presence and passing on only parsed messages from present players within `RECEIVE_LIMITS`. */
+/** Return a room source that joins private Supabase Realtime room channels on `client`, reading players and watchers from presence and passing on only parsed messages from present visitors within `RECEIVE_LIMITS`. */
 export function createSupabaseRoomSource(options: {
   client: ReturnType<typeof createPawsBrowserClient>;
   meowOrigins: string[];
@@ -30,17 +30,19 @@ export function createSupabaseRoomSource(options: {
     lastLeave: Promise.resolve(),
   };
   return {
-    join({ roomId, role, self, onPlayers, onFinger, onCats, onEvent }) {
+    join({ roomId, userId, role, self, onPlayers, onFinger, onCats, onEvent }) {
       const state: {
         channel?: RealtimeChannel;
         isSubscribed: boolean;
         hasLeft: boolean;
         players: PlayerPresence[];
+        watcherIds: string[];
         pressedByUserId: { [userId: string]: boolean };
       } = {
         isSubscribed: false,
         hasLeft: false,
         players: [],
+        watcherIds: [],
         pressedByUserId: {},
       };
       const now = () => performance.now();
@@ -60,9 +62,10 @@ export function createSupabaseRoomSource(options: {
         maxPerSecond: RECEIVE_LIMITS.eventsPerSecond,
         now,
       });
-      const isTracking = role === "player" && self !== undefined;
-      const isPresent = (userId: string) =>
-        state.players.some((player) => player.userId === userId);
+      const presence = role === "player" ? self : { role: "watcher" };
+      const isPresent = (visitorId: string) =>
+        state.players.some((player) => player.userId === visitorId) ||
+        state.watcherIds.includes(visitorId);
       const isConnected = (connectionId: string) =>
         state.players.some((player) => player.connectionId === connectionId);
 
@@ -86,7 +89,7 @@ export function createSupabaseRoomSource(options: {
           config: {
             private: true,
             broadcast: { self: false },
-            ...(isTracking ? { presence: { key: self.userId } } : {}),
+            presence: { key: userId },
           },
         });
         state.channel = channel;
@@ -109,6 +112,15 @@ export function createSupabaseRoomSource(options: {
                 return earliest === undefined ? [] : [earliest];
               }
             );
+            state.watcherIds = Object.entries(channel.presenceState())
+              .filter(
+                ([key, metas]) =>
+                  !state.players.some((player) => player.userId === key) &&
+                  metas.some(
+                    (meta) => "role" in meta && meta.role === "watcher"
+                  )
+              )
+              .map(([key]) => key);
             onPlayers(state.players);
           })
           .on("broadcast", { event: "finger" }, ({ payload }) => {
@@ -145,7 +157,8 @@ export function createSupabaseRoomSource(options: {
           })
           .subscribe((status) => {
             state.isSubscribed = status === "SUBSCRIBED";
-            if (state.isSubscribed && isTracking) void channel.track(self);
+            if (state.isSubscribed && presence !== undefined)
+              void channel.track(presence);
           });
       }
 

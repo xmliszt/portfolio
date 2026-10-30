@@ -10,11 +10,16 @@ export type PlayerPresence = {
   joinedAt: number;
 };
 
-/** One player's fingertip in world units. */
+/** `[x, y, t]`: a fingertip position in world units and the sender's clock in milliseconds when it was there. */
+export type FingerPoint = [number, number, number];
+
+/** One visitor's fingertip in world units at sender time `t`, with the `trail` of earlier points since their last message, oldest first. */
 export type FingerMessage = {
   userId: string;
   x: number;
   y: number;
+  t: number;
+  trail: FingerPoint[];
   pressed: boolean;
   seq: number;
 };

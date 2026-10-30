@@ -115,3 +115,67 @@ test("resends a still fingertip every second", () => {
   );
   assert.deepEqual(sentAt, [0, 1000]);
 });
+
+test("a watcher sends its fingertip with the trail since its last message", () => {
+  const engine = buildFollower();
+  engine.setSelf({ userId: "me", connectionId: "me-tab", role: "watcher" });
+  const sent = Array.from({ length: 31 }, (_, index) => index * 20).flatMap(
+    (nowMs) => {
+      engine.setOwnPointer({
+        x: nowMs / 10,
+        y: 60,
+        present: true,
+        pressed: false,
+      });
+      const finger = engine.frame({ nowMs, dtSeconds: DT_SECONDS }).outgoing
+        .finger;
+      return finger === undefined ? [] : [finger];
+    }
+  );
+  assert.deepEqual(
+    sent.map((finger) => finger.t),
+    [0, 500],
+    "sends at the room's finger rate"
+  );
+  assert.deepEqual(
+    sent[1].trail.map((point) => point[2]),
+    [60, 120, 180, 240, 300, 360, 420, 480]
+  );
+  assert.equal(sent[1].x, 50);
+});
+
+test("plays another visitor's fingertip back along a curve behind real time", () => {
+  const engine = buildFollower();
+  const positions: number[] = [];
+  for (let nowMs = 0; nowMs <= 2000; nowMs += 20) {
+    if (nowMs % 500 === 0)
+      engine.receiveFinger({
+        message: {
+          userId: "guest",
+          x: nowMs / 5,
+          y: 100,
+          t: nowMs,
+          trail: [100, 200, 300, 400]
+            .map((step) => nowMs - 500 + step)
+            .filter((t) => t > 0)
+            .map((t): [number, number, number] => [t / 5, 100, t]),
+          pressed: false,
+          seq: nowMs,
+        },
+        receivedAtMs: nowMs + 40,
+      });
+    const remote = engine
+      .frame({ nowMs: nowMs + 40, dtSeconds: DT_SECONDS })
+      .fingers.find((finger) => finger.kind === "remote");
+    if (nowMs >= 1000 && remote !== undefined) positions.push(remote.x);
+  }
+  const steps = positions.slice(1).map((x, index) => x - positions[index]);
+  assert.ok(
+    steps.every((step) => step > 3 && step < 5),
+    `moves evenly: ${steps.map((step) => step.toFixed(1)).join(" ")}`
+  );
+  assert.ok(
+    positions[0] < 1000 / 5 - 100,
+    `plays behind the latest point: ${positions[0]}`
+  );
+});

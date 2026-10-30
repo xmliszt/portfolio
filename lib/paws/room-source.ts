@@ -14,10 +14,11 @@ export type RoomConnection = {
   leave: () => void;
 };
 
-/** A room on a Realtime channel; watchers receive everything but their sends are refused by the server. */
+/** A room on a Realtime channel; players and watchers both send fingertips and events, and only a player's cats are taken. */
 export type RoomSource = {
   join: (options: {
     roomId: string;
+    userId: string;
     role: RoomRole;
     self: PlayerPresence | undefined;
     onPlayers: (players: PlayerPresence[]) => void;

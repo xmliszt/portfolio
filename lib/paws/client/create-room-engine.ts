@@ -22,13 +22,22 @@ import type {
   CatsMessage,
   CatSnapshot,
   FingerMessage,
+  FingerPoint,
   PawPrintEvent,
   PlayerPresence,
   RoomEvent,
 } from "@/lib/paws/wire-types";
 
+import { type FingerSample, sampleFingerPath } from "./sample-finger-path";
+
 const REMOTE_FINGER_TIMEOUT_MS = 2000;
 const FINGER_REFRESH_MS = 1000;
+const FINGER_SEND_MS = 1000 / ROOM_LIMITS.fingerSendsPerSecond;
+const TRAIL_STEP_MS = 50;
+const MAX_TRAIL_POINTS = 12;
+const PLAYBACK_DELAY_MS = FINGER_SEND_MS + 150;
+const KEPT_SAMPLES_MS = 1000;
+const CLOCK_OFFSET_WINDOW = 10;
 const MIN_FINGER_MOVE = 0.5;
 const MIN_FINGERPRINT_PRESS = 0.2;
 const RESIDENT_CATS = 3;
@@ -57,8 +66,12 @@ export type RoomFrame = {
 };
 
 type RemoteFinger = {
-  message: FingerMessage;
+  userId: string;
+  samples: FingerSample[];
+  lastSeq: number;
+  clockOffsets: number[];
   receivedAtMs: number;
+  pressed: boolean;
   tip: FingertipState | undefined;
 };
 
@@ -80,6 +93,7 @@ export function createRoomEngine(options: { random: () => number }) {
     lastSentFinger:
       | { x: number; y: number; pressed: boolean; sentAtMs: number }
       | undefined;
+    ownTrail: FingerPoint[];
     wasPressed: boolean;
     seq: number;
     prints: ScenePrint[];
@@ -100,6 +114,7 @@ export function createRoomEngine(options: { random: () => number }) {
     ownPointer: { x: 0, y: 0, present: false, pressed: false },
     ownTip: undefined,
     lastSentFinger: undefined,
+    ownTrail: [],
     wasPressed: false,
     seq: 0,
     prints: [],
@@ -132,17 +147,15 @@ export function createRoomEngine(options: { random: () => number }) {
         ? []
         : [
             {
-              userId: finger.message.userId,
+              userId: finger.userId,
               x: finger.tip.x,
               y: finger.tip.y,
-              pressed: finger.message.pressed,
+              pressed: finger.pressed,
             },
           ]
     );
     const own =
-      state.role === "player" &&
-      state.selfId !== undefined &&
-      state.ownPointer.present
+      state.selfId !== undefined && state.ownPointer.present
         ? [
             {
               userId: state.selfId,
@@ -155,9 +168,27 @@ export function createRoomEngine(options: { random: () => number }) {
     return [...own, ...remote];
   }
 
+  function recordOwnTrail(nowMs: number) {
+    if (!state.ownPointer.present) {
+      state.ownTrail = [];
+      return;
+    }
+    const last = state.ownTrail.at(-1);
+    if (last !== undefined && nowMs - last[2] < TRAIL_STEP_MS) return;
+    state.ownTrail = [
+      ...state.ownTrail,
+      [
+        state.ownPointer.x,
+        state.ownPointer.y,
+        Math.round(nowMs),
+      ] satisfies FingerPoint,
+    ].slice(-MAX_TRAIL_POINTS);
+  }
+
   function ownFingerMessage(nowMs: number): FingerMessage | undefined {
-    if (state.role !== "player" || state.selfId === undefined) return undefined;
+    if (state.selfId === undefined) return undefined;
     const last = state.lastSentFinger;
+    const t = Math.round(nowMs);
     if (!state.ownPointer.present) {
       state.lastSentFinger = undefined;
       if (last === undefined || !last.pressed) return undefined;
@@ -166,20 +197,27 @@ export function createRoomEngine(options: { random: () => number }) {
         userId: state.selfId,
         x: last.x,
         y: last.y,
+        t,
+        trail: [],
         pressed: false,
         seq: state.seq,
       };
     }
     const { x, y, pressed } = state.ownPointer;
-    const isUnchanged =
-      last !== undefined &&
-      Math.hypot(x - last.x, y - last.y) <= MIN_FINGER_MOVE &&
-      last.pressed === pressed &&
-      nowMs - last.sentAtMs < FINGER_REFRESH_MS;
-    if (isUnchanged) return undefined;
-    state.lastSentFinger = { x, y, pressed, sentAtMs: nowMs };
+    const isDue =
+      last === undefined ||
+      last.pressed !== pressed ||
+      nowMs - last.sentAtMs >= FINGER_REFRESH_MS ||
+      (nowMs - last.sentAtMs >= FINGER_SEND_MS &&
+        Math.hypot(x - last.x, y - last.y) > MIN_FINGER_MOVE);
+    if (!isDue) return undefined;
+    const trail = state.ownTrail.filter(
+      (point) =>
+        point[2] < t && (last === undefined || point[2] > last.sentAtMs)
+    );
+    state.lastSentFinger = { x, y, pressed, sentAtMs: t };
     state.seq += 1;
-    return { userId: state.selfId, x, y, pressed, seq: state.seq };
+    return { userId: state.selfId, x, y, t, trail, pressed, seq: state.seq };
   }
 
   function ownFingerprint(): RoomEvent | undefined {
@@ -191,7 +229,7 @@ export function createRoomEngine(options: { random: () => number }) {
       state.ownTip.press < MIN_FINGERPRINT_PRESS
     )
       return undefined;
-    if (state.role !== "player" || state.selfId === undefined) return undefined;
+    if (state.selfId === undefined) return undefined;
     return {
       kind: "fingerPrint",
       userId: state.selfId,
@@ -221,10 +259,29 @@ export function createRoomEngine(options: { random: () => number }) {
       message: FingerMessage;
       receivedAtMs: number;
     }) => {
-      const existing = state.remoteFingers[options.message.userId];
-      state.remoteFingers[options.message.userId] = {
-        message: options.message,
-        receivedAtMs: options.receivedAtMs,
+      const { message, receivedAtMs } = options;
+      const existing = state.remoteFingers[message.userId];
+      if (existing !== undefined && message.seq <= existing.lastSeq) return;
+      const previous = existing?.samples.at(-1);
+      const arrived: FingerSample[] = [
+        ...message.trail.map(([x, y, t]) => ({
+          x,
+          y,
+          t,
+          pressed: previous?.pressed ?? message.pressed,
+        })),
+        { x: message.x, y: message.y, t: message.t, pressed: message.pressed },
+      ].filter((sample) => previous === undefined || sample.t > previous.t);
+      state.remoteFingers[message.userId] = {
+        userId: message.userId,
+        samples: [...(existing?.samples ?? []), ...arrived],
+        lastSeq: message.seq,
+        clockOffsets: [
+          ...(existing?.clockOffsets ?? []),
+          receivedAtMs - message.t,
+        ].slice(-CLOCK_OFFSET_WINDOW),
+        receivedAtMs,
+        pressed: existing?.pressed ?? message.pressed,
         tip: existing?.tip,
       };
     },
@@ -362,6 +419,8 @@ export function createRoomEngine(options: { random: () => number }) {
         input: state.ownPointer,
         dtSeconds,
       });
+      recordOwnTrail(nowMs);
+      recordOwnTrail(nowMs);
       const fingerprint = ownFingerprint();
       if (fingerprint !== undefined) events.push(fingerprint);
       const outgoingEvents =
@@ -371,13 +430,21 @@ export function createRoomEngine(options: { random: () => number }) {
       for (const [userId, finger] of Object.entries(state.remoteFingers)) {
         if (finger === undefined) continue;
         const isFresh = nowMs - finger.receivedAtMs <= REMOTE_FINGER_TIMEOUT_MS;
+        const playAt =
+          nowMs - Math.min(...finger.clockOffsets) - PLAYBACK_DELAY_MS;
+        const point = sampleFingerPath({ samples: finger.samples, t: playAt });
+        const keepFrom = finger.samples.findLastIndex(
+          (sample) => sample.t < playAt - KEPT_SAMPLES_MS
+        );
+        finger.samples = finger.samples.slice(Math.max(0, keepFrom));
+        finger.pressed = point?.pressed ?? false;
         finger.tip = stepFingertip({
           fingertip: finger.tip,
           input: {
-            x: finger.message.x,
-            y: finger.message.y,
+            x: point?.x ?? finger.tip?.x ?? 0,
+            y: point?.y ?? finger.tip?.y ?? 0,
             present: isFresh,
-            pressed: finger.message.pressed,
+            pressed: finger.pressed,
           },
           dtSeconds,
         });
@@ -397,14 +464,13 @@ export function createRoomEngine(options: { random: () => number }) {
           ? []
           : [deriveCat({ snapshot, look, time: state.time })];
       });
-      const ownKind = state.role === "player" ? "own" : "watchOnly";
       const fingers: SceneFinger[] = [
         ...Object.values(state.remoteFingers).flatMap((finger) =>
           finger?.tip === undefined
             ? []
             : [{ ...finger.tip, kind: "remote" as const }]
         ),
-        { ...state.ownTip, kind: ownKind },
+        { ...state.ownTip, kind: "own" },
       ];
       return {
         time: state.time,

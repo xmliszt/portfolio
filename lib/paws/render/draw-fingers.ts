@@ -11,8 +11,6 @@ const getStrength = (kind: FingertipKind) => {
       return 1;
     case "remote":
       return 0.75;
-    case "watchOnly":
-      return 0.35;
     default: {
       const unknown: never = kind;
       return unknown;
@@ -20,7 +18,7 @@ const getStrength = (kind: FingertipKind) => {
   }
 };
 
-/** Draw each fingertip under the glass at `time` seconds, with its fingerprint showing as it presses and smearing as it drags; remote and watch-only fingertips are fainter. */
+/** Draw each fingertip under the glass at `time` seconds, with its fingerprint showing as it presses and smearing as it drags; remote fingertips are fainter. */
 export function drawFingers(options: {
   draw: DrawContext;
   resources: SceneResources;

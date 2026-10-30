@@ -55,6 +55,6 @@ export type FingertipState = {
 };
 
 /** Whose fingertip it is: the viewer's, another player's, or the viewer's while they only watch. */
-export type FingertipKind = "own" | "remote" | "watchOnly";
+export type FingertipKind = "own" | "remote";
 
 export type SceneFinger = FingertipState & { kind: FingertipKind };
