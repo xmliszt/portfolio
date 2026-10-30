@@ -4,7 +4,7 @@ import { test } from "node:test";
 import { readPawsSession } from "./read-paws-session";
 
 test("reads no session as loading", () => {
-  assert.deepEqual(readPawsSession(null), { kind: "loading" });
+  assert.deepEqual(readPawsSession(null), { kind: "signedOut" });
 });
 
 test("reads an anonymous user as a guest", () => {

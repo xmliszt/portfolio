@@ -1,5 +1,6 @@
 export type PawsSession =
   | { kind: "loading" }
+  | { kind: "signedOut" }
   | { kind: "guest"; userId: string; accessToken: string }
   | { kind: "member"; userId: string; email: string; accessToken: string };
 

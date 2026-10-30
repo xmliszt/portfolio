@@ -287,3 +287,27 @@ test("a guest alone in the room plays with the resident cats", () => {
   };
   assert.notDeepEqual(run(true), run(false));
 });
+
+test("a visitor who is not signed in still plays with the resident cats", () => {
+  const run = (isTouching: boolean) => {
+    const engine = createRoomEngine({
+      random: createSeededRandom({ seed: 2 }),
+    });
+    const cats: string[] = [];
+    for (let frame = 0; frame < 900; frame++) {
+      engine.setOwnPointer({
+        x: 800,
+        y: 500,
+        present: isTouching,
+        pressed: false,
+      });
+      const room = engine.frame({ nowMs: frame * 16, dtSeconds: DT_SECONDS });
+      if (frame === 899)
+        cats.push(
+          ...room.cats.map((cat) => `${cat.x.toFixed(1)},${cat.y.toFixed(1)}`)
+        );
+    }
+    return cats;
+  };
+  assert.notDeepEqual(run(true), run(false));
+});

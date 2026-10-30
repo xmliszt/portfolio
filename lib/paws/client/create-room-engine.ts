@@ -44,6 +44,7 @@ const MAX_REMOTE_SAMPLES =
 const MIN_FINGER_MOVE = 0.5;
 const MIN_FINGERPRINT_PRESS = 0.2;
 const RESIDENT_CATS = 3;
+const LOCAL_VISITOR_ID = "visitor";
 const MAX_QUEUED_PRINTS = 160;
 const MAX_QUEUED_EVENTS = 200;
 
@@ -158,17 +159,16 @@ export function createRoomEngine(options: { random: () => number }) {
             },
           ]
     );
-    const own =
-      state.selfId !== undefined && state.ownPointer.present
-        ? [
-            {
-              userId: state.selfId,
-              x: state.ownPointer.x,
-              y: state.ownPointer.y,
-              pressed: state.ownPointer.pressed,
-            },
-          ]
-        : [];
+    const own = state.ownPointer.present
+      ? [
+          {
+            userId: state.selfId ?? LOCAL_VISITOR_ID,
+            x: state.ownPointer.x,
+            y: state.ownPointer.y,
+            pressed: state.ownPointer.pressed,
+          },
+        ]
+      : [];
     return [...own, ...remote];
   }
 
@@ -233,10 +233,9 @@ export function createRoomEngine(options: { random: () => number }) {
       state.ownTip.press < MIN_FINGERPRINT_PRESS
     )
       return undefined;
-    if (state.selfId === undefined) return undefined;
     return {
       kind: "fingerPrint",
-      userId: state.selfId,
+      userId: state.selfId ?? LOCAL_VISITOR_ID,
       x: state.ownTip.x,
       y: state.ownTip.y,
       pressure: state.ownTip.press,

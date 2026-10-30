@@ -7,7 +7,7 @@ type AuthSession = {
 
 /** Return the paws session for a Supabase auth session: `loading` without one, `member` for a user with an email who is not anonymous, `guest` otherwise. */
 export function readPawsSession(session: AuthSession | null): PawsSession {
-  if (session === null) return { kind: "loading" };
+  if (session === null) return { kind: "signedOut" };
   const { user } = session;
   if (
     user.is_anonymous !== true &&
