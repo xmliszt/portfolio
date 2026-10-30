@@ -1,5 +1,7 @@
 import type { SceneConfig } from "@/lib/laundromat/scene-config";
 
+import { CRAYON_FILTER_MARGIN } from "./crayon-filter-margin";
+
 const RED_TO_ALPHA = "0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  1 0 0 0 0";
 
 type CrayonFilterProps = {
@@ -15,10 +17,10 @@ export function CrayonFilter(props: CrayonFilterProps) {
       <filter
         id={props.id}
         filterUnits="userSpaceOnUse"
-        x="-10%"
-        y="-10%"
-        width="120%"
-        height="120%"
+        x={`${-CRAYON_FILTER_MARGIN * 100}%`}
+        y={`${-CRAYON_FILTER_MARGIN * 100}%`}
+        width={`${100 + CRAYON_FILTER_MARGIN * 200}%`}
+        height={`${100 + CRAYON_FILTER_MARGIN * 200}%`}
       >
         <feTurbulence
           type="fractalNoise"
