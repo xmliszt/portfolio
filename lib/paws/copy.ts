@@ -2,8 +2,7 @@
 export const COPY = {
   site: {
     title: "Paws",
-    description:
-      "Cats walk on a pane of frosted glass. Bring yours, and touch the glass with strangers.",
+    description: "Bring your cat. Meet strangers and their cats.",
   },
   watch: {
     signInToBring: "Sign in to bring your cat",

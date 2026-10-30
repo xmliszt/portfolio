@@ -12,7 +12,7 @@ export const PENDING_COPY = {
   saving: "Saving…",
   saveFailed: "Couldn't save your cat just now. Try again in a bit.",
   signInAgain: "Your sign-in ran out. Sign in again to keep your cat.",
-  previewLabel: "Your cat, sitting under the glass",
+  previewLabel: "Your cat",
   playSound: "Play the sound",
   back: "Back",
   tryAgain: "Try again",

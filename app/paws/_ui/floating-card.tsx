@@ -15,7 +15,7 @@ type FloatingCardProps = {
   onClose: () => void;
 };
 
-/** Render a small paper card in the bottom-left corner of the glass, titled and closable, with its body scrolling between header and footer. */
+/** Render a small paper card in the bottom-left corner of the page, titled and closable, with its body scrolling between header and footer. */
 export function FloatingCard(props: FloatingCardProps) {
   const titleId = useId();
   const cardRef = useRef<HTMLElement>(null);

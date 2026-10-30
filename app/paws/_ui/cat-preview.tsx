@@ -13,7 +13,7 @@ type CatPreviewProps = {
   look: CatLook;
 };
 
-/** Render the cat sitting under the glass on a canvas, animated unless the visitor prefers reduced motion. */
+/** Render the cat sitting in the preview on a canvas, animated unless the visitor prefers reduced motion. */
 export function CatPreview(props: CatPreviewProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const lookRef = useRef(props.look);
