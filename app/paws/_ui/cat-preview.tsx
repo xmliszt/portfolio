@@ -90,7 +90,7 @@ export function CatPreview(props: CatPreviewProps) {
       ref={canvasRef}
       role="img"
       aria-label={PENDING_COPY.previewLabel}
-      className="block aspect-[2/1] w-full border-[1.5px] border-[var(--pw-ink)] bg-[var(--pw-paper-deep)]"
+      className="block size-full border-[1.5px] border-[var(--pw-ink)] bg-[var(--pw-paper-deep)]"
     />
   );
 }

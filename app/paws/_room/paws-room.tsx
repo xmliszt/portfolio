@@ -192,7 +192,7 @@ export function PawsRoom() {
   }
 
   return (
-    <div className="absolute inset-0">
+    <div className="group/room absolute inset-0">
       <canvas
         ref={canvasRef}
         aria-label={COPY.site.description}
@@ -208,7 +208,7 @@ export function PawsRoom() {
         onClick={handleToggleMute}
         className={cn(
           FOCUS_RING_CLASS,
-          "absolute top-4 right-4 h-8 border-[1.5px] border-[var(--pw-ink)] bg-[var(--pw-paper)] px-3 text-[12px] text-[var(--pw-ink)] hover:bg-[var(--pw-paper-deep)] sm:top-6 sm:right-6"
+          "absolute top-4 right-4 h-8 border-[1.5px] border-[var(--pw-ink)] bg-[var(--pw-paper)] px-3 text-[12px] text-[var(--pw-ink)] group-has-[[aria-modal=true]]/room:hidden hover:bg-[var(--pw-paper-deep)] sm:top-6 sm:right-6"
         )}
       >
         {isMuted ? COPY.room.unmute : COPY.room.mute}

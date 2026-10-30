@@ -22,13 +22,13 @@ import {
 import { cn } from "@/lib/utils";
 
 import { fetchSavedCat } from "./fetch-saved-cat";
-import { FloatingCard } from "./floating-card";
 import { FOCUS_RING_CLASS } from "./focus-ring-class";
 import { PENDING_COPY } from "./pending-copy";
 import { putCat } from "./put-cat";
 import { requestMeow } from "./request-meow";
 import { RisoButton } from "./riso-button";
 import { SegmentedControl } from "./segmented-control";
+import { StudioFrame } from "./studio-frame";
 import { TEXT_FIELD_CLASS } from "./text-field-class";
 
 const AGE_OPTIONS = AGES.map((age) => ({
@@ -70,6 +70,7 @@ export function VoiceStep(props: VoiceStepProps) {
   const textId = useId();
   const formId = useId();
   const [text, setText] = useState("");
+  const [playCount, setPlayCount] = useState(0);
   const [phase, setPhase] = useState<Phase>({
     kind: "editing",
     notice: undefined,
@@ -109,6 +110,7 @@ export function VoiceStep(props: VoiceStepProps) {
     audio.src = meowUrl;
     audio.currentTime = 0;
     audio.play().catch(() => {});
+    setPlayCount((count) => count + 1);
   }
 
   async function makeSound() {
@@ -251,8 +253,11 @@ export function VoiceStep(props: VoiceStepProps) {
   })();
 
   return (
-    <FloatingCard
+    <StudioFrame
+      eyebrow={COPY.voice.eyebrow}
       title={COPY.voice.title}
+      look={props.look}
+      reactKey={String(playCount)}
       onClose={props.onClose}
       footer={(() => {
         switch (phase.kind) {
@@ -400,6 +405,6 @@ export function VoiceStep(props: VoiceStepProps) {
       >
         {notice ?? (phase.kind === "making" ? COPY.voice.making : "")}
       </p>
-    </FloatingCard>
+    </StudioFrame>
   );
 }

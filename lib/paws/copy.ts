@@ -22,6 +22,14 @@ export const COPY = {
   },
   maker: {
     title: "Make your cat",
+    eyebrow: "Look · 1 of 2",
+    tabs: {
+      coat: "Coat",
+      pattern: "Pattern",
+      belly: "Belly",
+      pads: "Beans",
+      shape: "Shape",
+    },
     coat: "Coat",
     pattern: "Pattern",
     belly: "Belly and paws",
@@ -36,6 +44,7 @@ export const COPY = {
   },
   voice: {
     title: "Give your cat its voice",
+    eyebrow: "Voice · 2 of 2",
     textLabel: "What sound does your cat make?",
     textPlaceholder: "meow",
     age: "Age",

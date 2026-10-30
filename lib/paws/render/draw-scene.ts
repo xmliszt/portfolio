@@ -49,7 +49,12 @@ export function drawScene(options: {
   );
   const draw = { g: ink, unitPx: view.scale };
   drawPrints({ draw, resources, prints: options.prints, time });
-  for (const cat of options.cats.toSorted((a, b) => a.y - b.y)) {
+  const bodyHeight = (cat: DerivedCat) =>
+    cat.spine.reduce((total, point) => total + point[3], 0) / cat.spine.length;
+  const farthestFirst = options.cats.toSorted(
+    (a, b) => bodyHeight(b) - bodyHeight(a) || (a.userId < b.userId ? -1 : 1)
+  );
+  for (const cat of farthestFirst) {
     drawCat({
       draw,
       cat,

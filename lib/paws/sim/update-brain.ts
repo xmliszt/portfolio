@@ -443,7 +443,7 @@ export function updateBrain(options: { tick: Tick; cat: SimCat }) {
       walkTo({ tick, cat, goal: partner, pace: 2.3, ignoreId: partner.userId });
       if (
         Math.hypot(cat.x - partner.x, cat.y - partner.y) <
-          70 * (k + partner.build.scale) ||
+          80 * (k + partner.build.scale) ||
         social.t > social.durationSeconds
       ) {
         endSocial({ world, cat });

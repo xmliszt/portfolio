@@ -1,3 +1,4 @@
+import { shuffleCatLook } from "@/lib/paws/maker/shuffle-cat-look";
 import { pruneScenePrints } from "@/lib/paws/render/prune-scene-prints";
 import type {
   FingertipState,
@@ -29,6 +30,7 @@ import { detectPawLandings } from "./detect-paw-landings";
 const REMOTE_FINGER_TIMEOUT_MS = 2000;
 const MIN_FINGER_MOVE = 0.5;
 const MIN_FINGERPRINT_PRESS = 0.2;
+const RESIDENT_CATS = 3;
 
 export type OwnPointer = {
   x: number;
@@ -64,6 +66,9 @@ export function createRoomEngine(options: { random: () => number }) {
     selfId: string | undefined;
     role: RoomRole;
     world: World | undefined;
+    residents:
+      | { world: World; players: Pick<PlayerPresence, "userId" | "look">[] }
+      | undefined;
     buffer: ReturnType<typeof createSnapshotBuffer>;
     remoteFingers: { [userId: string]: RemoteFinger | undefined };
     ownPointer: OwnPointer;
@@ -81,6 +86,7 @@ export function createRoomEngine(options: { random: () => number }) {
     selfId: undefined,
     role: "watcher",
     world: undefined,
+    residents: undefined,
     buffer: createSnapshotBuffer(),
     remoteFingers: {},
     ownPointer: { x: 0, y: 0, present: false, pressed: false },
@@ -96,7 +102,8 @@ export function createRoomEngine(options: { random: () => number }) {
   };
 
   function lookOf(userId: string) {
-    return state.players.find((player) => player.userId === userId)?.look;
+    const players = [...state.players, ...(state.residents?.players ?? [])];
+    return players.find((player) => player.userId === userId)?.look;
   }
 
   function addPrint(event: RoomEvent) {
@@ -227,12 +234,32 @@ export function createRoomEngine(options: { random: () => number }) {
             : createWorld({ random: options.random });
       }
       if (!isHost) state.world = undefined;
+      if (hostId !== undefined) state.residents = undefined;
+      if (hostId === undefined && state.residents === undefined) {
+        state.residents = {
+          world: createWorld({ random: options.random }),
+          players: Array.from({ length: RESIDENT_CATS }, (_, index) => ({
+            userId: `resident-${index + 1}`,
+            look: shuffleCatLook({ random: options.random }),
+          })),
+        };
+      }
 
       const events: RoomEvent[] = [...state.received];
       state.received = [];
       let outgoingCats: CatsMessage | undefined;
       let outgoingEvents: RoomEvent[] = [];
       const snapshots = (() => {
+        if (state.world === undefined && state.residents !== undefined) {
+          const stepped = stepWorld({
+            world: state.residents.world,
+            players: state.residents.players,
+            fingers: [],
+            dtSeconds,
+          });
+          events.push(...stepped.events);
+          return getCatSnapshots(state.residents.world);
+        }
         if (state.world === undefined) {
           const sampled = state.buffer.sample({ nowMs });
           events.push(

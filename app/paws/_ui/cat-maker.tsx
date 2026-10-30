@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useId } from "react";
+import { useEffect, useId, useRef, useState } from "react";
+import { useReducedMotion } from "motion/react";
 
 import {
   BELLIES,
@@ -15,12 +16,16 @@ import { COPY } from "@/lib/paws/copy";
 import { coatInkOptions } from "@/lib/paws/maker/coat-ink-options";
 import { padInkOptions } from "@/lib/paws/maker/pad-ink-options";
 import { shuffleCatLook } from "@/lib/paws/maker/shuffle-cat-look";
+import { cn } from "@/lib/utils";
 
-import { CatPreview } from "./cat-preview";
-import { FloatingCard } from "./floating-card";
+import { FOCUS_RING_CLASS } from "./focus-ring-class";
 import { RisoButton } from "./riso-button";
 import { SegmentedControl } from "./segmented-control";
+import { StudioFrame } from "./studio-frame";
 import { SwatchPicker } from "./swatch-picker";
+
+const SHUFFLE_ROLLS = 6;
+const SHUFFLE_ROLL_MS = 70;
 
 const COAT_OPTIONS = coatInkOptions().map((coat) => ({
   value: coat,
@@ -50,12 +55,15 @@ const STEP_OPTIONS = STEPS.map((step) => ({
   label: COPY.options.step[step],
 }));
 
-const STEP_FIELDS = [
+const TABS = ["coat", "pattern", "belly", "pads", "shape"] as const;
+const SHAPE_FIELDS = [
   "size",
   "fluff",
   "tail",
   "ears",
 ] as const satisfies readonly (keyof CatLook)[];
+
+type Tab = (typeof TABS)[number];
 
 type CatMakerProps = {
   look: CatLook;
@@ -67,42 +75,55 @@ type CatMakerProps = {
   onClose: () => void;
 };
 
-/** Render the corner card where a member picks their cat's look over a live preview. */
+/** Render the studio where a member picks their cat's look one group at a time while the cat, large in the middle, reacts to every change. */
 export function CatMaker(props: CatMakerProps) {
+  const [tab, setTab] = useState<Tab>("coat");
+  const tabsId = useId();
   const primaryId = useId();
+  const rollRef = useRef<number | undefined>(undefined);
+  const isReduced = useReducedMotion() ?? false;
 
   useEffect(() => {
     if (!props.busy && document.activeElement === document.body)
       document.getElementById(primaryId)?.focus();
   }, [props.busy, primaryId]);
 
+  useEffect(() => () => window.clearInterval(rollRef.current), []);
+
   function change(patch: Partial<CatLook>) {
     props.onLookChange({ ...props.look, ...patch });
   }
 
-  function handleCoatChange(coat: CatLook["coat"]) {
-    change({ coat });
-  }
-
-  function handlePatternChange(pattern: CatLook["pattern"]) {
-    change({ pattern });
-  }
-
-  function handleBellyChange(belly: CatLook["belly"]) {
-    change({ belly });
-  }
-
-  function handlePadsChange(pads: CatLook["pads"]) {
-    change({ pads });
-  }
-
   function handleShuffle() {
-    props.onLookChange(shuffleCatLook({ random: Math.random }));
+    window.clearInterval(rollRef.current);
+    if (isReduced) {
+      props.onLookChange(shuffleCatLook({ random: Math.random }));
+      return;
+    }
+    const roll = { count: 0 };
+    rollRef.current = window.setInterval(() => {
+      roll.count += 1;
+      props.onLookChange(shuffleCatLook({ random: Math.random }));
+      if (roll.count >= SHUFFLE_ROLLS) window.clearInterval(rollRef.current);
+    }, SHUFFLE_ROLL_MS);
+  }
+
+  function handleTabKeyDown(event: React.KeyboardEvent) {
+    const step =
+      event.key === "ArrowRight" ? 1 : event.key === "ArrowLeft" ? -1 : 0;
+    if (step === 0) return;
+    event.preventDefault();
+    const next = TABS.at((TABS.indexOf(tab) + step) % TABS.length) ?? "coat";
+    setTab(next);
+    document.getElementById(`${tabsId}-${next}`)?.focus();
   }
 
   return (
-    <FloatingCard
+    <StudioFrame
+      eyebrow={COPY.maker.eyebrow}
       title={COPY.maker.title}
+      look={props.look}
+      reactKey={JSON.stringify(props.look)}
       onClose={props.onClose}
       footer={
         <>
@@ -124,60 +145,122 @@ export function CatMaker(props: CatMakerProps) {
         </>
       }
     >
-      <CatPreview look={props.look} />
-      <SwatchPicker
-        legend={COPY.maker.coat}
-        name="coat"
-        options={COAT_OPTIONS}
-        value={props.look.coat}
-        disabled={props.busy}
-        onChange={handleCoatChange}
-      />
-      <SegmentedControl
-        legend={COPY.maker.pattern}
-        name="pattern"
-        columns={3}
-        options={PATTERN_OPTIONS}
-        value={props.look.pattern}
-        disabled={props.busy}
-        onChange={handlePatternChange}
-      />
-      <SegmentedControl
-        legend={COPY.maker.belly}
-        name="belly"
-        columns={2}
-        options={BELLY_OPTIONS}
-        value={props.look.belly}
-        disabled={props.busy}
-        onChange={handleBellyChange}
-      />
-      <SwatchPicker
-        legend={COPY.maker.pads}
-        name="pads"
-        options={PAD_OPTIONS}
-        value={props.look.pads}
-        disabled={props.busy}
-        onChange={handlePadsChange}
-      />
-      <div className="grid grid-cols-2 gap-x-3 gap-y-3">
-        {STEP_FIELDS.map((field) => (
-          <SegmentedControl<Step>
-            key={field}
-            legend={COPY.maker[field]}
-            name={field}
-            columns={3}
-            options={STEP_OPTIONS}
-            value={props.look[field]}
-            disabled={props.busy}
-            onChange={(step) => change({ [field]: step })}
-          />
-        ))}
+      <div
+        role="tablist"
+        aria-label={COPY.maker.title}
+        onKeyDown={handleTabKeyDown}
+        className="flex gap-x-4 overflow-x-auto"
+      >
+        {TABS.map((name) => {
+          const isActive = name === tab;
+          return (
+            <button
+              key={name}
+              id={`${tabsId}-${name}`}
+              type="button"
+              role="tab"
+              aria-selected={isActive}
+              aria-controls={`${tabsId}-panel`}
+              tabIndex={isActive ? 0 : -1}
+              onClick={() => setTab(name)}
+              className={cn(
+                FOCUS_RING_CLASS,
+                "shrink-0 cursor-pointer border-b-[1.5px] pb-1 text-[12px] leading-none",
+                isActive
+                  ? "border-[var(--pw-orange)] text-[var(--pw-ink)]"
+                  : "border-transparent text-[var(--pw-ink-soft)] hover:text-[var(--pw-ink)]"
+              )}
+            >
+              {COPY.maker.tabs[name]}
+            </button>
+          );
+        })}
       </div>
+
+      <div
+        id={`${tabsId}-panel`}
+        role="tabpanel"
+        aria-labelledby={`${tabsId}-${tab}`}
+        className="min-h-[64px]"
+      >
+        {(() => {
+          switch (tab) {
+            case "coat":
+              return (
+                <SwatchPicker
+                  legend={COPY.maker.coat}
+                  name="coat"
+                  options={COAT_OPTIONS}
+                  value={props.look.coat}
+                  disabled={props.busy}
+                  onChange={(coat) => change({ coat })}
+                />
+              );
+            case "pattern":
+              return (
+                <SegmentedControl
+                  legend={COPY.maker.pattern}
+                  name="pattern"
+                  columns={PATTERN_OPTIONS.length}
+                  options={PATTERN_OPTIONS}
+                  value={props.look.pattern}
+                  disabled={props.busy}
+                  onChange={(pattern) => change({ pattern })}
+                />
+              );
+            case "belly":
+              return (
+                <SegmentedControl
+                  legend={COPY.maker.belly}
+                  name="belly"
+                  columns={BELLY_OPTIONS.length}
+                  options={BELLY_OPTIONS}
+                  value={props.look.belly}
+                  disabled={props.busy}
+                  onChange={(belly) => change({ belly })}
+                />
+              );
+            case "pads":
+              return (
+                <SwatchPicker
+                  legend={COPY.maker.pads}
+                  name="pads"
+                  options={PAD_OPTIONS}
+                  value={props.look.pads}
+                  disabled={props.busy}
+                  onChange={(pads) => change({ pads })}
+                />
+              );
+            case "shape":
+              return (
+                <div className="grid grid-cols-2 gap-x-3 gap-y-2">
+                  {SHAPE_FIELDS.map((field) => (
+                    <SegmentedControl<Step>
+                      key={field}
+                      legend={COPY.maker[field]}
+                      name={field}
+                      columns={3}
+                      options={STEP_OPTIONS}
+                      value={props.look[field]}
+                      disabled={props.busy}
+                      onChange={(step) => change({ [field]: step })}
+                    />
+                  ))}
+                </div>
+              );
+            default: {
+              const unhandled: never = tab;
+              return unhandled;
+            }
+          }
+        })()}
+      </div>
+
       {props.notice && (
         <p role="alert" className="text-[var(--pw-pink)]">
           {props.notice}
         </p>
       )}
-    </FloatingCard>
+    </StudioFrame>
   );
 }

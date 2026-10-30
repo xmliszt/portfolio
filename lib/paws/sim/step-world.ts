@@ -3,6 +3,7 @@ import type { PlayerPresence } from "@/lib/paws/wire-types";
 import { createSimCat } from "./create-sim-cat";
 import { getCatBuild } from "./get-cat-build";
 import { moveCatBody } from "./move-cat-body";
+import { separateCats } from "./separate-cats";
 import type { FingerInput, Tick, World } from "./sim-types";
 import { spawnCat } from "./spawn-cat";
 import { updateAttention } from "./update-attention";
@@ -53,6 +54,7 @@ export function stepWorld(options: {
     updateCatPose({ tick, cat });
     updateCatLegs({ tick, cat });
   }
+  separateCats(world);
   for (const cat of Object.values(world.cats)) {
     if (cat.isDeparting && cat.state === "offstage")
       delete world.cats[cat.userId];

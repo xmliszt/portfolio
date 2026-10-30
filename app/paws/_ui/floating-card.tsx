@@ -4,6 +4,7 @@ import { cn } from "@/lib/utils";
 
 import { FOCUS_RING_CLASS } from "./focus-ring-class";
 import { PENDING_COPY } from "./pending-copy";
+import { SCROLL_FADE_CLASS } from "./scroll-fade-class";
 
 const PAPER_GRAIN =
   "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .17 0 0 0 0 .23 0 0 0 0 .39 0 0 0 .07 0'/%3E%3C/filter%3E%3Crect width='120' height='120' filter='url(%23n)'/%3E%3C/svg%3E\")";
@@ -71,7 +72,12 @@ export function FloatingCard(props: FloatingCardProps) {
           </svg>
         </button>
       </header>
-      <div className="flex min-h-0 flex-col gap-y-3 overflow-y-auto px-3 pb-3 [scrollbar-color:var(--pw-rule)_transparent] [scrollbar-width:thin]">
+      <div
+        className={cn(
+          "flex min-h-0 flex-col gap-y-3 overflow-y-auto px-3 py-3",
+          SCROLL_FADE_CLASS
+        )}
+      >
         {props.children}
       </div>
       {props.footer && (
