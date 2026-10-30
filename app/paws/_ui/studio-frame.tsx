@@ -147,7 +147,7 @@ export function StudioFrame(props: StudioFrameProps) {
       <div className="flex min-h-0 w-full flex-1 items-center justify-center py-4">
         <motion.div
           {...rise(TIMING.cat, 16)}
-          className="aspect-square w-[min(78vw,42dvh,420px)] shrink-0"
+          className="aspect-square w-[min(78vw,38dvh,420px)] shrink-0"
         >
           <div ref={scope} className="size-full">
             <CatPlayground look={props.look} />
@@ -163,8 +163,8 @@ export function StudioFrame(props: StudioFrameProps) {
           className={cn(
             "flex min-h-0 flex-col",
             props.fixedHeight
-              ? "h-[min(34dvh,300px)]"
-              : "max-h-[min(34dvh,300px)]"
+              ? "h-[min(28dvh,300px)]"
+              : "max-h-[min(28dvh,300px)]"
           )}
         >
           <div
