@@ -3,6 +3,7 @@
 import { useEffect, useId, useRef, useState } from "react";
 
 import { usePawsCopy } from "@/app/paws/_i18n/use-paws-copy";
+import { useUiSound } from "@/app/paws/_room/use-ui-sound";
 import type { SavedCat } from "@/lib/paws/cat-api-types";
 import type { CatLook } from "@/lib/paws/cat-look";
 import {
@@ -52,6 +53,7 @@ type VoiceStepProps = {
 
 /** Render the corner card that saves the cat, makes its one sound, plays it back, and brings the cat in. */
 export function VoiceStep(props: VoiceStepProps) {
+  const playUi = useUiSound();
   const { copy } = usePawsCopy();
   const AGE_OPTIONS = AGES.map((age) => ({
     value: age,
@@ -139,6 +141,7 @@ export function VoiceStep(props: VoiceStepProps) {
         return;
       case "invalid":
       case "unreachable":
+        playUi("refused");
         setPhase({ kind: "editing", notice: copy.maker.saveFailed });
         return;
       default: {
@@ -166,6 +169,7 @@ export function VoiceStep(props: VoiceStepProps) {
         if (outcome.meowUrl) play(outcome.meowUrl);
         return;
       case "tryAnother":
+        playUi("refused");
         setPhase({ kind: "editing", notice: outcome.message });
         return;
       case "signInRequired":

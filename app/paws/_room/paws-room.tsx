@@ -7,6 +7,7 @@ import { usePawsCopy } from "@/app/paws/_i18n/use-paws-copy";
 import { usePawsSession } from "@/app/paws/_session/use-paws-session";
 import { FOCUS_RING_CLASS } from "@/app/paws/_ui/focus-ring-class";
 import { PawsOnboarding } from "@/app/paws/_ui/paws-onboarding";
+import type { SavedCat } from "@/lib/paws/cat-api-types";
 import { COAT_INKS } from "@/lib/paws/cat-look";
 import { getRevealSteps } from "@/lib/paws/chat/get-reveal-steps";
 import { createRoomEngine } from "@/lib/paws/client/create-room-engine";
@@ -27,6 +28,7 @@ import { ChatLayer } from "./chat-layer";
 import { COMPOSE_ANCHOR_PREFIX } from "./compose-anchor-prefix";
 import { postChat } from "./post-chat";
 import { SoundSwitch } from "./sound-switch";
+import { UiSoundContext } from "./ui-sound-context";
 import { useRoomConnection } from "./use-room-connection";
 import { useSavedCat } from "./use-saved-cat";
 
@@ -37,6 +39,7 @@ const BUBBLE_HOLD_MS = 2500;
 const MAX_BUBBLE_MS = 12000;
 const BUBBLE_GAP_PX = 10;
 const BUBBLE_EDGE_PX = 8;
+const SETTLE_BEFORE_ARRIVALS_MS = 3000;
 
 function isTypingTarget(target: EventTarget | null) {
   return (
@@ -171,7 +174,7 @@ export function PawsRoom() {
       )
         return;
       event.preventDefault();
-      void sound.unlock();
+      sound.playUi("chatOpen");
       setIsComposing(true);
     }
     window.addEventListener("keydown", handleKeyDown);
@@ -198,6 +201,11 @@ export function PawsRoom() {
       paperSeed: Math.random(),
     });
     const ownCat = { isHere: false };
+    const arrivals: {
+      roomId: string | undefined;
+      since: number;
+      seen: Set<string>;
+    } = { roomId: undefined, since: 0, seen: new Set() };
     const frame: { id: number; lastMs: number } = {
       id: 0,
       lastMs: performance.now(),
@@ -221,6 +229,20 @@ export function PawsRoom() {
         canvas.height = Math.round(height * dpr);
       }
       const room = engine.frame({ nowMs, dtSeconds });
+      const playerIds = playersRef.current.map((player) => player.userId);
+      if (arrivals.roomId !== roomIdRef.current) {
+        arrivals.roomId = roomIdRef.current;
+        arrivals.since = nowMs;
+        arrivals.seen = new Set(playerIds);
+      }
+      const isNewcomer = (userId: string) =>
+        !arrivals.seen.has(userId) && userId !== ownCatIdRef.current;
+      if (
+        nowMs - arrivals.since > SETTLE_BEFORE_ARRIVALS_MS &&
+        playerIds.some(isNewcomer)
+      )
+        sound.playUi("catJoins");
+      playerIds.forEach((userId) => arrivals.seen.add(userId));
       const connection = connectionRef.current;
       if (connection !== undefined) {
         if (room.outgoing.cats !== undefined)
@@ -295,7 +317,7 @@ export function PawsRoom() {
 
     frame.id = window.requestAnimationFrame(tick);
     return () => window.cancelAnimationFrame(frame.id);
-  }, [engine, sound, connectionRef, playersRef, ownCatIdRef]);
+  }, [engine, sound, connectionRef, playersRef, ownCatIdRef, roomIdRef]);
 
   function toWorld(event: React.PointerEvent<HTMLCanvasElement>) {
     const bounds = event.currentTarget.getBoundingClientRect();
@@ -346,12 +368,15 @@ export function PawsRoom() {
       roomId,
       text,
     });
-    if (result.kind === "sent") sayLine(result.message);
+    if (result.kind === "sent") {
+      sound.playUi("chatSend");
+      sayLine(result.message);
+    } else sound.playUi("refused");
     return result.kind;
   }
 
   function handleTalk() {
-    void sound.unlock();
+    sound.playUi("chatOpen");
     setIsComposing(true);
   }
 
@@ -361,57 +386,72 @@ export function PawsRoom() {
 
   function handleToggleMute() {
     void sound.unlock();
-    setIsMuted((muted) => !muted);
+    if (isMuted) {
+      sound.setMuted(false);
+      sound.playUi("soundOn");
+    }
+    setIsMuted(!isMuted);
+  }
+
+  function handleLanguageChange() {
+    sound.playUi("language");
+  }
+
+  function handleBringCatIn(cat: SavedCat) {
+    sound.playUi("bringIn");
+    setSavedCat(cat);
   }
 
   return (
-    <div className="group/room absolute inset-0">
-      <canvas
-        ref={canvasRef}
-        aria-label={copy.site.description}
-        className="absolute inset-0 size-full touch-none [@media(pointer:fine)]:cursor-none"
-        onPointerMove={handlePointerMove}
-        onPointerDown={handlePointerDown}
-        onPointerUp={handlePointerUp}
-        onPointerCancel={handlePointerLeave}
-        onPointerLeave={handlePointerLeave}
-      />
-      <div className="absolute top-4 right-4 flex items-center gap-x-2 group-has-[[aria-modal=true]]/room:hidden sm:top-6 sm:right-6">
-        <LanguagePicker />
-        {hasOwnCatInRoom && (
-          <button
-            type="button"
-            onClick={handleTalk}
-            aria-keyshortcuts="/"
-            className={cn(
-              FOCUS_RING_CLASS,
-              "h-10 border-[1.5px] border-[var(--pw-ink)] bg-[var(--pw-paper)] px-3 text-[12px] text-[var(--pw-ink)] hover:bg-[var(--pw-paper-deep)] sm:h-8"
-            )}
-          >
-            {copy.room.talk}
-          </button>
-        )}
-        <SoundSwitch
-          muted={isMuted}
-          label={copy.room.mute}
-          onToggle={handleToggleMute}
+    <UiSoundContext.Provider value={sound.playUi}>
+      <div className="group/room absolute inset-0">
+        <canvas
+          ref={canvasRef}
+          aria-label={copy.site.description}
+          className="absolute inset-0 size-full touch-none [@media(pointer:fine)]:cursor-none"
+          onPointerMove={handlePointerMove}
+          onPointerDown={handlePointerDown}
+          onPointerUp={handlePointerUp}
+          onPointerCancel={handlePointerLeave}
+          onPointerLeave={handlePointerLeave}
+        />
+        <div className="absolute top-4 right-4 flex items-center gap-x-2 group-has-[[aria-modal=true]]/room:hidden sm:top-6 sm:right-6">
+          <LanguagePicker onChange={handleLanguageChange} />
+          {hasOwnCatInRoom && (
+            <button
+              type="button"
+              onClick={handleTalk}
+              aria-keyshortcuts="/"
+              className={cn(
+                FOCUS_RING_CLASS,
+                "h-10 border-[1.5px] border-[var(--pw-ink)] bg-[var(--pw-paper)] px-3 text-[12px] text-[var(--pw-ink)] hover:bg-[var(--pw-paper-deep)] sm:h-8"
+              )}
+            >
+              {copy.room.talk}
+            </button>
+          )}
+          <SoundSwitch
+            muted={isMuted}
+            label={copy.room.mute}
+            onToggle={handleToggleMute}
+          />
+        </div>
+        <ChatLayer
+          bubbles={bubbles}
+          ownUserId={ownUserId}
+          ownAccent={self === undefined ? RISO.pink : COAT_INKS[self.look.coat]}
+          composing={isComposing && hasOwnCatInRoom}
+          anchors={anchorsRef}
+          onSend={handleSend}
+          onCloseCompose={handleCloseCompose}
+        />
+        <PawsOnboarding
+          session={session}
+          actions={actions}
+          hasCat={savedCat !== undefined}
+          onBringCatIn={handleBringCatIn}
         />
       </div>
-      <ChatLayer
-        bubbles={bubbles}
-        ownUserId={ownUserId}
-        ownAccent={self === undefined ? RISO.pink : COAT_INKS[self.look.coat]}
-        composing={isComposing && hasOwnCatInRoom}
-        anchors={anchorsRef}
-        onSend={handleSend}
-        onCloseCompose={handleCloseCompose}
-      />
-      <PawsOnboarding
-        session={session}
-        actions={actions}
-        hasCat={savedCat !== undefined}
-        onBringCatIn={(cat) => setSavedCat(cat)}
-      />
-    </div>
+    </UiSoundContext.Provider>
   );
 }

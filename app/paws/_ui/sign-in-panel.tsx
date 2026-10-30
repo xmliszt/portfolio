@@ -3,6 +3,7 @@
 import { useEffect, useId, useRef, useState } from "react";
 
 import { usePawsCopy } from "@/app/paws/_i18n/use-paws-copy";
+import { useUiSound } from "@/app/paws/_room/use-ui-sound";
 import type { PawsCopy } from "@/lib/paws/i18n/paws-copy";
 import { fillCopy } from "@/lib/paws/maker/fill-copy";
 import { CODE_LENGTH, readCodeInput } from "@/lib/paws/maker/read-code-input";
@@ -50,6 +51,7 @@ type SignInPanelProps = {
 
 /** Render the corner card that signs a visitor in with a 6-digit code sent to their email. */
 export function SignInPanel(props: SignInPanelProps) {
+  const playUi = useUiSound();
   const { copy } = usePawsCopy();
 
   const emailId = useId();
@@ -78,6 +80,7 @@ export function SignInPanel(props: SignInPanelProps) {
         : { kind: "code", busy: "sending", notice: undefined }
     );
     const result = await props.actions.sendEmailCode({ email: email.trim() });
+    playUi(result.kind === "sent" ? "codeSent" : "refused");
     switch (result.kind) {
       case "sent":
         setCode("");
@@ -106,6 +109,7 @@ export function SignInPanel(props: SignInPanelProps) {
       email: email.trim(),
       code,
     });
+    playUi(result.kind === "verified" ? "signedIn" : "refused");
     switch (result.kind) {
       case "verified":
         return;

@@ -5,3 +5,4 @@
 - `meow-*-deep-*`: cut from "Cat has a crazy deep meow", used with permission.
 - `trill-1.mp3`, `trill-2.mp3`: cut from "Cat Trilling Mmmrrrraaaauuuu", used with permission.
 - `../letters/*.mp3`: English letters recorded by the Lingua Libre speaker Userofwikiofusa (CaulkyAlphabet), CC0, via Wikimedia Commons.
+- `music.mp3`: "Yammy Flavor" by UmbrTone, promoted by PupClub (https://www.youtube.com/watch?v=lt5je1VIU48), looped from 1.655 s to 62.578 s with a 0.3 s crossfade.

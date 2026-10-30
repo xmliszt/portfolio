@@ -14,6 +14,8 @@ import { getPawsSoundUrl } from "./get-paws-sound-url";
 import { getRmsGain } from "./get-rms-gain";
 import type { PawsSound } from "./paws-sound";
 import { scheduleBabble } from "./schedule-babble";
+import { scheduleUiNotes } from "./schedule-ui-notes";
+import { UI_SOUNDS, type UiSound } from "./ui-sounds";
 
 const MASTER_LEVEL = 0.7;
 const MUTE_TIME_CONSTANT_S = 0.03;
@@ -27,6 +29,11 @@ const SOUND_LEVEL_DB = {
   purr: 0,
   lick: 0,
 } as const satisfies { [sound in PawsSound]: number };
+const MUSIC_URL = "/paws/sounds/music.mp3";
+/** Where the music's seamless loop sits in `MUSIC_URL`, in seconds; the file holds one extra second of the loop on each side. */
+const MUSIC_LOOP = { start: 1, length: 60.923084 } as const;
+const MUSIC_LEVEL_DB = -12;
+const UI_LEVEL_DB = -6;
 const OLD_VIBRATO_CENTS = 35;
 const OLD_VIBRATO_HZ = 5.5;
 const BABBLE_LEVEL = 0.6;
@@ -74,6 +81,7 @@ export function createPawsSoundPlayer(options: {
     lastPlayedAtMs: { [userId: string]: number | undefined };
     clips: { [url: string]: Promise<Clip | undefined> | undefined };
     babbles: { [userId: string]: GainNode | undefined };
+    music?: AudioBufferSourceNode;
   } = {
     muted: false,
     mutedCats: {},
@@ -170,7 +178,7 @@ export function createPawsSoundPlayer(options: {
     source.stop(startAt + playedS);
   }
 
-  /** Create and resume the audio context and start loading the recorded letters; call it from a pointer or key event so the browser allows sound. */
+  /** Create and resume the audio context, start the looping music and start loading the recorded letters; call it from a pointer or key event so the browser allows sound. */
   async function unlock() {
     if (state.graph === undefined) {
       const graph = createGraph();
@@ -178,6 +186,7 @@ export function createPawsSoundPlayer(options: {
       RECORDED_LETTERS.forEach(
         (letter) => void loadClip(graph, getLetterUrl(letter))
       );
+      startMusic(graph);
     }
     if (state.graph.context.state === "suspended")
       await state.graph.context.resume();
@@ -298,6 +307,47 @@ export function createPawsSoundPlayer(options: {
     ender.stop(endsAt + 0.1);
   }
 
+  function startMusic(graph: Graph) {
+    void fetchClip(MUSIC_URL)
+      .then((bytes) =>
+        bytes === undefined ? undefined : graph.context.decodeAudioData(bytes)
+      )
+      .then((buffer) => {
+        if (buffer === undefined || state.graph !== graph || state.music)
+          return;
+        const source = graph.context.createBufferSource();
+        source.buffer = buffer;
+        source.loop = true;
+        source.loopStart = MUSIC_LOOP.start;
+        source.loopEnd = MUSIC_LOOP.start + MUSIC_LOOP.length;
+        const level = graph.context.createGain();
+        level.gain.value = 10 ** (MUSIC_LEVEL_DB / 20);
+        source.connect(level);
+        level.connect(graph.master);
+        source.start(graph.context.currentTime + 0.05, MUSIC_LOOP.start);
+        state.music = source;
+      })
+      .catch(() => undefined);
+  }
+
+  /** Play the interface sound `sound`, opening the audio context first if this call comes from a pointer or key event, unless sound is muted. */
+  function playUi(sound: UiSound) {
+    void unlock().then(() => {
+      const graph = state.graph;
+      if (graph === undefined || state.muted) return;
+      const level = graph.context.createGain();
+      level.gain.value = 10 ** (UI_LEVEL_DB / 20);
+      level.connect(graph.master);
+      scheduleUiNotes({
+        context: graph.context,
+        destination: level,
+        notes: UI_SOUNDS[sound],
+        startAt: graph.context.currentTime + 0.01,
+      });
+      window.setTimeout(() => level.disconnect(), 2000);
+    });
+  }
+
   /** Mute or unmute every cat. */
   function setMuted(muted: boolean) {
     state.muted = muted;
@@ -317,11 +367,21 @@ export function createPawsSoundPlayer(options: {
 
   /** Close the audio context and drop every cached clip; a later `unlock` opens a new context. */
   function dispose() {
+    state.music = undefined;
     state.clips = {};
     state.babbles = {};
     void state.graph?.context.close();
     state.graph = undefined;
   }
 
-  return { unlock, preload, play, speak, setMuted, setCatMuted, dispose };
+  return {
+    unlock,
+    preload,
+    play,
+    speak,
+    playUi,
+    setMuted,
+    setCatMuted,
+    dispose,
+  };
 }

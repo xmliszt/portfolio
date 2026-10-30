@@ -174,7 +174,7 @@ export function LanguagePicker(props: LanguagePickerProps) {
             exit={{ opacity: 0, transition: { duration: 0.1 } }}
             transition={{ type: "spring", stiffness: 520, damping: 34 }}
             style={{ transformOrigin: "100% 0%" }}
-            className="absolute top-full right-0 z-20 mt-2 max-h-[min(60dvh,360px)] w-48 overflow-y-auto [scrollbar-width:thin] border-[1.5px] border-[var(--pw-ink)] bg-[var(--pw-paper)] py-1 text-[12px] text-[var(--pw-ink)] shadow-[3px_2px_0_var(--pw-pink)] outline-none"
+            className="absolute top-full right-0 z-20 mt-2 max-h-[min(60dvh,360px)] w-48 overflow-y-auto border-[1.5px] border-[var(--pw-ink)] bg-[var(--pw-paper)] py-1 text-[12px] text-[var(--pw-ink)] shadow-[3px_2px_0_var(--pw-pink)] outline-none [scrollbar-width:thin]"
           >
             {OPTIONS.map((option, index) => (
               <li

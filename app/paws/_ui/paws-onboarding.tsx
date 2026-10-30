@@ -3,6 +3,7 @@
 import { useEffect, useId, useRef, useState } from "react";
 
 import { usePawsCopy } from "@/app/paws/_i18n/use-paws-copy";
+import { useUiSound } from "@/app/paws/_room/use-ui-sound";
 import type { SavedCat } from "@/lib/paws/cat-api-types";
 import type { CatLook } from "@/lib/paws/cat-look";
 import { shuffleCatLook } from "@/lib/paws/maker/shuffle-cat-look";
@@ -46,6 +47,7 @@ type PawsOnboardingProps = {
 
 /** Render the corner flow that takes a watcher through sign-in, making a cat and giving it a sound, then hands the saved cat over; with `hasCat`, it reopens the same flow so a member can change the look or give a borrowed meow its own sound. */
 export function PawsOnboarding(props: PawsOnboardingProps) {
+  const playUi = useUiSound();
   const { copy } = usePawsCopy();
 
   const [step, setStep] = useState<OnboardingStep>({ kind: "watching" });
@@ -186,6 +188,7 @@ export function PawsOnboarding(props: PawsOnboardingProps) {
         return;
       case "invalid":
       case "unreachable":
+        playUi("refused");
         setStep({
           kind: "maker",
           look: options.look,
@@ -208,9 +211,10 @@ export function PawsOnboarding(props: PawsOnboardingProps) {
 
   function handleMakerPrimary() {
     if (step.kind !== "maker") return;
-    if (!step.hasOwnMeow)
+    if (!step.hasOwnMeow) {
+      playUi("stepNext");
       setStep({ kind: "voice", look: step.look, voice: step.voice });
-    else if (accessToken)
+    } else if (accessToken)
       void keepLookAndBringIn({
         look: step.look,
         voice: step.voice,
@@ -219,11 +223,13 @@ export function PawsOnboarding(props: PawsOnboardingProps) {
   }
 
   function handleVoiceChange(voice: VoiceSettings) {
+    playUi("optionPick");
     if (step.kind === "voice") setStep({ ...step, voice });
   }
 
   function handleBackToMaker() {
     if (step.kind !== "voice") return;
+    playUi("stepNext");
     setStep({
       kind: "maker",
       look: step.look,

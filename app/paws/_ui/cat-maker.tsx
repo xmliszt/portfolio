@@ -4,6 +4,7 @@ import { useEffect, useId, useRef, useState } from "react";
 import { useReducedMotion } from "motion/react";
 
 import { usePawsCopy } from "@/app/paws/_i18n/use-paws-copy";
+import { useUiSound } from "@/app/paws/_room/use-ui-sound";
 import {
   BELLIES,
   type CatLook,
@@ -49,6 +50,7 @@ type CatMakerProps = {
 
 /** Render the studio where a member picks their cat's look one group at a time while the cat, large in the middle, reacts to every change. */
 export function CatMaker(props: CatMakerProps) {
+  const playUi = useUiSound();
   const { copy } = usePawsCopy();
   const COAT_OPTIONS = coatInkOptions().map((coat) => ({
     value: coat,
@@ -91,10 +93,12 @@ export function CatMaker(props: CatMakerProps) {
   useEffect(() => () => window.clearInterval(rollRef.current), []);
 
   function change(patch: Partial<CatLook>) {
+    playUi("optionPick");
     props.onLookChange({ ...props.look, ...patch });
   }
 
   function handleShuffle() {
+    playUi("shuffle");
     window.clearInterval(rollRef.current);
     if (isReduced) {
       props.onLookChange(shuffleCatLook({ random: Math.random }));
