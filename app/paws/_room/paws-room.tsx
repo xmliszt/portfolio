@@ -26,6 +26,7 @@ import type { ChatBubble } from "./chat-bubble";
 import { ChatLayer } from "./chat-layer";
 import { COMPOSE_ANCHOR_PREFIX } from "./compose-anchor-prefix";
 import { postChat } from "./post-chat";
+import { SoundSwitch } from "./sound-switch";
 import { useRoomConnection } from "./use-room-connection";
 import { useSavedCat } from "./use-saved-cat";
 
@@ -390,16 +391,11 @@ export function PawsRoom() {
             {copy.room.talk}
           </button>
         )}
-        <button
-          type="button"
-          onClick={handleToggleMute}
-          className={cn(
-            FOCUS_RING_CLASS,
-            "h-10 border-[1.5px] border-[var(--pw-ink)] bg-[var(--pw-paper)] px-3 text-[12px] text-[var(--pw-ink)] hover:bg-[var(--pw-paper-deep)] sm:h-8"
-          )}
-        >
-          {isMuted ? copy.room.unmute : copy.room.mute}
-        </button>
+        <SoundSwitch
+          muted={isMuted}
+          label={copy.room.mute}
+          onToggle={handleToggleMute}
+        />
       </div>
       <ChatLayer
         bubbles={bubbles}
