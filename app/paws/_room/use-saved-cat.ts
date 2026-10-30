@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import { fetchSavedCat } from "@/app/paws/_ui/fetch-saved-cat";
 import type { SavedCat } from "@/lib/paws/cat-api-types";
@@ -13,8 +13,14 @@ export function useSavedCat(session: PawsSession) {
   const memberId = session.kind === "member" ? session.userId : undefined;
   const accessToken =
     session.kind === "member" ? session.accessToken : undefined;
+  const tokenRef = useRef(accessToken);
 
   useEffect(() => {
+    tokenRef.current = accessToken;
+  }, [accessToken]);
+
+  useEffect(() => {
+    const accessToken = tokenRef.current;
     if (memberId === undefined || accessToken === undefined) return;
     const controller = new AbortController();
     void fetchSavedCat({ accessToken, signal: controller.signal }).then(
@@ -28,8 +34,6 @@ export function useSavedCat(session: PawsSession) {
       controller.abort();
       setSavedCat(undefined);
     };
-    // The token refreshes every hour; the cat only needs loading once per account.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [memberId]);
 
   const isChecked =

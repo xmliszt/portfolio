@@ -43,6 +43,7 @@ export function useRoomConnection(options: {
   const connectionRef = useRef<RoomConnection | undefined>(undefined);
   const playersRef = useRef<PlayerPresence[]>([]);
   const tokenRef = useRef<string | undefined>(undefined);
+  const selfRef = useRef(options.self);
   const { session, client, self, engine, useFakeRoom, isReady } = options;
   const userId = session.kind === "loading" ? undefined : session.userId;
   const selfKey = self === undefined ? "" : JSON.stringify(self);
@@ -51,6 +52,10 @@ export function useRoomConnection(options: {
     tokenRef.current =
       session.kind === "loading" ? undefined : session.accessToken;
   }, [session]);
+
+  useEffect(() => {
+    selfRef.current = self;
+  }, [self]);
 
   useEffect(() => {
     if (
@@ -68,6 +73,7 @@ export function useRoomConnection(options: {
     } = {
       isCancelled: false,
     };
+    const self = selfRef.current;
     const presence =
       self === undefined ? undefined : { ...self, joinedAt: Date.now() };
 
@@ -207,8 +213,6 @@ export function useRoomConnection(options: {
       }
       setStatus({ kind: "idle" });
     };
-    // `self` is compared through `selfKey` so a new object with the same cat does not rejoin.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userId, client, selfKey, engine, useFakeRoom, attempt, isReady]);
 
   return { status, connectionRef, playersRef };
