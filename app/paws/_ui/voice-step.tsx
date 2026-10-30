@@ -272,13 +272,6 @@ export function VoiceStep(props: VoiceStepProps) {
       look={props.look}
       reactKey={String(playCount)}
       onClose={props.onClose}
-      note={
-        (phase.kind === "editing" || phase.kind === "making") && (
-          <p className="border-l-[3px] border-[var(--pw-orange)] pl-2">
-            {COPY.voice.oneOnly}
-          </p>
-        )
-      }
       footer={(() => {
         switch (phase.kind) {
           case "editing":
@@ -392,6 +385,11 @@ export function VoiceStep(props: VoiceStepProps) {
           disabled={isLocked}
           onChange={handleMoodChange}
         />
+        {(phase.kind === "editing" || phase.kind === "making") && (
+          <p className="border-l-[3px] border-[var(--pw-orange)] pl-2">
+            {COPY.voice.oneOnly}
+          </p>
+        )}
       </form>
       {(phase.kind === "ready" || phase.kind === "bringing") &&
         phase.outcome.meowUrl && (

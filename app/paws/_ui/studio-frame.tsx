@@ -35,12 +35,11 @@ type StudioFrameProps = {
   look: CatLook;
   reactKey: string;
   footer: React.ReactNode;
-  note?: React.ReactNode;
   children: React.ReactNode;
   onClose: () => void;
 };
 
-/** Render the full-screen studio over the room: the visitor's cat large in a square playground that bounces on every `reactKey` change, and a dock of fixed height with scrolling controls, an optional `note` and a footer. */
+/** Render the full-screen studio over the room: the visitor's cat large in a square playground that bounces on every `reactKey` change, and a dock of fixed height with scrolling controls and a footer. */
 export function StudioFrame(props: StudioFrameProps) {
   const titleId = useId();
   const dialogRef = useRef<HTMLElement>(null);
@@ -166,7 +165,6 @@ export function StudioFrame(props: StudioFrameProps) {
           >
             {props.children}
           </div>
-          {props.note && <div className="shrink-0 px-3 pb-3">{props.note}</div>}
         </div>
         <footer className="flex items-center justify-between gap-x-3 border-t-[1.5px] border-[var(--pw-rule)] p-3 [&>:only-child]:ml-auto">
           {props.footer}
