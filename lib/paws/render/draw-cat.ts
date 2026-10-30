@@ -4,6 +4,7 @@ import { lerp } from "@/lib/paws/sim/lerp";
 import { valueNoise } from "@/lib/paws/sim/value-noise";
 
 import { blurOf } from "./blur-of";
+import { drawMouth } from "./draw-mouth";
 import { drawNose } from "./draw-nose";
 import { drawPads } from "./draw-pads";
 import { drawWhiskers, WHISKER_FADE_HEIGHT } from "./draw-whiskers";
@@ -47,7 +48,7 @@ export function drawCat(options: {
 
   const head = cat.head;
   const body = sampleCurve({
-    points: [...cat.spine, [head[0], head[1], head[2] * 0.8, head[3]]],
+    points: [...cat.spine, [head[0], head[1], head[2] * 0.55, head[3]]],
     perSegment: 4,
   });
   const colorAt = (i: number) => {
@@ -137,15 +138,46 @@ export function drawCat(options: {
     r * k,
     h,
   ];
-  const earH = head[3] + 8 + 14 * (1 - cat.sleepWeight);
+  const nearHead = (lift: number) => Math.max(0, head[3] - lift);
+  const earH = head[3] + 4 + 10 * (1 - cat.sleepWeight);
+  const earSize = cat.build.earScale;
+  for (const side of [-1, 1]) {
+    const ear = [
+      onHead(-10, side * 20, 11, earH),
+      onHead(-10 - 9 * earSize, side * (20 + 12 * earSize), 6.5, earH),
+      onHead(-10 - 16 * earSize, side * (20 + 23 * earSize), 1.5, earH),
+    ];
+    parts.push({
+      h: earH,
+      draw: () =>
+        softOutline({
+          draw,
+          samples: ear,
+          blur: blurOf(earH, k) + fluff * 0.4,
+          color: palette.ears,
+        }),
+    });
+  }
+  disc(onHead(-4, 0, 30, head[3]), palette.head);
+  disc(onHead(0, -17, 21, nearHead(1)), palette.cheeks[0]);
+  disc(onHead(0, 17, 21, nearHead(1)), palette.cheeks[1]);
   for (const side of [-1, 1])
-    disc(onHead(-10, side * 20, 12 * cat.build.earScale, earH), palette.ears);
-  disc(head, palette.head);
-  disc(onHead(6, -15, 21, head[3] + 1), palette.cheeks[0]);
-  disc(onHead(6, 15, 21, head[3] + 1), palette.cheeks[1]);
-  for (const side of [-1, 1])
-    disc(onHead(20, side * 6, 7.5, head[3] + 2), palette.muzzle);
-  disc(onHead(12, 0, 8, head[3] + 3), palette.muzzle);
+    disc(onHead(19, side * 6.5, 8.5, nearHead(2)), palette.muzzle);
+  disc(onHead(11, 0, 9, nearHead(3)), palette.muzzle);
+  const mouthH = nearHead(3.5);
+  parts.push({
+    h: mouthH,
+    draw: () =>
+      drawMouth({
+        g: draw.g,
+        at: onHead(26, 0, 0, mouthH),
+        angle: cat.headDir,
+        k,
+        lineWidth: 0.9 / draw.unitPx,
+        color: palette.nose,
+        alpha: 0.7 / (1 + blurOf(mouthH, k) * 0.3),
+      }),
+  });
   const noseH = Math.max(0, cat.headH - 4);
   parts.push({
     h: noseH - 0.2,
