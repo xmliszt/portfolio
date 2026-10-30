@@ -23,7 +23,7 @@ export type FingerMessage = {
   seq: number;
 };
 
-/** One line a player's cat says, as the server broadcasts it after moderation. */
+/** One line a player's cat says, as the server broadcasts it after the room and rate checks. */
 export type ChatMessage = { id: string; userId: string; text: string };
 
 export type LegSnapshot = { x: number; y: number; h: number };

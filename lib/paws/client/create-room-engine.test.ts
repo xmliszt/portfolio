@@ -411,3 +411,78 @@ test("resident cats make sounds that resolve to a resident's voice", () => {
   );
   assert.equal(isResidentSoundHeard, true);
 });
+
+function runHost(options: { roomId: string }) {
+  const engine = createRoomEngine({ random: createSeededRandom({ seed: 1 }) });
+  engine.setPlayers([buildPlayer({ userId: "a", joinedAt: 1 })]);
+  engine.setSelf({
+    userId: "a",
+    connectionId: "a-tab",
+    role: "player",
+    roomId: options.roomId,
+  });
+  return Array.from({ length: 600 }, (_, frame) =>
+    engine.frame({ nowMs: frame * 16, dtSeconds: DT_SECONDS })
+  ).findLast((room) => room.outgoing.cats !== undefined)?.outgoing.cats;
+}
+
+test("a visitor who becomes host keeps the residents where their screen had them", () => {
+  const lastHostMessage = runHost({ roomId: "room-1" });
+  assert.ok(lastHostMessage);
+  const engine = createRoomEngine({ random: createSeededRandom({ seed: 2 }) });
+  engine.setPlayers([buildPlayer({ userId: "a", joinedAt: 1 })]);
+  engine.setSelf({
+    userId: "b",
+    connectionId: "b-tab",
+    role: "watcher",
+    roomId: "room-1",
+  });
+  engine.receiveCats({ message: lastHostMessage, receivedAtMs: 0 });
+  engine.frame({ nowMs: 0, dtSeconds: DT_SECONDS });
+  engine.setPlayers([]);
+  engine.setOwnPointer({ x: 1500, y: 800, present: true, pressed: false });
+  const alone = Array.from({ length: 3600 }, (_, frame) =>
+    engine.frame({ nowMs: (frame + 1) * 16, dtSeconds: DT_SECONDS })
+  ).at(-1);
+  const before = alone?.cats.find((cat) => cat.userId === "resident-1");
+  engine.setPlayers([buildPlayer({ userId: "b", joinedAt: 5 })]);
+  engine.setSelf({
+    userId: "b",
+    connectionId: "b-tab",
+    role: "player",
+    roomId: "room-1",
+  });
+  const after = engine
+    .frame({ nowMs: 3602 * 16, dtSeconds: DT_SECONDS })
+    .cats.find((cat) => cat.userId === "resident-1");
+  assert.ok(before && after);
+  assert.ok(Math.abs(after.x - before.x) < 5, `${before.x} -> ${after.x}`);
+});
+
+test("a new room's residents do not start from the last room's snapshots", () => {
+  const lastHostMessage = runHost({ roomId: "room-1" });
+  const old = lastHostMessage?.cats.find((cat) => cat.userId === "resident-1");
+  assert.ok(lastHostMessage && old);
+  const engine = createRoomEngine({ random: createSeededRandom({ seed: 2 }) });
+  engine.setPlayers([buildPlayer({ userId: "a", joinedAt: 1 })]);
+  engine.setSelf({
+    userId: "b",
+    connectionId: "b-tab",
+    role: "watcher",
+    roomId: "room-1",
+  });
+  engine.receiveCats({ message: lastHostMessage, receivedAtMs: 0 });
+  engine.setPlayers([]);
+  engine.setSelf({
+    userId: "b",
+    connectionId: "b-tab",
+    role: "watcher",
+    roomId: "room-2",
+  });
+  const fresh = engine
+    .frame({ nowMs: 16, dtSeconds: DT_SECONDS })
+    .cats.find((cat) => cat.userId === "resident-1");
+  assert.ok(
+    fresh === undefined || Math.hypot(fresh.x - old.x, fresh.y - old.y) > 1
+  );
+});

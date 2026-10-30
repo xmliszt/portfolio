@@ -1,6 +1,6 @@
-import { getBorrowedMeowUrl } from "@/lib/paws/profile/get-borrowed-meow-url";
 import type { VoiceSettings } from "@/lib/paws/voice-settings";
 
+import { getMeowUrl } from "./get-meow-url";
 import { hashUserId } from "./hash-user-id";
 import type { PawsSound } from "./paws-sound";
 
@@ -12,7 +12,7 @@ export function getPawsSoundUrl(options: {
 }) {
   switch (options.sound) {
     case "meow":
-      return getBorrowedMeowUrl(options.voice);
+      return getMeowUrl(options.voice);
     case "lick":
       return "/paws/sounds/lick.mp3";
     case "trill":

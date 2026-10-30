@@ -1,5 +1,6 @@
+import { GeistSerifRegular } from "geist/font/serif/regular";
 import { Metadata, Viewport } from "next";
-import { IBM_Plex_Mono, Instrument_Serif } from "next/font/google";
+import { IBM_Plex_Mono } from "next/font/google";
 
 import { PAWS_ORIGIN } from "@/lib/paws/paws-hosts";
 import { PAWS_SEO } from "@/lib/paws/paws-seo";
@@ -7,12 +8,6 @@ import { RISO, RISO_CSS_VARIABLES } from "@/lib/paws/riso-inks";
 import { cn } from "@/lib/utils";
 
 import { PawsJsonLd } from "./paws-json-ld";
-
-const fontDisplay = Instrument_Serif({
-  subsets: ["latin"],
-  weight: "400",
-  variable: "--pw-font-display",
-});
 
 const fontMono = IBM_Plex_Mono({
   subsets: ["latin"],
@@ -78,7 +73,8 @@ export default function PawsLayout(props: PawsLayoutProps) {
       className={cn(
         "fixed inset-0 z-[100] overflow-hidden antialiased",
         "bg-[var(--pw-paper)] font-[family-name:var(--pw-font-mono)] text-[var(--pw-ink)]",
-        fontDisplay.variable,
+        "[--pw-font-display:var(--font-geist-serif-regular)]",
+        GeistSerifRegular.variable,
         fontMono.variable
       )}
     >

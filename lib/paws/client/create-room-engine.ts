@@ -9,6 +9,7 @@ import { toScenePrint } from "@/lib/paws/render/to-scene-print";
 import { ROOM_LIMITS } from "@/lib/paws/room-limits";
 import type { RoomRole } from "@/lib/paws/room-source";
 import { chooseHost } from "@/lib/paws/rooms/choose-host";
+import { LOCAL_ROOM_ID } from "@/lib/paws/rooms/local-room-id";
 import { createSnapshotBuffer } from "@/lib/paws/sim/create-snapshot-buffer";
 import { createWorld } from "@/lib/paws/sim/create-world";
 import { createWorldFromSnapshots } from "@/lib/paws/sim/create-world-from-snapshots";
@@ -44,7 +45,6 @@ const MAX_REMOTE_SAMPLES =
 const MIN_FINGER_MOVE = 0.5;
 const MIN_FINGERPRINT_PRESS = 0.2;
 const LOCAL_VISITOR_ID = "visitor";
-const LOCAL_ROOM_ID = "local";
 const MAX_QUEUED_PRINTS = 160;
 const MAX_QUEUED_EVENTS = 200;
 
@@ -261,6 +261,7 @@ export function createRoomEngine(options: { random: () => number }) {
         state.roomId = self.roomId;
         state.residents = getResidentCats({ roomId: self.roomId });
         state.residentWorld = undefined;
+        state.buffer = createSnapshotBuffer();
       }
       state.selfId = self.userId;
       state.selfConnectionId = self.connectionId;
@@ -347,13 +348,14 @@ export function createRoomEngine(options: { random: () => number }) {
       if (isHost && state.world === undefined) {
         const latest = state.buffer.latest();
         state.world =
-          latest.length > 0
+          state.residentWorld ??
+          (latest.length > 0
             ? createWorldFromSnapshots({
                 random: options.random,
                 snapshots: latest,
                 players: [...state.players, ...state.residents],
               })
-            : (state.residentWorld ?? createWorld({ random: options.random }));
+            : createWorld({ random: options.random }));
       }
       if (!isHost) {
         state.world = undefined;

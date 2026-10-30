@@ -125,6 +125,7 @@ export function CatMaker(props: CatMakerProps) {
       title={copy.maker.title}
       look={props.look}
       reactKey={JSON.stringify(props.look)}
+      fixedHeight
       onClose={props.onClose}
       footer={
         <RisoButton variant="primary" id={primaryId} onClick={props.onPrimary}>

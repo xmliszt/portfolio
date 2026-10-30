@@ -1,6 +1,7 @@
 import type { RealtimeChannel } from "@supabase/supabase-js";
 
 import { getChatTopic } from "@/lib/paws/chat/get-chat-topic";
+import { isResidentId } from "@/lib/paws/client/is-resident-id";
 import { ROOM_LIMITS } from "@/lib/paws/room-limits";
 import type { RoomSource } from "@/lib/paws/room-source";
 import type { createPawsBrowserClient } from "@/lib/paws/supabase/create-paws-browser-client";
@@ -22,7 +23,7 @@ const RECEIVE_LIMITS = {
   eventsPerSecond: 20,
 } as const;
 
-/** Return a room source that joins private Supabase Realtime room channels on `client`, reading players and watchers from presence and passing on only parsed messages from present visitors within `RECEIVE_LIMITS`. */
+/** Return a room source that joins private Supabase Realtime room channels on `client`, reading players and watchers from presence and passing on only parsed messages from present visitors, and events of the room's resident cats, within `RECEIVE_LIMITS`. */
 export function createSupabaseRoomSource(options: {
   client: ReturnType<typeof createPawsBrowserClient>;
 }): RoomSource {
@@ -159,7 +160,7 @@ export function createSupabaseRoomSource(options: {
             const event = parseRoomEvent(payload);
             if (
               event !== undefined &&
-              isPresent(event.userId) &&
+              (isPresent(event.userId) || isResidentId(event.userId)) &&
               eventGate.allow(event.userId)
             )
               onEvent(event);

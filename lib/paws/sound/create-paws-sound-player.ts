@@ -80,6 +80,7 @@ export function createPawsSoundPlayer(options: {
     lastPlayedAtMs: { [userId: string]: number | undefined };
     clips: { [url: string]: Promise<Clip | undefined> | undefined };
     babbles: { [userId: string]: GainNode | undefined };
+    lineCounts: { [userId: string]: number | undefined };
     music?: AudioBufferSourceNode;
   } = {
     muted: false,
@@ -87,6 +88,7 @@ export function createPawsSoundPlayer(options: {
     lastPlayedAtMs: {},
     clips: {},
     babbles: {},
+    lineCounts: {},
   };
 
   function createGraph() {
@@ -244,10 +246,17 @@ export function createPawsSoundPlayer(options: {
       ),
     ];
     if (needed.length === 0) return;
+    const lineCount = (state.lineCounts[line.userId] ?? 0) + 1;
+    state.lineCounts[line.userId] = lineCount;
     void Promise.all(
       needed.map((letter) => loadClip(graph, getLetterUrl(letter)))
     ).then((clips) => {
-      if (state.graph !== graph || state.muted || state.mutedCats[line.userId])
+      if (
+        state.graph !== graph ||
+        state.muted ||
+        state.mutedCats[line.userId] ||
+        state.lineCounts[line.userId] !== lineCount
+      )
         return;
       startBabble({
         graph,
@@ -264,8 +273,9 @@ export function createPawsSoundPlayer(options: {
     });
   }
 
-  /** Fade out the cat's line in progress, if it has one. */
+  /** Fade out the cat's line in progress and drop the one still loading, if it has either. */
   function hush(userId: string) {
+    state.lineCounts[userId] = (state.lineCounts[userId] ?? 0) + 1;
     const level = state.babbles[userId];
     const graph = state.graph;
     if (level === undefined || graph === undefined) return;

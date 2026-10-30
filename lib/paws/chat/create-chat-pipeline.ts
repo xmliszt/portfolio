@@ -61,7 +61,7 @@ export function createChatPipeline(deps: ChatPipelineDependencies) {
         await deps.deleteLine(id);
         return { kind: "tooFast" };
       }
-      const message = { id, userId, text: request.text };
+      const message = { id: request.lineId, userId, text: request.text };
       await deps.broadcast({ roomId: request.roomId, message });
       await deps.markLine({ id, status: "sent" });
       return { kind: "sent", message };

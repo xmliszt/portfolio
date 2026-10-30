@@ -53,7 +53,7 @@ export function ChatLayer(props: ChatLayerProps) {
   }
 
   function reopen(options: { line: string; notice: string }) {
-    setText(options.line);
+    setText((current) => (current.trim() === "" ? options.line : current));
     setNotice(options.notice);
     props.onReopenCompose();
   }
@@ -66,11 +66,11 @@ export function ChatLayer(props: ChatLayerProps) {
     const kind = await props.onSend(line);
     switch (kind) {
       case "sent":
-      case "signInRequired":
         return;
       case "tooFast":
         reopen({ line, notice: copy.room.chatTooFast });
         return;
+      case "signInRequired":
       case "notPlaying":
       case "invalid":
       case "failed":

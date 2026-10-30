@@ -34,12 +34,13 @@ type StudioFrameProps = {
   title: string;
   look: CatLook;
   reactKey: string;
+  fixedHeight: boolean;
   footer: React.ReactNode;
   children: React.ReactNode;
   onClose: () => void;
 };
 
-/** Render the full-screen studio over the room: the visitor's cat large in a square playground that bounces on every `reactKey` change, and a dock of fixed height with scrolling controls and a footer. */
+/** Render the full-screen studio over the room: the visitor's cat large in a square playground that bounces on every `reactKey` change, and a dock with scrolling controls and a footer, of fixed height when `fixedHeight` and as tall as its controls otherwise. */
 export function StudioFrame(props: StudioFrameProps) {
   const { copy } = usePawsCopy();
 
@@ -158,7 +159,14 @@ export function StudioFrame(props: StudioFrameProps) {
         {...rise(TIMING.dock, 24)}
         className="flex w-full max-w-[560px] flex-col border-[1.5px] border-[var(--pw-ink)] bg-[var(--pw-paper)] text-[12px] leading-snug"
       >
-        <div className="flex h-[min(34dvh,300px)] min-h-0 flex-col">
+        <div
+          className={cn(
+            "flex min-h-0 flex-col",
+            props.fixedHeight
+              ? "h-[min(34dvh,300px)]"
+              : "max-h-[min(34dvh,300px)]"
+          )}
+        >
           <div
             className={cn(
               "flex min-h-0 min-w-0 flex-1 flex-col gap-y-3 overflow-y-auto p-3",

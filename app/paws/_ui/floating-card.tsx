@@ -46,10 +46,10 @@ export function FloatingCard(props: FloatingCardProps) {
         "sm:bottom-6 sm:left-6"
       )}
     >
-      <header className="flex shrink-0 items-start justify-between gap-x-3 py-2 pr-1.5 pl-3">
+      <header className="flex shrink-0 items-center justify-between gap-x-3 py-2 pr-1.5 pl-3">
         <h2
           id={titleId}
-          className="pt-1.5 font-[family-name:var(--pw-font-display)] text-[22px] leading-none"
+          className="font-[family-name:var(--pw-font-display)] text-[22px] leading-none"
         >
           {props.title}
         </h2>

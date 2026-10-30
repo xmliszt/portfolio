@@ -18,6 +18,7 @@ import { getWorldView } from "@/lib/paws/render/get-world-view";
 import { RISO } from "@/lib/paws/riso-inks";
 import { ROOM_LIMITS } from "@/lib/paws/room-limits";
 import { getRoomNumber } from "@/lib/paws/rooms/get-room-number";
+import { LOCAL_ROOM_ID } from "@/lib/paws/rooms/local-room-id";
 import type { DerivedCat } from "@/lib/paws/sim/derive-cat";
 import { createPawsSoundPlayer } from "@/lib/paws/sound/create-paws-sound-player";
 import type { ChatMessage } from "@/lib/paws/wire-types";
@@ -131,10 +132,6 @@ export function PawsRoom() {
     });
   }
 
-  function handleChat(message: ChatMessage) {
-    if (message.userId !== ownUserId) sayLine(message);
-  }
-
   function retractLine(message: ChatMessage) {
     const { userId, id } = message;
     if (latestOwnLineIdRef.current !== id) return;
@@ -178,7 +175,7 @@ export function PawsRoom() {
       engine,
       useFakeRoom,
       isReady: isChecked || useFakeRoom,
-      onChat: handleChat,
+      onChat: sayLine,
     });
 
   const [enteredRoomId, setEnteredRoomId] = useState<string | undefined>(
@@ -187,7 +184,11 @@ export function PawsRoom() {
   const [banner, setBanner] = useState<
     { roomId: string; isMove: boolean } | undefined
   >(undefined);
-  if (roomId !== undefined && roomId !== "local" && roomId !== enteredRoomId) {
+  if (
+    roomId !== undefined &&
+    roomId !== LOCAL_ROOM_ID &&
+    roomId !== enteredRoomId
+  ) {
     setEnteredRoomId(roomId);
     setBanner({ roomId, isMove: enteredRoomId !== undefined });
   }
@@ -422,10 +423,7 @@ export function PawsRoom() {
     if (event.pointerType === "touch")
       touchesRef.current[event.pointerId] = event.clientX;
     if (Object.keys(touchesRef.current).length >= 2) {
-      pinchRef.current ??= {
-        startMidX: touchMidX(),
-        startCenterX: centerXRef.current,
-      };
+      restartPinch();
       engine.setOwnPointer({
         ...toWorld(event),
         present: false,
@@ -438,11 +436,19 @@ export function PawsRoom() {
     engine.setOwnPointer({ ...toWorld(event), present: true, pressed: true });
   }
 
+  function restartPinch() {
+    pinchRef.current = {
+      startMidX: touchMidX(),
+      startCenterX: centerXRef.current,
+    };
+  }
+
   function releaseTouch(pointerId: number) {
     delete touchesRef.current[pointerId];
     const isPinching = pinchRef.current !== undefined;
     if (Object.keys(touchesRef.current).length === 0)
       pinchRef.current = undefined;
+    else if (isPinching) restartPinch();
     return isPinching;
   }
 
@@ -471,6 +477,7 @@ export function PawsRoom() {
     const result = await postChat({
       accessToken: session.accessToken,
       roomId,
+      lineId: line.id,
       text,
     });
     if (result.kind !== "sent") {
@@ -482,6 +489,18 @@ export function PawsRoom() {
 
   function handleTalk() {
     sound.playUi("chatOpen");
+    setIsComposing(true);
+  }
+
+  function readCenterX() {
+    return centerXRef.current;
+  }
+
+  function handlePan(centerX: number) {
+    centerXRef.current = centerX;
+  }
+
+  function handleReopenCompose() {
     setIsComposing(true);
   }
 
@@ -558,11 +577,9 @@ export function PawsRoom() {
           <div className="absolute right-4 bottom-4 group-has-[[aria-modal=true]]/room:hidden max-[379px]:bottom-16 sm:right-6 sm:bottom-6">
             <PanBar
               label={copy.room.lookAround}
-              centerX={() => centerXRef.current}
+              centerX={readCenterX}
               handleRef={panBarRef}
-              onPan={(centerX) => {
-                centerXRef.current = centerX;
-              }}
+              onPan={handlePan}
             />
           </div>
         )}
@@ -590,7 +607,7 @@ export function PawsRoom() {
           anchors={anchorsRef}
           onSend={handleSend}
           onCloseCompose={handleCloseCompose}
-          onReopenCompose={() => setIsComposing(true)}
+          onReopenCompose={handleReopenCompose}
         />
         <PawsOnboarding
           session={session}

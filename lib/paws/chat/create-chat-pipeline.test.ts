@@ -10,6 +10,7 @@ import {
 
 const NOW = new Date("2026-10-30T12:00:00.000Z");
 const PLAYER = { userId: "u", isAnonymous: false };
+const LINE_ID = "0f8fad5b-d9cb-469f-a165-70867728950e";
 
 function buildRig(options: {
   isPlaying?: boolean;
@@ -63,12 +64,12 @@ test("sends a player's line to the room", async () => {
   assert.deepEqual(
     await pipeline.sendChat({
       user: PLAYER,
-      body: { roomId: "r", text: " hi  there " },
+      body: { roomId: "r", lineId: LINE_ID, text: " hi  there " },
     }),
-    { kind: "sent", message: { id: "m1", userId: "u", text: "hi there" } }
+    { kind: "sent", message: { id: LINE_ID, userId: "u", text: "hi there" } }
   );
   assert.deepEqual(rig.broadcast, [
-    { id: "m1", userId: "u", text: "hi there" },
+    { id: LINE_ID, userId: "u", text: "hi there" },
   ]);
 });
 
@@ -77,7 +78,7 @@ test("guests and visitors without a cat in the room cannot chat", async () => {
     (
       await buildRig({}).pipeline.sendChat({
         user: { userId: "g", isAnonymous: true },
-        body: { roomId: "r", text: "hi" },
+        body: { roomId: "r", lineId: LINE_ID, text: "hi" },
       })
     ).kind,
     "signInRequired"
@@ -86,7 +87,7 @@ test("guests and visitors without a cat in the room cannot chat", async () => {
     (
       await buildRig({ isPlaying: false }).pipeline.sendChat({
         user: PLAYER,
-        body: { roomId: "r", text: "hi" },
+        body: { roomId: "r", lineId: LINE_ID, text: "hi" },
       })
     ).kind,
     "notPlaying"
@@ -101,7 +102,7 @@ test("limits a burst and a minute of lines", async () => {
     (
       await burst.pipeline.sendChat({
         user: PLAYER,
-        body: { roomId: "r", text: "hi" },
+        body: { roomId: "r", lineId: LINE_ID, text: "hi" },
       })
     ).kind,
     "tooFast"
@@ -113,7 +114,7 @@ test("limits a burst and a minute of lines", async () => {
     (
       await minute.pipeline.sendChat({
         user: PLAYER,
-        body: { roomId: "r", text: "hi" },
+        body: { roomId: "r", lineId: LINE_ID, text: "hi" },
       })
     ).kind,
     "tooFast"
@@ -124,7 +125,10 @@ test("parallel lines cannot get past the burst limit", async () => {
   const { rig, pipeline } = buildRig({});
   const results = await Promise.all(
     Array.from({ length: 10 }, () =>
-      pipeline.sendChat({ user: PLAYER, body: { roomId: "r", text: "hi" } })
+      pipeline.sendChat({
+        user: PLAYER,
+        body: { roomId: "r", lineId: LINE_ID, text: "hi" },
+      })
     )
   );
   assert.ok(
@@ -140,7 +144,7 @@ test("fails closed when a check or the broadcast throws", async () => {
     (
       await pipeline.sendChat({
         user: PLAYER,
-        body: { roomId: "r", text: "hi" },
+        body: { roomId: "r", lineId: LINE_ID, text: "hi" },
       })
     ).kind,
     "failed"

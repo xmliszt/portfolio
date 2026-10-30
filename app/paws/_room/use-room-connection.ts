@@ -7,6 +7,7 @@ import { parseJoinRoomResponse } from "@/lib/paws/client/parse-join-room-respons
 import type { RoomConnection } from "@/lib/paws/room-source";
 import { createFakeRoomSource } from "@/lib/paws/rooms/create-fake-room-source";
 import { createSupabaseRoomSource } from "@/lib/paws/rooms/create-supabase-room-source";
+import { LOCAL_ROOM_ID } from "@/lib/paws/rooms/local-room-id";
 import { ROOM_TIMING } from "@/lib/paws/rooms/room-timing";
 import type { PawsSession } from "@/lib/paws/session-types";
 import type { createPawsBrowserClient } from "@/lib/paws/supabase/create-paws-browser-client";
@@ -99,7 +100,7 @@ export function useRoomConnection(options: {
       const joined = await (async () => {
         if (useFakeRoom || client === undefined) {
           return {
-            roomId: "local",
+            roomId: LOCAL_ROOM_ID,
             role:
               presence === undefined
                 ? ("watcher" as const)

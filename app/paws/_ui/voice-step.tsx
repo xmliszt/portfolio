@@ -6,7 +6,7 @@ import { usePawsCopy } from "@/app/paws/_i18n/use-paws-copy";
 import { useUiSound } from "@/app/paws/_room/use-ui-sound";
 import type { SavedCat } from "@/lib/paws/cat-api-types";
 import type { CatLook } from "@/lib/paws/cat-look";
-import { getBorrowedMeowUrl } from "@/lib/paws/profile/get-borrowed-meow-url";
+import { getMeowUrl } from "@/lib/paws/sound/get-meow-url";
 import {
   type Age,
   AGES,
@@ -78,7 +78,7 @@ export function VoiceStep(props: VoiceStepProps) {
   function play(voice: VoiceSettings) {
     const audio = audioRef.current ?? new Audio();
     audioRef.current = audio;
-    audio.src = getBorrowedMeowUrl(voice);
+    audio.src = getMeowUrl(voice);
     audio.currentTime = 0;
     audio
       .play()
@@ -148,6 +148,7 @@ export function VoiceStep(props: VoiceStepProps) {
       title={copy.voice.title}
       look={props.look}
       reactKey={String(playCount)}
+      fixedHeight={false}
       onClose={props.onClose}
       footer={
         <>
