@@ -151,6 +151,6 @@ export const CAT_POSES = {
     ],
     pawAng: [2.2, 0.6],
     padVis: [0.25, 0.4],
-    tail: [-19, 81, 0.17, -1.5, 1, 1],
+    tail: [0, 66, -0.15, -1.5, 1, 1],
   },
 } as const satisfies { [name in PoseName]: Pose };
