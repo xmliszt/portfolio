@@ -24,10 +24,10 @@ const MAX_CLIP_S = 2;
 const FADE_OUT_S = 0.12;
 /** Each sound's level in decibels after its loudness is matched to the others, set by ear. */
 const SOUND_LEVEL_DB = {
-  meow: -4,
-  trill: -4,
-  purr: -4,
-  lick: -4,
+  meow: -6,
+  trill: -6,
+  purr: -6,
+  lick: -6,
 } as const satisfies { [sound in PawsSound]: number };
 const MUSIC_URL = "/paws/sounds/music.mp3";
 /** Where the music's seamless loop sits in `MUSIC_URL`, in seconds; the file holds one extra second of the loop on each side. */
