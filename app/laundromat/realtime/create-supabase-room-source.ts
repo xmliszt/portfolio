@@ -36,6 +36,7 @@ export function createSupabaseRoomSource(options: {
     }) {
       const channel = client.channel(ROOM_CHANNEL, {
         config: {
+          private: true,
           presence: { key: sessionId },
           broadcast: { self: false },
         },
