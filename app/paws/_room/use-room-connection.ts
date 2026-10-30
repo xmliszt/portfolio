@@ -167,12 +167,12 @@ export function useRoomConnection(options: {
           accessToken: token,
           body: { roomId: run.roomId },
         });
-        const isGone =
+        const isRejoining =
           typeof answer === "object" &&
           answer !== null &&
           "kind" in answer &&
-          answer.kind === "gone";
-        if (isGone && !run.isCancelled) setAttempt((value) => value + 1);
+          (answer.kind === "gone" || answer.kind === "move");
+        if (isRejoining && !run.isCancelled) setAttempt((value) => value + 1);
       }, ROOM_TIMING.heartbeatMs);
     }
 

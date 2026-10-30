@@ -15,6 +15,7 @@ export type RoomRequest = { roomId: string };
 export type HeartbeatResponse =
   | { kind: "seen" }
   | { kind: "gone" }
+  | { kind: "move" }
   | { kind: "forbidden" }
   | { kind: "failed" };
 
