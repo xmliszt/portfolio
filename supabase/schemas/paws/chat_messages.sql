@@ -2,7 +2,6 @@ create table "paws"."chat_messages" (
   "id" uuid primary key default gen_random_uuid(),
   "room_id" text not null check ("room_id" ~ '^[a-z0-9-]{1,64}$'),
   "user_id" uuid not null references "auth"."users" ("id") on delete cascade,
-  "text" text not null check (char_length("text") between 1 and 60),
   "status" text not null default 'pending' check ("status" in ('pending', 'sent', 'refused')),
   "created_at" timestamptz not null default now()
 );

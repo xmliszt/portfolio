@@ -19,11 +19,7 @@ export type ChatPipelineDependencies = {
     userId: string;
     since: Date;
   }) => Promise<number>;
-  insertLine: (options: {
-    roomId: string;
-    userId: string;
-    text: string;
-  }) => Promise<string>;
+  insertLine: (options: { roomId: string; userId: string }) => Promise<string>;
   deleteLine: (id: string) => Promise<void>;
   markLine: (options: {
     id: string;
@@ -38,7 +34,7 @@ export type ChatPipelineDependencies = {
   log: (message: string, details: unknown) => void;
 };
 
-/** Return a chat pipeline that sends one line from a player in a room to everyone in it, after the room, rate and moderation checks; each attempt is saved before the rate check counts it, so parallel attempts and refused lines count too. */
+/** Return a chat pipeline that sends one line from a player in a room to everyone in it, after the room, rate and moderation checks; each attempt is recorded, without its text, before the rate check counts it, so parallel attempts and refused lines count too. */
 export function createChatPipeline(deps: ChatPipelineDependencies) {
   async function sendChat(options: {
     user: RequestUser | undefined;
@@ -57,11 +53,7 @@ export function createChatPipeline(deps: ChatPipelineDependencies) {
         seenSince: new Date(now - ROOM_TIMING.memberFreshMs),
       });
       if (!isPlaying) return { kind: "notPlaying" };
-      const id = await deps.insertLine({
-        roomId: request.roomId,
-        userId,
-        text: request.text,
-      });
+      const id = await deps.insertLine({ roomId: request.roomId, userId });
       const [burst, minute] = await Promise.all(
         [BURST, MINUTE].map((limit) =>
           deps.countLinesSince({

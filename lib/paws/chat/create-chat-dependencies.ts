@@ -7,7 +7,9 @@ import { readMeowProvidersConfig } from "@/lib/paws/profile/read-meow-providers-
 import type { ChatPipelineDependencies } from "./create-chat-pipeline";
 import { getChatTopic } from "./get-chat-topic";
 
-/** Return the chat pipeline's dependencies on `client`, with real moderation when `process.env` has its key and a fake one otherwise. */
+const KEEP_LINES_MS = 60 * 60_000;
+
+/** Return the chat pipeline's dependencies on `client`, with real moderation when `process.env` has its key and a fake one otherwise; lines are counted but their text is never saved, and a user's rows older than `KEEP_LINES_MS` are deleted when they send another. */
 export function createChatDependencies(
   client: PawsServiceClient
 ): ChatPipelineDependencies {
@@ -33,10 +35,16 @@ export function createChatDependencies(
       if (error) throw error;
       return count ?? 0;
     },
-    insertLine: async ({ roomId, userId, text }) => {
+    insertLine: async ({ roomId, userId }) => {
+      const pruned = await client
+        .from("chat_messages")
+        .delete()
+        .eq("user_id", userId)
+        .lt("created_at", new Date(Date.now() - KEEP_LINES_MS).toISOString());
+      if (pruned.error) throw pruned.error;
       const { data, error } = await client
         .from("chat_messages")
-        .insert({ room_id: roomId, user_id: userId, text })
+        .insert({ room_id: roomId, user_id: userId })
         .select("id")
         .single();
       if (error) throw error;
