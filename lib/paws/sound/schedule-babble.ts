@@ -1,54 +1,25 @@
-import type {
-  BabbleOnset,
-  BabbleSyllable,
-  BabbleVowel,
-} from "./get-babble-syllables";
+import type { BabbleSyllable, RecordedLetter } from "./get-babble-syllables";
 import { getBabbleTimes } from "./get-babble-times";
 import type { BabbleVoice } from "./get-babble-voice";
 
-/** First and second formants of each vowel, in hertz, for a small voice. */
-const FORMANTS = {
-  a: [850, 1600],
-  e: [600, 2300],
-  i: [350, 2800],
-  o: [500, 1000],
-  u: [380, 900],
-} as const satisfies { [vowel in BabbleVowel]: readonly [number, number] };
+const LETTER_LENGTH_SHARE = 1.3;
+const FADE_SHARE = 0.3;
+const LEVEL = 0.9;
+const LOUD_LEVEL = 1.25;
 
-/** How each onset starts a syllable: its attack time in seconds and the pitch it slides down (or up) from, as a multiple. */
-const ONSETS = {
-  none: { attack: 0.008, fromPitch: 1.04 },
-  stop: { attack: 0.003, fromPitch: 1.15 },
-  hiss: { attack: 0.01, fromPitch: 1.08 },
-  hum: { attack: 0.018, fromPitch: 0.94 },
-} as const satisfies {
-  [onset in BabbleOnset]: { attack: number; fromPitch: number };
-};
-const BREATH_SHARE = 0.25;
-const GAP_SHARE = 0.25;
-const PEAK = 0.5;
-const LOUD_PEAK = 0.75;
-
-function createNoise(context: BaseAudioContext) {
-  const length = Math.round(context.sampleRate * 0.5);
-  const buffer = context.createBuffer(1, length, context.sampleRate);
-  const samples = buffer.getChannelData(0);
-  for (let i = 0; i < length; i++) samples[i] = Math.random() * 2 - 1;
-  return buffer;
-}
-
-/** Schedule `syllables` spoken in `voice` into `destination` from `startAt` seconds on `context`, using `random` for each syllable's pitch wobble, and return the time the last one ends. */
+/** Schedule `syllables` as recorded `letters` played in `voice` into `destination` from `startAt` seconds on `context`, each letter cut to a little over one step and pitched by `random` within the voice's wobble, and return the time the last one ends. */
 export function scheduleBabble(options: {
   context: BaseAudioContext;
   destination: AudioNode;
   syllables: BabbleSyllable[];
+  letters: { [letter in RecordedLetter]?: AudioBuffer };
   voice: BabbleVoice;
   startAt: number;
   random: () => number;
 }) {
   const { context, destination, voice } = options;
-  const noise = createNoise(context);
   const step = voice.syllableSeconds;
+  const length = step * LETTER_LENGTH_SHARE;
   const times = getBabbleTimes({
     syllables: options.syllables,
     syllableSeconds: step,
@@ -59,71 +30,30 @@ export function scheduleBabble(options: {
       : []
   );
   voiced.forEach(({ syllable, at }, spoken) => {
-    const length = step * (1 - GAP_SHARE);
+    const buffer = options.letters[syllable.letter];
+    if (buffer === undefined) return;
     const progress = voiced.length <= 1 ? 0 : spoken / (voiced.length - 1);
     const semitones =
       syllable.semitones +
       voice.slideSemitones * progress +
       (options.random() * 2 - 1) * voice.wobbleSemitones;
-    const pitch = voice.pitchHz * 2 ** (semitones / 12);
-
-    const source = context.createOscillator();
-    source.type = "sawtooth";
-    const onset = ONSETS[syllable.onset];
-    source.frequency.setValueAtTime(pitch * onset.fromPitch, at);
-    source.frequency.exponentialRampToValueAtTime(pitch, at + length * 0.6);
-    const envelope = context.createGain();
-    const peak = syllable.loud ? LOUD_PEAK : PEAK;
-    envelope.gain.setValueAtTime(0, at);
-    envelope.gain.linearRampToValueAtTime(peak, at + onset.attack);
-    envelope.gain.exponentialRampToValueAtTime(0.001, at + length);
-    const [first, second] = FORMANTS[syllable.vowel];
-    const formants = [first, second].map((frequency, index) => {
-      const filter = context.createBiquadFilter();
-      filter.type = "bandpass";
-      filter.frequency.value = frequency * voice.formantScale;
-      filter.Q.value = index === 0 ? 4 : 6;
-      return filter;
-    });
-    source.connect(envelope);
-    for (const filter of formants) {
-      envelope.connect(filter);
-      filter.connect(destination);
-    }
-
-    const noiseSource =
-      voice.rasp > 0 ? context.createBufferSource() : undefined;
-    if (noiseSource !== undefined) {
-      noiseSource.buffer = noise;
-      const shape = context.createBiquadFilter();
-      shape.type = "bandpass";
-      shape.frequency.value = second * voice.formantScale;
-      shape.Q.value = 2;
-      const noiseGain = context.createGain();
-      noiseGain.gain.setValueAtTime(0, at);
-      noiseGain.gain.linearRampToValueAtTime(
-        peak * voice.rasp * BREATH_SHARE,
-        at + onset.attack
-      );
-      noiseGain.gain.exponentialRampToValueAtTime(0.001, at + length);
-      noiseSource.connect(shape);
-      shape.connect(noiseGain);
-      noiseGain.connect(destination);
-      noiseSource.start(at, options.random() * 0.4);
-      noiseSource.stop(at + length);
-      noiseSource.onended = () => {
-        noiseSource.disconnect();
-        shape.disconnect();
-        noiseGain.disconnect();
-      };
-    }
+    const source = context.createBufferSource();
+    source.buffer = buffer;
+    source.playbackRate.value = voice.rate;
+    source.detune.value = semitones * 100;
+    const gain = context.createGain();
+    const level = syllable.loud ? LOUD_LEVEL : LEVEL;
+    gain.gain.setValueAtTime(level, at);
+    gain.gain.setValueAtTime(level, at + length * (1 - FADE_SHARE));
+    gain.gain.linearRampToValueAtTime(0, at + length);
+    source.connect(gain);
+    gain.connect(destination);
     source.start(at);
     source.stop(at + length);
     source.onended = () => {
       source.disconnect();
-      envelope.disconnect();
-      formants.forEach((filter) => filter.disconnect());
+      gain.disconnect();
     };
   });
-  return options.startAt + times.endsAt;
+  return options.startAt + times.endsAt + step * (LETTER_LENGTH_SHARE - 1);
 }

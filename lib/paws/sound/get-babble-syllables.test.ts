@@ -3,12 +3,12 @@ import { test } from "node:test";
 
 import { getBabbleSyllables } from "./get-babble-syllables";
 
-test("speaks each letter by its name's vowel, with spaces as short pauses", () => {
+test("speaks each letter as its recording, with stand-ins and spaces as short pauses", () => {
   assert.deepEqual(
-    getBabbleSyllables("hi yo").map((syllable) =>
-      syllable.kind === "voiced" ? syllable.vowel : "_"
+    getBabbleSyllables("hi Zoé qw").map((syllable) =>
+      syllable.kind === "voiced" ? syllable.letter : "_"
     ),
-    ["e", "a", "_", "a", "o"]
+    ["h", "i", "_", "s", "o", "e", "_", "k", "u"]
   );
 });
 

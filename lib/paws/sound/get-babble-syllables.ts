@@ -1,13 +1,38 @@
 import { hashUserId } from "./hash-user-id";
 
-export type BabbleVowel = "a" | "e" | "i" | "o" | "u";
-export type BabbleOnset = "none" | "stop" | "hiss" | "hum";
+/** The letters there is a recording of in `public/paws/letters`. */
+export const RECORDED_LETTERS = [
+  "a",
+  "b",
+  "c",
+  "d",
+  "e",
+  "f",
+  "g",
+  "h",
+  "i",
+  "j",
+  "k",
+  "l",
+  "m",
+  "n",
+  "o",
+  "p",
+  "r",
+  "s",
+  "t",
+  "u",
+  "v",
+  "x",
+  "y",
+] as const;
+
+export type RecordedLetter = (typeof RECORDED_LETTERS)[number];
 
 export type BabbleSyllable =
   | {
       kind: "voiced";
-      vowel: BabbleVowel;
-      onset: BabbleOnset;
+      letter: RecordedLetter;
       semitones: number;
       loud: boolean;
       characters: number;
@@ -15,66 +40,39 @@ export type BabbleSyllable =
   | { kind: "pause"; long: boolean; characters: number };
 
 const MAX_SYLLABLES = 48;
-const VOWELS = ["a", "e", "i", "o", "u"] as const;
-const ONSETS = ["none", "stop", "hiss", "hum"] as const;
 const RISE_SYLLABLES = 3;
+const STAND_INS = { q: "k", w: "u", z: "s" } as const satisfies {
+  [letter: string]: RecordedLetter;
+};
 
-/** The vowel and onset of each English letter's name, the way Animalese speaks a letter. */
-const LETTERS = {
-  a: ["e", "none"],
-  b: ["i", "stop"],
-  c: ["i", "hiss"],
-  d: ["i", "stop"],
-  e: ["i", "none"],
-  f: ["e", "hiss"],
-  g: ["i", "stop"],
-  h: ["e", "hiss"],
-  i: ["a", "none"],
-  j: ["e", "stop"],
-  k: ["e", "stop"],
-  l: ["e", "hum"],
-  m: ["e", "hum"],
-  n: ["e", "hum"],
-  o: ["o", "none"],
-  p: ["i", "stop"],
-  q: ["u", "stop"],
-  r: ["a", "hum"],
-  s: ["e", "hiss"],
-  t: ["i", "stop"],
-  u: ["u", "none"],
-  v: ["i", "hiss"],
-  w: ["u", "hum"],
-  x: ["e", "hiss"],
-  y: ["a", "none"],
-  z: ["i", "hiss"],
-} as const satisfies { [letter: string]: readonly [BabbleVowel, BabbleOnset] };
+function isRecordedLetter(key: string): key is RecordedLetter {
+  return RECORDED_LETTERS.some((letter) => letter === key);
+}
 
-function isLetterKey(key: string): key is keyof typeof LETTERS {
-  return key in LETTERS;
+function isStandIn(key: string): key is keyof typeof STAND_INS {
+  return key in STAND_INS;
+}
+
+function toLetter(character: string): RecordedLetter {
+  const key = character.normalize("NFD").replace(/\p{M}/gu, "").toLowerCase();
+  if (isRecordedLetter(key)) return key;
+  if (isStandIn(key)) return STAND_INS[key];
+  return RECORDED_LETTERS[
+    Math.floor(hashUserId(character) * RECORDED_LETTERS.length)
+  ];
 }
 
 function toVoiced(options: { character: string; isUpper: boolean }) {
-  const key = options.character
-    .normalize("NFD")
-    .replace(/\p{M}/gu, "")
-    .toLowerCase();
-  const [vowel, onset] = isLetterKey(key)
-    ? LETTERS[key]
-    : [
-        VOWELS[Math.floor(hashUserId(options.character) * VOWELS.length)],
-        ONSETS[Math.floor(hashUserId(`${options.character}~`) * ONSETS.length)],
-      ];
   return {
     kind: "voiced" as const,
-    vowel,
-    onset,
+    letter: toLetter(options.character),
     semitones: options.isUpper ? 2 : 0,
     loud: options.isUpper,
     characters: 1,
   };
 }
 
-/** Return the syllables a cat babbles for `text`: one per letter or other character, a short pause for whitespace, a long pause for punctuation such as `.`, `,` or `?`, a rise over the last syllables before `?`, louder syllables in capitals or throughout a line ending in `!`, and at most `MAX_SYLLABLES`; each syllable counts the `characters` of `text` it covers, symbols included. */
+/** Return the syllables a cat babbles for `text`: one recorded letter per letter, a stand-in for `q`, `w` and `z`, a letter picked by hash for any other character, a short pause for whitespace, a long pause for punctuation such as `.`, `,` or `?`, a rise over the last syllables before `?`, louder syllables in capitals or throughout a line ending in `!`, and at most `MAX_SYLLABLES`; each syllable counts the `characters` of `text` it covers, symbols included. */
 export function getBabbleSyllables(text: string): BabbleSyllable[] {
   const sounds = Array.from(text).map(
     (character): BabbleSyllable | undefined => {

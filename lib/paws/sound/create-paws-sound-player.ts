@@ -1,7 +1,12 @@
 import type { Step } from "@/lib/paws/cat-look";
 import type { Age, VoiceSettings } from "@/lib/paws/voice-settings";
 
-import { getBabbleSyllables } from "./get-babble-syllables";
+import {
+  type BabbleSyllable,
+  getBabbleSyllables,
+  RECORDED_LETTERS,
+  type RecordedLetter,
+} from "./get-babble-syllables";
 import { getBabbleVoice } from "./get-babble-voice";
 import { getCatPlaybackRate } from "./get-cat-playback-rate";
 import { getPanFromWorldX } from "./get-pan-from-world-x";
@@ -16,6 +21,7 @@ const CAT_COOLDOWN_MS = 900;
 const MAX_CLIP_S = 2;
 const FADE_OUT_S = 0.12;
 const BABBLE_LEVEL = 0.6;
+const getLetterUrl = (letter: RecordedLetter) => `/paws/letters/${letter}.mp3`;
 const BABBLE_CUT_S = 0.03;
 
 export type PawsSoundCue = {
@@ -138,9 +144,15 @@ export function createPawsSoundPlayer(options: {
     source.stop(startAt + playedS);
   }
 
-  /** Create and resume the audio context; call it from a pointer or key event so the browser allows sound. */
+  /** Create and resume the audio context and start loading the recorded letters; call it from a pointer or key event so the browser allows sound. */
   async function unlock() {
-    state.graph ??= createGraph();
+    if (state.graph === undefined) {
+      const graph = createGraph();
+      state.graph = graph;
+      RECORDED_LETTERS.forEach(
+        (letter) => void loadClip(graph, getLetterUrl(letter))
+      );
+    }
     if (state.graph.context.state === "suspended")
       await state.graph.context.resume();
   }
@@ -185,7 +197,41 @@ export function createPawsSoundPlayer(options: {
     if (graph === undefined || state.muted || state.mutedCats[line.userId])
       return;
     const syllables = getBabbleSyllables(line.text);
-    if (!syllables.some((syllable) => syllable.kind === "voiced")) return;
+    const needed = [
+      ...new Set(
+        syllables.flatMap((syllable) =>
+          syllable.kind === "voiced" ? [syllable.letter] : []
+        )
+      ),
+    ];
+    if (needed.length === 0) return;
+    void Promise.all(
+      needed.map((letter) => loadClip(graph, getLetterUrl(letter)))
+    ).then((clips) => {
+      if (state.graph !== graph || state.muted || state.mutedCats[line.userId])
+        return;
+      startBabble({
+        graph,
+        line,
+        syllables,
+        letters: needed.reduce<{ [letter in RecordedLetter]?: AudioBuffer }>(
+          (letters, letter, index) => ({
+            ...letters,
+            [letter]: clips[index]?.buffer,
+          }),
+          {}
+        ),
+      });
+    });
+  }
+
+  function startBabble(options: {
+    graph: Graph;
+    line: { userId: string; x: number; voice: VoiceSettings; size: Step };
+    syllables: BabbleSyllable[];
+    letters: { [letter in RecordedLetter]?: AudioBuffer };
+  }) {
+    const { graph, line } = options;
     const { context } = graph;
     const previous = state.babbles[line.userId];
     if (previous !== undefined) {
@@ -202,7 +248,8 @@ export function createPawsSoundPlayer(options: {
     const endsAt = scheduleBabble({
       context,
       destination: level,
-      syllables,
+      syllables: options.syllables,
+      letters: options.letters,
       voice: getBabbleVoice({
         voice: line.voice,
         size: line.size,
