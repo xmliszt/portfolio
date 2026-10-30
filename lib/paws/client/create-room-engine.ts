@@ -206,7 +206,8 @@ export function createRoomEngine(options: { random: () => number }) {
       };
     },
     receiveCats: (options: { message: CatsMessage; receivedAtMs: number }) => {
-      if (options.message.hostId === state.selfId) return;
+      const hostId = chooseHost(state.players);
+      if (options.message.hostId === state.selfId || options.message.hostId !== hostId) return;
       state.buffer.push(options);
     },
     receiveEvent: (event: RoomEvent) => {

@@ -12,7 +12,7 @@ export type PickedRoom =
   | { kind: "new"; roomId: string }
   | { kind: "full" };
 
-/** Return the room `userId` should join as `role`: the room they are already in when it still has a slot for that role, else the room with the most players that has one, else a new room from `createRoomId` for a player or when there are no rooms, and `full` for a watcher otherwise; members not seen within `freshMs` of `now` do not count. */
+/** Return the room `userId` should join as `role`: the room with the most other players that still has a slot for that role, preferring the room they are already in on a tie, else a new room from `createRoomId` for a player or when there are no rooms, and `full` for a watcher otherwise; members not seen within `freshMs` of `now` do not count. */
 export function pickRoom(options: {
   members: RoomMember[];
   userId: string;
@@ -49,8 +49,8 @@ export function pickRoom(options: {
     .filter((room) => room.sameRole < limit)
     .toSorted(
       (a, b) =>
-        Number(b.isOwn) - Number(a.isOwn) ||
         b.players - a.players ||
+        Number(b.isOwn) - Number(a.isOwn) ||
         a.roomId.localeCompare(b.roomId)
     )
     .at(0);

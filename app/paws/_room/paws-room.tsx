@@ -25,7 +25,7 @@ const FAKE_MEOW_URL = "/paws/sounds/meow-adult-soft-chatty.mp3";
 /** Render the room: the shared cats, every fingertip and print on a full-screen canvas, the visitor's own fingertip from the pointer, sounds, and the corner flow for bringing a cat in. */
 export function PawsRoom() {
   const { session, actions, client } = usePawsSession();
-  const { savedCat, setSavedCat } = useSavedCat(session);
+  const { savedCat, setSavedCat, isChecked } = useSavedCat(session);
   const [isMuted, setIsMuted] = useState(false);
   const [onboardingKey, setOnboardingKey] = useState(0);
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -65,6 +65,7 @@ export function PawsRoom() {
     self,
     engine,
     useFakeRoom,
+    isReady: isChecked || useFakeRoom,
   });
 
   useEffect(() => {

@@ -76,7 +76,7 @@ export function VoiceStep(props: VoiceStepProps) {
     notice: undefined,
   });
   const audioRef = useRef<HTMLAudioElement | undefined>(undefined);
-  const controllerRef = useRef(new AbortController());
+  const controllerRef = useRef<AbortController>(new AbortController());
   const textRef = useRef<HTMLInputElement>(null);
   const playRef = useRef<HTMLButtonElement>(null);
   const bringInId = useId();
@@ -88,7 +88,8 @@ export function VoiceStep(props: VoiceStepProps) {
   }, [phase, bringInId]);
 
   useEffect(() => {
-    const controller = controllerRef.current;
+    const controller = new AbortController();
+    controllerRef.current = controller;
     return () => {
       controller.abort();
       const audio = audioRef.current;

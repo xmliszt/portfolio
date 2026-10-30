@@ -91,14 +91,26 @@ test("tells a watcher every room is full when every watcher slot is taken", () =
   assert.deepEqual(pick({ members, role: "watcher" }), { kind: "full" });
 });
 
-test("keeps a member in their own room when it still has a slot for the role", () => {
+test("keeps a member in their own room when another room has as many players", () => {
   const members = [
     buildMember({ roomId: "a", userId: "p1", role: "player" }),
-    buildMember({ roomId: "b", userId: "me", role: "watcher" }),
+    buildMember({ roomId: "b", userId: "me", role: "player" }),
+    buildMember({ roomId: "b", userId: "p2", role: "player" }),
   ];
   assert.deepEqual(pick({ members, role: "player" }), {
     kind: "existing",
     roomId: "b",
+  });
+});
+
+test("moves a member alone in their own room to a room with other players", () => {
+  const members = [
+    buildMember({ roomId: "a", userId: "p1", role: "player" }),
+    buildMember({ roomId: "b", userId: "me", role: "player" }),
+  ];
+  assert.deepEqual(pick({ members, role: "player" }), {
+    kind: "existing",
+    roomId: "a",
   });
 });
 

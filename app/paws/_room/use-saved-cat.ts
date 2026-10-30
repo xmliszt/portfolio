@@ -6,9 +6,10 @@ import { fetchSavedCat } from "@/app/paws/_ui/fetch-saved-cat";
 import type { SavedCat } from "@/lib/paws/cat-api-types";
 import type { PawsSession } from "@/lib/paws/session-types";
 
-/** Return the signed-in member's saved cat (loaded once per account, `undefined` until found or for guests) and a setter for a cat just made. */
+/** Return the signed-in member's saved cat (loaded once per account, `undefined` until found or for guests), whether the lookup is done (`true` at once for guests), and a setter for a cat just made. */
 export function useSavedCat(session: PawsSession) {
   const [savedCat, setSavedCat] = useState<SavedCat | undefined>(undefined);
+  const [checkedFor, setCheckedFor] = useState<string | undefined>(undefined);
   const memberId = session.kind === "member" ? session.userId : undefined;
   const accessToken =
     session.kind === "member" ? session.accessToken : undefined;
@@ -19,6 +20,8 @@ export function useSavedCat(session: PawsSession) {
     void fetchSavedCat({ accessToken, signal: controller.signal }).then(
       (answer) => {
         if (answer.kind === "found") setSavedCat(answer.cat);
+        if (answer.kind !== "unreachable" || !controller.signal.aborted)
+          setCheckedFor(memberId);
       }
     );
     return () => {
@@ -29,5 +32,8 @@ export function useSavedCat(session: PawsSession) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [memberId]);
 
-  return { savedCat, setSavedCat };
+  const isChecked =
+    session.kind === "guest" ||
+    (memberId !== undefined && checkedFor === memberId);
+  return { savedCat, setSavedCat, isChecked };
 }

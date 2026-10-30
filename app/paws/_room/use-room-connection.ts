@@ -36,13 +36,14 @@ export function useRoomConnection(options: {
   self: Omit<PlayerPresence, "joinedAt"> | undefined;
   engine: ReturnType<typeof createRoomEngine>;
   useFakeRoom: boolean;
+  isReady: boolean;
 }) {
   const [status, setStatus] = useState<RoomStatus>({ kind: "idle" });
   const [attempt, setAttempt] = useState(0);
   const connectionRef = useRef<RoomConnection | undefined>(undefined);
   const playersRef = useRef<PlayerPresence[]>([]);
   const tokenRef = useRef<string | undefined>(undefined);
-  const { session, client, self, engine, useFakeRoom } = options;
+  const { session, client, self, engine, useFakeRoom, isReady } = options;
   const userId = session.kind === "loading" ? undefined : session.userId;
   const selfKey = self === undefined ? "" : JSON.stringify(self);
 
@@ -52,7 +53,7 @@ export function useRoomConnection(options: {
   }, [session]);
 
   useEffect(() => {
-    if (userId === undefined || (client === undefined && !useFakeRoom)) return;
+    if (!isReady || userId === undefined || (client === undefined && !useFakeRoom)) return;
     const run: {
       isCancelled: boolean;
       heartbeat?: number;
@@ -203,7 +204,7 @@ export function useRoomConnection(options: {
     };
     // `self` is compared through `selfKey` so a new object with the same cat does not rejoin.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [userId, client, selfKey, engine, useFakeRoom, attempt]);
+  }, [userId, client, selfKey, engine, useFakeRoom, attempt, isReady]);
 
   return { status, connectionRef, playersRef };
 }
