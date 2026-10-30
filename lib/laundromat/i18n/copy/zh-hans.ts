@@ -373,6 +373,10 @@ export const zhHans = {
       board: "告示板",
     },
     updates: {
+      "dreamcore-station": {
+        title: "电视有了梦核频道",
+        body: "把调台旋钮转过深空，就能收听梦核电台，柔和的氛围音乐在空旷中回响。",
+      },
       "halloween-theme": {
         title: "房间里的万圣节",
         body: "点开主题按钮选择万圣节，或开启季节模式，让主题随节日变化。使用万圣节主题时，打开电视就能收听万圣节音乐直播，点一点装饰，发现小惊喜。",
@@ -540,6 +544,7 @@ export const zhHans = {
       "string-quartet": "弦乐四重奏",
       "porch-guitar": "门廊吉他",
       "deep-space": "深空",
+      dreamcore: "梦核",
     },
     station: (o: { channel: string; name: string }) =>
       `${o.channel} 台 · ${o.name}`,

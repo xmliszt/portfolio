@@ -5,7 +5,7 @@ export type TvEvent =
   | { type: "tune"; step: 1 | -1 }
   | { type: "volume"; step: 1 | -1 };
 
-export const TUNER_DETENTS = 12;
+export const TUNER_DETENTS = 13;
 
 export const TV_STATION_IDS = [
   "rainy-cafe",
@@ -20,6 +20,7 @@ export const TV_STATION_IDS = [
   "string-quartet",
   "porch-guitar",
   "deep-space",
+  "dreamcore",
   "halloween",
 ] as const;
 

@@ -420,6 +420,10 @@ export const it = {
       board: "bacheca",
     },
     updates: {
+      "dreamcore-station": {
+        title: "un canale dreamcore in tv",
+        body: "Gira la manopola oltre lo spazio profondo per una radio dreamcore di musica ambient morbida ed echeggiante.",
+      },
       "halloween-theme": {
         title: "halloween nelle stanze",
         body: "Scegli Halloween dal pulsante dei temi oppure attiva Stagionale per seguire le ricorrenze. Con il tema Halloween, accendi la TV per ascoltare una stazione di musica di Halloween in diretta; tocca le decorazioni per una piccola sorpresa.",
@@ -587,6 +591,7 @@ export const it = {
       "string-quartet": "quartetto d'archi",
       "porch-guitar": "chitarra in veranda",
       "deep-space": "spazio profondo",
+      dreamcore: "dreamcore",
     },
     station: (o: { channel: string; name: string }) =>
       `can. ${o.channel} · ${o.name}`,

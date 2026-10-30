@@ -419,6 +419,10 @@ export const en = {
       board: "board",
     } satisfies { [tag in BoardTag]: string },
     updates: {
+      "dreamcore-station": {
+        title: "a dreamcore station on the tv",
+        body: "Turn the tuner past deep space for a dreamcore radio of soft, echoing ambient music.",
+      },
       "halloween-theme": {
         title: "halloween in the rooms",
         body: "Choose Halloween from the theme button, or turn on Seasonal to follow the occasion. With Halloween selected, turn on the TV for a live Halloween music station; tap the decorations for a little surprise.",
@@ -586,6 +590,7 @@ export const en = {
       "string-quartet": "string quartet",
       "porch-guitar": "porch guitar",
       "deep-space": "deep space",
+      dreamcore: "dreamcore",
     } satisfies { [id in TvStationId]: string },
     station: (o: { channel: string; name: string }) =>
       `ch ${o.channel} · ${o.name}`,

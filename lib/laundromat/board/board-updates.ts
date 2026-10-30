@@ -1,4 +1,5 @@
 export const BOARD_UPDATE_IDS = [
+  "dreamcore-station",
   "halloween-theme",
   "light-appearance",
   "tip-coin-machine",
@@ -45,6 +46,7 @@ export type BoardTag = (typeof BOARD_TAGS)[number];
 
 /** Every change the board can show, newest first, with its tag and the day it shipped as `YYYY-MM-DD`. */
 export const BOARD_UPDATES = [
+  { id: "dreamcore-station", tag: "tv", date: "2026-10-30" },
   { id: "halloween-theme", tag: "room", date: "2026-10-25" },
   { id: "light-appearance", tag: "room", date: "2026-10-25" },
   { id: "tip-coin-machine", tag: "room", date: "2026-10-20" },

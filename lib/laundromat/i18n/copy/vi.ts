@@ -402,6 +402,10 @@ export const vi = {
       board: "bảng tin",
     },
     updates: {
+      "dreamcore-station": {
+        title: "kênh dreamcore trên tv",
+        body: "Xoay nút dò kênh qua vũ trụ sâu thẳm để nghe đài dreamcore với nhạc ambient êm dịu, vang vọng.",
+      },
       "halloween-theme": {
         title: "halloween trong hai căn phòng",
         body: "Chọn Halloween từ nút chủ đề hoặc bật Theo mùa để chủ đề thay đổi theo dịp lễ. Khi chọn chủ đề Halloween, bật TV để nghe đài nhạc Halloween phát trực tiếp; chạm vào đồ trang trí để nhận bất ngờ nho nhỏ.",
@@ -569,6 +573,7 @@ export const vi = {
       "string-quartet": "tứ tấu đàn dây",
       "porch-guitar": "guitar hiên nhà",
       "deep-space": "vũ trụ sâu thẳm",
+      dreamcore: "dreamcore",
     } satisfies { [id in TvStationId]: string },
     station: (o: { channel: string; name: string }) =>
       `kênh ${o.channel} · ${o.name}`,

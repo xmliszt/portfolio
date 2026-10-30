@@ -412,6 +412,10 @@ export const ptBR = {
       board: "mural",
     },
     updates: {
+      "dreamcore-station": {
+        title: "um canal dreamcore na tv",
+        body: "Gire o dial além do espaço profundo para uma rádio dreamcore de música ambiente suave e ecoante.",
+      },
       "halloween-theme": {
         title: "halloween nos dois cômodos",
         body: "Escolha Halloween no botão de temas ou ative Sazonal para acompanhar as comemorações. Com o tema Halloween, ligue a TV para ouvir uma estação de música de Halloween ao vivo; toque nas decorações para uma pequena surpresa.",
@@ -579,6 +583,7 @@ export const ptBR = {
       "string-quartet": "quarteto de cordas",
       "porch-guitar": "violão na varanda",
       "deep-space": "espaço profundo",
+      dreamcore: "dreamcore",
     },
     station: (o: { channel: string; name: string }) =>
       `can. ${o.channel} · ${o.name}`,

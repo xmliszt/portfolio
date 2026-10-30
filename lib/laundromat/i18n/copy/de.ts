@@ -418,6 +418,10 @@ export const de = {
       board: "aushang",
     },
     updates: {
+      "dreamcore-station": {
+        title: "ein dreamcore-sender im fernseher",
+        body: "Dreh die Senderskala über den tiefen Weltraum hinaus zu einem Dreamcore-Radio mit sanfter, hallender Ambient-Musik.",
+      },
       "halloween-theme": {
         title: "halloween in den räumen",
         body: "Wähle Halloween über die Themen-Schaltfläche oder aktiviere Saisonal für den passenden Anlass. Mit dem Halloween-Thema startet der Fernseher mit einem Live-Sender für Halloween-Musik; tippe auf die Dekorationen für eine kleine Überraschung.",
@@ -585,6 +589,7 @@ export const de = {
       "string-quartet": "streichquartett",
       "porch-guitar": "gitarre auf der veranda",
       "deep-space": "tiefer weltraum",
+      dreamcore: "dreamcore",
     },
     station: (o: { channel: string; name: string }) =>
       `K ${o.channel} · ${o.name}`,

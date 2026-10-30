@@ -676,6 +676,12 @@ export const sceneConfig: SceneConfig = {
           channel: "Lofi Girl",
           placeholder: false,
         },
+        {
+          id: "dreamcore",
+          videoId: "nfN6QDZtpUs",
+          channel: "Smiling Puddles",
+          placeholder: false,
+        },
       ],
       stallSeconds: 12,
       noSignalMs: 1200,
