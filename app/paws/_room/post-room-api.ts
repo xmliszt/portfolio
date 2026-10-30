@@ -1,6 +1,6 @@
 /** Send `body` to the room route at `path` with the visitor's access token and return the parsed JSON answer, or `undefined` when the request fails. */
 export async function postRoomApi(options: {
-  path: "join" | "heartbeat" | "leave";
+  path: "join" | "heartbeat" | "leave" | "list";
   accessToken: string;
   body: object;
   keepalive?: boolean;

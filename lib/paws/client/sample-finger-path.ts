@@ -1,4 +1,9 @@
-export type FingerSample = { x: number; y: number; t: number; pressed: boolean };
+export type FingerSample = {
+  x: number;
+  y: number;
+  t: number;
+  pressed: boolean;
+};
 
 function catmullRom(options: {
   p0: number;

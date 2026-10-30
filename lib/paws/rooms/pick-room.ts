@@ -12,7 +12,7 @@ export type PickedRoom =
   | { kind: "new"; roomId: string }
   | { kind: "full" };
 
-/** Return the room `userId` should join as `role`: the room with the most other players that still has a slot for that role, preferring the room they are already in on a tie, else a new room from `createRoomId` for a player or when there are no rooms, and `full` for a watcher otherwise; members not seen within `freshMs` of `now` do not count. */
+/** Return the room `userId` should join as `role`: `preferredRoomId` when it has a slot for that role (opening it when nobody is in it), else the room with the most other players that still has a slot for that role, preferring the room they are already in on a tie, else a new room from `createRoomId` for a player or when there are no rooms, and `full` for a watcher otherwise; members not seen within `freshMs` of `now` do not count. */
 export function pickRoom(options: {
   members: RoomMember[];
   userId: string;
@@ -21,6 +21,7 @@ export function pickRoom(options: {
   freshMs: number;
   limits: { maxPlayers: number; maxWatchers: number };
   createRoomId: () => string;
+  preferredRoomId?: string;
 }): PickedRoom {
   const fresh = options.members.filter(
     (member) => member.lastSeenAt > options.now - options.freshMs
@@ -45,6 +46,12 @@ export function pickRoom(options: {
       };
     }
   );
+  const preferred = options.preferredRoomId;
+  if (preferred !== undefined) {
+    const room = rooms.find((candidate) => candidate.roomId === preferred);
+    if (room === undefined) return { kind: "new", roomId: preferred };
+    if (room.sameRole < limit) return { kind: "existing", roomId: preferred };
+  }
   const best = rooms
     .filter((room) => room.sameRole < limit)
     .toSorted(

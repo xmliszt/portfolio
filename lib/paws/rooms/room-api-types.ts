@@ -1,6 +1,13 @@
 import type { RoomRole } from "@/lib/paws/room-source";
 
-export type JoinRoomRequest = { wantsToPlay: boolean };
+export type JoinRoomRequest = { wantsToPlay: boolean; roomId?: string };
+
+export type RoomSummary = { roomId: string; players: number; watchers: number };
+
+export type ListRoomsResponse =
+  | { kind: "rooms"; rooms: RoomSummary[] }
+  | { kind: "forbidden" }
+  | { kind: "failed" };
 
 export type JoinRoomResponse =
   | { kind: "joined"; roomId: string; topic: string; role: RoomRole }

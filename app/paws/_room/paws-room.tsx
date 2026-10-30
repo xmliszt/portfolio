@@ -27,6 +27,7 @@ import type { ChatBubble } from "./chat-bubble";
 import { ChatLayer } from "./chat-layer";
 import { COMPOSE_ANCHOR_PREFIX } from "./compose-anchor-prefix";
 import { postChat } from "./post-chat";
+import { RoomPicker } from "./room-picker";
 import { SoundSwitch } from "./sound-switch";
 import { UiSoundContext } from "./ui-sound-context";
 import { useRoomConnection } from "./use-room-connection";
@@ -64,7 +65,7 @@ export function PawsRoom() {
   const [bubbles, setBubbles] = useState<ChatBubble[]>([]);
   const [isComposing, setIsComposing] = useState(false);
   const [hasOwnCatInRoom, setHasOwnCatInRoom] = useState(false);
-  const ownUserId = session.kind === "loading" ? undefined : session.userId;
+  const ownUserId = "userId" in session ? session.userId : undefined;
   const engine = useMemo(() => createRoomEngine({ random: Math.random }), []);
   const [sound] = useState(() =>
     createPawsSoundPlayer({ createContext: () => new AudioContext() })
@@ -85,7 +86,7 @@ export function PawsRoom() {
         meowUrl: savedCat.meowUrl,
       };
     }
-    if (useFakeRoom && session.kind !== "loading") {
+    if (useFakeRoom && "userId" in session) {
       return {
         userId: session.userId,
         look: fakeLook,
@@ -147,15 +148,16 @@ export function PawsRoom() {
     ownCatIdRef.current = self === undefined ? undefined : self.userId;
   }, [self]);
 
-  const { connectionRef, playersRef, roomIdRef } = useRoomConnection({
-    session,
-    client,
-    self,
-    engine,
-    useFakeRoom,
-    isReady: isChecked || useFakeRoom,
-    onChat: sayLine,
-  });
+  const { connectionRef, playersRef, roomIdRef, roomId, switchRoom } =
+    useRoomConnection({
+      session,
+      client,
+      self,
+      engine,
+      useFakeRoom,
+      isReady: isChecked || useFakeRoom,
+      onChat: sayLine,
+    });
 
   useEffect(() => {
     const timers = bubbleTimersRef.current;
@@ -358,7 +360,7 @@ export function PawsRoom() {
 
   async function handleSend(text: string) {
     const roomId = roomIdRef.current;
-    if (session.kind === "loading" || roomId === undefined) return "failed";
+    if (!("userId" in session) || roomId === undefined) return "failed";
     if (useFakeRoom) {
       sayLine({ id: crypto.randomUUID(), userId: session.userId, text });
       return "sent";
@@ -393,6 +395,11 @@ export function PawsRoom() {
     setIsMuted(!isMuted);
   }
 
+  function handleSwitchRoom(nextRoomId: string) {
+    sound.playUi("stepNext");
+    switchRoom(nextRoomId);
+  }
+
   function handleLanguageChange() {
     sound.playUi("language");
   }
@@ -416,6 +423,14 @@ export function PawsRoom() {
           onPointerLeave={handlePointerLeave}
         />
         <div className="absolute top-4 right-4 flex items-center gap-x-2 group-has-[[aria-modal=true]]/room:hidden sm:top-6 sm:right-6">
+          {roomId !== undefined && !useFakeRoom && "accessToken" in session && (
+            <RoomPicker
+              roomId={roomId}
+              accessToken={session.accessToken}
+              isPlayer={self !== undefined}
+              onSwitch={handleSwitchRoom}
+            />
+          )}
           <LanguagePicker onChange={handleLanguageChange} />
           {hasOwnCatInRoom && (
             <button

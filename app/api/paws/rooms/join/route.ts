@@ -22,7 +22,7 @@ export async function POST(request: Request) {
   const client = createPawsServiceClient();
   const user = await readRequestUser({ request, client });
   if (user === undefined) return respond({ kind: "forbidden" }, 401);
-  const { wantsToPlay } = parseJoinRoomRequest(
+  const { wantsToPlay, roomId: preferredRoomId } = parseJoinRoomRequest(
     await request.json().catch(() => undefined)
   );
   const role: RoomRole =
@@ -62,6 +62,7 @@ export async function POST(request: Request) {
     freshMs: ROOM_TIMING.memberFreshMs,
     limits: ROOM_LIMITS,
     createRoomId: () => crypto.randomUUID(),
+    preferredRoomId,
   });
   if (picked.kind === "full") return respond({ kind: "full" }, 200);
   const recorded = await client

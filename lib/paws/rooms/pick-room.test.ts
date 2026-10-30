@@ -125,3 +125,53 @@ test("does not count members who stopped sending heartbeats", () => {
     roomId: "new-room",
   });
 });
+
+test("joins the room the visitor asked for when it has a slot", () => {
+  const members = [
+    buildMember({ roomId: "busy", userId: "a", role: "player" }),
+    buildMember({ roomId: "quiet", userId: "b", role: "watcher" }),
+  ];
+  assert.deepEqual(
+    pickRoom({
+      members,
+      userId: "me",
+      role: "watcher",
+      now: NOW,
+      freshMs: 90_000,
+      limits: { maxPlayers: 2, maxWatchers: 2 },
+      createRoomId: () => "new-room",
+      preferredRoomId: "quiet",
+    }),
+    { kind: "existing", roomId: "quiet" }
+  );
+});
+
+test("opens an asked-for room nobody is in, and falls back when it is full", () => {
+  const base = {
+    userId: "me",
+    role: "player" as const,
+    now: NOW,
+    freshMs: 90_000,
+    limits: LIMITS,
+    createRoomId: () => "new-room",
+  };
+  assert.deepEqual(
+    pickRoom({ ...base, members: [], preferredRoomId: "friends" }),
+    {
+      kind: "new",
+      roomId: "friends",
+    }
+  );
+  const full = [
+    buildMember({ roomId: "friends", userId: "a", role: "player" }),
+    buildMember({ roomId: "friends", userId: "b", role: "player" }),
+    buildMember({ roomId: "other", userId: "c", role: "player" }),
+  ];
+  assert.deepEqual(
+    pickRoom({ ...base, members: full, preferredRoomId: "friends" }),
+    {
+      kind: "existing",
+      roomId: "other",
+    }
+  );
+});

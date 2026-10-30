@@ -20,7 +20,7 @@ const FAKE_VOICE = { age: "adult", voice: "soft", mood: "chatty" } as const;
 const REJOIN_DELAY_MS = 4000;
 const FULL_REJOIN_DELAY_MS = 30_000;
 
-/** Join a room for the current visitor (a player when `self` is set, otherwise a watcher), feed everything it receives into `engine`, keep the membership alive, and return the open connection and the latest players. */
+/** Join a room for the current visitor (a player when `self` is set, otherwise a watcher), asking for the `?room=` room or the one passed to `switchRoom` when there is one, feed everything it receives into `engine`, keep the membership alive, and return the open connection, the latest players, the room id and `switchRoom`. */
 export function useRoomConnection(options: {
   session: PawsSession;
   client: ReturnType<typeof createPawsBrowserClient> | undefined;
@@ -31,6 +31,12 @@ export function useRoomConnection(options: {
   onChat: (message: ChatMessage) => void;
 }) {
   const [attempt, setAttempt] = useState(0);
+  const [chosenRoomId, setChosenRoomId] = useState<string | undefined>(() =>
+    typeof window === "undefined"
+      ? undefined
+      : (new URLSearchParams(window.location.search).get("room") ?? undefined)
+  );
+  const [roomId, setRoomId] = useState<string | undefined>(undefined);
   const connectionRef = useRef<RoomConnection | undefined>(undefined);
   const roomIdRef = useRef<string | undefined>(undefined);
   const onChatRef = useRef(options.onChat);
@@ -38,7 +44,7 @@ export function useRoomConnection(options: {
   const tokenRef = useRef<string | undefined>(undefined);
   const selfRef = useRef(options.self);
   const { session, client, self, engine, useFakeRoom, isReady } = options;
-  const userId = session.kind === "loading" ? undefined : session.userId;
+  const userId = "userId" in session ? session.userId : undefined;
   const selfKey = self === undefined ? "" : JSON.stringify(self);
   const source = useMemo(() => {
     if (useFakeRoom)
@@ -61,7 +67,7 @@ export function useRoomConnection(options: {
 
   useEffect(() => {
     tokenRef.current =
-      session.kind === "loading" ? undefined : session.accessToken;
+      "accessToken" in session ? session.accessToken : undefined;
   }, [session]);
 
   useEffect(() => {
@@ -115,7 +121,10 @@ export function useRoomConnection(options: {
           await postRoomApi({
             path: "join",
             accessToken: token,
-            body: { wantsToPlay: presence !== undefined },
+            body: {
+              wantsToPlay: presence !== undefined,
+              ...(chosenRoomId === undefined ? {} : { roomId: chosenRoomId }),
+            },
           })
         );
         if (run.isCancelled) return undefined;
@@ -140,6 +149,7 @@ export function useRoomConnection(options: {
       if (joined === undefined || run.isCancelled) return;
       run.roomId = joined.roomId;
       roomIdRef.current = joined.roomId;
+      setRoomId(joined.roomId);
       engine.setSelf({ userId, connectionId, role: joined.role });
       connectionRef.current = roomSource.join({
         roomId: joined.roomId,
@@ -171,7 +181,8 @@ export function useRoomConnection(options: {
           typeof answer === "object" &&
           answer !== null &&
           "kind" in answer &&
-          (answer.kind === "gone" || answer.kind === "move");
+          (answer.kind === "gone" ||
+            (answer.kind === "move" && chosenRoomId === undefined));
         if (isRejoining && !run.isCancelled) setAttempt((value) => value + 1);
       }, ROOM_TIMING.heartbeatMs);
     }
@@ -184,6 +195,7 @@ export function useRoomConnection(options: {
       connectionRef.current?.leave();
       connectionRef.current = undefined;
       roomIdRef.current = undefined;
+      setRoomId(undefined);
       playersRef.current = [];
       engine.setPlayers([]);
       engine.setSelf({
@@ -201,7 +213,22 @@ export function useRoomConnection(options: {
         });
       }
     };
-  }, [userId, client, source, selfKey, engine, useFakeRoom, attempt, isReady]);
+  }, [
+    userId,
+    client,
+    source,
+    selfKey,
+    engine,
+    useFakeRoom,
+    attempt,
+    isReady,
+    chosenRoomId,
+  ]);
 
-  return { connectionRef, playersRef, roomIdRef };
+  function switchRoom(nextRoomId: string) {
+    setChosenRoomId(nextRoomId);
+    setAttempt((value) => value + 1);
+  }
+
+  return { connectionRef, playersRef, roomIdRef, roomId, switchRoom };
 }
