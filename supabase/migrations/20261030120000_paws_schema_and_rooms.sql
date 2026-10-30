@@ -30,6 +30,7 @@ create index "room_joins_user_id_created_at_idx" on "paws"."room_joins" ("user_i
 
 alter table "paws"."room_joins" enable row level security;
 
+revoke all on table "paws"."room_members", "paws"."room_joins" from public, "anon", "authenticated";
 grant all on table "paws"."room_members", "paws"."room_joins" to "service_role";
 
 -- Realtime policies run as the caller, who cannot read "room_members" through RLS.
