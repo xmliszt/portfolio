@@ -126,7 +126,3 @@ revoke execute on function "paws"."release_credits"(date, integer) from public, 
 revoke execute on function "paws"."count_meow_report"() from public, "anon", "authenticated";
 grant execute on function "paws"."reserve_credits"(date, integer, integer) to "service_role";
 grant execute on function "paws"."release_credits"(date, integer) to "service_role";
-
-insert into storage.buckets ("id", "name", "public")
-values ('paws-meows', 'paws-meows', true)
-on conflict ("id") do nothing;

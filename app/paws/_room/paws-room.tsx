@@ -37,6 +37,15 @@ import { useRoomConnection } from "./use-room-connection";
 import { useSavedCat } from "./use-saved-cat";
 
 const MAX_DPR = 2;
+const KEY_PAN_SPEED = 700;
+const PAN_KEYS: { [key: string]: -1 | 1 | undefined } = {
+  ArrowLeft: -1,
+  a: -1,
+  A: -1,
+  ArrowRight: 1,
+  d: 1,
+  D: 1,
+};
 const MAX_DT_SECONDS = 0.05;
 const FAKE_VOICE = { age: "adult", voice: "soft", mood: "chatty" } as const;
 const BUBBLE_HOLD_MS = 2500;
@@ -68,6 +77,7 @@ export function PawsRoom() {
   const latestOwnLineIdRef = useRef<string | undefined>(undefined);
   const lastCatsRef = useRef<DerivedCat[]>([]);
   const centerXRef = useRef(ROOM_LIMITS.worldWidth / 2);
+  const heldPanKeysRef = useRef<{ [key: string]: -1 | 1 | undefined }>({});
   const touchesRef = useRef<{ [pointerId: number]: number | undefined }>({});
   const pinchRef = useRef<
     { startMidX: number; startCenterX: number } | undefined
@@ -205,6 +215,41 @@ export function PawsRoom() {
   }, []);
 
   useEffect(() => {
+    if (!isPannable) return;
+    const held = heldPanKeysRef.current;
+    function handleKeyDown(event: KeyboardEvent) {
+      const direction = PAN_KEYS[event.key];
+      if (
+        direction === undefined ||
+        event.defaultPrevented ||
+        event.metaKey ||
+        event.ctrlKey ||
+        event.altKey ||
+        isTypingTarget(event.target) ||
+        document.querySelector("[aria-modal=true]") !== null
+      )
+        return;
+      event.preventDefault();
+      held[event.key.toLowerCase()] = direction;
+    }
+    function handleKeyUp(event: KeyboardEvent) {
+      delete held[event.key.toLowerCase()];
+    }
+    function releaseAll() {
+      for (const key of Object.keys(held)) delete held[key];
+    }
+    window.addEventListener("keydown", handleKeyDown);
+    window.addEventListener("keyup", handleKeyUp);
+    window.addEventListener("blur", releaseAll);
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+      window.removeEventListener("keyup", handleKeyUp);
+      window.removeEventListener("blur", releaseAll);
+      releaseAll();
+    };
+  }, [isPannable]);
+
+  useEffect(() => {
     if (!hasOwnCatInRoom) return;
     function handleKeyDown(event: KeyboardEvent) {
       if (
@@ -319,6 +364,11 @@ export function PawsRoom() {
         setHasOwnCatInRoom(isOwnCatHere);
         if (ownCatNow !== undefined) centerXRef.current = ownCatNow.x;
       }
+      const panDirection = Object.values(heldPanKeysRef.current).reduce<number>(
+        (sum, direction) => sum + (direction ?? 0),
+        0
+      );
+      centerXRef.current += Math.sign(panDirection) * KEY_PAN_SPEED * dtSeconds;
       const view = getWorldView({
         width,
         height,
