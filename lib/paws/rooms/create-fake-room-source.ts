@@ -12,10 +12,22 @@ import { AGES, MOODS, VOICES } from "@/lib/paws/voice-settings";
 import type { FingerMessage, PlayerPresence } from "@/lib/paws/wire-types";
 
 const LATER_THAN_SELF_MS = 1000;
-const STEP_SHARE = 0.3;
+const MAX_STEP = 60;
 const PRESS_CHANCE = 0.08;
 
 type FakeFinger = { finger: FingerMessage; target: { x: number; y: number } };
+
+/** Return the point at most `MAX_STEP` world units from `from` toward `to`, so fake fingertips move at a calm hand's pace. */
+function stepToward(options: {
+  from: { x: number; y: number };
+  to: { x: number; y: number };
+}) {
+  const dx = options.to.x - options.from.x;
+  const dy = options.to.y - options.from.y;
+  const distance = Math.hypot(dx, dy);
+  const share = distance <= MAX_STEP ? 1 : MAX_STEP / distance;
+  return { x: options.from.x + dx * share, y: options.from.y + dy * share };
+}
 
 /** Return a room source without a server for local development: joining adds `remotePlayerCount` made-up players who joined after `self`, so `self` hosts, and moves their fingertips toward random points `ROOM_LIMITS.fingerSendsPerSecond` times a second, pressing now and then; sends go nowhere. */
 export function createFakeRoomSource(options: {
@@ -77,12 +89,11 @@ export function createFakeRoomSource(options: {
       const timer = window.setInterval(() => {
         fingers.all = fingers.all.map(({ finger, target }) => {
           const isNear =
-            Math.hypot(target.x - finger.x, target.y - finger.y) < 20;
+            Math.hypot(target.x - finger.x, target.y - finger.y) < 1;
           return {
             finger: {
               userId: finger.userId,
-              x: finger.x + (target.x - finger.x) * STEP_SHARE,
-              y: finger.y + (target.y - finger.y) * STEP_SHARE,
+              ...stepToward({ from: finger, to: target }),
               pressed:
                 options.random() < PRESS_CHANCE
                   ? !finger.pressed
