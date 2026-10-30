@@ -179,3 +179,111 @@ test("plays another visitor's fingertip back along a curve behind real time", ()
     `plays behind the latest point: ${positions[0]}`
   );
 });
+
+function buildGuestFinger(options: {
+  x: number;
+  t: number;
+  seq: number;
+  trail?: [number, number, number][];
+}) {
+  return {
+    userId: "guest",
+    x: options.x,
+    y: 100,
+    t: options.t,
+    trail: options.trail ?? [],
+    pressed: false,
+    seq: options.seq,
+  };
+}
+
+function remoteX(engine: ReturnType<typeof createRoomEngine>, nowMs: number) {
+  return engine
+    .frame({ nowMs, dtSeconds: DT_SECONDS })
+    .fingers.find((finger) => finger.kind === "remote")?.x;
+}
+
+test("follows a visitor who reloads and starts their sequence again", () => {
+  const engine = buildFollower();
+  engine.receiveFinger({
+    message: buildGuestFinger({ x: 100, t: 120_000, seq: 50 }),
+    receivedAtMs: 0,
+  });
+  remoteX(engine, 0);
+  engine.receiveFinger({
+    message: buildGuestFinger({ x: 900, t: 5, seq: 1 }),
+    receivedAtMs: 1000,
+  });
+  assert.equal(remoteX(engine, 1000), 900);
+});
+
+test("eases playback when the delay grows, so the cursor never steps back", () => {
+  const engine = buildFollower();
+  const positions: number[] = [];
+  for (let nowMs = 0; nowMs <= 8000; nowMs += 20) {
+    if (nowMs % 500 === 0)
+      engine.receiveFinger({
+        message: buildGuestFinger({
+          x: nowMs / 5,
+          t: nowMs,
+          seq: nowMs + 1,
+          trail: [100, 200, 300, 400]
+            .map((step) => nowMs - 500 + step)
+            .filter((t) => t > 0)
+            .map((t): [number, number, number] => [t / 5, 100, t]),
+        }),
+        receivedAtMs: nowMs + (nowMs === 0 ? 40 : 440),
+      });
+    const x = remoteX(engine, nowMs + 20);
+    if (x !== undefined) positions.push(x);
+  }
+  const backwards = positions.filter(
+    (x, index) => index > 0 && x < positions[index - 1] - 0.01
+  );
+  assert.deepEqual(backwards, []);
+});
+
+test("shows another visitor's fingerprint once their cursor gets there", () => {
+  const engine = buildFollower();
+  engine.receiveEvent({
+    event: { kind: "fingerPrint", userId: "guest", x: 10, y: 10, pressure: 1 },
+    receivedAtMs: 0,
+  });
+  assert.equal(
+    engine.frame({ nowMs: 100, dtSeconds: DT_SECONDS }).prints.length,
+    0
+  );
+  assert.equal(
+    engine.frame({ nowMs: 1000, dtSeconds: DT_SECONDS }).prints.length,
+    1
+  );
+});
+
+test("a guest alone in the room plays with the resident cats", () => {
+  const run = (isTouching: boolean) => {
+    const engine = createRoomEngine({
+      random: createSeededRandom({ seed: 2 }),
+    });
+    engine.setSelf({
+      userId: "guest",
+      connectionId: "guest-tab",
+      role: "watcher",
+    });
+    const cats: string[] = [];
+    for (let frame = 0; frame < 900; frame++) {
+      engine.setOwnPointer({
+        x: 800,
+        y: 500,
+        present: isTouching,
+        pressed: false,
+      });
+      const room = engine.frame({ nowMs: frame * 16, dtSeconds: DT_SECONDS });
+      if (frame === 899)
+        cats.push(
+          ...room.cats.map((cat) => `${cat.x.toFixed(1)},${cat.y.toFixed(1)}`)
+        );
+    }
+    return cats;
+  };
+  assert.notDeepEqual(run(true), run(false));
+});

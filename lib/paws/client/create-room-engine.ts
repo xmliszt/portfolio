@@ -10,6 +10,7 @@ import { toScenePrint } from "@/lib/paws/render/to-scene-print";
 import { ROOM_LIMITS } from "@/lib/paws/room-limits";
 import type { RoomRole } from "@/lib/paws/room-source";
 import { chooseHost } from "@/lib/paws/rooms/choose-host";
+import { WIRE_LIMITS } from "@/lib/paws/wire/wire-limits";
 import { createSnapshotBuffer } from "@/lib/paws/sim/create-snapshot-buffer";
 import { createWorld } from "@/lib/paws/sim/create-world";
 import { createWorldFromSnapshots } from "@/lib/paws/sim/create-world-from-snapshots";
@@ -34,10 +35,12 @@ const REMOTE_FINGER_TIMEOUT_MS = 2000;
 const FINGER_REFRESH_MS = 1000;
 const FINGER_SEND_MS = 1000 / ROOM_LIMITS.fingerSendsPerSecond;
 const TRAIL_STEP_MS = 50;
-const MAX_TRAIL_POINTS = 12;
 const PLAYBACK_DELAY_MS = FINGER_SEND_MS + 150;
 const KEPT_SAMPLES_MS = 1000;
 const CLOCK_OFFSET_WINDOW = 10;
+const MAX_CLOCK_SLEW = 0.2;
+const MAX_REMOTE_SAMPLES =
+  2 * CLOCK_OFFSET_WINDOW * (WIRE_LIMITS.maxTrailPoints + 1);
 const MIN_FINGER_MOVE = 0.5;
 const MIN_FINGERPRINT_PRESS = 0.2;
 const RESIDENT_CATS = 3;
@@ -70,6 +73,7 @@ type RemoteFinger = {
   samples: FingerSample[];
   lastSeq: number;
   clockOffsets: number[];
+  clockOffset: number | undefined;
   receivedAtMs: number;
   pressed: boolean;
   tip: FingertipState | undefined;
@@ -97,7 +101,7 @@ export function createRoomEngine(options: { random: () => number }) {
     wasPressed: boolean;
     seq: number;
     prints: ScenePrint[];
-    received: RoomEvent[];
+    received: { event: RoomEvent; showAtMs: number }[];
     unsentPrints: PawPrintEvent[];
     incomingPrints: { print: PawPrintEvent; showAtMs: number }[];
     lastCatsSentAtMs: number;
@@ -182,7 +186,7 @@ export function createRoomEngine(options: { random: () => number }) {
         state.ownPointer.y,
         Math.round(nowMs),
       ] satisfies FingerPoint,
-    ].slice(-MAX_TRAIL_POINTS);
+    ].slice(-WIRE_LIMITS.maxTrailPoints);
   }
 
   function ownFingerMessage(nowMs: number): FingerMessage | undefined {
@@ -261,8 +265,12 @@ export function createRoomEngine(options: { random: () => number }) {
     }) => {
       const { message, receivedAtMs } = options;
       const existing = state.remoteFingers[message.userId];
-      if (existing !== undefined && message.seq <= existing.lastSeq) return;
-      const previous = existing?.samples.at(-1);
+      if (existing !== undefined && message.seq === existing.lastSeq) return;
+      const stream =
+        existing !== undefined && message.seq > existing.lastSeq
+          ? existing
+          : undefined;
+      const previous = stream?.samples.at(-1);
       const arrived: FingerSample[] = [
         ...message.trail.map(([x, y, t]) => ({
           x,
@@ -274,14 +282,17 @@ export function createRoomEngine(options: { random: () => number }) {
       ].filter((sample) => previous === undefined || sample.t > previous.t);
       state.remoteFingers[message.userId] = {
         userId: message.userId,
-        samples: [...(existing?.samples ?? []), ...arrived],
+        samples: [...(stream?.samples ?? []), ...arrived].slice(
+          -MAX_REMOTE_SAMPLES
+        ),
         lastSeq: message.seq,
         clockOffsets: [
-          ...(existing?.clockOffsets ?? []),
+          ...(stream?.clockOffsets ?? []),
           receivedAtMs - message.t,
         ].slice(-CLOCK_OFFSET_WINDOW),
+        clockOffset: stream?.clockOffset,
         receivedAtMs,
-        pressed: existing?.pressed ?? message.pressed,
+        pressed: stream?.pressed ?? message.pressed,
         tip: existing?.tip,
       };
     },
@@ -301,8 +312,17 @@ export function createRoomEngine(options: { random: () => number }) {
         })),
       ].slice(-MAX_QUEUED_PRINTS);
     },
-    receiveEvent: (event: RoomEvent) => {
-      state.received = [...state.received, event].slice(-MAX_QUEUED_EVENTS);
+    receiveEvent: (options: { event: RoomEvent; receivedAtMs: number }) => {
+      state.received = [
+        ...state.received,
+        {
+          event: options.event,
+          showAtMs:
+            options.event.kind === "fingerPrint"
+              ? options.receivedAtMs + PLAYBACK_DELAY_MS
+              : options.receivedAtMs,
+        },
+      ].slice(-MAX_QUEUED_EVENTS);
     },
     /** Advance the room by `dtSeconds` at local time `nowMs` and return what to draw, play and send. */
     frame: (frameOptions: { nowMs: number; dtSeconds: number }): RoomFrame => {
@@ -341,8 +361,12 @@ export function createRoomEngine(options: { random: () => number }) {
         };
       }
 
-      const events: RoomEvent[] = [...state.received];
-      state.received = [];
+      const events: RoomEvent[] = state.received
+        .filter((received) => received.showAtMs <= nowMs)
+        .map((received) => received.event);
+      state.received = state.received.filter(
+        (received) => received.showAtMs > nowMs
+      );
       const stepped: {
         snapshots: CatSnapshot[];
         cats: CatsMessage | undefined;
@@ -352,7 +376,7 @@ export function createRoomEngine(options: { random: () => number }) {
           const result = stepWorld({
             world: state.residents.world,
             players: state.residents.players,
-            fingers: [],
+            fingers: simFingers(nowMs),
             dtSeconds,
           });
           events.push(...result.events);
@@ -420,7 +444,6 @@ export function createRoomEngine(options: { random: () => number }) {
         dtSeconds,
       });
       recordOwnTrail(nowMs);
-      recordOwnTrail(nowMs);
       const fingerprint = ownFingerprint();
       if (fingerprint !== undefined) events.push(fingerprint);
       const outgoingEvents =
@@ -430,8 +453,17 @@ export function createRoomEngine(options: { random: () => number }) {
       for (const [userId, finger] of Object.entries(state.remoteFingers)) {
         if (finger === undefined) continue;
         const isFresh = nowMs - finger.receivedAtMs <= REMOTE_FINGER_TIMEOUT_MS;
-        const playAt =
-          nowMs - Math.min(...finger.clockOffsets) - PLAYBACK_DELAY_MS;
+        const targetOffset = Math.min(...finger.clockOffsets);
+        const slew = MAX_CLOCK_SLEW * dtSeconds * 1000;
+        finger.clockOffset =
+          finger.clockOffset === undefined
+            ? targetOffset
+            : finger.clockOffset +
+              Math.min(
+                slew,
+                Math.max(-slew, targetOffset - finger.clockOffset)
+              );
+        const playAt = nowMs - finger.clockOffset - PLAYBACK_DELAY_MS;
         const point = sampleFingerPath({ samples: finger.samples, t: playAt });
         const keepFrom = finger.samples.findLastIndex(
           (sample) => sample.t < playAt - KEPT_SAMPLES_MS

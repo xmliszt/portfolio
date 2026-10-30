@@ -58,6 +58,17 @@ test("keeps only well formed trail points in time order before the fingertip", (
       [2, 2, 300],
     ]
   );
+  assert.deepEqual(
+    parseFingerMessage({
+      ...finger,
+      trail: [
+        [1, 1, 100],
+        [1, 1, 50],
+        [1, 1, 80],
+      ],
+    })?.trail,
+    [[1, 1, 100]]
+  );
   assert.equal(
     parseFingerMessage({
       ...finger,

@@ -31,11 +31,13 @@ function parseTrail(options: { value: unknown; before: number }) {
         ? []
         : [[x, y, t]];
     });
-  return points.filter(
-    (point, index) =>
-      point[2] < options.before &&
-      (index === 0 || point[2] > points[index - 1][2])
-  );
+  return points.reduce<FingerPoint[]>((kept, point) => {
+    const last = kept.at(-1);
+    return point[2] < options.before &&
+      (last === undefined || point[2] > last[2])
+      ? [...kept, point]
+      : kept;
+  }, []);
 }
 
 /** Return the fingertip another visitor broadcast with every position clamped to the world bounds in `WIRE_LIMITS`, keeping the last `WIRE_LIMITS.maxTrailPoints` trail points that are well formed and in time order before `t`, or `undefined` when the payload is not one. */

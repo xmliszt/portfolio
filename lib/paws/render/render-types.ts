@@ -54,7 +54,7 @@ export type FingertipState = {
   press: number;
 };
 
-/** Whose fingertip it is: the viewer's, another player's, or the viewer's while they only watch. */
+/** Whose fingertip it is: the viewer's or another visitor's. */
 export type FingertipKind = "own" | "remote";
 
 export type SceneFinger = FingertipState & { kind: FingertipKind };

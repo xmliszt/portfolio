@@ -146,7 +146,8 @@ export function useRoomConnection(options: {
           engine.receiveFinger({ message, receivedAtMs: performance.now() }),
         onCats: (message) =>
           engine.receiveCats({ message, receivedAtMs: performance.now() }),
-        onEvent: (event) => engine.receiveEvent(event),
+        onEvent: (event) =>
+          engine.receiveEvent({ event, receivedAtMs: performance.now() }),
       });
       if (useFakeRoom || client === undefined) return;
       run.heartbeat = window.setInterval(async () => {
