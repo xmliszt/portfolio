@@ -87,6 +87,7 @@ export function PawsRoom() {
         created.height = height;
         return created;
       },
+      paperSeed: Math.random(),
     });
     const frame: { id: number; lastMs: number } = {
       id: 0,

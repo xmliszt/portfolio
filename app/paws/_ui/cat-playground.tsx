@@ -54,6 +54,7 @@ export function CatPlayground(props: CatPlaygroundProps) {
         created.height = height;
         return created;
       },
+      paperSeed: Math.random(),
     });
     const world = createWorld({ random: Math.random });
     const scene: {

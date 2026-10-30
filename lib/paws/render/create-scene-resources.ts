@@ -11,7 +11,9 @@ export type SceneResources = {
   ridges: { fingerprint: AnyCanvas; mask: Surface } | undefined;
   /** Paw prints already tinted, by `color:variant`. */
   tintedPrints: { [key: string]: AnyCanvas };
-  /** The painted paper and the `width×height@dpr` it was painted for. */
+  /** Picks where the paper's palettes start, from 0 to 1. */
+  paperSeed: number;
+  /** The painted paper and the `width×height@dpr#step` it was painted for. */
   paper: Surface & { paintedFor: string | undefined };
   /** Scratch canvas each ink wash is graded on before it is printed onto the paper. */
   wash: Surface;
@@ -19,13 +21,15 @@ export type SceneResources = {
   layer: Surface;
 };
 
-/** Return the textures and scratch canvases one scene renderer keeps between frames, made with `createCanvas`. */
+/** Return the textures and scratch canvases one scene renderer keeps between frames, made with `createCanvas`, with the paper's palettes starting from `paperSeed`. */
 export function createSceneResources(options: {
   createCanvas: CreateCanvas;
+  paperSeed: number;
 }): SceneResources {
   const { createCanvas } = options;
   return {
     createCanvas,
+    paperSeed: options.paperSeed,
     grain: createGrainTexture({ createCanvas }),
     pawMasks: undefined,
     ridges: undefined,

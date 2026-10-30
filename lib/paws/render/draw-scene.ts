@@ -23,7 +23,7 @@ export function drawScene(options: {
   resources: SceneResources;
 }) {
   const { g, width, height, dpr, view, resources, time } = options;
-  const paper = paintPaper({ resources, width, height, dpr });
+  const paper = paintPaper({ resources, width, height, dpr, time });
   const { layer } = resources;
   const deviceWidth = paper.width;
   const deviceHeight = paper.height;
