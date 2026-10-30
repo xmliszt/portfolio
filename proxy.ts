@@ -72,6 +72,10 @@ export const config = {
       has: [{ type: "host", value: "paws\\.(liyuxuan\\.dev|localhost)" }],
     },
     {
+      source: "/(robots\\.txt|sitemap\\.xml|favicon\\.ico)",
+      has: [{ type: "host", value: "paws\\.(liyuxuan\\.dev|localhost)" }],
+    },
+    {
       source: "/paws/:path*",
       has: [{ type: "host", value: "(www\\.)?liyuxuan\\.dev" }],
     },

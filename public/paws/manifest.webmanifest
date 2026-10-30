@@ -1,0 +1,14 @@
+{
+  "name": "Paws",
+  "short_name": "Paws",
+  "description": "Meet strangers' cats through frosted paper. Play as a guest or make a cat of your own.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#f3efe4",
+  "theme_color": "#f3efe4",
+  "icons": [
+    { "src": "/paws/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "/paws/icon-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "/paws/icon.svg", "sizes": "any", "type": "image/svg+xml" }
+  ]
+}

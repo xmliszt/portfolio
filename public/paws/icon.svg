@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <defs>
+    <filter id="ink" x="-10%" y="-10%" width="120%" height="120%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="1" seed="4" result="wobble"/>
+      <feDisplacementMap in="SourceGraphic" in2="wobble" scale="1.4" xChannelSelector="R" yChannelSelector="G" result="rough"/>
+      <feTurbulence type="fractalNoise" baseFrequency="2.4" numOctaves="2" seed="9" result="grain"/>
+      <feColorMatrix in="grain" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  -5 0 0 0 4.1" result="speckle"/>
+      <feComposite in="rough" in2="speckle" operator="in"/>
+    </filter>
+    <filter id="paper">
+      <feTurbulence type="fractalNoise" baseFrequency="1.8" numOctaves="2" seed="2" result="fibre"/>
+      <feColorMatrix in="fibre" type="matrix" values="0 0 0 0 0.93  0 0 0 0 0.9  0 0 0 0 0.83  0 0 0 -1.6 1.05"/>
+      <feComposite in2="SourceGraphic" operator="in"/>
+    </filter>
+    <clipPath id="tile"><rect width="64" height="64" rx="14"/></clipPath>
+  </defs>
+  <g clip-path="url(#tile)">
+    <rect width="64" height="64" fill="#f3efe4"/>
+    <rect width="64" height="64" fill="#000" filter="url(#paper)" opacity="0.5"/>
+    <g fill="#2c68b2" transform="translate(2.2 1.7)" filter="url(#ink)">
+      <ellipse cx="32" cy="41" rx="12.5" ry="10.5"/>
+      <ellipse cx="15.5" cy="27" rx="5.4" ry="6.6" transform="rotate(-18 15.5 27)"/>
+      <ellipse cx="25.5" cy="17.5" rx="5.6" ry="7" transform="rotate(-6 25.5 17.5)"/>
+      <ellipse cx="38.5" cy="17.5" rx="5.6" ry="7" transform="rotate(6 38.5 17.5)"/>
+      <ellipse cx="48.5" cy="27" rx="5.4" ry="6.6" transform="rotate(18 48.5 27)"/>
+    </g>
+    <g fill="#e8577f" filter="url(#ink)">
+      <ellipse cx="32" cy="41" rx="12.5" ry="10.5"/>
+      <ellipse cx="15.5" cy="27" rx="5.4" ry="6.6" transform="rotate(-18 15.5 27)"/>
+      <ellipse cx="25.5" cy="17.5" rx="5.6" ry="7" transform="rotate(-6 25.5 17.5)"/>
+      <ellipse cx="38.5" cy="17.5" rx="5.6" ry="7" transform="rotate(6 38.5 17.5)"/>
+      <ellipse cx="48.5" cy="27" rx="5.4" ry="6.6" transform="rotate(18 48.5 27)"/>
+    </g>
+  </g>
+</svg>
