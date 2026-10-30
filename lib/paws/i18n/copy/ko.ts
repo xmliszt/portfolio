@@ -93,6 +93,12 @@ export const ko = {
     report: "소리 신고",
     reconnecting: "다시 연결 중…",
     language: "언어",
+    talk: "말하기",
+    chatLabel: "고양이가 할 말",
+    chatPlaceholder: "뭐라고 말할까요…",
+    chatRefused: "다정하게 말해 주세요.",
+    chatTooFast: "조금 천천히요.",
+    chatFailed: "보내지 못했어요. 다시 해 보세요.",
   },
   options: {
     coat: {

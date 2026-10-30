@@ -94,6 +94,12 @@ export const vi = {
     report: "Báo cáo tiếng kêu",
     reconnecting: "Đang kết nối lại…",
     language: "Ngôn ngữ",
+    talk: "Nói",
+    chatLabel: "Lời mèo của bạn",
+    chatPlaceholder: "Nói gì đó…",
+    chatRefused: "Hãy nói thân thiện nhé.",
+    chatTooFast: "Chậm lại một chút.",
+    chatFailed: "Chưa gửi được. Thử lại nhé.",
   },
   options: {
     coat: {

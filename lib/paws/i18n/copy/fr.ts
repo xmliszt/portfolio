@@ -95,6 +95,12 @@ export const fr = {
     report: "Signaler ce son",
     reconnecting: "Reconnexion…",
     language: "Langue",
+    talk: "Parler",
+    chatLabel: "Ce que dit ton chat",
+    chatPlaceholder: "Dis quelque chose…",
+    chatRefused: "Restons gentils.",
+    chatTooFast: "Un peu plus doucement.",
+    chatFailed: "Pas envoyé. Réessaie.",
   },
   options: {
     coat: {

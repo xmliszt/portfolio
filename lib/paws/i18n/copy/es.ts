@@ -97,6 +97,12 @@ export const es = {
     report: "Denunciar sonido",
     reconnecting: "Reconectando…",
     language: "Idioma",
+    talk: "Hablar",
+    chatLabel: "Lo que dice tu gato",
+    chatPlaceholder: "Di algo…",
+    chatRefused: "Seamos amables.",
+    chatTooFast: "Un poco más despacio.",
+    chatFailed: "No se envió. Inténtalo de nuevo.",
   },
   options: {
     coat: {

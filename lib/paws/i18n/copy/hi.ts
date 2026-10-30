@@ -95,6 +95,12 @@ export const hi = {
     report: "आवाज़ की शिकायत",
     reconnecting: "फिर जुड़ रहे हैं…",
     language: "भाषा",
+    talk: "बोलो",
+    chatLabel: "आपकी बिल्ली क्या कहती है",
+    chatPlaceholder: "कुछ कहो…",
+    chatRefused: "चलो, प्यार से बात करें।",
+    chatTooFast: "थोड़ा धीरे।",
+    chatFailed: "नहीं भेजा गया। फिर से कोशिश करें।",
   },
   options: {
     coat: {

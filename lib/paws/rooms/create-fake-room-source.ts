@@ -14,6 +14,16 @@ import type { FingerMessage, PlayerPresence } from "@/lib/paws/wire-types";
 const LATER_THAN_SELF_MS = 1000;
 const MAX_STEP = 60;
 const PRESS_CHANCE = 0.08;
+const CHAT_EVERY_MS = 5000;
+const CHAT_CHANCE = 0.4;
+const FAKE_LINES = [
+  "hello!",
+  "is that a finger?",
+  "nap time soon",
+  "who wants to play",
+  "mrrp?",
+  "I saw a bird",
+];
 
 type FakeFinger = { finger: FingerMessage; target: { x: number; y: number } };
 
@@ -28,7 +38,7 @@ function stepToward(options: {
   return { x: options.from.x + dx * share, y: options.from.y + dy * share };
 }
 
-/** Return a room source without a server for local development: joining adds `remotePlayerCount` made-up players who joined after `self`, so `self` hosts, and moves their fingertips toward random points `ROOM_LIMITS.fingerSendsPerSecond` times a second, pressing now and then; sends go nowhere. */
+/** Return a room source without a server for local development: joining adds `remotePlayerCount` made-up players who joined after `self`, so `self` hosts, and moves their fingertips toward random points `ROOM_LIMITS.fingerSendsPerSecond` times a second, pressing now and then, and has one of them say a line from `FAKE_LINES` now and then; sends go nowhere. */
 export function createFakeRoomSource(options: {
   remotePlayerCount: number;
   meowUrl: string;
@@ -62,7 +72,7 @@ export function createFakeRoomSource(options: {
 
   const state: { stops: (() => void)[] } = { stops: [] };
   return {
-    join({ self, onPlayers, onFinger }) {
+    join({ self, onPlayers, onFinger, onChat }) {
       const startedAt = Date.now();
       const fakes = Array.from(
         { length: options.remotePlayerCount },
@@ -109,7 +119,18 @@ export function createFakeRoomSource(options: {
         });
         fingers.all.forEach(({ finger }) => onFinger(finger));
       }, 1000 / ROOM_LIMITS.fingerSendsPerSecond);
-      const stop = () => window.clearInterval(timer);
+      const chatTimer = window.setInterval(() => {
+        if (options.random() > CHAT_CHANCE) return;
+        onChat({
+          id: `fake-line-${Date.now()}`,
+          userId: pick(fakes).userId,
+          text: pick(FAKE_LINES),
+        });
+      }, CHAT_EVERY_MS);
+      const stop = () => {
+        window.clearInterval(timer);
+        window.clearInterval(chatTimer);
+      };
       state.stops = [...state.stops, stop];
       onPlayers(self === undefined ? fakes : [self, ...fakes]);
       return {

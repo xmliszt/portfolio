@@ -95,6 +95,12 @@ export const uk = {
     report: "Поскаржитися",
     reconnecting: "З'єднуємося знову…",
     language: "Мова",
+    talk: "Сказати",
+    chatLabel: "Що каже твій кіт",
+    chatPlaceholder: "Скажи щось…",
+    chatRefused: "Будьмо привітними.",
+    chatTooFast: "Трохи повільніше.",
+    chatFailed: "Не надіслано. Спробуй ще раз.",
   },
   options: {
     coat: {

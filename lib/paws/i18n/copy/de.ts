@@ -99,6 +99,12 @@ export const de = {
     report: "Laut melden",
     reconnecting: "Verbindung wird hergestellt…",
     language: "Sprache",
+    talk: "Sprechen",
+    chatLabel: "Was deine Katze sagt",
+    chatPlaceholder: "Sag etwas …",
+    chatRefused: "Bleib freundlich.",
+    chatTooFast: "Etwas langsamer.",
+    chatFailed: "Nicht gesendet. Versuch es noch mal.",
   },
   options: {
     coat: {

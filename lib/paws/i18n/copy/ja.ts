@@ -94,6 +94,12 @@ export const ja = {
     report: "声を通報",
     reconnecting: "再接続中…",
     language: "言語",
+    talk: "話す",
+    chatLabel: "ねこのセリフ",
+    chatPlaceholder: "なにか話して…",
+    chatRefused: "やさしい言葉でね。",
+    chatTooFast: "ちょっとゆっくりね。",
+    chatFailed: "送れませんでした。もう一度どうぞ。",
   },
   options: {
     coat: {

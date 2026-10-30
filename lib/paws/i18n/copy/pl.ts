@@ -96,6 +96,12 @@ export const pl = {
     report: "Zgłoś dźwięk",
     reconnecting: "Łączenie ponownie…",
     language: "Język",
+    talk: "Mów",
+    chatLabel: "Co mówi twój kot",
+    chatPlaceholder: "Powiedz coś…",
+    chatRefused: "Bądźmy mili.",
+    chatTooFast: "Trochę wolniej.",
+    chatFailed: "Nie wysłano. Spróbuj ponownie.",
   },
   options: {
     coat: {

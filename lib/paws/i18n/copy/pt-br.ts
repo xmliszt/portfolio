@@ -94,6 +94,12 @@ export const ptBR = {
     report: "Denunciar som",
     reconnecting: "Reconectando…",
     language: "Idioma",
+    talk: "Falar",
+    chatLabel: "O que seu gato diz",
+    chatPlaceholder: "Diga algo…",
+    chatRefused: "Vamos manter a gentileza.",
+    chatTooFast: "Mais devagar.",
+    chatFailed: "Não foi enviado. Tente de novo.",
   },
   options: {
     coat: {

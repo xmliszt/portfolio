@@ -89,6 +89,12 @@ export const zhHans = {
     report: "举报叫声",
     reconnecting: "正在重连…",
     language: "语言",
+    talk: "说话",
+    chatLabel: "你的猫要说的话",
+    chatPlaceholder: "说点什么…",
+    chatRefused: "我们友好一点吧。",
+    chatTooFast: "慢一点哦。",
+    chatFailed: "没发出去，再试一次。",
   },
   options: {
     coat: {

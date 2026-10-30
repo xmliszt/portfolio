@@ -94,6 +94,12 @@ export const ru = {
     report: "Пожаловаться",
     reconnecting: "Подключаемся снова…",
     language: "Язык",
+    talk: "Сказать",
+    chatLabel: "Что говорит твой кот",
+    chatPlaceholder: "Скажи что-нибудь…",
+    chatRefused: "Давай по-доброму.",
+    chatTooFast: "Чуть помедленнее.",
+    chatFailed: "Не отправилось. Попробуй ещё раз.",
   },
   options: {
     coat: {

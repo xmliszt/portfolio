@@ -94,6 +94,12 @@ export const id = {
     report: "Laporkan suara",
     reconnecting: "Menyambung lagi…",
     language: "Bahasa",
+    talk: "Bicara",
+    chatLabel: "Yang dikatakan kucingmu",
+    chatPlaceholder: "Katakan sesuatu…",
+    chatRefused: "Tetap ramah, ya.",
+    chatTooFast: "Pelan-pelan sedikit.",
+    chatFailed: "Tidak terkirim. Coba lagi.",
   },
   options: {
     coat: {

@@ -94,6 +94,12 @@ export const tr = {
     report: "Sesi bildir",
     reconnecting: "Yeniden bağlanıyor…",
     language: "Dil",
+    talk: "Konuş",
+    chatLabel: "Kedinin söyledikleri",
+    chatPlaceholder: "Bir şey söyle…",
+    chatRefused: "Nazik kalalım.",
+    chatTooFast: "Biraz yavaş.",
+    chatFailed: "Gönderilemedi. Tekrar dene.",
   },
   options: {
     coat: {

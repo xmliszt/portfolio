@@ -11,7 +11,7 @@ import { createSupabaseRoomSource } from "@/lib/paws/rooms/create-supabase-room-
 import { ROOM_TIMING } from "@/lib/paws/rooms/room-timing";
 import type { PawsSession } from "@/lib/paws/session-types";
 import type { createPawsBrowserClient } from "@/lib/paws/supabase/create-paws-browser-client";
-import type { PlayerPresence } from "@/lib/paws/wire-types";
+import type { ChatMessage, PlayerPresence } from "@/lib/paws/wire-types";
 
 import { postRoomApi } from "./post-room-api";
 
@@ -28,9 +28,12 @@ export function useRoomConnection(options: {
   engine: ReturnType<typeof createRoomEngine>;
   useFakeRoom: boolean;
   isReady: boolean;
+  onChat: (message: ChatMessage) => void;
 }) {
   const [attempt, setAttempt] = useState(0);
   const connectionRef = useRef<RoomConnection | undefined>(undefined);
+  const roomIdRef = useRef<string | undefined>(undefined);
+  const onChatRef = useRef(options.onChat);
   const playersRef = useRef<PlayerPresence[]>([]);
   const tokenRef = useRef<string | undefined>(undefined);
   const selfRef = useRef(options.self);
@@ -64,6 +67,10 @@ export function useRoomConnection(options: {
   useEffect(() => {
     selfRef.current = self;
   }, [self]);
+
+  useEffect(() => {
+    onChatRef.current = options.onChat;
+  }, [options.onChat]);
 
   useEffect(() => {
     if (!isReady || userId === undefined || source === undefined) return;
@@ -132,6 +139,7 @@ export function useRoomConnection(options: {
       })();
       if (joined === undefined || run.isCancelled) return;
       run.roomId = joined.roomId;
+      roomIdRef.current = joined.roomId;
       engine.setSelf({ userId, connectionId, role: joined.role });
       connectionRef.current = roomSource.join({
         roomId: joined.roomId,
@@ -148,6 +156,7 @@ export function useRoomConnection(options: {
           engine.receiveCats({ message, receivedAtMs: performance.now() }),
         onEvent: (event) =>
           engine.receiveEvent({ event, receivedAtMs: performance.now() }),
+        onChat: (message) => onChatRef.current(message),
       });
       if (useFakeRoom || client === undefined) return;
       run.heartbeat = window.setInterval(async () => {
@@ -174,6 +183,7 @@ export function useRoomConnection(options: {
       window.clearTimeout(run.retry);
       connectionRef.current?.leave();
       connectionRef.current = undefined;
+      roomIdRef.current = undefined;
       playersRef.current = [];
       engine.setPlayers([]);
       engine.setSelf({
@@ -193,5 +203,5 @@ export function useRoomConnection(options: {
     };
   }, [userId, client, source, selfKey, engine, useFakeRoom, attempt, isReady]);
 
-  return { connectionRef, playersRef };
+  return { connectionRef, playersRef, roomIdRef };
 }

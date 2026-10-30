@@ -1,9 +1,11 @@
 import type { RealtimeChannel } from "@supabase/supabase-js";
 
+import { getChatTopic } from "@/lib/paws/chat/get-chat-topic";
 import { ROOM_LIMITS } from "@/lib/paws/room-limits";
 import type { RoomSource } from "@/lib/paws/room-source";
 import type { createPawsBrowserClient } from "@/lib/paws/supabase/create-paws-browser-client";
 import { parseCatsMessage } from "@/lib/paws/wire/parse-cats-message";
+import { parseChatMessage } from "@/lib/paws/wire/parse-chat-message";
 import { parseFingerMessage } from "@/lib/paws/wire/parse-finger-message";
 import { parsePlayerPresence } from "@/lib/paws/wire/parse-player-presence";
 import { parseRoomEvent } from "@/lib/paws/wire/parse-room-event";
@@ -30,9 +32,20 @@ export function createSupabaseRoomSource(options: {
     lastLeave: Promise.resolve(),
   };
   return {
-    join({ roomId, userId, role, self, onPlayers, onFinger, onCats, onEvent }) {
+    join({
+      roomId,
+      userId,
+      role,
+      self,
+      onPlayers,
+      onFinger,
+      onCats,
+      onEvent,
+      onChat,
+    }) {
       const state: {
         channel?: RealtimeChannel;
+        chatChannel?: RealtimeChannel;
         isSubscribed: boolean;
         hasLeft: boolean;
         players: PlayerPresence[];
@@ -162,10 +175,29 @@ export function createSupabaseRoomSource(options: {
           });
       }
 
+      function openChatChannel() {
+        const chatChannel = client.channel(getChatTopic(roomId), {
+          config: { private: true },
+        });
+        state.chatChannel = chatChannel;
+        chatChannel
+          .on("broadcast", { event: "chat" }, ({ payload }) => {
+            const message = parseChatMessage(payload);
+            if (
+              message !== undefined &&
+              state.players.some((player) => player.userId === message.userId)
+            )
+              onChat(message);
+          })
+          .subscribe();
+      }
+
       // A channel left on the same topic is reused by the client until its removal finishes.
       void Promise.all([shared.lastLeave, client.realtime.setAuth()]).then(
         () => {
-          if (!state.hasLeft) openChannel();
+          if (state.hasLeft) return;
+          openChannel();
+          openChatChannel();
         }
       );
 
@@ -177,11 +209,12 @@ export function createSupabaseRoomSource(options: {
           state.hasLeft = true;
           state.isSubscribed = false;
           fingerThrottle.dispose();
-          if (state.channel !== undefined) {
-            shared.lastLeave = client
-              .removeChannel(state.channel)
-              .catch(() => undefined);
-          }
+          const channels = [state.channel, state.chatChannel].flatMap(
+            (channel) => (channel === undefined ? [] : [channel])
+          );
+          shared.lastLeave = Promise.all(
+            channels.map((channel) => client.removeChannel(channel))
+          ).catch(() => undefined);
         },
       };
     },

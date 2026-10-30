@@ -95,6 +95,12 @@ export const nl = {
     report: "Geluid melden",
     reconnecting: "Opnieuw verbinden…",
     language: "Taal",
+    talk: "Praten",
+    chatLabel: "Wat je kat zegt",
+    chatPlaceholder: "Zeg iets…",
+    chatRefused: "Hou het vriendelijk.",
+    chatTooFast: "Iets rustiger aan.",
+    chatFailed: "Niet verstuurd. Probeer het opnieuw.",
   },
   options: {
     coat: {

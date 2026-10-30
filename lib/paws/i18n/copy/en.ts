@@ -98,6 +98,12 @@ export const en = {
     report: "Report this sound",
     reconnecting: "Reconnecting…",
     language: "Language",
+    talk: "Talk",
+    chatLabel: "What your cat says",
+    chatPlaceholder: "Say something…",
+    chatRefused: "Let's keep it friendly.",
+    chatTooFast: "Slow down a little.",
+    chatFailed: "That didn't send. Try again.",
   },
   options: {
     coat: {
