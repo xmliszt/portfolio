@@ -1,7 +1,7 @@
-/** Every word the visitor reads on the glass page, kept in one place so it can be proofread together. */
+/** Every word the visitor reads on the paws page, kept in one place so it can be proofread together. */
 export const COPY = {
   site: {
-    title: "Glass Paws",
+    title: "Paws",
     description: "Cats walk on a pane of frosted glass. Bring yours, and touch the glass with strangers.",
   },
   watch: {

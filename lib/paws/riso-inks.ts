@@ -13,13 +13,13 @@ export const RISO = {
 
 /** The same paper and inks as CSS custom properties, for the `style` of the page root. */
 export const RISO_CSS_VARIABLES = {
-  "--gp-paper": RISO.paper,
-  "--gp-paper-deep": RISO.paperDeep,
-  "--gp-ink": RISO.ink,
-  "--gp-ink-soft": RISO.inkSoft,
-  "--gp-orange": RISO.orange,
-  "--gp-pink": RISO.pink,
-  "--gp-blue": RISO.blue,
-  "--gp-yellow": RISO.yellow,
-  "--gp-rule": RISO.rule,
+  "--pw-paper": RISO.paper,
+  "--pw-paper-deep": RISO.paperDeep,
+  "--pw-ink": RISO.ink,
+  "--pw-ink-soft": RISO.inkSoft,
+  "--pw-orange": RISO.orange,
+  "--pw-pink": RISO.pink,
+  "--pw-blue": RISO.blue,
+  "--pw-yellow": RISO.yellow,
+  "--pw-rule": RISO.rule,
 } as const;

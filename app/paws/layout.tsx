@@ -1,20 +1,20 @@
 import { Metadata, Viewport } from "next";
 import { IBM_Plex_Mono, Instrument_Serif } from "next/font/google";
 
-import { COPY } from "@/lib/glass-paws/copy";
-import { RISO, RISO_CSS_VARIABLES } from "@/lib/glass-paws/riso-inks";
+import { COPY } from "@/lib/paws/copy";
+import { RISO, RISO_CSS_VARIABLES } from "@/lib/paws/riso-inks";
 import { cn } from "@/lib/utils";
 
 const fontDisplay = Instrument_Serif({
   subsets: ["latin"],
   weight: "400",
-  variable: "--gp-font-display",
+  variable: "--pw-font-display",
 });
 
 const fontMono = IBM_Plex_Mono({
   subsets: ["latin"],
   weight: ["400", "500"],
-  variable: "--gp-font-mono",
+  variable: "--pw-font-mono",
 });
 
 export const metadata: Metadata = {
@@ -28,17 +28,17 @@ export const viewport: Viewport = {
   colorScheme: "light",
 };
 
-type GlassLayoutProps = {
+type PawsLayoutProps = {
   children: React.ReactNode;
 };
 
-export default function GlassLayout(props: GlassLayoutProps) {
+export default function PawsLayout(props: PawsLayoutProps) {
   return (
     <div
       style={RISO_CSS_VARIABLES}
       className={cn(
         "fixed inset-0 z-[100] overflow-hidden antialiased",
-        "bg-[var(--gp-paper)] font-[family-name:var(--gp-font-mono)] text-[var(--gp-ink)]",
+        "bg-[var(--pw-paper)] font-[family-name:var(--pw-font-mono)] text-[var(--pw-ink)]",
         fontDisplay.variable,
         fontMono.variable
       )}
