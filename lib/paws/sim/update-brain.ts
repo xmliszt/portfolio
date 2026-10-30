@@ -349,7 +349,7 @@ export function updateBrain(options: { tick: Tick; cat: SimCat }) {
         setCatState(cat, "approach");
         break;
       }
-      if (cat.stateT > 14 && (!finger.present || finger.stillSeconds > 10)) {
+      if (cat.stateT > 25 && (!finger.present || finger.stillSeconds > 10)) {
         cat.rest = "sleep";
         setCatState(cat, "sleep");
       }
@@ -361,6 +361,16 @@ export function updateBrain(options: { tick: Tick; cat: SimCat }) {
       if (finger.pressed) {
         cat.rest = "sit";
         setCatState(cat, "sit");
+        break;
+      }
+      if (
+        !finger.present &&
+        cat.stateT > 30 &&
+        world.random() < dtSeconds * 0.04
+      ) {
+        cat.rest = undefined;
+        cat.wander = pickRandomSpot({ world, cat });
+        setCatState(cat, "approach");
       }
       break;
     }
@@ -467,7 +477,7 @@ export function updateBrain(options: { tick: Tick; cat: SimCat }) {
           world.height * 0.9
         ),
       };
-      walkTo({ tick, cat, goal, pace: 1.9, ignoreId: partner.userId });
+      walkTo({ tick, cat, goal, pace: 2.1, ignoreId: partner.userId });
       break;
     }
     case "bat": {

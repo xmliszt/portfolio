@@ -30,7 +30,25 @@ export function startSocial(options: {
   const isResting =
     partner.rest !== undefined &&
     (partner.state === "sit" || partner.state === "sleep");
-  if (isResting && world.random() < 0.55) {
+  const isPlayful = cat.playful + partner.playful > 0.6;
+  if (
+    isResting &&
+    partner.state === "sit" &&
+    isPlayful &&
+    world.random() < 0.4
+  ) {
+    cat.social = {
+      kind: "chase",
+      t: 0,
+      durationSeconds: 4 + world.random() * 3,
+    };
+    partner.social = { kind: "chased", t: 0 };
+    cat.partnerId = partner.userId;
+    partner.partnerId = cat.userId;
+    partner.rest = undefined;
+    setCatState(cat, "chase");
+    setCatState(partner, "chased");
+  } else if (isResting && world.random() < 0.55) {
     cat.social = {
       kind: "bat",
       t: 0,
@@ -49,11 +67,11 @@ export function startSocial(options: {
     cat.isSnuggling = true;
     cat.partnerId = partner.userId;
     setCatState(cat, "approach");
-  } else if (cat.playful + partner.playful > 0.9 && world.random() < 0.5) {
+  } else if (isPlayful && world.random() < 0.7) {
     cat.social = {
       kind: "chase",
       t: 0,
-      durationSeconds: 2.5 + world.random() * 1.5,
+      durationSeconds: 4 + world.random() * 3,
     };
     partner.social = { kind: "chased", t: 0 };
     cat.partnerId = partner.userId;

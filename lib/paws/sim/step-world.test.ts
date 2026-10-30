@@ -182,3 +182,17 @@ test("social cats greet with a meow and a nose print", () => {
     "leaves paw prints"
   );
 });
+
+test("a sleeping cat wakes up on its own and walks somewhere", () => {
+  const world = createWorld({ random: createSeededRandom({ seed: 5 }) });
+  const states = Array.from({ length: 600 }, () => {
+    runWorld({ world, players: players(1), seconds: 1 });
+    return world.cats["player-0"].state;
+  });
+  const firstSleep = states.indexOf("sleep");
+  assert.ok(firstSleep >= 0, "falls asleep");
+  assert.ok(
+    states.slice(firstSleep).some((state) => state === "approach"),
+    "wakes and walks after sleeping"
+  );
+});
