@@ -69,6 +69,7 @@ export function createFakeRoomSource(options: {
         { length: options.remotePlayerCount },
         (_, index): PlayerPresence => ({
           userId: `fake-${index + 1}`,
+          connectionId: `fake-${index + 1}`,
           look: buildLook(),
           voice: { age: pick(AGES), voice: pick(VOICES), mood: pick(MOODS) },
           meowUrl: options.meowUrl,

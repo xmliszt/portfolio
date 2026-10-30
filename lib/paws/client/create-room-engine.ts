@@ -19,13 +19,13 @@ import { getCatSnapshots } from "@/lib/paws/sim/get-cat-snapshots";
 import type { FingerInput, World } from "@/lib/paws/sim/sim-types";
 import { stepWorld } from "@/lib/paws/sim/step-world";
 import type {
+  CatSnapshot,
   CatsMessage,
   FingerMessage,
+  PawPrintEvent,
   PlayerPresence,
   RoomEvent,
 } from "@/lib/paws/wire-types";
-
-import { detectPawLandings } from "./detect-paw-landings";
 
 const REMOTE_FINGER_TIMEOUT_MS = 2000;
 const MIN_FINGER_MOVE = 0.5;
@@ -64,6 +64,7 @@ export function createRoomEngine(options: { random: () => number }) {
   const state: {
     players: PlayerPresence[];
     selfId: string | undefined;
+    selfConnectionId: string | undefined;
     role: RoomRole;
     world: World | undefined;
     residents:
@@ -78,12 +79,14 @@ export function createRoomEngine(options: { random: () => number }) {
     seq: number;
     prints: ScenePrint[];
     received: RoomEvent[];
-    lastHeights: { [userId: string]: number[] | undefined };
+    unsentPrints: PawPrintEvent[];
+    incomingPrints: { print: PawPrintEvent; showAtMs: number }[];
     lastCatsSentAtMs: number;
     time: number;
   } = {
     players: [],
     selfId: undefined,
+    selfConnectionId: undefined,
     role: "watcher",
     world: undefined,
     residents: undefined,
@@ -96,7 +99,8 @@ export function createRoomEngine(options: { random: () => number }) {
     seq: 0,
     prints: [],
     received: [],
-    lastHeights: {},
+    unsentPrints: [],
+    incomingPrints: [],
     lastCatsSentAtMs: -Infinity,
     time: 0,
   };
@@ -187,8 +191,13 @@ export function createRoomEngine(options: { random: () => number }) {
     setPlayers: (players: PlayerPresence[]) => {
       state.players = players;
     },
-    setSelf: (self: { userId: string | undefined; role: RoomRole }) => {
+    setSelf: (self: {
+      userId: string | undefined;
+      connectionId: string | undefined;
+      role: RoomRole;
+    }) => {
       state.selfId = self.userId;
+      state.selfConnectionId = self.connectionId;
       state.role = self.role;
     },
     setOwnPointer: (pointer: OwnPointer) => {
@@ -207,8 +216,19 @@ export function createRoomEngine(options: { random: () => number }) {
     },
     receiveCats: (options: { message: CatsMessage; receivedAtMs: number }) => {
       const hostId = chooseHost(state.players);
-      if (options.message.hostId === state.selfId || options.message.hostId !== hostId) return;
+      if (
+        options.message.hostId === state.selfConnectionId ||
+        options.message.hostId !== hostId
+      )
+        return;
       state.buffer.push(options);
+      state.incomingPrints = [
+        ...state.incomingPrints,
+        ...options.message.prints.map((print) => ({
+          print,
+          showAtMs: options.receivedAtMs + ROOM_LIMITS.renderDelayMs,
+        })),
+      ];
     },
     receiveEvent: (event: RoomEvent) => {
       state.received = [...state.received, event];
@@ -220,8 +240,8 @@ export function createRoomEngine(options: { random: () => number }) {
       const hostId = chooseHost(state.players);
       const isHost =
         state.role === "player" &&
-        state.selfId !== undefined &&
-        hostId === state.selfId;
+        state.selfConnectionId !== undefined &&
+        hostId === state.selfConnectionId;
 
       if (isHost && state.world === undefined) {
         const latest = state.buffer.latest();
@@ -248,54 +268,76 @@ export function createRoomEngine(options: { random: () => number }) {
 
       const events: RoomEvent[] = [...state.received];
       state.received = [];
-      let outgoingCats: CatsMessage | undefined;
-      let outgoingEvents: RoomEvent[] = [];
-      const snapshots = (() => {
+      const stepped: {
+        snapshots: CatSnapshot[];
+        cats: CatsMessage | undefined;
+        events: RoomEvent[];
+      } = (() => {
         if (state.world === undefined && state.residents !== undefined) {
-          const stepped = stepWorld({
+          const result = stepWorld({
             world: state.residents.world,
             players: state.residents.players,
             fingers: [],
             dtSeconds,
           });
-          events.push(...stepped.events);
-          return getCatSnapshots(state.residents.world);
+          events.push(...result.events);
+          return {
+            snapshots: getCatSnapshots(state.residents.world),
+            cats: undefined,
+            events: [],
+          };
         }
         if (state.world === undefined) {
-          const sampled = state.buffer.sample({ nowMs });
-          events.push(
-            ...detectPawLandings({
-              snapshots: sampled,
-              lastHeights: state.lastHeights,
-            })
+          const due = state.incomingPrints.filter(
+            (incoming) => incoming.showAtMs <= nowMs
           );
-          return sampled;
+          state.incomingPrints = state.incomingPrints.filter(
+            (incoming) => incoming.showAtMs > nowMs
+          );
+          events.push(...due.map((incoming) => incoming.print));
+          return {
+            snapshots: state.buffer.sample({ nowMs }),
+            cats: undefined,
+            events: [],
+          };
         }
-        const stepped = stepWorld({
+        const result = stepWorld({
           world: state.world,
           players: state.players,
           fingers: simFingers(nowMs),
           dtSeconds,
         });
-        events.push(...stepped.events);
-        outgoingEvents = stepped.events.filter(
-          (event) => event.kind !== "pawPrint"
-        );
+        events.push(...result.events);
+        state.unsentPrints = [
+          ...state.unsentPrints,
+          ...result.events.filter(
+            (event): event is PawPrintEvent => event.kind === "pawPrint"
+          ),
+        ];
         const current = getCatSnapshots(state.world);
-        if (
+        const isDue =
           nowMs - state.lastCatsSentAtMs >=
-            1000 / ROOM_LIMITS.catSnapshotsPerSecond &&
-          state.selfId !== undefined
-        ) {
+          1000 / ROOM_LIMITS.catSnapshotsPerSecond;
+        const cats =
+          isDue && state.selfConnectionId !== undefined
+            ? {
+                hostId: state.selfConnectionId,
+                sentAt: Date.now(),
+                cats: current,
+                prints: state.unsentPrints,
+              }
+            : undefined;
+        if (cats !== undefined) {
           state.lastCatsSentAtMs = nowMs;
-          outgoingCats = {
-            hostId: state.selfId,
-            sentAt: Date.now(),
-            cats: current,
-          };
+          state.unsentPrints = [];
         }
-        return current;
+        return {
+          snapshots: current,
+          cats,
+          events: result.events.filter((event) => event.kind !== "pawPrint"),
+        };
       })();
+      const snapshots = stepped.snapshots;
 
       state.ownTip = stepFingertip({
         fingertip: state.ownTip,
@@ -303,10 +345,11 @@ export function createRoomEngine(options: { random: () => number }) {
         dtSeconds,
       });
       const fingerprint = ownFingerprint();
-      if (fingerprint !== undefined) {
-        events.push(fingerprint);
-        outgoingEvents = [...outgoingEvents, fingerprint];
-      }
+      if (fingerprint !== undefined) events.push(fingerprint);
+      const outgoingEvents =
+        fingerprint === undefined
+          ? stepped.events
+          : [...stepped.events, fingerprint];
       for (const [userId, finger] of Object.entries(state.remoteFingers)) {
         if (finger === undefined) continue;
         const isFresh = nowMs - finger.receivedAtMs <= REMOTE_FINGER_TIMEOUT_MS;
@@ -355,7 +398,7 @@ export function createRoomEngine(options: { random: () => number }) {
             event.kind === "sound"
         ),
         outgoing: {
-          cats: outgoingCats,
+          cats: stepped.cats,
           events: outgoingEvents,
           finger: ownFingerMessage(),
         },

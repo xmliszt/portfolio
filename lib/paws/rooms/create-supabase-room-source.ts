@@ -72,6 +72,8 @@ export function createSupabaseRoomSource(options: {
       const isTracking = role === "player" && self !== undefined;
       const isPresent = (userId: string) =>
         state.players.some((player) => player.userId === userId);
+      const isConnected = (connectionId: string) =>
+        state.players.some((player) => player.connectionId === connectionId);
 
       function broadcast(event: "finger" | "cats" | "event", payload: object) {
         if (!state.isSubscribed || state.channel === undefined) return;
@@ -101,13 +103,19 @@ export function createSupabaseRoomSource(options: {
           .on("presence", { event: "sync" }, () => {
             state.players = Object.entries(channel.presenceState()).flatMap(
               ([key, metas]) => {
-                const presence = parsePlayerPresence({
-                  value: metas.at(-1),
-                  meowOrigins: options.meowOrigins,
-                });
-                return presence === undefined || presence.userId !== key
-                  ? []
-                  : [presence];
+                const earliest = metas
+                  .flatMap((meta) => {
+                    const presence = parsePlayerPresence({
+                      value: meta,
+                      meowOrigins: options.meowOrigins,
+                    });
+                    return presence === undefined || presence.userId !== key
+                      ? []
+                      : [presence];
+                  })
+                  .toSorted((a, b) => a.joinedAt - b.joinedAt)
+                  .at(0);
+                return earliest === undefined ? [] : [earliest];
               }
             );
             onPlayers(state.players);
@@ -129,7 +137,7 @@ export function createSupabaseRoomSource(options: {
             const cats = parseCatsMessage(payload);
             if (
               cats !== undefined &&
-              isPresent(cats.hostId) &&
+              isConnected(cats.hostId) &&
               catsGate.allow(cats.hostId)
             ) {
               onCats(cats);

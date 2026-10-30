@@ -33,7 +33,7 @@ export type RoomStatus =
 export function useRoomConnection(options: {
   session: PawsSession;
   client: ReturnType<typeof createPawsBrowserClient> | undefined;
-  self: Omit<PlayerPresence, "joinedAt"> | undefined;
+  self: Omit<PlayerPresence, "joinedAt" | "connectionId"> | undefined;
   engine: ReturnType<typeof createRoomEngine>;
   useFakeRoom: boolean;
   isReady: boolean;
@@ -74,8 +74,11 @@ export function useRoomConnection(options: {
       isCancelled: false,
     };
     const self = selfRef.current;
+    const connectionId = crypto.randomUUID();
     const presence =
-      self === undefined ? undefined : { ...self, joinedAt: Date.now() };
+      self === undefined
+        ? undefined
+        : { ...self, connectionId, joinedAt: Date.now() };
 
     function scheduleRejoin() {
       run.retry = window.setTimeout(
@@ -144,7 +147,7 @@ export function useRoomConnection(options: {
                 ).origin,
               ],
             });
-      engine.setSelf({ userId, role: joined.role });
+      engine.setSelf({ userId, connectionId, role: joined.role });
       setStatus({
         kind: "joined",
         roomId: joined.roomId,
@@ -201,7 +204,11 @@ export function useRoomConnection(options: {
       run.source?.dispose();
       playersRef.current = [];
       engine.setPlayers([]);
-      engine.setSelf({ userId: undefined, role: "watcher" });
+      engine.setSelf({
+        userId: undefined,
+        connectionId: undefined,
+        role: "watcher",
+      });
       const token = tokenRef.current;
       if (run.roomId !== undefined && token !== undefined && !useFakeRoom) {
         void postRoomApi({

@@ -1,32 +1,9 @@
 import { parseCatLook } from "@/lib/paws/parse-cat-look";
-import {
-  AGES,
-  MOODS,
-  VOICES,
-  type VoiceSettings,
-} from "@/lib/paws/voice-settings";
+import { parseVoiceSettings } from "@/lib/paws/profile/parse-voice-settings";
 import type { PlayerPresence } from "@/lib/paws/wire-types";
 
 import { parseWireId } from "./parse-wire-id";
 import { WIRE_LIMITS } from "./wire-limits";
-
-const isOneOf = <T extends string>(
-  options: readonly T[],
-  value: unknown
-): value is T => options.some((option) => option === value);
-
-function parseVoice(value: unknown): VoiceSettings | undefined {
-  if (
-    typeof value !== "object" ||
-    value === null ||
-    !("age" in value && isOneOf(AGES, value.age)) ||
-    !("voice" in value && isOneOf(VOICES, value.voice)) ||
-    !("mood" in value && isOneOf(MOODS, value.mood))
-  ) {
-    return undefined;
-  }
-  return { age: value.age, voice: value.voice, mood: value.mood };
-}
 
 function parseMeowUrl(options: { value: unknown; meowOrigins: string[] }) {
   const { value } = options;
@@ -51,13 +28,16 @@ export function parsePlayerPresence(options: {
   if (typeof value !== "object" || value === null) return undefined;
   const userId = "userId" in value ? parseWireId(value.userId) : undefined;
   const look = "look" in value ? parseCatLook(value.look) : undefined;
-  const voice = "voice" in value ? parseVoice(value.voice) : undefined;
+  const connectionId =
+    "connectionId" in value ? parseWireId(value.connectionId) : undefined;
+  const voice = "voice" in value ? parseVoiceSettings(value.voice) : undefined;
   const meowUrl =
     "meowUrl" in value
       ? parseMeowUrl({ value: value.meowUrl, meowOrigins: options.meowOrigins })
       : undefined;
   if (
     userId === undefined ||
+    connectionId === undefined ||
     look === undefined ||
     voice === undefined ||
     meowUrl === undefined ||
@@ -69,5 +49,12 @@ export function parsePlayerPresence(options: {
   ) {
     return undefined;
   }
-  return { userId, look, voice, meowUrl, joinedAt: value.joinedAt };
+  return {
+    userId,
+    connectionId,
+    look,
+    voice,
+    meowUrl,
+    joinedAt: value.joinedAt,
+  };
 }

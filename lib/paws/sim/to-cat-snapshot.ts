@@ -1,4 +1,8 @@
-import type { CatActivity, CatSnapshot, LegSnapshot } from "@/lib/paws/wire-types";
+import type {
+  CatActivity,
+  CatSnapshot,
+  LegSnapshot,
+} from "@/lib/paws/wire-types";
 
 import type { SimCat, SimLeg, SimState } from "./sim-types";
 import { wrapAngle } from "./wrap-angle";

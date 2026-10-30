@@ -20,6 +20,7 @@ import { parseVoiceSettings } from "./parse-voice-settings";
 const CREDITS_PER_CLIP = 60;
 const MAX_REFUSALS_PER_DAY = 5;
 const MAX_GENERATIONS_PER_IP_PER_DAY = 3;
+const CLAIM_STALE_MS = 2 * 60_000;
 
 /** Return a meow pipeline that runs one meow request through the account, attempt, cache, safety, budget and generation steps in order. */
 export function createMeowPipeline(deps: MeowPipelineDependencies) {
@@ -175,6 +176,31 @@ export function createMeowPipeline(deps: MeowPipelineDependencies) {
     }
 
     const now = deps.clock.now();
+    const isClaimed = await deps.store.claimMeow({
+      userId,
+      now,
+      staleBefore: new Date(now.getTime() - CLAIM_STALE_MS),
+    });
+    if (!isClaimed) return { kind: "tooManyAttempts" };
+    try {
+      return await requestUnclaimedMeow({
+        userId,
+        ip: options.ip,
+        request,
+        now,
+      });
+    } finally {
+      await deps.store.releaseMeowClaim({ userId });
+    }
+  }
+
+  async function requestUnclaimedMeow(options: {
+    userId: string;
+    ip: string;
+    request: MeowRequest;
+    now: Date;
+  }): Promise<MeowPipelineResult> {
+    const { userId, request, now } = options;
     const day = getUtcDay(now);
     const since = new Date(`${day}T00:00:00.000Z`);
     const ipHash = hashIp({ ip: options.ip, secret: deps.hashSecret });

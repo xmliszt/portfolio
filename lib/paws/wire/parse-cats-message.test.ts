@@ -30,7 +30,26 @@ test("reads the host's cats", () => {
     hostId: "h",
     sentAt: 5,
     cats: [cat],
+    prints: [],
   });
+});
+
+test("keeps only the paw prints among the host's prints", () => {
+  const print = {
+    kind: "pawPrint",
+    userId: "a",
+    x: 10,
+    y: 20,
+    angle: 1,
+    leg: 2,
+  };
+  const parsed = parseCatsMessage({
+    hostId: "h",
+    sentAt: 5,
+    cats: [],
+    prints: [print, { kind: "sound", userId: "a", sound: "meow" }, "junk"],
+  });
+  assert.deepEqual(parsed?.prints, [print]);
 });
 
 test("clamps numbers and drops malformed cats", () => {

@@ -73,7 +73,7 @@ const nextConfig = {
           {
             type: "host",
             value:
-              "((www\\.)?laundro\\.cafe|laundromat\\.(liyuxuan\\.dev|localhost))",
+              "((www\\.)?laundro\\.cafe|(laundromat|paws)\\.(liyuxuan\\.dev|localhost))",
           },
         ],
       },

@@ -1,4 +1,4 @@
-import type { CatSnapshot,PlayerPresence } from "@/lib/paws/wire-types";
+import type { CatSnapshot, PlayerPresence } from "@/lib/paws/wire-types";
 
 import { createSimCat } from "./create-sim-cat";
 import { createWorld } from "./create-world";

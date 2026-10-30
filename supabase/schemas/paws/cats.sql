@@ -3,6 +3,7 @@ create table "paws"."cats" (
   "look" jsonb not null,
   "voice" jsonb not null,
   "meow_key" text references "paws"."meows" ("key") on delete set null,
+  "meow_claimed_at" timestamptz,
   "created_at" timestamptz not null default now(),
   "updated_at" timestamptz not null default now()
 );

@@ -1,5 +1,5 @@
 import { ROOM_LIMITS } from "@/lib/paws/room-limits";
-import type { CatsMessage,CatSnapshot } from "@/lib/paws/wire-types";
+import type { CatsMessage, CatSnapshot } from "@/lib/paws/wire-types";
 
 import { clamp } from "./clamp";
 import { interpolateCatSnapshot } from "./interpolate-cat-snapshot";

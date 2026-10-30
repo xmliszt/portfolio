@@ -51,6 +51,22 @@ export function createMeowStore(client: PawsServiceClient): MeowStore {
       if (data === null || voice === undefined) return { kind: "noCat" };
       return { kind: "cat", voice, meow: parseStoredMeow(data.meows) };
     },
+    claimMeow: async (query) => {
+      const { data, error } = await client.rpc("claim_meow", {
+        p_user_id: query.userId,
+        p_now: query.now.toISOString(),
+        p_stale_before: query.staleBefore.toISOString(),
+      });
+      if (error) throw error;
+      return data === true;
+    },
+    releaseMeowClaim: async (query) => {
+      const { error } = await client
+        .from("cats")
+        .update({ meow_claimed_at: null })
+        .eq("user_id", query.userId);
+      if (error) throw error;
+    },
     countRefusalsSince: (query) =>
       countAttempts({
         column: "user_id",

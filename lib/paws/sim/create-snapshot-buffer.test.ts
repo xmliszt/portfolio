@@ -22,6 +22,7 @@ const buildMessage = (options: {
       heading: options.heading,
     }),
   ],
+  prints: [],
 });
 
 test("plays cats back between the two messages around the delayed time", () => {

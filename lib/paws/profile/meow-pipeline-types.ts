@@ -17,6 +17,12 @@ export type CatMeowLookup =
 
 export type MeowStore = {
   findCatMeow: (options: { userId: string }) => Promise<CatMeowLookup>;
+  claimMeow: (options: {
+    userId: string;
+    now: Date;
+    staleBefore: Date;
+  }) => Promise<boolean>;
+  releaseMeowClaim: (options: { userId: string }) => Promise<void>;
   countRefusalsSince: (options: {
     userId: string;
     since: Date;

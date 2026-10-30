@@ -4,7 +4,7 @@ import type { CatActivity, CatSnapshot } from "@/lib/paws/wire-types";
 import { blendPose } from "./blend-pose";
 import type { Vec2, Vec4 } from "./cat-poses";
 import { catToWorld } from "./cat-to-world";
-import { type CatBuild,getCatBuild } from "./get-cat-build";
+import { type CatBuild, getCatBuild } from "./get-cat-build";
 import { hashUnit } from "./hash-unit";
 import { LEG_LAYOUT, type LegSide } from "./leg-layout";
 import { lerp } from "./lerp";

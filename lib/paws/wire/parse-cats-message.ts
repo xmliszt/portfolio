@@ -4,9 +4,11 @@ import type {
   CatsMessage,
   CatSnapshot,
   LegSnapshot,
+  PawPrintEvent,
 } from "@/lib/paws/wire-types";
 
 import { clampNumber } from "./clamp-number";
+import { parseRoomEvent } from "./parse-room-event";
 import { parseWireId } from "./parse-wire-id";
 import { WIRE_LIMITS } from "./wire-limits";
 
@@ -29,6 +31,7 @@ const MAX_ANGLE = 4 * Math.PI;
 const MAX_SPEED = 2000;
 const MAX_BEND = 4;
 const MAX_LEG_HEIGHT = 200;
+const MAX_PRINTS = 4 * ROOM_LIMITS.maxPlayers;
 
 function isCatActivity(value: unknown): value is CatActivity {
   return CAT_ACTIVITIES.some((activity) => activity === value);
@@ -132,7 +135,7 @@ function parseCat(value: unknown): CatSnapshot | undefined {
   };
 }
 
-/** Return the cat snapshots the host broadcast, keeping the first `ROOM_LIMITS.maxPlayers` cats, dropping malformed ones and clamping every number to its range, or `undefined` when the payload is not one. */
+/** Return the cat snapshots and paw prints the host broadcast, keeping the first `ROOM_LIMITS.maxPlayers` cats and `MAX_PRINTS` prints, dropping malformed ones and clamping every number to its range, or `undefined` when the payload is not one. */
 export function parseCatsMessage(value: unknown): CatsMessage | undefined {
   if (typeof value !== "object" || value === null) return undefined;
   const hostId = "hostId" in value ? parseWireId(value.hostId) : undefined;
@@ -153,5 +156,14 @@ export function parseCatsMessage(value: unknown): CatsMessage | undefined {
       const parsed = parseCat(cat);
       return parsed === undefined ? [] : [parsed];
     });
-  return { hostId, sentAt: value.sentAt, cats };
+  const prints =
+    "prints" in value && Array.isArray(value.prints)
+      ? value.prints.slice(0, MAX_PRINTS).flatMap((print: unknown) => {
+          const event = parseRoomEvent(print);
+          return event?.kind === "pawPrint"
+            ? [event satisfies PawPrintEvent]
+            : [];
+        })
+      : [];
+  return { hostId, sentAt: value.sentAt, cats, prints };
 }

@@ -39,6 +39,7 @@ function buildWorld(options: {
   hasCredits?: boolean;
   generated?: GenerateResult;
   uploadError?: Error;
+  isClaimTaken?: boolean;
 }) {
   const calls: string[] = [];
   const attempts: Attempt[] = [];
@@ -49,6 +50,7 @@ function buildWorld(options: {
   const counted: { since: Date }[] = [];
   const logs: string[] = [];
   const meows = options.meows ?? [];
+  const claim = { isHeld: options.isClaimTaken ?? false, releases: 0 };
 
   const deps = {
     store: {
@@ -57,6 +59,16 @@ function buildWorld(options: {
         return options.hasCat === false
           ? { kind: "noCat" }
           : { kind: "cat", voice: VOICE, meow: options.catMeow };
+      },
+      claimMeow: async () => {
+        calls.push("claimMeow");
+        if (claim.isHeld) return false;
+        claim.isHeld = true;
+        return true;
+      },
+      releaseMeowClaim: async () => {
+        claim.isHeld = false;
+        claim.releases += 1;
       },
       countRefusalsSince: async (query: { since: Date }) => {
         calls.push("countRefusals");
@@ -151,6 +163,7 @@ function buildWorld(options: {
     credits,
     counted,
     logs,
+    claim,
   };
 }
 
@@ -229,7 +242,7 @@ test("stops after five refusals today, counted from UTC midnight, before the cac
     await createMeowPipeline(world.deps).requestMeow(request()),
     { kind: "tooManyAttempts" }
   );
-  assert.deepEqual(world.calls, ["findCatMeow", "countRefusals"]);
+  assert.deepEqual(world.calls, ["findCatMeow", "claimMeow", "countRefusals"]);
   assert.equal(
     world.counted.at(0)?.since.toISOString(),
     "2026-10-30T00:00:00.000Z"
@@ -245,6 +258,7 @@ test("stops after three generations from one address today, before the cache", a
   );
   assert.deepEqual(world.calls, [
     "findCatMeow",
+    "claimMeow",
     "countRefusals",
     "countGenerations",
   ]);
@@ -264,6 +278,7 @@ test("reuses a cached clip for free without running any check", async () => {
   );
   assert.deepEqual(world.calls, [
     "findCatMeow",
+    "claimMeow",
     "countRefusals",
     "countGenerations",
     "findMeow",
@@ -346,6 +361,7 @@ test("generates, stores and assigns a new clip in check order", async () => {
   );
   assert.deepEqual(world.calls, [
     "findCatMeow",
+    "claimMeow",
     "countRefusals",
     "countGenerations",
     "findMeow",
@@ -420,4 +436,22 @@ test("keeps spent credits but borrows a meow when saving the clip fails", async 
   assert.deepEqual(world.credits, { reserved: 60, released: 0 });
   assert.deepEqual(world.assigned, []);
   assert.equal(world.attempts.at(0)?.credits, 60);
+});
+
+test("stops a second request while the account's first one is still running", async () => {
+  const world = buildWorld({ isClaimTaken: true });
+  const pipeline = createMeowPipeline(world.deps);
+  assert.deepEqual(await pipeline.requestMeow(request()), {
+    kind: "tooManyAttempts",
+  });
+  assert.equal(world.calls.includes("generate"), false);
+  assert.equal(world.claim.releases, 0);
+});
+
+test("releases the account's claim after a request finishes", async () => {
+  const world = buildWorld({});
+  const pipeline = createMeowPipeline(world.deps);
+  await pipeline.requestMeow(request());
+  assert.equal(world.claim.isHeld, false);
+  assert.equal(world.claim.releases, 1);
 });

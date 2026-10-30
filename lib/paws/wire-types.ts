@@ -3,6 +3,7 @@ import type { VoiceSettings } from "./voice-settings";
 
 export type PlayerPresence = {
   userId: string;
+  connectionId: string;
   look: CatLook;
   voice: VoiceSettings;
   meowUrl: string;
@@ -54,7 +55,10 @@ export type CatsMessage = {
   hostId: string;
   sentAt: number;
   cats: CatSnapshot[];
+  prints: PawPrintEvent[];
 };
+
+export type PawPrintEvent = Extract<RoomEvent, { kind: "pawPrint" }>;
 
 export type RoomEvent =
   | { kind: "sound"; userId: string; sound: "meow" | "trill" | "purr" }

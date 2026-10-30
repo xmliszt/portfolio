@@ -21,6 +21,7 @@ test("reads a player's presence", () => {
     parsePlayerPresence({
       value: {
         userId: "u",
+        connectionId: "c",
         look,
         voice,
         meowUrl: "https://cdn.example/meow.mp3",
@@ -31,6 +32,7 @@ test("reads a player's presence", () => {
     }),
     {
       userId: "u",
+      connectionId: "c",
       look,
       voice,
       meowUrl: "https://cdn.example/meow.mp3",
@@ -41,6 +43,7 @@ test("reads a player's presence", () => {
     parsePlayerPresence({
       value: {
         userId: "u",
+        connectionId: "c",
         look,
         voice,
         meowUrl: "/paws/meow.mp3",
@@ -57,6 +60,7 @@ test("drops a presence with a meow URL that is neither a same-site path nor from
     parsePlayerPresence({
       value: {
         userId: "u",
+        connectionId: "c",
         look,
         voice,
         meowUrl: "javascript:alert(1)",
@@ -70,6 +74,7 @@ test("drops a presence with a meow URL that is neither a same-site path nor from
     parsePlayerPresence({
       value: {
         userId: "u",
+        connectionId: "c",
         look,
         voice,
         meowUrl: "//evil.example/a",
@@ -83,6 +88,7 @@ test("drops a presence with a meow URL that is neither a same-site path nor from
     parsePlayerPresence({
       value: {
         userId: "u",
+        connectionId: "c",
         look,
         voice,
         meowUrl: "https://evil.example/a.mp3",
@@ -96,6 +102,7 @@ test("drops a presence with a meow URL that is neither a same-site path nor from
     parsePlayerPresence({
       value: {
         userId: "u",
+        connectionId: "c",
         look,
         voice,
         meowUrl: "https://cdn.example.evil/a.mp3",
@@ -109,6 +116,7 @@ test("drops a presence with a meow URL that is neither a same-site path nor from
     parsePlayerPresence({
       value: {
         userId: "u",
+        connectionId: "c",
         look,
         voice,
         meowUrl: `https://cdn.example/${"a".repeat(600)}`,
@@ -125,6 +133,7 @@ test("drops a presence with an unknown look or voice option", () => {
     parsePlayerPresence({
       value: {
         userId: "u",
+        connectionId: "c",
         look: { ...look, coat: "neon" },
         voice,
         meowUrl: "/m",
@@ -138,6 +147,7 @@ test("drops a presence with an unknown look or voice option", () => {
     parsePlayerPresence({
       value: {
         userId: "u",
+        connectionId: "c",
         look,
         voice: { ...voice, mood: "angry" },
         meowUrl: "/m",

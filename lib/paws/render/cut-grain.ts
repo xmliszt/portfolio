@@ -1,4 +1,4 @@
-import type { AnyCanvas,AnyContext } from "./render-types";
+import type { AnyCanvas, AnyContext } from "./render-types";
 
 /** Cut riso grain out of everything drawn on `g`, removing up to `strength` of the ink under each speck. */
 export function cutGrain(options: {

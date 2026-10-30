@@ -6,11 +6,12 @@ import type { PlayerPresence } from "@/lib/paws/wire-types";
 import { chooseHost } from "./choose-host";
 
 function buildPlayer(options: {
-  userId: string;
+  connectionId: string;
   joinedAt: number;
 }): PlayerPresence {
   return {
-    userId: options.userId,
+    userId: `user-${options.connectionId}`,
+    connectionId: options.connectionId,
     joinedAt: options.joinedAt,
     look: {
       coat: "ginger",
@@ -30,18 +31,18 @@ function buildPlayer(options: {
 test("picks the player who joined first", () => {
   assert.equal(
     chooseHost([
-      buildPlayer({ userId: "b", joinedAt: 2 }),
-      buildPlayer({ userId: "c", joinedAt: 1 }),
+      buildPlayer({ connectionId: "b", joinedAt: 2 }),
+      buildPlayer({ connectionId: "c", joinedAt: 1 }),
     ]),
     "c"
   );
 });
 
-test("breaks a tie by user id", () => {
+test("breaks a tie by connection id", () => {
   assert.equal(
     chooseHost([
-      buildPlayer({ userId: "b", joinedAt: 1 }),
-      buildPlayer({ userId: "a", joinedAt: 1 }),
+      buildPlayer({ connectionId: "b", joinedAt: 1 }),
+      buildPlayer({ connectionId: "a", joinedAt: 1 }),
     ]),
     "a"
   );

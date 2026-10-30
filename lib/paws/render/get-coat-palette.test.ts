@@ -1,7 +1,12 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
 
-import { BELLIES, type CatLook,COAT_INKS, PATTERNS } from "@/lib/paws/cat-look";
+import {
+  BELLIES,
+  type CatLook,
+  COAT_INKS,
+  PATTERNS,
+} from "@/lib/paws/cat-look";
 import { RISO } from "@/lib/paws/riso-inks";
 
 import { getCoatPalette } from "./get-coat-palette";
