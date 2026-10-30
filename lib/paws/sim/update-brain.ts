@@ -62,7 +62,6 @@ const isReachingFinger = (cat: SimCat, fingerId: string) =>
       leg.reach.target.userId === fingerId
   );
 
-/** Move `cat` toward a spot 95 units short of `point`, or face it once there, so a paw can reach it. */
 const reposition = (tick: Tick, cat: SimCat, point: Point) => {
   const k = cat.build.scale;
   const gap = Math.max(1, Math.hypot(point.x - cat.x, point.y - cat.y));
@@ -547,7 +546,6 @@ export function updateBrain(options: { tick: Tick; cat: SimCat }) {
   }
 }
 
-/** Purr now and then while a finger rests near `cat`'s head. */
 function purrNearFinger(tick: Tick, cat: SimCat) {
   const head = cat.derived.head;
   const isNear = Object.values(tick.world.fingers).some(

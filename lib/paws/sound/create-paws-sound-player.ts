@@ -50,13 +50,11 @@ export function createPawsSoundPlayer(options: {
   const state: {
     graph?: Graph;
     muted: boolean;
-    disposed: boolean;
     mutedCats: { [userId: string]: true | undefined };
     lastPlayedAtMs: { [userId: string]: number | undefined };
     clips: { [url: string]: Promise<Clip | undefined> | undefined };
   } = {
     muted: false,
-    disposed: false,
     mutedCats: {},
     lastPlayedAtMs: {},
     clips: {},
@@ -92,7 +90,12 @@ export function createPawsSoundPlayer(options: {
         );
         return { buffer, gain: getRmsGain(channels) };
       })
-      .catch(() => undefined);
+      .catch(() => undefined)
+      .then((clip) => {
+        if (clip === undefined && state.clips[url] === loading)
+          state.clips[url] = undefined;
+        return clip;
+      });
     state.clips[url] = loading;
     return loading;
   }
@@ -130,7 +133,6 @@ export function createPawsSoundPlayer(options: {
 
   /** Create and resume the audio context; call it from a pointer or key event so the browser allows sound. */
   async function unlock() {
-    if (state.disposed) return;
     state.graph ??= createGraph();
     if (state.graph.context.state === "suspended")
       await state.graph.context.resume();
@@ -138,19 +140,14 @@ export function createPawsSoundPlayer(options: {
 
   /** Fetch and decode `url` ahead of its first play. */
   async function preload(url: string) {
-    if (state.graph === undefined || state.disposed) return;
+    if (state.graph === undefined) return;
     await loadClip(state.graph, url);
   }
 
   /** Play one cat's sound unless sound is muted, the cat is muted, it played within the cooldown, or the player is not unlocked. */
   function play(cue: PawsSoundCue) {
     const graph = state.graph;
-    if (
-      graph === undefined ||
-      state.disposed ||
-      state.muted ||
-      state.mutedCats[cue.userId]
-    )
+    if (graph === undefined || state.muted || state.mutedCats[cue.userId])
       return;
     const now = nowMs();
     const lastPlayedAtMs = state.lastPlayedAtMs[cue.userId];
@@ -160,7 +157,7 @@ export function createPawsSoundPlayer(options: {
     void loadClip(graph, getPawsSoundUrl(cue)).then((clip) => {
       if (
         clip === undefined ||
-        state.disposed ||
+        state.graph !== graph ||
         state.muted ||
         state.mutedCats[cue.userId]
       )
@@ -186,9 +183,8 @@ export function createPawsSoundPlayer(options: {
     state.mutedCats[cat.userId] = cat.muted ? true : undefined;
   }
 
-  /** Close the audio context and drop every cached clip. */
+  /** Close the audio context and drop every cached clip; a later `unlock` opens a new context. */
   function dispose() {
-    state.disposed = true;
     state.clips = {};
     void state.graph?.context.close();
     state.graph = undefined;

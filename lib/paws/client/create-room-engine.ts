@@ -19,8 +19,8 @@ import { getCatSnapshots } from "@/lib/paws/sim/get-cat-snapshots";
 import type { FingerInput, World } from "@/lib/paws/sim/sim-types";
 import { stepWorld } from "@/lib/paws/sim/step-world";
 import type {
-  CatSnapshot,
   CatsMessage,
+  CatSnapshot,
   FingerMessage,
   PawPrintEvent,
   PlayerPresence,
@@ -28,6 +28,7 @@ import type {
 } from "@/lib/paws/wire-types";
 
 const REMOTE_FINGER_TIMEOUT_MS = 2000;
+const FINGER_REFRESH_MS = 1000;
 const MIN_FINGER_MOVE = 0.5;
 const MIN_FINGERPRINT_PRESS = 0.2;
 const RESIDENT_CATS = 3;
@@ -74,7 +75,9 @@ export function createRoomEngine(options: { random: () => number }) {
     remoteFingers: { [userId: string]: RemoteFinger | undefined };
     ownPointer: OwnPointer;
     ownTip: FingertipState | undefined;
-    lastSentFinger: { x: number; y: number; pressed: boolean } | undefined;
+    lastSentFinger:
+      | { x: number; y: number; pressed: boolean; sentAtMs: number }
+      | undefined;
     wasPressed: boolean;
     seq: number;
     prints: ScenePrint[];
@@ -150,20 +153,29 @@ export function createRoomEngine(options: { random: () => number }) {
     return [...own, ...remote];
   }
 
-  function ownFingerMessage(): FingerMessage | undefined {
-    if (
-      state.role !== "player" ||
-      state.selfId === undefined ||
-      !state.ownPointer.present
-    )
-      return undefined;
-    const { x, y, pressed } = state.ownPointer;
+  function ownFingerMessage(nowMs: number): FingerMessage | undefined {
+    if (state.role !== "player" || state.selfId === undefined) return undefined;
     const last = state.lastSentFinger;
-    const hasMoved =
-      last === undefined ||
-      Math.hypot(x - last.x, y - last.y) > MIN_FINGER_MOVE;
-    if (!hasMoved && last.pressed === pressed) return undefined;
-    state.lastSentFinger = { x, y, pressed };
+    if (!state.ownPointer.present) {
+      state.lastSentFinger = undefined;
+      if (last === undefined || !last.pressed) return undefined;
+      state.seq += 1;
+      return {
+        userId: state.selfId,
+        x: last.x,
+        y: last.y,
+        pressed: false,
+        seq: state.seq,
+      };
+    }
+    const { x, y, pressed } = state.ownPointer;
+    const isUnchanged =
+      last !== undefined &&
+      Math.hypot(x - last.x, y - last.y) <= MIN_FINGER_MOVE &&
+      last.pressed === pressed &&
+      nowMs - last.sentAtMs < FINGER_REFRESH_MS;
+    if (isUnchanged) return undefined;
+    state.lastSentFinger = { x, y, pressed, sentAtMs: nowMs };
     state.seq += 1;
     return { userId: state.selfId, x, y, pressed, seq: state.seq };
   }
@@ -400,7 +412,7 @@ export function createRoomEngine(options: { random: () => number }) {
         outgoing: {
           cats: stepped.cats,
           events: outgoingEvents,
-          finger: ownFingerMessage(),
+          finger: ownFingerMessage(nowMs),
         },
         isHost,
       };

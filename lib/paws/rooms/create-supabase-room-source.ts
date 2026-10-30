@@ -20,7 +20,7 @@ const RECEIVE_LIMITS = {
   eventsPerSecond: 20,
 } as const;
 
-/** Return a room source on private Supabase Realtime channels of `client`: players are read from presence and only a player with `self` tracks it, fingertips, cat snapshots and events go by broadcast, everything received is parsed, fingertips, events and cat snapshots claiming a user who is not a present player are dropped, as is any message past its `RECEIVE_LIMITS` rate in the last second for that user, with presses and releases counted apart from moves, a `meowUrl` must be a same-site path or under one of `meowOrigins`, and own fingertips are throttled to `ROOM_LIMITS.fingerSendsPerSecond` except presses and releases. */
+/** Return a room source that joins private Supabase Realtime room channels on `client`, reading players from presence and passing on only parsed messages from present players within `RECEIVE_LIMITS`. */
 export function createSupabaseRoomSource(options: {
   client: ReturnType<typeof createPawsBrowserClient>;
   meowOrigins: string[];

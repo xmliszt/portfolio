@@ -1,4 +1,4 @@
-/** Paper and inks shared by the canvas and the interface; nothing on the page uses any other colour. */
+/** Paper and interface inks shared by the canvas and the controls. */
 export const RISO = {
   paper: "#f3efe4",
   paperDeep: "#ebe5d6",

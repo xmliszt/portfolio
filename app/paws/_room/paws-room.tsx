@@ -8,6 +8,7 @@ import { PawsOnboarding } from "@/app/paws/_ui/paws-onboarding";
 import { createRoomEngine } from "@/lib/paws/client/create-room-engine";
 import { COPY } from "@/lib/paws/copy";
 import { shuffleCatLook } from "@/lib/paws/maker/shuffle-cat-look";
+import { getBorrowedMeowUrl } from "@/lib/paws/profile/get-borrowed-meow-url";
 import { createSceneResources } from "@/lib/paws/render/create-scene-resources";
 import { drawScene } from "@/lib/paws/render/draw-scene";
 import { getWorldView } from "@/lib/paws/render/get-world-view";
@@ -20,7 +21,6 @@ import { useSavedCat } from "./use-saved-cat";
 const MAX_DPR = 2;
 const MAX_DT_SECONDS = 0.05;
 const FAKE_VOICE = { age: "adult", voice: "soft", mood: "chatty" } as const;
-const FAKE_MEOW_URL = "/paws/sounds/meow-adult-soft-chatty.mp3";
 
 /** Render the room: the shared cats, every fingertip and print on a full-screen canvas, the visitor's own fingertip from the pointer, sounds, and the corner flow for bringing a cat in. */
 export function PawsRoom() {
@@ -32,11 +32,11 @@ export function PawsRoom() {
   const [sound] = useState(() =>
     createPawsSoundPlayer({ createContext: () => new AudioContext() })
   );
-  const useFakeRoom = useMemo(
+  const [useFakeRoom] = useState(
     () =>
+      process.env.NODE_ENV !== "production" &&
       typeof window !== "undefined" &&
-      new URLSearchParams(window.location.search).has("fake"),
-    []
+      new URLSearchParams(window.location.search).has("fake")
   );
   const [fakeLook] = useState(() => shuffleCatLook({ random: Math.random }));
   const self = (() => {
@@ -53,7 +53,7 @@ export function PawsRoom() {
         userId: session.userId,
         look: fakeLook,
         voice: FAKE_VOICE,
-        meowUrl: FAKE_MEOW_URL,
+        meowUrl: getBorrowedMeowUrl(FAKE_VOICE),
       };
     }
     return undefined;

@@ -19,7 +19,7 @@ const toLeg = (index: 0 | 1 | 2 | 3, snapshot: CatSnapshot): SimLeg => ({
   reach: undefined,
 });
 
-/** Return a new cat for player `userId` standing still where `snapshot` puts it; callers then spawn it or restore its activity. */
+/** Return a new cat for player `userId` standing still where `snapshot` puts it. */
 export function createSimCat(options: {
   world: World;
   userId: string;

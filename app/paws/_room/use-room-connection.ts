@@ -1,14 +1,11 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 
 import type { createRoomEngine } from "@/lib/paws/client/create-room-engine";
 import { parseJoinRoomResponse } from "@/lib/paws/client/parse-join-room-response";
-import type {
-  RoomConnection,
-  RoomRole,
-  RoomSource,
-} from "@/lib/paws/room-source";
+import { getBorrowedMeowUrl } from "@/lib/paws/profile/get-borrowed-meow-url";
+import type { RoomConnection } from "@/lib/paws/room-source";
 import { createFakeRoomSource } from "@/lib/paws/rooms/create-fake-room-source";
 import { createSupabaseRoomSource } from "@/lib/paws/rooms/create-supabase-room-source";
 import { ROOM_TIMING } from "@/lib/paws/rooms/room-timing";
@@ -19,17 +16,11 @@ import type { PlayerPresence } from "@/lib/paws/wire-types";
 import { postRoomApi } from "./post-room-api";
 
 const FAKE_REMOTE_PLAYERS = 4;
-const FAKE_MEOW_URL = "/paws/sounds/meow-adult-soft-chatty.mp3";
+const FAKE_VOICE = { age: "adult", voice: "soft", mood: "chatty" } as const;
 const REJOIN_DELAY_MS = 4000;
+const FULL_REJOIN_DELAY_MS = 30_000;
 
-export type RoomStatus =
-  | { kind: "idle" }
-  | { kind: "joining" }
-  | { kind: "joined"; roomId: string; role: RoomRole; isConnected: boolean }
-  | { kind: "full" }
-  | { kind: "failed" };
-
-/** Join a room for the current visitor (a player when `self` is set, otherwise a watcher), feed everything it receives into `engine`, keep the membership alive, and return the room status, the open connection and the latest players. */
+/** Join a room for the current visitor (a player when `self` is set, otherwise a watcher), feed everything it receives into `engine`, keep the membership alive, and return the open connection and the latest players. */
 export function useRoomConnection(options: {
   session: PawsSession;
   client: ReturnType<typeof createPawsBrowserClient> | undefined;
@@ -38,7 +29,6 @@ export function useRoomConnection(options: {
   useFakeRoom: boolean;
   isReady: boolean;
 }) {
-  const [status, setStatus] = useState<RoomStatus>({ kind: "idle" });
   const [attempt, setAttempt] = useState(0);
   const connectionRef = useRef<RoomConnection | undefined>(undefined);
   const playersRef = useRef<PlayerPresence[]>([]);
@@ -47,6 +37,24 @@ export function useRoomConnection(options: {
   const { session, client, self, engine, useFakeRoom, isReady } = options;
   const userId = session.kind === "loading" ? undefined : session.userId;
   const selfKey = self === undefined ? "" : JSON.stringify(self);
+  const source = useMemo(() => {
+    if (useFakeRoom)
+      return createFakeRoomSource({
+        remotePlayerCount: FAKE_REMOTE_PLAYERS,
+        meowUrl: getBorrowedMeowUrl(FAKE_VOICE),
+        random: Math.random,
+      });
+    if (client === undefined) return undefined;
+    return createSupabaseRoomSource({
+      client,
+      meowOrigins: [
+        new URL(process.env.NEXT_PUBLIC_SUPABASE_URL ?? "https://invalid.local")
+          .origin,
+      ],
+    });
+  }, [client, useFakeRoom]);
+
+  useEffect(() => () => source?.dispose(), [source]);
 
   useEffect(() => {
     tokenRef.current =
@@ -58,17 +66,12 @@ export function useRoomConnection(options: {
   }, [self]);
 
   useEffect(() => {
-    if (
-      !isReady ||
-      userId === undefined ||
-      (client === undefined && !useFakeRoom)
-    )
-      return;
+    if (!isReady || userId === undefined || source === undefined) return;
+    const roomSource = source;
     const run: {
       isCancelled: boolean;
       heartbeat?: number;
       retry?: number;
-      source?: RoomSource;
       roomId?: string;
     } = {
       isCancelled: false,
@@ -80,15 +83,14 @@ export function useRoomConnection(options: {
         ? undefined
         : { ...self, connectionId, joinedAt: Date.now() };
 
-    function scheduleRejoin() {
+    function scheduleRejoin(delayMs: number) {
       run.retry = window.setTimeout(
         () => setAttempt((value) => value + 1),
-        REJOIN_DELAY_MS
+        delayMs
       );
     }
 
     async function join() {
-      setStatus({ kind: "joining" });
       const joined = await (async () => {
         if (useFakeRoom || client === undefined) {
           return {
@@ -113,15 +115,13 @@ export function useRoomConnection(options: {
           case "joined":
             return { roomId: answer.roomId, role: answer.role };
           case "full":
-            setStatus({ kind: "full" });
-            scheduleRejoin();
+            scheduleRejoin(FULL_REJOIN_DELAY_MS);
             return undefined;
           case "tooManyJoins":
           case "forbidden":
           case "failed":
           case undefined:
-            setStatus({ kind: "failed" });
-            scheduleRejoin();
+            scheduleRejoin(REJOIN_DELAY_MS);
             return undefined;
           default: {
             const unhandled: never = answer;
@@ -131,31 +131,8 @@ export function useRoomConnection(options: {
       })();
       if (joined === undefined || run.isCancelled) return;
       run.roomId = joined.roomId;
-      const source =
-        useFakeRoom || client === undefined
-          ? createFakeRoomSource({
-              remotePlayerCount: FAKE_REMOTE_PLAYERS,
-              meowUrl: FAKE_MEOW_URL,
-              random: Math.random,
-            })
-          : createSupabaseRoomSource({
-              client,
-              meowOrigins: [
-                new URL(
-                  process.env.NEXT_PUBLIC_SUPABASE_URL ??
-                    "https://invalid.local"
-                ).origin,
-              ],
-            });
       engine.setSelf({ userId, connectionId, role: joined.role });
-      setStatus({
-        kind: "joined",
-        roomId: joined.roomId,
-        role: joined.role,
-        isConnected: false,
-      });
-      run.source = source;
-      connectionRef.current = source.join({
+      connectionRef.current = roomSource.join({
         roomId: joined.roomId,
         role: joined.role,
         self: joined.role === "player" ? presence : undefined,
@@ -168,13 +145,7 @@ export function useRoomConnection(options: {
         onCats: (message) =>
           engine.receiveCats({ message, receivedAtMs: performance.now() }),
         onEvent: (event) => engine.receiveEvent(event),
-        onConnectedChange: (isConnected) =>
-          setStatus({
-            kind: "joined",
-            roomId: joined.roomId,
-            role: joined.role,
-            isConnected,
-          }),
+        onConnectedChange: () => undefined,
       });
       if (useFakeRoom || client === undefined) return;
       run.heartbeat = window.setInterval(async () => {
@@ -201,7 +172,6 @@ export function useRoomConnection(options: {
       window.clearTimeout(run.retry);
       connectionRef.current?.leave();
       connectionRef.current = undefined;
-      run.source?.dispose();
       playersRef.current = [];
       engine.setPlayers([]);
       engine.setSelf({
@@ -218,9 +188,8 @@ export function useRoomConnection(options: {
           keepalive: true,
         });
       }
-      setStatus({ kind: "idle" });
     };
-  }, [userId, client, selfKey, engine, useFakeRoom, attempt, isReady]);
+  }, [userId, client, source, selfKey, engine, useFakeRoom, attempt, isReady]);
 
-  return { status, connectionRef, playersRef };
+  return { connectionRef, playersRef };
 }

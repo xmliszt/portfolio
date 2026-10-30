@@ -17,7 +17,6 @@ const PRESS_CHANCE = 0.08;
 
 type FakeFinger = { finger: FingerMessage; target: { x: number; y: number } };
 
-/** Return the point at most `MAX_STEP` world units from `from` toward `to`, so fake fingertips move at a calm hand's pace. */
 function stepToward(options: {
   from: { x: number; y: number };
   to: { x: number; y: number };

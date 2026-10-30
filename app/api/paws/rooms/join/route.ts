@@ -75,17 +75,15 @@ export async function POST(request: Request) {
     .eq("user_id", user.userId)
     .neq("room_id", picked.roomId);
   if (left.error !== null) return respond({ kind: "failed" }, 500);
-  const joined = await client
-    .from("room_members")
-    .upsert(
-      {
-        room_id: picked.roomId,
-        user_id: user.userId,
-        role,
-        last_seen_at: new Date(now).toISOString(),
-      },
-      { onConflict: "room_id,user_id" }
-    );
+  const joined = await client.from("room_members").upsert(
+    {
+      room_id: picked.roomId,
+      user_id: user.userId,
+      role,
+      last_seen_at: new Date(now).toISOString(),
+    },
+    { onConflict: "room_id,user_id" }
+  );
   if (joined.error !== null) return respond({ kind: "failed" }, 500);
   return respond(
     {
