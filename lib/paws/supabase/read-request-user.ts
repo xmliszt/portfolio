@@ -7,7 +7,7 @@ export type RequestUser = { userId: string; isAnonymous: boolean };
 /** Return the Supabase user behind the request's `Authorization: Bearer` access token, or `undefined` when there is no valid token. */
 export async function readRequestUser(options: {
   request: Request;
-  client: SupabaseClient;
+  client: { auth: SupabaseClient["auth"] };
 }): Promise<RequestUser | undefined> {
   const token = options.request.headers.get("authorization")?.match(/^Bearer (.+)$/)?.at(1);
   if (token === undefined) return undefined;
