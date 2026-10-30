@@ -102,7 +102,9 @@ export function drawCat(options: {
         (point, i): Vec4 => [
           point[0],
           point[1],
-          point[2] * (0.34 + 0.16 * valueNoise(i * 0.45, cat.phase)),
+          point[2] *
+            (0.34 + 0.16 * valueNoise(i * 0.45, cat.phase)) *
+            (1 - 0.8 * cat.sleepWeight),
           point[3],
         ]
       );
