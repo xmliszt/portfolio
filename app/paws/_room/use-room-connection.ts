@@ -19,7 +19,7 @@ const FAKE_REMOTE_PLAYERS = 4;
 const REJOIN_DELAY_MS = 4000;
 const FULL_REJOIN_DELAY_MS = 30_000;
 
-/** Join a room for the current visitor (a player when `self` is set, otherwise a watcher), asking for the `?room=` room or the one passed to `switchRoom` when there is one, feed everything it receives into `engine`, keep the membership alive, and return the open connection, the latest players, the room id and `switchRoom`. */
+/** Join a room for the current visitor (a player when `self` is set, otherwise a watcher), asking for the `?room=` room or the one passed to `switchRoom` when there is one, feed everything it receives into `engine`, keep the membership alive, and return the open connection, the latest players, the room id, whether every room was full on the last try, and `switchRoom`. */
 export function useRoomConnection(options: {
   session: PawsSession;
   client: ReturnType<typeof createPawsBrowserClient> | undefined;
@@ -36,6 +36,7 @@ export function useRoomConnection(options: {
       : (new URLSearchParams(window.location.search).get("room") ?? undefined)
   );
   const [roomId, setRoomId] = useState<string | undefined>(undefined);
+  const [isFull, setIsFull] = useState(false);
   const connectionRef = useRef<RoomConnection | undefined>(undefined);
   const roomIdRef = useRef<string | undefined>(undefined);
   const onChatRef = useRef(options.onChat);
@@ -124,6 +125,7 @@ export function useRoomConnection(options: {
           case "joined":
             return { roomId: answer.roomId, role: answer.role };
           case "full":
+            setIsFull(true);
             scheduleRejoin(FULL_REJOIN_DELAY_MS);
             return undefined;
           case "tooManyJoins":
@@ -140,6 +142,7 @@ export function useRoomConnection(options: {
       })();
       if (joined === undefined || run.isCancelled) return;
       run.roomId = joined.roomId;
+      setIsFull(false);
       roomIdRef.current = joined.roomId;
       setRoomId(joined.roomId);
       engine.setSelf({
@@ -228,5 +231,5 @@ export function useRoomConnection(options: {
     setAttempt((value) => value + 1);
   }
 
-  return { connectionRef, playersRef, roomIdRef, roomId, switchRoom };
+  return { connectionRef, playersRef, roomIdRef, roomId, isFull, switchRoom };
 }

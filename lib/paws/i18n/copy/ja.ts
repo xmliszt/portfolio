@@ -89,6 +89,7 @@ export const ja = {
     chatTooFast: "ちょっとゆっくりね。",
     chatFailed: "送れませんでした。もう一度どうぞ。",
     lookAround: "部屋を見わたす",
+    findingRoom: "部屋をさがしています…",
     roomEntered: "{room}に入りました",
     roomMoved: "{room}に移動しました",
   },

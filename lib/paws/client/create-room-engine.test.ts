@@ -486,3 +486,22 @@ test("a new room's residents do not start from the last room's snapshots", () =>
     fresh === undefined || Math.hypot(fresh.x - old.x, fresh.y - old.y) > 1
   );
 });
+
+test("a screen whose host goes silent runs the room's cats itself", () => {
+  const engine = createRoomEngine({ random: createSeededRandom({ seed: 4 }) });
+  engine.setPlayers([buildPlayer({ userId: "a", joinedAt: 1 })]);
+  engine.setSelf({
+    userId: "b",
+    connectionId: "b-tab",
+    role: "watcher",
+    roomId: "room-1",
+  });
+  const waiting = engine.frame({ nowMs: 0, dtSeconds: DT_SECONDS });
+  assert.equal(waiting.cats.length, 0, "waits for the host at first");
+  const silent = engine.frame({ nowMs: 3100, dtSeconds: DT_SECONDS });
+  assert.deepEqual(
+    silent.cats.map((cat) => cat.userId).toSorted(),
+    ["a", "resident-1", "resident-2", "resident-3"],
+    "after 3 s of silence it shows the player's cat and the residents"
+  );
+});

@@ -30,6 +30,7 @@ import { COMPOSE_ANCHOR_PREFIX } from "./compose-anchor-prefix";
 import { PanBar, type PanBarHandle } from "./pan-bar";
 import { postChat } from "./post-chat";
 import { RoomBanner } from "./room-banner";
+import { RoomLoading } from "./room-loading";
 import { RoomPicker } from "./room-picker";
 import { SoundSwitch } from "./sound-switch";
 import { UiSoundContext } from "./ui-sound-context";
@@ -177,7 +178,7 @@ export function PawsRoom() {
     ownCatIdRef.current = self === undefined ? undefined : self.userId;
   }, [self]);
 
-  const { connectionRef, playersRef, roomIdRef, roomId, switchRoom } =
+  const { connectionRef, playersRef, roomIdRef, roomId, isFull, switchRoom } =
     useRoomConnection({
       session,
       client,
@@ -594,6 +595,17 @@ export function PawsRoom() {
           onPointerCancel={handlePointerLeave}
           onPointerLeave={handlePointerLeave}
         />
+        <RoomLoading
+          text={
+            isChecked &&
+            !useFakeRoom &&
+            "accessToken" in session &&
+            roomId === undefined &&
+            !isFull
+              ? copy.room.findingRoom
+              : undefined
+          }
+        />
         <div className="absolute top-4 right-4 flex items-center gap-x-2 group-has-[[aria-modal=true]]/room:hidden sm:top-6 sm:right-6">
           {roomId !== undefined && !useFakeRoom && "accessToken" in session && (
             <RoomPicker
@@ -635,18 +647,20 @@ export function PawsRoom() {
         )}
         <RoomBanner
           text={
-            banner === undefined
-              ? undefined
-              : (banner.isMove
-                  ? copy.room.roomMoved
-                  : copy.room.roomEntered
-                ).replace(
-                  "{room}",
-                  copy.room.roomName.replace(
-                    "{number}",
-                    String(getRoomNumber(banner.roomId))
+            isFull
+              ? copy.watch.roomFull
+              : banner === undefined
+                ? undefined
+                : (banner.isMove
+                    ? copy.room.roomMoved
+                    : copy.room.roomEntered
+                  ).replace(
+                    "{room}",
+                    copy.room.roomName.replace(
+                      "{number}",
+                      String(getRoomNumber(banner.roomId))
+                    )
                   )
-                )
           }
         />
         <ChatLayer

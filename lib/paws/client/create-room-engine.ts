@@ -10,8 +10,8 @@ import { ROOM_LIMITS } from "@/lib/paws/room-limits";
 import type { RoomRole } from "@/lib/paws/room-source";
 import { chooseHost } from "@/lib/paws/rooms/choose-host";
 import { LOCAL_ROOM_ID } from "@/lib/paws/rooms/local-room-id";
+import { createResidentWorld } from "@/lib/paws/sim/create-resident-world";
 import { createSnapshotBuffer } from "@/lib/paws/sim/create-snapshot-buffer";
-import { createWorld } from "@/lib/paws/sim/create-world";
 import { createWorldFromSnapshots } from "@/lib/paws/sim/create-world-from-snapshots";
 import type { DerivedCat } from "@/lib/paws/sim/derive-cat";
 import { deriveCat } from "@/lib/paws/sim/derive-cat";
@@ -45,6 +45,7 @@ const MAX_REMOTE_SAMPLES =
 const MIN_FINGER_MOVE = 0.5;
 const MIN_FINGERPRINT_PRESS = 0.2;
 const LOCAL_VISITOR_ID = "visitor";
+const SILENT_HOST_MS = 3000;
 const MAX_QUEUED_PRINTS = 160;
 const MAX_QUEUED_EVENTS = 200;
 
@@ -109,6 +110,8 @@ export function createRoomEngine(options: { random: () => number }) {
     unsentPrints: PawPrintEvent[];
     incomingPrints: { print: PawPrintEvent; showAtMs: number }[];
     lastCatsSentAtMs: number;
+    lastCatsReceivedAtMs: number;
+    followed: { hostId: string | undefined; sinceMs: number };
     time: number;
   } = {
     players: [],
@@ -132,6 +135,8 @@ export function createRoomEngine(options: { random: () => number }) {
     unsentPrints: [],
     incomingPrints: [],
     lastCatsSentAtMs: -Infinity,
+    lastCatsReceivedAtMs: -Infinity,
+    followed: { hostId: undefined, sinceMs: 0 },
     time: 0,
   };
 
@@ -262,6 +267,7 @@ export function createRoomEngine(options: { random: () => number }) {
         state.residents = getResidentCats({ roomId: self.roomId });
         state.residentWorld = undefined;
         state.buffer = createSnapshotBuffer();
+        state.lastCatsReceivedAtMs = -Infinity;
       }
       state.selfId = self.userId;
       state.selfConnectionId = self.connectionId;
@@ -315,6 +321,7 @@ export function createRoomEngine(options: { random: () => number }) {
       )
         return;
       state.buffer.push(options);
+      state.lastCatsReceivedAtMs = options.receivedAtMs;
       state.incomingPrints = [
         ...state.incomingPrints,
         ...options.message.prints.map((print) => ({
@@ -345,6 +352,18 @@ export function createRoomEngine(options: { random: () => number }) {
         state.selfConnectionId !== undefined &&
         hostId === state.selfConnectionId;
 
+      if (hostId !== state.followed.hostId)
+        state.followed = { hostId, sinceMs: nowMs };
+      const isHostSilent =
+        hostId !== undefined &&
+        !isHost &&
+        nowMs - Math.max(state.lastCatsReceivedAtMs, state.followed.sinceMs) >
+          SILENT_HOST_MS;
+      const runsLocally = hostId === undefined || isHostSilent;
+      const localPlayers = isHostSilent
+        ? [...state.players, ...state.residents]
+        : state.residents;
+
       if (isHost && state.world === undefined) {
         const latest = state.buffer.latest();
         state.world =
@@ -355,20 +374,31 @@ export function createRoomEngine(options: { random: () => number }) {
                 snapshots: latest,
                 players: [...state.players, ...state.residents],
               })
-            : createWorld({ random: options.random }));
+            : createResidentWorld({
+                random: options.random,
+                players: state.residents,
+              }));
       }
       if (!isHost) {
         state.world = undefined;
         state.unsentPrints = [];
       }
-      if (isHost || hostId === undefined) state.incomingPrints = [];
-      if (hostId !== undefined) state.residentWorld = undefined;
-      if (hostId === undefined && state.residentWorld === undefined)
-        state.residentWorld = createWorldFromSnapshots({
-          random: options.random,
-          snapshots: state.buffer.latest(),
-          players: state.residents,
-        });
+      if (isHost || runsLocally) state.incomingPrints = [];
+      if (!runsLocally) state.residentWorld = undefined;
+      if (runsLocally && state.residentWorld === undefined) {
+        const latest = state.buffer.latest();
+        state.residentWorld =
+          latest.length > 0
+            ? createWorldFromSnapshots({
+                random: options.random,
+                snapshots: latest,
+                players: localPlayers,
+              })
+            : createResidentWorld({
+                random: options.random,
+                players: localPlayers,
+              });
+      }
 
       const events: RoomEvent[] = state.received
         .filter((received) => received.showAtMs <= nowMs)
@@ -384,7 +414,7 @@ export function createRoomEngine(options: { random: () => number }) {
         if (state.world === undefined && state.residentWorld !== undefined) {
           const result = stepWorld({
             world: state.residentWorld,
-            players: state.residents,
+            players: localPlayers,
             fingers: simFingers(nowMs),
             dtSeconds,
           });

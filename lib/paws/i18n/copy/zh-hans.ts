@@ -85,6 +85,7 @@ export const zhHans = {
     chatTooFast: "慢一点哦。",
     chatFailed: "没发出去，再试一次。",
     lookAround: "环顾房间",
+    findingRoom: "正在为你找房间…",
     roomEntered: "你在{room}",
     roomMoved: "已来到{room}",
   },

@@ -88,6 +88,7 @@ export const nl = {
     chatTooFast: "Iets rustiger aan.",
     chatFailed: "Niet verstuurd. Probeer het opnieuw.",
     lookAround: "Rondkijken in de kamer",
+    findingRoom: "We zoeken een kamer voor je…",
     roomEntered: "Je bent in {room}",
     roomMoved: "Nu in {room}",
   },

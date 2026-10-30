@@ -88,6 +88,7 @@ export const ptBR = {
     chatTooFast: "Mais devagar.",
     chatFailed: "Não foi enviado. Tente de novo.",
     lookAround: "Olhar pela sala",
+    findingRoom: "Procurando uma sala para você…",
     roomEntered: "Você está na {room}",
     roomMoved: "Agora na {room}",
   },

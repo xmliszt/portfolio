@@ -88,6 +88,7 @@ export const hi = {
     chatTooFast: "थोड़ा धीरे।",
     chatFailed: "नहीं भेजा गया। फिर से कोशिश करें।",
     lookAround: "कमरे में इधर-उधर देखें",
+    findingRoom: "आपके लिए कमरा ढूँढ रहे हैं…",
     roomEntered: "आप {room} में हैं",
     roomMoved: "अब {room} में",
   },

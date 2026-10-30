@@ -88,6 +88,7 @@ export const tr = {
     chatTooFast: "Biraz yavaş.",
     chatFailed: "Gönderilemedi. Tekrar dene.",
     lookAround: "Odada gezin",
+    findingRoom: "Sana bir oda arıyoruz…",
     roomEntered: "{room} içindesin",
     roomMoved: "Şimdi {room} içinde",
   },

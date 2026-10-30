@@ -88,6 +88,7 @@ export const ko = {
     chatTooFast: "조금 천천히요.",
     chatFailed: "보내지 못했어요. 다시 해 보세요.",
     lookAround: "방 둘러보기",
+    findingRoom: "방을 찾는 중…",
     roomEntered: "{room}에 들어왔어요",
     roomMoved: "{room}(으)로 옮겼어요",
   },

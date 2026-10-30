@@ -88,6 +88,7 @@ export const id = {
     chatTooFast: "Pelan-pelan sedikit.",
     chatFailed: "Tidak terkirim. Coba lagi.",
     lookAround: "Lihat sekeliling ruangan",
+    findingRoom: "Mencarikan ruangan…",
     roomEntered: "Kamu di {room}",
     roomMoved: "Sekarang di {room}",
   },

@@ -88,6 +88,7 @@ export const ru = {
     chatTooFast: "Чуть помедленнее.",
     chatFailed: "Не отправилось. Попробуй ещё раз.",
     lookAround: "Осмотреть комнату",
+    findingRoom: "Ищем для вас комнату…",
     roomEntered: "Ваша комната: {room}",
     roomMoved: "Новая комната: {room}",
   },

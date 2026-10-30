@@ -89,6 +89,7 @@ export const es = {
     chatTooFast: "Un poco más despacio.",
     chatFailed: "No se envió. Inténtalo de nuevo.",
     lookAround: "Mirar por la sala",
+    findingRoom: "Buscándote una sala…",
     roomEntered: "Estás en {room}",
     roomMoved: "Ahora en {room}",
   },

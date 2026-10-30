@@ -88,6 +88,7 @@ export const vi = {
     chatTooFast: "Chậm lại một chút.",
     chatFailed: "Chưa gửi được. Thử lại nhé.",
     lookAround: "Nhìn quanh phòng",
+    findingRoom: "Đang tìm phòng cho bạn…",
     roomEntered: "Bạn đang ở {room}",
     roomMoved: "Giờ ở {room}",
   },
