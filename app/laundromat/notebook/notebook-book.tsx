@@ -33,6 +33,7 @@ import { getEntrySpreads } from "@/lib/laundromat/notebook/get-entry-spreads";
 import { getLinesUsed } from "@/lib/laundromat/notebook/get-lines-used";
 import { getRestingPlacedAt } from "@/lib/laundromat/notebook/get-resting-placed-at";
 import { getSpreadOfPage } from "@/lib/laundromat/notebook/get-spread-of-page";
+import { getWiggleKeyframes } from "@/lib/laundromat/notebook/get-wiggle-keyframes";
 import { isEntryHidden } from "@/lib/laundromat/notebook/is-entry-hidden";
 import { isRtlScript } from "@/lib/laundromat/notebook/is-rtl-script";
 import { keepTrailingSpace } from "@/lib/laundromat/notebook/keep-trailing-space";
@@ -1632,6 +1633,7 @@ export function NotebookBook(props: NotebookBookProps) {
 @keyframes lm-caret { 50% { opacity: 0; } }
 @keyframes lm-doodle-ink { from { opacity: 1; } to { stroke-dashoffset: 0; opacity: 1; } }
 @keyframes lm-doodle-dot { to { opacity: 1; } }
+${getWiggleKeyframes(doodle.wiggle.frameCount)}
 `}</style>
       {isWritable && (
         <textarea
