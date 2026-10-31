@@ -10,6 +10,7 @@ import { CODE_LENGTH, readCodeInput } from "@/lib/paws/maker/read-code-input";
 import type { PawsSessionActions } from "@/lib/paws/session-types";
 import { cn } from "@/lib/utils";
 
+import { CodeBoxes } from "./code-boxes";
 import { FloatingCard } from "./floating-card";
 import { FOCUS_RING_CLASS } from "./focus-ring-class";
 import { RisoButton } from "./riso-button";
@@ -60,6 +61,7 @@ export function SignInPanel(props: SignInPanelProps) {
   const formId = useId();
   const [email, setEmail] = useState("");
   const [code, setCode] = useState("");
+  const [isCodeFocused, setIsCodeFocused] = useState(false);
   const [step, setStep] = useState<SignInStep>({
     kind: "email",
     busy: false,
@@ -103,11 +105,11 @@ export function SignInPanel(props: SignInPanelProps) {
     }
   }
 
-  async function verifyCode() {
+  async function verifyCode(typed: string) {
     setStep({ kind: "code", busy: "verifying", notice: undefined });
     const result = await props.actions.verifyEmailCode({
       email: email.trim(),
-      code,
+      code: typed,
     });
     playUi(result.kind === "verified" ? "signedIn" : "refused");
     switch (result.kind) {
@@ -131,7 +133,17 @@ export function SignInPanel(props: SignInPanelProps) {
   }
 
   function handleCodeChange(event: React.ChangeEvent<HTMLInputElement>) {
-    setCode(readCodeInput(event.target.value));
+    const typed = readCodeInput(event.target.value);
+    setCode(typed);
+    if (typed.length === CODE_LENGTH && typed !== code) void verifyCode(typed);
+  }
+
+  function handleCodeFocus() {
+    setIsCodeFocused(true);
+  }
+
+  function handleCodeBlur() {
+    setIsCodeFocused(false);
   }
 
   function handleEmailSubmit(event: React.FormEvent) {
@@ -141,7 +153,7 @@ export function SignInPanel(props: SignInPanelProps) {
 
   function handleCodeSubmit(event: React.FormEvent) {
     event.preventDefault();
-    if (code.length === CODE_LENGTH) void verifyCode();
+    if (code.length === CODE_LENGTH) void verifyCode(code);
   }
 
   function handleResend() {
@@ -250,25 +262,32 @@ export function SignInPanel(props: SignInPanelProps) {
                   >
                     {copy.signIn.codeLabel}
                   </label>
-                  <input
-                    ref={inputRef}
-                    id={codeId}
-                    type="text"
-                    required
-                    autoFocus
-                    inputMode="numeric"
-                    autoComplete="one-time-code"
-                    pattern={`[0-9]{${CODE_LENGTH}}`}
-                    value={code}
-                    disabled={step.busy !== undefined}
-                    aria-describedby={step.notice ? noticeId : undefined}
-                    aria-invalid={step.notice === "wrongCode"}
-                    onChange={handleCodeChange}
-                    className={cn(
-                      TEXT_FIELD_CLASS,
-                      "h-10 text-center text-[20px] tracking-[0.5em] tabular-nums"
-                    )}
-                  />
+                  <div className="relative">
+                    <CodeBoxes
+                      code={code}
+                      focused={isCodeFocused && step.busy === undefined}
+                      invalid={step.notice === "wrongCode"}
+                      disabled={step.busy !== undefined}
+                    />
+                    <input
+                      ref={inputRef}
+                      id={codeId}
+                      type="text"
+                      required
+                      autoFocus
+                      inputMode="numeric"
+                      autoComplete="one-time-code"
+                      pattern={`[0-9]{${CODE_LENGTH}}`}
+                      value={code}
+                      disabled={step.busy !== undefined}
+                      aria-describedby={step.notice ? noticeId : undefined}
+                      aria-invalid={step.notice === "wrongCode"}
+                      onChange={handleCodeChange}
+                      onFocus={handleCodeFocus}
+                      onBlur={handleCodeBlur}
+                      className="absolute inset-0 size-full cursor-text bg-transparent text-[16px] text-transparent caret-transparent outline-none selection:bg-transparent"
+                    />
+                  </div>
                 </div>
                 {notice}
                 <div className="flex flex-wrap items-center gap-x-2 text-[12px]">
