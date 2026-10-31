@@ -41,6 +41,9 @@ const PLAYBACK_DELAY_MS = FINGER_SEND_MS + 150;
 const KEPT_SAMPLES_MS = 1000;
 const CLOCK_OFFSET_WINDOW = 10;
 const MAX_CLOCK_SLEW = 0.2;
+/** World units a late batch would move a held fingertip in one frame before playback resumes from where it held instead. */
+const CATCH_UP_JUMP = 24;
+const MAX_CATCH_UP_MS = 3000;
 const MAX_REMOTE_SAMPLES =
   2 * CLOCK_OFFSET_WINDOW * (WIRE_LIMITS.maxTrailPoints + 1);
 const MIN_FINGER_MOVE = 0.5;
@@ -83,6 +86,8 @@ type RemoteFinger = {
   receivedAtMs: number;
   pressed: boolean;
   tip: FingertipState | undefined;
+  /** The newest sample's time when playback ran past it, so a late batch resumes from there instead of jumping ahead. */
+  heldAt: number | undefined;
 };
 
 /** Return the room as one screen runs it: the host steps the shared cats and the others play back the host's snapshots, both turning fingertips, prints and sounds into what to draw, play and send each frame. */
@@ -314,6 +319,7 @@ export function createRoomEngine(options: { random: () => number }) {
         receivedAtMs,
         pressed: stream?.pressed ?? message.pressed,
         tip: existing?.tip,
+        heldAt: stream?.heldAt,
       };
     },
     receiveCats: (options: { message: CatsMessage; receivedAtMs: number }) => {
@@ -518,7 +524,31 @@ export function createRoomEngine(options: { random: () => number }) {
                 slew,
                 Math.max(-slew, targetOffset - finger.clockOffset)
               );
+        const newestAt = finger.samples.at(-1)?.t;
+        const heldAt = finger.heldAt;
+        if (
+          heldAt !== undefined &&
+          newestAt !== undefined &&
+          newestAt > heldAt
+        ) {
+          const scheduledAt = nowMs - finger.clockOffset - PLAYBACK_DELAY_MS;
+          const held = sampleFingerPath({ samples: finger.samples, t: heldAt });
+          const scheduled = sampleFingerPath({
+            samples: finger.samples,
+            t: scheduledAt,
+          });
+          const jump =
+            held === undefined || scheduled === undefined
+              ? 0
+              : Math.hypot(scheduled.x - held.x, scheduled.y - held.y);
+          if (jump > CATCH_UP_JUMP && scheduledAt - heldAt <= MAX_CATCH_UP_MS)
+            finger.clockOffset = nowMs - PLAYBACK_DELAY_MS - heldAt;
+        }
         const playAt = nowMs - finger.clockOffset - PLAYBACK_DELAY_MS;
+        finger.heldAt =
+          newestAt !== undefined && playAt > newestAt
+            ? (finger.heldAt ?? newestAt)
+            : undefined;
         const point = sampleFingerPath({ samples: finger.samples, t: playAt });
         const keepFrom = finger.samples.findLastIndex(
           (sample) => sample.t < playAt - KEPT_SAMPLES_MS

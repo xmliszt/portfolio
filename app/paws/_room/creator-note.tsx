@@ -17,9 +17,7 @@ export function CreatorNote(props: CreatorNoteProps) {
         {copy.note.paragraphs.map((paragraph) => (
           <p key={paragraph}>{paragraph}</p>
         ))}
-        <p className="pt-2 text-right">
-          {copy.note.signature}
-        </p>
+        <p className="pt-2 text-right">{copy.note.signature}</p>
       </article>
     </RoomSheet>
   );

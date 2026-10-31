@@ -15,9 +15,9 @@ import { stepWorld } from "@/lib/paws/sim/step-world";
 import type { RoomEvent } from "@/lib/paws/wire-types";
 
 import { GUIDE_FADE_SECONDS } from "./guide-fade-seconds";
+import { GUIDE_STEPS_PER_SECOND } from "./guide-steps-per-second";
 import type { GuideFrame, GuideTake } from "./guide-types";
 
-const STEPS_PER_SECOND = 60;
 const LEAD_SECONDS = 1;
 const CAMERA_RATE = 2.5;
 const SHOWN_VISIBILITY = 0.3;
@@ -30,7 +30,7 @@ export function runGuideTake(take: GuideTake) {
     players: take.cats,
   });
   take.setup?.(world);
-  const dtSeconds = 1 / STEPS_PER_SECOND;
+  const dtSeconds = 1 / GUIDE_STEPS_PER_SECOND;
   const fingers = take.fingers ?? [];
   const tips: { [userId: string]: FingertipState | undefined } = {};
   const wasPressed: { [userId: string]: boolean | undefined } = {};
@@ -40,9 +40,9 @@ export function runGuideTake(take: GuideTake) {
     camera: { x: number; y: number } | undefined;
     nextDirection: number;
   } = { prints: [], camera: undefined, nextDirection: 0 };
-  const firstStep = -LEAD_SECONDS * STEPS_PER_SECOND;
+  const firstStep = -LEAD_SECONDS * GUIDE_STEPS_PER_SECOND;
   const lastStep = Math.round(
-    (take.loopSeconds + GUIDE_FADE_SECONDS) * STEPS_PER_SECOND
+    (take.loopSeconds + GUIDE_FADE_SECONDS) * GUIDE_STEPS_PER_SECOND
   );
   const looks = Object.fromEntries(
     take.cats.map((cat) => [cat.userId, cat.look])
@@ -78,7 +78,7 @@ export function runGuideTake(take: GuideTake) {
 
   const frames: GuideFrame[] = [];
   for (let step = firstStep; step <= lastStep; step++) {
-    const t = step / STEPS_PER_SECOND;
+    const t = step / GUIDE_STEPS_PER_SECOND;
     while ((pending.at(state.nextDirection)?.at ?? Infinity) <= t) {
       pending.at(state.nextDirection)?.run(world);
       state.nextDirection += 1;

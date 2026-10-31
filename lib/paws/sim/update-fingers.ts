@@ -2,8 +2,10 @@ import { damp } from "./damp";
 import type { FingerInput, World } from "./sim-types";
 
 const FORGET_SECONDS = 10;
+/** World units a finger can move in one step before it counts as a jump, such as a laggy cursor catching up, rather than as speed. */
+const JUMP_DISTANCE = 600;
 
-/** Record where each finger in `inputs` is now, how fast it moves and how long it has been still; fingers missing from `inputs` are marked absent and forgotten after a while. */
+/** Record where each finger in `inputs` is now, how fast it moves and how long it has been still, counting a step longer than `JUMP_DISTANCE` as no movement; fingers missing from `inputs` are marked absent and forgotten after a while. */
 export function updateFingers(options: {
   world: World;
   inputs: FingerInput[];
@@ -13,10 +15,11 @@ export function updateFingers(options: {
   const presentIds = new Set(inputs.map((input) => input.userId));
   for (const input of inputs) {
     const previous = world.fingers[input.userId];
-    const moved =
+    const distance =
       previous?.present === true
         ? Math.hypot(input.x - previous.x, input.y - previous.y)
         : 0;
+    const moved = distance > JUMP_DISTANCE ? 0 : distance;
     world.fingers[input.userId] = {
       userId: input.userId,
       x: input.x,
@@ -29,7 +32,8 @@ export function updateFingers(options: {
         rate: 10,
         dtSeconds,
       }),
-      stillSeconds: moved > 1.5 ? 0 : (previous?.stillSeconds ?? 0) + dtSeconds,
+      stillSeconds:
+        distance > 1.5 ? 0 : (previous?.stillSeconds ?? 0) + dtSeconds,
       absentSeconds: 0,
     };
   }

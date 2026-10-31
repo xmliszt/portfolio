@@ -1,6 +1,6 @@
 import type { CatLook } from "@/lib/paws/cat-look";
 
-/** The cats the guide previews use, the same cats as the promo film. */
+/** Cat looks the guide takes use, by name. */
 export const GUIDE_LOOKS = {
   hero: {
     coat: "ginger",

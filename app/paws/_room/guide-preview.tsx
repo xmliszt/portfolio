@@ -4,6 +4,7 @@ import { useEffect, useRef } from "react";
 import { useReducedMotion } from "motion/react";
 
 import { GUIDE_FADE_SECONDS } from "@/lib/paws/guide/guide-fade-seconds";
+import { GUIDE_STEPS_PER_SECOND } from "@/lib/paws/guide/guide-steps-per-second";
 import { GUIDE_TAKES } from "@/lib/paws/guide/guide-takes";
 import type { GuideFrame } from "@/lib/paws/guide/guide-types";
 import { runGuideTake } from "@/lib/paws/guide/run-guide-take";
@@ -12,7 +13,6 @@ import { drawScene } from "@/lib/paws/render/draw-scene";
 import { deriveCat } from "@/lib/paws/sim/derive-cat";
 
 const MAX_DPR = 2;
-const STEPS_PER_SECOND = 60;
 
 type GuidePreviewProps = {
   take: keyof typeof GUIDE_TAKES;
@@ -55,7 +55,7 @@ export function GuidePreview(props: GuidePreviewProps) {
       const frames = playback.frames ?? [];
       const index = Math.min(
         frames.length - 1,
-        Math.max(0, Math.round(t * STEPS_PER_SECOND))
+        Math.max(0, Math.round(t * GUIDE_STEPS_PER_SECOND))
       );
       return frames.at(index);
     }
@@ -145,8 +145,15 @@ export function GuidePreview(props: GuidePreviewProps) {
       playback.rafId = window.requestAnimationFrame(tick);
     });
     observer.observe(canvas);
+    const resizeObserver = new ResizeObserver(() => {
+      if (!isReduced || !playback.isVisible) return;
+      window.cancelAnimationFrame(playback.rafId);
+      playback.rafId = window.requestAnimationFrame(tick);
+    });
+    resizeObserver.observe(canvas);
     return () => {
       observer.disconnect();
+      resizeObserver.disconnect();
       window.cancelAnimationFrame(playback.rafId);
     };
   }, [props.take, props.posterAt, isReduced]);

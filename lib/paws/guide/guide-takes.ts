@@ -1,3 +1,4 @@
+import { beginSocial } from "@/lib/paws/sim/begin-social";
 import { makeCurious } from "@/lib/paws/sim/make-curious";
 import { setCatState } from "@/lib/paws/sim/set-cat-state";
 import type { World } from "@/lib/paws/sim/sim-types";
@@ -9,6 +10,20 @@ import type { GuideTake } from "./guide-types";
 import { poseGuideCat } from "./pose-guide-cat";
 
 const ease = (u: number) => (u <= 0 ? 0 : u >= 1 ? 1 : u * u * (3 - 2 * u));
+
+function play(options: {
+  catId: string;
+  partnerId: string;
+  play: Parameters<typeof beginSocial>[0]["play"];
+}) {
+  return (world: World) => {
+    const cat = world.cats[options.catId];
+    const partner = world.cats[options.partnerId];
+    if (cat === undefined || partner === undefined) return;
+    cat.focusId = undefined;
+    beginSocial({ cat, partner, play: options.play });
+  };
+}
 
 function curious(options: { catId: string; fingerId: string }) {
   return (world: World) => {
@@ -39,7 +54,7 @@ function wiggle(options: {
 
 function swipe(options: { pressed: boolean }): GuideTake {
   const at = 2;
-  const seconds = 0.22;
+  const seconds = 0.16;
   return {
     seed: 17,
     loopSeconds: 5.5,
@@ -434,7 +449,7 @@ export const GUIDE_TAKES = {
       poseGuideCat({
         world,
         userId: "social-e",
-        at: { x: 560, y: 540, heading: 0.3 },
+        at: { x: 540, y: 420, heading: 0.3 },
         then: { kind: "rest", pose: "sit" },
       });
       poseGuideCat({
@@ -447,43 +462,35 @@ export const GUIDE_TAKES = {
     directions: [
       {
         at: 0.1,
-        run: (world) =>
-          startPair({
-            world,
-            kind: "greet",
-            catId: "social-a",
-            partnerId: "social-b",
-          }),
+        run: play({
+          catId: "social-a",
+          partnerId: "social-b",
+          play: { kind: "greet" },
+        }),
       },
       {
         at: 3.1,
-        run: (world) =>
-          startPair({
-            world,
-            kind: "chase",
-            catId: "social-d",
-            partnerId: "social-c",
-          }),
+        run: play({
+          catId: "social-d",
+          partnerId: "social-c",
+          play: { kind: "chase", durationSeconds: 3.4 },
+        }),
       },
       {
         at: 6.2,
-        run: (world) =>
-          startPair({
-            world,
-            kind: "bat",
-            catId: "social-a",
-            partnerId: "social-e",
-          }),
+        run: play({
+          catId: "social-a",
+          partnerId: "social-e",
+          play: { kind: "bat", durationSeconds: 6 },
+        }),
       },
       {
         at: 6.8,
-        run: (world) =>
-          startPair({
-            world,
-            kind: "snuggle",
-            catId: "social-d",
-            partnerId: "social-f",
-          }),
+        run: play({
+          catId: "social-d",
+          partnerId: "social-f",
+          play: { kind: "snuggle", side: 1 },
+        }),
       },
       {
         at: 12.5,
@@ -504,67 +511,3 @@ export const GUIDE_TAKES = {
     ],
   },
 } satisfies { [item: string]: GuideTake };
-
-/** Start `kind` between `catId` and `partnerId` the way the sim's own social start does, without its random pick of kind. */
-function startPair(options: {
-  world: World;
-  kind: "greet" | "chase" | "bat" | "snuggle";
-  catId: string;
-  partnerId: string;
-}) {
-  const cat = options.world.cats[options.catId];
-  const partner = options.world.cats[options.partnerId];
-  if (cat === undefined || partner === undefined) return;
-  cat.partnerId = partner.userId;
-  cat.focusId = undefined;
-  switch (options.kind) {
-    case "greet":
-      cat.social = {
-        kind: "greet",
-        t: 0,
-        sniffT: 0,
-        sniffing: false,
-        lead: true,
-        printed: false,
-      };
-      partner.social = {
-        kind: "greet",
-        t: 0,
-        sniffT: 0,
-        sniffing: false,
-        lead: false,
-        printed: false,
-      };
-      partner.partnerId = cat.userId;
-      partner.rest = undefined;
-      setCatState(cat, "greet");
-      setCatState(partner, "greet");
-      break;
-    case "chase":
-      cat.social = { kind: "chase", t: 0, durationSeconds: 3.4 };
-      partner.social = { kind: "chased", t: 0 };
-      partner.partnerId = cat.userId;
-      partner.rest = undefined;
-      setCatState(cat, "chase");
-      setCatState(partner, "chased");
-      break;
-    case "bat":
-      cat.social = { kind: "bat", t: 0, durationSeconds: 6, phase: "go" };
-      setCatState(cat, "bat");
-      break;
-    case "snuggle": {
-      const gap = 85 * (cat.build.scale + partner.build.scale);
-      cat.wander = {
-        x: partner.x - Math.sin(partner.heading) * gap,
-        y: partner.y + Math.cos(partner.heading) * gap,
-      };
-      cat.isSnuggling = true;
-      setCatState(cat, "approach");
-      break;
-    }
-    default: {
-      const unknown: never = options.kind;
-      return unknown;
-    }
-  }
-}
