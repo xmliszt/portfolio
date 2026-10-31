@@ -28,7 +28,7 @@ export const ko = {
     resend: "다시 받기",
     changeEmail: "이메일 변경",
     wrongCode: "코드가 맞지 않아. 확인하거나 새 코드를 받아 봐.",
-    tooSoon: "1분만 기다렸다가 다시 시도해 줘.",
+    tooSoon: "몇 초만 기다렸다가 다시 시도해 줘.",
     sendFailed: "코드를 보내지 못했어. 다시 시도해 줘.",
     verifyFailed: "로그인하지 못했어. 다시 시도해 줘.",
     signInAgain: "고양이를 계속 두려면 다시 로그인해 줘.",

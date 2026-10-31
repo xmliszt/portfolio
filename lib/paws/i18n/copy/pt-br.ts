@@ -28,7 +28,7 @@ export const ptBR = {
     resend: "Enviar novo código",
     changeEmail: "Usar outro e-mail",
     wrongCode: "Esse código não funcionou. Confira ou peça um novo.",
-    tooSoon: "Espere um minuto e tente de novo.",
+    tooSoon: "Espere alguns segundos e tente de novo.",
     sendFailed: "Não foi possível enviar o código. Tente de novo.",
     verifyFailed: "Não foi possível entrar. Tente de novo.",
     signInAgain: "Entre de novo para manter seu gato.",

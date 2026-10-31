@@ -32,7 +32,7 @@ export const en = {
     resend: "Send a new code",
     changeEmail: "Use another email",
     wrongCode: "That code didn't work. Check it or get a new one.",
-    tooSoon: "Please wait a minute, then try again.",
+    tooSoon: "Please wait a few seconds, then try again.",
     sendFailed: "Couldn't send the code. Try again.",
     verifyFailed: "Couldn't sign you in. Try again.",
     signInAgain: "Please sign in again to keep your cat.",

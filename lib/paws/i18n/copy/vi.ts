@@ -28,7 +28,7 @@ export const vi = {
     resend: "Gửi mã mới",
     changeEmail: "Đổi email",
     wrongCode: "Mã này chưa đúng. Kiểm tra lại hoặc lấy mã mới nhé.",
-    tooSoon: "Đợi một phút rồi thử lại nhé.",
+    tooSoon: "Đợi vài giây rồi thử lại nhé.",
     sendFailed: "Chưa gửi được mã. Thử lại nhé.",
     verifyFailed: "Chưa đăng nhập được. Thử lại nhé.",
     signInAgain: "Đăng nhập lại để giữ mèo của bạn nhé.",

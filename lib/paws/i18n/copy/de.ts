@@ -29,7 +29,7 @@ export const de = {
     changeEmail: "Andere E-Mail",
     wrongCode:
       "Der Code hat nicht geklappt. Prüf ihn oder hol dir einen neuen.",
-    tooSoon: "Warte bitte eine Minute und versuch es nochmal.",
+    tooSoon: "Warte bitte ein paar Sekunden und versuch es nochmal.",
     sendFailed: "Der Code konnte nicht gesendet werden. Versuch es nochmal.",
     verifyFailed: "Die Anmeldung hat nicht geklappt. Versuch es nochmal.",
     signInAgain: "Melde dich bitte erneut an, um deine Katze zu behalten.",

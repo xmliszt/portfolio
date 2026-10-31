@@ -28,7 +28,7 @@ export const id = {
     resend: "Kirim kode baru",
     changeEmail: "Ganti email",
     wrongCode: "Kodenya tidak cocok. Periksa lagi atau minta kode baru.",
-    tooSoon: "Tunggu satu menit, lalu coba lagi.",
+    tooSoon: "Tunggu beberapa detik, lalu coba lagi.",
     sendFailed: "Kode belum bisa dikirim. Coba lagi.",
     verifyFailed: "Kamu belum bisa masuk. Coba lagi.",
     signInAgain: "Masuk lagi agar kucingmu tetap ada.",

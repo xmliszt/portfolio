@@ -25,7 +25,7 @@ export const zhHans = {
     resend: "重新发送",
     changeEmail: "换个邮箱",
     wrongCode: "验证码不对。检查一下，或重新获取。",
-    tooSoon: "请等一分钟，再试一次。",
+    tooSoon: "请等几秒钟，再试一次。",
     sendFailed: "验证码没能发出，请再试一次。",
     verifyFailed: "没能登录，请再试一次。",
     signInAgain: "请重新登录，让你的猫留下来。",

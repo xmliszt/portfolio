@@ -25,7 +25,7 @@ export const zhHant = {
     resend: "重新寄送",
     changeEmail: "換個信箱",
     wrongCode: "驗證碼不對。檢查一下，或重新取得。",
-    tooSoon: "請等一分鐘，再試一次。",
+    tooSoon: "請等幾秒鐘，再試一次。",
     sendFailed: "驗證碼沒能寄出，請再試一次。",
     verifyFailed: "沒能登入，請再試一次。",
     signInAgain: "請重新登入，讓你的貓留下來。",
