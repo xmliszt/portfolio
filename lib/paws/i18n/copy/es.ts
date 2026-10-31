@@ -184,6 +184,10 @@ export const es = {
     closeKey: "Cerrar una ventana",
     or: "o",
   },
+  otherApps: {
+    title: "Otras apps",
+    hint: "Más cositas de quien creó Paws. Cada una se abre en una pestaña nueva.",
+  },
   note: {
     open: "Unas palabras de quien creó Paws",
     title: "Unas palabras de quien creó Paws",

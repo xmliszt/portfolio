@@ -47,6 +47,10 @@ export const tr = {
     },
     updateAvailable: "güncel çamaşırhane için yenile",
   },
+  otherApps: {
+    heading: "diğer uygulamalar",
+    hint: "Aynı yapımcıdan küçük şeyler. Her biri yeni sekmede açılır.",
+  },
   themes: {
     heading: "temalar",
     seasonal: "mevsimsel",

@@ -183,6 +183,10 @@ export const it = {
     closeKey: "Chiudi una finestra",
     or: "o",
   },
+  otherApps: {
+    title: "Altre app",
+    hint: "Altre piccole cose fatte da me. Ognuna si apre in una nuova scheda.",
+  },
   note: {
     open: "Due parole da parte mia",
     title: "Due parole da parte mia",

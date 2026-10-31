@@ -183,6 +183,10 @@ export const nl = {
     closeKey: "Venster sluiten",
     or: "of",
   },
+  otherApps: {
+    title: "Andere apps",
+    hint: "Meer kleine dingen van dezelfde maker. Elk opent in een nieuw tabblad.",
+  },
   note: {
     open: "Een woordje van de maker",
     title: "Een woordje van de maker",

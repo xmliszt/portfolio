@@ -49,6 +49,10 @@ export const ptBR = {
     },
     updateAvailable: "recarregue para a lavanderia atualizada",
   },
+  otherApps: {
+    heading: "outros apps",
+    hint: "Mais coisinhas de quem criou este lugar. Cada uma abre em uma nova aba.",
+  },
   themes: {
     heading: "temas",
     seasonal: "sazonal",

@@ -63,6 +63,10 @@ export const pl = {
     },
     updateAvailable: "odśwież — pralnia zaktualizowana",
   },
+  otherApps: {
+    heading: "inne aplikacje",
+    hint: "Więcej drobiazgów od tego samego twórcy. Każdy otwiera się w nowej karcie.",
+  },
   themes: {
     heading: "motywy",
     seasonal: "sezonowy",

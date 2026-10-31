@@ -182,6 +182,10 @@ export const vi = {
     closeKey: "Đóng cửa sổ",
     or: "hoặc",
   },
+  otherApps: {
+    title: "Ứng dụng khác",
+    hint: "Thêm vài thứ nhỏ của người làm ra Paws. Mỗi cái mở trong một thẻ mới.",
+  },
   note: {
     open: "Đôi lời từ người làm ra Paws",
     title: "Đôi lời từ người làm ra Paws",

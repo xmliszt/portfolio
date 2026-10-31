@@ -53,6 +53,10 @@ export const hi = {
     },
     updateAvailable: "अपडेट हुई लॉन्ड्री के लिए रीफ़्रेश करें",
   },
+  otherApps: {
+    heading: "और ऐप",
+    hint: "इन्हीं बनाने वाले की और छोटी चीज़ें। हर एक नए टैब में खुलती है।",
+  },
   themes: {
     heading: "थीम",
     seasonal: "मौसमी",

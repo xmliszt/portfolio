@@ -46,6 +46,10 @@ export const zhHans = {
     },
     updateAvailable: "刷新，进入更新后的自助洗衣店",
   },
+  otherApps: {
+    heading: "其他应用",
+    hint: "同一位作者做的其他小东西。每个都会在新标签页中打开。",
+  },
   themes: {
     heading: "主题",
     seasonal: "时令",

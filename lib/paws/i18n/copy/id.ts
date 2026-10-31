@@ -186,6 +186,10 @@ export const id = {
     closeKey: "Tutup jendela",
     or: "atau",
   },
+  otherApps: {
+    title: "Aplikasi lain",
+    hint: "Hal-hal kecil lain dari pembuat yang sama. Masing-masing terbuka di tab baru.",
+  },
   note: {
     open: "Sepatah kata dari pembuatnya",
     title: "Sepatah kata dari pembuatnya",

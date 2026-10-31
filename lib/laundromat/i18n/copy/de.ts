@@ -48,6 +48,10 @@ export const de = {
     },
     updateAvailable: "neu laden: Waschsalon aktualisiert",
   },
+  otherApps: {
+    heading: "Weitere Apps",
+    hint: "Mehr kleine Dinge vom selben Macher. Jede öffnet sich in einem neuen Tab.",
+  },
   themes: {
     heading: "Themen",
     seasonal: "saisonal",

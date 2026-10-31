@@ -58,6 +58,10 @@ export const en = {
     },
     updateAvailable: "refresh for updated laundromat",
   },
+  otherApps: {
+    heading: "other apps",
+    hint: "More small things by the same maker. Each opens in a new tab.",
+  },
   themes: {
     heading: "themes",
     seasonal: "seasonal",

@@ -48,6 +48,10 @@ export const fr = {
     },
     updateAvailable: "recharge pour la laverie mise à jour",
   },
+  otherApps: {
+    heading: "autres applis",
+    hint: "D’autres petites choses du même créateur. Chacune s’ouvre dans un nouvel onglet.",
+  },
   themes: {
     heading: "thèmes",
     seasonal: "saisonnier",

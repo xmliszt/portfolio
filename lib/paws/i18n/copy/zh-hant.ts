@@ -160,6 +160,10 @@ export const zhHant = {
     closeKey: "關閉視窗",
     or: "或",
   },
+  otherApps: {
+    title: "其他應用程式",
+    hint: "同一位作者做的其他小東西。每個都會在新分頁中開啟。",
+  },
   note: {
     open: "創作者的話",
     title: "創作者的話",

@@ -46,6 +46,10 @@ export const ko = {
     },
     updateAvailable: "새로고침하면 새로워진 빨래방이 열려요",
   },
+  otherApps: {
+    heading: "다른 앱",
+    hint: "같은 만든 이의 작은 작품들이에요. 각각 새 탭에서 열려요.",
+  },
   themes: {
     heading: "테마",
     seasonal: "계절에 맞추기",

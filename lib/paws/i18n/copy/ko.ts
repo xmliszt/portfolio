@@ -172,6 +172,10 @@ export const ko = {
     closeKey: "창 닫기",
     or: "또는",
   },
+  otherApps: {
+    title: "다른 앱",
+    hint: "같은 만든 이의 작은 작품들이에요. 각각 새 탭에서 열려요.",
+  },
   note: {
     open: "만든 이의 말",
     title: "만든 이의 말",

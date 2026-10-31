@@ -51,6 +51,10 @@ export const id = {
     },
     updateAvailable: "muat ulang untuk laundry terbaru",
   },
+  otherApps: {
+    heading: "aplikasi lain",
+    hint: "Hal-hal kecil lain dari pembuat yang sama. Masing-masing terbuka di tab baru.",
+  },
   themes: {
     heading: "tema",
     seasonal: "musiman",

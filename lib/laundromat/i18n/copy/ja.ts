@@ -46,6 +46,10 @@ export const ja = {
     },
     updateAvailable: "再読み込みで更新されたコインランドリーへ",
   },
+  otherApps: {
+    heading: "ほかのアプリ",
+    hint: "同じ作り手の小さな作品たち。それぞれ新しいタブで開きます。",
+  },
   themes: {
     heading: "テーマ",
     seasonal: "季節に合わせる",

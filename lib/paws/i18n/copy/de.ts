@@ -185,6 +185,10 @@ export const de = {
     closeKey: "Fenster schließen",
     or: "oder",
   },
+  otherApps: {
+    title: "Weitere Apps",
+    hint: "Mehr kleine Dinge vom selben Macher. Jede öffnet sich in einem neuen Tab.",
+  },
   note: {
     open: "Ein paar Worte von mir",
     title: "Ein paar Worte von mir",

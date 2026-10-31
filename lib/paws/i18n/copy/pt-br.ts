@@ -183,6 +183,10 @@ export const ptBR = {
     closeKey: "Fechar uma janela",
     or: "ou",
   },
+  otherApps: {
+    title: "Outros apps",
+    hint: "Mais coisinhas de quem criou o Paws. Cada uma abre em uma nova aba.",
+  },
   note: {
     open: "Um recado de quem criou o Paws",
     title: "Um recado de quem criou o Paws",
