@@ -14,6 +14,7 @@ const LOOK = {
   size: "medium",
   fluff: "medium",
   tail: "medium",
+  tailShape: "slim",
   ears: "medium",
 } as const;
 

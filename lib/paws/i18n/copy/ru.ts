@@ -54,6 +54,7 @@ export const ru = {
     size: "Размер",
     fluff: "Пушистость",
     tail: "Хвост",
+    tailShape: "Форма хвоста",
     ears: "Уши",
     shuffle: "Случайно",
     next: "Дать голос",
@@ -156,6 +157,12 @@ export const ru = {
       mixed: "Разные",
     },
     step: { small: "Малый", medium: "Средний", large: "Большой" },
+    tailShape: {
+      slim: "Тонкий",
+      plume: "Пушистый",
+      wave: "Волной",
+      hook: "Крючком",
+    },
     age: { kitten: "Котёнок", adult: "Взрослый", old: "Пожилой" },
     voice: {
       squeaky: "Писклявый",

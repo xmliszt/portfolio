@@ -55,6 +55,7 @@ export const es = {
     size: "Tamaño",
     fluff: "Pelusilla",
     tail: "Cola",
+    tailShape: "Forma de la cola",
     ears: "Orejas",
     shuffle: "Al azar",
     next: "Dale una voz",
@@ -152,6 +153,12 @@ export const es = {
     },
     pads: { pink: "Rosa", black: "Negro", mauve: "Malva", mixed: "Mezcla" },
     step: { small: "Pequeño", medium: "Mediano", large: "Grande" },
+    tailShape: {
+      slim: "Fina",
+      plume: "Esponjosa",
+      wave: "Ondulada",
+      hook: "Gancho",
+    },
     age: { kitten: "Gatito", adult: "Adulto", old: "Mayor" },
     voice: {
       squeaky: "Chillona",

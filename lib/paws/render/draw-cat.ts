@@ -247,12 +247,18 @@ export function drawCat(options: {
 
   const tailSegments = cat.tail.length - 1;
   const { base, tip } = cat.tailHeights;
+  const isPlume = cat.look.tailShape === "plume";
+  const tailRadiusAt = (i: number) =>
+    isPlume
+      ? cat.build.tailRadius *
+        (1 + 1.1 * Math.sin((Math.PI * i) / tailSegments))
+      : cat.build.tailRadius - i * 0.4;
   const tail = sampleCurve({
     points: cat.tail.map(
       ([x, y], i): Vec4 => [
         x,
         y,
-        (cat.build.tailRadius - i * 0.4) * k,
+        tailRadiusAt(i) * k,
         lerp(base, tip, i / tailSegments),
       ]
     ),
@@ -282,7 +288,7 @@ export function drawCat(options: {
         softOutline({
           draw,
           samples,
-          blur: blurOf(h, k) + fluff,
+          blur: blurOf(h, k) + fluff + (isPlume ? 7 * k : 0),
           color: run.color,
         }),
     });

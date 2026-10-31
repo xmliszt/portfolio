@@ -26,12 +26,14 @@ export const PAD_INKS = {
   mixed: "mixed",
 } as const;
 export const STEPS = ["small", "medium", "large"] as const;
+export const TAIL_SHAPES = ["slim", "plume", "wave", "hook"] as const;
 
 export type CoatInk = keyof typeof COAT_INKS;
 export type Pattern = (typeof PATTERNS)[number];
 export type Belly = (typeof BELLIES)[number];
 export type PadInk = keyof typeof PAD_INKS;
 export type Step = (typeof STEPS)[number];
+export type TailShape = (typeof TAIL_SHAPES)[number];
 
 export type CatLook = {
   coat: CoatInk;
@@ -41,5 +43,6 @@ export type CatLook = {
   size: Step;
   fluff: Step;
   tail: Step;
+  tailShape: TailShape;
   ears: Step;
 };

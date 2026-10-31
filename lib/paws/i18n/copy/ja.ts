@@ -55,6 +55,7 @@ export const ja = {
     size: "大きさ",
     fluff: "ふわふわ",
     tail: "しっぽ",
+    tailShape: "しっぽの形",
     ears: "耳",
     shuffle: "おまかせ",
     next: "声をつける",
@@ -152,6 +153,12 @@ export const ja = {
     },
     pads: { pink: "ピンク", black: "黒", mauve: "薄紫", mixed: "まだら" },
     step: { small: "小さめ", medium: "ふつう", large: "大きめ" },
+    tailShape: {
+      slim: "ほっそり",
+      plume: "ふさふさ",
+      wave: "くねくね",
+      hook: "かぎしっぽ",
+    },
     age: { kitten: "子猫", adult: "成猫", old: "老猫" },
     voice: {
       squeaky: "高い",

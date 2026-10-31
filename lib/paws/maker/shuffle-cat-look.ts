@@ -1,4 +1,10 @@
-import { BELLIES, type CatLook, PATTERNS, STEPS } from "@/lib/paws/cat-look";
+import {
+  BELLIES,
+  type CatLook,
+  PATTERNS,
+  STEPS,
+  TAIL_SHAPES,
+} from "@/lib/paws/cat-look";
 
 import { coatInkOptions } from "./coat-ink-options";
 import { padInkOptions } from "./pad-ink-options";
@@ -15,6 +21,7 @@ export function shuffleCatLook(options: { random: () => number }): CatLook {
     size: pickOption({ options: STEPS, random }),
     fluff: pickOption({ options: STEPS, random }),
     tail: pickOption({ options: STEPS, random }),
+    tailShape: pickOption({ options: TAIL_SHAPES, random }),
     ears: pickOption({ options: STEPS, random }),
   };
 }

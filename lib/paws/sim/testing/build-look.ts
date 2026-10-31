@@ -10,6 +10,7 @@ export function buildLook(overrides: Partial<CatLook> = {}): CatLook {
     size: "medium",
     fluff: "medium",
     tail: "medium",
+    tailShape: "slim",
     ears: "medium",
     ...overrides,
   };

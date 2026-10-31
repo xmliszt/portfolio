@@ -11,6 +11,7 @@ const LOOK = {
   size: "small",
   fluff: "medium",
   tail: "large",
+  tailShape: "slim",
   ears: "medium",
 };
 const VOICE = { age: "kitten", voice: "squeaky", mood: "chatty" };

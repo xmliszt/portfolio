@@ -29,6 +29,7 @@ test("picks the first option at 0 and the last just below 1", () => {
     size: "small",
     fluff: "small",
     tail: "small",
+    tailShape: "slim",
     ears: "small",
   });
   assert.deepEqual(shuffleCatLook({ random: () => 0.999999 }), {
@@ -39,6 +40,7 @@ test("picks the first option at 0 and the last just below 1", () => {
     size: "large",
     fluff: "large",
     tail: "large",
+    tailShape: "hook",
     ears: "large",
   });
 });

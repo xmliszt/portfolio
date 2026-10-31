@@ -54,6 +54,7 @@ export const pl = {
     size: "Rozmiar",
     fluff: "Puszystość",
     tail: "Ogon",
+    tailShape: "Kształt ogona",
     ears: "Uszy",
     shuffle: "Losuj",
     next: "Daj mu głos",
@@ -156,6 +157,12 @@ export const pl = {
       mixed: "Mieszane",
     },
     step: { small: "Mały", medium: "Średni", large: "Duży" },
+    tailShape: {
+      slim: "Smukły",
+      plume: "Puszysty",
+      wave: "Falisty",
+      hook: "Haczyk",
+    },
     age: { kitten: "Kociak", adult: "Dorosły", old: "Starszy" },
     voice: {
       squeaky: "Piskliwy",

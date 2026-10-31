@@ -13,6 +13,7 @@ const cat = {
     size: "small",
     fluff: "medium",
     tail: "large",
+    tailShape: "slim",
     ears: "small",
   },
   voice: { age: "adult", voice: "soft", mood: "chatty" },
