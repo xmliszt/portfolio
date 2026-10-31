@@ -73,7 +73,7 @@ export function OtherAppsDialog(props: OtherAppsDialogProps) {
               >
                 <SquircleAppIcon
                   src={app.iconSrc}
-                  sizePx={52}
+                  sizePx={48}
                   className="transition-transform duration-200 ease-out group-hover:-translate-y-0.5 group-active:scale-95 motion-reduce:transition-none"
                 />
                 <span className="max-w-full truncate">{app.name}</span>

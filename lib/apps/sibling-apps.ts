@@ -31,7 +31,7 @@ export const SIBLING_APPS = [
   {
     id: "moire",
     name: "Moiré",
-    href: "https://moire.day",
+    href: "https://www.moire.day",
     iconSrc: "/apps/moire-icon.svg",
   },
 ] as const;
