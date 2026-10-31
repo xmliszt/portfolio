@@ -18,6 +18,7 @@ import { createWorld } from "@/lib/paws/sim/create-world";
 import { damp } from "@/lib/paws/sim/damp";
 import { deriveCat } from "@/lib/paws/sim/derive-cat";
 import { getCatSnapshots } from "@/lib/paws/sim/get-cat-snapshots";
+import { standUp } from "@/lib/paws/sim/stand-up";
 import { stepWorld } from "@/lib/paws/sim/step-world";
 
 const CAT_ID = "playground";
@@ -63,12 +64,14 @@ export function CatPlayground(props: CatPlaygroundProps) {
       camera: { x: number; y: number } | undefined;
       prints: ScenePrint[];
       tip: FingertipState | undefined;
+      tailShape: CatLook["tailShape"];
     } = {
       frame: 0,
       lastMs: performance.now(),
       camera: undefined,
       prints: [],
       tip: undefined,
+      tailShape: lookRef.current.tailShape,
     };
 
     function tick(nowMs: number) {
@@ -90,6 +93,10 @@ export function CatPlayground(props: CatPlaygroundProps) {
       }
       const pointer = pointerRef.current;
       const look = lookRef.current;
+      const playgroundCat = world.cats[CAT_ID];
+      if (look.tailShape !== scene.tailShape && playgroundCat !== undefined)
+        standUp(playgroundCat);
+      scene.tailShape = look.tailShape;
       const { events } = stepWorld({
         world,
         players: [{ userId: CAT_ID, look }],

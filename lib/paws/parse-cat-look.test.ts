@@ -9,6 +9,9 @@ test("reads a look saved without a tail shape as a slim tail", () => {
   assert.deepEqual(parseCatLook(saved), buildLook({ tailShape: "slim" }));
 });
 
-test("drops a look with an unknown tail shape", () => {
-  assert.equal(parseCatLook({ ...buildLook(), tailShape: "curly" }), undefined);
+test("reads a look with an unknown tail shape as a slim tail", () => {
+  assert.deepEqual(
+    parseCatLook({ ...buildLook(), tailShape: "curly" }),
+    buildLook({ tailShape: "slim" })
+  );
 });
