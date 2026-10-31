@@ -35,7 +35,7 @@ function LaundroCafeMark() {
       aria-hidden
       data-pw-laundro
       viewBox="0 0 40 40"
-      className="-my-1 size-7 shrink-0 overflow-visible"
+      className="size-5 shrink-0 overflow-visible"
     >
       <style>{KEYFRAMES}</style>
       <g transform="translate(1.1 0.9)">
@@ -121,7 +121,7 @@ export function LaundroCafeLink() {
       rel="noopener"
       className={cn(
         FOCUS_RING_CLASS,
-        "group flex h-10 cursor-pointer items-center gap-x-2 border-[1.5px] border-[var(--pw-ink)] bg-[var(--pw-paper)] pr-3 pl-1.5 text-[12px] text-[var(--pw-ink)] hover:bg-[var(--pw-paper-deep)] sm:h-8"
+        "group flex h-10 cursor-pointer items-center gap-x-2 border-[1.5px] border-[var(--pw-ink)] bg-[var(--pw-paper)] pr-3 pl-2 text-[12px] text-[var(--pw-ink)] hover:bg-[var(--pw-paper-deep)] sm:h-8"
       )}
     >
       <LaundroCafeMark />

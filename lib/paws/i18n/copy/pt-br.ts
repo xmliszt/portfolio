@@ -124,6 +124,82 @@ export const ptBR = {
     roomEntered: "Você está na {room}",
     roomMoved: "Agora na {room}",
   },
+  guide: {
+    open: "Como funciona",
+    title: "Como funciona",
+    you: "Você e os gatos",
+    mouse: {
+      move: {
+        act: "Mova o cursor",
+        result: "É a ponta do seu dedo na sala. Todo mundo vê.",
+      },
+      still: { act: "Não se mexa", result: "Um gato vem olhar." },
+      press: {
+        act: "Clique e segure",
+        result: "Ele põe as patas em você. Sua marca fica.",
+      },
+      wiggle: { act: "Balance", result: "Ele segue você por aí." },
+      fast: { act: "Deslize rápido", result: "Ele foge." },
+    },
+    touch: {
+      hold: {
+        act: "Toque e não se mexa",
+        result: "Um gato vem e põe as patas em você. Sua marca fica.",
+      },
+      slide: { act: "Deslize devagar", result: "Ele segue você por aí." },
+      fast: { act: "Deslize rápido", result: "Ele foge." },
+    },
+    others: "Com outras pessoas",
+    everyone: {
+      act: "Todo mundo aqui",
+      result:
+        "As pontas dos dedos de outras pessoas também passeiam pela sala.",
+    },
+    share: {
+      act: "Divida um gato",
+      result: "Um gato pode pôr a pata em dois desconhecidos ao mesmo tempo.",
+    },
+    crowd: {
+      act: "Cerque",
+      result: "Três dedos em volta de um gato, e ele recua.",
+    },
+    cats: "Gatos sozinhos",
+    catsHint: "Deixe-os em paz, e eles brincam entre si.",
+    catActs: [
+      "dizer oi",
+      "perseguir",
+      "dar tapa no rabo",
+      "aconchegar",
+      "soneca",
+      "correria",
+    ],
+    around: "Andando pela sala",
+    lookAround: "Olhar pela sala",
+    dragMap: "Arraste o mapa",
+    twoFingers: "Arraste com dois dedos",
+    talkKey: "Falar, quando seu gato estiver na sala",
+    tapTalk: "Toque em “Falar”",
+    tapTalkResult: "Seu gato diz em voz alta, quando estiver na sala.",
+    closeKey: "Fechar uma janela",
+    or: "ou",
+  },
+  note: {
+    open: "Um recado de quem criou o Paws",
+    title: "Um recado de quem criou o Paws",
+    paragraphs: [
+      "Sempre achei que existe algo silenciosamente bonito nos pequenos encontros que temos com desconhecidos.",
+      "Nem sempre precisamos nos conhecer, nem mesmo saber quem é a outra pessoa. Às vezes, nossos caminhos se cruzam só por um breve momento, talvez com uma fina camada de vidro fosco entre nós, e ainda assim, de algum jeito, conseguimos sentir a presença um do outro.",
+      "Foi nisso que eu não parei de pensar enquanto fazia o Paws.",
+      "Sempre amei pinturas impressionistas. Elas não tentam mostrar cada pequeno detalhe, mas aquela luz difusa e aquelas cores conseguem fazer um momento parecer tão real. Fico pensando se os pequenos encontros entre as pessoas também podem ser assim.",
+      "E foi assim que nasceu esta salinha pequena e fofinha.",
+      "Desconhecidos de diferentes cantos do mundo trazem seus próprios gatinhos para cá. Talvez você nunca saiba quem está por trás de cada um, mas, quem sabe, em algum momento um gato curioso venha até você, olhe para você lá de cima e encoste de leve a patinha na ponta do seu dedo, com só uma fina folha de vidro entre vocês.",
+      "Eu amo momentos assim.",
+      "Aqui não há nada que você precise conquistar, nem nenhum lugar aonde precise chegar. Você pode simplesmente ficar um pouco, fazer carinho em alguns gatos, ouvir as vozinhas deles ou dar um oi para um desconhecido que encontrar por acaso.",
+      "Se esta salinha puder ajudar você a desacelerar por um momento, arrancar um sorriso seu ou deixar seu coração um pouquinho mais quentinho, para mim já é mais do que suficiente.",
+      "Agradeço de coração por você estar aqui. 🐾",
+    ],
+    signature: "— Yuxuan",
+  },
   options: {
     coat: {
       ginger: "Laranja",

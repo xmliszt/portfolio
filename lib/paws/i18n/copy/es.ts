@@ -125,6 +125,82 @@ export const es = {
     roomEntered: "Estás en {room}",
     roomMoved: "Ahora en {room}",
   },
+  guide: {
+    open: "Cómo funciona",
+    title: "Cómo funciona",
+    you: "Tú y los gatos",
+    mouse: {
+      move: {
+        act: "Mueve el cursor",
+        result: "Es la yema de tu dedo en la sala. Todos la ven.",
+      },
+      still: { act: "No te muevas", result: "Un gato viene a mirar." },
+      press: {
+        act: "Haz clic y mantén",
+        result: "Te pone las patas encima. Tu huella se queda.",
+      },
+      wiggle: { act: "Menéalo", result: "Te sigue a todas partes." },
+      fast: { act: "Desliza rápido", result: "Sale corriendo." },
+    },
+    touch: {
+      hold: {
+        act: "Toca y no te muevas",
+        result:
+          "Un gato se acerca y te pone las patas encima. Tu huella se queda.",
+      },
+      slide: { act: "Desliza despacio", result: "Te sigue a todas partes." },
+      fast: { act: "Desliza rápido", result: "Sale corriendo." },
+    },
+    others: "Con otras personas",
+    everyone: {
+      act: "Todos están aquí",
+      result: "Los dedos de otras personas también se mueven por la sala.",
+    },
+    share: {
+      act: "Comparte un gato",
+      result: "Un gato puede poner una pata sobre dos desconocidos a la vez.",
+    },
+    crowd: {
+      act: "Rodéalo",
+      result: "Tres dedos alrededor de un gato, y retrocede.",
+    },
+    cats: "Gatos a su aire",
+    catsHint: "Si los dejas tranquilos, juegan entre ellos.",
+    catActs: [
+      "saludar",
+      "perseguir",
+      "dar zarpazos a una cola",
+      "acurrucarse",
+      "siesta",
+      "carreras locas",
+    ],
+    around: "Moverse por la sala",
+    lookAround: "Mirar por la sala",
+    dragMap: "Arrastra el mapa",
+    twoFingers: "Arrastra con dos dedos",
+    talkKey: "Hablar, cuando tu gato esté en la sala",
+    tapTalk: "Toca «Hablar»",
+    tapTalkResult: "Tu gato lo dice en voz alta, cuando esté en la sala.",
+    closeKey: "Cerrar una ventana",
+    or: "o",
+  },
+  note: {
+    open: "Unas palabras de quien creó Paws",
+    title: "Unas palabras de quien creó Paws",
+    paragraphs: [
+      "Siempre me ha parecido que hay algo silenciosamente bonito en esos pequeños encuentros que tenemos con desconocidos.",
+      "No siempre hace falta conocernos, ni siquiera saber quién es la otra persona. A veces nuestros caminos solo se cruzan un instante, quizá con una fina capa de cristal esmerilado entre nosotros, y aun así, de algún modo, podemos sentir la presencia del otro.",
+      "En eso no dejé de pensar mientras hacía Paws.",
+      "Siempre me ha encantado la pintura impresionista. No intenta mostrar cada pequeño detalle y, sin embargo, esa luz difusa y esos colores pueden hacer que un momento se sienta tan real. Me pregunto si los pequeños encuentros entre personas también pueden ser así.",
+      "Y así nació esta pequeña y mullida sala.",
+      "Desconocidos de distintos rincones del mundo traen aquí a sus propios gatitos. Puede que nunca sepas quién está detrás de cada uno, pero quizá, en algún momento, un gato curioso se acerque, te mire desde arriba y apoye con suavidad su patita en la punta de tu dedo, con solo una fina lámina de cristal entre los dos.",
+      "Me encantan los momentos así.",
+      "Aquí no tienes nada que lograr ni ningún sitio al que llegar. Puedes simplemente quedarte un rato, acariciar a algunos gatos, escuchar sus vocecitas o saludar a algún desconocido con quien te cruces por casualidad.",
+      "Si esta pequeña sala puede ayudarte a ir más despacio por un momento, sacarte una sonrisa o hacerte sentir un poquito más de calidez por dentro, para mí eso ya es más que suficiente.",
+      "Gracias por estar aquí. 🐾",
+    ],
+    signature: "— Yuxuan",
+  },
   options: {
     coat: {
       ginger: "Naranja",

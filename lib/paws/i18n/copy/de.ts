@@ -126,6 +126,82 @@ export const de = {
     roomEntered: "Du bist in {room}",
     roomMoved: "Jetzt in {room}",
   },
+  guide: {
+    open: "So funktioniert's",
+    title: "So funktioniert's",
+    you: "Du und die Katzen",
+    mouse: {
+      move: {
+        act: "Cursor bewegen",
+        result: "Das ist deine Fingerspitze im Raum. Alle sehen sie.",
+      },
+      still: { act: "Stillhalten", result: "Eine Katze kommt schauen." },
+      press: {
+        act: "Klicken und halten",
+        result: "Sie legt ihre Pfoten auf dich. Dein Abdruck bleibt.",
+      },
+      wiggle: { act: "Wackeln", result: "Sie folgt dir überallhin." },
+      fast: { act: "Schnell wischen", result: "Sie läuft weg." },
+    },
+    touch: {
+      hold: {
+        act: "Berühren und stillhalten",
+        result:
+          "Eine Katze kommt und legt ihre Pfoten auf dich. Dein Abdruck bleibt.",
+      },
+      slide: { act: "Langsam ziehen", result: "Sie folgt dir überallhin." },
+      fast: { act: "Schnell wischen", result: "Sie läuft weg." },
+    },
+    others: "Mit anderen",
+    everyone: {
+      act: "Alle sind da",
+      result: "Die Fingerspitzen anderer bewegen sich auch durch den Raum.",
+    },
+    share: {
+      act: "Eine Katze teilen",
+      result: "Eine Katze kann zwei Fremden gleichzeitig eine Pfote auflegen.",
+    },
+    crowd: {
+      act: "Umzingeln",
+      result: "Drei Finger um eine Katze, und sie weicht zurück.",
+    },
+    cats: "Katzen unter sich",
+    catsHint: "Lass sie in Ruhe, dann spielen sie miteinander.",
+    catActs: [
+      "hallo sagen",
+      "jagen",
+      "nach dem Schwanz tatzen",
+      "kuscheln",
+      "dösen",
+      "flitzen",
+    ],
+    around: "Unterwegs",
+    lookAround: "Im Raum umsehen",
+    dragMap: "Karte ziehen",
+    twoFingers: "Mit zwei Fingern ziehen",
+    talkKey: "Sprechen, sobald deine Katze im Raum ist",
+    tapTalk: "Tippe auf „Sprechen“",
+    tapTalkResult: "Deine Katze sagt es laut, sobald sie im Raum ist.",
+    closeKey: "Fenster schließen",
+    or: "oder",
+  },
+  note: {
+    open: "Ein paar Worte von mir",
+    title: "Ein paar Worte von mir",
+    paragraphs: [
+      "Ich fand die kleinen Begegnungen mit Fremden schon immer auf eine leise Art schön.",
+      "Wir müssen uns nicht immer kennen, nicht einmal wissen, wer der andere ist. Manchmal kreuzen sich unsere Wege nur für einen kurzen Moment, vielleicht mit einer dünnen Schicht Milchglas zwischen uns, und trotzdem spüren wir irgendwie, dass der andere da ist.",
+      "Daran musste ich immer wieder denken, während ich Paws gemacht habe.",
+      "Ich mochte impressionistische Bilder schon immer. Sie versuchen nicht, jedes kleine Detail zu zeigen, und doch können das verschwommene Licht und die Farben einen Moment so echt wirken lassen. Ich frage mich, ob die kleinen Begegnungen zwischen Menschen nicht auch so sein können.",
+      "Und so ist dieser kleine, flauschige Raum entstanden.",
+      "Fremde aus allen Ecken der Welt bringen ihre eigenen kleinen Katzen hierher. Vielleicht erfährst du nie, wer hinter den einzelnen Katzen steckt. Aber vielleicht kommt irgendwann eine neugierige Katze zu dir herüber, schaut zu dir herunter und drückt ganz sanft ihre kleine Pfote gegen deine Fingerspitze, nur eine dünne Glasscheibe zwischen euch.",
+      "Ich liebe solche Momente.",
+      "Hier musst du nichts schaffen und nirgendwo ankommen. Du kannst einfach eine Weile bleiben, ein paar Katzen streicheln, ihren leisen Stimmen zuhören oder einem Fremden, dem du zufällig begegnest, Hallo sagen.",
+      "Wenn dieser kleine Raum dir hilft, für einen Moment langsamer zu werden, dich ein bisschen lächeln lässt oder dafür sorgt, dass dir ein kleines bisschen wärmer ums Herz wird, dann ist das für mich mehr als genug.",
+      "Danke, dass du hier bist. 🐾",
+    ],
+    signature: "— Yuxuan",
+  },
   options: {
     coat: {
       ginger: "Rot",

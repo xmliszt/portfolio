@@ -124,6 +124,82 @@ export const it = {
     roomEntered: "Sei in {room}",
     roomMoved: "Ora in {room}",
   },
+  guide: {
+    open: "Come funziona",
+    title: "Come funziona",
+    you: "Tu e i gatti",
+    mouse: {
+      move: {
+        act: "Muovi il cursore",
+        result: "È il tuo polpastrello nella stanza. Tutti lo vedono.",
+      },
+      still: { act: "Non muoverti", result: "Un gatto viene a guardare." },
+      press: {
+        act: "Clicca e tieni premuto",
+        result: "Ti mette le zampe addosso. La tua impronta resta.",
+      },
+      wiggle: { act: "Agita un po'", result: "Ti segue ovunque." },
+      fast: { act: "Scorri veloce", result: "Scappa via." },
+    },
+    touch: {
+      hold: {
+        act: "Tocca e non muoverti",
+        result:
+          "Un gatto arriva e ti mette le zampe addosso. La tua impronta resta.",
+      },
+      slide: { act: "Scorri piano", result: "Ti segue ovunque." },
+      fast: { act: "Scorri veloce", result: "Scappa via." },
+    },
+    others: "Con gli altri",
+    everyone: {
+      act: "Ci sono tutti",
+      result: "Anche i polpastrelli degli altri si muovono nella stanza.",
+    },
+    share: {
+      act: "Condividi un gatto",
+      result: "Un gatto può posare una zampa su due sconosciuti insieme.",
+    },
+    crowd: {
+      act: "Accerchialo",
+      result: "Tre dita intorno a un gatto, e lui indietreggia.",
+    },
+    cats: "Gatti tra loro",
+    catsHint: "Lasciali stare, e giocano tra loro.",
+    catActs: [
+      "salutarsi",
+      "rincorrersi",
+      "colpire una coda",
+      "coccolarsi",
+      "pisolino",
+      "corse pazze",
+    ],
+    around: "Muoversi",
+    lookAround: "Guarda nella stanza",
+    dragMap: "Trascina la mappa",
+    twoFingers: "Trascina con due dita",
+    talkKey: "Parla, quando il tuo gatto è nella stanza",
+    tapTalk: "Tocca «Parla»",
+    tapTalkResult: "Il tuo gatto lo dice ad alta voce, quando è nella stanza.",
+    closeKey: "Chiudi una finestra",
+    or: "o",
+  },
+  note: {
+    open: "Due parole da parte mia",
+    title: "Due parole da parte mia",
+    paragraphs: [
+      "Ho sempre trovato qualcosa di silenziosamente bello nei piccoli incontri che facciamo con gli sconosciuti.",
+      "Non sempre abbiamo bisogno di conoscerci, e nemmeno di sapere chi sia l’altro. A volte le nostre strade si incrociano solo per un breve momento, magari con un sottile strato di vetro smerigliato tra noi, eppure, in qualche modo, riusciamo comunque a sentire la presenza dell’altro.",
+      "È una cosa a cui ho continuato a pensare mentre creavo Paws.",
+      "Ho sempre amato i quadri impressionisti. Non cercano di mostrare ogni minimo dettaglio, eppure quella luce sfumata e quei colori riescono a rendere un momento così vero. Mi chiedo se anche i piccoli incontri tra le persone possano essere così.",
+      "E così è nata questa piccola stanza tutta soffice.",
+      "Sconosciuti da ogni angolo del mondo portano qui i loro gattini. Forse non saprai mai chi c’è dietro ognuno di loro, ma magari, a un certo punto, un gatto curioso si avvicinerà, ti guarderà dall’alto e appoggerà piano la sua zampetta sulla punta del tuo dito, con solo un sottile vetro a separarvi.",
+      "Adoro momenti come questi.",
+      "Qui non c’è niente che tu debba portare a termine, e nessun posto dove tu debba arrivare. Puoi semplicemente restare un po’, accarezzare qualche gatto, ascoltare le loro vocine o salutare uno sconosciuto che incontri per caso.",
+      "Se questa piccola stanza riesce ad aiutarti a rallentare per un momento, a strapparti un sorriso o a farti sentire un po’ più di calore dentro, per me è già più che abbastanza.",
+      "Grazie di essere qui. 🐾",
+    ],
+    signature: "— Yuxuan",
+  },
   options: {
     coat: {
       ginger: "Rosso",
