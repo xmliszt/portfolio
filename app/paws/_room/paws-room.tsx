@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
+import { clamp } from "lodash";
 
 import { LanguagePicker } from "@/app/paws/_i18n/language-picker";
 import { usePawsCopy } from "@/app/paws/_i18n/use-paws-copy";
@@ -59,6 +60,7 @@ const BUBBLE_HOLD_MS = 2500;
 const MAX_BUBBLE_MS = 12000;
 const BUBBLE_GAP_PX = 10;
 const BUBBLE_EDGE_PX = 8;
+const TAIL_INSET_PX = 10;
 const SETTLE_BEFORE_ARRIVALS_MS = 3000;
 const ROOM_BANNER_MS = 2600;
 const RESIDENT_LINE_EVERY_MS = 15_000;
@@ -439,10 +441,15 @@ export function PawsRoom() {
           continue;
         }
         const halfWidth = element.offsetWidth / 2 + BUBBLE_EDGE_PX;
-        const x = Math.min(
-          Math.max(cat.head[0] * view.scale + view.offsetX, halfWidth),
-          width - halfWidth
+        const catX = cat.head[0] * view.scale + view.offsetX;
+        const x = clamp(catX, halfWidth, width - halfWidth);
+        const tailRoom = element.offsetWidth / 2 - TAIL_INSET_PX;
+        element.style.setProperty(
+          "--pw-tail-x",
+          `${clamp(catX - x, -tailRoom, tailRoom)}px`
         );
+        element.dataset.tail =
+          catX < 0 ? "left" : catX > width ? "right" : "down";
         const y =
           (cat.head[1] - cat.head[2]) * view.scale +
           view.offsetY -

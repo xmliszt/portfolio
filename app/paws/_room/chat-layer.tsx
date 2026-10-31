@@ -13,7 +13,7 @@ import type { ChatBubble } from "./chat-bubble";
 import { COMPOSE_ANCHOR_PREFIX } from "./compose-anchor-prefix";
 import { RevealedText } from "./revealed-text";
 
-const ANCHOR_CLASS = "absolute top-0 left-0 w-max max-w-[220px]";
+const ANCHOR_CLASS = "group/anchor absolute top-0 left-0 w-max max-w-[220px]";
 const FADE_OUT = { opacity: 0, transition: { duration: 0.2 } } as const;
 
 type ChatLayerProps = {
