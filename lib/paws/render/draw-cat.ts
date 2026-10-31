@@ -245,18 +245,47 @@ export function drawCat(options: {
     }
   });
 
-  const segments = cat.tail.length - 1;
-  for (let i = 0; i < segments; i++) {
-    const [x0, y0] = cat.tail[i];
-    const [x1, y1] = cat.tail[i + 1];
-    const r0 = cat.build.tailRadius - i * 0.4;
-    const r1 = cat.build.tailRadius - (i + 1) * 0.4;
-    const { base, tip } = cat.tailHeights;
-    capsule(
-      [x0, y0, r0 * k, lerp(base, tip, i / segments)],
-      [x1, y1, r1 * k, lerp(base, tip, (i + 1) / segments)],
-      palette.tail[i] ?? palette.tail[0]
-    );
+  const tailSegments = cat.tail.length - 1;
+  const { base, tip } = cat.tailHeights;
+  const tail = sampleCurve({
+    points: cat.tail.map(
+      ([x, y], i): Vec4 => [
+        x,
+        y,
+        (cat.build.tailRadius - i * 0.4) * k,
+        lerp(base, tip, i / tailSegments),
+      ]
+    ),
+    perSegment: 4,
+  });
+  const tailColorAt = (i: number) =>
+    palette.tail[Math.min(tailSegments - 1, Math.floor(i / 4))] ??
+    palette.tail[0];
+  const tailRuns = tail
+    .slice(0, -1)
+    .reduce<{ start: number; end: number; color: string }[]>((list, _, i) => {
+      const run = list.at(-1);
+      const color = tailColorAt(i);
+      if (run !== undefined && run.color === color) {
+        run.end = i + 1;
+        return list;
+      }
+      return [...list, { start: Math.max(0, i - 1), end: i + 1, color }];
+    }, []);
+  for (const run of tailRuns) {
+    const samples = tail.slice(run.start, run.end + 1);
+    const h =
+      samples.reduce((sum, point) => sum + point[3], 0) / samples.length;
+    parts.push({
+      h,
+      draw: () =>
+        softOutline({
+          draw,
+          samples,
+          blur: blurOf(h, k) + fluff,
+          color: run.color,
+        }),
+    });
   }
 
   if (cat.headH < WHISKER_FADE_HEIGHT)
