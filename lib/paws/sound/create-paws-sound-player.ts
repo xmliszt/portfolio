@@ -24,8 +24,8 @@ const MAX_CLIP_S = 2;
 const FADE_OUT_S = 0.12;
 /** Each sound's level in decibels after its loudness is matched to the others, set by ear. */
 const SOUND_LEVEL_DB = {
-  meow: -6,
-  purr: -6,
+  meow: -20,
+  purr: -20,
 } as const satisfies { [sound in PawsSound]: number };
 const MUSIC_URL = "/paws/sounds/music.mp3";
 /** Where the music's seamless loop sits in `MUSIC_URL`, in seconds; the file holds one extra second of the loop on each side. */
@@ -34,7 +34,7 @@ const MUSIC_LEVEL_DB = -12;
 const UI_LEVEL_DB = -6;
 const OLD_VIBRATO_CENTS = 35;
 const OLD_VIBRATO_HZ = 5.5;
-const BABBLE_LEVEL = 0.6;
+const BABBLE_LEVEL_DB = -18.4;
 const getLetterUrl = (letter: RecordedLetter) => `/paws/letters/${letter}.mp3`;
 const BABBLE_CUT_S = 0.03;
 
@@ -295,7 +295,7 @@ export function createPawsSoundPlayer(options: {
       window.setTimeout(() => previous.disconnect(), BABBLE_CUT_S * 5000);
     }
     const level = context.createGain();
-    level.gain.value = BABBLE_LEVEL;
+    level.gain.value = 10 ** (BABBLE_LEVEL_DB / 20);
     state.babbles[line.userId] = level;
     const panner = context.createStereoPanner();
     panner.pan.value = getPanFromWorldX(line.x);

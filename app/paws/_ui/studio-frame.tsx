@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useId, useRef } from "react";
+import { useContext, useEffect, useId, useRef } from "react";
 import { motion, useAnimate, useReducedMotion } from "motion/react";
 
 import { usePawsCopy } from "@/app/paws/_i18n/use-paws-copy";
@@ -9,7 +9,9 @@ import { cn } from "@/lib/utils";
 
 import { CatPlayground } from "./cat-playground";
 import { FOCUS_RING_CLASS } from "./focus-ring-class";
+import { ReturnFocusContext } from "./return-focus-context";
 import { SCROLL_FADE_CLASS } from "./scroll-fade-class";
+import { trapTab } from "./trap-tab";
 
 /* ─────────────────────────────────────────────────────────
  * STUDIO STORYBOARD
@@ -50,15 +52,20 @@ export function StudioFrame(props: StudioFrameProps) {
   const bouncedKeyRef = useRef(props.reactKey);
   const [scope, animate] = useAnimate<HTMLDivElement>();
   const isReduced = useReducedMotion() ?? false;
+  const returnFocusTo = useContext(ReturnFocusContext);
 
   useEffect(() => {
     const opener = document.activeElement;
     const dialog = dialogRef.current;
     if (dialog && !dialog.contains(document.activeElement)) dialog.focus();
     return () => {
-      if (opener instanceof HTMLElement && opener.isConnected) opener.focus();
+      const isOpenerShown =
+        opener instanceof HTMLElement &&
+        opener.isConnected &&
+        opener !== document.body;
+      (isOpenerShown ? opener : returnFocusTo?.current)?.focus();
     };
-  }, []);
+  }, [returnFocusTo]);
 
   useEffect(() => {
     if (bouncedKeyRef.current === props.reactKey) return;
@@ -67,23 +74,9 @@ export function StudioFrame(props: StudioFrameProps) {
       void animate(scope.current, { scale: [1, 1.05, 1] }, BOUNCE_TRANSITION);
   }, [props.reactKey, isReduced, animate, scope]);
 
-  function handleKeyDown(event: React.KeyboardEvent) {
+  function handleKeyDown(event: React.KeyboardEvent<HTMLElement>) {
     if (event.key === "Escape") props.onClose();
-    if (event.key !== "Tab") return;
-    const focusable = [
-      ...event.currentTarget.querySelectorAll<HTMLElement>(
-        "button:not(:disabled), input:not(:disabled), [tabindex='0']"
-      ),
-    ];
-    const first = focusable.at(0);
-    const last = focusable.at(-1);
-    if (event.shiftKey && document.activeElement === first) {
-      event.preventDefault();
-      last?.focus();
-    } else if (!event.shiftKey && document.activeElement === last) {
-      event.preventDefault();
-      first?.focus();
-    }
+    trapTab(event);
   }
 
   function rise(delay: number, offsetY: number) {

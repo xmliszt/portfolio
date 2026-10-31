@@ -3,6 +3,7 @@
 import {
   Children,
   isValidElement,
+  useContext,
   useEffect,
   useId,
   useRef,
@@ -12,6 +13,7 @@ import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 
 import { usePawsCopy } from "@/app/paws/_i18n/use-paws-copy";
 import { FOCUS_RING_CLASS } from "@/app/paws/_ui/focus-ring-class";
+import { ReturnFocusContext } from "@/app/paws/_ui/return-focus-context";
 import { cn } from "@/lib/utils";
 
 /* ─────────────────────────────────────────────────────────
@@ -36,7 +38,8 @@ export function RoomMenu(props: RoomMenuProps) {
   const { copy } = usePawsCopy();
   const panelId = useId();
   const rootRef = useRef<HTMLDivElement>(null);
-  const buttonRef = useRef<HTMLButtonElement>(null);
+  const ownButtonRef = useRef<HTMLButtonElement>(null);
+  const buttonRef = useContext(ReturnFocusContext) ?? ownButtonRef;
   const isReduced = useReducedMotion() ?? false;
   const [isOpen, setIsOpen] = useState(false);
   const items = Children.toArray(props.children({ close: handleClose }));

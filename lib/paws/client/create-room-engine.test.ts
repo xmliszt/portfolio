@@ -599,3 +599,39 @@ test("a screen whose host goes silent runs the room's cats itself", () => {
     "after 3 s of silence it shows the player's cat and the residents"
   );
 });
+
+test("resumes a laggy visitor's fingertip where it stopped instead of jumping to catch up", () => {
+  const engine = buildFollower();
+  const lagFromMs = 2000;
+  const lagToMs = 3500;
+  const messages = Array.from({ length: 12 }, (_, i) => (i + 1) * 500).map(
+    (sentMs) => ({
+      message: buildGuestFinger({
+        x: sentMs / 2,
+        t: sentMs,
+        seq: sentMs,
+        trail: [100, 200, 300, 400].map((step): [number, number, number] => [
+          (sentMs - 500 + step) / 2,
+          100,
+          sentMs - 500 + step,
+        ]),
+      }),
+      receivedAtMs:
+        sentMs > lagFromMs && sentMs <= lagToMs ? lagToMs : sentMs + 40,
+    })
+  );
+  const positions: number[] = [];
+  for (let nowMs = 0; nowMs <= 6500; nowMs += 16) {
+    messages
+      .filter(
+        (entry) =>
+          entry.receivedAtMs > nowMs - 16 && entry.receivedAtMs <= nowMs
+      )
+      .forEach((entry) => engine.receiveFinger(entry));
+    const x = remoteX(engine, nowMs);
+    if (x !== undefined) positions.push(x);
+  }
+  const steps = positions.slice(1).map((x, index) => x - positions[index]);
+  const largest = Math.max(...steps);
+  assert.ok(largest < 20, `largest step per frame: ${largest.toFixed(1)}`);
+});

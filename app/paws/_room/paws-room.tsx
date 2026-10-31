@@ -11,6 +11,7 @@ import {
   PawsOnboarding,
   type PawsOnboardingHandle,
 } from "@/app/paws/_ui/paws-onboarding";
+import { ReturnFocusContext } from "@/app/paws/_ui/return-focus-context";
 import { RisoButton } from "@/app/paws/_ui/riso-button";
 import type { SavedCat } from "@/lib/paws/cat-api-types";
 import { COAT_INKS } from "@/lib/paws/cat-look";
@@ -104,6 +105,7 @@ export function PawsRoom() {
   >(undefined);
   const panBarRef = useRef<PanBarHandle | undefined>(undefined);
   const onboardingRef = useRef<PawsOnboardingHandle | undefined>(undefined);
+  const menuButtonRef = useRef<HTMLButtonElement>(null);
   const hasCatToEdit = session.kind === "member" && savedCat !== undefined;
   const [isPannable, setIsPannable] = useState(false);
   const [bubbles, setBubbles] = useState<ChatBubble[]>([]);
@@ -675,154 +677,161 @@ export function PawsRoom() {
 
   return (
     <UiSoundContext.Provider value={sound.playUi}>
-      <div className="group/room absolute inset-0 select-none [-webkit-touch-callout:none]">
-        <canvas
-          ref={canvasRef}
-          aria-label={copy.site.description}
-          className="absolute inset-0 size-full touch-none [@media(pointer:fine)]:cursor-none"
-          onPointerMove={handlePointerMove}
-          onPointerDown={handlePointerDown}
-          onPointerUp={handlePointerUp}
-          onPointerCancel={handlePointerLeave}
-          onPointerLeave={handlePointerLeave}
-          onContextMenu={handleContextMenu}
-        />
-        <RoomLoading
-          text={
-            isChecked &&
-            !useFakeRoom &&
-            "accessToken" in session &&
-            roomId === undefined &&
-            !isFull
-              ? copy.room.findingRoom
-              : undefined
-          }
-        />
-        <div className="absolute top-4 right-4 flex items-start gap-x-2 group-has-[[aria-modal=true]]/room:hidden sm:top-6 sm:right-6">
-          {hasOwnCatInRoom && (
-            <button
-              type="button"
-              onClick={handleTalk}
-              aria-keyshortcuts="/"
-              className={cn(
-                FOCUS_RING_CLASS,
-                "flex h-10 items-center gap-x-2 border-[1.5px] border-[var(--pw-ink)] bg-[var(--pw-paper)] px-3 text-[12px] text-[var(--pw-ink)] hover:bg-[var(--pw-paper-deep)] sm:h-8"
-              )}
-            >
-              {copy.room.talk}
-              <kbd
-                aria-hidden
-                className="grid size-5 place-items-center border border-[var(--pw-ink-soft)] font-[inherit] text-[11px] leading-none text-[var(--pw-ink-soft)] [@media(pointer:coarse)]:hidden"
+      <ReturnFocusContext.Provider value={menuButtonRef}>
+        <div className="group/room absolute inset-0 select-none [-webkit-touch-callout:none]">
+          <canvas
+            ref={canvasRef}
+            aria-label={copy.site.description}
+            className="absolute inset-0 size-full touch-none [@media(pointer:fine)]:cursor-none"
+            onPointerMove={handlePointerMove}
+            onPointerDown={handlePointerDown}
+            onPointerUp={handlePointerUp}
+            onPointerCancel={handlePointerLeave}
+            onPointerLeave={handlePointerLeave}
+            onContextMenu={handleContextMenu}
+          />
+          <RoomLoading
+            text={
+              isChecked &&
+              !useFakeRoom &&
+              "accessToken" in session &&
+              roomId === undefined &&
+              !isFull
+                ? copy.room.findingRoom
+                : undefined
+            }
+          />
+          <div className="absolute top-4 right-4 flex items-start gap-x-2 group-has-[[aria-modal=true]]/room:hidden sm:top-6 sm:right-6">
+            {hasOwnCatInRoom && (
+              <button
+                type="button"
+                onClick={handleTalk}
+                aria-keyshortcuts="/"
+                className={cn(
+                  FOCUS_RING_CLASS,
+                  "flex h-10 items-center gap-x-2 border-[1.5px] border-[var(--pw-ink)] bg-[var(--pw-paper)] px-3 text-[12px] text-[var(--pw-ink)] hover:bg-[var(--pw-paper-deep)] sm:h-8"
+                )}
               >
-                /
-              </kbd>
-            </button>
-          )}
-          {session.kind !== "loading" && !hasCatToEdit && (
-            <RisoButton
-              variant="primary"
-              onClick={handleStartOnboardingFromRoom}
-            >
-              {session.kind === "member"
-                ? copy.watch.bringYourCat
-                : copy.watch.signInToBring}
-            </RisoButton>
-          )}
-          <RoomMenu>
-            {(menu) => [
-              hasCatToEdit && (
-                <RisoButton
-                  key="cat"
-                  variant="quiet"
-                  onClick={() => handleStartOnboarding(menu)}
+                {copy.room.talk}
+                <kbd
+                  aria-hidden
+                  className="grid size-5 place-items-center border border-[var(--pw-ink-soft)] font-[inherit] text-[11px] leading-none text-[var(--pw-ink-soft)] [@media(pointer:coarse)]:hidden"
                 >
-                  {copy.watch.yourCat}
-                </RisoButton>
-              ),
-              roomId !== undefined &&
-                !useFakeRoom &&
-                "accessToken" in session && (
-                  <RoomPicker
-                    key="room"
-                    roomId={roomId}
-                    accessToken={session.accessToken}
-                    isPlayer={self !== undefined}
-                    onSwitch={handleSwitchRoom}
-                  />
+                  /
+                </kbd>
+              </button>
+            )}
+            {session.kind !== "loading" && !hasCatToEdit && (
+              <RisoButton
+                variant="primary"
+                onClick={handleStartOnboardingFromRoom}
+              >
+                {session.kind === "member"
+                  ? copy.watch.bringYourCat
+                  : copy.watch.signInToBring}
+              </RisoButton>
+            )}
+            <RoomMenu>
+              {(menu) => [
+                hasCatToEdit && (
+                  <RisoButton
+                    key="cat"
+                    variant="quiet"
+                    onClick={() => handleStartOnboarding(menu)}
+                  >
+                    {copy.watch.yourCat}
+                  </RisoButton>
                 ),
-              <SoundSwitch
-                key="sound"
-                muted={isMuted}
-                label={copy.room.mute}
-                onToggle={handleToggleMute}
-              />,
-              <LanguagePicker key="language" onChange={handleLanguageChange} />,
-              <SheetButton
-                key="guide"
-                icon="guide"
-                label={copy.guide.open}
-                onOpen={() => handleOpenSheet({ menu, sheet: "guide" })}
-              />,
-              <SheetButton
-                key="note"
-                icon="note"
-                label={copy.note.open}
-                onOpen={() => handleOpenSheet({ menu, sheet: "note" })}
-              />,
-              <PortfolioLink key="credit" />,
-              <LaundroCafeLink key="laundro" />,
-            ]}
-          </RoomMenu>
-        </div>
-        {isPannable && (
-          <div className="absolute bottom-4 left-4 group-has-[[role=dialog]]/room:hidden sm:bottom-6 sm:left-6">
-            <PanBar
-              label={copy.room.lookAround}
-              centerX={readCenterX}
-              handleRef={panBarRef}
-              onPan={handlePan}
-            />
+                roomId !== undefined &&
+                  !useFakeRoom &&
+                  "accessToken" in session && (
+                    <RoomPicker
+                      key="room"
+                      roomId={roomId}
+                      accessToken={session.accessToken}
+                      isPlayer={self !== undefined}
+                      onSwitch={handleSwitchRoom}
+                    />
+                  ),
+                <SoundSwitch
+                  key="sound"
+                  muted={isMuted}
+                  label={copy.room.mute}
+                  onToggle={handleToggleMute}
+                />,
+                <LanguagePicker
+                  key="language"
+                  onChange={handleLanguageChange}
+                />,
+                <SheetButton
+                  key="guide"
+                  icon="guide"
+                  label={copy.guide.open}
+                  onOpen={() => handleOpenSheet({ menu, sheet: "guide" })}
+                />,
+                <SheetButton
+                  key="note"
+                  icon="note"
+                  label={copy.note.open}
+                  onOpen={() => handleOpenSheet({ menu, sheet: "note" })}
+                />,
+                <PortfolioLink key="credit" />,
+                <LaundroCafeLink key="laundro" />,
+              ]}
+            </RoomMenu>
           </div>
-        )}
-        <RoomBanner
-          text={
-            isFull
-              ? copy.watch.roomFull
-              : banner === undefined
-                ? undefined
-                : (banner.isMove
-                    ? copy.room.roomMoved
-                    : copy.room.roomEntered
-                  ).replace(
-                    "{room}",
-                    copy.room.roomName.replace(
-                      "{number}",
-                      String(getRoomNumber(banner.roomId))
+          {isPannable && (
+            <div className="absolute bottom-4 left-4 group-has-[[role=dialog]]/room:hidden sm:bottom-6 sm:left-6">
+              <PanBar
+                label={copy.room.lookAround}
+                centerX={readCenterX}
+                handleRef={panBarRef}
+                onPan={handlePan}
+              />
+            </div>
+          )}
+          <RoomBanner
+            text={
+              isFull
+                ? copy.watch.roomFull
+                : banner === undefined
+                  ? undefined
+                  : (banner.isMove
+                      ? copy.room.roomMoved
+                      : copy.room.roomEntered
+                    ).replace(
+                      "{room}",
+                      copy.room.roomName.replace(
+                        "{number}",
+                        String(getRoomNumber(banner.roomId))
+                      )
                     )
-                  )
-          }
-        />
-        <ChatLayer
-          bubbles={bubbles}
-          ownUserId={ownUserId}
-          ownAccent={self === undefined ? RISO.pink : COAT_INKS[self.look.coat]}
-          composing={isComposing && hasOwnCatInRoom}
-          anchors={anchorsRef}
-          onSend={handleSend}
-          onCloseCompose={handleCloseCompose}
-          onReopenCompose={handleReopenCompose}
-        />
-        {openSheet === "guide" && (
-          <RoomGuide pannable={isPannable} onClose={handleCloseSheet} />
-        )}
-        {openSheet === "note" && <CreatorNote onClose={handleCloseSheet} />}
-        <PawsOnboarding
-          session={session}
-          actions={actions}
-          handleRef={onboardingRef}
-          onBringCatIn={handleBringCatIn}
-        />
-      </div>
+            }
+          />
+          <ChatLayer
+            bubbles={bubbles}
+            ownUserId={ownUserId}
+            ownAccent={
+              self === undefined ? RISO.pink : COAT_INKS[self.look.coat]
+            }
+            composing={isComposing && hasOwnCatInRoom}
+            anchors={anchorsRef}
+            onSend={handleSend}
+            onCloseCompose={handleCloseCompose}
+            onReopenCompose={handleReopenCompose}
+          />
+          {openSheet === "guide" && (
+            <RoomGuide pannable={isPannable} onClose={handleCloseSheet} />
+          )}
+          {openSheet === "note" && <CreatorNote onClose={handleCloseSheet} />}
+          <PawsOnboarding
+            session={session}
+            actions={actions}
+            handleRef={onboardingRef}
+            onBringCatIn={handleBringCatIn}
+          />
+        </div>
+      </ReturnFocusContext.Provider>
     </UiSoundContext.Provider>
   );
 }

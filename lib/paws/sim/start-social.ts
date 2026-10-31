@@ -1,7 +1,7 @@
+import { beginSocial } from "./begin-social";
 import { emitCatSound } from "./emit-cat-sound";
 import { isCatLeaving } from "./is-cat-leaving";
 import { isCatOnstage } from "./is-cat-onstage";
-import { setCatState } from "./set-cat-state";
 import type { SimCat, Tick } from "./sim-types";
 
 const isFree = (cat: SimCat) =>
@@ -38,70 +38,31 @@ export function startSocial(options: {
     isPlayful &&
     world.random() < 0.4
   ) {
-    cat.social = {
-      kind: "chase",
-      t: 0,
-      durationSeconds: 4 + world.random() * 3,
-    };
-    partner.social = { kind: "chased", t: 0 };
-    cat.partnerId = partner.userId;
-    partner.partnerId = cat.userId;
-    partner.rest = undefined;
-    setCatState(cat, "chase");
-    setCatState(partner, "chased");
+    beginSocial({
+      cat,
+      partner,
+      play: { kind: "chase", durationSeconds: 4 + world.random() * 3 },
+    });
   } else if (isResting && world.random() < 0.55) {
-    cat.social = {
-      kind: "bat",
-      t: 0,
-      durationSeconds: 5 + world.random() * 4,
-      phase: "go",
-    };
-    cat.partnerId = partner.userId;
-    setCatState(cat, "bat");
+    beginSocial({
+      cat,
+      partner,
+      play: { kind: "bat", durationSeconds: 5 + world.random() * 4 },
+    });
   } else if (isResting) {
-    const side = world.random() < 0.5 ? -1 : 1;
-    const gap = 85 * (cat.build.scale + partner.build.scale);
-    cat.wander = {
-      x: partner.x - Math.sin(partner.heading) * side * gap,
-      y: partner.y + Math.cos(partner.heading) * side * gap,
-    };
-    cat.isSnuggling = true;
-    cat.partnerId = partner.userId;
-    setCatState(cat, "approach");
+    beginSocial({
+      cat,
+      partner,
+      play: { kind: "snuggle", side: world.random() < 0.5 ? -1 : 1 },
+    });
   } else if (isPlayful && world.random() < 0.7) {
-    cat.social = {
-      kind: "chase",
-      t: 0,
-      durationSeconds: 4 + world.random() * 3,
-    };
-    partner.social = { kind: "chased", t: 0 };
-    cat.partnerId = partner.userId;
-    partner.partnerId = cat.userId;
-    partner.rest = undefined;
-    setCatState(cat, "chase");
-    setCatState(partner, "chased");
+    beginSocial({
+      cat,
+      partner,
+      play: { kind: "chase", durationSeconds: 4 + world.random() * 3 },
+    });
   } else {
-    cat.social = {
-      kind: "greet",
-      t: 0,
-      sniffT: 0,
-      sniffing: false,
-      lead: true,
-      printed: false,
-    };
-    partner.social = {
-      kind: "greet",
-      t: 0,
-      sniffT: 0,
-      sniffing: false,
-      lead: false,
-      printed: false,
-    };
-    cat.partnerId = partner.userId;
-    partner.partnerId = cat.userId;
-    partner.rest = undefined;
-    setCatState(cat, "greet");
-    setCatState(partner, "greet");
+    beginSocial({ cat, partner, play: { kind: "greet" } });
     emitCatSound({ tick, cat, sound: "meow" });
   }
   cat.socialCooldownUntil = world.time + 14 + world.random() * 20;

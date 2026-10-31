@@ -1,11 +1,13 @@
 "use client";
 
-import { useEffect, useId, useRef } from "react";
+import { useContext, useEffect, useId, useRef } from "react";
 import { motion, useReducedMotion } from "motion/react";
 
 import { usePawsCopy } from "@/app/paws/_i18n/use-paws-copy";
 import { FOCUS_RING_CLASS } from "@/app/paws/_ui/focus-ring-class";
+import { ReturnFocusContext } from "@/app/paws/_ui/return-focus-context";
 import { SCROLL_FADE_CLASS } from "@/app/paws/_ui/scroll-fade-class";
+import { trapTab } from "@/app/paws/_ui/trap-tab";
 import { cn } from "@/lib/utils";
 
 /* ─────────────────────────────────────────────────────────
@@ -27,23 +29,29 @@ type RoomSheetProps = {
   onClose: () => void;
 };
 
-/** Render a titled paper card in the middle of the room over a paper veil, its body scrolling, closing on Escape, the close button or a tap on the veil, and handing focus back to the opener when it unmounts. */
+/** Render a titled paper card in the middle of the room over a paper veil, its body scrolling, keeping Tab inside it, closing on Escape, the close button or a tap on the veil, and handing focus back to the opener, or to the `ReturnFocusContext` element when the opener is gone, when it unmounts. */
 export function RoomSheet(props: RoomSheetProps) {
   const { copy } = usePawsCopy();
   const titleId = useId();
   const dialogRef = useRef<HTMLElement>(null);
   const isReduced = useReducedMotion() ?? false;
+  const returnFocusTo = useContext(ReturnFocusContext);
 
   useEffect(() => {
     const opener = document.activeElement;
     dialogRef.current?.focus();
     return () => {
-      if (opener instanceof HTMLElement && opener.isConnected) opener.focus();
+      const isOpenerShown =
+        opener instanceof HTMLElement &&
+        opener.isConnected &&
+        opener !== document.body;
+      (isOpenerShown ? opener : returnFocusTo?.current)?.focus();
     };
-  }, []);
+  }, [returnFocusTo]);
 
-  function handleKeyDown(event: React.KeyboardEvent) {
+  function handleKeyDown(event: React.KeyboardEvent<HTMLElement>) {
     if (event.key === "Escape") props.onClose();
+    trapTab(event);
   }
 
   function handleVeilPointerDown(event: React.PointerEvent) {
@@ -62,7 +70,7 @@ export function RoomSheet(props: RoomSheetProps) {
       initial={isReduced ? false : { opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.2 }}
-      className="absolute inset-0 z-20 flex items-center justify-center bg-[var(--pw-paper)]/85 px-[max(16px,env(safe-area-inset-left))] pt-[max(16px,env(safe-area-inset-top))] pb-[max(16px,env(safe-area-inset-bottom))] text-[var(--pw-ink)] outline-none select-none"
+      className="absolute inset-0 z-20 flex items-center justify-center bg-[var(--pw-paper)]/85 px-[max(16px,env(safe-area-inset-left))] pt-[max(16px,env(safe-area-inset-top))] pb-[max(16px,env(safe-area-inset-bottom))] text-[var(--pw-ink)] outline-none"
     >
       <motion.div
         initial={isReduced ? false : { opacity: 0, y: 16 }}
