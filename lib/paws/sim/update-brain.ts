@@ -208,7 +208,7 @@ export function updateBrain(options: { tick: Tick; cat: SimCat }) {
     (candidate) =>
       candidate.present &&
       candidate.speed > FLEE_SPEED &&
-      Math.hypot(cat.x - candidate.x, cat.y - candidate.y) < 360 * k
+      Math.hypot(cat.x - candidate.x, cat.y - candidate.y) < 260 * k
   );
   if (scare !== undefined && cat.state !== "flee") {
     startLeaving({ world, cat, fleeFrom: scare });
