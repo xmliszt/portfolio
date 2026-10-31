@@ -185,7 +185,6 @@ export const it = {
   },
   otherApps: {
     title: "Altre app",
-    hint: "Altre piccole cose fatte da me. Ognuna si apre in una nuova scheda.",
   },
   note: {
     open: "Due parole da parte mia",

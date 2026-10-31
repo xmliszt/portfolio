@@ -184,7 +184,6 @@ export const tr = {
   },
   otherApps: {
     title: "Diğer uygulamalar",
-    hint: "Aynı yapımcıdan küçük şeyler. Her biri yeni sekmede açılır.",
   },
   note: {
     open: "Yaratıcısından birkaç söz",

@@ -174,7 +174,6 @@ export const zhHans = {
   },
   otherApps: {
     title: "其他应用",
-    hint: "同一位作者做的其他小东西。每个都会在新标签页中打开。",
   },
   note: {
     open: "创作者的话",

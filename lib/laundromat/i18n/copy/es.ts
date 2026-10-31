@@ -48,7 +48,6 @@ export const es = {
   },
   otherApps: {
     heading: "otras apps",
-    hint: "Más cositas del mismo creador. Cada una se abre en una pestaña nueva.",
   },
   themes: {
     heading: "temas",

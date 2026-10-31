@@ -185,7 +185,6 @@ export const ptBR = {
   },
   otherApps: {
     title: "Outros apps",
-    hint: "Mais coisinhas de quem criou o Paws. Cada uma abre em uma nova aba.",
   },
   note: {
     open: "Um recado de quem criou o Paws",

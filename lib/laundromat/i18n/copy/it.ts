@@ -50,7 +50,6 @@ export const it = {
   },
   otherApps: {
     heading: "altre app",
-    hint: "Altre piccole cose dello stesso autore. Ognuna si apre in una nuova scheda.",
   },
   themes: {
     heading: "temi",

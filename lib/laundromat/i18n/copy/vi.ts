@@ -53,7 +53,6 @@ export const vi = {
   },
   otherApps: {
     heading: "ứng dụng khác",
-    hint: "Thêm vài thứ nhỏ của cùng người làm. Mỗi cái mở trong một thẻ mới.",
   },
   themes: {
     heading: "chủ đề",

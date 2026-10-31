@@ -50,7 +50,6 @@ export const fr = {
   },
   otherApps: {
     heading: "autres applis",
-    hint: "D’autres petites choses du même créateur. Chacune s’ouvre dans un nouvel onglet.",
   },
   themes: {
     heading: "thèmes",

@@ -181,7 +181,6 @@ export const en = {
   },
   otherApps: {
     title: "Other Apps",
-    hint: "More small things by the same maker. Each opens in a new tab.",
   },
   note: {
     open: "A Note from the Maker",

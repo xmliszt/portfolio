@@ -13,7 +13,6 @@ export function OtherAppsDialog(props: OtherAppsDialogProps) {
   const { copy } = useLaundromatCopy();
   const dialogRef = useRef<HTMLDivElement>(null);
   const headingId = useId();
-  const hintId = useId();
   const { onClose } = props;
 
   useEffect(() => {
@@ -54,7 +53,6 @@ export function OtherAppsDialog(props: OtherAppsDialogProps) {
       role="dialog"
       aria-modal
       aria-labelledby={headingId}
-      aria-describedby={hintId}
       className="flex max-h-[calc(100dvh-32px)] w-[min(360px,calc(100vw-32px))] flex-col gap-y-3 rounded-[22px] bg-[var(--lm-panel)] p-3.5 text-[var(--lm-ink)] [box-shadow:var(--lm-panel-shadow)]"
     >
       <div className="flex min-h-0 flex-col gap-y-4 overflow-y-auto overscroll-contain rounded-lg px-5 pt-5 pb-5 lowercase shadow-[0_0_0_1px_var(--lm-edge)] [scrollbar-color:var(--lm-line)_transparent] [scrollbar-width:thin]">
@@ -64,12 +62,6 @@ export function OtherAppsDialog(props: OtherAppsDialogProps) {
         >
           {copy.otherApps.heading}
         </h2>
-        <p
-          id={hintId}
-          className="m-0 text-[11px] leading-5 text-pretty opacity-80"
-        >
-          {copy.otherApps.hint}
-        </p>
         <ul className="m-0 grid list-none grid-cols-4 gap-x-2 gap-y-4 p-0">
           {getSiblingApps("laundromat").map((app) => (
             <li key={app.id} className="m-0 p-0">

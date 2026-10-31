@@ -49,7 +49,6 @@ export const nl = {
   },
   otherApps: {
     heading: "andere apps",
-    hint: "Meer kleine dingen van dezelfde maker. Elk opent in een nieuw tabblad.",
   },
   themes: {
     heading: "thema’s",

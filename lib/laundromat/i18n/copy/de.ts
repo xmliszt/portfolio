@@ -50,7 +50,6 @@ export const de = {
   },
   otherApps: {
     heading: "Weitere Apps",
-    hint: "Mehr kleine Dinge vom selben Macher. Jede öffnet sich in einem neuen Tab.",
   },
   themes: {
     heading: "Themen",

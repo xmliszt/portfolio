@@ -48,7 +48,6 @@ export const ja = {
   },
   otherApps: {
     heading: "ほかのアプリ",
-    hint: "同じ作り手の小さな作品たち。それぞれ新しいタブで開きます。",
   },
   themes: {
     heading: "テーマ",

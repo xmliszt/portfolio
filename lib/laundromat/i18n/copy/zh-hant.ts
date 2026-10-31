@@ -47,7 +47,6 @@ export const zhHant = {
   },
   otherApps: {
     heading: "其他應用程式",
-    hint: "同一位作者做的其他小東西。每個都會在新分頁中開啟。",
   },
   themes: {
     heading: "主題",

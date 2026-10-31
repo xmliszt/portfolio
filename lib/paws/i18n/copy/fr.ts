@@ -185,7 +185,6 @@ export const fr = {
   },
   otherApps: {
     title: "Autres applis",
-    hint: "D’autres petites choses de ma part. Chacune s’ouvre dans un nouvel onglet.",
   },
   note: {
     open: "Un petit mot de ma part",

@@ -185,7 +185,6 @@ export const ja = {
   },
   otherApps: {
     title: "ほかのアプリ",
-    hint: "同じ作り手の小さな作品たち。それぞれ新しいタブで開きます。",
   },
   note: {
     open: "作り手のことば",

@@ -184,7 +184,6 @@ export const vi = {
   },
   otherApps: {
     title: "Ứng dụng khác",
-    hint: "Thêm vài thứ nhỏ của người làm ra Paws. Mỗi cái mở trong một thẻ mới.",
   },
   note: {
     open: "Đôi lời từ người làm ra Paws",

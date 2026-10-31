@@ -188,7 +188,6 @@ export const id = {
   },
   otherApps: {
     title: "Aplikasi lain",
-    hint: "Hal-hal kecil lain dari pembuat yang sama. Masing-masing terbuka di tab baru.",
   },
   note: {
     open: "Sepatah kata dari pembuatnya",

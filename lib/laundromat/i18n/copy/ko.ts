@@ -48,7 +48,6 @@ export const ko = {
   },
   otherApps: {
     heading: "다른 앱",
-    hint: "같은 만든 이의 작은 작품들이에요. 각각 새 탭에서 열려요.",
   },
   themes: {
     heading: "테마",

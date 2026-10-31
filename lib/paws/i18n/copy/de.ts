@@ -187,7 +187,6 @@ export const de = {
   },
   otherApps: {
     title: "Weitere Apps",
-    hint: "Mehr kleine Dinge vom selben Macher. Jede öffnet sich in einem neuen Tab.",
   },
   note: {
     open: "Ein paar Worte von mir",

@@ -65,7 +65,6 @@ export const pl = {
   },
   otherApps: {
     heading: "inne aplikacje",
-    hint: "Więcej drobiazgów od tego samego twórcy. Każdy otwiera się w nowej karcie.",
   },
   themes: {
     heading: "motywy",

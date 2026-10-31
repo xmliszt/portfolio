@@ -48,7 +48,6 @@ export const zhHans = {
   },
   otherApps: {
     heading: "其他应用",
-    hint: "同一位作者做的其他小东西。每个都会在新标签页中打开。",
   },
   themes: {
     heading: "主题",

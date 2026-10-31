@@ -60,7 +60,6 @@ export const en = {
   },
   otherApps: {
     heading: "other apps",
-    hint: "More small things by the same maker. Each opens in a new tab.",
   },
   themes: {
     heading: "themes",

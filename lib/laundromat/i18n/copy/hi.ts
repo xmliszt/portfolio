@@ -55,7 +55,6 @@ export const hi = {
   },
   otherApps: {
     heading: "और ऐप",
-    hint: "इन्हीं बनाने वाले की और छोटी चीज़ें। हर एक नए टैब में खुलती है।",
   },
   themes: {
     heading: "थीम",

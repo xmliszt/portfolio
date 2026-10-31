@@ -186,7 +186,6 @@ export const es = {
   },
   otherApps: {
     title: "Otras apps",
-    hint: "Más cositas de quien creó Paws. Cada una se abre en una pestaña nueva.",
   },
   note: {
     open: "Unas palabras de quien creó Paws",

@@ -49,7 +49,6 @@ export const tr = {
   },
   otherApps: {
     heading: "diğer uygulamalar",
-    hint: "Aynı yapımcıdan küçük şeyler. Her biri yeni sekmede açılır.",
   },
   themes: {
     heading: "temalar",

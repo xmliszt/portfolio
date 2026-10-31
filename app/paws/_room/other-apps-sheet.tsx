@@ -17,33 +17,30 @@ export function OtherAppsSheet(props: OtherAppsSheetProps) {
   const { copy } = usePawsCopy();
   return (
     <RoomSheet title={copy.otherApps.title} onClose={props.onClose}>
-      <div className="flex flex-col gap-y-5 px-1">
-        <p className="m-0 text-[13px] leading-relaxed">{copy.otherApps.hint}</p>
-        <ul className="m-0 grid list-none grid-cols-4 gap-x-2 gap-y-4 p-0">
-          {getSiblingApps("paws").map((app) => (
-            <li key={app.id}>
-              <a
-                href={app.href}
-                target="_blank"
-                rel="noopener"
-                className={cn(
-                  FOCUS_RING_CLASS,
-                  "group flex flex-col items-center gap-y-2 py-1 text-[11px] leading-4 text-[var(--pw-ink)]"
-                )}
-              >
-                <SquircleAppIcon
-                  src={app.iconSrc}
-                  sizePx={56}
-                  className="transition-transform duration-200 ease-out group-hover:-translate-y-0.5 group-hover:-rotate-3 group-active:scale-95 motion-reduce:transition-none"
-                />
-                <span className="max-w-full truncate decoration-[var(--pw-pink)] decoration-2 underline-offset-4 group-hover:underline">
-                  {app.name}
-                </span>
-              </a>
-            </li>
-          ))}
-        </ul>
-      </div>
+      <ul className="m-0 grid list-none grid-cols-4 gap-x-2 gap-y-4 p-0">
+        {getSiblingApps("paws").map((app) => (
+          <li key={app.id}>
+            <a
+              href={app.href}
+              target="_blank"
+              rel="noopener"
+              className={cn(
+                FOCUS_RING_CLASS,
+                "group flex flex-col items-center gap-y-2 py-1 text-[11px] leading-4 text-[var(--pw-ink)]"
+              )}
+            >
+              <SquircleAppIcon
+                src={app.iconSrc}
+                sizePx={56}
+                className="transition-transform duration-200 ease-out group-hover:-translate-y-0.5 group-hover:-rotate-3 group-active:scale-95 motion-reduce:transition-none"
+              />
+              <span className="max-w-full truncate decoration-[var(--pw-pink)] decoration-2 underline-offset-4 group-hover:underline">
+                {app.name}
+              </span>
+            </a>
+          </li>
+        ))}
+      </ul>
     </RoomSheet>
   );
 }

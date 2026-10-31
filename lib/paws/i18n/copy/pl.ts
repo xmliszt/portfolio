@@ -184,7 +184,6 @@ export const pl = {
   },
   otherApps: {
     title: "Inne aplikacje",
-    hint: "Więcej drobiazgów ode mnie. Każdy otwiera się w nowej karcie.",
   },
   note: {
     open: "Kilka słów ode mnie",
