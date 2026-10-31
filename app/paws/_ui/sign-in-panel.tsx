@@ -116,9 +116,11 @@ export function SignInPanel(props: SignInPanelProps) {
       case "verified":
         return;
       case "wrongCode":
+        setCode("");
         setStep({ kind: "code", busy: undefined, notice: "wrongCode" });
         return;
       case "failed":
+        setCode("");
         setStep({ kind: "code", busy: undefined, notice: "verifyFailed" });
         return;
       default: {

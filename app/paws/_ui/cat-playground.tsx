@@ -95,7 +95,7 @@ export function CatPlayground(props: CatPlaygroundProps) {
       const look = lookRef.current;
       const playgroundCat = world.cats[CAT_ID];
       if (look.tailShape !== scene.tailShape && playgroundCat !== undefined)
-        standUp(playgroundCat);
+        standUp({ world, cat: playgroundCat });
       scene.tailShape = look.tailShape;
       const { events } = stepWorld({
         world,

@@ -14,10 +14,10 @@ export function CodeBoxes(props: CodeBoxesProps) {
   return (
     <div
       aria-hidden
-      className={cn(
-        "grid grid-cols-6 gap-x-1.5",
-        props.disabled && "opacity-60"
-      )}
+      style={{
+        gridTemplateColumns: `repeat(${CODE_LENGTH}, minmax(0, 1fr))`,
+      }}
+      className={cn("grid gap-x-1.5", props.disabled && "opacity-60")}
     >
       {Array.from({ length: CODE_LENGTH }, (_, index) => {
         const digit = props.code.at(index);

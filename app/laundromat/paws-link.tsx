@@ -1,4 +1,4 @@
-import { PAWS_ORIGIN } from "@/lib/paws/paws-hosts";
+import { PAWS_HOSTNAMES, PAWS_ORIGIN } from "@/lib/paws/paws-hosts";
 
 import { TOOLBAR_BUTTON_CLASS } from "./toolbar-button-class";
 import { ToolbarLabel } from "./toolbar-label";
@@ -24,7 +24,7 @@ export function PawsLink() {
         <circle cx="7.4" cy="2.9" r="1.1" />
         <circle cx="9.6" cy="5" r="1.1" />
       </svg>
-      <ToolbarLabel>paws.liyuxuan.dev</ToolbarLabel>
+      <ToolbarLabel>{PAWS_HOSTNAMES[0]}</ToolbarLabel>
     </a>
   );
 }
