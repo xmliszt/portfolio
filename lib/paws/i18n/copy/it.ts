@@ -28,7 +28,7 @@ export const it = {
     resend: "Invia nuovo codice",
     changeEmail: "Cambia email",
     wrongCode: "Quel codice non funziona. Controllalo o chiedine uno nuovo.",
-    tooSoon: "Aspetta un minuto, poi riprova.",
+    tooSoon: "Aspetta qualche secondo, poi riprova.",
     sendFailed: "Non siamo riusciti a inviare il codice. Riprova.",
     verifyFailed: "Non siamo riusciti a farti accedere. Riprova.",
     signInAgain: "Accedi di nuovo per tenere il tuo gatto.",

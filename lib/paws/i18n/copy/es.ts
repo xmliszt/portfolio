@@ -29,7 +29,7 @@ export const es = {
     resend: "Enviar otro código",
     changeEmail: "Usar otro correo",
     wrongCode: "Ese código no funciona. Revísalo o pide otro.",
-    tooSoon: "Espera un minuto y vuelve a intentarlo.",
+    tooSoon: "Espera unos segundos y vuelve a intentarlo.",
     sendFailed: "No se pudo enviar el código. Vuelve a intentarlo.",
     verifyFailed: "No se pudo iniciar sesión. Vuelve a intentarlo.",
     signInAgain: "Vuelve a iniciar sesión para conservar a tu gato.",

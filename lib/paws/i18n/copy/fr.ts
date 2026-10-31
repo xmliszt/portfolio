@@ -29,7 +29,7 @@ export const fr = {
     resend: "Renvoyer un code",
     changeEmail: "Autre e-mail",
     wrongCode: "Ce code ne fonctionne pas. Vérifie-le ou demande-en un autre.",
-    tooSoon: "Attends une minute, puis réessaie.",
+    tooSoon: "Attends quelques secondes, puis réessaie.",
     sendFailed: "Le code n'a pas pu être envoyé. Réessaie.",
     verifyFailed: "La connexion a échoué. Réessaie.",
     signInAgain: "Reconnecte-toi pour garder ton chat.",

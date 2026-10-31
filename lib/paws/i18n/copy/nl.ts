@@ -28,7 +28,7 @@ export const nl = {
     resend: "Nieuwe code",
     changeEmail: "Andere e-mail",
     wrongCode: "Die code werkt niet. Controleer hem of vraag een nieuwe aan.",
-    tooSoon: "Wacht een minuut en probeer het opnieuw.",
+    tooSoon: "Wacht een paar seconden en probeer het opnieuw.",
     sendFailed: "De code kon niet worden verstuurd. Probeer het opnieuw.",
     verifyFailed: "Inloggen is niet gelukt. Probeer het opnieuw.",
     signInAgain: "Log opnieuw in om je kat te houden.",

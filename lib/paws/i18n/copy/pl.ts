@@ -28,7 +28,7 @@ export const pl = {
     resend: "Wyślij nowy kod",
     changeEmail: "Zmień e-mail",
     wrongCode: "Ten kod nie działa. Sprawdź go lub poproś o nowy.",
-    tooSoon: "Poczekaj minutę i spróbuj ponownie.",
+    tooSoon: "Poczekaj kilka sekund i spróbuj ponownie.",
     sendFailed: "Nie udało się wysłać kodu. Spróbuj ponownie.",
     verifyFailed: "Nie udało się zalogować. Spróbuj ponownie.",
     signInAgain: "Zaloguj się ponownie, by zachować swojego kota.",

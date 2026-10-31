@@ -28,7 +28,7 @@ export const tr = {
     resend: "Yeni kod gönder",
     changeEmail: "E-postayı değiştir",
     wrongCode: "Bu kod olmadı. Kontrol et ya da yeni bir kod al.",
-    tooSoon: "Bir dakika bekle, sonra tekrar dene.",
+    tooSoon: "Birkaç saniye bekle, sonra tekrar dene.",
     sendFailed: "Kod gönderilemedi. Tekrar dene.",
     verifyFailed: "Giriş yapılamadı. Tekrar dene.",
     signInAgain: "Kedini tutmak için tekrar giriş yap.",

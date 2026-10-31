@@ -29,7 +29,7 @@ export const ja = {
     changeEmail: "メール変更",
     wrongCode:
       "コードが合わないみたい。確認するか、新しいコードを受け取ってね。",
-    tooSoon: "1分待ってから、もう一度試してね。",
+    tooSoon: "数秒待ってから、もう一度試してね。",
     sendFailed: "コードを送れなかったよ。もう一度試してね。",
     verifyFailed: "ログインできなかったよ。もう一度試してね。",
     signInAgain: "猫をそのまま残すには、もう一度ログインしてね。",
