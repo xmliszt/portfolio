@@ -1,6 +1,12 @@
 "use client";
 
-import { useEffect, useId, useRef, useState } from "react";
+import {
+  type RefObject,
+  useEffect,
+  useImperativeHandle,
+  useRef,
+  useState,
+} from "react";
 
 import { usePawsCopy } from "@/app/paws/_i18n/use-paws-copy";
 import { useUiSound } from "@/app/paws/_room/use-ui-sound";
@@ -34,21 +40,21 @@ type OnboardingStep =
     }
   | { kind: "voice"; look: CatLook; voice: VoiceSettings };
 
+export type PawsOnboardingHandle = { start: () => void };
+
 type PawsOnboardingProps = {
   session: PawsSession;
   actions: PawsSessionActions;
-  hasCat: boolean;
+  handleRef: RefObject<PawsOnboardingHandle | undefined>;
   onBringCatIn: (cat: SavedCat) => void;
 };
 
-/** Render the corner flow that takes a watcher through sign-in, making a cat and picking its voice, then hands the saved cat over; with `hasCat`, it reopens the same flow so a member can change the look and the voice. */
+/** Render the corner flow that takes a watcher through sign-in, making a cat and picking its voice, then hands the saved cat over; `start`, exposed through `handleRef`, opens it, and for a member with a cat it reopens the same flow to change the look and the voice. */
 export function PawsOnboarding(props: PawsOnboardingProps) {
   const playUi = useUiSound();
   const { copy } = usePawsCopy();
 
   const [step, setStep] = useState<OnboardingStep>({ kind: "watching" });
-  const startButtonId = useId();
-  const shouldFocusStartRef = useRef(false);
   const flowRef = useRef(0);
   const signOutRef = useRef(props.actions.signOut);
   const session = props.session;
@@ -72,11 +78,7 @@ export function PawsOnboarding(props: PawsOnboardingProps) {
     signOutRef.current = props.actions.signOut;
   }, [props.actions.signOut]);
 
-  useEffect(() => {
-    if (step.kind !== "watching" || !shouldFocusStartRef.current) return;
-    shouldFocusStartRef.current = false;
-    document.getElementById(startButtonId)?.focus();
-  }, [step.kind, startButtonId]);
+  useImperativeHandle(props.handleRef, () => ({ start: handleStart }));
 
   useEffect(() => {
     if (!isLoadingCat || accessToken === undefined) return;
@@ -127,13 +129,11 @@ export function PawsOnboarding(props: PawsOnboardingProps) {
 
   function close() {
     flowRef.current += 1;
-    shouldFocusStartRef.current = true;
     setStep({ kind: "watching" });
   }
 
   function finish(cat: SavedCat) {
     flowRef.current += 1;
-    shouldFocusStartRef.current = true;
     setStep({ kind: "watching" });
     props.onBringCatIn(cat);
   }
@@ -183,21 +183,7 @@ export function PawsOnboarding(props: PawsOnboardingProps) {
 
   switch (step.kind) {
     case "watching":
-      return (
-        <div className="pointer-events-auto absolute bottom-4 left-4 z-10 sm:bottom-6 sm:left-6">
-          <RisoButton
-            variant="primary"
-            id={startButtonId}
-            onClick={handleStart}
-          >
-            {session.kind !== "member"
-              ? copy.watch.signInToBring
-              : props.hasCat
-                ? copy.watch.yourCat
-                : copy.watch.bringYourCat}
-          </RisoButton>
-        </div>
-      );
+      return null;
     case "signIn":
       return (
         <SignInPanel

@@ -1,4 +1,3 @@
-import { ToolbarLabel } from "@/app/laundromat/toolbar-label";
 import { FOCUS_RING_CLASS } from "@/app/paws/_ui/focus-ring-class";
 import { LAUNDROMAT_ORIGIN } from "@/lib/laundromat/hosts";
 import { cn } from "@/lib/utils";
@@ -36,7 +35,7 @@ function LaundroCafeMark() {
       aria-hidden
       data-pw-laundro
       viewBox="0 0 40 40"
-      className="size-9 shrink-0 overflow-visible"
+      className="-my-1 size-7 shrink-0 overflow-visible"
     >
       <style>{KEYFRAMES}</style>
       <g transform="translate(1.1 0.9)">
@@ -113,23 +112,20 @@ function LaundroCafeMark() {
   );
 }
 
-/** Link to laundro.cafe in a new tab: the riso washer-cup mark, opening to the site's name while hovered or focused. */
+/** Link to laundro.cafe in a new tab: the riso washer-cup mark and the site's name, the drum spinning faster while hovered or focused. */
 export function LaundroCafeLink() {
   return (
     <a
       href={LAUNDROMAT_ORIGIN}
       target="_blank"
       rel="noopener"
-      aria-label="laundro.cafe"
       className={cn(
         FOCUS_RING_CLASS,
-        "group flex h-11 min-w-11 items-center justify-center border-[1.5px] border-[var(--pw-ink)] bg-[var(--pw-paper)] px-0.5 text-[12px] text-[var(--pw-ink)] hover:bg-[var(--pw-paper-deep)]"
+        "group flex h-10 items-center gap-x-2 border-[1.5px] border-[var(--pw-ink)] bg-[var(--pw-paper)] pr-3 pl-1.5 text-[12px] text-[var(--pw-ink)] hover:bg-[var(--pw-paper-deep)] sm:h-8"
       )}
     >
       <LaundroCafeMark />
-      <ToolbarLabel>
-        <span className="pr-2">laundro.cafe</span>
-      </ToolbarLabel>
+      <span className="flex-1">laundro.cafe</span>
     </a>
   );
 }

@@ -27,9 +27,11 @@ const DROP_SPRING = { type: "spring", stiffness: 520, damping: 34 } as const;
 const BAR_CLASS =
   "absolute left-1/2 h-[1.5px] w-4 -translate-x-1/2 bg-current transition-transform duration-200 ease-out motion-reduce:transition-none";
 
-type RoomMenuProps = { children: React.ReactNode };
+type RoomMenuProps = {
+  children: (menu: { close: () => void }) => React.ReactNode;
+};
 
-/** Render a square menu button that opens the room's options as a column of full-width rows under it, closing on Escape or a tap outside. */
+/** Render a square menu button that opens the rows `children` returns as a full-width column under it, closing on Escape, a tap outside or the `close` it hands the rows. */
 export function RoomMenu(props: RoomMenuProps) {
   const { copy } = usePawsCopy();
   const panelId = useId();
@@ -37,7 +39,7 @@ export function RoomMenu(props: RoomMenuProps) {
   const buttonRef = useRef<HTMLButtonElement>(null);
   const isReduced = useReducedMotion() ?? false;
   const [isOpen, setIsOpen] = useState(false);
-  const items = Children.toArray(props.children);
+  const items = Children.toArray(props.children({ close: handleClose }));
 
   useEffect(() => {
     if (!isOpen) return;
@@ -51,6 +53,10 @@ export function RoomMenu(props: RoomMenuProps) {
     document.addEventListener("pointerdown", handlePointerDown);
     return () => document.removeEventListener("pointerdown", handlePointerDown);
   }, [isOpen]);
+
+  function handleClose() {
+    setIsOpen(false);
+  }
 
   function handleToggle() {
     setIsOpen((open) => !open);
@@ -73,13 +79,17 @@ export function RoomMenu(props: RoomMenuProps) {
         onClick={handleToggle}
         className={cn(
           FOCUS_RING_CLASS,
-          "relative size-11 cursor-pointer border-[1.5px] border-[var(--pw-ink)] bg-[var(--pw-paper)] text-[var(--pw-ink)] hover:bg-[var(--pw-paper-deep)]",
+          "relative size-10 shrink-0 cursor-pointer border-[1.5px] border-[var(--pw-ink)] bg-[var(--pw-paper)] text-[var(--pw-ink)] hover:bg-[var(--pw-paper-deep)] sm:size-8",
           isOpen && "bg-[var(--pw-paper-deep)]"
         )}
       >
         <span
           aria-hidden
-          className={cn(BAR_CLASS, "top-[14px]", isOpen && "top-1/2 rotate-45")}
+          className={cn(
+            BAR_CLASS,
+            "top-[13px] sm:top-[10px]",
+            isOpen && "top-1/2 rotate-45 sm:top-1/2"
+          )}
         />
         <span
           aria-hidden
@@ -93,8 +103,8 @@ export function RoomMenu(props: RoomMenuProps) {
           aria-hidden
           className={cn(
             BAR_CLASS,
-            "bottom-[14px]",
-            isOpen && "top-1/2 bottom-auto -rotate-45"
+            "bottom-[13px] sm:bottom-[10px]",
+            isOpen && "top-1/2 bottom-auto -rotate-45 sm:top-1/2 sm:bottom-auto"
           )}
         />
       </button>

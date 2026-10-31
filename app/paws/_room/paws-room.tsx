@@ -7,7 +7,11 @@ import { LanguagePicker } from "@/app/paws/_i18n/language-picker";
 import { usePawsCopy } from "@/app/paws/_i18n/use-paws-copy";
 import { usePawsSession } from "@/app/paws/_session/use-paws-session";
 import { FOCUS_RING_CLASS } from "@/app/paws/_ui/focus-ring-class";
-import { PawsOnboarding } from "@/app/paws/_ui/paws-onboarding";
+import {
+  PawsOnboarding,
+  type PawsOnboardingHandle,
+} from "@/app/paws/_ui/paws-onboarding";
+import { RisoButton } from "@/app/paws/_ui/riso-button";
 import type { SavedCat } from "@/lib/paws/cat-api-types";
 import { COAT_INKS } from "@/lib/paws/cat-look";
 import { getRevealSteps } from "@/lib/paws/chat/get-reveal-steps";
@@ -96,6 +100,8 @@ export function PawsRoom() {
     { startMidX: number; startCenterX: number } | undefined
   >(undefined);
   const panBarRef = useRef<PanBarHandle | undefined>(undefined);
+  const onboardingRef = useRef<PawsOnboardingHandle | undefined>(undefined);
+  const hasCatToEdit = session.kind === "member" && savedCat !== undefined;
   const [isPannable, setIsPannable] = useState(false);
   const [bubbles, setBubbles] = useState<ChatBubble[]>([]);
   const [isComposing, setIsComposing] = useState(false);
@@ -584,6 +590,15 @@ export function PawsRoom() {
     return result.kind;
   }
 
+  function handleStartOnboarding(menu: { close: () => void }) {
+    menu.close();
+    onboardingRef.current?.start();
+  }
+
+  function handleStartOnboardingFromRoom() {
+    onboardingRef.current?.start();
+  }
+
   function handleTalk() {
     sound.playUi("chatOpen");
     setIsComposing(true);
@@ -652,9 +667,6 @@ export function PawsRoom() {
               : undefined
           }
         />
-        <div className="absolute top-4 left-4 group-has-[[aria-modal=true]]/room:hidden sm:top-6 sm:left-6">
-          <LaundroCafeLink />
-        </div>
         <div className="absolute top-4 right-4 flex items-start gap-x-2 group-has-[[aria-modal=true]]/room:hidden sm:top-6 sm:right-6">
           {hasOwnCatInRoom && (
             <button
@@ -663,7 +675,7 @@ export function PawsRoom() {
               aria-keyshortcuts="/"
               className={cn(
                 FOCUS_RING_CLASS,
-                "flex h-11 items-center gap-x-2 border-[1.5px] border-[var(--pw-ink)] bg-[var(--pw-paper)] px-3 text-[12px] text-[var(--pw-ink)] hover:bg-[var(--pw-paper-deep)]"
+                "flex h-10 items-center gap-x-2 border-[1.5px] border-[var(--pw-ink)] bg-[var(--pw-paper)] px-3 text-[12px] text-[var(--pw-ink)] hover:bg-[var(--pw-paper-deep)] sm:h-8"
               )}
             >
               {copy.room.talk}
@@ -675,30 +687,52 @@ export function PawsRoom() {
               </kbd>
             </button>
           )}
+          {session.kind !== "loading" && !hasCatToEdit && (
+            <RisoButton
+              variant="primary"
+              onClick={handleStartOnboardingFromRoom}
+            >
+              {session.kind === "member"
+                ? copy.watch.bringYourCat
+                : copy.watch.signInToBring}
+            </RisoButton>
+          )}
           <RoomMenu>
-            {roomId !== undefined &&
-              !useFakeRoom &&
-              "accessToken" in session && (
-                <RoomPicker
-                  key="room"
-                  roomId={roomId}
-                  accessToken={session.accessToken}
-                  isPlayer={self !== undefined}
-                  onSwitch={handleSwitchRoom}
-                />
-              )}
-            <LanguagePicker key="language" onChange={handleLanguageChange} />
-            <SoundSwitch
-              key="sound"
-              muted={isMuted}
-              label={copy.room.mute}
-              onToggle={handleToggleMute}
-            />
-            <PortfolioLink key="credit" />
+            {(menu) => [
+              hasCatToEdit && (
+                <RisoButton
+                  key="cat"
+                  variant="quiet"
+                  onClick={() => handleStartOnboarding(menu)}
+                >
+                  {copy.watch.yourCat}
+                </RisoButton>
+              ),
+              roomId !== undefined &&
+                !useFakeRoom &&
+                "accessToken" in session && (
+                  <RoomPicker
+                    key="room"
+                    roomId={roomId}
+                    accessToken={session.accessToken}
+                    isPlayer={self !== undefined}
+                    onSwitch={handleSwitchRoom}
+                  />
+                ),
+              <SoundSwitch
+                key="sound"
+                muted={isMuted}
+                label={copy.room.mute}
+                onToggle={handleToggleMute}
+              />,
+              <LanguagePicker key="language" onChange={handleLanguageChange} />,
+              <PortfolioLink key="credit" />,
+              <LaundroCafeLink key="laundro" />,
+            ]}
           </RoomMenu>
         </div>
         {isPannable && (
-          <div className="absolute right-4 bottom-4 group-has-[[aria-modal=true]]/room:hidden max-[379px]:bottom-16 sm:right-6 sm:bottom-6">
+          <div className="absolute bottom-4 left-4 group-has-[[role=dialog]]/room:hidden sm:bottom-6 sm:left-6">
             <PanBar
               label={copy.room.lookAround}
               centerX={readCenterX}
@@ -738,7 +772,7 @@ export function PawsRoom() {
         <PawsOnboarding
           session={session}
           actions={actions}
-          hasCat={savedCat !== undefined}
+          handleRef={onboardingRef}
           onBringCatIn={handleBringCatIn}
         />
       </div>
