@@ -269,10 +269,16 @@ export function drawCat(options: {
     palette.tail[0];
   const tailRuns = tail
     .slice(0, -1)
-    .reduce<{ start: number; end: number; color: string }[]>((list, _, i) => {
+    .reduce<
+      { start: number; end: number; color: string }[]
+    >((list, point, i) => {
       const run = list.at(-1);
       const color = tailColorAt(i);
-      if (run !== undefined && run.color === color) {
+      if (
+        run !== undefined &&
+        run.color === color &&
+        Math.abs(blurOf(point[3], k) - blurOf(tail[run.start][3], k)) < mergeGap
+      ) {
         run.end = i + 1;
         return list;
       }

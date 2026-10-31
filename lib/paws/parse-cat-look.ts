@@ -8,7 +8,6 @@ import {
   PATTERNS,
   STEPS,
   TAIL_SHAPES,
-  type TailShape,
 } from "./cat-look";
 
 const isOneOf = <T extends string>(
@@ -36,12 +35,8 @@ export function parseCatLook(value: unknown): CatLook | undefined {
   ) {
     return undefined;
   }
-  const tailShape: TailShape | undefined = !("tailShape" in value)
-    ? "slim"
-    : isOneOf(TAIL_SHAPES, value.tailShape)
-      ? value.tailShape
-      : undefined;
-  if (tailShape === undefined) return undefined;
+  const tailShape = "tailShape" in value ? value.tailShape : "slim";
+  if (!isOneOf(TAIL_SHAPES, tailShape)) return undefined;
   return {
     coat: value.coat,
     pattern: value.pattern,

@@ -76,7 +76,8 @@ export function deriveCat(options: {
     heading: snapshot.heading,
     scale: k,
   };
-  const phase = hashUnit(snapshot.userId) * 100;
+  const userHash = hashUnit(snapshot.userId);
+  const phase = userHash * 100;
   const weights = snapshot.pose;
   const pose = blendPose(weights);
 
@@ -112,7 +113,7 @@ export function deriveCat(options: {
 
   const tailBase = catToWorld(frame, [pose.tail[0], pose.tail[1]]);
   const sway = 1 - Math.max(weights.sit, weights.sleep) * 0.6;
-  const bendSide = hashUnit(snapshot.userId) < 0.5 ? -1 : 1;
+  const bendSide = userHash < 0.5 ? -1 : 1;
   const tail = Array.from({ length: TAIL_SEGMENTS }).reduce<{
     points: Vec2[];
     angle: number;

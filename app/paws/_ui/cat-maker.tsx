@@ -33,8 +33,8 @@ const TABS = ["coat", "pattern", "belly", "pads", "shape"] as const;
 const SHAPE_FIELDS = [
   "size",
   "fluff",
-  "tail",
   "ears",
+  "tail",
 ] as const satisfies readonly (keyof CatLook)[];
 
 type Tab = (typeof TABS)[number];
