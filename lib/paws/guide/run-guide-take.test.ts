@@ -25,3 +25,17 @@ for (const [name, take] of Object.entries(GUIDE_TAKES)) {
     );
   });
 }
+
+test("the cats take shows a tail bat before its loop fades", () => {
+  const take = GUIDE_TAKES.cats;
+  const frames = runGuideTake(take);
+  assert.ok(
+    frames.some(
+      (frame) =>
+        frame.time < take.loopSeconds &&
+        frame.cats.some(
+          (cat) => cat.userId === "social-a" && cat.activity === "bat"
+        )
+    )
+  );
+});

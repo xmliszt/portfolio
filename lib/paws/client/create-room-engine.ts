@@ -41,8 +41,10 @@ const PLAYBACK_DELAY_MS = FINGER_SEND_MS + 150;
 const KEPT_SAMPLES_MS = 1000;
 const CLOCK_OFFSET_WINDOW = 10;
 const MAX_CLOCK_SLEW = 0.2;
-/** World units a late batch would move a held fingertip in one frame before playback resumes from where it held instead. */
+/** World units a late batch must move a held fingertip in one frame for playback to resume from where it held. */
 const CATCH_UP_JUMP = 24;
+/** Milliseconds between two samples beyond which they belong to different strokes, such as a lift and a new touch, and playback steps between them instead of gliding. */
+const STROKE_GAP_MS = 3 * TRAIL_STEP_MS;
 const MAX_CATCH_UP_MS = 3000;
 const MAX_REMOTE_SAMPLES =
   2 * CLOCK_OFFSET_WINDOW * (WIRE_LIMITS.maxTrailPoints + 1);
@@ -86,8 +88,12 @@ type RemoteFinger = {
   receivedAtMs: number;
   pressed: boolean;
   tip: FingertipState | undefined;
-  /** The newest sample's time when playback ran past it, so a late batch resumes from there instead of jumping ahead. */
+  /** The newest sample's time while playback has run past it, or `undefined` while playback is inside the samples. */
   heldAt: number | undefined;
+  /** The sample time playback showed last frame. */
+  playedAt: number | undefined;
+  /** `true` when last frame's playback crossed into a new stroke. */
+  jumped: boolean;
 };
 
 /** Return the room as one screen runs it: the host steps the shared cats and the others play back the host's snapshots, both turning fingertips, prints and sounds into what to draw, play and send each frame. */
@@ -173,6 +179,7 @@ export function createRoomEngine(options: { random: () => number }) {
               x: finger.tip.x,
               y: finger.tip.y,
               pressed: finger.pressed,
+              jumped: finger.jumped,
             },
           ]
     );
@@ -320,6 +327,8 @@ export function createRoomEngine(options: { random: () => number }) {
         pressed: stream?.pressed ?? message.pressed,
         tip: existing?.tip,
         heldAt: stream?.heldAt,
+        playedAt: stream?.playedAt,
+        jumped: stream?.jumped ?? false,
       };
     },
     receiveCats: (options: { message: CatsMessage; receivedAtMs: number }) => {
@@ -526,16 +535,25 @@ export function createRoomEngine(options: { random: () => number }) {
               );
         const newestAt = finger.samples.at(-1)?.t;
         const heldAt = finger.heldAt;
+        const resumedAt =
+          heldAt === undefined
+            ? undefined
+            : finger.samples.find((sample) => sample.t > heldAt)?.t;
         if (
           heldAt !== undefined &&
-          newestAt !== undefined &&
-          newestAt > heldAt
+          resumedAt !== undefined &&
+          resumedAt - heldAt <= STROKE_GAP_MS
         ) {
           const scheduledAt = nowMs - finger.clockOffset - PLAYBACK_DELAY_MS;
-          const held = sampleFingerPath({ samples: finger.samples, t: heldAt });
+          const held = sampleFingerPath({
+            samples: finger.samples,
+            t: heldAt,
+            maxGapMs: STROKE_GAP_MS,
+          });
           const scheduled = sampleFingerPath({
             samples: finger.samples,
             t: scheduledAt,
+            maxGapMs: STROKE_GAP_MS,
           });
           const jump =
             held === undefined || scheduled === undefined
@@ -546,10 +564,23 @@ export function createRoomEngine(options: { random: () => number }) {
         }
         const playAt = nowMs - finger.clockOffset - PLAYBACK_DELAY_MS;
         finger.heldAt =
-          newestAt !== undefined && playAt > newestAt
-            ? (finger.heldAt ?? newestAt)
-            : undefined;
-        const point = sampleFingerPath({ samples: finger.samples, t: playAt });
+          newestAt !== undefined && playAt > newestAt ? newestAt : undefined;
+        const point = sampleFingerPath({
+          samples: finger.samples,
+          t: playAt,
+          maxGapMs: STROKE_GAP_MS,
+        });
+        const playedAt = finger.playedAt;
+        finger.jumped =
+          playedAt !== undefined &&
+          finger.samples.some(
+            (sample, index) =>
+              sample.t > playedAt &&
+              sample.t <= playAt &&
+              sample.t - (finger.samples[index - 1]?.t ?? sample.t) >
+                STROKE_GAP_MS
+          );
+        finger.playedAt = playAt;
         const keepFrom = finger.samples.findLastIndex(
           (sample) => sample.t < playAt - KEPT_SAMPLES_MS
         );

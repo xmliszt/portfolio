@@ -22,10 +22,11 @@ function catmullRom(options: {
   );
 }
 
-/** Return where the fingertip in `samples` (sorted by `t`) was at time `t`, on a Catmull-Rom curve through the samples, holding the first or last sample outside their span, or `undefined` when there are none. */
+/** Return where the fingertip in `samples` (sorted by `t`) was at time `t`, on a Catmull-Rom curve through the samples, holding the first or last sample outside their span and the earlier sample across a gap longer than `maxGapMs`, or `undefined` when there are none. */
 export function sampleFingerPath(options: {
   samples: FingerSample[];
   t: number;
+  maxGapMs?: number;
 }) {
   const { samples, t } = options;
   const first = samples.at(0);
@@ -38,6 +39,8 @@ export function sampleFingerPath(options: {
   );
   const p1 = samples[index];
   const p2 = samples[index + 1];
+  if (p2.t - p1.t > (options.maxGapMs ?? Infinity))
+    return { x: p1.x, y: p1.y, pressed: p1.pressed };
   const p0 = samples[index - 1] ?? p1;
   const p3 = samples[index + 2] ?? p2;
   const u = (t - p1.t) / (p2.t - p1.t);

@@ -107,7 +107,9 @@ export function RoomSheet(props: RoomSheetProps) {
           </button>
         </header>
         <div
+          tabIndex={0}
           className={cn(
+            FOCUS_RING_CLASS,
             "flex min-h-0 flex-col gap-y-8 overflow-y-auto px-4 pt-4 pb-6",
             SCROLL_FADE_CLASS
           )}

@@ -40,3 +40,14 @@ test("holds the ends outside the samples' span", () => {
   });
   assert.equal(sampleFingerPath({ samples: [], t: 0 }), undefined);
 });
+
+test("holds the earlier sample across a gap longer than maxGapMs", () => {
+  const gapped = [
+    { x: 0, y: 0, t: 0, pressed: false },
+    { x: 500, y: 0, t: 1000, pressed: true },
+  ];
+  assert.deepEqual(
+    sampleFingerPath({ samples: gapped, t: 600, maxGapMs: 150 }),
+    { x: 0, y: 0, pressed: false }
+  );
+});
