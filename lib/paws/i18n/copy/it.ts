@@ -97,7 +97,7 @@ export const it = {
       "fusa fusa",
     ],
     builtBy: {
-      beforeClaude: "fatto con 🐾 da Li Yuxuan e ",
+      beforeClaude: "fatto da Li Yuxuan e ",
       afterClaude: "",
     },
     mute: "Silenzia",

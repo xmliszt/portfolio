@@ -98,7 +98,7 @@ export const tr = {
     ],
     builtBy: {
       beforeClaude: "Li Yuxuan ve ",
-      afterClaude: " tarafından 🐾 ile yapıldı",
+      afterClaude: " tarafından yapıldı",
     },
     mute: "Sesi kapat",
     unmute: "Sesi aç",

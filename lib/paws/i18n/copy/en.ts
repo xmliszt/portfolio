@@ -102,7 +102,7 @@ export const en = {
     ],
     builtBy: {
       beforeClaude: "built by Li Yuxuan & ",
-      afterClaude: " with 🐾",
+      afterClaude: "",
     },
     mute: "Mute",
     unmute: "Unmute",

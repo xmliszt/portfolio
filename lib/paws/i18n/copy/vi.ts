@@ -97,7 +97,7 @@ export const vi = {
       "rừ rừ",
     ],
     builtBy: {
-      beforeClaude: "được làm với 🐾 bởi Li Yuxuan & ",
+      beforeClaude: "được làm bởi Li Yuxuan & ",
       afterClaude: "",
     },
     mute: "Tắt tiếng",

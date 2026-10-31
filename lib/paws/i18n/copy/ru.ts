@@ -97,7 +97,7 @@ export const ru = {
       "мур-мур",
     ],
     builtBy: {
-      beforeClaude: "сделано с 🐾 — Li Yuxuan и ",
+      beforeClaude: "сделано: Li Yuxuan и ",
       afterClaude: "",
     },
     mute: "Без звука",

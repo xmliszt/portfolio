@@ -97,7 +97,7 @@ export const pl = {
       "mrr mrr",
     ],
     builtBy: {
-      beforeClaude: "zrobione z 🐾 przez Li Yuxuan & ",
+      beforeClaude: "zrobione przez Li Yuxuan & ",
       afterClaude: "",
     },
     mute: "Wycisz",

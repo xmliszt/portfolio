@@ -98,7 +98,7 @@ export const hi = {
     ],
     builtBy: {
       beforeClaude: "Li Yuxuan और ",
-      afterClaude: " ने 🐾 से बनाया",
+      afterClaude: " ने बनाया",
     },
     mute: "आवाज़ बंद",
     unmute: "आवाज़ चालू",

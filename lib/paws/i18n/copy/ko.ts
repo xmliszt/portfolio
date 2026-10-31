@@ -98,7 +98,7 @@ export const ko = {
     ],
     builtBy: {
       beforeClaude: "Li Yuxuan과 ",
-      afterClaude: "가 🐾을 담아 만들었어요",
+      afterClaude: "가 만들었어요",
     },
     mute: "음소거",
     unmute: "소리 켜기",

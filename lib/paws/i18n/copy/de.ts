@@ -99,7 +99,7 @@ export const de = {
       "schnurr schnurr",
     ],
     builtBy: {
-      beforeClaude: "mit 🐾 gebaut von Li Yuxuan & ",
+      beforeClaude: "gebaut von Li Yuxuan & ",
       afterClaude: "",
     },
     mute: "Ton aus",

@@ -97,7 +97,7 @@ export const ptBR = {
       "purr purr",
     ],
     builtBy: {
-      beforeClaude: "feito com 🐾 por Li Yuxuan e ",
+      beforeClaude: "feito por Li Yuxuan e ",
       afterClaude: "",
     },
     mute: "Silenciar",

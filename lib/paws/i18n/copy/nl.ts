@@ -97,7 +97,7 @@ export const nl = {
       "spin spin",
     ],
     builtBy: {
-      beforeClaude: "met 🐾 gemaakt door Li Yuxuan & ",
+      beforeClaude: "gemaakt door Li Yuxuan & ",
       afterClaude: "",
     },
     mute: "Stil",

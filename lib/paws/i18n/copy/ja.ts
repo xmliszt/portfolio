@@ -99,7 +99,7 @@ export const ja = {
     ],
     builtBy: {
       beforeClaude: "Li Yuxuan と ",
-      afterClaude: " が 🐾 をこめて作りました",
+      afterClaude: " が作りました",
     },
     mute: "消音",
     unmute: "音を出す",

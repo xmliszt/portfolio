@@ -98,7 +98,7 @@ export const fr = {
       "ronron",
     ],
     builtBy: {
-      beforeClaude: "fait avec 🐾 par Li Yuxuan et ",
+      beforeClaude: "fait par Li Yuxuan et ",
       afterClaude: "",
     },
     mute: "Couper le son",

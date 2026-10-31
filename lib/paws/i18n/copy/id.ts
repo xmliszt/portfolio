@@ -97,7 +97,7 @@ export const id = {
       "purr purr",
     ],
     builtBy: {
-      beforeClaude: "dibuat dengan 🐾 oleh Li Yuxuan & ",
+      beforeClaude: "dibuat oleh Li Yuxuan & ",
       afterClaude: "",
     },
     mute: "Senyapkan",

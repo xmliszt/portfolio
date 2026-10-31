@@ -98,7 +98,7 @@ export function drawCat(options: {
   const belly = palette.belly;
   if (belly !== undefined) {
     const patch = body
-      .slice(0, -2)
+      .slice(0, -4)
       .map(
         (point, i): Vec4 => [
           point[0],
