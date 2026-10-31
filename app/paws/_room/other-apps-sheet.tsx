@@ -30,7 +30,7 @@ export function OtherAppsSheet(props: OtherAppsSheetProps) {
               )}
             >
               <SquircleAppIcon
-                src={app.iconSrc}
+                src={app.icon.light}
                 sizePx={56}
                 className="transition-transform duration-200 ease-out group-hover:-translate-y-0.5 group-hover:-rotate-3 group-active:scale-95 motion-reduce:transition-none"
               />

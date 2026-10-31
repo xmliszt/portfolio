@@ -1,16 +1,20 @@
 "use client";
 
-import { useEffect, useId, useRef } from "react";
+import { useContext, useEffect, useId, useRef } from "react";
 
 import { useLaundromatCopy } from "@/app/laundromat/i18n/use-laundromat-copy";
+import { SceneThemeContext } from "@/app/laundromat/themes/scene-theme-context";
 import { SquircleAppIcon } from "@/components/ui/squircle-app-icon";
 import { getSiblingApps } from "@/lib/apps/get-sibling-apps";
+import { themes } from "@/lib/laundromat/themes/themes";
 
 type OtherAppsDialogProps = { onClose: () => void };
 
 /** Render a panel of the maker's other apps as home-screen icons, each opening in a new tab, closing on Escape or the close button and keeping Tab inside it. */
 export function OtherAppsDialog(props: OtherAppsDialogProps) {
   const { copy } = useLaundromatCopy();
+  const theme = useContext(SceneThemeContext);
+  const colorScheme = themes[theme?.themeId ?? "classic"].colorScheme;
   const dialogRef = useRef<HTMLDivElement>(null);
   const headingId = useId();
   const { onClose } = props;
@@ -72,7 +76,7 @@ export function OtherAppsDialog(props: OtherAppsDialogProps) {
                 className="group flex flex-col items-center gap-y-2 rounded-lg py-1 text-[11px] leading-4 normal-case outline-none hover:text-[var(--lm-ink-hi)] focus-visible:ring-1 focus-visible:ring-[var(--lm-edge)]"
               >
                 <SquircleAppIcon
-                  src={app.iconSrc}
+                  src={app.icon[colorScheme]}
                   sizePx={48}
                   className="transition-transform duration-200 ease-out group-hover:-translate-y-0.5 group-active:scale-95 motion-reduce:transition-none"
                 />
