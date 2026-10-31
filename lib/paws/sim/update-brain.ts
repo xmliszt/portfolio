@@ -426,7 +426,6 @@ export function updateBrain(options: { tick: Tick; cat: SimCat }) {
           y: cat.derived.nose.y,
           angle: cat.derived.headDir,
         });
-        emitCatSound({ tick, cat, sound: "lick" });
       }
       if (cat.stateT > 2.2) {
         cat.sniffCooldownSeconds = 5;

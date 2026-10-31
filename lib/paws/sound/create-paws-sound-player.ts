@@ -26,7 +26,6 @@ const FADE_OUT_S = 0.12;
 const SOUND_LEVEL_DB = {
   meow: -6,
   purr: -6,
-  lick: -6,
 } as const satisfies { [sound in PawsSound]: number };
 const MUSIC_URL = "/paws/sounds/music.mp3";
 /** Where the music's seamless loop sits in `MUSIC_URL`, in seconds; the file holds one extra second of the loop on each side. */
@@ -64,7 +63,7 @@ async function fetchClipBytes(url: string) {
   }
 }
 
-/** Return a player for the cats' meows, purrs and licks that creates its `AudioContext` on the first `unlock`, which the page calls from a user gesture. */
+/** Return a player for the cats' meows and purrs that creates its `AudioContext` on the first `unlock`, which the page calls from a user gesture. */
 export function createPawsSoundPlayer(options: {
   createContext: () => AudioContext;
   fetchClip?: (url: string) => Promise<ArrayBuffer | undefined>;

@@ -6,7 +6,7 @@ const QUIET_SECONDS = 3;
 export function emitCatSound(options: {
   tick: Tick;
   cat: SimCat;
-  sound: "meow" | "purr" | "lick";
+  sound: "meow" | "purr";
 }) {
   const { tick, cat } = options;
   if (tick.world.time < cat.quietUntil) return false;

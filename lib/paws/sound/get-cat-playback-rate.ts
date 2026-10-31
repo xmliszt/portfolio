@@ -14,7 +14,7 @@ const MAX_OFFSET = 0.04;
 const MIN_RATE = 0.65;
 const MAX_RATE = 1.6;
 
-/** Return the playback rate for one cat's sound from its size, its age (shared purr and lick only, since meows are made for their age) and a small fixed offset from `userId`. */
+/** Return the playback rate for one cat's sound from its size, its age (the shared purr only, since meows are made for their age) and a small fixed offset from `userId`. */
 export function getCatPlaybackRate(options: {
   sound: PawsSound;
   size: Step;

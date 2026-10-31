@@ -23,10 +23,3 @@ test("picks one of two shared clips per user, the same every time", () => {
     getPawsSoundUrl({ sound: "purr", userId: "a", voice: VOICE })
   );
 });
-
-test("every cat shares one lick clip", () => {
-  assert.equal(
-    getPawsSoundUrl({ sound: "lick", userId: "a", voice: VOICE }),
-    "/paws/sounds/lick.mp3"
-  );
-});
