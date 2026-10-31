@@ -12,7 +12,7 @@ export function getResidentCats(options: {
   const random = createSeededRandom({
     seed: hashUserId(options.roomId) * 2 ** 32,
   });
-  // Tail shapes draw from their own sequence so every other resident pick matches tabs built before tail shapes.
+  // Tail shapes draw from their own sequence so mixed-version tabs agree on every other resident pick.
   const tailShapeRandom = createSeededRandom({
     seed: hashUserId(`${options.roomId}:tail`) * 2 ** 32,
   });
