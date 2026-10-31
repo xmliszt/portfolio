@@ -10,7 +10,10 @@ import { PawsOnboarding } from "@/app/paws/_ui/paws-onboarding";
 import type { SavedCat } from "@/lib/paws/cat-api-types";
 import { COAT_INKS } from "@/lib/paws/cat-look";
 import { getRevealSteps } from "@/lib/paws/chat/get-reveal-steps";
-import { createRoomEngine } from "@/lib/paws/client/create-room-engine";
+import {
+  createRoomEngine,
+  type RoomFrame,
+} from "@/lib/paws/client/create-room-engine";
 import { shuffleCatLook } from "@/lib/paws/maker/shuffle-cat-look";
 import { createSceneResources } from "@/lib/paws/render/create-scene-resources";
 import { drawScene } from "@/lib/paws/render/draw-scene";
@@ -56,6 +59,8 @@ const BUBBLE_GAP_PX = 10;
 const BUBBLE_EDGE_PX = 8;
 const SETTLE_BEFORE_ARRIVALS_MS = 3000;
 const ROOM_BANNER_MS = 2600;
+const RESIDENT_LINE_EVERY_MS = 8000;
+const RESIDENT_LINE_CHANCE = { alone: 0.35, shared: 0.1 } as const;
 
 function isTypingTarget(target: EventTarget | null) {
   return (
@@ -78,6 +83,8 @@ export function PawsRoom() {
   const spokenIdsRef = useRef<string[]>([]);
   const latestOwnLineIdRef = useRef<string | undefined>(undefined);
   const lastCatsRef = useRef<DerivedCat[]>([]);
+  const residentsRef = useRef<RoomFrame["residents"]>([]);
+  const sayLineRef = useRef(sayLine);
   const centerXRef = useRef(ROOM_LIMITS.worldWidth / 2);
   const heldPanKeysRef = useRef<{ [key: string]: -1 | 1 | undefined }>({});
   const touchesRef = useRef<{ [pointerId: number]: number | undefined }>({});
@@ -121,7 +128,7 @@ export function PawsRoom() {
   function sayLine(message: ChatMessage) {
     if (spokenIdsRef.current.includes(message.id)) return;
     spokenIdsRef.current = [...spokenIdsRef.current, message.id].slice(-20);
-    const player = playersRef.current.find(
+    const player = [...playersRef.current, ...residentsRef.current].find(
       (candidate) => candidate.userId === message.userId
     );
     if (player === undefined) return;
@@ -215,6 +222,34 @@ export function PawsRoom() {
     const timers = bubbleTimersRef.current;
     return () => Object.values(timers).forEach(window.clearTimeout);
   }, []);
+
+  useEffect(() => {
+    sayLineRef.current = sayLine;
+  });
+
+  useEffect(() => {
+    const lines = copy.room.residentLines;
+    const timer = window.setInterval(() => {
+      if (document.hidden) return;
+      const chance =
+        playersRef.current.length > 1
+          ? RESIDENT_LINE_CHANCE.shared
+          : RESIDENT_LINE_CHANCE.alone;
+      if (Math.random() > chance) return;
+      const speakers = residentsRef.current.filter((resident) =>
+        lastCatsRef.current.some((cat) => cat.userId === resident.userId)
+      );
+      const speaker = speakers.at(Math.floor(Math.random() * speakers.length));
+      const text = lines.at(Math.floor(Math.random() * lines.length));
+      if (speaker === undefined || text === undefined) return;
+      sayLineRef.current({
+        id: crypto.randomUUID(),
+        userId: speaker.userId,
+        text,
+      });
+    }, RESIDENT_LINE_EVERY_MS);
+    return () => window.clearInterval(timer);
+  }, [copy.room.residentLines, playersRef]);
 
   useEffect(() => {
     if (!isPannable) return;
@@ -358,6 +393,7 @@ export function PawsRoom() {
         });
       }
       lastCatsRef.current = room.cats;
+      residentsRef.current = room.residents;
       const ownCatId = ownCatIdRef.current;
       const ownCatNow = room.cats.find((cat) => cat.userId === ownCatId);
       const isOwnCatHere = ownCatId !== undefined && ownCatNow !== undefined;
