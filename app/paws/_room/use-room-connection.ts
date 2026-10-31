@@ -19,7 +19,7 @@ const FAKE_REMOTE_PLAYERS = 4;
 const REJOIN_DELAY_MS = 4000;
 const FULL_REJOIN_DELAY_MS = 30_000;
 
-/** Join a room for the current visitor (a player when `self` is set, otherwise a watcher), asking for the `?room=` room or the one passed to `switchRoom` when there is one, feed everything it receives into `engine`, keep the membership alive, and return the open connection, the latest players, the room id, whether every room was full on the last try, and `switchRoom`. */
+/** Join a room for the current visitor (a player when `self` is set, otherwise a watcher), asking for the `?room=` room or the one passed to `switchRoom` when there is one, and otherwise for the room it was last in, feed everything it receives into `engine`, keep the membership alive, and return the open connection, the latest players, the room id, whether every room was full on the last try, and `switchRoom`. */
 export function useRoomConnection(options: {
   session: PawsSession;
   client: ReturnType<typeof createPawsBrowserClient> | undefined;
@@ -39,6 +39,8 @@ export function useRoomConnection(options: {
   const [isFull, setIsFull] = useState(false);
   const connectionRef = useRef<RoomConnection | undefined>(undefined);
   const roomIdRef = useRef<string | undefined>(undefined);
+  const lastRoomIdRef = useRef<string | undefined>(undefined);
+  const pendingLeaveRef = useRef<Promise<unknown>>(Promise.resolve());
   const onChatRef = useRef(options.onChat);
   const playersRef = useRef<PlayerPresence[]>([]);
   const tokenRef = useRef<string | undefined>(undefined);
@@ -108,15 +110,19 @@ export function useRoomConnection(options: {
                 : ("player" as const),
           };
         }
+        await pendingLeaveRef.current;
         const token = tokenRef.current;
-        if (token === undefined) return undefined;
+        if (token === undefined || run.isCancelled) return undefined;
+        const preferredRoomId = chosenRoomId ?? lastRoomIdRef.current;
         const answer = parseJoinRoomResponse(
           await postRoomApi({
             path: "join",
             accessToken: token,
             body: {
               wantsToPlay: presence !== undefined,
-              ...(chosenRoomId === undefined ? {} : { roomId: chosenRoomId }),
+              ...(preferredRoomId === undefined
+                ? {}
+                : { roomId: preferredRoomId }),
             },
           })
         );
@@ -144,6 +150,7 @@ export function useRoomConnection(options: {
       run.roomId = joined.roomId;
       setIsFull(false);
       roomIdRef.current = joined.roomId;
+      lastRoomIdRef.current = joined.roomId;
       setRoomId(joined.roomId);
       engine.setSelf({
         userId,
@@ -177,13 +184,15 @@ export function useRoomConnection(options: {
           accessToken: token,
           body: { roomId: run.roomId },
         });
-        const isRejoining =
-          typeof answer === "object" &&
-          answer !== null &&
-          "kind" in answer &&
-          (answer.kind === "gone" ||
-            (answer.kind === "move" && chosenRoomId === undefined));
-        if (isRejoining && !run.isCancelled) setAttempt((value) => value + 1);
+        const kind =
+          typeof answer === "object" && answer !== null && "kind" in answer
+            ? answer.kind
+            : undefined;
+        const isMoving = kind === "move" && chosenRoomId === undefined;
+        if ((kind === "gone" || isMoving) && !run.isCancelled) {
+          if (isMoving) lastRoomIdRef.current = undefined;
+          setAttempt((value) => value + 1);
+        }
       }, ROOM_TIMING.heartbeatMs);
     }
 
@@ -206,7 +215,7 @@ export function useRoomConnection(options: {
       });
       const token = tokenRef.current;
       if (run.roomId !== undefined && token !== undefined && !useFakeRoom) {
-        void postRoomApi({
+        pendingLeaveRef.current = postRoomApi({
           path: "leave",
           accessToken: token,
           body: { roomId: run.roomId },
