@@ -59,7 +59,7 @@ export function FloatingCard(props: FloatingCardProps) {
           onClick={props.onClose}
           className={cn(
             FOCUS_RING_CLASS,
-            "relative grid size-8 shrink-0 cursor-pointer place-items-center text-[var(--pw-ink-soft)] after:absolute after:-inset-1 hover:text-[var(--pw-ink)]"
+            "relative grid size-8 shrink-0 place-items-center text-[var(--pw-ink-soft)] after:absolute after:-inset-1 hover:text-[var(--pw-ink)]"
           )}
         >
           <svg

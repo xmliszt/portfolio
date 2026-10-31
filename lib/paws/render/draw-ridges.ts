@@ -7,7 +7,7 @@ import type { AnyContext } from "./render-types";
 
 const MAX_CACHED_FINGERPRINTS = 48;
 
-/** Draw the fingerprint in `style` at `x, y` out to `reach` (0–1 of the fingertip) from its centre, fading at that edge, its ridges inked as a split fountain from the style's first ink to its second. */
+/** Draw the fingerprint in `style` at `x, y` out to `reach` (0–1 of the fingertip) from its centre, fading at that edge, its ridges inked as a split fountain in the style's `tipInks` when `isOnSkin` and its `printInks` otherwise. */
 export function drawRidges(options: {
   g: AnyContext;
   resources: SceneResources;
@@ -16,6 +16,7 @@ export function drawRidges(options: {
   reach: number;
   alpha: number;
   style: FingerprintStyle;
+  isOnSkin: boolean;
 }) {
   const { g, resources, reach, alpha, style } = options;
   if (alpha < 0.01 || reach < 0.03) return;
@@ -62,8 +63,9 @@ export function drawRidges(options: {
   mask.setTransform(1, 0, 0, 1, 0, 0);
   mask.globalCompositeOperation = "source-in";
   const fountain = mask.createLinearGradient(0, 0, width * 0.4, height);
-  fountain.addColorStop(0.15, style.inks[0]);
-  fountain.addColorStop(0.85, style.inks[1]);
+  const inks = options.isOnSkin ? style.tipInks : style.printInks;
+  fountain.addColorStop(0.15, inks[0]);
+  fountain.addColorStop(0.85, inks[1]);
   mask.fillStyle = fountain;
   mask.fillRect(0, 0, width, height);
   mask.globalCompositeOperation = "source-over";

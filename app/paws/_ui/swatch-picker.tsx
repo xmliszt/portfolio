@@ -34,7 +34,7 @@ export function SwatchPicker<T extends string>(props: SwatchPickerProps<T>) {
               htmlFor={optionId}
               title={option.label}
               className={cn(
-                "grid size-9 cursor-pointer place-items-center rounded-full border-[1.5px] sm:size-7",
+                "grid size-9 place-items-center rounded-full border-[1.5px] sm:size-7",
                 "has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-offset-2 has-[:focus-visible]:outline-[var(--pw-blue)] has-[:focus-visible]:outline-solid",
                 isChecked
                   ? "border-[var(--pw-ink)]"

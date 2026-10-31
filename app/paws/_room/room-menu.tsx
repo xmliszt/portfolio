@@ -79,7 +79,7 @@ export function RoomMenu(props: RoomMenuProps) {
         onClick={handleToggle}
         className={cn(
           FOCUS_RING_CLASS,
-          "relative size-10 shrink-0 cursor-pointer border-[1.5px] border-[var(--pw-ink)] bg-[var(--pw-paper)] text-[var(--pw-ink)] hover:bg-[var(--pw-paper-deep)] sm:size-8",
+          "relative size-10 shrink-0 border-[1.5px] border-[var(--pw-ink)] bg-[var(--pw-paper)] text-[var(--pw-ink)] hover:bg-[var(--pw-paper-deep)] sm:size-8",
           isOpen && "bg-[var(--pw-paper-deep)]"
         )}
       >

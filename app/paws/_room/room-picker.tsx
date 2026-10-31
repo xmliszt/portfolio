@@ -189,7 +189,7 @@ export function RoomPicker(props: RoomPickerProps) {
         onClick={handleToggle}
         className={cn(
           FOCUS_RING_CLASS,
-          "flex h-10 cursor-pointer items-center gap-x-2 border-[1.5px] border-[var(--pw-ink)] bg-[var(--pw-paper)] px-3 text-[12px] text-[var(--pw-ink)] tabular-nums hover:bg-[var(--pw-paper-deep)] sm:h-8"
+          "flex h-10 items-center gap-x-2 border-[1.5px] border-[var(--pw-ink)] bg-[var(--pw-paper)] px-3 text-[12px] text-[var(--pw-ink)] tabular-nums hover:bg-[var(--pw-paper-deep)] sm:h-8"
         )}
       >
         {nameOf(props.roomId)}
@@ -243,9 +243,7 @@ export function RoomPicker(props: RoomPickerProps) {
                     className={cn(
                       "flex items-center gap-x-3 px-3 py-2 tabular-nums sm:py-1.5",
                       index === activeIndex && "bg-[var(--pw-paper-deep)]",
-                      isFull(room)
-                        ? "cursor-default opacity-50"
-                        : "cursor-pointer",
+                      isFull(room) && "opacity-50",
                       isHere && "font-medium"
                     )}
                   >

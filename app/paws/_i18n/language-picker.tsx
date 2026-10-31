@@ -139,7 +139,7 @@ export function LanguagePicker(props: LanguagePickerProps) {
         onKeyDown={handleButtonKeyDown}
         className={cn(
           FOCUS_RING_CLASS,
-          "flex h-10 cursor-pointer items-center gap-x-2 border-[1.5px] border-[var(--pw-ink)] bg-[var(--pw-paper)] px-3 text-[12px] text-[var(--pw-ink)] hover:bg-[var(--pw-paper-deep)] sm:h-8"
+          "flex h-10 items-center gap-x-2 border-[1.5px] border-[var(--pw-ink)] bg-[var(--pw-paper)] px-3 text-[12px] text-[var(--pw-ink)] hover:bg-[var(--pw-paper-deep)] sm:h-8"
         )}
       >
         <span className="max-w-28 truncate">
@@ -186,7 +186,7 @@ export function LanguagePicker(props: LanguagePickerProps) {
                 onPointerMove={() => setActiveIndex(index)}
                 onClick={() => pick(index)}
                 className={cn(
-                  "flex cursor-pointer items-center justify-between gap-x-2 px-3 py-2 sm:py-1.5",
+                  "flex items-center justify-between gap-x-2 px-3 py-2 sm:py-1.5",
                   index === activeIndex && "bg-[var(--pw-paper-deep)]",
                   index === selectedIndex && "font-medium"
                 )}

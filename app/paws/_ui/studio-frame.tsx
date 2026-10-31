@@ -115,7 +115,7 @@ export function StudioFrame(props: StudioFrameProps) {
         onClick={props.onClose}
         className={cn(
           FOCUS_RING_CLASS,
-          "absolute top-4 right-4 grid size-10 cursor-pointer place-items-center text-[var(--pw-ink-soft)] hover:text-[var(--pw-ink)] sm:top-6 sm:right-6 sm:size-8"
+          "absolute top-4 right-4 grid size-10 place-items-center text-[var(--pw-ink-soft)] hover:text-[var(--pw-ink)] sm:top-6 sm:right-6 sm:size-8"
         )}
       >
         <svg

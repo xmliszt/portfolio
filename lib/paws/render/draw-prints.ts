@@ -72,6 +72,7 @@ export function drawPrints(options: {
           reach: print.pressure * Math.pow(left, 0.6),
           alpha: 0.6 * left,
           style: getFingerprintStyle(print.userId),
+          isOnSkin: false,
         });
         break;
       default: {

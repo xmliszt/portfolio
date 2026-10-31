@@ -148,7 +148,7 @@ export function CatMaker(props: CatMakerProps) {
                   onClick={() => setTab(name)}
                   className={cn(
                     FOCUS_RING_CLASS,
-                    "shrink-0 cursor-pointer border-b-[1.5px] py-2.5 text-[12px] leading-none sm:py-1",
+                    "shrink-0 border-b-[1.5px] py-2.5 text-[12px] leading-none sm:py-1",
                     isActive
                       ? "border-[var(--pw-orange)] text-[var(--pw-ink)]"
                       : "border-transparent text-[var(--pw-ink-soft)] hover:text-[var(--pw-ink)]"
@@ -164,7 +164,7 @@ export function CatMaker(props: CatMakerProps) {
             onClick={handleShuffle}
             className={cn(
               FOCUS_RING_CLASS,
-              "ml-auto shrink-0 cursor-pointer py-2.5 text-[12px] leading-none underline underline-offset-2 disabled:opacity-50 sm:py-1"
+              "ml-auto shrink-0 py-2.5 text-[12px] leading-none underline underline-offset-2 disabled:opacity-50 sm:py-1"
             )}
           >
             {copy.maker.shuffle}

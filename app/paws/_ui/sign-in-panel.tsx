@@ -278,7 +278,7 @@ export function SignInPanel(props: SignInPanelProps) {
                     disabled={step.busy !== undefined}
                     className={cn(
                       FOCUS_RING_CLASS,
-                      "cursor-pointer py-2 underline underline-offset-2 disabled:opacity-50"
+                      "py-2 underline underline-offset-2 disabled:opacity-50"
                     )}
                   >
                     {step.busy === "sending"
@@ -294,7 +294,7 @@ export function SignInPanel(props: SignInPanelProps) {
                     disabled={step.busy !== undefined}
                     className={cn(
                       FOCUS_RING_CLASS,
-                      "cursor-pointer py-2 text-[var(--pw-ink-soft)] underline underline-offset-2 disabled:opacity-50"
+                      "py-2 text-[var(--pw-ink-soft)] underline underline-offset-2 disabled:opacity-50"
                     )}
                   >
                     {copy.signIn.changeEmail}

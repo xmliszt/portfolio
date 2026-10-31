@@ -6,6 +6,9 @@ import { drawRidges } from "./draw-ridges";
 import { getFingerprintStyle } from "./get-fingerprint-style";
 import type { DrawContext, FingertipKind, SceneFinger } from "./render-types";
 
+const RESTING_REACH = 0.85;
+const RESTING_RIDGE_ALPHA = 0.75;
+
 const getStrength = (kind: FingertipKind) => {
   switch (kind) {
     case "own":
@@ -19,7 +22,7 @@ const getStrength = (kind: FingertipKind) => {
   }
 };
 
-/** Draw each fingertip under the glass at `time` seconds, with its fingerprint showing as it presses and smearing as it drags; remote fingertips are fainter. */
+/** Draw each fingertip under the glass at `time` seconds, with its fingerprint faint while it rests, full as it presses and smearing as it drags; remote fingertips are fainter. */
 export function drawFingers(options: {
   draw: DrawContext;
   resources: SceneResources;
@@ -41,17 +44,20 @@ export function drawFingers(options: {
       press,
       style,
     });
-    if (press < 0.02) continue;
-    const drag = Math.min(0.3, finger.speed / 2500);
-    const reach = press * (0.97 + 0.04 * Math.sin(time * 2.1)) * (1 - drag);
+    const drag = press < 0.02 ? 0 : Math.min(0.3, finger.speed / 2500);
+    const reach =
+      lerp(RESTING_REACH, 1, press) *
+      (0.97 + 0.04 * Math.sin(time * 2.1)) *
+      (1 - drag);
     drawRidges({
       g: draw.g,
       resources,
       x: finger.x,
       y: finger.y,
       reach,
-      alpha: strength,
+      alpha: strength * lerp(RESTING_RIDGE_ALPHA, 1, press),
       style,
+      isOnSkin: true,
     });
     if (drag > 0.05) {
       drawRidges({
@@ -62,6 +68,7 @@ export function drawFingers(options: {
         reach: reach * 0.85,
         alpha: drag * strength,
         style,
+        isOnSkin: true,
       });
     }
   }

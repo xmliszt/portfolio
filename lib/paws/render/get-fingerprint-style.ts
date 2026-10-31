@@ -1,4 +1,7 @@
+import { RISO } from "@/lib/paws/riso-inks";
 import { hashUnit } from "@/lib/paws/sim/hash-unit";
+
+import { getContrastingInk } from "./get-contrasting-ink";
 
 /** Riso ink pairs printed as a split fountain: each fingerprint fades from the first ink into the second. */
 const SPLIT_FOUNTAINS = [
@@ -42,6 +45,10 @@ export type FingerprintRidges = {
 export type FingerprintStyle = {
   userId: string;
   inks: readonly [string, string];
+  /** `inks` adjusted to stand out on `skin`, for ridges drawn on the fingertip itself. */
+  tipInks: readonly [string, string];
+  /** `inks` adjusted to stand out on the paper, for prints left behind. */
+  printInks: readonly [string, string];
   skin: { base: string; pressed: string };
   /** The fingertip's tilt in radians. */
   angle: number;
@@ -63,10 +70,37 @@ function pickRidgeKind(unit: number): RidgeKind {
 export function getFingerprintStyle(userId: string): FingerprintStyle {
   const unit = (part: string) => hashUnit(`${userId}:${part}`);
   const signed = (part: string) => unit(part) * 2 - 1;
+  const inks =
+    SPLIT_FOUNTAINS[Math.floor(unit("ink") * SPLIT_FOUNTAINS.length)];
+  const skin = SKINS[Math.floor(unit("skin") * SKINS.length)];
   return {
     userId,
-    inks: SPLIT_FOUNTAINS[Math.floor(unit("ink") * SPLIT_FOUNTAINS.length)],
-    skin: SKINS[Math.floor(unit("skin") * SKINS.length)],
+    inks,
+    tipInks: [
+      getContrastingInk({
+        ink: inks[0],
+        background: skin.base,
+        minContrast: 4.5,
+      }),
+      getContrastingInk({
+        ink: inks[1],
+        background: skin.base,
+        minContrast: 4.5,
+      }),
+    ],
+    printInks: [
+      getContrastingInk({
+        ink: inks[0],
+        background: RISO.paper,
+        minContrast: 2.5,
+      }),
+      getContrastingInk({
+        ink: inks[1],
+        background: RISO.paper,
+        minContrast: 2.5,
+      }),
+    ],
+    skin,
     angle: BASE_ANGLE + signed("angle") * MAX_TURN,
     scale: 0.88 + unit("scale") * 0.24,
     tilt: signed("tilt") * MAX_TILT,

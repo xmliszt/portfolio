@@ -44,7 +44,7 @@ export function SegmentedControl<T extends string>(
                   : undefined
               }
               className={cn(
-                "relative flex h-9 min-w-0 cursor-pointer items-center justify-center px-0.5 text-[12px] leading-none sm:h-7",
+                "relative flex h-9 min-w-0 items-center justify-center px-0.5 text-[12px] leading-none sm:h-7",
                 "has-[:focus-visible]:z-10 has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-offset-2 has-[:focus-visible]:outline-[var(--pw-blue)] has-[:focus-visible]:outline-solid",
                 isChecked
                   ? "bg-[var(--pw-ink)] text-[var(--pw-paper)]"

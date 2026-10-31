@@ -117,7 +117,7 @@ export function PanBar(props: PanBarProps) {
       onKeyDown={handleKeyDown}
       className={cn(
         FOCUS_RING_CLASS,
-        "relative h-10 w-36 cursor-pointer touch-none border-[1.5px] border-[var(--pw-ink)] bg-[var(--pw-paper)]"
+        "relative h-10 w-36 cursor-grab touch-none active:cursor-grabbing border-[1.5px] border-[var(--pw-ink)] bg-[var(--pw-paper)]"
       )}
     >
       <canvas
