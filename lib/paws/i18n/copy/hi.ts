@@ -69,6 +69,10 @@ export const hi = {
     bringing: "तुम्हारी बिल्ली आ रही है…",
   },
   room: {
+    builtBy: {
+      beforeClaude: "Li Yuxuan और ",
+      afterClaude: " ने 🐾 से बनाया",
+    },
     mute: "आवाज़ बंद",
     unmute: "आवाज़ चालू",
     muteCat: "इसे चुप करो",

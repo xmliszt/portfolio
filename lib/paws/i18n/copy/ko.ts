@@ -69,6 +69,10 @@ export const ko = {
     bringing: "고양이가 들어오는 중…",
   },
   room: {
+    builtBy: {
+      beforeClaude: "Li Yuxuan과 ",
+      afterClaude: "가 🐾을 담아 만들었어요",
+    },
     mute: "음소거",
     unmute: "소리 켜기",
     muteCat: "이 고양이 음소거",

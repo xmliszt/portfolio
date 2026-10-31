@@ -69,6 +69,10 @@ export const ru = {
     bringing: "Твой кот входит…",
   },
   room: {
+    builtBy: {
+      beforeClaude: "сделано с 🐾 — Li Yuxuan и ",
+      afterClaude: "",
+    },
     mute: "Без звука",
     unmute: "Включить звук",
     muteCat: "Заглушить кота",

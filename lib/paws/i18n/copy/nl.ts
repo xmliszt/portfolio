@@ -69,6 +69,10 @@ export const nl = {
     bringing: "Je kat komt binnen…",
   },
   room: {
+    builtBy: {
+      beforeClaude: "met 🐾 gemaakt door Li Yuxuan & ",
+      afterClaude: "",
+    },
     mute: "Stil",
     unmute: "Geluid aan",
     muteCat: "Kat dempen",

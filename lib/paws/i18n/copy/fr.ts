@@ -70,6 +70,10 @@ export const fr = {
     bringing: "Ton chat entre…",
   },
   room: {
+    builtBy: {
+      beforeClaude: "fait avec 🐾 par Li Yuxuan et ",
+      afterClaude: "",
+    },
     mute: "Couper le son",
     unmute: "Activer le son",
     muteCat: "Couper sa voix",

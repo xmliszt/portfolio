@@ -69,6 +69,10 @@ export const tr = {
     bringing: "Kedin içeri giriyor…",
   },
   room: {
+    builtBy: {
+      beforeClaude: "Li Yuxuan ve ",
+      afterClaude: " tarafından 🐾 ile yapıldı",
+    },
     mute: "Sesi kapat",
     unmute: "Sesi aç",
     muteCat: "Kediyi sustur",

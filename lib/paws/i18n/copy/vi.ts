@@ -69,6 +69,10 @@ export const vi = {
     bringing: "Mèo đang vào…",
   },
   room: {
+    builtBy: {
+      beforeClaude: "được làm với 🐾 bởi Li Yuxuan & ",
+      afterClaude: "",
+    },
     mute: "Tắt tiếng",
     unmute: "Bật tiếng",
     muteCat: "Tắt tiếng mèo này",

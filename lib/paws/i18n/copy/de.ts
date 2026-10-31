@@ -71,6 +71,10 @@ export const de = {
     bringing: "Deine Katze kommt rein…",
   },
   room: {
+    builtBy: {
+      beforeClaude: "mit 🐾 gebaut von Li Yuxuan & ",
+      afterClaude: "",
+    },
     mute: "Ton aus",
     unmute: "Ton an",
     muteCat: "Katze stummschalten",

@@ -69,6 +69,10 @@ export const id = {
     bringing: "Kucingmu sedang masuk…",
   },
   room: {
+    builtBy: {
+      beforeClaude: "dibuat dengan 🐾 oleh Li Yuxuan & ",
+      afterClaude: "",
+    },
     mute: "Senyapkan",
     unmute: "Bunyikan",
     muteCat: "Senyapkan kucing",

@@ -70,6 +70,10 @@ export const uk = {
     bringing: "Твій кіт заходить…",
   },
   room: {
+    builtBy: {
+      beforeClaude: "зроблено з 🐾 — Li Yuxuan і ",
+      afterClaude: "",
+    },
     mute: "Без звуку",
     unmute: "Увімкнути звук",
     muteCat: "Стишити кота",

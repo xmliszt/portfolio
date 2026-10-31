@@ -69,6 +69,10 @@ export const ptBR = {
     bringing: "Seu gato está entrando…",
   },
   room: {
+    builtBy: {
+      beforeClaude: "feito com 🐾 por Li Yuxuan e ",
+      afterClaude: "",
+    },
     mute: "Silenciar",
     unmute: "Ativar som",
     muteCat: "Silenciar gato",

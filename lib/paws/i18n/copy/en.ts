@@ -73,6 +73,10 @@ export const en = {
     bringing: "Bringing your cat in…",
   },
   room: {
+    builtBy: {
+      beforeClaude: "built by Li Yuxuan & ",
+      afterClaude: " with 🐾",
+    },
     mute: "Mute",
     unmute: "Unmute",
     muteCat: "Mute this cat",

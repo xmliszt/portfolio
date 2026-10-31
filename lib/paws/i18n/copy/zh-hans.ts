@@ -66,6 +66,10 @@ export const zhHans = {
     bringing: "你的猫正在进来…",
   },
   room: {
+    builtBy: {
+      beforeClaude: "李雨轩和",
+      afterClaude: "制作",
+    },
     mute: "静音",
     unmute: "开启声音",
     muteCat: "让这只猫静音",

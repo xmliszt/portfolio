@@ -70,6 +70,10 @@ export const es = {
     bringing: "Tu gato está entrando…",
   },
   room: {
+    builtBy: {
+      beforeClaude: "hecho con 🐾 por Li Yuxuan y ",
+      afterClaude: "",
+    },
     mute: "Silenciar",
     unmute: "Activar sonido",
     muteCat: "Silenciar gato",

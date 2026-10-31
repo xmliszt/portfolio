@@ -28,6 +28,7 @@ import type { ChatBubble } from "./chat-bubble";
 import { ChatLayer } from "./chat-layer";
 import { COMPOSE_ANCHOR_PREFIX } from "./compose-anchor-prefix";
 import { PanBar, type PanBarHandle } from "./pan-bar";
+import { PortfolioLink } from "./portfolio-link";
 import { postChat } from "./post-chat";
 import { RoomBanner } from "./room-banner";
 import { RoomLoading } from "./room-loading";
@@ -623,10 +624,16 @@ export function PawsRoom() {
               aria-keyshortcuts="/"
               className={cn(
                 FOCUS_RING_CLASS,
-                "h-10 border-[1.5px] border-[var(--pw-ink)] bg-[var(--pw-paper)] px-3 text-[12px] text-[var(--pw-ink)] hover:bg-[var(--pw-paper-deep)] sm:h-8"
+                "flex h-10 items-center gap-x-2 border-[1.5px] border-[var(--pw-ink)] bg-[var(--pw-paper)] px-3 text-[12px] text-[var(--pw-ink)] hover:bg-[var(--pw-paper-deep)] sm:h-8"
               )}
             >
               {copy.room.talk}
+              <kbd
+                aria-hidden
+                className="grid size-5 place-items-center border border-[var(--pw-ink-soft)] font-[inherit] text-[11px] leading-none text-[var(--pw-ink-soft)] [@media(pointer:coarse)]:hidden"
+              >
+                /
+              </kbd>
             </button>
           )}
           <SoundSwitch
@@ -634,6 +641,7 @@ export function PawsRoom() {
             label={copy.room.mute}
             onToggle={handleToggleMute}
           />
+          <PortfolioLink />
         </div>
         {isPannable && (
           <div className="absolute right-4 bottom-4 group-has-[[aria-modal=true]]/room:hidden max-[379px]:bottom-16 sm:right-6 sm:bottom-6">

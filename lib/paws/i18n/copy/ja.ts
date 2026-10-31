@@ -70,6 +70,10 @@ export const ja = {
     bringing: "猫が入ってくるよ…",
   },
   room: {
+    builtBy: {
+      beforeClaude: "Li Yuxuan と ",
+      afterClaude: " が 🐾 をこめて作りました",
+    },
     mute: "消音",
     unmute: "音を出す",
     muteCat: "この猫を消音",
