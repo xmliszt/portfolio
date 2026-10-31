@@ -54,6 +54,7 @@ export const ko = {
     size: "크기",
     fluff: "복슬함",
     tail: "꼬리",
+    tailShape: "꼬리 모양",
     ears: "귀",
     shuffle: "무작위",
     next: "목소리 주기",
@@ -98,7 +99,7 @@ export const ko = {
     ],
     builtBy: {
       beforeClaude: "Li Yuxuan과 ",
-      afterClaude: "가 🐾을 담아 만들었어요",
+      afterClaude: "가 만들었어요",
     },
     mute: "음소거",
     unmute: "소리 켜기",
@@ -146,6 +147,12 @@ export const ko = {
     belly: { cream: "크림색", white: "흰색", coat: "털색대로", light: "밝게" },
     pads: { pink: "분홍", black: "검정", mauve: "회보라", mixed: "알록달록" },
     step: { small: "작게", medium: "보통", large: "크게" },
+    tailShape: {
+      slim: "날씬",
+      plume: "복슬복슬",
+      wave: "물결",
+      hook: "갈고리",
+    },
     age: { kitten: "아기", adult: "어른", old: "노묘" },
     voice: {
       squeaky: "가늘게",

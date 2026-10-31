@@ -21,6 +21,7 @@ import { PocketButton } from "./tip/pocket-button";
 import { TipProvider } from "./tip/tip-provider";
 import { CameraButton } from "./camera-button";
 import { LaundromatScene } from "./laundromat-scene";
+import { PawsLink } from "./paws-link";
 import { PortfolioLink } from "./portfolio-link";
 import { UpdateNotice } from "./update-notice";
 
@@ -163,6 +164,7 @@ export function LaundromatEntry(props: LaundromatEntryProps) {
           <ThemeButton />
           <SettingsButton />
           <PortfolioLink />
+          <PawsLink />
         </div>
         {isFirstVisit && (
           <div ref={bedroomRef} className="absolute inset-0">

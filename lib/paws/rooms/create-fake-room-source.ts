@@ -5,6 +5,7 @@ import {
   PAD_INKS,
   PATTERNS,
   STEPS,
+  TAIL_SHAPES,
 } from "@/lib/paws/cat-look";
 import { ROOM_LIMITS } from "@/lib/paws/room-limits";
 import type { RoomSource } from "@/lib/paws/room-source";
@@ -65,6 +66,7 @@ export function createFakeRoomSource(options: {
       size: pick(STEPS),
       fluff: pick(STEPS),
       tail: pick(STEPS),
+      tailShape: pick(TAIL_SHAPES),
       ears: pick(STEPS),
     };
   }

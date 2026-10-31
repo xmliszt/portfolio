@@ -1,4 +1,4 @@
-import type { CatLook } from "@/lib/paws/cat-look";
+import type { CatLook, TailShape } from "@/lib/paws/cat-look";
 import type { CatActivity, CatSnapshot } from "@/lib/paws/wire-types";
 
 import { blendPose } from "./blend-pose";
@@ -10,6 +10,13 @@ import { LEG_LAYOUT, type LegSide } from "./leg-layout";
 import { lerp } from "./lerp";
 
 export const TAIL_SEGMENTS = 6;
+
+const TAIL_JOINT_TURNS_RADIANS = {
+  slim: [0, 0, 0, 0, 0, 0],
+  plume: [0, 0, 0, 0, 0, 0],
+  wave: [0.5, 0.35, 0, -0.35, -0.5, -0.35],
+  hook: [0, 0, 0, 0.3, 0.9, 1.1],
+} as const satisfies { [shape in TailShape]: readonly number[] };
 
 export type DerivedLeg = {
   front: boolean;
@@ -68,7 +75,8 @@ export function deriveCat(options: {
     heading: snapshot.heading,
     scale: k,
   };
-  const phase = hashUnit(snapshot.userId) * 100;
+  const userHash = hashUnit(snapshot.userId);
+  const phase = userHash * 100;
   const weights = snapshot.pose;
   const pose = blendPose(weights);
 
@@ -104,6 +112,7 @@ export function deriveCat(options: {
 
   const tailBase = catToWorld(frame, [pose.tail[0], pose.tail[1]]);
   const sway = 1 - Math.max(weights.sit, weights.sleep) * 0.6;
+  const bendSide = userHash < 0.5 ? -1 : 1;
   const tail = Array.from({ length: TAIL_SEGMENTS }).reduce<{
     points: Vec2[];
     angle: number;
@@ -112,7 +121,10 @@ export function deriveCat(options: {
       const angle =
         chain.angle +
         pose.tail[3] / TAIL_SEGMENTS +
-        Math.sin(time * 1.7 - i * 0.8 + phase) * 0.13 * sway;
+        Math.sin(time * 1.7 - i * 0.8 + phase) * 0.13 * sway +
+        (TAIL_JOINT_TURNS_RADIANS[look.tailShape].at(i) ?? 0) *
+          bendSide *
+          weights.stand;
       const last = chain.points[chain.points.length - 1];
       return {
         points: [

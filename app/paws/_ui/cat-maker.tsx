@@ -13,6 +13,7 @@ import {
   PATTERNS,
   type Step,
   STEPS,
+  TAIL_SHAPES,
 } from "@/lib/paws/cat-look";
 import { coatInkOptions } from "@/lib/paws/maker/coat-ink-options";
 import { padInkOptions } from "@/lib/paws/maker/pad-ink-options";
@@ -32,8 +33,8 @@ const TABS = ["coat", "pattern", "belly", "pads", "shape"] as const;
 const SHAPE_FIELDS = [
   "size",
   "fluff",
-  "tail",
   "ears",
+  "tail",
 ] as const satisfies readonly (keyof CatLook)[];
 
 type Tab = (typeof TABS)[number];
@@ -75,6 +76,10 @@ export function CatMaker(props: CatMakerProps) {
   const STEP_OPTIONS = STEPS.map((step) => ({
     value: step,
     label: copy.options.step[step],
+  }));
+  const TAIL_SHAPE_OPTIONS = TAIL_SHAPES.map((tailShape) => ({
+    value: tailShape,
+    label: copy.options.tailShape[tailShape],
   }));
   const [tab, setTab] = useState<Tab>("coat");
   const tabsId = useId();
@@ -242,6 +247,16 @@ export function CatMaker(props: CatMakerProps) {
                       onChange={(step) => change({ [field]: step })}
                     />
                   ))}
+                  <div className="sm:col-span-2">
+                    <SegmentedControl
+                      legend={copy.maker.tailShape}
+                      name="tailShape"
+                      columns={TAIL_SHAPE_OPTIONS.length}
+                      options={TAIL_SHAPE_OPTIONS}
+                      value={props.look.tailShape}
+                      onChange={(tailShape) => change({ tailShape })}
+                    />
+                  </div>
                 </div>
               );
             default: {

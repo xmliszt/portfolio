@@ -21,6 +21,7 @@ function buildPlayer(options: {
       size: "small",
       fluff: "small",
       tail: "small",
+      tailShape: "slim",
       ears: "small",
     },
     voice: { age: "adult", voice: "soft", mood: "chatty" },

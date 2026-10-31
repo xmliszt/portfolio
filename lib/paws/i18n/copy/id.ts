@@ -54,6 +54,7 @@ export const id = {
     size: "Ukuran",
     fluff: "Kelebatan",
     tail: "Ekor",
+    tailShape: "Bentuk ekor",
     ears: "Telinga",
     shuffle: "Acak",
     next: "Beri suara",
@@ -97,7 +98,7 @@ export const id = {
       "purr purr",
     ],
     builtBy: {
-      beforeClaude: "dibuat dengan 🐾 oleh Li Yuxuan & ",
+      beforeClaude: "dibuat oleh Li Yuxuan & ",
       afterClaude: "",
     },
     mute: "Senyapkan",
@@ -156,6 +157,12 @@ export const id = {
       mixed: "Campur",
     },
     step: { small: "Kecil", medium: "Sedang", large: "Besar" },
+    tailShape: {
+      slim: "Ramping",
+      plume: "Lebat",
+      wave: "Bergelombang",
+      hook: "Kait",
+    },
     age: { kitten: "Anak", adult: "Dewasa", old: "Tua" },
     voice: {
       squeaky: "Melengking",

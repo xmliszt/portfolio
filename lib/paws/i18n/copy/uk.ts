@@ -55,6 +55,7 @@ export const uk = {
     size: "Розмір",
     fluff: "Пухнастість",
     tail: "Хвіст",
+    tailShape: "Форма хвоста",
     ears: "Вуха",
     shuffle: "Навмання",
     next: "Дати голос",
@@ -98,7 +99,7 @@ export const uk = {
       "мур-мур",
     ],
     builtBy: {
-      beforeClaude: "зроблено з 🐾 — Li Yuxuan і ",
+      beforeClaude: "зроблено: Li Yuxuan і ",
       afterClaude: "",
     },
     mute: "Без звуку",
@@ -152,6 +153,12 @@ export const uk = {
     },
     pads: { pink: "Рожеві", black: "Чорні", mauve: "Лілові", mixed: "Різні" },
     step: { small: "Малий", medium: "Середній", large: "Великий" },
+    tailShape: {
+      slim: "Тонкий",
+      plume: "Пухнастий",
+      wave: "Хвилею",
+      hook: "Гачком",
+    },
     age: { kitten: "Кошеня", adult: "Дорослий", old: "Літній" },
     voice: {
       squeaky: "Писклявий",

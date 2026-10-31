@@ -12,9 +12,13 @@ export function getResidentCats(options: {
   const random = createSeededRandom({
     seed: hashUserId(options.roomId) * 2 ** 32,
   });
+  // Tail shapes draw from their own sequence so mixed-version tabs agree on every other resident pick.
+  const tailShapeRandom = createSeededRandom({
+    seed: hashUserId(`${options.roomId}:tail`) * 2 ** 32,
+  });
   return Array.from({ length: ROOM_LIMITS.residentCats }, (_, index) => ({
     userId: `resident-${index + 1}`,
     voice: shuffleVoice({ random }),
-    look: shuffleCatLook({ random }),
+    look: shuffleCatLook({ random, tailShapeRandom }),
   }));
 }

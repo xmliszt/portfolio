@@ -7,6 +7,7 @@ import {
   type PadInk,
   PATTERNS,
   STEPS,
+  TAIL_SHAPES,
 } from "./cat-look";
 
 const isOneOf = <T extends string>(
@@ -18,7 +19,7 @@ const isCoatInk = (value: unknown): value is CoatInk =>
 const isPadInk = (value: unknown): value is PadInk =>
   typeof value === "string" && Object.hasOwn(PAD_INKS, value);
 
-/** Return the cat look in `value`, or `undefined` when any field is missing or not one of the offered options. */
+/** Return the cat look in `value`, or `undefined` when any field is missing or not one of the offered options; a missing or unknown `tailShape` reads as `"slim"`. */
 export function parseCatLook(value: unknown): CatLook | undefined {
   if (
     typeof value !== "object" ||
@@ -34,6 +35,10 @@ export function parseCatLook(value: unknown): CatLook | undefined {
   ) {
     return undefined;
   }
+  const tailShape =
+    "tailShape" in value && isOneOf(TAIL_SHAPES, value.tailShape)
+      ? value.tailShape
+      : "slim";
   return {
     coat: value.coat,
     pattern: value.pattern,
@@ -42,6 +47,7 @@ export function parseCatLook(value: unknown): CatLook | undefined {
     size: value.size,
     fluff: value.fluff,
     tail: value.tail,
+    tailShape,
     ears: value.ears,
   };
 }

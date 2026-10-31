@@ -13,6 +13,7 @@ const look = {
   size: "medium",
   fluff: "small",
   tail: "large",
+  tailShape: "slim",
   ears: "medium",
 } as const;
 
