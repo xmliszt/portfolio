@@ -59,8 +59,8 @@ const BUBBLE_GAP_PX = 10;
 const BUBBLE_EDGE_PX = 8;
 const SETTLE_BEFORE_ARRIVALS_MS = 3000;
 const ROOM_BANNER_MS = 2600;
-const RESIDENT_LINE_EVERY_MS = 8000;
-const RESIDENT_LINE_CHANCE = { alone: 0.35, shared: 0.1 } as const;
+const RESIDENT_LINE_EVERY_MS = 15_000;
+const RESIDENT_LINE_CHANCE = { alone: 0.25, shared: 0.06 } as const;
 
 function isTypingTarget(target: EventTarget | null) {
   return (
