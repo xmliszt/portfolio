@@ -3,6 +3,7 @@
 import { useEffect, useRef } from "react";
 
 import { usePawsCopy } from "@/app/paws/_i18n/use-paws-copy";
+import { usePawsSession } from "@/app/paws/_session/use-paws-session";
 import type { CatLook } from "@/lib/paws/cat-look";
 import { createSceneResources } from "@/lib/paws/render/create-scene-resources";
 import { drawScene } from "@/lib/paws/render/draw-scene";
@@ -21,7 +22,7 @@ import { getCatSnapshots } from "@/lib/paws/sim/get-cat-snapshots";
 import { standUp } from "@/lib/paws/sim/stand-up";
 import { stepWorld } from "@/lib/paws/sim/step-world";
 
-const CAT_ID = "playground";
+const PREVIEW_CAT_ID = "playground";
 const VIEW_SPAN = 420;
 const CAMERA_RATE = 2.5;
 const MAX_DT_SECONDS = 0.05;
@@ -34,6 +35,8 @@ type CatPlaygroundProps = {
 /** Render a small private room with only the visitor's cat in it, running the real cat behaviour: it walks, sits, sleeps, sniffs and reaches for the visitor's fingertip, while the view follows it. */
 export function CatPlayground(props: CatPlaygroundProps) {
   const { copy } = usePawsCopy();
+  const { session } = usePawsSession();
+  const catId = "userId" in session ? session.userId : PREVIEW_CAT_ID;
 
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const lookRef = useRef(props.look);
@@ -93,17 +96,17 @@ export function CatPlayground(props: CatPlaygroundProps) {
       }
       const pointer = pointerRef.current;
       const look = lookRef.current;
-      const playgroundCat = world.cats[CAT_ID];
+      const playgroundCat = world.cats[catId];
       if (look.tailShape !== scene.tailShape && playgroundCat !== undefined)
         standUp({ world, cat: playgroundCat });
       scene.tailShape = look.tailShape;
       const { events } = stepWorld({
         world,
-        players: [{ userId: CAT_ID, look }],
+        players: [{ userId: catId, look }],
         fingers: pointer.present
           ? [
               {
-                userId: CAT_ID,
+                userId: catId,
                 x: pointer.x,
                 y: pointer.y,
                 pressed: pointer.pressed,
@@ -175,7 +178,7 @@ export function CatPlayground(props: CatPlaygroundProps) {
 
     scene.frame = window.requestAnimationFrame(tick);
     return () => window.cancelAnimationFrame(scene.frame);
-  }, []);
+  }, [catId]);
 
   function toWorld(event: React.PointerEvent<HTMLCanvasElement>) {
     const bounds = event.currentTarget.getBoundingClientRect();

@@ -5,6 +5,7 @@ import {
   BELLIES,
   type CatLook,
   COAT_INKS,
+  PAD_INKS,
   PATTERNS,
 } from "@/lib/paws/cat-look";
 import { RISO } from "@/lib/paws/riso-inks";
@@ -79,4 +80,21 @@ test("mixed pads are picked per paw, the same for the same player", () => {
     new Set(users.flatMap((userId) => pick(userId))).size > 1,
     "uses more than one ink"
   );
+});
+
+test("mixed pads skip inks that vanish on a dark paw", () => {
+  const users = Array.from({ length: 40 }, (_, i) => `player-${i}`);
+  const pads = users.flatMap(
+    (userId) =>
+      getCoatPalette({
+        look: buildLook({
+          coat: "black",
+          pattern: "solid",
+          belly: "coat",
+          pads: "mixed",
+        }),
+        userId,
+      }).pads
+  );
+  assert.ok(!pads.includes(PAD_INKS.black), "no black pads on a black paw");
 });
