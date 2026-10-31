@@ -3,6 +3,7 @@ import { test } from "node:test";
 
 import { ROOM_LIMITS } from "@/lib/paws/room-limits";
 import { createSeededRandom } from "@/lib/paws/sim/create-seeded-random";
+import { buildSnapshot } from "@/lib/paws/sim/testing/build-snapshot";
 import { parseCatsMessage } from "@/lib/paws/wire/parse-cats-message";
 import type { PlayerPresence } from "@/lib/paws/wire-types";
 
@@ -47,13 +48,15 @@ function buildFollower() {
   return engine;
 }
 
-test("shows the host's paw prints once the render delay has passed", () => {
+test("shows the host's prints of a reaching paw once the render delay has passed", () => {
   const engine = buildFollower();
   engine.receiveCats({
     message: {
       hostId: "host-tab",
       sentAt: 0,
-      cats: [],
+      cats: [
+        buildSnapshot({ userId: "host", x: 100, y: 100, activity: "paw" }),
+      ],
       prints: [
         { kind: "pawPrint", userId: "host", x: 100, y: 100, angle: 0, leg: 0 },
       ],
@@ -70,6 +73,96 @@ test("shows the host's paw prints once the render delay has passed", () => {
     dtSeconds: DT_SECONDS,
   });
   assert.equal(due.prints.length, 1, "print shows after the render delay");
+});
+
+test("drops the host's footfall prints, since this screen steps the legs itself", () => {
+  const engine = buildFollower();
+  engine.receiveCats({
+    message: {
+      hostId: "host-tab",
+      sentAt: 0,
+      cats: [buildSnapshot({ userId: "host", x: 100, y: 100 })],
+      prints: [
+        { kind: "pawPrint", userId: "host", x: 100, y: 100, angle: 0, leg: 0 },
+      ],
+    },
+    receivedAtMs: 1000,
+  });
+  const due = engine.frame({
+    nowMs: 1000 + ROOM_LIMITS.renderDelayMs,
+    dtSeconds: DT_SECONDS,
+  });
+  assert.equal(due.prints.length, 0);
+});
+
+function walkingHost(options: { x: number; activity?: "paw" | "pause" }) {
+  return {
+    ...buildSnapshot({
+      userId: "host",
+      x: options.x,
+      y: 500,
+      activity: options.activity ?? "approach",
+    }),
+    speed: options.activity === undefined ? 300 : 0,
+  };
+}
+
+test("prints a walking cat's footfalls from the legs this screen steps", () => {
+  const engine = buildFollower();
+  const sendMs = 1000 / ROOM_LIMITS.catSnapshotsPerSecond;
+  Array.from({ length: 12 }, (_, index) =>
+    engine.receiveCats({
+      message: {
+        hostId: "host-tab",
+        sentAt: index * sendMs,
+        cats: [walkingHost({ x: 300 + index * 75 })],
+        prints: [],
+      },
+      receivedAtMs: 1000 + index * sendMs,
+    })
+  );
+  const prints = Array.from({ length: 150 }, (_, frame) =>
+    engine.frame({
+      nowMs: 1000 + frame * 1000 * DT_SECONDS,
+      dtSeconds: DT_SECONDS,
+    })
+  ).at(-1)?.prints;
+  assert.ok((prints?.length ?? 0) > 2, `${prints?.length} prints`);
+});
+
+test("keeps the host's print of a paw sent as the cat stops pawing", () => {
+  const engine = buildFollower();
+  const sendMs = 1000 / ROOM_LIMITS.catSnapshotsPerSecond;
+  engine.receiveCats({
+    message: {
+      hostId: "host-tab",
+      sentAt: 0,
+      cats: [walkingHost({ x: 500, activity: "paw" })],
+      prints: [],
+    },
+    receivedAtMs: 1000,
+  });
+  engine.receiveCats({
+    message: {
+      hostId: "host-tab",
+      sentAt: sendMs,
+      cats: [walkingHost({ x: 500, activity: "pause" })],
+      prints: [
+        { kind: "pawPrint", userId: "host", x: 560, y: 500, angle: 0, leg: 0 },
+      ],
+    },
+    receivedAtMs: 1000 + sendMs,
+  });
+  const frames = Array.from({ length: 60 }, (_, frame) =>
+    engine.frame({
+      nowMs: 1000 + frame * 1000 * DT_SECONDS,
+      dtSeconds: DT_SECONDS,
+    })
+  );
+  assert.ok(
+    frames.at(-1)?.prints.some((print) => print.x === 560),
+    "the paw's print shows"
+  );
 });
 
 test("ignores cat messages from a connection that is not the host", () => {

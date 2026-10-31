@@ -29,6 +29,7 @@ import type {
   RoomEvent,
 } from "@/lib/paws/wire-types";
 
+import { createLegPlayer } from "./create-leg-player";
 import { getResidentCats } from "./get-resident-cats";
 import { type FingerSample, sampleFingerPath } from "./sample-finger-path";
 
@@ -139,6 +140,7 @@ export function createRoomEngine(options: { random: () => number }) {
     followed: { hostId: undefined, sinceMs: 0 },
     time: 0,
   };
+  const legPlayer = createLegPlayer({ random: options.random });
 
   function lookOf(userId: string) {
     const players = [...state.players, ...state.residents];
@@ -268,6 +270,7 @@ export function createRoomEngine(options: { random: () => number }) {
         state.residentWorld = undefined;
         state.buffer = createSnapshotBuffer();
         state.lastCatsReceivedAtMs = -Infinity;
+        legPlayer.reset();
       }
       state.selfId = self.userId;
       state.selfConnectionId = self.connectionId;
@@ -383,7 +386,10 @@ export function createRoomEngine(options: { random: () => number }) {
         state.world = undefined;
         state.unsentPrints = [];
       }
-      if (isHost || runsLocally) state.incomingPrints = [];
+      if (isHost || runsLocally) {
+        state.incomingPrints = [];
+        legPlayer.reset();
+      }
       if (!runsLocally) state.residentWorld = undefined;
       if (runsLocally && state.residentWorld === undefined) {
         const latest = state.buffer.latest();
@@ -426,15 +432,25 @@ export function createRoomEngine(options: { random: () => number }) {
           };
         }
         if (state.world === undefined) {
+          const legged = legPlayer.step({
+            snapshots: state.buffer.sample({ nowMs }),
+            lookOf,
+            dtSeconds,
+          });
           const due = state.incomingPrints.filter(
             (incoming) => incoming.showAtMs <= nowMs
           );
           state.incomingPrints = state.incomingPrints.filter(
             (incoming) => incoming.showAtMs > nowMs
           );
-          events.push(...due.map((incoming) => incoming.print));
+          events.push(
+            ...due
+              .map((incoming) => incoming.print)
+              .filter((print) => legged.hostLegIds.has(print.userId)),
+            ...legged.prints
+          );
           return {
-            snapshots: state.buffer.sample({ nowMs }),
+            snapshots: legged.snapshots,
             cats: undefined,
             events: [],
           };

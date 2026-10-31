@@ -1,10 +1,7 @@
-import type {
-  CatActivity,
-  CatSnapshot,
-  LegSnapshot,
-} from "@/lib/paws/wire-types";
+import type { CatActivity, CatSnapshot } from "@/lib/paws/wire-types";
 
-import type { SimCat, SimLeg, SimState } from "./sim-types";
+import type { SimCat, SimState } from "./sim-types";
+import { toLegSnapshot } from "./to-leg-snapshot";
 import { wrapAngle } from "./wrap-angle";
 
 const toActivity = (state: SimState): CatActivity => {
@@ -34,12 +31,6 @@ const toActivity = (state: SimState): CatActivity => {
     }
   }
 };
-
-const toLegSnapshot = (leg: SimLeg): LegSnapshot => ({
-  x: leg.x,
-  y: leg.y,
-  h: leg.h,
-});
 
 /** Return what every screen needs to draw `cat` now. */
 export function toCatSnapshot(cat: SimCat): CatSnapshot {
