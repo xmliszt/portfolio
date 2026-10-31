@@ -340,7 +340,10 @@ export function PawsRoom() {
       },
       paperSeed: Math.random(),
     });
-    const ownCat = { isHere: false };
+    const ownCat: { isHere: boolean; centeredOn: string | undefined } = {
+      isHere: false,
+      centeredOn: undefined,
+    };
     const pan = { isPannable: false };
     const arrivals: {
       roomId: string | undefined;
@@ -416,7 +419,11 @@ export function PawsRoom() {
       if (isOwnCatHere !== ownCat.isHere) {
         ownCat.isHere = isOwnCatHere;
         setHasOwnCatInRoom(isOwnCatHere);
-        if (ownCatNow !== undefined) centerXRef.current = ownCatNow.x;
+      }
+      const ownCatKey = `${roomIdRef.current}/${ownCatId}`;
+      if (ownCatNow !== undefined && ownCat.centeredOn !== ownCatKey) {
+        ownCat.centeredOn = ownCatKey;
+        centerXRef.current = ownCatNow.x;
       }
       const panDirection = Object.values(heldPanKeysRef.current).reduce<number>(
         (sum, direction) => sum + (direction ?? 0),
