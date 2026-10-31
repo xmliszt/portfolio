@@ -30,6 +30,7 @@ import { cn } from "@/lib/utils";
 import type { ChatBubble } from "./chat-bubble";
 import { ChatLayer } from "./chat-layer";
 import { COMPOSE_ANCHOR_PREFIX } from "./compose-anchor-prefix";
+import { LaundroCafeLink } from "./laundro-cafe-link";
 import { PanBar, type PanBarHandle } from "./pan-bar";
 import { PortfolioLink } from "./portfolio-link";
 import { postChat } from "./post-chat";
@@ -643,7 +644,10 @@ export function PawsRoom() {
               : undefined
           }
         />
-        <div className="absolute top-4 right-4 flex items-center gap-x-2 group-has-[[aria-modal=true]]/room:hidden sm:top-6 sm:right-6">
+        <div className="absolute top-4 left-4 group-has-[[aria-modal=true]]/room:hidden sm:top-6 sm:left-6">
+          <LaundroCafeLink />
+        </div>
+        <div className="absolute top-4 right-4 left-[68px] flex flex-wrap items-center justify-end gap-x-2 gap-y-2 group-has-[[aria-modal=true]]/room:hidden sm:top-6 sm:right-6 sm:left-auto">
           {roomId !== undefined && !useFakeRoom && "accessToken" in session && (
             <RoomPicker
               roomId={roomId}
