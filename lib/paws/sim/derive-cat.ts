@@ -83,13 +83,10 @@ export function deriveCat(options: {
   const breath =
     Math.sin(time * (weights.sleep > 0.5 ? 1.4 : 2.2) + phase) *
     (1 - weights.stand);
+  const bendCurve = (snapshot.bend * weights.stand) / 4000;
+  const bendY = (x: number, y: number) => y + bendCurve * x * x;
   const spineLocal = pose.spine.map(
-    ([x, y, r, h]): Vec4 => [
-      x,
-      y + ((snapshot.bend * x * x) / 4000) * weights.stand,
-      r * (1 + 0.03 * breath),
-      h,
-    ]
+    ([x, y, r, h]): Vec4 => [x, bendY(x, y), r * (1 + 0.03 * breath), h]
   );
   const neck = spineLocal[spineLocal.length - 1];
   const reach = pose.head[0] + 24 * snapshot.sniff - neck[0];
@@ -106,11 +103,19 @@ export function deriveCat(options: {
     point[2] * k,
     point[3],
   ];
+  const bentToWorld4 = (point: Vec4): Vec4 => [
+    ...catToWorld(frame, [point[0], bendY(point[0], point[1])]),
+    point[2] * k,
+    point[3],
+  ];
 
   const head = toWorld4([headLocal[0], headLocal[1], pose.head[2], headH]);
   const headDir = snapshot.heading + pose.headDir + snapshot.yaw;
 
-  const tailBase = catToWorld(frame, [pose.tail[0], pose.tail[1]]);
+  const tailBase = catToWorld(frame, [
+    pose.tail[0],
+    bendY(pose.tail[0], pose.tail[1]),
+  ]);
   const sway = 1 - Math.max(weights.sit, weights.sleep) * 0.6;
   const bendSide = userHash < 0.5 ? -1 : 1;
   const tail = Array.from({ length: TAIL_SEGMENTS }).reduce<{
@@ -137,7 +142,13 @@ export function deriveCat(options: {
         angle,
       };
     },
-    { points: [tailBase], angle: snapshot.heading + pose.tail[2] }
+    {
+      points: [tailBase],
+      angle:
+        snapshot.heading +
+        pose.tail[2] +
+        Math.atan(2 * bendCurve * pose.tail[0]),
+    }
   ).points;
   const tipPoint = tail[tail.length - 1];
 
@@ -157,7 +168,10 @@ export function deriveCat(options: {
       y: legSnapshot.y,
       h: legSnapshot.h + baseH,
       attach: [
-        ...catToWorld(frame, [attachLocal[0], attachLocal[1]]),
+        ...catToWorld(frame, [
+          attachLocal[0],
+          bendY(attachLocal[0], attachLocal[1]),
+        ]),
         attachLocal[2],
       ],
       pawAngle:
@@ -167,7 +181,7 @@ export function deriveCat(options: {
       padVisibility: pose.padVis[place.front ? 0 : 1],
       hock:
         !place.front && pose.soleW > 0.05
-          ? toWorld4([hockLocal[0], hockLocal[1], 8.5, hockLocal[2]])
+          ? bentToWorld4([hockLocal[0], hockLocal[1], 8.5, hockLocal[2]])
           : undefined,
     };
   };
@@ -190,7 +204,7 @@ export function deriveCat(options: {
       x: head[0] + Math.cos(headDir) * 30 * k,
       y: head[1] + Math.sin(headDir) * 30 * k,
     },
-    thighs: [toWorld4(pose.thigh[0]), toWorld4(pose.thigh[1])],
+    thighs: [bentToWorld4(pose.thigh[0]), bentToWorld4(pose.thigh[1])],
     legs: [deriveLeg(0), deriveLeg(1), deriveLeg(2), deriveLeg(3)],
     tail,
     tailHeights: { base: pose.tail[4], tip: pose.tail[5] },
