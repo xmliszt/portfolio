@@ -183,6 +183,9 @@ export const fr = {
     closeKey: "Fermer une fenêtre",
     or: "ou",
   },
+  otherApps: {
+    title: "Autres applis",
+  },
   note: {
     open: "Un petit mot de ma part",
     title: "Un petit mot de ma part",

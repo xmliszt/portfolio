@@ -51,6 +51,9 @@ export const vi = {
     },
     updateAvailable: "tải lại để vào tiệm giặt đã cập nhật",
   },
+  otherApps: {
+    heading: "ứng dụng khác",
+  },
   themes: {
     heading: "chủ đề",
     seasonal: "theo mùa",

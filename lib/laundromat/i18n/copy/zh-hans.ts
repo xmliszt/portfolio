@@ -46,6 +46,9 @@ export const zhHans = {
     },
     updateAvailable: "刷新，进入更新后的自助洗衣店",
   },
+  otherApps: {
+    heading: "其他应用",
+  },
   themes: {
     heading: "主题",
     seasonal: "时令",

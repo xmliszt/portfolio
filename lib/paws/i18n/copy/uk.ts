@@ -183,6 +183,9 @@ export const uk = {
     closeKey: "Закрити вікно",
     or: "або",
   },
+  otherApps: {
+    title: "Інші застосунки",
+  },
   note: {
     open: "Кілька слів від мене",
     title: "Кілька слів від мене",

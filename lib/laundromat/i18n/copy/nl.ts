@@ -47,6 +47,9 @@ export const nl = {
     },
     updateAvailable: "vernieuw voor de bijgewerkte wasserette",
   },
+  otherApps: {
+    heading: "andere apps",
+  },
   themes: {
     heading: "thema’s",
     seasonal: "seizoensgebonden",

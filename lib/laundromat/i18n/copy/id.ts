@@ -51,6 +51,9 @@ export const id = {
     },
     updateAvailable: "muat ulang untuk laundry terbaru",
   },
+  otherApps: {
+    heading: "aplikasi lain",
+  },
   themes: {
     heading: "tema",
     seasonal: "musiman",

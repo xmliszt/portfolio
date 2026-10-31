@@ -47,6 +47,9 @@ export const tr = {
     },
     updateAvailable: "güncel çamaşırhane için yenile",
   },
+  otherApps: {
+    heading: "diğer uygulamalar",
+  },
   themes: {
     heading: "temalar",
     seasonal: "mevsimsel",

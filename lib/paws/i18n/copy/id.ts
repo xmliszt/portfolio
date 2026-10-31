@@ -186,6 +186,9 @@ export const id = {
     closeKey: "Tutup jendela",
     or: "atau",
   },
+  otherApps: {
+    title: "Aplikasi lain",
+  },
   note: {
     open: "Sepatah kata dari pembuatnya",
     title: "Sepatah kata dari pembuatnya",

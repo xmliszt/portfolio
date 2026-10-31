@@ -183,6 +183,9 @@ export const ja = {
     closeKey: "ウィンドウを閉じる",
     or: "または",
   },
+  otherApps: {
+    title: "ほかのアプリ",
+  },
   note: {
     open: "作り手のことば",
     title: "作り手のことば",

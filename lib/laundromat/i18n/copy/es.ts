@@ -46,6 +46,9 @@ export const es = {
     },
     updateAvailable: "recarga para la lavandería actualizada",
   },
+  otherApps: {
+    heading: "otras apps",
+  },
   themes: {
     heading: "temas",
     seasonal: "estacional",

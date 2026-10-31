@@ -63,6 +63,9 @@ export const pl = {
     },
     updateAvailable: "odśwież — pralnia zaktualizowana",
   },
+  otherApps: {
+    heading: "inne aplikacje",
+  },
   themes: {
     heading: "motywy",
     seasonal: "sezonowy",

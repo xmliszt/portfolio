@@ -182,6 +182,9 @@ export const pl = {
     closeKey: "Zamknij okno",
     or: "lub",
   },
+  otherApps: {
+    title: "Inne aplikacje",
+  },
   note: {
     open: "Kilka słów ode mnie",
     title: "Kilka słów ode mnie",

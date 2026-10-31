@@ -48,6 +48,9 @@ export const fr = {
     },
     updateAvailable: "recharge pour la laverie mise à jour",
   },
+  otherApps: {
+    heading: "autres applis",
+  },
   themes: {
     heading: "thèmes",
     seasonal: "saisonnier",

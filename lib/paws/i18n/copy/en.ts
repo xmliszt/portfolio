@@ -179,6 +179,9 @@ export const en = {
     closeKey: "Close a window",
     or: "or",
   },
+  otherApps: {
+    title: "Other Apps",
+  },
   note: {
     open: "A Note from the Maker",
     title: "A Note from the Maker",

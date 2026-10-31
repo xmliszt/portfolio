@@ -182,6 +182,9 @@ export const hi = {
     closeKey: "विंडो बंद करें",
     or: "या",
   },
+  otherApps: {
+    title: "और ऐप",
+  },
   note: {
     open: "रचनाकार की ओर से दो शब्द",
     title: "रचनाकार की ओर से दो शब्द",

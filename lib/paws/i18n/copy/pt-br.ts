@@ -183,6 +183,9 @@ export const ptBR = {
     closeKey: "Fechar uma janela",
     or: "ou",
   },
+  otherApps: {
+    title: "Outros apps",
+  },
   note: {
     open: "Um recado de quem criou o Paws",
     title: "Um recado de quem criou o Paws",

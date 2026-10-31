@@ -184,6 +184,9 @@ export const es = {
     closeKey: "Cerrar una ventana",
     or: "o",
   },
+  otherApps: {
+    title: "Otras apps",
+  },
   note: {
     open: "Unas palabras de quien creó Paws",
     title: "Unas palabras de quien creó Paws",

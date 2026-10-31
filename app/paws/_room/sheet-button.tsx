@@ -2,7 +2,7 @@ import { FOCUS_RING_CLASS } from "@/app/paws/_ui/focus-ring-class";
 import { cn } from "@/lib/utils";
 
 type SheetButtonProps = {
-  icon: "guide" | "note";
+  icon: "guide" | "note" | "apps";
   label: string;
   onOpen: () => void;
 };
@@ -39,6 +39,34 @@ function SheetIcon(props: { icon: SheetButtonProps["icon"] }) {
           <path
             d="M1.5 4.5 7 9l5.5-4.5"
             className="origin-top fill-transparent transition-[transform,fill] duration-200 ease-out [transform-box:fill-box] group-hover:-scale-y-100 group-hover:fill-[var(--pw-orange)] group-focus-visible:-scale-y-100 group-focus-visible:fill-[var(--pw-orange)] motion-reduce:transition-none"
+          />
+        </svg>
+      );
+    case "apps":
+      return (
+        <svg
+          aria-hidden
+          viewBox="0 0 14 14"
+          className="size-3.5 shrink-0"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="1.2"
+        >
+          <rect
+            x="1.5"
+            y="1.5"
+            width="4.5"
+            height="4.5"
+            className="transition-colors group-hover:fill-[var(--pw-pink)] group-focus-visible:fill-[var(--pw-pink)]"
+          />
+          <rect x="8" y="1.5" width="4.5" height="4.5" />
+          <rect x="1.5" y="8" width="4.5" height="4.5" />
+          <rect
+            x="8"
+            y="8"
+            width="4.5"
+            height="4.5"
+            className="transition-colors group-hover:fill-[var(--pw-blue)] group-focus-visible:fill-[var(--pw-blue)]"
           />
         </svg>
       );

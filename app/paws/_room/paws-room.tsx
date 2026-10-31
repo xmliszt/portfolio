@@ -37,7 +37,7 @@ import type { ChatBubble } from "./chat-bubble";
 import { ChatLayer } from "./chat-layer";
 import { COMPOSE_ANCHOR_PREFIX } from "./compose-anchor-prefix";
 import { CreatorNote } from "./creator-note";
-import { LaundroCafeLink } from "./laundro-cafe-link";
+import { OtherAppsSheet } from "./other-apps-sheet";
 import { PanBar, type PanBarHandle } from "./pan-bar";
 import { PortfolioLink } from "./portfolio-link";
 import { postChat } from "./post-chat";
@@ -110,9 +110,9 @@ export function PawsRoom() {
   const [isPannable, setIsPannable] = useState(false);
   const [bubbles, setBubbles] = useState<ChatBubble[]>([]);
   const [isComposing, setIsComposing] = useState(false);
-  const [openSheet, setOpenSheet] = useState<"guide" | "note" | undefined>(
-    undefined
-  );
+  const [openSheet, setOpenSheet] = useState<
+    "guide" | "note" | "apps" | undefined
+  >(undefined);
   const [hasOwnCatInRoom, setHasOwnCatInRoom] = useState(false);
   const ownUserId = "userId" in session ? session.userId : undefined;
   const engine = useMemo(() => createRoomEngine({ random: Math.random }), []);
@@ -616,7 +616,7 @@ export function PawsRoom() {
 
   function handleOpenSheet(options: {
     menu: { close: () => void };
-    sheet: "guide" | "note";
+    sheet: "guide" | "note" | "apps";
   }) {
     options.menu.close();
     sound.playUi("stepNext");
@@ -776,7 +776,12 @@ export function PawsRoom() {
                   onOpen={() => handleOpenSheet({ menu, sheet: "note" })}
                 />,
                 <PortfolioLink key="credit" />,
-                <LaundroCafeLink key="laundro" />,
+                <SheetButton
+                  key="apps"
+                  icon="apps"
+                  label={copy.otherApps.title}
+                  onOpen={() => handleOpenSheet({ menu, sheet: "apps" })}
+                />,
               ]}
             </RoomMenu>
           </div>
@@ -824,6 +829,9 @@ export function PawsRoom() {
             <RoomGuide pannable={isPannable} onClose={handleCloseSheet} />
           )}
           {openSheet === "note" && <CreatorNote onClose={handleCloseSheet} />}
+          {openSheet === "apps" && (
+            <OtherAppsSheet onClose={handleCloseSheet} />
+          )}
           <PawsOnboarding
             session={session}
             actions={actions}

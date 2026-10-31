@@ -53,6 +53,9 @@ export const hi = {
     },
     updateAvailable: "अपडेट हुई लॉन्ड्री के लिए रीफ़्रेश करें",
   },
+  otherApps: {
+    heading: "और ऐप",
+  },
   themes: {
     heading: "थीम",
     seasonal: "मौसमी",

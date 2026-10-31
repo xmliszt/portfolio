@@ -183,6 +183,9 @@ export const nl = {
     closeKey: "Venster sluiten",
     or: "of",
   },
+  otherApps: {
+    title: "Andere apps",
+  },
   note: {
     open: "Een woordje van de maker",
     title: "Een woordje van de maker",

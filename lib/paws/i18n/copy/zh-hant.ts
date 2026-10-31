@@ -160,6 +160,9 @@ export const zhHant = {
     closeKey: "關閉視窗",
     or: "或",
   },
+  otherApps: {
+    title: "其他應用程式",
+  },
   note: {
     open: "創作者的話",
     title: "創作者的話",

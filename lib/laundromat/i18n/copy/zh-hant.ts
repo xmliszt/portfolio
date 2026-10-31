@@ -45,6 +45,9 @@ export const zhHant = {
     },
     updateAvailable: "重新整理，進入更新後的自助洗衣店",
   },
+  otherApps: {
+    heading: "其他應用程式",
+  },
   themes: {
     heading: "主題",
     seasonal: "時令",

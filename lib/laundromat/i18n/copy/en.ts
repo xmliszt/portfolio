@@ -58,6 +58,9 @@ export const en = {
     },
     updateAvailable: "refresh for updated laundromat",
   },
+  otherApps: {
+    heading: "other apps",
+  },
   themes: {
     heading: "themes",
     seasonal: "seasonal",

@@ -172,6 +172,9 @@ export const zhHans = {
     closeKey: "关闭窗口",
     or: "或",
   },
+  otherApps: {
+    title: "其他应用",
+  },
   note: {
     open: "创作者的话",
     title: "创作者的话",

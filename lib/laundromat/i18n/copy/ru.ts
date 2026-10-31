@@ -61,6 +61,9 @@ export const ru = {
     },
     updateAvailable: "обнови — прачечная обновилась",
   },
+  otherApps: {
+    heading: "другие приложения",
+  },
   themes: {
     heading: "темы",
     seasonal: "сезонный",

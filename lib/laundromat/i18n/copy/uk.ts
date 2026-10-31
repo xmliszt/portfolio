@@ -61,6 +61,9 @@ export const uk = {
     },
     updateAvailable: "онови — пральня оновилася",
   },
+  otherApps: {
+    heading: "інші застосунки",
+  },
   themes: {
     heading: "теми",
     seasonal: "сезонний",

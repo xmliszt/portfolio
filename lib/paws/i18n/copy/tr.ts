@@ -182,6 +182,9 @@ export const tr = {
     closeKey: "Pencereyi kapat",
     or: "veya",
   },
+  otherApps: {
+    title: "Diğer uygulamalar",
+  },
   note: {
     open: "Yaratıcısından birkaç söz",
     title: "Yaratıcısından birkaç söz",
