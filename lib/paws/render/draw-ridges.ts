@@ -5,6 +5,8 @@ import { FINGERTIP_SHAPE } from "./fingertip-shape";
 import type { FingerprintStyle } from "./get-fingerprint-style";
 import type { AnyContext } from "./render-types";
 
+const MAX_CACHED_FINGERPRINTS = 48;
+
 /** Draw the fingerprint in `style` at `x, y` out to `reach` (0–1 of the fingertip) from its centre, fading at that edge, its ridges inked as a split fountain from the style's first ink to its second. */
 export function drawRidges(options: {
   g: AnyContext;
@@ -18,7 +20,7 @@ export function drawRidges(options: {
   const { g, resources, reach, alpha, style } = options;
   if (alpha < 0.01 || reach < 0.03) return;
   const ridges = resources.ridges ?? {
-    fingerprints: [],
+    fingerprints: {},
     mask: createSurface({
       createCanvas: resources.createCanvas,
       width: FINGERTIP_SHAPE.rx * 10,
@@ -26,13 +28,15 @@ export function drawRidges(options: {
     }),
   };
   resources.ridges = ridges;
+  if (Object.keys(ridges.fingerprints).length > MAX_CACHED_FINGERPRINTS)
+    ridges.fingerprints = {};
   const fingerprint =
-    ridges.fingerprints[style.pattern] ??
+    ridges.fingerprints[style.userId] ??
     createFingerprintTexture({
       createCanvas: resources.createCanvas,
-      pattern: style.pattern,
+      ridges: style.ridges,
     });
-  ridges.fingerprints[style.pattern] = fingerprint;
+  ridges.fingerprints[style.userId] = fingerprint;
   if (
     ridges.mask.canvas.width !== fingerprint.width ||
     ridges.mask.canvas.height !== fingerprint.height
@@ -65,15 +69,11 @@ export function drawRidges(options: {
   mask.globalCompositeOperation = "source-over";
   g.save();
   g.translate(options.x, options.y);
-  g.rotate(FINGERTIP_SHAPE.angle + style.tilt);
+  g.rotate(style.angle + style.tilt);
   g.globalAlpha = alpha;
-  g.drawImage(
-    canvas,
-    -FINGERTIP_SHAPE.rx,
-    -FINGERTIP_SHAPE.ry,
-    FINGERTIP_SHAPE.rx * 2,
-    FINGERTIP_SHAPE.ry * 2
-  );
+  const rx = FINGERTIP_SHAPE.rx * style.scale;
+  const ry = FINGERTIP_SHAPE.ry * style.scale;
+  g.drawImage(canvas, -rx, -ry, rx * 2, ry * 2);
   g.restore();
   g.globalAlpha = 1;
 }

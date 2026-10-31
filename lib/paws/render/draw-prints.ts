@@ -62,6 +62,7 @@ export function drawPrints(options: {
           height: 1.2,
           alpha: 0.16 * fade,
           press: 0,
+          style: getFingerprintStyle(print.userId),
         });
         drawRidges({
           g,

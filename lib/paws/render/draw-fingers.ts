@@ -39,6 +39,7 @@ export function drawFingers(options: {
       height: finger.height,
       alpha: strength * lerp(0.85, 0.5, press),
       press,
+      style,
     });
     if (press < 0.02) continue;
     const drag = Math.min(0.3, finger.speed / 2500);
