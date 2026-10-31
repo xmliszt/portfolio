@@ -142,6 +142,8 @@ export type FingerInput = {
   x: number;
   y: number;
   pressed: boolean;
+  /** `true` when the fingertip skipped here from somewhere else this step, such as a new touch, so the step is not movement. */
+  jumped?: boolean;
 };
 
 export type SimFinger = {

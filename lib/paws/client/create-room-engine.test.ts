@@ -635,3 +635,80 @@ test("resumes a laggy visitor's fingertip where it stopped instead of jumping to
   const largest = Math.max(...steps);
   assert.ok(largest < 20, `largest step per frame: ${largest.toFixed(1)}`);
 });
+
+function playGuest(options: {
+  deliveries: { atMs: number; message: ReturnType<typeof buildGuestFinger> }[];
+  endMs: number;
+}) {
+  const engine = buildFollower();
+  const positions: { nowMs: number; x: number }[] = [];
+  for (let nowMs = 0; nowMs <= options.endMs; nowMs += 16) {
+    options.deliveries
+      .filter((entry) => entry.atMs > nowMs - 16 && entry.atMs <= nowMs)
+      .forEach((entry) =>
+        engine.receiveFinger({
+          message: entry.message,
+          receivedAtMs: entry.atMs,
+        })
+      );
+    const x = remoteX(engine, nowMs);
+    if (x !== undefined) positions.push({ nowMs, x });
+  }
+  return positions;
+}
+
+function slowStroke(options: { sentMs: number; seq: number }) {
+  const x = (t: number) => 100 + t * 0.04;
+  return buildGuestFinger({
+    x: x(options.sentMs),
+    t: options.sentMs,
+    seq: options.seq,
+    trail:
+      options.sentMs <= 500
+        ? []
+        : [100, 200, 300, 400].map((step): [number, number, number] => [
+            x(options.sentMs - 500 + step),
+            100,
+            options.sentMs - 500 + step,
+          ]),
+  });
+}
+
+test("never steps a slow fingertip back when two late batches follow each other", () => {
+  const positions = playGuest({
+    deliveries: [
+      { atMs: 540, message: slowStroke({ sentMs: 500, seq: 1 }) },
+      { atMs: 1040, message: slowStroke({ sentMs: 1000, seq: 2 }) },
+      { atMs: 2400, message: slowStroke({ sentMs: 1500, seq: 3 }) },
+      { atMs: 2900, message: slowStroke({ sentMs: 2000, seq: 4 }) },
+      { atMs: 3040, message: slowStroke({ sentMs: 2500, seq: 5 }) },
+    ],
+    endMs: 4000,
+  });
+  const backwards = positions.filter(
+    (position, index) =>
+      index > 0 && position.x < (positions[index - 1]?.x ?? 0) - 0.01
+  );
+  assert.deepEqual(backwards, []);
+});
+
+test("steps a lifted fingertip straight to its next touch instead of gliding there", () => {
+  const positions = playGuest({
+    deliveries: [
+      {
+        atMs: 1040,
+        message: buildGuestFinger({ x: 100, t: 1000, seq: 1 }),
+      },
+      {
+        atMs: 2540,
+        message: buildGuestFinger({ x: 900, t: 2500, seq: 2 }),
+      },
+    ],
+    endMs: 4500,
+  });
+  const between = positions.filter(
+    (position) => position.x > 150 && position.x < 850
+  );
+  assert.deepEqual(between, []);
+  assert.equal(positions.at(-1)?.x, 900);
+});
