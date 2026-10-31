@@ -180,13 +180,13 @@ export const en = {
     or: "or",
   },
   note: {
-    open: "A note from the creator",
-    title: "A note from the creator",
+    open: "A Note from the Maker",
+    title: "A Note from the Maker",
     paragraphs: [
       "I've always found something quietly beautiful about the little encounters we have with strangers.",
       "We don't always need to know each other, or even know who the other person is. Sometimes, we only cross paths for a brief moment, perhaps with a thin layer of frosted glass between us, and yet somehow, we can still feel each other's presence.",
       "That's something I kept thinking about while making Paws.",
-      "I've always loved Impressionist paintings. They don't try to show every little detail, yet the hazy light and colours can make a moment feel so real. I wonder if the little encounters between people can be like that too.",
+      "I've always loved Impressionist paintings, and the delicate, grainy textures of risograph prints. There's something about the hazy light, soft, airbrushed colours, and all those little imperfections that makes me feel like some things become even more real when we can't see every detail. I wonder if the little encounters between people can be like that too.",
       "And so, this tiny, fluffy room came to life.",
       "Strangers from different corners of the world bring their own little cats here. You might never know who's behind each one, but perhaps, at some point, a curious cat will wander over, look down at you, and gently press its little paw against your fingertip, with only a thin sheet of glass between you.",
       "I love moments like these.",

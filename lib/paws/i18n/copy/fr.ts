@@ -190,7 +190,7 @@ export const fr = {
       "J’ai toujours trouvé quelque chose de doucement beau dans les petites rencontres que l’on fait avec des inconnus.",
       "On n’a pas toujours besoin de se connaître, ni même de savoir qui est l’autre. Parfois, on ne se croise qu’un bref instant, peut-être avec une fine couche de verre dépoli entre nous, et pourtant, d’une certaine façon, on sent quand même la présence de l’autre.",
       "C’est une chose à laquelle je n’ai pas cessé de penser en créant Paws.",
-      "J’ai toujours aimé la peinture impressionniste. Elle ne cherche pas à montrer chaque petit détail, et pourtant cette lumière floue et ces couleurs rendent un instant si réel. Je me demande si les petites rencontres entre les gens ne peuvent pas être comme ça, elles aussi.",
+      "J’ai toujours aimé la peinture impressionniste, et la texture fine et granuleuse des impressions en risographie. Cette lumière floue, ces couleurs douces comme passées à l’aérographe et toutes ces petites imperfections me donnent le sentiment que certaines choses deviennent encore plus réelles quand on n’en voit pas chaque détail. Je me demande si les petites rencontres entre les gens ne peuvent pas être comme ça, elles aussi.",
       "Et c’est ainsi qu’est née cette toute petite pièce, douce et duveteuse.",
       "Des inconnus venus des quatre coins du monde amènent ici leurs propres petits chats. Tu ne sauras peut-être jamais qui se cache derrière chacun d’eux, mais peut-être qu’à un moment, un chat curieux viendra vers toi, te regardera d’en haut et posera doucement sa petite patte contre le bout de ton doigt, avec seulement une fine vitre entre vous.",
       "J’aime ces moments-là.",

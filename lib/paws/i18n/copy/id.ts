@@ -193,7 +193,7 @@ export const id = {
       "Aku selalu merasa ada sesuatu yang diam-diam indah dalam pertemuan-pertemuan kecil kita dengan orang asing.",
       "Kita tidak selalu perlu saling kenal, bahkan tidak perlu tahu siapa orang itu. Kadang, kita hanya berpapasan sebentar, mungkin dengan selapis tipis kaca buram di antara kita, tapi entah bagaimana, kita tetap bisa merasakan kehadiran satu sama lain.",
       "Itulah yang terus kupikirkan selama membuat Paws.",
-      "Aku selalu suka lukisan impresionis. Lukisan-lukisan itu tidak berusaha menampilkan setiap detail kecil, tapi cahaya dan warnanya yang samar bisa membuat sebuah momen terasa begitu nyata. Aku jadi bertanya-tanya, mungkinkah pertemuan kecil antarmanusia juga bisa seperti itu.",
+      "Aku selalu suka lukisan impresionis, juga tekstur risograf yang halus dan berbintik. Cahaya yang samar, warna-warna lembut seperti semprotan airbrush, dan semua ketidaksempurnaan kecilnya membuatku merasa bahwa ada hal-hal yang justru terasa lebih nyata saat kita tidak bisa melihat setiap detailnya. Aku jadi bertanya-tanya, mungkinkah pertemuan kecil antarmanusia juga bisa seperti itu.",
       "Dan begitulah ruangan mungil yang lembut dan berbulu ini lahir.",
       "Orang-orang asing dari berbagai penjuru dunia membawa kucing kecil mereka sendiri ke sini. Kamu mungkin tidak akan pernah tahu siapa di balik setiap kucing, tapi mungkin, suatu saat, seekor kucing yang penasaran akan menghampirimu, menatapmu dari atas, lalu dengan lembut menempelkan telapak kaki mungilnya ke ujung jarimu, hanya dengan selembar kaca tipis di antara kalian.",
       "Aku suka sekali momen-momen seperti ini.",

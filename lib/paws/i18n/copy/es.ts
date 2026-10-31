@@ -191,7 +191,7 @@ export const es = {
       "Siempre me ha parecido que hay algo silenciosamente bonito en esos pequeños encuentros que tenemos con desconocidos.",
       "No siempre hace falta conocernos, ni siquiera saber quién es la otra persona. A veces nuestros caminos solo se cruzan un instante, quizá con una fina capa de cristal esmerilado entre nosotros, y aun así, de algún modo, podemos sentir la presencia del otro.",
       "En eso no dejé de pensar mientras hacía Paws.",
-      "Siempre me ha encantado la pintura impresionista. No intenta mostrar cada pequeño detalle y, sin embargo, esa luz difusa y esos colores pueden hacer que un momento se sienta tan real. Me pregunto si los pequeños encuentros entre personas también pueden ser así.",
+      "Siempre me ha encantado la pintura impresionista, y también la textura delicada y granulada de las impresiones en risografía. Hay algo en esa luz difusa, en esos colores suaves como de aerógrafo y en todas esas pequeñas imperfecciones que me hace sentir que algunas cosas se vuelven aún más reales cuando no podemos ver cada detalle. Me pregunto si los pequeños encuentros entre personas también pueden ser así.",
       "Y así nació esta pequeña y mullida sala.",
       "Desconocidos de distintos rincones del mundo traen aquí a sus propios gatitos. Puede que nunca sepas quién está detrás de cada uno, pero quizá, en algún momento, un gato curioso se acerque, te mire desde arriba y apoye con suavidad su patita en la punta de tu dedo, con solo una fina lámina de cristal entre los dos.",
       "Me encantan los momentos así.",

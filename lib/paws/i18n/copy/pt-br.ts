@@ -190,7 +190,7 @@ export const ptBR = {
       "Sempre achei que existe algo silenciosamente bonito nos pequenos encontros que temos com desconhecidos.",
       "Nem sempre precisamos nos conhecer, nem mesmo saber quem é a outra pessoa. Às vezes, nossos caminhos se cruzam só por um breve momento, talvez com uma fina camada de vidro fosco entre nós, e ainda assim, de algum jeito, conseguimos sentir a presença um do outro.",
       "Foi nisso que eu não parei de pensar enquanto fazia o Paws.",
-      "Sempre amei pinturas impressionistas. Elas não tentam mostrar cada pequeno detalhe, mas aquela luz difusa e aquelas cores conseguem fazer um momento parecer tão real. Fico pensando se os pequenos encontros entre as pessoas também podem ser assim.",
+      "Sempre amei pinturas impressionistas, e também a textura delicada e granulada das impressões em risografia. Tem algo naquela luz difusa, naquelas cores suaves como de aerógrafo e em todas aquelas pequenas imperfeições que me faz sentir que algumas coisas ficam ainda mais reais quando não conseguimos ver cada detalhe. Fico pensando se os pequenos encontros entre as pessoas também podem ser assim.",
       "E foi assim que nasceu esta salinha pequena e fofinha.",
       "Desconhecidos de diferentes cantos do mundo trazem seus próprios gatinhos para cá. Talvez você nunca saiba quem está por trás de cada um, mas, quem sabe, em algum momento um gato curioso venha até você, olhe para você lá de cima e encoste de leve a patinha na ponta do seu dedo, com só uma fina folha de vidro entre vocês.",
       "Eu amo momentos assim.",

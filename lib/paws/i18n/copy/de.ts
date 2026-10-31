@@ -192,7 +192,7 @@ export const de = {
       "Ich fand die kleinen Begegnungen mit Fremden schon immer auf eine leise Art schön.",
       "Wir müssen uns nicht immer kennen, nicht einmal wissen, wer der andere ist. Manchmal kreuzen sich unsere Wege nur für einen kurzen Moment, vielleicht mit einer dünnen Schicht Milchglas zwischen uns, und trotzdem spüren wir irgendwie, dass der andere da ist.",
       "Daran musste ich immer wieder denken, während ich Paws gemacht habe.",
-      "Ich mochte impressionistische Bilder schon immer. Sie versuchen nicht, jedes kleine Detail zu zeigen, und doch können das verschwommene Licht und die Farben einen Moment so echt wirken lassen. Ich frage mich, ob die kleinen Begegnungen zwischen Menschen nicht auch so sein können.",
+      "Ich mochte impressionistische Bilder schon immer, und auch die feine, körnige Textur von Risographie-Drucken. Das verschwommene Licht, die weichen, wie gesprühten Farben und all die kleinen Unvollkommenheiten geben mir das Gefühl, dass manche Dinge sogar noch echter werden, wenn man nicht jedes Detail sieht. Ich frage mich, ob die kleinen Begegnungen zwischen Menschen nicht auch so sein können.",
       "Und so ist dieser kleine, flauschige Raum entstanden.",
       "Fremde aus allen Ecken der Welt bringen ihre eigenen kleinen Katzen hierher. Vielleicht erfährst du nie, wer hinter den einzelnen Katzen steckt. Aber vielleicht kommt irgendwann eine neugierige Katze zu dir herüber, schaut zu dir herunter und drückt ganz sanft ihre kleine Pfote gegen deine Fingerspitze, nur eine dünne Glasscheibe zwischen euch.",
       "Ich liebe solche Momente.",

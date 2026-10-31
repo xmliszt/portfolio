@@ -190,7 +190,7 @@ export const it = {
       "Ho sempre trovato qualcosa di silenziosamente bello nei piccoli incontri che facciamo con gli sconosciuti.",
       "Non sempre abbiamo bisogno di conoscerci, e nemmeno di sapere chi sia l’altro. A volte le nostre strade si incrociano solo per un breve momento, magari con un sottile strato di vetro smerigliato tra noi, eppure, in qualche modo, riusciamo comunque a sentire la presenza dell’altro.",
       "È una cosa a cui ho continuato a pensare mentre creavo Paws.",
-      "Ho sempre amato i quadri impressionisti. Non cercano di mostrare ogni minimo dettaglio, eppure quella luce sfumata e quei colori riescono a rendere un momento così vero. Mi chiedo se anche i piccoli incontri tra le persone possano essere così.",
+      "Ho sempre amato i quadri impressionisti, e la trama delicata e granulosa delle stampe in risografia. C’è qualcosa in quella luce sfumata, in quei colori morbidi come ad aerografo e in tutte quelle piccole imperfezioni che mi fa sentire che certe cose diventano ancora più vere quando non se ne vede ogni dettaglio. Mi chiedo se anche i piccoli incontri tra le persone possano essere così.",
       "E così è nata questa piccola stanza tutta soffice.",
       "Sconosciuti da ogni angolo del mondo portano qui i loro gattini. Forse non saprai mai chi c’è dietro ognuno di loro, ma magari, a un certo punto, un gatto curioso si avvicinerà, ti guarderà dall’alto e appoggerà piano la sua zampetta sulla punta del tuo dito, con solo un sottile vetro a separarvi.",
       "Adoro momenti come questi.",

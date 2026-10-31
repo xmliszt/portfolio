@@ -189,7 +189,7 @@ export const tr = {
       "Yabancılarla yaşadığımız küçük karşılaşmalarda hep sessiz bir güzellik bulmuşumdur.",
       "Her zaman birbirimizi tanımamız, hatta karşımızdakinin kim olduğunu bilmemiz gerekmiyor. Bazen yollarımız sadece kısa bir an için kesişiyor, belki de aramızda ince bir buzlu cam katmanı oluyor, ama yine de bir şekilde birbirimizin varlığını hissedebiliyoruz.",
       "Paws’u yaparken aklımdan hiç çıkmayan şey buydu.",
-      "İzlenimci resimleri hep sevmişimdir. Her küçük ayrıntıyı göstermeye çalışmazlar, ama o puslu ışık ve renkler bir anı öyle gerçek hissettirebilir ki. İnsanlar arasındaki küçük karşılaşmalar da böyle olabilir mi, diye düşünüyorum.",
+      "İzlenimci resimleri hep sevmişimdir, risograf baskıların o ince, grenli dokusunu da. O puslu ışıkta, airbrush'la püskürtülmüş gibi yumuşak renklerde ve tüm o küçük kusurlarda bir şey var; bana bazı şeylerin her ayrıntısını göremediğimizde daha da gerçek hissettirdiğini düşündürüyor. İnsanlar arasındaki küçük karşılaşmalar da böyle olabilir mi, diye düşünüyorum.",
       "Ve böylece bu minicik, pofuduk oda hayat buldu.",
       "Dünyanın dört bir yanından yabancılar kendi küçük kedilerini buraya getiriyor. Her birinin arkasında kim olduğunu belki hiç bilemeyeceksin, ama belki bir an meraklı bir kedi yavaşça yanına gelir, sana yukarıdan bakar ve aranızda yalnızca ince bir cam varken minik patisini usulca parmak ucuna dayar.",
       "Böyle anları çok seviyorum.",

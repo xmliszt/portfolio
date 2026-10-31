@@ -189,7 +189,7 @@ export const vi = {
       "Mình luôn thấy có điều gì đó đẹp một cách lặng lẽ trong những lần tình cờ gặp gỡ người lạ.",
       "Chúng ta không nhất thiết phải quen biết nhau, thậm chí không cần biết người kia là ai. Đôi khi, ta chỉ lướt qua nhau trong một khoảnh khắc ngắn ngủi, có khi còn cách nhau một lớp kính mờ mỏng manh, vậy mà bằng cách nào đó, ta vẫn cảm nhận được sự hiện diện của nhau.",
       "Đó là điều mình cứ nghĩ mãi trong lúc làm Paws.",
-      "Mình vẫn luôn yêu những bức tranh ấn tượng. Chúng không cố vẽ ra từng chi tiết nhỏ, vậy mà ánh sáng và màu sắc mờ ảo ấy lại khiến một khoảnh khắc trở nên thật đến lạ. Mình tự hỏi, phải chăng những cuộc gặp gỡ nhỏ giữa người với người cũng có thể như thế.",
+      "Mình vẫn luôn yêu những bức tranh ấn tượng, và cả chất giấy lấm tấm, tinh tế của những bản in risograph. Ánh sáng mờ ảo, những mảng màu mềm như phun airbrush và cả những chỗ chưa hoàn hảo nho nhỏ khiến mình cảm thấy có những điều càng thật hơn khi ta không nhìn rõ từng chi tiết. Mình tự hỏi, phải chăng những cuộc gặp gỡ nhỏ giữa người với người cũng có thể như thế.",
       "Và thế là căn phòng nhỏ xíu, mềm mại và bông xù này ra đời.",
       "Những người lạ từ khắp nơi trên thế giới mang những chú mèo nhỏ của riêng mình đến đây. Có thể bạn sẽ không bao giờ biết ai đứng sau mỗi chú mèo, nhưng biết đâu, vào một lúc nào đó, một chú mèo tò mò sẽ lững thững đi đến, nhìn xuống bạn, rồi nhẹ nhàng áp bàn chân nhỏ vào đầu ngón tay bạn, chỉ cách nhau một tấm kính mỏng.",
       "Mình rất yêu những khoảnh khắc như thế.",

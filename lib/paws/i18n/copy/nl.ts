@@ -190,7 +190,7 @@ export const nl = {
       "Ik heb altijd iets stilletjes moois gezien in de kleine ontmoetingen die we met onbekenden hebben.",
       "We hoeven elkaar niet altijd te kennen, of zelfs maar te weten wie de ander is. Soms kruisen onze paden elkaar maar heel even, misschien met een dun laagje matglas tussen ons in, en toch kunnen we op de een of andere manier voelen dat de ander er is.",
       "Daar bleef ik steeds aan denken terwijl ik Paws maakte.",
-      "Ik heb altijd van impressionistische schilderijen gehouden. Ze proberen niet elk klein detail te laten zien, en toch kunnen dat wazige licht en die kleuren een moment zo echt laten voelen. Ik vraag me af of de kleine ontmoetingen tussen mensen ook zo kunnen zijn.",
+      "Ik heb altijd van impressionistische schilderijen gehouden, en van de fijne, korrelige textuur van risografie-afdrukken. Er is iets aan dat wazige licht, die zachte, als met een airbrush gespoten kleuren en al die kleine onvolkomenheden waardoor ik het gevoel krijg dat sommige dingen nog echter worden als je niet elk detail ziet. Ik vraag me af of de kleine ontmoetingen tussen mensen ook zo kunnen zijn.",
       "En zo is deze kleine, pluizige kamer ontstaan.",
       "Onbekenden uit alle hoeken van de wereld nemen hun eigen katjes mee hierheen. Je weet misschien nooit wie er achter elke kat zit, maar misschien komt er op een gegeven moment een nieuwsgierige kat naar je toe, kijkt je van bovenaf aan en drukt zachtjes haar pootje tegen je vingertop, met alleen een dun ruitje glas tussen jullie in.",
       "Ik hou van zulke momenten.",

@@ -189,7 +189,7 @@ export const pl = {
       "Zawsze wydawało mi się, że w drobnych spotkaniach z nieznajomymi jest coś cicho pięknego.",
       "Nie zawsze musimy się znać ani nawet wiedzieć, kim jest ta druga osoba. Czasem nasze drogi przecinają się tylko na krótką chwilę, może przez cienką warstwę matowego szkła, a jednak w jakiś sposób wciąż czujemy, że po drugiej stronie ktoś jest.",
       "Ta myśl towarzyszyła mi przez cały czas tworzenia Paws.",
-      "Od zawsze kocham obrazy impresjonistów. Nie próbują pokazać każdego drobnego szczegółu, a jednak to rozmyte światło i kolory sprawiają, że chwila wydaje się tak prawdziwa. Zastanawiam się, czy drobne spotkania między ludźmi też mogą takie być.",
+      "Od zawsze kocham obrazy impresjonistów, a także delikatną, ziarnistą fakturę druków ryzograficznych. To rozmyte światło, miękkie, jakby natryskiwane aerografem kolory i wszystkie te drobne niedoskonałości sprawiają, że czuję, iż niektóre rzeczy stają się jeszcze bardziej prawdziwe, gdy nie widać każdego szczegółu. Zastanawiam się, czy drobne spotkania między ludźmi też mogą takie być.",
       "I tak powstał ten malutki, puszysty pokój.",
       "Nieznajomi z różnych zakątków świata przyprowadzają tu swoje kotki. Może nigdy się nie dowiesz, kto stoi za każdym z nich, ale może w którejś chwili jakiś ciekawski kot podejdzie, spojrzy na ciebie z góry i delikatnie przyłoży łapkę do czubka twojego palca, a między wami będzie tylko cienka szyba.",
       "Kocham takie chwile.",
