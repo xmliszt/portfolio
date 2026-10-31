@@ -35,14 +35,17 @@ import { cn } from "@/lib/utils";
 import type { ChatBubble } from "./chat-bubble";
 import { ChatLayer } from "./chat-layer";
 import { COMPOSE_ANCHOR_PREFIX } from "./compose-anchor-prefix";
+import { CreatorNote } from "./creator-note";
 import { LaundroCafeLink } from "./laundro-cafe-link";
 import { PanBar, type PanBarHandle } from "./pan-bar";
 import { PortfolioLink } from "./portfolio-link";
 import { postChat } from "./post-chat";
 import { RoomBanner } from "./room-banner";
+import { RoomGuide } from "./room-guide";
 import { RoomLoading } from "./room-loading";
 import { RoomMenu } from "./room-menu";
 import { RoomPicker } from "./room-picker";
+import { SheetButton } from "./sheet-button";
 import { SoundSwitch } from "./sound-switch";
 import { UiSoundContext } from "./ui-sound-context";
 import { useRoomConnection } from "./use-room-connection";
@@ -105,6 +108,9 @@ export function PawsRoom() {
   const [isPannable, setIsPannable] = useState(false);
   const [bubbles, setBubbles] = useState<ChatBubble[]>([]);
   const [isComposing, setIsComposing] = useState(false);
+  const [openSheet, setOpenSheet] = useState<"guide" | "note" | undefined>(
+    undefined
+  );
   const [hasOwnCatInRoom, setHasOwnCatInRoom] = useState(false);
   const ownUserId = "userId" in session ? session.userId : undefined;
   const engine = useMemo(() => createRoomEngine({ random: Math.random }), []);
@@ -599,6 +605,23 @@ export function PawsRoom() {
     onboardingRef.current?.start();
   }
 
+  function handleOpenSheet(options: {
+    menu: { close: () => void };
+    sheet: "guide" | "note";
+  }) {
+    options.menu.close();
+    sound.playUi("stepNext");
+    setOpenSheet(options.sheet);
+  }
+
+  function handleCloseSheet() {
+    setOpenSheet(undefined);
+  }
+
+  function handleContextMenu(event: React.MouseEvent) {
+    event.preventDefault();
+  }
+
   function handleTalk() {
     sound.playUi("chatOpen");
     setIsComposing(true);
@@ -645,7 +668,7 @@ export function PawsRoom() {
 
   return (
     <UiSoundContext.Provider value={sound.playUi}>
-      <div className="group/room absolute inset-0">
+      <div className="group/room absolute inset-0 select-none [-webkit-touch-callout:none]">
         <canvas
           ref={canvasRef}
           aria-label={copy.site.description}
@@ -655,6 +678,7 @@ export function PawsRoom() {
           onPointerUp={handlePointerUp}
           onPointerCancel={handlePointerLeave}
           onPointerLeave={handlePointerLeave}
+          onContextMenu={handleContextMenu}
         />
         <RoomLoading
           text={
@@ -726,6 +750,18 @@ export function PawsRoom() {
                 onToggle={handleToggleMute}
               />,
               <LanguagePicker key="language" onChange={handleLanguageChange} />,
+              <SheetButton
+                key="guide"
+                icon="guide"
+                label={copy.guide.open}
+                onOpen={() => handleOpenSheet({ menu, sheet: "guide" })}
+              />,
+              <SheetButton
+                key="note"
+                icon="note"
+                label={copy.note.open}
+                onOpen={() => handleOpenSheet({ menu, sheet: "note" })}
+              />,
               <PortfolioLink key="credit" />,
               <LaundroCafeLink key="laundro" />,
             ]}
@@ -769,6 +805,10 @@ export function PawsRoom() {
           onCloseCompose={handleCloseCompose}
           onReopenCompose={handleReopenCompose}
         />
+        {openSheet === "guide" && (
+          <RoomGuide pannable={isPannable} onClose={handleCloseSheet} />
+        )}
+        {openSheet === "note" && <CreatorNote onClose={handleCloseSheet} />}
         <PawsOnboarding
           session={session}
           actions={actions}

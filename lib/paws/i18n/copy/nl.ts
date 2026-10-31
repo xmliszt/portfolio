@@ -124,6 +124,82 @@ export const nl = {
     roomEntered: "Je bent in {room}",
     roomMoved: "Nu in {room}",
   },
+  guide: {
+    open: "Zo werkt het",
+    title: "Zo werkt het",
+    you: "Jij en de katten",
+    mouse: {
+      move: {
+        act: "Beweeg de cursor",
+        result: "Dat is je vingertop in de kamer. Iedereen ziet hem.",
+      },
+      still: { act: "Hou stil", result: "Er komt een kat kijken." },
+      press: {
+        act: "Klik en hou vast",
+        result: "Hij legt zijn pootjes op je. Je afdruk blijft.",
+      },
+      wiggle: { act: "Wiebel", result: "Hij volgt je overal." },
+      fast: { act: "Veeg snel", result: "Hij rent weg." },
+    },
+    touch: {
+      hold: {
+        act: "Raak aan en hou stil",
+        result:
+          "Er komt een kat die zijn pootjes op je legt. Je afdruk blijft.",
+      },
+      slide: { act: "Schuif langzaam", result: "Hij volgt je overal." },
+      fast: { act: "Veeg snel", result: "Hij rent weg." },
+    },
+    others: "Met anderen",
+    everyone: {
+      act: "Iedereen is er",
+      result: "Ook de vingertoppen van anderen bewegen door de kamer.",
+    },
+    share: {
+      act: "Deel een kat",
+      result: "Eén kat kan tegelijk een poot op twee vreemden leggen.",
+    },
+    crowd: {
+      act: "Omsingel hem",
+      result: "Drie vingers rond één kat, en hij deinst terug.",
+    },
+    cats: "Katten onder elkaar",
+    catsHint: "Laat ze met rust, dan spelen ze met elkaar.",
+    catActs: [
+      "hoi zeggen",
+      "achtervolgen",
+      "naar een staart meppen",
+      "knuffelen",
+      "dutje",
+      "rondrennen",
+    ],
+    around: "Rondgaan",
+    lookAround: "Rondkijken in de kamer",
+    dragMap: "Sleep de kaart",
+    twoFingers: "Sleep met twee vingers",
+    talkKey: "Praten, zodra je kat in de kamer is",
+    tapTalk: "Tik op ‘Praten’",
+    tapTalkResult: "Je kat zegt het hardop, zodra hij in de kamer is.",
+    closeKey: "Venster sluiten",
+    or: "of",
+  },
+  note: {
+    open: "Een woordje van de maker",
+    title: "Een woordje van de maker",
+    paragraphs: [
+      "Ik heb altijd iets stilletjes moois gezien in de kleine ontmoetingen die we met onbekenden hebben.",
+      "We hoeven elkaar niet altijd te kennen, of zelfs maar te weten wie de ander is. Soms kruisen onze paden elkaar maar heel even, misschien met een dun laagje matglas tussen ons in, en toch kunnen we op de een of andere manier voelen dat de ander er is.",
+      "Daar bleef ik steeds aan denken terwijl ik Paws maakte.",
+      "Ik heb altijd van impressionistische schilderijen gehouden, en van de fijne, korrelige textuur van risografie-afdrukken. Er is iets aan dat wazige licht, die zachte, als met een airbrush gespoten kleuren en al die kleine onvolkomenheden waardoor ik het gevoel krijg dat sommige dingen nog echter worden als je niet elk detail ziet. Ik vraag me af of de kleine ontmoetingen tussen mensen ook zo kunnen zijn.",
+      "En zo is deze kleine, pluizige kamer ontstaan.",
+      "Onbekenden uit alle hoeken van de wereld nemen hun eigen katjes mee hierheen. Je weet misschien nooit wie er achter elke kat zit, maar misschien komt er op een gegeven moment een nieuwsgierige kat naar je toe, kijkt je van bovenaf aan en drukt zachtjes haar pootje tegen je vingertop, met alleen een dun ruitje glas tussen jullie in.",
+      "Ik hou van zulke momenten.",
+      "Er is hier niets wat je moet bereiken, en nergens waar je heen moet. Je kunt gewoon even blijven, een paar katten aaien, naar hun stemmetjes luisteren of gedag zeggen tegen een onbekende die je toevallig tegenkomt.",
+      "Als dit kleine kamertje je kan helpen om even te vertragen, je een glimlach kan bezorgen of je vanbinnen een tikje warmer kan laten voelen, dan is dat voor mij meer dan genoeg.",
+      "Dank je wel dat je hier bent. 🐾",
+    ],
+    signature: "— Yuxuan",
+  },
   options: {
     coat: {
       ginger: "Rood",

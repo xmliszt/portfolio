@@ -124,6 +124,85 @@ export const id = {
     roomEntered: "Kamu di {room}",
     roomMoved: "Sekarang di {room}",
   },
+  guide: {
+    open: "Cara mainnya",
+    title: "Cara mainnya",
+    you: "Kamu dan kucing",
+    mouse: {
+      move: {
+        act: "Gerakkan kursor",
+        result: "Itu ujung jarimu di ruang ini. Semua orang bisa melihatnya.",
+      },
+      still: { act: "Diam saja", result: "Seekor kucing datang melihat." },
+      press: {
+        act: "Klik dan tahan",
+        result: "Ia menaruh kakinya padamu. Jejakmu tertinggal.",
+      },
+      wiggle: { act: "Goyangkan", result: "Ia mengikutimu ke mana-mana." },
+      fast: { act: "Usap cepat", result: "Ia lari." },
+    },
+    touch: {
+      hold: {
+        act: "Sentuh dan diam",
+        result:
+          "Seekor kucing datang dan menaruh kakinya padamu. Jejakmu tertinggal.",
+      },
+      slide: {
+        act: "Geser pelan-pelan",
+        result: "Ia mengikutimu ke mana-mana.",
+      },
+      fast: { act: "Usap cepat", result: "Ia lari." },
+    },
+    others: "Bersama orang lain",
+    everyone: {
+      act: "Semua ada di sini",
+      result: "Ujung jari orang lain juga bergerak di ruang ini.",
+    },
+    share: {
+      act: "Berbagi kucing",
+      result: "Satu kucing bisa menaruh kaki pada dua orang asing sekaligus.",
+    },
+    crowd: {
+      act: "Kerumuni",
+      result: "Tiga jari di sekitar satu kucing, dan ia mundur.",
+    },
+    cats: "Kucing bermain sendiri",
+    catsHint: "Biarkan saja, dan mereka bermain satu sama lain.",
+    catActs: [
+      "menyapa",
+      "kejar-kejaran",
+      "menepuk ekor",
+      "meringkuk bersama",
+      "tidur siang",
+      "lari-lari",
+    ],
+    around: "Berkeliling",
+    lookAround: "Lihat sekeliling ruangan",
+    dragMap: "Seret peta",
+    twoFingers: "Seret dengan dua jari",
+    talkKey: "Bicara, setelah kucingmu masuk ruang",
+    tapTalk: "Ketuk “Bicara”",
+    tapTalkResult: "Kucingmu mengucapkannya, setelah ia masuk ruang.",
+    closeKey: "Tutup jendela",
+    or: "atau",
+  },
+  note: {
+    open: "Sepatah kata dari pembuatnya",
+    title: "Sepatah kata dari pembuatnya",
+    paragraphs: [
+      "Aku selalu merasa ada sesuatu yang diam-diam indah dalam pertemuan-pertemuan kecil kita dengan orang asing.",
+      "Kita tidak selalu perlu saling kenal, bahkan tidak perlu tahu siapa orang itu. Kadang, kita hanya berpapasan sebentar, mungkin dengan selapis tipis kaca buram di antara kita, tapi entah bagaimana, kita tetap bisa merasakan kehadiran satu sama lain.",
+      "Itulah yang terus kupikirkan selama membuat Paws.",
+      "Aku selalu suka lukisan impresionis, juga tekstur risograf yang halus dan berbintik. Cahaya yang samar, warna-warna lembut seperti semprotan airbrush, dan semua ketidaksempurnaan kecilnya membuatku merasa bahwa ada hal-hal yang justru terasa lebih nyata saat kita tidak bisa melihat setiap detailnya. Aku jadi bertanya-tanya, mungkinkah pertemuan kecil antarmanusia juga bisa seperti itu.",
+      "Dan begitulah ruangan mungil yang lembut dan berbulu ini lahir.",
+      "Orang-orang asing dari berbagai penjuru dunia membawa kucing kecil mereka sendiri ke sini. Kamu mungkin tidak akan pernah tahu siapa di balik setiap kucing, tapi mungkin, suatu saat, seekor kucing yang penasaran akan menghampirimu, menatapmu dari atas, lalu dengan lembut menempelkan telapak kaki mungilnya ke ujung jarimu, hanya dengan selembar kaca tipis di antara kalian.",
+      "Aku suka sekali momen-momen seperti ini.",
+      "Di sini tidak ada yang harus kamu capai, dan tidak ada tempat yang harus kamu tuju. Kamu bisa sekadar tinggal sebentar, mengelus beberapa kucing, mendengarkan suara-suara kecil mereka, atau menyapa orang asing yang kebetulan kamu temui.",
+      "Kalau ruangan kecil ini bisa membantumu melambat sejenak, membuatmu tersenyum sedikit, atau membuat hatimu terasa sedikit lebih hangat, itu sudah lebih dari cukup bagiku.",
+      "Terima kasih sudah ada di sini. 🐾",
+    ],
+    signature: "— Yuxuan",
+  },
   options: {
     coat: {
       ginger: "Oranye",
