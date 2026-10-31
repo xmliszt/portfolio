@@ -20,6 +20,7 @@ export type SimState =
   | "chase"
   | "chased"
   | "bat"
+  | "zoom"
   | "leave"
   | "flee";
 
@@ -124,6 +125,9 @@ export type SimCat = {
   partnerId: string | undefined;
   isSnuggling: boolean;
   socialCooldownUntil: number;
+  /** Sprints left in the current zoomies. */
+  zoomDashes: number;
+  zoomiesCooldownUntil: number;
   /** World time before which the cat makes no new sound, so sounds do not pile up. */
   quietUntil: number;
   wander: Point;

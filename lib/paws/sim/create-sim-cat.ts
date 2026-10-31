@@ -88,6 +88,8 @@ export function createSimCat(options: {
     partnerId: undefined,
     isSnuggling: false,
     socialCooldownUntil: world.time + 4 + world.random() * 8,
+    zoomDashes: 0,
+    zoomiesCooldownUntil: world.time + 20 + world.random() * 40,
     quietUntil: 0,
     wander: { x: snapshot.x, y: snapshot.y },
     exit: { x: snapshot.x, y: snapshot.y },

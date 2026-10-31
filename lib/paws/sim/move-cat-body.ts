@@ -3,7 +3,7 @@ import { isCatOnstage } from "./is-cat-onstage";
 import type { SimCat } from "./sim-types";
 import { wrapAngle } from "./wrap-angle";
 
-const FAST_STATES = new Set(["flee", "chase", "chased"]);
+const FAST_STATES = new Set(["flee", "chase", "chased", "zoom"]);
 
 /** Move `cat` along its heading at its eased speed and turn it, bending the spine into the turn. */
 export function moveCatBody(options: { cat: SimCat; dtSeconds: number }) {

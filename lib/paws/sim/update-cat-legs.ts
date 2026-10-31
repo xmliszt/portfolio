@@ -8,18 +8,37 @@ import type { SimCat, SimLeg, Tick } from "./sim-types";
 import { updateReach } from "./update-reach";
 
 const PRINT_MARGIN = 20;
+const GALLOP_SPEED = 300;
+const GALLOP_STAGGER_S = 0.04;
+
+const isBusy = (leg: SimLeg) =>
+  leg.swing !== undefined || leg.reach !== undefined;
+
+const startSwing = (options: {
+  leg: SimLeg;
+  durationSeconds: number;
+  lift: number;
+  delaySeconds: number;
+}) => {
+  options.leg.swing = {
+    fromX: options.leg.x,
+    fromY: options.leg.y,
+    fromH: options.leg.h,
+    t: -options.delaySeconds,
+    durationSeconds: options.durationSeconds,
+    lift: options.lift,
+  };
+};
 
 const canStep = (cat: SimCat, leg: SimLeg, maxSwinging: number) => {
-  const busy = cat.legs.filter(
-    (other) => other.swing !== undefined || other.reach !== undefined
-  );
+  const busy = cat.legs.filter(isBusy);
   if (busy.length >= maxSwinging) return false;
   return !busy.some(
     (other) => other.front === leg.front || other.side === leg.side
   );
 };
 
-/** Step `cat`'s paws: plant them, swing the one that lags furthest behind the body, glide them while it shifts in place, and report each footfall as a paw print. */
+/** Step `cat`'s paws: plant them, swing the one that lags furthest behind the body (or, above `GALLOP_SPEED`, the front or hind pair together), glide them while it shifts in place, and report each footfall as a paw print. */
 export function updateCatLegs(options: { tick: Tick; cat: SimCat }) {
   const { tick, cat } = options;
   const { world, dtSeconds } = tick;
@@ -44,18 +63,32 @@ export function updateCatLegs(options: { tick: Tick; cat: SimCat }) {
     leg.gap = Math.hypot(leg.x - leg.idealX, leg.y - leg.idealY);
   }
   const threshold = isMoving ? (18 + localSpeed * 0.12) * k : 4 * k;
-  if (!isGliding) {
-    for (const leg of cat.legs.toSorted((a, b) => b.gap - a.gap)) {
-      if (leg.reach !== undefined || leg.swing !== undefined) continue;
-      if (leg.gap > threshold && canStep(cat, leg, isMoving ? 2 : 1)) {
-        leg.swing = {
-          fromX: leg.x,
-          fromY: leg.y,
-          fromH: leg.h,
-          t: 0,
+  const lift = 10 + localSpeed * 0.03;
+  if (localSpeed > GALLOP_SPEED) {
+    const pair = [true, false]
+      .map((front) => cat.legs.filter((leg) => leg.front === front))
+      .map((legs) => legs.toSorted((a, b) => b.gap - a.gap))
+      .toSorted((a, b) => b[0].gap - a[0].gap)
+      .at(0);
+    if (
+      pair !== undefined &&
+      !cat.legs.some(isBusy) &&
+      pair[0].gap > threshold
+    ) {
+      pair.forEach((leg, index) =>
+        startSwing({
+          leg,
           durationSeconds: swingSeconds,
-          lift: 10 + localSpeed * 0.03,
-        };
+          lift,
+          delaySeconds: index * GALLOP_STAGGER_S,
+        })
+      );
+    }
+  } else if (!isGliding) {
+    for (const leg of cat.legs.toSorted((a, b) => b.gap - a.gap)) {
+      if (isBusy(leg)) continue;
+      if (leg.gap > threshold && canStep(cat, leg, isMoving ? 2 : 1)) {
+        startSwing({ leg, durationSeconds: swingSeconds, lift, delaySeconds: 0 });
       }
     }
   }
@@ -82,7 +115,7 @@ export function updateCatLegs(options: { tick: Tick; cat: SimCat }) {
       return;
     }
     swing.t += dtSeconds;
-    const progress = Math.min(1, swing.t / swing.durationSeconds);
+    const progress = clamp(swing.t / swing.durationSeconds, 0, 1);
     const eased = progress * progress * (3 - 2 * progress);
     leg.x = lerp(swing.fromX, leg.idealX, eased);
     leg.y = lerp(swing.fromY, leg.idealY, eased);

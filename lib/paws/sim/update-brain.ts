@@ -9,6 +9,7 @@ import { getCatFrame } from "./get-cat-frame";
 import { holdStill } from "./hold-still";
 import { isCatLeaving } from "./is-cat-leaving";
 import { isCatOnstage } from "./is-cat-onstage";
+import { pickFarSpot } from "./pick-far-spot";
 import { pickRandomSpot } from "./pick-random-spot";
 import { releasePaws } from "./release-paws";
 import { setCatState } from "./set-cat-state";
@@ -17,6 +18,7 @@ import { spawnCat } from "./spawn-cat";
 import { startLeaving } from "./start-leaving";
 import { startReach } from "./start-reach";
 import { startSocial } from "./start-social";
+import { startZoomies } from "./start-zoomies";
 import { turnToward } from "./turn-toward";
 import { walkTo } from "./walk-to";
 import { worldToCat } from "./world-to-cat";
@@ -43,6 +45,8 @@ const CROWD_SIZE = 3;
 const SHY_STEP = 260;
 const SHY_SECONDS = 6;
 const PURR_RANGE = 160;
+const ZOOMIES_CHANCE = 0.2;
+const ZOOM_PACE = 6;
 
 const approachGoal = (cat: SimCat, finger: FingerView): Point => {
   if (!finger.present) return cat.wander;
@@ -320,6 +324,13 @@ export function updateBrain(options: { tick: Tick; cat: SimCat }) {
           setCatState(cat, "settle");
       } else if (cat.stateT > cat.pauseSeconds) {
         if (
+          world.time > cat.zoomiesCooldownUntil &&
+          world.random() < ZOOMIES_CHANCE
+        ) {
+          startZoomies({ world, cat });
+          break;
+        }
+        if (
           world.time > cat.socialCooldownUntil &&
           world.random() < 0.6 &&
           startSocial({ tick, cat, range: 1040 * k })
@@ -567,6 +578,19 @@ export function updateBrain(options: { tick: Tick; cat: SimCat }) {
       if (social.t > social.durationSeconds) {
         cat.wander = pickRandomSpot({ world, cat });
         endSocial({ world, cat });
+      }
+      break;
+    }
+    case "zoom": {
+      const isThere =
+        walkTo({ tick, cat, goal: cat.wander, pace: ZOOM_PACE }) < 60 * k;
+      if (isThere) {
+        cat.zoomDashes -= 1;
+        cat.wander = pickFarSpot({ world, cat });
+      }
+      if (cat.zoomDashes <= 0 || cat.stateT > 10) {
+        cat.pauseSeconds = 1.5 + world.random() * 2;
+        setCatState(cat, "pause");
       }
       break;
     }

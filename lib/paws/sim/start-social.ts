@@ -9,7 +9,8 @@ const isFree = (cat: SimCat) =>
   cat.social === undefined &&
   cat.focusId === undefined &&
   !isCatLeaving(cat) &&
-  cat.state !== "paw";
+  cat.state !== "paw" &&
+  cat.state !== "zoom";
 
 /** Start a greeting, chase, tail bat or snuggle between `cat` and the nearest free cat within `range`; return `true` if one started. */
 export function startSocial(options: {

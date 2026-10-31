@@ -12,6 +12,8 @@ const toActivity = (state: SimState): CatActivity => {
     case "offstage":
     case "flee":
       return "leave";
+    case "zoom":
+      return "approach";
     case "enter":
     case "approach":
     case "pause":
