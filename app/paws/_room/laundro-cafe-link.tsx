@@ -123,7 +123,7 @@ export function LaundroCafeLink() {
       aria-label="laundro.cafe"
       className={cn(
         FOCUS_RING_CLASS,
-        "group flex h-11 items-center border-[1.5px] border-[var(--pw-ink)] bg-[var(--pw-paper)] px-[3px] text-[12px] text-[var(--pw-ink)] hover:bg-[var(--pw-paper-deep)]"
+        "group flex h-11 min-w-11 items-center justify-center border-[1.5px] border-[var(--pw-ink)] bg-[var(--pw-paper)] px-0.5 text-[12px] text-[var(--pw-ink)] hover:bg-[var(--pw-paper-deep)]"
       )}
     >
       <LaundroCafeMark />

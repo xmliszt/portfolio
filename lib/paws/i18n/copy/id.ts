@@ -69,6 +69,7 @@ export const id = {
     bringing: "Kucingmu sedang masuk…",
   },
   room: {
+    menu: "Menu",
     residentLines: [
       "halo!",
       "itu jari ya?",

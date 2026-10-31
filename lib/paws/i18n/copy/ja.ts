@@ -70,6 +70,7 @@ export const ja = {
     bringing: "猫が入ってくるよ…",
   },
   room: {
+    menu: "メニュー",
     residentLines: [
       "こんにちは!",
       "それって指?",

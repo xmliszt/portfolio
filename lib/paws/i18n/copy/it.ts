@@ -69,6 +69,7 @@ export const it = {
     bringing: "Il tuo gatto sta entrando…",
   },
   room: {
+    menu: "Menu",
     residentLines: [
       "ciao!",
       "quello è un dito?",

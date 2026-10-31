@@ -69,6 +69,7 @@ export const hi = {
     bringing: "तुम्हारी बिल्ली आ रही है…",
   },
   room: {
+    menu: "मेनू",
     residentLines: [
       "नमस्ते!",
       "क्या वो उंगली है?",

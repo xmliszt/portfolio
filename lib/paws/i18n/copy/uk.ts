@@ -70,6 +70,7 @@ export const uk = {
     bringing: "Твій кіт заходить…",
   },
   room: {
+    menu: "Меню",
     residentLines: [
       "привіт!",
       "це палець?",

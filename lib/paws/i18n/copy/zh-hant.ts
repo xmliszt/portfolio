@@ -66,6 +66,7 @@ export const zhHant = {
     bringing: "你的貓正在進來…",
   },
   room: {
+    menu: "選單",
     residentLines: [
       "你好!",
       "那是手指嗎?",

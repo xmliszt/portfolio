@@ -73,6 +73,7 @@ export const en = {
     bringing: "Bringing your cat in…",
   },
   room: {
+    menu: "Menu",
     residentLines: [
       "hello!",
       "is that a finger?",

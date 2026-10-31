@@ -69,6 +69,7 @@ export const vi = {
     bringing: "Mèo đang vào…",
   },
   room: {
+    menu: "Menu",
     residentLines: [
       "xin chào!",
       "đó là ngón tay à?",

@@ -69,6 +69,7 @@ export const nl = {
     bringing: "Je kat komt binnen…",
   },
   room: {
+    menu: "Menu",
     residentLines: [
       "hallo!",
       "is dat een vinger?",

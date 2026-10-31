@@ -69,6 +69,7 @@ export const ko = {
     bringing: "고양이가 들어오는 중…",
   },
   room: {
+    menu: "메뉴",
     residentLines: [
       "안녕!",
       "그거 손가락이야?",

@@ -69,6 +69,7 @@ export const tr = {
     bringing: "Kedin içeri giriyor…",
   },
   room: {
+    menu: "Menü",
     residentLines: [
       "merhaba!",
       "bu bir parmak mı?",

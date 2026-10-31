@@ -69,6 +69,7 @@ export const pl = {
     bringing: "Twój kot wchodzi…",
   },
   room: {
+    menu: "Menu",
     residentLines: [
       "cześć!",
       "czy to palec?",

@@ -70,6 +70,7 @@ export const fr = {
     bringing: "Ton chat entre…",
   },
   room: {
+    menu: "Menu",
     residentLines: [
       "salut !",
       "c'est un doigt ?",

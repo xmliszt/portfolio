@@ -69,6 +69,7 @@ export const ru = {
     bringing: "Твой кот входит…",
   },
   room: {
+    menu: "Меню",
     residentLines: [
       "привет!",
       "это палец?",

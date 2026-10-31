@@ -36,6 +36,7 @@ import { PortfolioLink } from "./portfolio-link";
 import { postChat } from "./post-chat";
 import { RoomBanner } from "./room-banner";
 import { RoomLoading } from "./room-loading";
+import { RoomMenu } from "./room-menu";
 import { RoomPicker } from "./room-picker";
 import { SoundSwitch } from "./sound-switch";
 import { UiSoundContext } from "./ui-sound-context";
@@ -647,16 +648,7 @@ export function PawsRoom() {
         <div className="absolute top-4 left-4 group-has-[[aria-modal=true]]/room:hidden sm:top-6 sm:left-6">
           <LaundroCafeLink />
         </div>
-        <div className="absolute top-4 right-4 left-[68px] flex flex-wrap items-center justify-end gap-x-2 gap-y-2 group-has-[[aria-modal=true]]/room:hidden sm:top-6 sm:right-6 sm:left-auto">
-          {roomId !== undefined && !useFakeRoom && "accessToken" in session && (
-            <RoomPicker
-              roomId={roomId}
-              accessToken={session.accessToken}
-              isPlayer={self !== undefined}
-              onSwitch={handleSwitchRoom}
-            />
-          )}
-          <LanguagePicker onChange={handleLanguageChange} />
+        <div className="absolute top-4 right-4 flex items-start gap-x-2 group-has-[[aria-modal=true]]/room:hidden sm:top-6 sm:right-6">
           {hasOwnCatInRoom && (
             <button
               type="button"
@@ -664,7 +656,7 @@ export function PawsRoom() {
               aria-keyshortcuts="/"
               className={cn(
                 FOCUS_RING_CLASS,
-                "flex h-10 items-center gap-x-2 border-[1.5px] border-[var(--pw-ink)] bg-[var(--pw-paper)] px-3 text-[12px] text-[var(--pw-ink)] hover:bg-[var(--pw-paper-deep)] sm:h-8"
+                "flex h-11 items-center gap-x-2 border-[1.5px] border-[var(--pw-ink)] bg-[var(--pw-paper)] px-3 text-[12px] text-[var(--pw-ink)] hover:bg-[var(--pw-paper-deep)]"
               )}
             >
               {copy.room.talk}
@@ -676,12 +668,27 @@ export function PawsRoom() {
               </kbd>
             </button>
           )}
-          <SoundSwitch
-            muted={isMuted}
-            label={copy.room.mute}
-            onToggle={handleToggleMute}
-          />
-          <PortfolioLink />
+          <RoomMenu>
+            {roomId !== undefined &&
+              !useFakeRoom &&
+              "accessToken" in session && (
+                <RoomPicker
+                  key="room"
+                  roomId={roomId}
+                  accessToken={session.accessToken}
+                  isPlayer={self !== undefined}
+                  onSwitch={handleSwitchRoom}
+                />
+              )}
+            <LanguagePicker key="language" onChange={handleLanguageChange} />
+            <SoundSwitch
+              key="sound"
+              muted={isMuted}
+              label={copy.room.mute}
+              onToggle={handleToggleMute}
+            />
+            <PortfolioLink key="credit" />
+          </RoomMenu>
         </div>
         {isPannable && (
           <div className="absolute right-4 bottom-4 group-has-[[aria-modal=true]]/room:hidden max-[379px]:bottom-16 sm:right-6 sm:bottom-6">

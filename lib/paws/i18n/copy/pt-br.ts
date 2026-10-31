@@ -69,6 +69,7 @@ export const ptBR = {
     bringing: "Seu gato está entrando…",
   },
   room: {
+    menu: "Menu",
     residentLines: [
       "oi!",
       "isso é um dedo?",
