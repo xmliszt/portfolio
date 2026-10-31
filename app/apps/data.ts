@@ -1,4 +1,5 @@
 import { LAUNDROMAT_ORIGIN } from "@/lib/laundromat/hosts";
+import { PAWS_ORIGIN } from "@/lib/paws/paws-hosts";
 
 export type AppIcon = {
   light: string;
@@ -122,8 +123,7 @@ const apps: Record<string, AppData> = {
       "visual journal app joodle",
     ],
     icon: {
-      light:
-        "https://joodle.liyuxuan.dev/socials/Joodle%20Icon%20Light.jpg",
+      light: "https://joodle.liyuxuan.dev/socials/Joodle%20Icon%20Light.jpg",
       dark: "https://joodle.liyuxuan.dev/socials/Joodle%20Icon%20Dark.jpg",
       alt: "Joodle App Icon",
     },
@@ -212,6 +212,18 @@ export type AppsListEntry = {
   href: string;
 };
 
+const pawsEntry: AppsListEntry = {
+  id: "paws",
+  name: "Paws",
+  subtitle: "Strangers' cats in one shared room",
+  icon: {
+    light: "/apps/paws-icon.svg",
+    dark: "/apps/paws-icon.svg",
+    alt: "Paws icon",
+  },
+  href: PAWS_ORIGIN,
+};
+
 const laundromatEntry: AppsListEntry = {
   id: "laundromat",
   name: "Laundro Cafe",
@@ -279,7 +291,7 @@ export function getAppsListEntries(): AppsListEntry[] {
     icon: app.icon,
     href: `/apps/${app.id}`,
   }));
-  return [laundromatEntry, ...iosApps, ...webApps];
+  return [pawsEntry, laundromatEntry, ...iosApps, ...webApps];
 }
 
 export function getAppById(id: string): AppData | undefined {

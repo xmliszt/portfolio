@@ -10,7 +10,7 @@ enabled = true
 port = 54321
 # Schemas to expose in your API. Tables, views and stored procedures in this schema will get API
 # endpoints. `public` and `graphql_public` schemas are included by default.
-schemas = ["public", "graphql_public", "portfolio", "laundro_cafe"]
+schemas = ["public", "graphql_public", "portfolio", "laundro_cafe", "paws"]
 # Extra schemas to add to the search_path of every request.
 extra_search_path = ["public", "extensions"]
 # The maximum number of rows returns from a view, table, or stored procedure. Limits payload size
@@ -74,6 +74,12 @@ schema_paths = [
   "./schemas/laundro_cafe/append_doodle.sql",
   "./schemas/laundro_cafe/visits.sql",
   "./schemas/laundro_cafe/record_visit.sql",
+  "./schemas/paws/schema.sql",
+  "./schemas/paws/room_members.sql",
+  "./schemas/paws/room_joins.sql",
+  "./schemas/paws/chat_messages.sql",
+  "./schemas/paws/room_role.sql",
+  "./schemas/paws/cats.sql",
 ]
 
 [db.seed]

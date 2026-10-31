@@ -15,6 +15,7 @@ import { ImagePerspectiveLink } from "./ui/image-perspective-link";
 import { IOSAppLink } from "./ui/ios-app-link";
 import { LaundromatAppLink } from "./ui/laundromat-app-link";
 import { LoadMoreLinks } from "./ui/load-more-links";
+import { PawsAppLink } from "./ui/paws-app-link";
 import { PhotoBentoGrid } from "./ui/photo-bento-grid";
 import { Ratings } from "./ui/ratings";
 
@@ -149,6 +150,7 @@ export function MDXContent({ code, components }: MdxProps) {
         ImagePerspectiveLink,
         IOSAppLink,
         LaundromatAppLink,
+        PawsAppLink,
       }}
     />
   );

@@ -2,7 +2,7 @@
 
 import { createContext, useContext, useEffect, useState } from "react";
 
-import { useIsLaundromatRoute } from "@/components/custom/site-chrome/use-is-laundromat-route";
+import { useIsFullBleedRoute } from "@/components/custom/site-chrome/use-is-full-bleed-route";
 
 import { Bgm } from "./bgm";
 
@@ -18,13 +18,13 @@ const BgmContext = createContext<BgmContextType>({
 
 export function BgmProvider({ children }: { children: React.ReactNode }) {
   const [bgm] = useState(() => new Bgm());
-  const isLaundromatRoute = useIsLaundromatRoute();
+  const isFullBleedRoute = useIsFullBleedRoute();
 
   useEffect(() => {
-    if (isLaundromatRoute) return;
+    if (isFullBleedRoute) return;
     bgm.initializeBgms();
     return () => bgm.cleanup();
-  }, [bgm, isLaundromatRoute]);
+  }, [bgm, isFullBleedRoute]);
 
   return <BgmContext.Provider value={{ bgm }}>{children}</BgmContext.Provider>;
 }
