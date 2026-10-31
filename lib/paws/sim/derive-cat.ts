@@ -11,8 +11,7 @@ import { lerp } from "./lerp";
 
 export const TAIL_SEGMENTS = 6;
 
-/** Extra turn in radians at each tail joint, base first, that gives each tail shape its curve. */
-const TAIL_BENDS = {
+const TAIL_JOINT_TURNS_RADIANS = {
   slim: [0, 0, 0, 0, 0, 0],
   plume: [0, 0, 0, 0, 0, 0],
   wave: [0.5, 0.35, 0, -0.35, -0.5, -0.35],
@@ -123,7 +122,9 @@ export function deriveCat(options: {
         chain.angle +
         pose.tail[3] / TAIL_SEGMENTS +
         Math.sin(time * 1.7 - i * 0.8 + phase) * 0.13 * sway +
-        (TAIL_BENDS[look.tailShape].at(i) ?? 0) * bendSide * weights.stand;
+        (TAIL_JOINT_TURNS_RADIANS[look.tailShape].at(i) ?? 0) *
+          bendSide *
+          weights.stand;
       const last = chain.points[chain.points.length - 1];
       return {
         points: [

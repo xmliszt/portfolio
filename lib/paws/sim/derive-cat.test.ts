@@ -35,4 +35,8 @@ test("a standing cat's wave and hook tails bend away from a slim tail", () => {
   assert.deepEqual(tailTipOf({ tailShape: "plume", pose }), slim);
   assert.notDeepEqual(tailTipOf({ tailShape: "wave", pose }), slim);
   assert.notDeepEqual(tailTipOf({ tailShape: "hook", pose }), slim);
+  assert.notDeepEqual(
+    tailTipOf({ tailShape: "wave", pose }),
+    tailTipOf({ tailShape: "hook", pose })
+  );
 });

@@ -140,6 +140,11 @@ export function SignInPanel(props: SignInPanelProps) {
     if (typed.length === CODE_LENGTH && typed !== code) void verifyCode(typed);
   }
 
+  function handleCodeSelect(event: React.SyntheticEvent<HTMLInputElement>) {
+    const end = event.currentTarget.value.length;
+    event.currentTarget.setSelectionRange(end, end);
+  }
+
   function handleCodeFocus() {
     setIsCodeFocused(true);
   }
@@ -285,6 +290,7 @@ export function SignInPanel(props: SignInPanelProps) {
                       aria-describedby={step.notice ? noticeId : undefined}
                       aria-invalid={step.notice === "wrongCode"}
                       onChange={handleCodeChange}
+                      onSelect={handleCodeSelect}
                       onFocus={handleCodeFocus}
                       onBlur={handleCodeBlur}
                       className="absolute inset-0 size-full cursor-text bg-transparent text-[16px] text-transparent caret-transparent outline-none selection:bg-transparent"
