@@ -44,4 +44,8 @@ export const RESEARCHED_WINDOWS = {
     { weekdays: EVERY_DAY, startHour: 20, endHour: 23, strength: 1 },
   ],
   youtube: [],
+  linkedin: [
+    { weekdays: [1, 2, 3], startHour: 21, endHour: 23, strength: 1 },
+    { weekdays: [0, 4], startHour: 21, endHour: 23, strength: 0.6 },
+  ],
 } as const satisfies { [id in PlatformId]: readonly ResearchedWindow[] };

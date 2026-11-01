@@ -9,6 +9,7 @@ export const PLATFORM_IDS = [
   "wechat_channels",
   "wechat_moments",
   "youtube",
+  "linkedin",
 ] as const;
 
 export type PlatformId = (typeof PLATFORM_IDS)[number];
@@ -161,6 +162,18 @@ export const PLATFORMS = {
     maxHashtags: 3,
     metrics: ["views", "likes", "comments"],
     composeUrl: "https://studio.youtube.com/",
+    postsFromPhone: false,
+  },
+  linkedin: {
+    id: "linkedin",
+    label: "LinkedIn",
+    shortLabel: "IN",
+    colorVar: "--cc-platform-linkedin",
+    bodyLimit: 3000,
+    titleLimit: undefined,
+    maxHashtags: 5,
+    metrics: ["views", "likes", "comments", "shares", "clicks"],
+    composeUrl: "https://www.linkedin.com/feed/?shareActive=true",
     postsFromPhone: false,
   },
 } as const satisfies { [id in PlatformId]: Platform };

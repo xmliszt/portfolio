@@ -1,7 +1,7 @@
 create table "command_center"."posts" (
   "id" uuid primary key default gen_random_uuid(),
   "campaign_id" uuid not null references "command_center"."campaigns" ("id") on delete cascade,
-  "platform" text not null check ("platform" in ('producthunt', 'x', 'threads', 'instagram', 'tiktok', 'reddit', 'xiaohongshu', 'wechat_channels', 'wechat_moments', 'youtube')),
+  "platform" text not null check ("platform" in ('producthunt', 'x', 'threads', 'instagram', 'tiktok', 'reddit', 'xiaohongshu', 'wechat_channels', 'wechat_moments', 'youtube', 'linkedin')),
   "kind" text not null default 'post' check ("kind" in ('post', 'reply', 'comment', 'repost')),
   "parent_post_id" uuid references "command_center"."posts" ("id") on delete cascade,
   "target" text,

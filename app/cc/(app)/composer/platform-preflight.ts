@@ -207,4 +207,28 @@ export const PLATFORM_PREFLIGHT = {
     },
     manualChecks: [],
   },
+  linkedin: {
+    hashtags: {
+      min: 0,
+      max: 5,
+      why: "3 to 5 specific tags at the end; more looks automated.",
+    },
+    media: "video",
+    audience: {
+      en: "designers, developers and people who build things, on their work feed",
+      zh: "在工作动态里看内容的设计师、开发者和做产品的人",
+    },
+    manualChecks: [
+      {
+        id: "linkedin-link-comment",
+        label: "Link in the first comment, not the post",
+        why: "LinkedIn shows posts with outside links to fewer people.",
+      },
+      {
+        id: "linkedin-native-video",
+        label: "Video uploaded, not linked",
+        why: "Uploaded video plays in the feed; a YouTube link shows as a small card.",
+      },
+    ],
+  },
 } as const satisfies { [id in PlatformId]: PlatformPreflight };
