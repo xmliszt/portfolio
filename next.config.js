@@ -24,6 +24,7 @@ const withPWA = require("next-pwa")({
 
 const nextConfig = {
   reactStrictMode: true,
+  serverExternalPackages: ["@napi-rs/canvas"],
   env: {
     LAUNDROMAT_BUILD_ID: process.env.VERCEL_GIT_COMMIT_SHA || "development",
   },

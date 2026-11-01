@@ -4,20 +4,12 @@ import { useEffect, useRef, useState } from "react";
 import { motion, useIsPresent } from "motion/react";
 
 import { useLaundromatCopy } from "@/app/laundromat/i18n/use-laundromat-copy";
+import type { Handoff } from "@/components/instant-camera/use-polaroid-share";
 import { INSTANT_CAMERA } from "@/lib/laundromat/instant-camera/instant-camera-config";
-import type { ShareStep } from "@/lib/laundromat/instant-camera/share-targets";
 
 const RING_RADIUS = 29;
 const RING_LENGTH = 2 * Math.PI * RING_RADIUS;
 const TICK_MS = 100;
-
-export type Handoff = {
-  label: string;
-  iconPath: string;
-  step: ShareStep;
-  url: string;
-  pasteKeys: string;
-};
 
 type ShareHandoffProps = {
   handoff: Handoff;
