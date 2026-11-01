@@ -10,18 +10,25 @@ import { parseHashtags } from "@/app/cc/(app)/composer/parse-hashtags";
 import { PLATFORM_PREFLIGHT } from "@/app/cc/(app)/composer/platform-preflight";
 import { buildSmartCampaignPlan } from "@/lib/cc/build-smart-campaign-plan";
 import { buildSmartCampaignPrompt } from "@/lib/cc/build-smart-campaign-prompt";
+import type { CampaignKind } from "@/lib/cc/campaign-plan";
+import { getLinkHost } from "@/lib/cc/get-link-host";
+import { getRepostGaps } from "@/lib/cc/get-repost-gaps";
 import {
   matchSmartCampaignReply,
   type SmartCampaignDraft,
 } from "@/lib/cc/match-smart-campaign-reply";
 import { parseSmartCampaignResponse } from "@/lib/cc/parse-smart-campaign-response";
 import { parseStoredSmartCampaign } from "@/lib/cc/parse-stored-smart-campaign";
-import { PLATFORMS } from "@/lib/cc/platforms";
+import { type PlatformId, PLATFORMS } from "@/lib/cc/platforms";
 import type {
   SmartCampaignEdit,
   SmartCampaignForm,
   SmartCampaignState,
 } from "@/lib/cc/smart-campaign-state";
+import {
+  type CampaignHistoryPost,
+  summariseCampaignHistory,
+} from "@/lib/cc/summarise-campaign-history";
 
 import { SmartCampaignCreatePanel } from "./smart-campaign-create-panel";
 import { SmartCampaignDraftCard } from "./smart-campaign-draft-card";
@@ -30,10 +37,18 @@ import { SmartCampaignPromptPanel } from "./smart-campaign-prompt-panel";
 
 type SmartCampaignProps = {
   defaultForm: SmartCampaignForm;
+  history: readonly CampaignHistoryPost[];
   current: { name: string; startDate: string | undefined } | undefined;
 };
 
 const STORAGE_KEY = "cc:smart-campaign";
+
+const NAME_SUFFIX = {
+  launch: "launch",
+  "follow-up": "follow-up",
+  "feature-update": "update",
+  event: "event",
+} as const satisfies { [kind in CampaignKind]: string };
 
 function toEdit(draft: SmartCampaignDraft): SmartCampaignEdit {
   return {
@@ -70,24 +85,63 @@ function getEmptyState(form: SmartCampaignForm): SmartCampaignState {
   };
 }
 
-function buildPrompt(form: SmartCampaignForm) {
+function buildPrompt(options: {
+  form: SmartCampaignForm;
+  history: readonly CampaignHistoryPost[];
+}) {
+  const form = options.form;
+  const host = getLinkHost(form.link);
+  const posts = options.history.filter(
+    (post) => host !== undefined && post.host === host
+  );
+  const repostGaps =
+    form.startDate === ""
+      ? []
+      : getRepostGaps({
+          posts,
+          platformIds: form.platformIds,
+          startDate: form.startDate,
+          lengthDays: form.lengthDays,
+        });
+  const eventDate =
+    form.kind === "event" && form.eventDate !== "" ? form.eventDate : undefined;
   const plan = buildSmartCampaignPlan({
+    kind: form.kind,
+    eventDate,
     platforms: form.platformIds.map((platformId) => ({
       platformId,
       language: form.languages[platformId],
     })),
     media: form.media,
+    repostGaps,
   });
+  const skippedIds = new Set(plan.skipped.map((entry) => entry.platformId));
   return {
     plan,
+    readyOn: Object.fromEntries(
+      repostGaps.flatMap((gap) =>
+        gap.kind === "no-history" || skippedIds.has(gap.platformId)
+          ? []
+          : [[gap.platformId, gap.readyOn]]
+      )
+    ) satisfies { [id in PlatformId]?: string },
     prompt: buildSmartCampaignPrompt({
+      kind: form.kind,
+      intent: form.intent,
+      eventDate,
       product: { name: form.name, link: form.link },
       thoughts: form.thoughts,
       makersNote: form.makersNote,
+      earlierPosts: form.earlierPosts,
+      history: summariseCampaignHistory({
+        posts,
+        platformIds: form.platformIds,
+      }),
       startDate: form.startDate,
       lengthDays: form.lengthDays,
       media: form.media,
       plan,
+      repostGaps,
       preflight: PLATFORM_PREFLIGHT,
     }),
   };
@@ -126,7 +180,9 @@ export function SmartCampaign(props: SmartCampaignProps) {
 
   const form = state.form;
   const generated =
-    state.promptForm === undefined ? undefined : buildPrompt(state.promptForm);
+    state.promptForm === undefined
+      ? undefined
+      : buildPrompt({ form: state.promptForm, history: props.history });
   const parsed =
     state.reply.trim() === ""
       ? undefined
@@ -154,13 +210,21 @@ export function SmartCampaign(props: SmartCampaignProps) {
     form.thoughts.trim() === "" ? "how you think about it" : undefined,
     form.platformIds.length === 0 ? "a platform" : undefined,
     form.startDate === "" ? "a start date" : undefined,
+    form.kind !== "launch" && form.intent.trim() === ""
+      ? "what this campaign should focus on"
+      : undefined,
+    form.kind === "event" &&
+    (form.eventDate === "" || form.eventDate <= form.startDate)
+      ? "an event day after the start"
+      : undefined,
   ].filter((field) => field !== undefined);
-  const productName = (state.promptForm ?? form).name.trim();
+  const promptForm = state.promptForm ?? form;
+  const productName = promptForm.name.trim();
   const isCreated = state.createdCampaignId !== undefined;
   const defaultName =
     parsed?.kind === "ok" && parsed.campaign.name !== undefined
       ? parsed.campaign.name
-      : `${productName} launch`;
+      : `${productName} ${NAME_SUFFIX[promptForm.kind]}`;
   const previewPlatformIds = uniq([
     ...(state.promptForm?.platformIds ?? []),
     ...kept.map((draft) => draft.platformId),
@@ -340,7 +404,7 @@ export function SmartCampaign(props: SmartCampaignProps) {
         <SmartCampaignCreatePanel
           key={defaultName}
           form={{
-            ...(state.promptForm ?? form),
+            ...promptForm,
             link: form.link,
             makersNote: form.makersNote,
             startDate: form.startDate,
@@ -348,6 +412,7 @@ export function SmartCampaign(props: SmartCampaignProps) {
           }}
           defaultName={defaultName}
           drafts={drafts}
+          notBefore={generated?.readyOn ?? {}}
           missingCount={match?.missingRefs.length ?? 0}
           createdCampaignId={state.createdCampaignId}
           onCreated={(campaignId) => update({ createdCampaignId: campaignId })}

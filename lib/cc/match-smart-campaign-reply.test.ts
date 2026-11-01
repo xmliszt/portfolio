@@ -7,6 +7,9 @@ import { matchSmartCampaignReply } from "./match-smart-campaign-reply";
 import { parseSmartCampaignResponse } from "./parse-smart-campaign-response";
 
 const plan = buildSmartCampaignPlan({
+  eventDate: undefined,
+  kind: "launch",
+  repostGaps: [],
   platforms: [
     { platformId: "x", language: "en" },
     { platformId: "xiaohongshu", language: "zh" },

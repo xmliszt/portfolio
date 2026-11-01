@@ -7,17 +7,27 @@ import { PLATFORMS } from "./platforms";
 import type { SmartCampaignForm } from "./smart-campaign-state";
 
 const DEFAULT_FORM: SmartCampaignForm = {
+  kind: "launch",
+  intent: "",
   name: "",
   link: "",
   thoughts: "",
   makersNote: "A note.",
+  earlierPosts: "",
   platformIds: [],
   languages: mapValues(PLATFORMS, (platform) =>
     platform.id === "xiaohongshu" ? "zh" : "en"
   ),
   startDate: "",
+  eventDate: "",
   lengthDays: 14,
-  media: { promo: true, features: false, images: false, notes: "" },
+  media: {
+    promo: true,
+    features: false,
+    images: false,
+    notes: "",
+    newMedia: "",
+  },
 };
 
 test("returns an empty campaign for a value that is not an object", () => {
@@ -68,6 +78,7 @@ test("keeps valid fields and falls back to the default form for the rest", () =>
     features: false,
     images: false,
     notes: "",
+    newMedia: "",
   });
   assert.equal(state.promptForm, undefined);
   assert.equal(state.reply, "```json\n{}\n```");
@@ -76,4 +87,57 @@ test("keeps valid fields and falls back to the default form for the rest", () =>
   });
   assert.deepEqual(state.removedRefs, ["x-3"]);
   assert.equal(state.createdCampaignId, "campaign-id");
+});
+
+test("loads a draft saved before campaigns had a kind and an intent", () => {
+  const oldForm = {
+    name: "Paws",
+    link: "https://paws.garden",
+    thoughts: "Strangers meet through their cats.",
+    makersNote: "",
+    platformIds: ["x"],
+    languages: { x: "en" },
+    startDate: "2026-11-03",
+    lengthDays: 14,
+    media: { promo: true, features: true, images: true, notes: "16x9" },
+  };
+  const state = parseStoredSmartCampaign({
+    value: { form: oldForm, promptForm: oldForm, reply: "", edits: {} },
+    defaultForm: DEFAULT_FORM,
+  });
+  for (const form of [state.form, state.promptForm]) {
+    assert.equal(form?.kind, "launch");
+    assert.equal(form?.intent, "");
+    assert.equal(form?.earlierPosts, "");
+    assert.equal(form?.eventDate, "");
+    assert.equal(form?.name, "Paws");
+    assert.equal(form?.startDate, "2026-11-03");
+    assert.deepEqual(form?.media, {
+      promo: true,
+      features: true,
+      images: true,
+      notes: "16x9",
+      newMedia: "",
+    });
+  }
+});
+
+test("reads a stored kind, intent, event date and new media", () => {
+  const state = parseStoredSmartCampaign({
+    value: {
+      form: {
+        kind: "event",
+        intent: "Christmas at the laundromat",
+        eventDate: "2026-12-25",
+        earlierPosts: "Oct: launched",
+        media: { newMedia: "a snowy promo" },
+      },
+    },
+    defaultForm: DEFAULT_FORM,
+  });
+  assert.equal(state.form.kind, "event");
+  assert.equal(state.form.intent, "Christmas at the laundromat");
+  assert.equal(state.form.eventDate, "2026-12-25");
+  assert.equal(state.form.earlierPosts, "Oct: launched");
+  assert.equal(state.form.media.newMedia, "a snowy promo");
 });

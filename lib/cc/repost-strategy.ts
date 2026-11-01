@@ -102,3 +102,9 @@ export const REPOST_STRATEGY = {
     sources: [],
   },
 } as const satisfies { [id in PlatformId]: RepostStrategy };
+
+export const REPOST_MODE_LABEL = {
+  quote: "quote or rewrite",
+  recut: "re-cut",
+  never: "no reposts",
+} as const satisfies { [mode in RepostMode]: string };

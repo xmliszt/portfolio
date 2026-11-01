@@ -1,5 +1,6 @@
 import mapValues from "lodash/mapValues.js";
 
+import { CAMPAIGN_KINDS } from "./campaign-plan";
 import { isJsonObject } from "./is-json-object";
 import { isPlatformId } from "./is-platform-id";
 import type {
@@ -10,6 +11,12 @@ import type {
 
 function readText(value: unknown, fallback: string) {
   return typeof value === "string" ? value : fallback;
+}
+
+function readDay(value: unknown, fallback: string) {
+  return typeof value === "string" && /^(\d{4}-\d{2}-\d{2})?$/.test(value)
+    ? value
+    : fallback;
 }
 
 function readFlag(value: unknown, fallback: boolean) {
@@ -26,10 +33,13 @@ function readForm(options: {
   const languages = isJsonObject(form.languages) ? form.languages : {};
   const media = isJsonObject(form.media) ? form.media : {};
   return {
+    kind: CAMPAIGN_KINDS.find((kind) => kind === form.kind) ?? fallback.kind,
+    intent: readText(form.intent, fallback.intent),
     name: readText(form.name, fallback.name),
     link: readText(form.link, fallback.link),
     thoughts: readText(form.thoughts, fallback.thoughts),
     makersNote: readText(form.makersNote, fallback.makersNote),
+    earlierPosts: readText(form.earlierPosts, fallback.earlierPosts),
     platformIds: Array.isArray(form.platformIds)
       ? form.platformIds.flatMap((id) =>
           typeof id === "string" && isPlatformId(id) ? [id] : []
@@ -39,11 +49,8 @@ function readForm(options: {
       const stored = languages[id];
       return stored === "en" || stored === "zh" ? stored : language;
     }),
-    startDate:
-      typeof form.startDate === "string" &&
-      /^(\d{4}-\d{2}-\d{2})?$/.test(form.startDate)
-        ? form.startDate
-        : fallback.startDate,
+    startDate: readDay(form.startDate, fallback.startDate),
+    eventDate: readDay(form.eventDate, fallback.eventDate),
     lengthDays:
       typeof form.lengthDays === "number" &&
       Number.isInteger(form.lengthDays) &&
@@ -55,6 +62,7 @@ function readForm(options: {
       features: readFlag(media.features, fallback.media.features),
       images: readFlag(media.images, fallback.media.images),
       notes: readText(media.notes, fallback.media.notes),
+      newMedia: readText(media.newMedia, fallback.media.newMedia),
     },
   };
 }

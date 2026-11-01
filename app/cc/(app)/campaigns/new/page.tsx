@@ -4,6 +4,7 @@ import Link from "next/link";
 import { PageHeader } from "@/app/cc/_ui/page-header";
 import { requireCcOwner } from "@/lib/cc/auth/require-cc-owner";
 import { getCurrentCampaign } from "@/lib/cc/data/get-current-campaign";
+import { listCampaignHistory } from "@/lib/cc/data/list-campaign-history";
 import { formatSgt } from "@/lib/cc/format-sgt";
 import { PLATFORMS } from "@/lib/cc/platforms";
 import type { SmartCampaignForm } from "@/lib/cc/smart-campaign-state";
@@ -20,23 +21,36 @@ const CHINESE_FIRST = new Set([
 
 export default async function SmartCampaignPage() {
   await requireCcOwner();
-  const current = await getCurrentCampaign();
+  const [current, history] = await Promise.all([
+    getCurrentCampaign(),
+    listCampaignHistory(),
+  ]);
   const currentStartDate =
     current?.starts_at === null || current?.starts_at === undefined
       ? undefined
       : formatSgt({ date: new Date(current.starts_at), pattern: "yyyy-MM-dd" });
   const defaultForm: SmartCampaignForm = {
+    kind: "launch",
+    intent: "",
     name: "",
     link: "",
     thoughts: "",
     makersNote: current?.notes ?? "",
+    earlierPosts: "",
     platformIds: [],
     languages: mapValues(PLATFORMS, (platform) =>
       CHINESE_FIRST.has(platform.id) ? "zh" : "en"
     ),
     startDate: "",
+    eventDate: "",
     lengthDays: 14,
-    media: { promo: true, features: false, images: false, notes: "" },
+    media: {
+      promo: true,
+      features: false,
+      images: false,
+      notes: "",
+      newMedia: "",
+    },
   };
 
   return (
@@ -51,6 +65,7 @@ export default async function SmartCampaignPage() {
       />
       <SmartCampaign
         defaultForm={defaultForm}
+        history={history}
         current={
           current === undefined
             ? undefined

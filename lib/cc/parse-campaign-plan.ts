@@ -1,5 +1,16 @@
 import type { Json } from "./supabase/__generated__/types";
-import { type CampaignPlan, DEFAULT_CAMPAIGN_PLAN } from "./campaign-plan";
+import {
+  CAMPAIGN_KINDS,
+  type CampaignPlan,
+  DEFAULT_CAMPAIGN_PLAN,
+} from "./campaign-plan";
+import { isPlatformId } from "./is-platform-id";
+
+const DAY = /^\d{4}-\d{2}-\d{2}$/;
+
+function readDay(value: Json | undefined) {
+  return typeof value === "string" && DAY.test(value) ? value : undefined;
+}
 
 function readNumber(options: {
   value: Json | undefined;
@@ -21,7 +32,7 @@ export function parseCampaignPlan(plan: Json): CampaignPlan {
     return DEFAULT_CAMPAIGN_PLAN;
   }
   const availability = plan.availability;
-  const startDate = plan.startDate;
+  const notBefore = plan.notBefore;
   return {
     availability: DEFAULT_CAMPAIGN_PLAN.availability.map(
       (fallback, weekday) => {
@@ -59,9 +70,27 @@ export function parseCampaignPlan(plan: Json): CampaignPlan {
       max: 24 * 60,
       fallback: DEFAULT_CAMPAIGN_PLAN.minGapMinutes,
     }),
-    startDate:
-      typeof startDate === "string" && /^\d{4}-\d{2}-\d{2}$/.test(startDate)
-        ? startDate
-        : undefined,
+    startDate: readDay(plan.startDate),
+    kind:
+      CAMPAIGN_KINDS.find((kind) => kind === plan.kind) ??
+      DEFAULT_CAMPAIGN_PLAN.kind,
+    intent:
+      typeof plan.intent === "string"
+        ? plan.intent
+        : DEFAULT_CAMPAIGN_PLAN.intent,
+    eventDate: readDay(plan.eventDate),
+    notBefore:
+      typeof notBefore === "object" &&
+      notBefore !== null &&
+      !Array.isArray(notBefore)
+        ? Object.fromEntries(
+            Object.entries(notBefore).flatMap(([id, day]) => {
+              const value = readDay(day);
+              return isPlatformId(id) && value !== undefined
+                ? [[id, value]]
+                : [];
+            })
+          )
+        : DEFAULT_CAMPAIGN_PLAN.notBefore,
   };
 }

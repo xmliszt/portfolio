@@ -2,11 +2,15 @@ import mapValues from "lodash/mapValues.js";
 import assert from "node:assert/strict";
 import { test } from "node:test";
 
+import { buildHistoryPost } from "./testing/build-history-post";
+import { LAUNDRO_FOLLOW_UP_CAMPAIGN } from "./testing/laundro-follow-up-campaign";
 import { PAWS_SMART_CAMPAIGN } from "./testing/paws-smart-campaign";
 import { buildSmartCampaignPlan } from "./build-smart-campaign-plan";
 import { buildSmartCampaignPrompt } from "./build-smart-campaign-prompt";
+import { getRepostGaps } from "./get-repost-gaps";
 import { parseSmartCampaignResponse } from "./parse-smart-campaign-response";
 import { PLATFORMS } from "./platforms";
+import { summariseCampaignHistory } from "./summarise-campaign-history";
 import { VOICE_RULES } from "./voice-rules";
 
 const PREFLIGHT = mapValues(PLATFORMS, (platform) => ({
@@ -21,6 +25,9 @@ function buildPrompt(options: {
   platforms: Parameters<typeof buildSmartCampaignPlan>[0]["platforms"];
 }) {
   const plan = buildSmartCampaignPlan({
+    eventDate: undefined,
+    kind: "launch",
+    repostGaps: [],
     platforms: options.platforms,
     media: PAWS_SMART_CAMPAIGN.media,
   });
@@ -59,6 +66,9 @@ test("quotes the owner's words verbatim", () => {
 
 test("leaves out the maker's note section when there is no note", () => {
   const plan = buildSmartCampaignPlan({
+    eventDate: undefined,
+    kind: "launch",
+    repostGaps: [],
     platforms: [{ platformId: "x", language: "en" }],
     media: PAWS_SMART_CAMPAIGN.media,
   });
@@ -127,5 +137,81 @@ test("ends with the schema and an example the parser reads", () => {
   assert.deepEqual(
     example.kind === "ok" ? example.posts.map((post) => post.ref) : [],
     plan.slots.slice(0, 2).map((slot) => slot.ref)
+  );
+});
+
+test("frames a follow-up by its intent, earlier posts, tracked history and repost gaps", () => {
+  const campaign = { ...LAUNDRO_FOLLOW_UP_CAMPAIGN, lengthDays: 45 };
+  const posts = [
+    buildHistoryPost({
+      platformId: "x",
+      at: "2026-10-20T13:00:00Z",
+      firstLine: "I opened a laundromat on the Internet",
+      views24h: 240,
+    }),
+    buildHistoryPost({
+      platformId: "linkedin",
+      at: "2026-10-20T13:00:00Z",
+      firstLine: "I made a small laundromat",
+    }),
+  ];
+  const repostGaps = getRepostGaps({
+    posts,
+    platformIds: campaign.platforms.map((platform) => platform.platformId),
+    startDate: campaign.startDate,
+    lengthDays: campaign.lengthDays,
+  });
+  const plan = buildSmartCampaignPlan({
+    eventDate: undefined,
+    kind: campaign.kind,
+    platforms: campaign.platforms,
+    media: campaign.media,
+    repostGaps,
+  });
+  const prompt = buildSmartCampaignPrompt({
+    ...campaign,
+    history: summariseCampaignHistory({
+      posts,
+      platformIds: campaign.platforms.map((platform) => platform.platformId),
+    }),
+    plan,
+    repostGaps,
+    preflight: PREFLIGHT,
+  });
+  assert.ok(prompt.startsWith("I'm Yuxuan."));
+  assert.ok(!prompt.includes("I'm launching"));
+  assert.ok(
+    prompt.includes(
+      `## What this campaign is for\nFollow-up.\n"""\n${campaign.intent}\n"""\nReaders may have seen the launch.`
+    )
+  );
+  assert.ok(
+    prompt.includes(
+      `### Earlier posts (from me)\n"""\n${campaign.earlierPosts}\n"""`
+    )
+  );
+  assert.ok(
+    prompt.includes(
+      `- 2026-10-20 · "I opened a laundromat on the Internet" · 240 views at 24 h, 2.4× median · no media`
+    )
+  );
+  assert.ok(prompt.includes("never repeat an earlier first line"));
+  assert.ok(
+    prompt.includes("- X · quote or rewrite · at least 7 days apart · sourced.")
+  );
+  assert.ok(
+    prompt.includes(
+      "Last post 27 days before the start: fine to post again with a new angle."
+    )
+  );
+  assert.ok(
+    prompt.includes(
+      "Last post 27 days before the start: wait until Sat 19 Dec; its first post goes out on or after that day."
+    )
+  );
+  assert.ok(
+    prompt.includes(
+      "`linkedin-1` · LinkedIn post · en · media: images · not before Sat 19 Dec."
+    )
   );
 });

@@ -1,5 +1,6 @@
 import { Panel } from "@/app/cc/_ui/panel";
 import { type PlatformId, PLATFORMS } from "@/lib/cc/platforms";
+import { REPOST_MODE_LABEL, REPOST_STRATEGY } from "@/lib/cc/repost-strategy";
 import { RESEARCH_SOURCES } from "@/lib/cc/research-sources";
 import { RESEARCHED_WINDOWS } from "@/lib/cc/researched-windows";
 
@@ -14,6 +15,7 @@ const WEEKDAYS = ["MON", "TUE", "WED", "THU", "FRI", "SAT", "SUN"];
 export function HeatLegendPanel(props: HeatLegendPanelProps) {
   const platform = PLATFORMS[props.platformId];
   const research = RESEARCHED_WINDOWS[props.platformId];
+  const repost = REPOST_STRATEGY[props.platformId];
   const sources = RESEARCH_SOURCES.filter(
     (source) =>
       source.platform === props.platformId || source.platform === "all"
@@ -104,6 +106,30 @@ export function HeatLegendPanel(props: HeatLegendPanelProps) {
           </ul>
         </div>
       )}
+      <div className="flex flex-col gap-y-1.5">
+        <span className="text-muted-foreground text-[11px] tracking-[0.14em]">
+          POSTING AGAIN ·{" "}
+          {repost.confidence === "sourced" ? "SOURCED" : "COMMON PRACTICE"}
+        </span>
+        <ul className="flex flex-col gap-y-1.5 text-[12px]">
+          <li className="text-cc-text-2">
+            Mode: {REPOST_MODE_LABEL[repost.mode]} · at least{" "}
+            {repost.minGapDays} days apart. {repost.how}
+          </li>
+          {repost.sources.map((url) => (
+            <li key={url}>
+              <a
+                href={url}
+                target="_blank"
+                rel="noreferrer"
+                className="text-primary"
+              >
+                {new URL(url).hostname.replace(/^www\./, "")} ↗
+              </a>
+            </li>
+          ))}
+        </ul>
+      </div>
     </Panel>
   );
 }
