@@ -1,5 +1,6 @@
 import { getResearchedSlot } from "./get-researched-slot";
 import { getSgtParts } from "./get-sgt-parts";
+import { getZoneParts } from "./get-zone-parts";
 import { type PlatformId, PLATFORMS } from "./platforms";
 import { RESEARCHED_WINDOWS } from "./researched-windows";
 
@@ -32,8 +33,7 @@ export function describeSlot(options: {
   const research = RESEARCHED_WINDOWS[options.platformId];
   const slot = getResearchedSlot({
     platformId: options.platformId,
-    weekday: parts.weekday,
-    hour: parts.hour,
+    at: options.at,
   });
   if (slot.window === undefined) {
     return `${when} · no researched ${label} window in your hours`;
@@ -47,10 +47,9 @@ export function describeSlot(options: {
       : slot.dayWeight >= GOOD_DAY_WEIGHT
         ? `a good day for ${label}`
         : `a slower day for ${label}`;
-  const zone = research.audienceZone;
   const hourPhrase =
-    zone === undefined
+    research.clockLabel === undefined
       ? slot.window.label
-      : `${formatClockHour({ hour: (parts.hour + zone.offsetHours + 24) % 24, minute: parts.minute })} ${zone.label}`;
+      : `${formatClockHour(getZoneParts({ date: options.at, timeZone: research.timeZone }))} ${research.clockLabel}`;
   return `${when} · ${dayPhrase} · ${hourPhrase}`;
 }

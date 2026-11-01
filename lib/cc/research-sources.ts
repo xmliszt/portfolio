@@ -54,7 +54,7 @@ export const RESEARCH_SOURCES: readonly ResearchSource[] = [
   {
     platform: "producthunt",
     claim:
-      "Launches go live at 00:01 PT (16:01 SGT); Tuesday to Thursday get the most traffic.",
+      "Launches go live at 00:01 PT (16:01 SGT, 15:01 SGT in US summer); Tuesday to Thursday get the most traffic.",
     url: "https://postfa.st/blog/best-time-to-post-on-social-media",
     checkedOn: CHECKED_ON,
   },

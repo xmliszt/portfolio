@@ -1,8 +1,10 @@
+import { recordTelegramUpdate } from "@/lib/cc/data/record-telegram-update";
 import { handleTelegramCallback } from "@/lib/cc/telegram/handle-telegram-callback";
 import { handleTelegramMessage } from "@/lib/cc/telegram/handle-telegram-message";
 import { sendTelegramMessage } from "@/lib/cc/telegram/send-telegram-message";
 
 type TelegramUpdate = {
+  update_id: number;
   message?: {
     message_id: number;
     chat: { id: number };
@@ -25,6 +27,11 @@ export async function POST(request: Request) {
     return new Response("Unauthorized", { status: 401 });
   }
   const update: TelegramUpdate = await request.json();
+  if (
+    (await recordTelegramUpdate({ updateId: update.update_id })) === "duplicate"
+  ) {
+    return Response.json({ ok: true });
+  }
   if (update.message?.text !== undefined) {
     await handleTelegramMessage({
       chatId: update.message.chat.id,

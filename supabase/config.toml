@@ -89,6 +89,7 @@ schema_paths = [
   "./schemas/command_center/keywords.sql",
   "./schemas/command_center/keyword_counts.sql",
   "./schemas/command_center/integrations.sql",
+  "./schemas/command_center/telegram_updates.sql",
   "./schemas/command_center/reschedule_post.sql",
 ]
 

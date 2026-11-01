@@ -14,6 +14,7 @@ import { getPostName } from "@/lib/cc/get-post-name";
 import { getSgtParts } from "@/lib/cc/get-sgt-parts";
 import { getSgtWeek } from "@/lib/cc/get-sgt-week";
 import { isPlatformId } from "@/lib/cc/is-platform-id";
+import { parseCampaignPlan } from "@/lib/cc/parse-campaign-plan";
 import { PLATFORM_IDS, type PlatformId, PLATFORMS } from "@/lib/cc/platforms";
 import { RESEARCHED_WINDOWS } from "@/lib/cc/researched-windows";
 import { sgtToUtc } from "@/lib/cc/sgt-to-utc";
@@ -22,6 +23,7 @@ import { FollowUpsPanel } from "./follow-ups-panel";
 import { HeatLegendPanel } from "./heat-legend-panel";
 import { HeatPicker } from "./heat-picker";
 import { PostEditor } from "./post-editor";
+import type { ScheduleContext } from "./schedule-clash-warning";
 import { SchedulePostForm } from "./schedule-post-form";
 import { type GridPost, WeekGrid } from "./week-grid";
 
@@ -108,7 +110,12 @@ export default async function CalendarPage(props: CalendarPageProps) {
     heatParam !== undefined && isPlatformId(heatParam)
       ? heatParam
       : (busiestPlatformId ?? "xiaohongshu");
-  const heat = getHourHeat({ ...stats, platformId: heatPlatformId });
+  const weekMidday = sgtToUtc({ date: weekStart, time: "12:00" });
+  const heat = getHourHeat({
+    ...stats,
+    platformId: heatPlatformId,
+    weekOf: weekMidday,
+  });
 
   const editId = readParam(searchParams.edit);
   function buildHref(options: {
@@ -177,10 +184,28 @@ export default async function CalendarPage(props: CalendarPageProps) {
       gridPosts.some((post) => post.hour === hour)
   );
 
+  const plan = parseCampaignPlan(campaign.plan);
+  const schedule: ScheduleContext = {
+    posts: posts.flatMap((post) =>
+      post.scheduled_at === null
+        ? []
+        : [
+            {
+              id: post.id,
+              at: post.scheduled_at,
+              kind: post.kind,
+              status: post.status,
+            },
+          ]
+    ),
+    minGapMinutes: plan.minGapMinutes,
+    maxPerDay: plan.maxPerDay,
+  };
+
   const editPost = posts.find((post) => post.id === editId);
   const isHeatEmpty = heat.cells.flat().every((value) => !value);
   const weekLabel = formatSgt({
-    date: sgtToUtc({ date: weekStart, time: "12:00" }),
+    date: weekMidday,
     pattern: "EEE dd MMM",
   }).slice(4);
 
@@ -252,6 +277,7 @@ export default async function CalendarPage(props: CalendarPageProps) {
               childCount: childrenByParent[editPost.id] ?? 0,
             }}
             closeHref={buildHref({})}
+            schedule={schedule}
           />
         )}
       <WeekGrid
@@ -279,12 +305,14 @@ export default async function CalendarPage(props: CalendarPageProps) {
           platformId={heatPlatformId}
           source={heat.kind}
           isEmpty={isHeatEmpty}
+          weekOf={weekMidday}
         />
         <SchedulePostForm
           campaignId={campaign.id}
           campaignLink={campaign.link ?? undefined}
           defaultDate={week.days.includes(today) ? today : weekStart}
           defaultPlatformId={heatPlatformId}
+          schedule={schedule}
         />
       </div>
       <FollowUpsPanel />

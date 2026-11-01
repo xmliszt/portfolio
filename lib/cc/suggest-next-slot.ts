@@ -4,6 +4,7 @@ import type { DayAvailability } from "./campaign-plan";
 import { describeSlot } from "./describe-slot";
 import { formatSgt } from "./format-sgt";
 import { getSgtParts } from "./get-sgt-parts";
+import { getSlotScore } from "./get-slot-score";
 import type { SlotScores } from "./get-slot-scores";
 import type { PlatformId } from "./platforms";
 import { sgtToUtc } from "./sgt-to-utc";
@@ -66,7 +67,11 @@ export function suggestNextSlot(options: {
       );
       return {
         at,
-        score: options.heat.cells.at(weekday)?.at(getSgtParts(at).hour) ?? 0,
+        score: getSlotScore({
+          scores: options.heat,
+          platformId: options.platformId,
+          at,
+        }),
       };
     }).filter(
       (candidate) =>

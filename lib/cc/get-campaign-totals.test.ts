@@ -9,6 +9,7 @@ function buildPost(options: { id: string; platform?: PlatformId }): StatPost {
   return {
     id: options.id,
     platform: options.platform ?? "x",
+    kind: "post",
     postedAt: new Date("2026-11-03T14:00:00Z"),
     hashtags: [],
     body: "",

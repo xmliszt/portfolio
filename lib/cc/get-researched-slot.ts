@@ -1,32 +1,26 @@
 import maxBy from "lodash/maxBy.js";
 
+import { getZoneParts } from "./get-zone-parts";
 import type { PlatformId } from "./platforms";
 import { RESEARCHED_WINDOWS } from "./researched-windows";
 
-/** Return the researched score from 0 to 1 of `platformId` at `weekday` (0 for Monday) and `hour` in Singapore time, the window behind it, and the weight of the day that window starts on. */
+/** Return the researched score from 0 to 1 of `platformId` at `at`, read on the platform's `timeZone` clock, the window behind it, and the weight of that day. */
 export function getResearchedSlot(options: {
   platformId: PlatformId;
-  weekday: number;
-  hour: number;
+  at: Date;
 }) {
   const research = RESEARCHED_WINDOWS[options.platformId];
-  const matches = research.hours.flatMap((window) =>
-    [0, 1].flatMap((daysBack) => {
-      const windowHour = options.hour + 24 * daysBack;
-      if (windowHour < window.startHour || windowHour >= window.endHour) {
-        return [];
-      }
-      const dayWeight =
-        research.dayWeights[(options.weekday + 7 - daysBack) % 7];
-      return [{ window, dayWeight, score: dayWeight * window.strength }];
-    })
+  const parts = getZoneParts({ date: options.at, timeZone: research.timeZone });
+  const dayWeight = research.dayWeights[parts.weekday];
+  const window = maxBy(
+    research.hours.filter(
+      (hours) => parts.hour >= hours.startHour && parts.hour < hours.endHour
+    ),
+    (hours) => hours.strength
   );
-  const best = maxBy(matches, (match) => match.score);
-  return (
-    best ?? {
-      window: undefined,
-      dayWeight: research.dayWeights[options.weekday],
-      score: 0,
-    }
-  );
+  return {
+    window,
+    dayWeight,
+    score: window === undefined ? 0 : dayWeight * window.strength,
+  };
 }

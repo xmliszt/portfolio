@@ -5,6 +5,8 @@ import { getHourHeat } from "./get-hour-heat";
 import type { PlatformId } from "./platforms";
 import type { MetricCheckpoint, StatMetric, StatPost } from "./stats-types";
 
+const WEEK_OF = new Date("2026-11-11T04:00:00Z");
+
 function buildPost(options: {
   id: string;
   platform?: PlatformId;
@@ -14,6 +16,7 @@ function buildPost(options: {
   return {
     id: options.id,
     platform: options.platform ?? "x",
+    kind: "post",
     postedAt: options.postedAt,
     hashtags: options.hashtags ?? [],
     body: "",
@@ -44,7 +47,12 @@ function buildMetric(options: {
 }
 
 test("uses researched day weight times hour strength before a platform has 10 measured posts", () => {
-  const heat = getHourHeat({ posts: [], metrics: [], platformId: "x" });
+  const heat = getHourHeat({
+    posts: [],
+    metrics: [],
+    platformId: "x",
+    weekOf: WEEK_OF,
+  });
   assert.equal(heat.kind, "researched");
   assert.equal(heat.cells.length, 7);
   assert.ok(heat.cells.every((day) => day.length === 24));
@@ -55,12 +63,22 @@ test("uses researched day weight times hour strength before a platform has 10 me
 });
 
 test("carries a window past midnight with the weight of the day it starts on", () => {
-  const heat = getHourHeat({ posts: [], metrics: [], platformId: "instagram" });
+  const heat = getHourHeat({
+    posts: [],
+    metrics: [],
+    platformId: "instagram",
+    weekOf: WEEK_OF,
+  });
   assert.equal(heat.cells[2][22], 1);
   assert.equal(heat.cells[3][0], 0.8);
   assert.equal(heat.cells[3][1], 0.8);
   assert.equal(heat.cells[2][2], 0);
-  const x = getHourHeat({ posts: [], metrics: [], platformId: "x" });
+  const x = getHourHeat({
+    posts: [],
+    metrics: [],
+    platformId: "x",
+    weekOf: WEEK_OF,
+  });
   assert.equal(x.cells[2][1], 0.6);
 });
 
@@ -69,6 +87,7 @@ test("takes the strongest overlapping window", () => {
     posts: [],
     metrics: [],
     platformId: "xiaohongshu",
+    weekOf: WEEK_OF,
   });
   assert.deepEqual(heat.cells[5].slice(19, 24), [0, 0.6, 1, 1, 0.6]);
 });
@@ -85,7 +104,12 @@ test("switches to the platform's own views at 10 measured posts", () => {
   const metrics = posts.map((post, index) =>
     buildMetric({ postId: post.id, views: (index + 1) * 100 })
   );
-  const heat = getHourHeat({ posts, metrics, platformId: "x" });
+  const heat = getHourHeat({
+    posts,
+    metrics,
+    platformId: "x",
+    weekOf: WEEK_OF,
+  });
   assert.equal(heat.kind, "own");
   assert.equal(heat.cells[0][21], 300);
   assert.equal(heat.cells[1][9], 800);
@@ -111,7 +135,18 @@ test("counts only posted posts on the platform with 24h views", () => {
     buildMetric({ postId: post.id, views: 100 })
   );
   assert.equal(
-    getHourHeat({ posts, metrics, platformId: "x" }).kind,
+    getHourHeat({ posts, metrics, platformId: "x", weekOf: WEEK_OF }).kind,
     "researched"
   );
+});
+
+test("moves US researched windows an hour earlier in SGT during US daylight saving time", () => {
+  const heat = getHourHeat({
+    posts: [],
+    metrics: [],
+    platformId: "instagram",
+    weekOf: new Date("2026-07-15T04:00:00Z"),
+  });
+  assert.equal(heat.cells[2][21], 1);
+  assert.equal(heat.cells[2][22], 0.8);
 });

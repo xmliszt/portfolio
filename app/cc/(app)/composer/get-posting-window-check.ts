@@ -3,7 +3,7 @@ import maxBy from "lodash/maxBy.js";
 import { describeSlot } from "@/lib/cc/describe-slot";
 import { formatSgt } from "@/lib/cc/format-sgt";
 import { getResearchedSlot } from "@/lib/cc/get-researched-slot";
-import { getSgtParts } from "@/lib/cc/get-sgt-parts";
+import { getSgtWindow } from "@/lib/cc/get-sgt-window";
 import { type PlatformId, PLATFORMS } from "@/lib/cc/platforms";
 import { RESEARCHED_WINDOWS } from "@/lib/cc/researched-windows";
 
@@ -31,26 +31,33 @@ function formatWeekdays(weekdays: readonly number[]) {
 
 const PASS_SCORE = 0.5;
 
-function formatBest(platformId: PlatformId) {
-  const research = RESEARCHED_WINDOWS[platformId];
+function formatBest(options: { platformId: PlatformId; at: Date }) {
+  const research = RESEARCHED_WINDOWS[options.platformId];
   const weights = research.dayWeights;
   const maxWeight = Math.max(...weights);
   const bestDays = weights.flatMap((weight, weekday) =>
     weight === maxWeight ? [weekday] : []
   );
   const window = maxBy(research.hours, (hours) => hours.strength);
-  return window === undefined
-    ? undefined
-    : `${formatWeekdays(bestDays)} ${formatHour(window.startHour)}–${formatHour(window.endHour)} SGT`;
+  if (window === undefined) return undefined;
+  const sgt = getSgtWindow({
+    window,
+    timeZone: research.timeZone,
+    at: options.at,
+  });
+  return `${formatWeekdays(bestDays)} ${formatHour(sgt.startHour)}–${formatHour(sgt.endHour)} SGT`;
 }
 
-/** Return the check of `scheduledAt` against the platform's researched day weights and hour windows, or a manual reminder when the platform has no hour windows. */
+/** Return the check of `scheduledAt` against the platform's researched day weights and hour windows, with the best window in Singapore time on `scheduledAt` or else `now`, or a manual reminder when the platform has no hour windows. */
 export function getPostingWindowCheck(options: {
   platformId: PlatformId;
   scheduledAt: string | null;
+  now: Date;
 }): PreflightCheck {
   const label = "Posting window";
-  const best = formatBest(options.platformId);
+  const date =
+    options.scheduledAt === null ? options.now : new Date(options.scheduledAt);
+  const best = formatBest({ platformId: options.platformId, at: date });
   if (best === undefined) {
     return {
       kind: "manual",
@@ -68,13 +75,7 @@ export function getPostingWindowCheck(options: {
       why: `Not scheduled. Best: ${best}.`,
     };
   }
-  const date = new Date(options.scheduledAt);
-  const parts = getSgtParts(date);
-  const slot = getResearchedSlot({
-    platformId: options.platformId,
-    weekday: parts.weekday,
-    hour: parts.hour,
-  });
+  const slot = getResearchedSlot({ platformId: options.platformId, at: date });
   const description = describeSlot({
     platformId: options.platformId,
     at: date,

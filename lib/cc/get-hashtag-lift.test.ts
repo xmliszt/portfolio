@@ -14,6 +14,7 @@ function buildPost(options: {
   return {
     id: options.id,
     platform: options.platform ?? "x",
+    kind: "post",
     postedAt: options.postedAt,
     hashtags: options.hashtags ?? [],
     body: "",
