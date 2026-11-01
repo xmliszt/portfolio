@@ -2,6 +2,7 @@
 
 import type React from "react";
 import { useEffect, useRef, useState } from "react";
+import { motion, useReducedMotion, type Variants } from "motion/react";
 
 import { FOCUS_RING_CLASS } from "@/app/paws/_ui/focus-ring-class";
 import { TOY_ITEMS, type ToyItemId } from "@/lib/paws/sim/toy-items";
@@ -25,9 +26,53 @@ type ToyTrayProps = {
   onKeyPick: (itemId: ToyItemId) => void;
 };
 
-/** Render the room's tray of toys a visitor can bring in, one button per toy in `TOY_ITEMS`: a row on wider screens, and on phones a button that opens the toys as a named list above it, closing when one is picked or on a tap elsewhere. Toys in `unavailableIds` are greyed out and cannot be picked, and the toy `heldId` floats up while it waits to be put down. */
+const RISE_LIST: Variants = {
+  open: {
+    opacity: 1,
+    scale: 1,
+    y: 0,
+    visibility: "visible",
+    transition: {
+      type: "spring",
+      stiffness: 520,
+      damping: 36,
+      staggerChildren: 0.03,
+      staggerDirection: -1,
+    },
+  },
+  closed: {
+    opacity: 0,
+    scale: 0.92,
+    y: 12,
+    transition: { duration: 0.16, ease: "easeIn" },
+    transitionEnd: { visibility: "hidden" },
+  },
+};
+
+const RISE_ITEM: Variants = {
+  open: {
+    opacity: 1,
+    y: 0,
+    transition: { type: "spring", stiffness: 600, damping: 34 },
+  },
+  closed: { opacity: 0, y: 10, transition: { duration: 0.1 } },
+};
+
+const FADE_LIST: Variants = {
+  open: { opacity: 1, visibility: "visible", transition: { duration: 0.12 } },
+  closed: {
+    opacity: 0,
+    transition: { duration: 0.12 },
+    transitionEnd: { visibility: "hidden" },
+  },
+};
+
+const FADE_ITEM: Variants = { open: { opacity: 1 }, closed: { opacity: 1 } };
+
+/** Render the room's tray of toys a visitor can bring in, one button per toy in `TOY_ITEMS`: a row on wider screens, and on phones a basket button that empties as the toys rise out of it into a named list above, which closes when one is picked or on a tap elsewhere. Toys in `unavailableIds` are greyed out and cannot be picked, and the toy `heldId` floats up while it waits to be put down. */
 export function ToyTray(props: ToyTrayProps) {
   const rootRef = useRef<HTMLDivElement>(null);
+  const isReduced = useReducedMotion() ?? false;
   const [isOpen, setIsOpen] = useState(false);
   const [seenHeldId, setSeenHeldId] = useState(props.heldId);
   if (props.heldId !== seenHeldId) {
@@ -56,18 +101,23 @@ export function ToyTray(props: ToyTrayProps) {
   }
 
   return (
-    <div ref={rootRef} className="flex flex-col items-end gap-y-2">
+    <div ref={rootRef} className="relative flex flex-col items-end gap-y-2">
       {props.heldId !== undefined && (
         <p className="bg-[var(--pw-paper)] px-2 py-1 text-[12px] text-[var(--pw-ink)]">
           {props.hint}
         </p>
       )}
-      <div
+      <motion.div
         role="toolbar"
         aria-label={props.label}
+        initial={false}
+        animate={isOpen ? "open" : "closed"}
+        variants={isReduced ? FADE_LIST : RISE_LIST}
+        style={{ transformOrigin: "bottom right" }}
         className={cn(
-          isOpen ? "flex" : "hidden",
-          "flex-col gap-y-1 border-[1.5px] border-[var(--pw-ink)] bg-[var(--pw-paper)] p-1 sm:flex sm:flex-row sm:items-center sm:gap-x-1"
+          "absolute right-0 bottom-full mb-2 flex flex-col gap-y-1 border-[1.5px] border-[var(--pw-ink)] bg-[var(--pw-paper)] p-1",
+          !isOpen && "pointer-events-none",
+          "sm:pointer-events-auto sm:!visible sm:static sm:mb-0 sm:!transform-none sm:flex-row sm:items-center sm:gap-x-1 sm:!opacity-100"
         )}
       >
         {TOY_ITEMS.map((item) => {
@@ -85,7 +135,11 @@ export function ToyTray(props: ToyTrayProps) {
             props.onKeyPick(item.id);
           }
           return (
-            <div key={item.id} className="group/toy relative">
+            <motion.div
+              key={item.id}
+              variants={isReduced ? FADE_ITEM : RISE_ITEM}
+              className="group/toy relative sm:!transform-none sm:!opacity-100"
+            >
               <button
                 type="button"
                 disabled={isUnavailable}
@@ -128,10 +182,10 @@ export function ToyTray(props: ToyTrayProps) {
                   )}
                 </span>
               )}
-            </div>
+            </motion.div>
           );
         })}
-      </div>
+      </motion.div>
       <button
         type="button"
         aria-label={props.label}
@@ -143,7 +197,7 @@ export function ToyTray(props: ToyTrayProps) {
           isOpen && "bg-[var(--pw-paper-deep)]"
         )}
       >
-        <ToyBasketIcon className="size-8" />
+        <ToyBasketIcon className="size-8" empty={isOpen} />
       </button>
     </div>
   );
