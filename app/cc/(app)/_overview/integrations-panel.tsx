@@ -1,0 +1,144 @@
+"use client";
+
+import { useState, useTransition } from "react";
+
+import { CcButton } from "@/app/cc/_ui/cc-button";
+import { Panel } from "@/app/cc/_ui/panel";
+import { disconnectThreads } from "@/app/cc/(app)/_actions/disconnect-threads";
+import { THREADS_REDIRECT_URI } from "@/lib/cc/threads/threads-api";
+
+import type { ThreadsStatus } from "./get-threads-status";
+
+type IntegrationsPanelProps = {
+  threads: ThreadsStatus;
+};
+
+export function IntegrationsPanel(props: IntegrationsPanelProps) {
+  const [error, setError] = useState<string | undefined>(undefined);
+  const [isPending, startTransition] = useTransition();
+
+  function handleDisconnect() {
+    if (!window.confirm("Disconnect Threads?")) return;
+    startTransition(async () => {
+      try {
+        await disconnectThreads();
+        setError(undefined);
+      } catch {
+        setError("Couldn't disconnect. Try again.");
+      }
+    });
+  }
+
+  function renderConnectForm(label: string) {
+    return (
+      <form action="/api/cc/threads/connect" method="get">
+        <CcButton type="submit" variant="primary">
+          {label}
+        </CcButton>
+      </form>
+    );
+  }
+
+  return (
+    <Panel
+      title="Integrations"
+      aside="Threads · daily sync at 10:20 SGT"
+      className="flex-[1_1_100%]"
+      bodyClassName="flex flex-col gap-y-3 px-[18px] py-4"
+    >
+      {(() => {
+        switch (props.threads.kind) {
+          case "not-set-up":
+            return (
+              <>
+                <p className="text-cc-text-2 leading-relaxed">
+                  Threads is not set up.
+                </p>
+                <ol className="text-muted-foreground flex list-decimal flex-col gap-y-1 pl-5 text-[12px] leading-relaxed">
+                  <li>
+                    Create a Meta app with the Threads use case and add{" "}
+                    <code>{THREADS_REDIRECT_URI}</code> as a redirect callback
+                    URL.
+                  </li>
+                  <li>
+                    Give it threads_basic, threads_manage_insights and
+                    threads_keyword_search.
+                  </li>
+                  <li>
+                    Set <code>CC_THREADS_APP_ID</code> and{" "}
+                    <code>CC_THREADS_APP_SECRET</code> in Vercel, redeploy, then
+                    connect here.
+                  </li>
+                </ol>
+              </>
+            );
+          case "not-connected":
+            return (
+              <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
+                {renderConnectForm("CONNECT THREADS")}
+                <span className="text-muted-foreground text-[12px]">
+                  Logs views on your Threads posts and powers “Check tags” in
+                  the Composer.
+                </span>
+              </div>
+            );
+          case "expired":
+            return (
+              <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
+                <span className="flex flex-col gap-y-0.5">
+                  <span className="font-bold">
+                    Threads · @{props.threads.username ?? "unknown"}
+                  </span>
+                  <span className="text-cc-warn text-[11px]">
+                    Token expired or revoked. Reconnect to resume the sync.
+                  </span>
+                </span>
+                {renderConnectForm("RECONNECT")}
+                <CcButton
+                  type="button"
+                  variant="warn"
+                  onClick={handleDisconnect}
+                  disabled={isPending}
+                >
+                  DISCONNECT
+                </CcButton>
+              </div>
+            );
+          case "connected":
+            return (
+              <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
+                <span className="flex flex-col gap-y-0.5">
+                  <span className="font-bold">
+                    Threads · @{props.threads.username ?? "unknown"}
+                  </span>
+                  <span className="text-muted-foreground text-[11px]">
+                    {props.threads.expiresLabel === undefined
+                      ? "Token expiry unknown"
+                      : `Token expires ${props.threads.expiresLabel} SGT · refreshed when under 10 days are left`}
+                  </span>
+                </span>
+                {renderConnectForm("RECONNECT")}
+                <CcButton
+                  type="button"
+                  variant="warn"
+                  onClick={handleDisconnect}
+                  disabled={isPending}
+                >
+                  DISCONNECT
+                </CcButton>
+              </div>
+            );
+          default: {
+            const unhandled: never = props.threads;
+            return unhandled;
+          }
+        }
+      })()}
+      {error !== undefined && (
+        <span role="alert" className="text-cc-warn text-[11px]">
+          {error}
+        </span>
+      )}
+    </Panel>
+  );
+}

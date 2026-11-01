@@ -26,6 +26,7 @@ import { AbPairsPanel } from "./ab-pairs-panel";
 import { CumulativeViewsChart } from "./cumulative-views-chart";
 import { HashtagLiftPanel } from "./hashtag-lift-panel";
 import { HourHeatPanel } from "./hour-heat-panel";
+import { KeywordsSection } from "./keywords-section";
 import { LearningsPanel } from "./learnings-panel";
 import { PlatformTable } from "./platform-table";
 
@@ -36,7 +37,12 @@ export default async function InsightsPage() {
   await requireCcOwner();
   const campaign = await getCurrentCampaign();
   if (campaign === undefined) {
-    return <PageHeader eyebrow="NO CAMPAIGN" title="Insights · nothing yet" />;
+    return (
+      <>
+        <PageHeader eyebrow="NO CAMPAIGN" title="Insights · nothing yet" />
+        <KeywordsSection />
+      </>
+    );
   }
   const [postRows, notes] = await Promise.all([
     listCampaignPosts({ campaignId: campaign.id }),
@@ -210,6 +216,7 @@ export default async function InsightsPage() {
           }))}
         />
       </div>
+      <KeywordsSection />
     </>
   );
 }
