@@ -41,6 +41,8 @@ export type Platform = {
   metrics: readonly MetricField[];
   composeUrl: string;
   postsFromPhone: boolean;
+  /** `true` if the campaign planner never moves this platform's posts; `false` when it may. */
+  plannerPinned: boolean;
   /** Where on the platform a post goes, stored in `posts.target`, or `undefined` when the platform has no such choice. */
   target: { label: string; placeholder: string } | undefined;
 };
@@ -57,6 +59,7 @@ export const PLATFORMS = {
     metrics: ["upvotes", "comments", "rank", "clicks"],
     composeUrl: "https://www.producthunt.com/posts/new",
     postsFromPhone: false,
+    plannerPinned: true,
     target: undefined,
   },
   x: {
@@ -70,6 +73,7 @@ export const PLATFORMS = {
     metrics: ["views", "likes", "comments", "shares", "saves", "clicks"],
     composeUrl: "https://x.com/intent/post",
     postsFromPhone: false,
+    plannerPinned: false,
     target: undefined,
   },
   threads: {
@@ -83,6 +87,7 @@ export const PLATFORMS = {
     metrics: ["views", "likes", "comments", "shares"],
     composeUrl: "https://www.threads.net/intent/post",
     postsFromPhone: false,
+    plannerPinned: false,
     target: { label: "TOPIC OR COMMUNITY", placeholder: "Digital Art" },
   },
   instagram: {
@@ -96,6 +101,7 @@ export const PLATFORMS = {
     metrics: ["views", "likes", "comments", "shares", "saves"],
     composeUrl: "https://www.instagram.com/",
     postsFromPhone: true,
+    plannerPinned: false,
     target: undefined,
   },
   tiktok: {
@@ -109,6 +115,7 @@ export const PLATFORMS = {
     metrics: ["views", "likes", "comments", "shares", "saves"],
     composeUrl: "https://www.tiktok.com/upload",
     postsFromPhone: true,
+    plannerPinned: false,
     target: undefined,
   },
   reddit: {
@@ -122,6 +129,7 @@ export const PLATFORMS = {
     metrics: ["views", "upvotes", "comments", "shares"],
     composeUrl: "https://www.reddit.com/submit",
     postsFromPhone: false,
+    plannerPinned: false,
     target: { label: "SUBREDDIT", placeholder: "r/SideProject" },
   },
   xiaohongshu: {
@@ -135,6 +143,7 @@ export const PLATFORMS = {
     metrics: ["views", "likes", "saves", "comments", "shares"],
     composeUrl: "https://creator.xiaohongshu.com/publish/publish",
     postsFromPhone: true,
+    plannerPinned: false,
     target: undefined,
   },
   wechat_channels: {
@@ -148,6 +157,7 @@ export const PLATFORMS = {
     metrics: ["views", "likes", "comments", "shares"],
     composeUrl: "https://channels.weixin.qq.com/platform/post/create",
     postsFromPhone: true,
+    plannerPinned: false,
     target: undefined,
   },
   wechat_moments: {
@@ -161,6 +171,7 @@ export const PLATFORMS = {
     metrics: ["likes", "comments"],
     composeUrl: "https://weixin.qq.com/",
     postsFromPhone: true,
+    plannerPinned: false,
     target: undefined,
   },
   youtube: {
@@ -174,6 +185,7 @@ export const PLATFORMS = {
     metrics: ["views", "likes", "comments"],
     composeUrl: "https://studio.youtube.com/",
     postsFromPhone: false,
+    plannerPinned: true,
     target: undefined,
   },
   linkedin: {
@@ -187,6 +199,7 @@ export const PLATFORMS = {
     metrics: ["views", "likes", "comments", "shares", "clicks"],
     composeUrl: "https://www.linkedin.com/feed/?shareActive=true",
     postsFromPhone: false,
+    plannerPinned: false,
     target: undefined,
   },
 } as const satisfies { [id in PlatformId]: Platform };

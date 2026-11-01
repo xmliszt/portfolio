@@ -6,7 +6,7 @@ import { requireCcOwner } from "@/lib/cc/auth/require-cc-owner";
 import { syncPostReminders } from "@/lib/cc/data/sync-post-reminders";
 import { createCcServiceClient } from "@/lib/cc/supabase/create-cc-service-client";
 
-/** Move an unposted post to `scheduledAt` with status "scheduled" and its unposted replies and comments by the same amount in one database call, resync their reminders, and return the moved post. */
+/** Move an unposted post to `scheduledAt` with status "scheduled" and its unposted replies and comments by the same amount in one database call, mark it `scheduled_by = 'user'`, resync their reminders, and return the moved post. */
 export async function schedulePost(options: {
   postId: string;
   scheduledAt: string;
@@ -16,6 +16,7 @@ export async function schedulePost(options: {
   const { data: moved, error } = await supabase.rpc("reschedule_post", {
     p_post_id: options.postId,
     p_scheduled_at: new Date(options.scheduledAt).toISOString(),
+    p_scheduled_by: "user",
   });
   if (error) throw error;
   await Promise.all(

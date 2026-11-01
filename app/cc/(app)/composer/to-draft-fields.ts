@@ -12,5 +12,6 @@ export function toDraftFields(post: PostRow): DraftFields {
     target: post.target ?? "",
     link: post.link ?? "",
     assets: parsePostAssets(post.assets),
+    wave: post.wave === null ? "" : String(post.wave),
   };
 }

@@ -21,6 +21,7 @@ export type Database = {
           link: string | null;
           name: string;
           notes: string | null;
+          plan: Json;
           starts_at: string | null;
         };
         Insert: {
@@ -29,6 +30,7 @@ export type Database = {
           link?: string | null;
           name: string;
           notes?: string | null;
+          plan?: Json;
           starts_at?: string | null;
         };
         Update: {
@@ -37,6 +39,7 @@ export type Database = {
           link?: string | null;
           name?: string;
           notes?: string | null;
+          plan?: Json;
           starts_at?: string | null;
         };
         Relationships: [];
@@ -217,6 +220,7 @@ export type Database = {
           platform: string;
           posted_at: string | null;
           scheduled_at: string | null;
+          scheduled_by: string;
           status: string;
           target: string | null;
           title: string | null;
@@ -224,6 +228,7 @@ export type Database = {
           url: string | null;
           variant: string;
           variant_group: string | null;
+          wave: number | null;
         };
         Insert: {
           assets?: Json;
@@ -238,6 +243,7 @@ export type Database = {
           platform: string;
           posted_at?: string | null;
           scheduled_at?: string | null;
+          scheduled_by?: string;
           status?: string;
           target?: string | null;
           title?: string | null;
@@ -245,6 +251,7 @@ export type Database = {
           url?: string | null;
           variant?: string;
           variant_group?: string | null;
+          wave?: number | null;
         };
         Update: {
           assets?: Json;
@@ -259,6 +266,7 @@ export type Database = {
           platform?: string;
           posted_at?: string | null;
           scheduled_at?: string | null;
+          scheduled_by?: string;
           status?: string;
           target?: string | null;
           title?: string | null;
@@ -266,6 +274,7 @@ export type Database = {
           url?: string | null;
           variant?: string;
           variant_group?: string | null;
+          wave?: number | null;
         };
         Relationships: [
           {
@@ -331,7 +340,11 @@ export type Database = {
     };
     Functions: {
       reschedule_post: {
-        Args: { p_post_id: string; p_scheduled_at: string };
+        Args: {
+          p_post_id: string;
+          p_scheduled_at: string;
+          p_scheduled_by?: string;
+        };
         Returns: {
           assets: Json;
           body: string;
@@ -345,6 +358,7 @@ export type Database = {
           platform: string;
           posted_at: string | null;
           scheduled_at: string | null;
+          scheduled_by: string;
           status: string;
           target: string | null;
           title: string | null;
@@ -352,6 +366,7 @@ export type Database = {
           url: string | null;
           variant: string;
           variant_group: string | null;
+          wave: number | null;
         }[];
         SetofOptions: {
           from: "*";

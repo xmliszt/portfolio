@@ -7,4 +7,6 @@ export type DraftFields = {
   target: string;
   link: string;
   assets: readonly PostAsset[];
+  /** The planner wave as select text, empty for the wave the assets suggest. */
+  wave: string;
 };

@@ -25,6 +25,7 @@ type EditablePostFields = Partial<
     | "url"
     | "variant"
     | "variant_group"
+    | "wave"
   >
 >;
 

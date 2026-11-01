@@ -1,10 +1,11 @@
+import maxBy from "lodash/maxBy.js";
+
+import { describeSlot } from "@/lib/cc/describe-slot";
 import { formatSgt } from "@/lib/cc/format-sgt";
+import { getResearchedSlot } from "@/lib/cc/get-researched-slot";
 import { getSgtParts } from "@/lib/cc/get-sgt-parts";
 import { type PlatformId, PLATFORMS } from "@/lib/cc/platforms";
-import {
-  RESEARCHED_WINDOWS,
-  type ResearchedWindow,
-} from "@/lib/cc/researched-windows";
+import { RESEARCHED_WINDOWS } from "@/lib/cc/researched-windows";
 
 import type { PreflightCheck } from "./preflight-check";
 
@@ -28,34 +29,28 @@ function formatWeekdays(weekdays: readonly number[]) {
     : weekdays.map((weekday) => WEEKDAY_LABELS.at(weekday)).join(", ");
 }
 
-function formatWindow(window: ResearchedWindow) {
-  return `${formatWeekdays(window.weekdays)} ${formatHour(window.startHour)}–${formatHour(window.endHour)}`;
+const PASS_SCORE = 0.5;
+
+function formatBest(platformId: PlatformId) {
+  const research = RESEARCHED_WINDOWS[platformId];
+  const weights = research.dayWeights;
+  const maxWeight = Math.max(...weights);
+  const bestDays = weights.flatMap((weight, weekday) =>
+    weight === maxWeight ? [weekday] : []
+  );
+  const window = maxBy(research.hours, (hours) => hours.strength);
+  return window === undefined
+    ? undefined
+    : `${formatWeekdays(bestDays)} ${formatHour(window.startHour)}–${formatHour(window.endHour)} SGT`;
 }
 
-function isInWindow(options: { window: ResearchedWindow; date: Date }) {
-  const parts = getSgtParts(options.date);
-  const hour = parts.hour + parts.minute / 60;
-  const window = options.window;
-  const isSameDay =
-    window.weekdays.includes(parts.weekday) &&
-    hour >= window.startHour &&
-    hour < window.endHour;
-  const isNextDay =
-    window.endHour > 24 &&
-    window.weekdays.includes((parts.weekday + 6) % 7) &&
-    hour < window.endHour - 24;
-  return isSameDay || isNextDay;
-}
-
-/** Return the check of `scheduledAt` against the platform's `RESEARCHED_WINDOWS`, or a manual reminder when the platform has none. */
+/** Return the check of `scheduledAt` against the platform's researched day weights and hour windows, or a manual reminder when the platform has no hour windows. */
 export function getPostingWindowCheck(options: {
   platformId: PlatformId;
   scheduledAt: string | null;
 }): PreflightCheck {
-  const windows: readonly ResearchedWindow[] =
-    RESEARCHED_WINDOWS[options.platformId];
   const label = "Posting window";
-  const best = windows.toSorted((a, b) => b.strength - a.strength).at(0);
+  const best = formatBest(options.platformId);
   if (best === undefined) {
     return {
       kind: "manual",
@@ -70,25 +65,37 @@ export function getPostingWindowCheck(options: {
       id: "window",
       label,
       passed: false,
-      why: `Not scheduled. Best window: ${formatWindow(best)} SGT.`,
+      why: `Not scheduled. Best: ${best}.`,
     };
   }
   const date = new Date(options.scheduledAt);
-  const match = windows.find((window) => isInWindow({ window, date }));
-  const when = formatSgt({ date, pattern: "EEE dd MMM HH:mm" });
-  return match === undefined
-    ? {
-        kind: "computed",
-        id: "window",
-        label,
-        passed: false,
-        why: `${when} SGT is outside the researched windows. Best: ${formatWindow(best)}.`,
-      }
+  const parts = getSgtParts(date);
+  const slot = getResearchedSlot({
+    platformId: options.platformId,
+    weekday: parts.weekday,
+    hour: parts.hour,
+  });
+  const description = describeSlot({
+    platformId: options.platformId,
+    at: date,
+    source: "researched",
+  });
+  if (slot.window === undefined) {
+    return {
+      kind: "computed",
+      id: "window",
+      label,
+      passed: false,
+      why: `${formatSgt({ date, pattern: "EEE dd MMM HH:mm" })} SGT is outside the researched windows. Best: ${best}.`,
+    };
+  }
+  return slot.score >= PASS_SCORE
+    ? { kind: "computed", id: "window", label, passed: true, why: description }
     : {
         kind: "computed",
         id: "window",
         label,
-        passed: true,
-        why: `${when} SGT is inside ${formatWindow(match)}.`,
+        passed: false,
+        why: `${description}. Best: ${best}.`,
       };
 }

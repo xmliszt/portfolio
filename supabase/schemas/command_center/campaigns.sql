@@ -4,6 +4,7 @@ create table "command_center"."campaigns" (
   "link" text,
   "starts_at" timestamptz,
   "notes" text,
+  "plan" jsonb not null default '{}',
   "created_at" timestamptz not null default now()
 );
 

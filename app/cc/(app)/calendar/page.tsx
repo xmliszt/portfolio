@@ -100,7 +100,7 @@ export default async function CalendarPage(props: CalendarPageProps) {
   );
   const busiestPlatformId = maxBy(
     PLATFORM_IDS.filter(
-      (id) => postCounts[id] > 0 && RESEARCHED_WINDOWS[id].length > 0
+      (id) => postCounts[id] > 0 && RESEARCHED_WINDOWS[id].hours.length > 0
     ),
     (id) => postCounts[id]
   );
@@ -235,6 +235,7 @@ export default async function CalendarPage(props: CalendarPageProps) {
         isPlatformId(editPost.platform) && (
           <PostEditor
             key={`${editPost.id}-${editPost.scheduled_at}-${editPost.status}`}
+            campaignId={campaign.id}
             post={{
               id: editPost.id,
               platformId: editPost.platform,

@@ -6,6 +6,7 @@ create table "command_center"."posts" (
   "parent_post_id" uuid references "command_center"."posts" ("id") on delete cascade,
   "target" text,
   "scheduled_at" timestamptz,
+  "scheduled_by" text not null default 'user' check ("scheduled_by" in ('user', 'planner')),
   "posted_at" timestamptz,
   "status" text not null default 'draft' check ("status" in ('draft', 'scheduled', 'posted', 'skipped')),
   "title" text,
@@ -16,6 +17,7 @@ create table "command_center"."posts" (
   "url" text,
   "variant" text not null default 'mine' check ("variant" in ('mine', 'chatgpt')),
   "variant_group" uuid,
+  "wave" smallint,
   "created_at" timestamptz not null default now(),
   "updated_at" timestamptz not null default now()
 );
