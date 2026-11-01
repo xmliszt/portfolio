@@ -8,6 +8,8 @@ import { PostCard } from "@/app/posts/post-card";
 
 import { posts, tags } from "#site/content";
 
+export const revalidate = 3600;
+
 interface TagProps {
   params: Promise<{
     slug: string;
@@ -33,7 +35,7 @@ export async function generateMetadata(props: TagProps): Promise<Metadata> {
     title: `posts | ${params.slug}`,
     description: `${params.postCount} posts tagged with ${params.slug}`,
     alternates: {
-      canonical: `https://www.liyuxuan.dev/tags/${params.slug}`,
+      canonical: `https://liyuxuan.dev/tags/${params.slug}`,
     },
     openGraph: {
       ...openGraph,
@@ -44,8 +46,8 @@ export async function generateMetadata(props: TagProps): Promise<Metadata> {
 }
 
 export async function generateStaticParams() {
-  return posts.map((post) => ({
-    slug: post.slug,
+  return tags.map((tag) => ({
+    slug: tag.slug,
   }));
 }
 

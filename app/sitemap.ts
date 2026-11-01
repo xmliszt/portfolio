@@ -97,25 +97,25 @@ export default function sitemap(): MetadataRoute.Sitemap {
 
   const experimentsSiteMap: MetadataRoute.Sitemap = [
     {
-      url: "https://liyuxuan.dev/experiments/piano",
+      url: "https://liyuxuan.dev/playground/piano",
       lastModified: new Date(),
       changeFrequency: "always",
       priority: 1,
     },
     {
-      url: "https://liyuxuan.dev/experiments/dune-themed-light-dark-toggle",
+      url: "https://liyuxuan.dev/playground/dune-themed-light-dark-toggle",
       lastModified: new Date(),
       changeFrequency: "always",
       priority: 1,
     },
     {
-      url: "https://liyuxuan.dev/experiments/ascii-animated-effect",
+      url: "https://liyuxuan.dev/playground/ascii-animated-effect",
       lastModified: new Date(),
       changeFrequency: "always",
       priority: 1,
     },
     {
-      url: "https://liyuxuan.dev/experiments/wiggle-sticker-effect",
+      url: "https://liyuxuan.dev/playground/wiggle-sticker-effect",
       lastModified: new Date(),
       changeFrequency: "always",
       priority: 1,

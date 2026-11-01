@@ -36,7 +36,7 @@ export async function generateMetadata(props: Props): Promise<Metadata> {
   const documentTitle = documentTitles[params.slug] ?? params.slug;
   const title = `${startCase(documentTitle)} | ${app.name}`;
   const description = `${documentTitle} for ${app.name}. Learn about how we handle your data and the terms governing your use of ${app.name}.`;
-  const url = `https://www.liyuxuan.dev/apps/${params.app_id}/${params.slug}`;
+  const url = `https://liyuxuan.dev/apps/${params.app_id}/${params.slug}`;
 
   return {
     title,

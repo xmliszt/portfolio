@@ -10,11 +10,13 @@ import { PostCard } from "./post-card";
 
 import { posts } from "#site/content";
 
+export const revalidate = 3600;
+
 export function generateMetadata(): Metadata {
   return {
     title: "posts | 碎碎念",
     alternates: {
-      canonical: "https://www.liyuxuan.dev/posts",
+      canonical: "https://liyuxuan.dev/posts",
     },
     openGraph: {
       ...openGraph,

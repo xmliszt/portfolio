@@ -104,7 +104,7 @@ export async function generateMetadata(props: Props): Promise<Metadata> {
 
   const title = `FAQs | ${app.name}`;
   const description = `Frequently asked questions about ${app.name}. Find answers to common questions about features, subscription, iCloud sync, widgets, and more.`;
-  const url = `https://www.liyuxuan.dev/apps/${params.app_id}/faqs`;
+  const url = `https://liyuxuan.dev/apps/${params.app_id}/faqs`;
 
   return {
     title,

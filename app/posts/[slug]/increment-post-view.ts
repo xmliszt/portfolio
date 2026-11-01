@@ -1,4 +1,4 @@
-import { cookies } from "next/headers";
+"use server";
 
 import { createServiceRoleClient } from "@/lib/supabase/create-service-role-client";
 
@@ -7,9 +7,6 @@ type IncrementPostViewOptions = {
 };
 
 export async function incrementPostView(options: IncrementPostViewOptions) {
-  // Force revalidate the cache
-  await cookies();
-
   const supabase = createServiceRoleClient();
   const fetchCurrentViewResponse = await supabase
     .from("post_views")
