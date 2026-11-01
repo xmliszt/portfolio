@@ -38,8 +38,10 @@ export const RESEARCHED_WINDOWS = {
   wechat_channels: [
     { weekdays: EVERY_DAY, startHour: 21, endHour: 22, strength: 0.6 },
   ],
-  wechat_article: [
-    { weekdays: EVERY_DAY, startHour: 17, endHour: 23, strength: 1 },
+  wechat_moments: [
+    { weekdays: EVERY_DAY, startHour: 7, endHour: 9, strength: 0.6 },
+    { weekdays: EVERY_DAY, startHour: 12, endHour: 13, strength: 0.7 },
+    { weekdays: EVERY_DAY, startHour: 20, endHour: 23, strength: 1 },
   ],
   youtube: [],
 } as const satisfies { [id in PlatformId]: readonly ResearchedWindow[] };

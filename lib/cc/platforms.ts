@@ -7,7 +7,7 @@ export const PLATFORM_IDS = [
   "reddit",
   "xiaohongshu",
   "wechat_channels",
-  "wechat_article",
+  "wechat_moments",
   "youtube",
 ] as const;
 
@@ -139,17 +139,17 @@ export const PLATFORMS = {
     composeUrl: "https://channels.weixin.qq.com/platform/post/create",
     postsFromPhone: true,
   },
-  wechat_article: {
-    id: "wechat_article",
-    label: "公众号",
-    shortLabel: "公众号",
+  wechat_moments: {
+    id: "wechat_moments",
+    label: "朋友圈",
+    shortLabel: "朋友圈",
     colorVar: "--cc-platform-wechat",
     bodyLimit: undefined,
-    titleLimit: 64,
+    titleLimit: undefined,
     maxHashtags: 0,
-    metrics: ["views", "likes", "shares", "comments"],
-    composeUrl: "https://mp.weixin.qq.com/",
-    postsFromPhone: false,
+    metrics: ["likes", "comments"],
+    composeUrl: "https://weixin.qq.com/",
+    postsFromPhone: true,
   },
   youtube: {
     id: "youtube",

@@ -193,7 +193,7 @@ function getPlatformChecks(options: {
     case "tiktok":
     case "xiaohongshu":
     case "wechat_channels":
-    case "wechat_article":
+    case "wechat_moments":
     case "youtube":
       return [];
     default: {

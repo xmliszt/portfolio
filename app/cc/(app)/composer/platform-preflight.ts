@@ -169,23 +169,28 @@ export const PLATFORM_PREFLIGHT = {
       },
     ],
   },
-  wechat_article: {
-    hashtags: { min: 0, max: 0, why: "公众号 articles carry no hashtags." },
+  wechat_moments: {
+    hashtags: { min: 0, max: 0, why: "朋友圈 has no hashtags." },
     media: "image",
     audience: {
-      en: "friends who follow my 公众号",
-      zh: "关注我公众号的朋友",
+      en: "my friends on WeChat, who know me but not the project",
+      zh: "微信里认识我、但还不知道这个作品的朋友",
     },
     manualChecks: [
       {
-        id: "article-covers",
-        label: "首图 2.35:1 and 次条 1:1 covers",
-        why: "Other ratios get cropped in the chat list.",
+        id: "moments-fold",
+        label: "The point fits in the first 6 lines",
+        why: "朋友圈 folds longer text behind 全文.",
       },
       {
-        id: "article-summary",
-        label: "摘要 set (≤120)",
-        why: "The 摘要 shows under the title when the article is shared.",
+        id: "moments-media",
+        label: "Up to 9 images, or one short video",
+        why: "朋友圈 takes 9 images or one video; a long video is better shared from 视频号.",
+      },
+      {
+        id: "moments-link",
+        label: "Link in the first comment",
+        why: "Links in 朋友圈 text are not clickable; friends copy it from the comment.",
       },
     ],
   },
