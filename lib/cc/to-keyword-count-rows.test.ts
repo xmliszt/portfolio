@@ -63,3 +63,22 @@ test("returns no rows when the response has no data or no counts", () => {
     []
   );
 });
+
+test("reads the older tweet_count field", () => {
+  assert.deepEqual(
+    toKeywordCountRows({
+      keywordId: "k",
+      response: {
+        data: [
+          {
+            start: "2026-11-01T00:00:00.000Z",
+            end: "2026-11-02T00:00:00.000Z",
+            tweet_count: 3,
+          },
+        ],
+      },
+      fetchedAt: new Date("2026-11-02T02:10:00Z"),
+    }).map((row) => row.count),
+    [3]
+  );
+});
