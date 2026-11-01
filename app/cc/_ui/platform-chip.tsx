@@ -1,4 +1,4 @@
-import { PLATFORMS, type PlatformId } from "@/lib/cc/platforms";
+import { type PlatformId,PLATFORMS } from "@/lib/cc/platforms";
 
 type PlatformChipProps = {
   platformId: PlatformId;

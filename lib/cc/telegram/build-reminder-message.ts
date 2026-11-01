@@ -1,5 +1,5 @@
 import { CC_ORIGIN } from "@/lib/cc/cc-hosts";
-import { PLATFORMS, type MetricField, type PlatformId } from "@/lib/cc/platforms";
+import { type MetricField, type PlatformId,PLATFORMS } from "@/lib/cc/platforms";
 
 type ReminderPost = {
   id: string;

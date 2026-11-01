@@ -1,0 +1,119 @@
+import Link from "next/link";
+
+import { PageHeader } from "@/app/cc/_ui/page-header";
+import { Panel } from "@/app/cc/_ui/panel";
+import { requireCcOwner } from "@/lib/cc/auth/require-cc-owner";
+import { getCurrentCampaign } from "@/lib/cc/data/get-current-campaign";
+import { listCampaignPosts } from "@/lib/cc/data/list-campaign-posts";
+import { formatSgt } from "@/lib/cc/format-sgt";
+import { isPlatformId } from "@/lib/cc/is-platform-id";
+
+import { Composer } from "./composer";
+import { getComposerTabs } from "./get-composer-tabs";
+import { getSelectedPost } from "./get-selected-post";
+
+export const metadata = { title: "Composer" };
+
+type ComposerPageProps = {
+  searchParams: Promise<{ post?: string | string[] }>;
+};
+
+function getSgtDay(scheduledAt: string | null) {
+  return scheduledAt === null
+    ? undefined
+    : formatSgt({ date: new Date(scheduledAt), pattern: "yyyy-MM-dd" });
+}
+
+export default async function ComposerPage(props: ComposerPageProps) {
+  await requireCcOwner();
+  const searchParams = await props.searchParams;
+  const postParam =
+    typeof searchParams.post === "string" ? searchParams.post : undefined;
+  const header = (
+    <PageHeader
+      eyebrow={
+        <Link href="/" className="text-primary hover:underline">
+          ← OVERVIEW
+        </Link>
+      }
+      title="Composer · pre-flight"
+    />
+  );
+
+  const campaign = await getCurrentCampaign();
+  const posts =
+    campaign === undefined
+      ? []
+      : await listCampaignPosts({ campaignId: campaign.id });
+  const selected = getSelectedPost({
+    posts,
+    postId: postParam,
+    now: new Date(),
+  });
+  const post = selected.post;
+
+  if (
+    campaign === undefined ||
+    post === undefined ||
+    !isPlatformId(post.platform)
+  ) {
+    return (
+      <>
+        {header}
+        <Panel title="No drafts">
+          <p className="text-muted-foreground px-[18px] py-4">
+            {campaign === undefined
+              ? "There is no campaign yet."
+              : "This campaign has no posts yet. Schedule one from the Calendar."}
+          </p>
+        </Panel>
+      </>
+    );
+  }
+
+  const childPosts = posts.filter(
+    (row) => row.parent_post_id === post.id && row.variant === "mine"
+  );
+  const chatgptVariant =
+    post.variant_group === null
+      ? undefined
+      : posts.find(
+          (row) =>
+            row.variant === "chatgpt" &&
+            row.variant_group === post.variant_group
+        );
+  const postDay = getSgtDay(post.scheduled_at);
+  const sameDayTargets = posts
+    .filter(
+      (row) =>
+        row.id !== post.id &&
+        row.platform === post.platform &&
+        row.variant === "mine" &&
+        row.parent_post_id === null &&
+        row.status !== "skipped" &&
+        postDay !== undefined &&
+        getSgtDay(row.scheduled_at) === postDay
+    )
+    .map((row) => row.target ?? "another post");
+
+  return (
+    <>
+      {header}
+      <Composer
+        key={post.id}
+        campaign={{
+          id: campaign.id,
+          name: campaign.name,
+          notes: campaign.notes,
+        }}
+        post={post}
+        platformId={post.platform}
+        childPosts={childPosts}
+        chatgptVariant={chatgptVariant}
+        tabs={getComposerTabs(posts)}
+        focusPostId={selected.focusPostId}
+        sameDayTargets={sameDayTargets}
+      />
+    </>
+  );
+}

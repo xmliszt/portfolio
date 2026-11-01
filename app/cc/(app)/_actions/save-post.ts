@@ -3,8 +3,8 @@
 import { revalidatePath } from "next/cache";
 
 import { requireCcOwner } from "@/lib/cc/auth/require-cc-owner";
-import { syncPostReminders } from "@/lib/cc/data/sync-post-reminders";
 import type { PostRow } from "@/lib/cc/data/cc-rows";
+import { syncPostReminders } from "@/lib/cc/data/sync-post-reminders";
 import { isPlatformId } from "@/lib/cc/is-platform-id";
 import { createCcServiceClient } from "@/lib/cc/supabase/create-cc-service-client";
 

@@ -34,10 +34,21 @@
   color: hsl(var(--foreground));
 }
 
-.cc-theme *,
-.cc-theme ::before,
-.cc-theme ::after {
-  border-color: hsl(var(--border));
+@layer base {
+  :where(.cc-theme) *,
+  :where(.cc-theme) ::before,
+  :where(.cc-theme) ::after {
+    border-color: hsl(var(--border));
+  }
+
+  :where(.cc-theme) :is(h1, h2, h3, h4) {
+    margin: 0;
+    user-select: text;
+  }
+
+  :where(.cc-theme) :is(button, a) {
+    cursor: pointer;
+  }
 }
 
 .cc-theme {
@@ -52,22 +63,24 @@
   --cc-platform-youtube: 0 100% 64%;
 }
 
-.cc-theme .cc-input {
-  min-height: 44px;
-  width: 100%;
-  border: 1px solid hsl(var(--border));
-  background: hsl(var(--cc-panel-2));
-  padding: 0 12px;
-  color: hsl(var(--foreground));
-  font: inherit;
-}
+@layer components {
+  .cc-theme .cc-input {
+    min-height: 44px;
+    width: 100%;
+    border: 1px solid hsl(var(--border));
+    background: hsl(var(--cc-panel-2));
+    padding: 0 12px;
+    color: hsl(var(--foreground));
+    font: inherit;
+  }
 
-.cc-theme textarea.cc-input {
-  padding: 10px 12px;
-  line-height: 1.6;
-}
+  .cc-theme textarea.cc-input {
+    padding: 10px 12px;
+    line-height: 1.6;
+  }
 
-.cc-theme .cc-input:focus-visible {
-  outline: 1px solid hsl(var(--primary));
-  outline-offset: 0;
+  .cc-theme .cc-input:focus-visible {
+    outline: 1px solid hsl(var(--primary));
+    outline-offset: 0;
+  }
 }
