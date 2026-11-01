@@ -50,6 +50,25 @@ export function buildReminderMessage(input: ReminderMessageInput) {
   const composerUrl = `${CC_ORIGIN}/composer?post=${input.post.id}`;
   switch (input.kind) {
     case "post": {
+      if (input.post.platformId === "producthunt") {
+        return {
+          text: [
+            `🚀 Launch goes live · Product Hunt · ${input.timeLabel}`,
+            ...(name === "" ? [] : [name]),
+            "",
+            "Product Hunt publishes the scheduled launch by itself. Be around to reply to the first comments, then share the link.",
+          ].join("\n"),
+          buttons:
+            input.post.url === null
+              ? [
+                  {
+                    text: "Open Product Hunt",
+                    url: "https://www.producthunt.com/",
+                  },
+                ]
+              : [{ text: "Open the launch", url: input.post.url }],
+        };
+      }
       const preview =
         input.post.body.length > PREVIEW_LENGTH
           ? `${input.post.body.slice(0, PREVIEW_LENGTH)}…`
