@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useTransition } from "react";
+import Link from "next/link";
 
 import { CcButton } from "@/app/cc/_ui/cc-button";
 import { CcField } from "@/app/cc/_ui/cc-field";
@@ -138,6 +139,12 @@ export function CampaignPanel(props: CampaignPanelProps) {
               {mode === "new" ? "CANCEL" : "+ NEW CAMPAIGN"}
             </CcButton>
           )}
+          <Link
+            href="/campaigns/new"
+            className="hover:border-primary hover:text-primary flex min-h-11 items-center border px-4 text-[12px] font-bold tracking-[0.1em]"
+          >
+            SMART CAMPAIGN
+          </Link>
           {status !== undefined && (
             <span
               role="status"
