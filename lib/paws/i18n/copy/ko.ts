@@ -262,6 +262,10 @@ export const ko = {
   otherApps: {
     title: "다른 앱",
   },
+  legal: {
+    privacy: "개인정보 처리방침",
+    terms: "이용약관",
+  },
   note: {
     open: "만든 이의 말",
     title: "만든 이의 말",

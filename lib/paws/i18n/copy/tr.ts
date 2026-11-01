@@ -275,6 +275,10 @@ export const tr = {
   otherApps: {
     title: "Diğer uygulamalar",
   },
+  legal: {
+    privacy: "Gizlilik",
+    terms: "Koşullar",
+  },
   note: {
     open: "Yaratıcısından birkaç söz",
     title: "Yaratıcısından birkaç söz",

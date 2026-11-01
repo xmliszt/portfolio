@@ -273,6 +273,10 @@ export const es = {
   otherApps: {
     title: "Otras apps",
   },
+  legal: {
+    privacy: "Privacidad",
+    terms: "Términos",
+  },
   note: {
     open: "Unas palabras de quien creó Paws",
     title: "Unas palabras de quien creó Paws",

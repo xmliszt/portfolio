@@ -276,6 +276,10 @@ export const id = {
   otherApps: {
     title: "Aplikasi lain",
   },
+  legal: {
+    privacy: "Privasi",
+    terms: "Ketentuan",
+  },
   note: {
     open: "Sepatah kata dari pembuatnya",
     title: "Sepatah kata dari pembuatnya",

@@ -274,6 +274,10 @@ export const uk = {
   otherApps: {
     title: "Інші застосунки",
   },
+  legal: {
+    privacy: "Конфіденційність",
+    terms: "Умови",
+  },
   note: {
     open: "Кілька слів від мене",
     title: "Кілька слів від мене",

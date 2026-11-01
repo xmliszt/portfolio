@@ -7,6 +7,7 @@ import type {
 import { getDaylitTokenStyle } from "@/lib/laundromat/get-daylit-token-style";
 import { getTimeOfDay } from "@/lib/laundromat/get-time-of-day";
 import { getWindowLights } from "@/lib/laundromat/get-window-lights";
+import { isFootprintInFront } from "@/lib/laundromat/is-footprint-in-front";
 import type { SceneConfig } from "@/lib/laundromat/scene-config";
 import { toSvgPoints } from "@/lib/laundromat/to-svg-points";
 import { getWindowWeather } from "@/lib/laundromat/weather/get-window-weather";
@@ -63,9 +64,14 @@ export function RoomDrawing(props: RoomDrawingProps) {
   const stationaryObjects = visibleObjects.filter(
     ({ object }) => object.kind !== "toy-box" || !isToyInTransit
   );
-  const movingObjects = visibleObjects.filter(
-    ({ object }) => object.kind === "toy-box" && isToyInTransit
-  );
+  const movingObjects = visibleObjects
+    .filter(({ object }) => object.kind === "toy-box" && isToyInTransit)
+    .map((laidOut) => ({
+      laidOut,
+      paintBeforeId: stationaryObjects.find(({ object }) =>
+        isFootprintInFront({ front: object, back: laidOut.object })
+      )?.object.id,
+    }));
   const objectProps = {
     projection: layout.projection,
     highlightedId: props.highlightedId,
@@ -148,17 +154,28 @@ export function RoomDrawing(props: RoomDrawingProps) {
       )}
       {stationaryObjects.map((laidOut) => (
         <Fragment key={laidOut.object.id}>
+          {movingObjects
+            .filter((moving) => moving.paintBeforeId === laidOut.object.id)
+            .map((moving) => (
+              <SceneObjectDrawing
+                key={moving.laidOut.object.id}
+                laidOut={moving.laidOut}
+                {...objectProps}
+              />
+            ))}
           <SceneObjectDrawing laidOut={laidOut} {...objectProps} />
           {renderFaceLight(laidOut)}
         </Fragment>
       ))}
-      {movingObjects.map((laidOut) => (
-        <SceneObjectDrawing
-          key={laidOut.object.id}
-          laidOut={laidOut}
-          {...objectProps}
-        />
-      ))}
+      {movingObjects
+        .filter((moving) => moving.paintBeforeId === undefined)
+        .map((moving) => (
+          <SceneObjectDrawing
+            key={moving.laidOut.object.id}
+            laidOut={moving.laidOut}
+            {...objectProps}
+          />
+        ))}
       {timeOfDay !== undefined && windowObject !== undefined && (
         <RoomDaylightFill
           window={windowObject}

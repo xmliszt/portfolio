@@ -52,6 +52,7 @@ import { ChatLayer } from "./chat-layer";
 import { COMPOSE_ANCHOR_PREFIX } from "./compose-anchor-prefix";
 import { CreatorNote } from "./creator-note";
 import { InviteButton } from "./invite-button";
+import { LegalMenuLink } from "./legal-menu-link";
 import { OtherAppsSheet } from "./other-apps-sheet";
 import { PanBar, type PanBarHandle } from "./pan-bar";
 import { PortfolioLink } from "./portfolio-link";
@@ -1004,6 +1005,8 @@ export function PawsRoom(props: PawsRoomProps) {
                     label={copy.otherApps.title}
                     onOpen={() => handleOpenSheet({ menu, sheet: "apps" })}
                   />,
+                  <LegalMenuLink key="privacy" page="privacy" />,
+                  <LegalMenuLink key="terms" page="terms" />,
                 ]}
               </RoomMenu>
             </div>

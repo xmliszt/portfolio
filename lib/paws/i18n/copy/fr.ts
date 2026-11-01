@@ -275,6 +275,10 @@ export const fr = {
   otherApps: {
     title: "Autres applis",
   },
+  legal: {
+    privacy: "Confidentialité",
+    terms: "Conditions",
+  },
   note: {
     open: "Un petit mot de ma part",
     title: "Un petit mot de ma part",

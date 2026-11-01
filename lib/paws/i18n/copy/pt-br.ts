@@ -272,6 +272,10 @@ export const ptBR = {
   otherApps: {
     title: "Outros apps",
   },
+  legal: {
+    privacy: "Privacidade",
+    terms: "Termos",
+  },
   note: {
     open: "Um recado de quem criou o Paws",
     title: "Um recado de quem criou o Paws",

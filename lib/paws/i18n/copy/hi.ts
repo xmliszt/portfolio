@@ -273,6 +273,10 @@ export const hi = {
   otherApps: {
     title: "और ऐप",
   },
+  legal: {
+    privacy: "गोपनीयता",
+    terms: "शर्तें",
+  },
   note: {
     open: "रचनाकार की ओर से दो शब्द",
     title: "रचनाकार की ओर से दो शब्द",

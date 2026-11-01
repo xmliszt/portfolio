@@ -267,6 +267,10 @@ export const en = {
   otherApps: {
     title: "Other Apps",
   },
+  legal: {
+    privacy: "Privacy",
+    terms: "Terms",
+  },
   note: {
     open: "A Note from the Maker",
     title: "A Note from the Maker",

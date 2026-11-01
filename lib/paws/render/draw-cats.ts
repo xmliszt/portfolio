@@ -18,12 +18,9 @@ type Part = { h: number; draw: () => void };
 
 const BLEND_SAMPLES = 3;
 
-/** Draw `cat` from below the glass in `palette`, its parts ordered farthest from the glass first so nearer parts sit on top. */
-export function drawCat(options: {
-  draw: DrawContext;
-  cat: DerivedCat;
-  palette: CoatPalette;
-}) {
+type CatToDraw = { cat: DerivedCat; palette: CoatPalette };
+
+function getCatParts(options: { draw: DrawContext } & CatToDraw) {
   const { draw, cat, palette } = options;
   const k = cat.k;
   const fluff = cat.build.fluff * 0.9 * k;
@@ -343,5 +340,19 @@ export function drawCat(options: {
 
   if (cat.headH < WHISKER_FADE_HEIGHT)
     parts.push({ h: 0, draw: () => drawWhiskers({ draw, cat }) });
-  for (const part of parts.toSorted((a, b) => b.h - a.h)) part.draw();
+  return parts;
+}
+
+/** Draw each of `cats` from below the glass in its `palette`, the parts of all of them ordered farthest from the glass first so nearer parts sit on top, whichever cat they belong to. */
+export function drawCats(options: { draw: DrawContext; cats: CatToDraw[] }) {
+  const parts = options.cats.flatMap((entry) =>
+    getCatParts({ draw: options.draw, ...entry }).map((part) => ({
+      ...part,
+      userId: entry.cat.userId,
+    }))
+  );
+  const nearestLast = parts.toSorted(
+    (a, b) => b.h - a.h || a.userId.localeCompare(b.userId)
+  );
+  for (const part of nearestLast) part.draw();
 }

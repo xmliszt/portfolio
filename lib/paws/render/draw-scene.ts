@@ -6,7 +6,7 @@ import type { ToySnapshot, ToyTrail } from "@/lib/paws/wire-types";
 import type { SceneResources } from "./create-scene-resources";
 import { cutGrain } from "./cut-grain";
 import { drawBoxes } from "./draw-boxes";
-import { drawCat } from "./draw-cat";
+import { drawCats } from "./draw-cats";
 import { drawFingers } from "./draw-fingers";
 import { drawFireflies } from "./draw-fireflies";
 import { drawPrints } from "./draw-prints";
@@ -96,13 +96,13 @@ export function drawScene(options: {
   const farthestFirst = cats.toSorted(
     (a, b) => bodyHeight(b) - bodyHeight(a) || (a.userId < b.userId ? -1 : 1)
   );
-  for (const cat of farthestFirst) {
-    drawCat({
-      draw,
+  drawCats({
+    draw,
+    cats: farthestFirst.map((cat) => ({
       cat,
       palette: getCoatPalette({ look: cat.look, userId: cat.userId }),
-    });
-  }
+    })),
+  });
   drawToysOnGlass();
   if (toyMarks !== undefined)
     drawPuddles({
