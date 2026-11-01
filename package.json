@@ -10,6 +10,7 @@
     "lint:fix": "eslint . --fix --ignore-pattern public --ignore-pattern .next",
     "test:laundromat": "node --import ./lib/laundromat/testing/register-ts-resolution.mjs --test \"lib/laundromat/**/*.test.ts\"",
     "test:paws": "node --import ./lib/laundromat/testing/register-ts-resolution.mjs --test \"lib/paws/**/*.test.ts\"",
+    "test:cc": "node --import ./lib/laundromat/testing/register-ts-resolution.mjs --test \"lib/cc/**/*.test.ts\"",
     "format:fix": "prettier . --write",
     "prepare": "husky install",
     "velite:build": "velite --clean",

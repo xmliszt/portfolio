@@ -1,12 +1,34 @@
 import { NextRequest, NextResponse } from "next/server";
 
+import { resolveCcRequest } from "@/lib/cc/resolve-cc-request";
+import { refreshCcSession } from "@/lib/cc/supabase/refresh-cc-session";
 import { LAUNDROMAT_LOCALE_COOKIE } from "@/lib/laundromat/i18n/laundromat-locales";
 import { resolveLaundromatLocale } from "@/lib/laundromat/i18n/resolve-laundromat-locale";
 import { resolveLaundromatRequest } from "@/lib/laundromat/resolve-laundromat-request";
 import { resolvePawsRequest } from "@/lib/paws/resolve-paws-request";
 
-export function proxy(request: NextRequest) {
+export async function proxy(request: NextRequest) {
   const hostname = request.headers.get("host")?.split(":", 1).at(0) ?? "";
+  const ccResolution = resolveCcRequest({
+    hostname,
+    pathname: request.nextUrl.pathname,
+    search: request.nextUrl.search,
+  });
+  switch (ccResolution.kind) {
+    case "rewrite": {
+      const url = request.nextUrl.clone();
+      url.pathname = ccResolution.pathname;
+      return refreshCcSession({ request, url });
+    }
+    case "redirect":
+      return NextResponse.redirect(ccResolution.url, 308);
+    case "pass":
+      break;
+    default: {
+      const unhandled: never = ccResolution;
+      return unhandled;
+    }
+  }
   const pawsResolution = resolvePawsRequest({
     hostname,
     pathname: request.nextUrl.pathname,
@@ -87,6 +109,18 @@ export const config = {
     },
     {
       source: "/paws/:path*",
+      has: [{ type: "host", value: "(www\\.)?liyuxuan\\.dev" }],
+    },
+    {
+      source: "/((?!api/|_next/|.*\\..*).*)",
+      has: [{ type: "host", value: "cc\\.(liyuxuan\\.dev|localhost)" }],
+    },
+    {
+      source: "/(robots\\.txt|favicon\\.ico)",
+      has: [{ type: "host", value: "cc\\.(liyuxuan\\.dev|localhost)" }],
+    },
+    {
+      source: "/cc/:path*",
       has: [{ type: "host", value: "(www\\.)?liyuxuan\\.dev" }],
     },
   ],

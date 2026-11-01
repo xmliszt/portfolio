@@ -1,0 +1,86 @@
+.cc-theme {
+  --background: 220 33.3% 3.5%;
+  --foreground: 210 55.6% 92.9%;
+  --card: 213 33.3% 6.5%;
+  --card-foreground: 210 55.6% 92.9%;
+  --popover: 213 33.3% 6.5%;
+  --popover-foreground: 210 55.6% 92.9%;
+  --primary: 188 100% 58.8%;
+  --primary-foreground: 220 33.3% 3.5%;
+  --secondary: 215 36.2% 9.2%;
+  --secondary-foreground: 210 55.6% 92.9%;
+  --muted: 215 36.2% 9.2%;
+  --muted-foreground: 213 19.6% 60%;
+  --accent: 188 100% 58.8%;
+  --accent-foreground: 220 33.3% 3.5%;
+  --destructive: 5 100% 66.5%;
+  --destructive-foreground: 220 33.3% 3.5%;
+  --border: 212 30.8% 15.3%;
+  --input: 212 30.8% 15.3%;
+  --ring: 188 100% 58.8%;
+  --radius: 0px;
+  --cc-panel-2: 215 36.2% 9.2%;
+  --cc-line-soft: 213 33.3% 10.6%;
+  --cc-text-2: 210 31.1% 82.4%;
+  --cc-warn: 36 100% 63.9%;
+  --cc-ok: 150 100% 65.1%;
+  --cc-chatgpt: 334 100% 65.5%;
+  color-scheme: dark;
+  background-color: hsl(var(--background));
+  background-image:
+    linear-gradient(hsl(var(--primary) / 0.035) 1px, transparent 1px),
+    linear-gradient(90deg, hsl(var(--primary) / 0.035) 1px, transparent 1px);
+  background-size: 32px 32px;
+  color: hsl(var(--foreground));
+}
+
+@layer base {
+  :where(.cc-theme) *,
+  :where(.cc-theme) ::before,
+  :where(.cc-theme) ::after {
+    border-color: hsl(var(--border));
+  }
+
+  :where(.cc-theme) :is(h1, h2, h3, h4) {
+    margin: 0;
+    user-select: text;
+  }
+
+  :where(.cc-theme) :is(button, a) {
+    cursor: pointer;
+  }
+}
+
+.cc-theme {
+  --cc-platform-producthunt: 5 100% 66.5%;
+  --cc-platform-xiaohongshu: 334 100% 65.5%;
+  --cc-platform-wechat: 150 100% 65.1%;
+  --cc-platform-x: 210 55.6% 92.9%;
+  --cc-platform-threads: 210 31.1% 82.4%;
+  --cc-platform-instagram: 36 100% 63.9%;
+  --cc-platform-tiktok: 188 100% 58.8%;
+  --cc-platform-reddit: 24 100% 62%;
+  --cc-platform-youtube: 0 100% 64%;
+}
+
+@layer components {
+  .cc-theme .cc-input {
+    min-height: 44px;
+    width: 100%;
+    border: 1px solid hsl(var(--border));
+    background: hsl(var(--cc-panel-2));
+    padding: 0 12px;
+    color: hsl(var(--foreground));
+    font: inherit;
+  }
+
+  .cc-theme textarea.cc-input {
+    padding: 10px 12px;
+    line-height: 1.6;
+  }
+
+  .cc-theme .cc-input:focus-visible {
+    outline: 1px solid hsl(var(--primary));
+    outline-offset: 0;
+  }
+}
