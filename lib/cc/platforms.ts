@@ -41,6 +41,8 @@ export type Platform = {
   metrics: readonly MetricField[];
   composeUrl: string;
   postsFromPhone: boolean;
+  /** Where on the platform a post goes, stored in `posts.target`, or `undefined` when the platform has no such choice. */
+  target: { label: string; placeholder: string } | undefined;
 };
 
 export const PLATFORMS = {
@@ -55,6 +57,7 @@ export const PLATFORMS = {
     metrics: ["upvotes", "comments", "rank", "clicks"],
     composeUrl: "https://www.producthunt.com/posts/new",
     postsFromPhone: false,
+    target: undefined,
   },
   x: {
     id: "x",
@@ -67,6 +70,7 @@ export const PLATFORMS = {
     metrics: ["views", "likes", "comments", "shares", "saves", "clicks"],
     composeUrl: "https://x.com/intent/post",
     postsFromPhone: false,
+    target: undefined,
   },
   threads: {
     id: "threads",
@@ -79,6 +83,7 @@ export const PLATFORMS = {
     metrics: ["views", "likes", "comments", "shares"],
     composeUrl: "https://www.threads.net/intent/post",
     postsFromPhone: false,
+    target: { label: "TOPIC OR COMMUNITY", placeholder: "Digital Art" },
   },
   instagram: {
     id: "instagram",
@@ -91,6 +96,7 @@ export const PLATFORMS = {
     metrics: ["views", "likes", "comments", "shares", "saves"],
     composeUrl: "https://www.instagram.com/",
     postsFromPhone: true,
+    target: undefined,
   },
   tiktok: {
     id: "tiktok",
@@ -103,6 +109,7 @@ export const PLATFORMS = {
     metrics: ["views", "likes", "comments", "shares", "saves"],
     composeUrl: "https://www.tiktok.com/upload",
     postsFromPhone: true,
+    target: undefined,
   },
   reddit: {
     id: "reddit",
@@ -115,6 +122,7 @@ export const PLATFORMS = {
     metrics: ["views", "upvotes", "comments", "shares"],
     composeUrl: "https://www.reddit.com/submit",
     postsFromPhone: false,
+    target: { label: "SUBREDDIT", placeholder: "r/SideProject" },
   },
   xiaohongshu: {
     id: "xiaohongshu",
@@ -127,6 +135,7 @@ export const PLATFORMS = {
     metrics: ["views", "likes", "saves", "comments", "shares"],
     composeUrl: "https://creator.xiaohongshu.com/publish/publish",
     postsFromPhone: true,
+    target: undefined,
   },
   wechat_channels: {
     id: "wechat_channels",
@@ -139,6 +148,7 @@ export const PLATFORMS = {
     metrics: ["views", "likes", "comments", "shares"],
     composeUrl: "https://channels.weixin.qq.com/platform/post/create",
     postsFromPhone: true,
+    target: undefined,
   },
   wechat_moments: {
     id: "wechat_moments",
@@ -151,6 +161,7 @@ export const PLATFORMS = {
     metrics: ["likes", "comments"],
     composeUrl: "https://weixin.qq.com/",
     postsFromPhone: true,
+    target: undefined,
   },
   youtube: {
     id: "youtube",
@@ -163,6 +174,7 @@ export const PLATFORMS = {
     metrics: ["views", "likes", "comments"],
     composeUrl: "https://studio.youtube.com/",
     postsFromPhone: false,
+    target: undefined,
   },
   linkedin: {
     id: "linkedin",
@@ -175,5 +187,6 @@ export const PLATFORMS = {
     metrics: ["views", "likes", "comments", "shares", "clicks"],
     composeUrl: "https://www.linkedin.com/feed/?shareActive=true",
     postsFromPhone: false,
+    target: undefined,
   },
 } as const satisfies { [id in PlatformId]: Platform };

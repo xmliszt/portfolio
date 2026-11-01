@@ -204,7 +204,20 @@ function getPlatformChecks(options: {
         },
       ];
     }
-    case "threads":
+    case "threads": {
+      const hasTarget = options.target.trim() !== "";
+      return [
+        {
+          kind: "computed",
+          id: "threads-target",
+          label: "Topic or community chosen",
+          passed: hasTarget,
+          why: hasTarget
+            ? `Posting to ${options.target.trim()}.`
+            : "Pick one topic or community on Threads and note it here, so Insights can compare them.",
+        },
+      ];
+    }
     case "tiktok":
     case "xiaohongshu":
     case "wechat_channels":
