@@ -2,24 +2,29 @@ import { catToWorld } from "./cat-to-world";
 import { clamp } from "./clamp";
 import { damp } from "./damp";
 import { emitCatSound } from "./emit-cat-sound";
+import { endCuriosity } from "./end-curiosity";
 import { endSocial } from "./end-social";
 import { faceToward } from "./face-toward";
 import { FLEE_SPEED } from "./flee-speed";
 import { getCatFrame } from "./get-cat-frame";
+import { getToyFingerId } from "./get-toy-finger-id";
 import { holdStill } from "./hold-still";
 import { isCatLeaving } from "./is-cat-leaving";
 import { isCatOnstage } from "./is-cat-onstage";
+import { isToyFingerId } from "./is-toy-finger-id";
 import { pickFarSpot } from "./pick-far-spot";
 import { pickRandomSpot } from "./pick-random-spot";
 import { releasePaws } from "./release-paws";
 import { setCatState } from "./set-cat-state";
 import type { Point, SimCat, SimFinger, Tick } from "./sim-types";
 import { spawnCat } from "./spawn-cat";
+import { startBoxVisit } from "./start-box-visit";
 import { startLeaving } from "./start-leaving";
 import { startReach } from "./start-reach";
 import { startSocial } from "./start-social";
 import { startZoomies } from "./start-zoomies";
 import { turnToward } from "./turn-toward";
+import { updateBoxVisit } from "./update-box-visit";
 import { walkTo } from "./walk-to";
 import { worldToCat } from "./world-to-cat";
 
@@ -47,6 +52,7 @@ const SHY_SECONDS = 6;
 const PURR_RANGE = 160;
 const ZOOMIES_CHANCE = 0.2;
 const ZOOM_PACE = 6;
+const BOX_CHANCE = 0.25;
 
 const approachGoal = (cat: SimCat, finger: FingerView): Point => {
   if (!finger.present) return cat.wander;
@@ -222,6 +228,7 @@ export function updateBrain(options: { tick: Tick; cat: SimCat }) {
   const crowd = Object.values(world.fingers).filter(
     (candidate) =>
       candidate.present &&
+      !isToyFingerId(candidate.userId) &&
       Math.hypot(cat.x - candidate.x, cat.y - candidate.y) < CROWD_RANGE * k
   );
   if (
@@ -298,6 +305,14 @@ export function updateBrain(options: { tick: Tick; cat: SimCat }) {
     }
     case "pause": {
       cat.rest = undefined;
+      const focusedBox = world.toys.find(
+        (toy) => toy.kind === "box" && getToyFingerId(toy.id) === cat.focusId
+      );
+      if (focusedBox !== undefined && cat.stateT > 0.6) {
+        if (!startBoxVisit({ world, cat, boxId: focusedBox.id }))
+          endCuriosity({ world, cat });
+        break;
+      }
       if (finger.present) turnToward({ tick, cat, point: finger });
       else holdStill({ tick, cat });
       if (finger.pressed) {
@@ -336,6 +351,7 @@ export function updateBrain(options: { tick: Tick; cat: SimCat }) {
           startSocial({ tick, cat, range: 1040 * k })
         )
           break;
+        if (world.random() < BOX_CHANCE && startBoxVisit({ world, cat })) break;
         if (world.random() < 0.5) {
           cat.wander = pickRandomSpot({ world, cat });
           setCatState(cat, "approach");
@@ -594,6 +610,9 @@ export function updateBrain(options: { tick: Tick; cat: SimCat }) {
       }
       break;
     }
+    case "box":
+      updateBoxVisit({ tick, cat });
+      break;
     case "leave":
     case "flee": {
       walkTo({

@@ -85,6 +85,8 @@ export function createSimCat(options: {
     curiousCooldownUntil: 0,
     pawFingerIds: [],
     social: undefined,
+    boxVisit: undefined,
+    boxCooldownUntil: 0,
     partnerId: undefined,
     isSnuggling: false,
     socialCooldownUntil: world.time + 4 + world.random() * 8,

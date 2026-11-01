@@ -7,7 +7,7 @@ import { getCoatPalette } from "./get-coat-palette";
 import { PAW_PRINT_BOX } from "./paw-print-box";
 import type { ScenePrint } from "./render-types";
 
-/** Return the print `event` leaves on the glass at `time` seconds, coloured by the look of the cat that made it, or `undefined` for sounds and for paw or nose prints of a cat whose `look` is unknown. */
+/** Return the print `event` leaves on the glass at `time` seconds, coloured by the look of the cat that made it, or `undefined` for sounds, toy placements and paw or nose prints of a cat whose `look` is unknown. */
 export function toScenePrint(options: {
   event: RoomEvent;
   look: CatLook | undefined;
@@ -16,6 +16,7 @@ export function toScenePrint(options: {
   const { event, look, time } = options;
   switch (event.kind) {
     case "sound":
+    case "placeToy":
       return undefined;
     case "fingerPrint":
       return {

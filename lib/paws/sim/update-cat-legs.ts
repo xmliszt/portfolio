@@ -88,7 +88,12 @@ export function updateCatLegs(options: { tick: Tick; cat: SimCat }) {
     for (const leg of cat.legs.toSorted((a, b) => b.gap - a.gap)) {
       if (isBusy(leg)) continue;
       if (leg.gap > threshold && canStep(cat, leg, isMoving ? 2 : 1)) {
-        startSwing({ leg, durationSeconds: swingSeconds, lift, delaySeconds: 0 });
+        startSwing({
+          leg,
+          durationSeconds: swingSeconds,
+          lift,
+          delaySeconds: 0,
+        });
       }
     }
   }

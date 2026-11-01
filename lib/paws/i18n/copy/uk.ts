@@ -124,6 +124,11 @@ export const uk = {
     findingRoom: "Шукаємо для вас кімнату…",
     roomEntered: "Ваша кімната: {room}",
     roomMoved: "Нова кімната: {room}",
+    toys: "Іграшки",
+    toyRoll: "Рулон паперу",
+    toyYarn: "Клубок пряжі",
+    toyPlaceHint: "Торкніться місця, щоб покласти",
+    toyInRoom: "У кімнаті",
   },
   guide: {
     open: "Як це працює",

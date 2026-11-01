@@ -124,6 +124,11 @@ export const ja = {
     findingRoom: "部屋をさがしています…",
     roomEntered: "{room}に入りました",
     roomMoved: "{room}に移動しました",
+    toys: "おもちゃ",
+    toyRoll: "トイレットペーパー",
+    toyYarn: "毛糸玉",
+    toyPlaceHint: "置きたい場所をタップ",
+    toyInRoom: "部屋にあります",
   },
   guide: {
     open: "あそびかた",

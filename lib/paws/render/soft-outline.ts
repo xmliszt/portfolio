@@ -9,7 +9,7 @@ export function softOutline(options: {
   draw: DrawContext;
   samples: Vec4[];
   blur: number;
-  color: string;
+  color: string | CanvasGradient;
   alpha?: number;
 }) {
   const { g, unitPx } = options.draw;

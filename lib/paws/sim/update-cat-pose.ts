@@ -16,7 +16,7 @@ const GLANCE_TEMPO = 1.3;
 const GLANCE_SHARE = 0.6;
 import { wrapAngle } from "./wrap-angle";
 
-const RESTING_STATES = new Set(["sit", "sleep", "paw", "sniff", "bat"]);
+const RESTING_STATES = new Set(["sit", "sleep", "paw", "sniff", "bat", "box"]);
 
 /** Ease `cat` toward its resting or standing pose, turn its head toward what it is watching, and refresh its derived geometry. */
 export function updateCatPose(options: { tick: Tick; cat: SimCat }) {

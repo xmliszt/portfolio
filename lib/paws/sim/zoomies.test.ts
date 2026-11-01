@@ -37,7 +37,10 @@ test("a cat on zoomies sprints, gallops a pair at a time, then stops", () => {
         mixedSwings += 1;
     },
   });
-  assert.ok(topSpeed > 500, `reaches a sprint, top speed ${topSpeed} a unit of scale`);
+  assert.ok(
+    topSpeed > 500,
+    `reaches a sprint, top speed ${topSpeed} a unit of scale`
+  );
   assert.equal(mixedSwings, 0, "front and hind pairs never swing together");
   assert.notEqual(cat.state, "zoom", "the zoomies end");
 });
@@ -54,7 +57,9 @@ test("cats get zoomies on their own now and then", () => {
     players: crowd,
     seconds: 300,
     onStep: (current) => {
-      zoomed ||= Object.values(current.cats).some((cat) => cat.state === "zoom");
+      zoomed ||= Object.values(current.cats).some(
+        (cat) => cat.state === "zoom"
+      );
     },
   });
   assert.ok(zoomed);

@@ -1,10 +1,14 @@
 import { ROOM_LIMITS } from "@/lib/paws/room-limits";
+import { TOY_ITEMS } from "@/lib/paws/sim/toy-items";
 import type {
   CatActivity,
   CatsMessage,
   CatSnapshot,
   LegSnapshot,
   PawPrintEvent,
+  ToySnapshot,
+  ToySpill,
+  ToyTrail,
 } from "@/lib/paws/wire-types";
 
 import { clampNumber } from "./clamp-number";
@@ -32,6 +36,13 @@ const MAX_SPEED = 2000;
 const MAX_BEND = 4;
 const MAX_LEG_HEIGHT = 200;
 const MAX_PRINTS = 4 * ROOM_LIMITS.maxPlayers;
+const MAX_TOYS = 13;
+const MAX_TRAILS = TOY_ITEMS.length;
+const MAX_TRAIL_POINTS = 200;
+const MAX_TOY_HEIGHT = 400;
+const MAX_SPIN = 1e6;
+const MAX_UNROLLED = 5000;
+const MAX_SPILL_SECONDS = 3600;
 
 function isCatActivity(value: unknown): value is CatActivity {
   return CAT_ACTIVITIES.some((activity) => activity === value);
@@ -135,7 +146,105 @@ function parseCat(value: unknown): CatSnapshot | undefined {
   };
 }
 
-/** Return the cat snapshots and paw prints the host broadcast, keeping the first `ROOM_LIMITS.maxPlayers + ROOM_LIMITS.residentCats` cats and `MAX_PRINTS` prints, dropping malformed ones and clamping every number to its range, or `undefined` when the payload is not one. */
+function parseSpill(value: unknown): ToySpill | undefined {
+  if (typeof value !== "object" || value === null) return undefined;
+  const x = "x" in value ? clampX(value.x) : undefined;
+  const y = "y" in value ? clampY(value.y) : undefined;
+  const seconds =
+    "seconds" in value
+      ? clampNumber({ value: value.seconds, min: 0, max: MAX_SPILL_SECONDS })
+      : undefined;
+  if (x === undefined || y === undefined || seconds === undefined)
+    return undefined;
+  return { x, y, seconds };
+}
+
+function parseToy(value: unknown): ToySnapshot | undefined {
+  if (typeof value !== "object" || value === null) return undefined;
+  const id = "id" in value ? parseWireId(value.id) : undefined;
+  const x = "x" in value ? clampX(value.x) : undefined;
+  const y = "y" in value ? clampY(value.y) : undefined;
+  const h =
+    "h" in value
+      ? clampNumber({ value: value.h, min: 0, max: MAX_TOY_HEIGHT })
+      : undefined;
+  const angle = "angle" in value ? clampAngle(value.angle) : undefined;
+  const spin =
+    "spin" in value
+      ? clampNumber({ value: value.spin, min: -MAX_SPIN, max: MAX_SPIN })
+      : undefined;
+  if (
+    id === undefined ||
+    x === undefined ||
+    y === undefined ||
+    h === undefined ||
+    angle === undefined ||
+    spin === undefined ||
+    !("kind" in value)
+  )
+    return undefined;
+  const place = { id, x, y, h, angle, spin };
+  switch (value.kind) {
+    case "yarn": {
+      const left = "left" in value ? clampUnit(value.left) : undefined;
+      const fade = "fade" in value ? clampUnit(value.fade) : undefined;
+      if (left === undefined || fade === undefined) return undefined;
+      return { ...place, kind: "yarn", left, fade };
+    }
+    case "box":
+      return { ...place, kind: "box" };
+    case "roll": {
+      const unrolled =
+        "unrolled" in value
+          ? clampNumber({ value: value.unrolled, min: 0, max: MAX_UNROLLED })
+          : undefined;
+      const fade = "fade" in value ? clampUnit(value.fade) : undefined;
+      if (
+        unrolled === undefined ||
+        fade === undefined ||
+        !("isStanding" in value) ||
+        typeof value.isStanding !== "boolean"
+      )
+        return undefined;
+      return {
+        ...place,
+        kind: "roll",
+        isStanding: value.isStanding,
+        unrolled,
+        fade,
+      };
+    }
+    case "bowl":
+      return {
+        ...place,
+        kind: "bowl",
+        spill: "spill" in value ? parseSpill(value.spill) : undefined,
+      };
+    default:
+      return undefined;
+  }
+}
+
+function parseTrail(value: unknown): ToyTrail | undefined {
+  if (typeof value !== "object" || value === null) return undefined;
+  const toyId = "toyId" in value ? parseWireId(value.toyId) : undefined;
+  if (
+    toyId === undefined ||
+    !("points" in value && Array.isArray(value.points))
+  )
+    return undefined;
+  const points = value.points
+    .slice(-MAX_TRAIL_POINTS)
+    .flatMap((point: unknown): [number, number][] => {
+      if (!Array.isArray(point)) return [];
+      const x = clampX(point[0]);
+      const y = clampY(point[1]);
+      return x === undefined || y === undefined ? [] : [[x, y]];
+    });
+  return { toyId, points };
+}
+
+/** Return the cat snapshots, paw prints, toys and toy trails the host broadcast, keeping the first `ROOM_LIMITS.maxPlayers + ROOM_LIMITS.residentCats` cats, `MAX_PRINTS` prints, `MAX_TOYS` toys and `MAX_TRAILS` trails of their newest `MAX_TRAIL_POINTS` points, leaving `trails` out when the message has none, dropping malformed ones and clamping every number to its range, or `undefined` when the payload is not one. */
 export function parseCatsMessage(value: unknown): CatsMessage | undefined {
   if (typeof value !== "object" || value === null) return undefined;
   const hostId = "hostId" in value ? parseWireId(value.hostId) : undefined;
@@ -165,5 +274,21 @@ export function parseCatsMessage(value: unknown): CatsMessage | undefined {
             : [];
         })
       : [];
-  return { hostId, sentAt: value.sentAt, cats, prints };
+  const toys =
+    "toys" in value && Array.isArray(value.toys)
+      ? value.toys.slice(0, MAX_TOYS).flatMap((toy: unknown) => {
+          const parsed = parseToy(toy);
+          return parsed === undefined ? [] : [parsed];
+        })
+      : [];
+  const trails =
+    "trails" in value && Array.isArray(value.trails)
+      ? value.trails.slice(0, MAX_TRAILS).flatMap((trail: unknown) => {
+          const parsed = parseTrail(trail);
+          return parsed === undefined ? [] : [parsed];
+        })
+      : undefined;
+  return trails === undefined
+    ? { hostId, sentAt: value.sentAt, cats, prints, toys }
+    : { hostId, sentAt: value.sentAt, cats, prints, toys, trails };
 }

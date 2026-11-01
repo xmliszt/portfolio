@@ -123,6 +123,11 @@ export const hi = {
     findingRoom: "आपके लिए कमरा ढूँढ रहे हैं…",
     roomEntered: "आप {room} में हैं",
     roomMoved: "अब {room} में",
+    toys: "खिलौने",
+    toyRoll: "टॉयलेट पेपर रोल",
+    toyYarn: "ऊन का गोला",
+    toyPlaceHint: "रखने के लिए कोई जगह टैप करें",
+    toyInRoom: "कमरे में है",
   },
   guide: {
     open: "यह कैसे काम करता है",

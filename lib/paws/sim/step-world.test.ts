@@ -107,6 +107,8 @@ test("a press puts a paw on that finger, not on another one", () => {
     random: createSeededRandom({ seed: 5 }),
     snapshots: [buildSnapshot({ userId: "a", x: 800, y: 500, heading: 0 })],
     players: [{ userId: "a", look: buildLook() }],
+    toys: [],
+    trails: [],
   });
   const pressing = { userId: "b", x: 870, y: 500, pressed: true };
   const hovering = { userId: "c", x: 700, y: 650, pressed: false };
@@ -139,6 +141,8 @@ test("two players pressing in reach of one cat each get a front paw", () => {
       }),
     ],
     players: [{ userId: "a", look: buildLook() }],
+    toys: [],
+    trails: [],
   });
   const left = { userId: "b", x: 858, y: 470, pressed: true };
   const right = { userId: "c", x: 858, y: 530, pressed: true };

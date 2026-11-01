@@ -24,6 +24,12 @@ export type SceneResources = {
   wash: Surface;
   /** Prints, cats and fingertips, multiplied onto the paper as one ink layer. */
   layer: Surface;
+  /** Small canvases the far sky is painted on before it is scaled up, and the sunlight patch mask. */
+  skyFar: Surface;
+  skySoft: Surface;
+  sunMask: Surface;
+  /** The night laid over everything, painted with the paper, and whether it holds any dark. */
+  night: Surface & { isDark: boolean };
 };
 
 /** Return the textures and scratch canvases one scene renderer keeps between frames, made with `createCanvas`, with the paper's palettes starting from `paperSeed`. */
@@ -45,5 +51,12 @@ export function createSceneResources(options: {
     },
     wash: createSurface({ createCanvas, width: 1, height: 1 }),
     layer: createSurface({ createCanvas, width: 1, height: 1 }),
+    skyFar: createSurface({ createCanvas, width: 1, height: 1 }),
+    skySoft: createSurface({ createCanvas, width: 1, height: 1 }),
+    sunMask: createSurface({ createCanvas, width: 1, height: 1 }),
+    night: {
+      ...createSurface({ createCanvas, width: 1, height: 1 }),
+      isDark: false,
+    },
   };
 }

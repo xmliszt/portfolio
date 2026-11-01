@@ -120,6 +120,11 @@ export const zhHant = {
     findingRoom: "正在為你找房間…",
     roomEntered: "你在{room}",
     roomMoved: "已來到{room}",
+    toys: "玩具",
+    toyRoll: "捲筒衛生紙",
+    toyYarn: "毛線球",
+    toyPlaceHint: "點一個地方放下",
+    toyInRoom: "在房間裡",
   },
   guide: {
     open: "怎麼玩",

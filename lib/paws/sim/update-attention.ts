@@ -6,6 +6,7 @@ import { FLEE_SPEED } from "./flee-speed";
 import { getCuriosityRate } from "./get-curiosity-rate";
 import { isCatLeaving } from "./is-cat-leaving";
 import { isCatOnstage } from "./is-cat-onstage";
+import { isToyFingerId } from "./is-toy-finger-id";
 import { makeCurious } from "./make-curious";
 import type { SimCat, Tick } from "./sim-types";
 
@@ -31,6 +32,9 @@ export function updateAttention(tick: Tick) {
   const { world, dtSeconds } = tick;
   const cats = Object.values(world.cats);
   const fingers = Object.values(world.fingers);
+  const playerFingers = fingers.filter(
+    (finger) => !isToyFingerId(finger.userId)
+  );
   const isAvailable = (cat: SimCat) => isCatOnstage(cat) && !isCatLeaving(cat);
 
   for (const cat of cats) {
@@ -52,7 +56,7 @@ export function updateAttention(tick: Tick) {
   for (const cat of cats.filter(
     (candidate) => isAvailable(candidate) && candidate.pawFingerIds.length < 2
   )) {
-    const shared = findSharedFingers({ cat, fingers });
+    const shared = findSharedFingers({ cat, fingers: playerFingers });
     if (shared === undefined) continue;
     const holders = cats.filter(
       (other) =>
@@ -73,12 +77,18 @@ export function updateAttention(tick: Tick) {
     if (cats.some((cat) => cat.pawFingerIds.includes(finger.userId))) continue;
     const gapTo = (cat: SimCat) =>
       Math.hypot(cat.x - finger.x, cat.y - finger.y);
+    const isToy = isToyFingerId(finger.userId);
     const best = cats
       .filter(
         (cat) =>
           isAvailable(cat) &&
           cat.pawFingerIds.length === 0 &&
-          (cat.focusId !== undefined || gapTo(cat) < PAW_RANGE)
+          (isToy
+            ? (cat.focusId === finger.userId ||
+                (cat.focusId === undefined &&
+                  world.time >= cat.curiousCooldownUntil)) &&
+              gapTo(cat) < PAW_RANGE
+            : cat.focusId !== undefined || gapTo(cat) < PAW_RANGE)
       )
       .toSorted((a, b) => gapTo(a) - gapTo(b))
       .at(0);
@@ -94,7 +104,7 @@ export function updateAttention(tick: Tick) {
     const focus =
       cat.focusId === undefined ? undefined : world.fingers[cat.focusId];
     const isBored =
-      world.time > cat.curiousUntil && cat.pawFingerIds.length === 0;
+      world.time > cat.curiousUntil && cat.pawFingerIds.every(isToyFingerId);
     if (!isAvailable(cat)) {
       cat.focusId = undefined;
       cat.pawFingerIds = [];
@@ -149,6 +159,7 @@ export function updateAttention(tick: Tick) {
               distance: Math.hypot(cat.x - finger.x, cat.y - finger.y),
               stillSeconds: finger.stillSeconds,
               isOwner: finger.userId === cat.userId,
+              isToy: isToyFingerId(finger.userId),
               isAsleep: cat.state === "sleep",
             }) *
               dtSeconds

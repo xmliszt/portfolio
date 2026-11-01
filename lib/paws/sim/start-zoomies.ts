@@ -14,4 +14,3 @@ export function startZoomies(options: { world: World; cat: SimCat }) {
   cat.wander = pickFarSpot({ world, cat });
   setCatState(cat, "zoom");
 }
-

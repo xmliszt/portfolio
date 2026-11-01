@@ -4,6 +4,7 @@ import { test } from "node:test";
 import { ROOM_LIMITS } from "@/lib/paws/room-limits";
 
 import { parseCatsMessage } from "./parse-cats-message";
+import { WIRE_LIMITS } from "./wire-limits";
 
 function buildCat(options: { userId: string }) {
   return {
@@ -33,7 +34,88 @@ test("reads the host's cats", () => {
     sentAt: 5,
     cats: [cat],
     prints: [],
+    toys: [],
   });
+});
+
+test("reads the host's toys and drops malformed ones", () => {
+  const parsed = parseCatsMessage({
+    hostId: "h",
+    sentAt: 5,
+    cats: [],
+    toys: [
+      {
+        kind: "yarn",
+        id: "yarn",
+        x: 10,
+        y: 20,
+        h: 3,
+        angle: 0,
+        spin: 2,
+        left: 1.5,
+        fade: 0,
+      },
+      {
+        kind: "roll",
+        id: "roll",
+        x: 1e6,
+        y: 20,
+        h: 0,
+        angle: 1,
+        spin: 0,
+        isStanding: false,
+        unrolled: 300,
+        fade: 0.25,
+      },
+      {
+        kind: "bowl",
+        id: "bowl",
+        x: 5,
+        y: 5,
+        h: 0,
+        angle: 0,
+        spin: 0,
+        spill: { x: 40, y: 50, seconds: 12 },
+      },
+      { kind: "ball", id: "ball", x: 1, y: 1, h: 0, angle: 0, spin: 0 },
+      { kind: "roll", id: "roll2", x: 1, y: 1, h: 0, angle: 0, spin: 0 },
+    ],
+  });
+  assert.deepEqual(parsed?.toys, [
+    {
+      kind: "yarn",
+      id: "yarn",
+      x: 10,
+      y: 20,
+      h: 3,
+      angle: 0,
+      spin: 2,
+      left: 1,
+      fade: 0,
+    },
+    {
+      kind: "roll",
+      id: "roll",
+      x: WIRE_LIMITS.maxX,
+      y: 20,
+      h: 0,
+      angle: 1,
+      spin: 0,
+      isStanding: false,
+      unrolled: 300,
+      fade: 0.25,
+    },
+    {
+      kind: "bowl",
+      id: "bowl",
+      x: 5,
+      y: 5,
+      h: 0,
+      angle: 0,
+      spin: 0,
+      spill: { x: 40, y: 50, seconds: 12 },
+    },
+  ]);
 });
 
 test("keeps only the paw prints among the host's prints", () => {
@@ -90,4 +172,34 @@ test("drops a message without a host, time or cats list", () => {
     parseCatsMessage({ hostId: "h", sentAt: 1, cats: "none" }),
     undefined
   );
+});
+
+test("reads toy trails when the message carries them and leaves them out when it does not", () => {
+  const withTrails = parseCatsMessage({
+    hostId: "h",
+    sentAt: 5,
+    cats: [],
+    trails: [
+      {
+        toyId: "yarn-1",
+        points: [
+          [10, 20],
+          [1e6, 30],
+          ["x", 1],
+        ],
+      },
+      { toyId: 7, points: [] },
+    ],
+  });
+  assert.deepEqual(withTrails?.trails, [
+    {
+      toyId: "yarn-1",
+      points: [
+        [10, 20],
+        [WIRE_LIMITS.maxX, 30],
+      ],
+    },
+  ]);
+  const without = parseCatsMessage({ hostId: "h", sentAt: 5, cats: [] });
+  assert.equal(without !== undefined && "trails" in without, false);
 });

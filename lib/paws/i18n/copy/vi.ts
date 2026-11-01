@@ -123,6 +123,11 @@ export const vi = {
     findingRoom: "Đang tìm phòng cho bạn…",
     roomEntered: "Bạn đang ở {room}",
     roomMoved: "Giờ ở {room}",
+    toys: "Đồ chơi",
+    toyRoll: "Cuộn giấy vệ sinh",
+    toyYarn: "Cuộn len",
+    toyPlaceHint: "Chạm vào một chỗ để đặt xuống",
+    toyInRoom: "Đang trong phòng",
   },
   guide: {
     open: "Cách chơi",

@@ -123,6 +123,11 @@ export const tr = {
     findingRoom: "Sana bir oda arıyoruz…",
     roomEntered: "{room} içindesin",
     roomMoved: "Şimdi {room} içinde",
+    toys: "Oyuncaklar",
+    toyRoll: "Tuvalet kâğıdı rulosu",
+    toyYarn: "Yün yumağı",
+    toyPlaceHint: "Bırakmak için bir yere dokun",
+    toyInRoom: "Odada",
   },
   guide: {
     open: "Nasıl çalışır",
