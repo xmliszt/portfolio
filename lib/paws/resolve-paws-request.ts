@@ -1,6 +1,11 @@
 import { PORTFOLIO_HOSTNAMES } from "@/lib/laundromat/hosts";
 
-import { PAWS_BASE_PATH, PAWS_HOSTNAMES, PAWS_ORIGIN } from "./paws-hosts";
+import {
+  PAWS_BASE_PATH,
+  PAWS_HOSTNAMES,
+  PAWS_ORIGIN,
+  REDIRECTED_PAWS_HOSTNAMES,
+} from "./paws-hosts";
 
 type PawsRequest = { hostname: string; pathname: string; search: string };
 
@@ -9,7 +14,7 @@ type PawsRequestResolution =
   | { kind: "redirect"; url: string }
   | { kind: "pass" };
 
-/** Decide how `proxy.ts` routes a request: serve the paws page on its subdomain, send the portfolio's `/paws` paths to that subdomain, or leave it alone. */
+/** Decide how `proxy.ts` routes a request: serve the paws page on its domain, send `REDIRECTED_PAWS_HOSTNAMES` and the portfolio's `/paws` paths to that domain, or leave it alone. */
 export function resolvePawsRequest(
   request: PawsRequest
 ): PawsRequestResolution {
@@ -26,6 +31,13 @@ export function resolvePawsRequest(
         request.pathname === "/"
           ? PAWS_BASE_PATH
           : `${PAWS_BASE_PATH}${request.pathname}`,
+    };
+  }
+
+  if (REDIRECTED_PAWS_HOSTNAMES.includes(hostname)) {
+    return {
+      kind: "redirect",
+      url: `${PAWS_ORIGIN}${request.pathname}${request.search}`,
     };
   }
 
