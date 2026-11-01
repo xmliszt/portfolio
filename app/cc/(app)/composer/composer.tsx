@@ -27,6 +27,7 @@ import { PreflightPanel } from "./preflight-panel";
 import { toDraftFields } from "./to-draft-fields";
 import { toPostFields } from "./to-post-fields";
 import { VoiceCheckPanel } from "./voice-check-panel";
+import { XTagCheckPanel } from "./x-tag-check-panel";
 
 type ComposerProps = {
   campaign: { id: string; name: string; notes: string | null };
@@ -260,10 +261,18 @@ export function Composer(props: ComposerProps) {
             assets: draft.assets,
           })}
         />
-        <CheckTagsPanel
-          hashtags={parseHashtags(draft.hashtagsText)}
-          className="flex-[1_1_380px]"
-        />
+        {props.platformId === "threads" && (
+          <CheckTagsPanel
+            hashtags={parseHashtags(draft.hashtagsText)}
+            className="flex-[1_1_380px]"
+          />
+        )}
+        {props.platformId === "x" && (
+          <XTagCheckPanel
+            hashtags={parseHashtags(draft.hashtagsText)}
+            className="flex-[1_1_380px]"
+          />
+        )}
       </div>
     </>
   );

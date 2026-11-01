@@ -46,7 +46,7 @@ export function CheckTagsPanel(props: CheckTagsPanelProps) {
 
   return (
     <Panel
-      title="Check tags"
+      title="Check tags on Threads"
       aside="Recent Threads posts · up to 25"
       className={props.className}
       bodyClassName="flex flex-col gap-y-3 px-[18px] py-4"
