@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 
 import { resolveCcRequest } from "@/lib/cc/resolve-cc-request";
-import { refreshCcSession } from "@/lib/cc/supabase/refresh-cc-session";
+import { respondWithCcSession } from "@/lib/cc/supabase/respond-with-cc-session";
 import { LAUNDROMAT_LOCALE_COOKIE } from "@/lib/laundromat/i18n/laundromat-locales";
 import { resolveLaundromatLocale } from "@/lib/laundromat/i18n/resolve-laundromat-locale";
 import { resolveLaundromatRequest } from "@/lib/laundromat/resolve-laundromat-request";
@@ -18,7 +18,7 @@ export async function proxy(request: NextRequest) {
     case "rewrite": {
       const url = request.nextUrl.clone();
       url.pathname = ccResolution.pathname;
-      return refreshCcSession({ request, url });
+      return respondWithCcSession({ request, url });
     }
     case "redirect":
       return NextResponse.redirect(ccResolution.url, 308);
