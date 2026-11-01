@@ -120,6 +120,11 @@ export const zhHans = {
     findingRoom: "正在为你找房间…",
     roomEntered: "你在{room}",
     roomMoved: "已来到{room}",
+    toys: "玩具",
+    toyRoll: "卷纸",
+    toyYarn: "毛线球",
+    toyPlaceHint: "点一个地方放下",
+    toyInRoom: "在房间里",
   },
   guide: {
     open: "怎么玩",

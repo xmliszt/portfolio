@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
-import { clamp } from "lodash";
+import { clamp, isEqual } from "lodash";
 
 import { LanguagePicker } from "@/app/paws/_i18n/language-picker";
 import { usePawsCopy } from "@/app/paws/_i18n/use-paws-copy";
@@ -29,6 +29,10 @@ import { ROOM_LIMITS } from "@/lib/paws/room-limits";
 import { getRoomNumber } from "@/lib/paws/rooms/get-room-number";
 import { LOCAL_ROOM_ID } from "@/lib/paws/rooms/local-room-id";
 import type { DerivedCat } from "@/lib/paws/sim/derive-cat";
+import { TOY_ITEMS, type ToyItemId } from "@/lib/paws/sim/toy-items";
+import { getSky } from "@/lib/paws/sky/get-sky";
+import { guessLatitude } from "@/lib/paws/sky/guess-latitude";
+import { parseSkyOverride } from "@/lib/paws/sky/parse-sky-override";
 import { createPawsSoundPlayer } from "@/lib/paws/sound/create-paws-sound-player";
 import type { ChatMessage } from "@/lib/paws/wire-types";
 import { cn } from "@/lib/utils";
@@ -48,6 +52,8 @@ import { RoomMenu } from "./room-menu";
 import { RoomPicker } from "./room-picker";
 import { SheetButton } from "./sheet-button";
 import { SoundSwitch } from "./sound-switch";
+import { ToyIcon } from "./toy-icon";
+import { ToyTray } from "./toy-tray";
 import { UiSoundContext } from "./ui-sound-context";
 import { useRoomConnection } from "./use-room-connection";
 import { useSavedCat } from "./use-saved-cat";
@@ -63,6 +69,7 @@ const PAN_KEYS: { [key: string]: -1 | 1 | undefined } = {
   D: 1,
 };
 const MAX_DT_SECONDS = 0.05;
+const SKY_REFRESH_MS = 1000;
 const FAKE_VOICE = { age: "adult", voice: "soft", mood: "chatty" } as const;
 const BUBBLE_HOLD_MS = 2500;
 const MAX_BUBBLE_MS = 12000;
@@ -73,6 +80,7 @@ const SETTLE_BEFORE_ARRIVALS_MS = 3000;
 const ROOM_BANNER_MS = 2600;
 const RESIDENT_LINE_EVERY_MS = 15_000;
 const RESIDENT_LINE_CHANCE = { alone: 0.25, shared: 0.06 } as const;
+const TOY_DRAG_PX = 6;
 
 function isTypingTarget(target: EventTarget | null) {
   return (
@@ -82,8 +90,13 @@ function isTypingTarget(target: EventTarget | null) {
   );
 }
 
+type PawsRoomProps = {
+  /** The visitor's latitude and longitude from their IP address, when the request carried them. */
+  location: { latitude: number; longitude: number } | undefined;
+};
+
 /** Render the room: the shared cats, every fingertip and print on a full-screen canvas, the visitor's own fingertip from the pointer, sounds, and the corner flow for bringing a cat in. */
-export function PawsRoom() {
+export function PawsRoom(props: PawsRoomProps) {
   const { copy } = usePawsCopy();
 
   const { session, actions, client } = usePawsSession();
@@ -114,6 +127,10 @@ export function PawsRoom() {
     "guide" | "note" | "apps" | undefined
   >(undefined);
   const [hasOwnCatInRoom, setHasOwnCatInRoom] = useState(false);
+  const [heldToyId, setHeldToyId] = useState<ToyItemId | undefined>(undefined);
+  const heldToyRef = useRef<ToyItemId | undefined>(undefined);
+  const toyGhostRef = useRef<HTMLDivElement>(null);
+  const [unavailableToyIds, setUnavailableToyIds] = useState<ToyItemId[]>([]);
   const ownUserId = "userId" in session ? session.userId : undefined;
   const engine = useMemo(() => createRoomEngine({ random: Math.random }), []);
   const [sound] = useState(() =>
@@ -324,6 +341,15 @@ export function PawsRoom() {
   }, [hasOwnCatInRoom, sound]);
 
   useEffect(() => {
+    if (heldToyId === undefined) return;
+    function handleKeyDown(event: KeyboardEvent) {
+      if (event.key === "Escape") holdToy(undefined);
+    }
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [heldToyId]);
+
+  useEffect(() => {
     sound.setMuted(isMuted);
   }, [sound, isMuted]);
 
@@ -356,6 +382,24 @@ export function PawsRoom() {
       id: 0,
       lastMs: performance.now(),
     };
+    const tray: { unavailable: ToyItemId[] } = { unavailable: [] };
+    const latitude =
+      props.location?.latitude ??
+      guessLatitude(Intl.DateTimeFormat().resolvedOptions().timeZone);
+    const longitude = props.location?.longitude;
+    const skyOverride =
+      process.env.NODE_ENV === "development"
+        ? parseSkyOverride(new URLSearchParams(window.location.search))
+        : undefined;
+    const skyClock = {
+      sky: getSky({
+        date: new Date(),
+        latitude,
+        longitude,
+        override: skyOverride,
+      }),
+      refreshedAtMs: performance.now(),
+    };
 
     function tick(nowMs: number) {
       if (canvas === null || g === null || g === undefined) return;
@@ -375,6 +419,29 @@ export function PawsRoom() {
         canvas.height = Math.round(height * dpr);
       }
       const room = engine.frame({ nowMs, dtSeconds });
+      const unavailable = TOY_ITEMS.filter(
+        (item) =>
+          room.toys.some((toy) => toy.id === item.id) ||
+          room.pendingItemIds.includes(item.id)
+      ).map((item) => item.id);
+      if (!isEqual(unavailable, tray.unavailable)) {
+        tray.unavailable = unavailable;
+        setUnavailableToyIds(unavailable);
+        if (
+          heldToyRef.current !== undefined &&
+          unavailable.includes(heldToyRef.current)
+        )
+          holdToy(undefined);
+      }
+      if (nowMs - skyClock.refreshedAtMs > SKY_REFRESH_MS) {
+        skyClock.sky = getSky({
+          date: new Date(),
+          latitude,
+          longitude,
+          override: skyOverride,
+        });
+        skyClock.refreshedAtMs = nowMs;
+      }
       const playerIds = playersRef.current.map((player) => player.userId);
       if (arrivals.roomId !== roomIdRef.current) {
         arrivals.roomId = roomIdRef.current;
@@ -489,16 +556,30 @@ export function PawsRoom() {
         fingers: room.fingers,
         time: room.time,
         resources,
+        sky: skyClock.sky,
+        toys: room.toys,
+        trails: room.trails,
+        toyMarks: room.toyMarks,
       });
       frame.id = window.requestAnimationFrame(tick);
     }
 
     frame.id = window.requestAnimationFrame(tick);
     return () => window.cancelAnimationFrame(frame.id);
-  }, [engine, sound, connectionRef, playersRef, ownCatIdRef, roomIdRef]);
+  }, [
+    engine,
+    sound,
+    connectionRef,
+    playersRef,
+    ownCatIdRef,
+    roomIdRef,
+    props.location,
+  ]);
 
-  function toWorld(event: React.PointerEvent<HTMLCanvasElement>) {
-    const bounds = event.currentTarget.getBoundingClientRect();
+  function toWorld(event: { clientX: number; clientY: number }) {
+    const canvas = canvasRef.current;
+    if (canvas === null) return { x: 0, y: 0 };
+    const bounds = canvas.getBoundingClientRect();
     const view = getWorldView({
       width: bounds.width,
       height: bounds.height,
@@ -517,7 +598,84 @@ export function PawsRoom() {
     return xs.reduce((sum, x) => sum + x, 0) / Math.max(1, xs.length);
   }
 
+  function holdToy(itemId: ToyItemId | undefined) {
+    heldToyRef.current = itemId;
+    setHeldToyId(itemId);
+    const ghost = toyGhostRef.current;
+    if (itemId === undefined && ghost !== null)
+      ghost.style.visibility = "hidden";
+  }
+
+  function moveToyGhost(point: { clientX: number; clientY: number }) {
+    const ghost = toyGhostRef.current;
+    if (ghost === null || heldToyRef.current === undefined) return;
+    ghost.style.transform = `translate(${point.clientX}px, ${point.clientY}px) translate(-50%, -50%)`;
+    ghost.style.visibility = "visible";
+  }
+
+  function placeHeldToy(point: { clientX: number; clientY: number }) {
+    const itemId = heldToyRef.current;
+    if (itemId === undefined) return;
+    engine.placeToy({ itemId, ...toWorld(point), nowMs: performance.now() });
+    sound.playUi("bringIn");
+    holdToy(undefined);
+  }
+
+  function isOverCanvas(point: { clientX: number; clientY: number }) {
+    const canvas = canvasRef.current;
+    return (
+      canvas !== null &&
+      document.elementFromPoint(point.clientX, point.clientY) === canvas
+    );
+  }
+
+  function handleToyPress(press: {
+    itemId: ToyItemId;
+    event: React.PointerEvent<HTMLButtonElement>;
+  }) {
+    void sound.unlock();
+    const { itemId, event } = press;
+    event.preventDefault();
+    const start = { x: event.clientX, y: event.clientY };
+    const drag = { isDragging: false };
+    function handleMove(move: PointerEvent) {
+      if (
+        !drag.isDragging &&
+        Math.hypot(move.clientX - start.x, move.clientY - start.y) > TOY_DRAG_PX
+      ) {
+        drag.isDragging = true;
+        holdToy(itemId);
+      }
+      if (drag.isDragging) moveToyGhost(move);
+    }
+    function handleUp(up: PointerEvent) {
+      window.removeEventListener("pointermove", handleMove);
+      window.removeEventListener("pointerup", handleUp);
+      window.removeEventListener("pointercancel", handleCancel);
+      if (!drag.isDragging) {
+        holdToy(heldToyRef.current === itemId ? undefined : itemId);
+        return;
+      }
+      if (isOverCanvas(up)) placeHeldToy(up);
+      else holdToy(undefined);
+    }
+    function handleCancel() {
+      window.removeEventListener("pointermove", handleMove);
+      window.removeEventListener("pointerup", handleUp);
+      window.removeEventListener("pointercancel", handleCancel);
+      if (drag.isDragging) holdToy(undefined);
+    }
+    window.addEventListener("pointermove", handleMove);
+    window.addEventListener("pointerup", handleUp);
+    window.addEventListener("pointercancel", handleCancel);
+  }
+
+  function handleToyKeyPick(itemId: ToyItemId) {
+    holdToy(heldToyRef.current === itemId ? undefined : itemId);
+  }
+
   function handlePointerMove(event: React.PointerEvent<HTMLCanvasElement>) {
+    moveToyGhost(event);
     if (event.pointerType === "touch" && event.pointerId in touchesRef.current)
       touchesRef.current[event.pointerId] = event.clientX;
     const pinch = pinchRef.current;
@@ -538,6 +696,10 @@ export function PawsRoom() {
 
   function handlePointerDown(event: React.PointerEvent<HTMLCanvasElement>) {
     void sound.unlock();
+    if (heldToyRef.current !== undefined) {
+      placeHeldToy(event);
+      return;
+    }
     if (event.pointerType === "touch")
       touchesRef.current[event.pointerId] = event.clientX;
     if (Object.keys(touchesRef.current).length >= 2) {
@@ -784,6 +946,28 @@ export function PawsRoom() {
                 />,
               ]}
             </RoomMenu>
+          </div>
+          <div className="absolute right-4 bottom-4 group-has-[[role=dialog]]/room:hidden sm:right-6 sm:bottom-6">
+            <ToyTray
+              label={copy.room.toys}
+              rollLabel={copy.room.toyRoll}
+              yarnLabel={copy.room.toyYarn}
+              inRoomLabel={copy.room.toyInRoom}
+              hint={copy.room.toyPlaceHint}
+              unavailableIds={unavailableToyIds}
+              heldId={heldToyId}
+              onPress={handleToyPress}
+              onKeyPick={handleToyKeyPick}
+            />
+          </div>
+          <div
+            ref={toyGhostRef}
+            aria-hidden
+            className="pointer-events-none invisible fixed top-0 left-0 z-10 drop-shadow-[0_4px_3px_rgba(43,58,99,0.35)]"
+          >
+            {heldToyId !== undefined && (
+              <ToyIcon itemId={heldToyId} className="size-9" />
+            )}
           </div>
           {isPannable && (
             <div className="absolute bottom-4 left-4 group-has-[[role=dialog]]/room:hidden sm:bottom-6 sm:left-6">

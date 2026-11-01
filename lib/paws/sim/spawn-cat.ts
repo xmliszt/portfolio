@@ -31,6 +31,7 @@ export function spawnCat(options: { world: World; cat: SimCat }) {
     focusId: undefined,
     pawFingerIds: [],
     social: undefined,
+    boxVisit: undefined,
     partnerId: undefined,
     isSnuggling: false,
     socialCooldownUntil: world.time + 4 + world.random() * 8,

@@ -27,6 +27,8 @@ test("a snapshot survives the trip into a new world and back", () => {
     random: createSeededRandom({ seed: 1 }),
     snapshots: [snapshot],
     players,
+    toys: [],
+    trails: [],
   });
   assert.deepEqual(getCatSnapshots(world), [snapshot]);
 });
@@ -39,6 +41,8 @@ test("a new host carries on where the old one stopped", () => {
     random: createSeededRandom({ seed: 99 }),
     snapshots: handoff,
     players,
+    toys: [],
+    trails: [],
   });
   runWorld({ world: old, players, seconds: 0.1 });
   runWorld({ world: next, players, seconds: 0.1 });

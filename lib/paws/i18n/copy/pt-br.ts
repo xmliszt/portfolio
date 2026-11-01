@@ -123,6 +123,11 @@ export const ptBR = {
     findingRoom: "Procurando uma sala para você…",
     roomEntered: "Você está na {room}",
     roomMoved: "Agora na {room}",
+    toys: "Brinquedos",
+    toyRoll: "Rolo de papel higiênico",
+    toyYarn: "Novelo de lã",
+    toyPlaceHint: "Toque em um lugar para colocar",
+    toyInRoom: "Na sala",
   },
   guide: {
     open: "Como funciona",

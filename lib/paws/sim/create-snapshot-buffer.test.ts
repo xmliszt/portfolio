@@ -23,6 +23,7 @@ const buildMessage = (options: {
     }),
   ],
   prints: [],
+  toys: [],
 });
 
 test("plays cats back between the two messages around the delayed time", () => {
@@ -98,4 +99,29 @@ test("ignores messages that arrive out of order", () => {
     receivedAtMs: 210,
   });
   assert.equal(buffer.latest()[0].x, 20);
+});
+
+test("plays toys back between messages and keeps the newest for a new host", () => {
+  const buffer = createSnapshotBuffer({ renderDelayMs: 100 });
+  const withYarn = (sentAt: number, x: number): CatsMessage => ({
+    ...buildMessage({ hostId: "h", sentAt, x: 0, heading: 0 }),
+    toys: [
+      {
+        kind: "yarn",
+        id: "yarn-1",
+        x,
+        y: 50,
+        h: 0,
+        angle: 0,
+        spin: 0,
+        left: 1,
+        fade: 0,
+      },
+    ],
+  });
+  buffer.push({ message: withYarn(1000, 0), receivedAtMs: 5050 });
+  buffer.push({ message: withYarn(1250, 100), receivedAtMs: 5300 });
+  const [yarn] = buffer.sampleToys({ nowMs: 5050 + 225 });
+  assert.ok(Math.abs(yarn.x - 50) < 1e-9, `x ${yarn.x}`);
+  assert.equal(buffer.latestToys()[0]?.x, 100);
 });

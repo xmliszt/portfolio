@@ -16,6 +16,8 @@ import { softOutline } from "./soft-outline";
 
 type Part = { h: number; draw: () => void };
 
+const BLEND_SAMPLES = 3;
+
 /** Draw `cat` from below the glass in `palette`, its parts ordered farthest from the glass first so nearer parts sit on top. */
 export function drawCat(options: {
   draw: DrawContext;
@@ -95,6 +97,45 @@ export function drawCat(options: {
         }),
     });
   }
+  const runHeight = (run: { start: number; end: number }) =>
+    body
+      .slice(run.start, run.end + 1)
+      .reduce((sum, point) => sum + point[3], 0) /
+    (run.end - run.start + 1);
+  if (runs.length > 1)
+    for (const [index, run] of runs.entries()) {
+      const neighbours = [runs[index - 1], run, runs[index + 1]].flatMap(
+        (candidate) => (candidate === undefined ? [] : [runHeight(candidate)])
+      );
+      const from = Math.max(0, run.start - BLEND_SAMPLES);
+      const to = Math.min(body.length - 1, run.end + BLEND_SAMPLES);
+      const samples = body.slice(from, to + 1);
+      const h =
+        samples.reduce((sum, point) => sum + point[3], 0) / samples.length;
+      const span = Math.max(1, to - from);
+      parts.push({
+        h: Math.min(...neighbours) - 0.001,
+        draw: () => {
+          const fade = draw.g.createLinearGradient(
+            body[from][0],
+            body[from][1],
+            body[to][0],
+            body[to][1]
+          );
+          const clear = `${run.color}00`;
+          fade.addColorStop(0, from < run.start ? clear : run.color);
+          fade.addColorStop((run.start - from) / span, run.color);
+          fade.addColorStop(1 - (to - run.end) / span, run.color);
+          fade.addColorStop(1, to > run.end ? clear : run.color);
+          softOutline({
+            draw,
+            samples,
+            blur: blurOf(h, k) + fluff,
+            color: fade,
+          });
+        },
+      });
+    }
   const belly = palette.belly;
   if (belly !== undefined) {
     const patch = body

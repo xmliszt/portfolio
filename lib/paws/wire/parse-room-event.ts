@@ -1,3 +1,4 @@
+import { TOY_ITEMS } from "@/lib/paws/sim/toy-items";
 import type { RoomEvent } from "@/lib/paws/wire-types";
 
 import { clampNumber } from "./clamp-number";
@@ -71,6 +72,15 @@ export function parseRoomEvent(value: unknown): RoomEvent | undefined {
       if (x === undefined || y === undefined || pressure === undefined)
         return undefined;
       return { kind: "fingerPrint", userId, x, y, pressure };
+    }
+    case "placeToy": {
+      const item =
+        "itemId" in value
+          ? TOY_ITEMS.find((candidate) => candidate.id === value.itemId)
+          : undefined;
+      if (x === undefined || y === undefined || item === undefined)
+        return undefined;
+      return { kind: "placeToy", userId, itemId: item.id, x, y };
     }
     default:
       return undefined;

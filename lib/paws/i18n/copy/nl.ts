@@ -123,6 +123,11 @@ export const nl = {
     findingRoom: "We zoeken een kamer voor je…",
     roomEntered: "Je bent in {room}",
     roomMoved: "Nu in {room}",
+    toys: "Speelgoed",
+    toyRoll: "Wc-rol",
+    toyYarn: "Bol wol",
+    toyPlaceHint: "Tik op een plek om het neer te leggen",
+    toyInRoom: "In de kamer",
   },
   guide: {
     open: "Zo werkt het",

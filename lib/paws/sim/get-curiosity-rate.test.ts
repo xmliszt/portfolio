@@ -11,6 +11,7 @@ const rate = (
     distance: 200,
     stillSeconds: 1,
     isOwner: false,
+    isToy: false,
     isAsleep: false,
     ...overrides,
   });
@@ -24,4 +25,8 @@ test("still, near fingers interest awake cats more", () => {
   assert.ok(rate({ distance: 100 }) > rate({ distance: 400 }));
   assert.ok(rate({ isAsleep: false }) > rate({ isAsleep: true }));
   assert.equal(rate({ distance: 600 }), 0);
+});
+
+test("a toy draws a cat less than a visitor's finger", () => {
+  assert.ok(rate({ isToy: true }) < rate({ isToy: false }));
 });

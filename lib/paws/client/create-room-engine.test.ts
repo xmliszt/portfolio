@@ -61,6 +61,7 @@ test("shows the host's prints of a reaching paw once the render delay has passed
       prints: [
         { kind: "pawPrint", userId: "host", x: 100, y: 100, angle: 0, leg: 0 },
       ],
+      toys: [],
     },
     receivedAtMs: 1000,
   });
@@ -86,6 +87,7 @@ test("drops the host's footfall prints, since this screen steps the legs itself"
       prints: [
         { kind: "pawPrint", userId: "host", x: 100, y: 100, angle: 0, leg: 0 },
       ],
+      toys: [],
     },
     receivedAtMs: 1000,
   });
@@ -118,6 +120,7 @@ test("prints a walking cat's footfalls from the legs this screen steps", () => {
         sentAt: index * sendMs,
         cats: [walkingHost({ x: 300 + index * 75 })],
         prints: [],
+        toys: [],
       },
       receivedAtMs: 1000 + index * sendMs,
     })
@@ -140,6 +143,7 @@ test("keeps the host's print of a paw sent as the cat stops pawing", () => {
       sentAt: 0,
       cats: [walkingHost({ x: 500, activity: "paw" })],
       prints: [],
+      toys: [],
     },
     receivedAtMs: 1000,
   });
@@ -151,6 +155,7 @@ test("keeps the host's print of a paw sent as the cat stops pawing", () => {
       prints: [
         { kind: "pawPrint", userId: "host", x: 560, y: 500, angle: 0, leg: 0 },
       ],
+      toys: [],
     },
     receivedAtMs: 1000 + sendMs,
   });
@@ -176,6 +181,7 @@ test("ignores cat messages from a connection that is not the host", () => {
       prints: [
         { kind: "pawPrint", userId: "host", x: 1, y: 1, angle: 0, leg: 0 },
       ],
+      toys: [],
     },
     receivedAtMs: 0,
   });
@@ -711,4 +717,166 @@ test("steps a lifted fingertip straight to its next touch instead of gliding the
   );
   assert.deepEqual(between, []);
   assert.equal(positions.at(-1)?.x, 900);
+});
+
+function buildHost() {
+  const engine = createRoomEngine({ random: createSeededRandom({ seed: 7 }) });
+  engine.setPlayers([buildPlayer({ userId: "me", joinedAt: 1 })]);
+  engine.setSelf({
+    userId: "me",
+    connectionId: "me-tab",
+    role: "player",
+    roomId: "room-1",
+  });
+  return engine;
+}
+
+test("the host puts a placed toy straight into the room and sends it with its trail", () => {
+  const engine = buildHost();
+  engine.frame({ nowMs: 0, dtSeconds: DT_SECONDS });
+  engine.placeToy({ itemId: "yarn-2", x: 600, y: 500, nowMs: 10 });
+  const room = engine.frame({ nowMs: 1000, dtSeconds: DT_SECONDS });
+  assert.ok(room.toys.some((toy) => toy.id === "yarn-2"));
+  assert.deepEqual(room.pendingItemIds, []);
+  assert.ok(room.outgoing.cats?.toys.some((toy) => toy.id === "yarn-2"));
+  assert.ok(
+    room.outgoing.cats?.trails !== undefined,
+    "trails go with a new toy"
+  );
+  assert.equal(
+    room.outgoing.events.some((event) => event.kind === "placeToy"),
+    false
+  );
+});
+
+test("the host sends trails about once a second, and at once when a toy comes or goes", () => {
+  const engine = buildHost();
+  const sentAt = Array.from({ length: 240 }, (_, frame) => {
+    const nowMs = frame * (1000 / 60);
+    if (frame === 150)
+      engine.placeToy({ itemId: "roll-1", x: 400, y: 400, nowMs });
+    const cats = engine.frame({ nowMs, dtSeconds: DT_SECONDS }).outgoing.cats;
+    return cats?.trails === undefined ? [] : [Math.round(nowMs)];
+  }).flat();
+  const gaps = sentAt.slice(1, 3).map((at, index) => at - sentAt[index]);
+  assert.ok(
+    gaps.every((gap) => gap >= 1000 && gap < 1100),
+    `trails sent at ${sentAt.join(", ")}`
+  );
+  assert.ok(
+    sentAt.some((at) => at > 2500 && at < 2700),
+    `no trails right after the toy came in: ${sentAt.join(", ")}`
+  );
+});
+
+test("a follower asks the host to place a toy and greys it out until it shows up or 3 s pass", () => {
+  const engine = buildFollower();
+  engine.placeToy({ itemId: "yarn-1", x: 300, y: 300, nowMs: 0 });
+  const asked = engine.frame({ nowMs: 0, dtSeconds: DT_SECONDS });
+  assert.deepEqual(
+    asked.outgoing.events.filter((event) => event.kind === "placeToy"),
+    [{ kind: "placeToy", userId: "me", itemId: "yarn-1", x: 300, y: 300 }]
+  );
+  assert.deepEqual(asked.pendingItemIds, ["yarn-1"]);
+  const later = engine.frame({ nowMs: 3100, dtSeconds: DT_SECONDS });
+  assert.deepEqual(later.pendingItemIds, [], "a refused request frees the toy");
+});
+
+test("a follower draws the trail that matches the moment it draws the toys", () => {
+  const engine = buildFollower();
+  const yarnAt = (x: number) => ({
+    kind: "yarn" as const,
+    id: "yarn-1",
+    x,
+    y: 300,
+    h: 0,
+    angle: 0,
+    spin: 0,
+    left: 0.9,
+    fade: 0,
+  });
+  const send = (sentAt: number, x: number, trailTo: number) =>
+    engine.receiveCats({
+      message: {
+        hostId: "host-tab",
+        sentAt,
+        cats: [buildSnapshot({ userId: "host", x: 900, y: 600 })],
+        prints: [],
+        toys: [yarnAt(x)],
+        trails: [
+          {
+            toyId: "yarn-1",
+            points: [
+              [100, 300],
+              [trailTo, 300],
+            ],
+          },
+        ],
+      },
+      receivedAtMs: sentAt,
+    });
+  send(0, 200, 200);
+  send(1000, 400, 400);
+  const room = engine.frame({ nowMs: 1000, dtSeconds: DT_SECONDS });
+  const ball = room.toys.find((toy) => toy.id === "yarn-1");
+  const trailEnd = room.trails.at(0)?.points.at(-1)?.[0];
+  assert.ok(ball !== undefined && trailEnd !== undefined);
+  assert.ok(
+    trailEnd <= ball.x,
+    `trail ends at ${trailEnd}, ahead of the ball at ${ball.x}`
+  );
+});
+
+test("a new host keeps a half-used yarn ball and its trail when no cat is in sight", () => {
+  const engine = createRoomEngine({ random: createSeededRandom({ seed: 4 }) });
+  engine.setPlayers([
+    buildPlayer({ userId: "host", joinedAt: 1 }),
+    buildPlayer({ userId: "me", joinedAt: 2 }),
+  ]);
+  engine.setSelf({
+    userId: "me",
+    connectionId: "me-tab",
+    role: "player",
+    roomId: "room-1",
+  });
+  engine.receiveCats({
+    message: {
+      hostId: "host-tab",
+      sentAt: 0,
+      cats: [],
+      prints: [],
+      toys: [
+        {
+          kind: "yarn",
+          id: "yarn-3",
+          x: 500,
+          y: 500,
+          h: 0,
+          angle: 0,
+          spin: 0,
+          left: 0.4,
+          fade: 0,
+        },
+      ],
+      trails: [
+        {
+          toyId: "yarn-3",
+          points: [
+            [300, 500],
+            [500, 500],
+          ],
+        },
+      ],
+    },
+    receivedAtMs: 0,
+  });
+  engine.setPlayers([buildPlayer({ userId: "me", joinedAt: 2 })]);
+  const room = engine.frame({ nowMs: 100, dtSeconds: DT_SECONDS });
+  assert.equal(room.isHost, true);
+  const yarn = room.toys.find((toy) => toy.id === "yarn-3");
+  assert.ok(yarn?.kind === "yarn" && Math.abs(yarn.left - 0.4) < 0.01);
+  assert.deepEqual(room.trails.at(0)?.points.slice(0, 2), [
+    [300, 500],
+    [500, 500],
+  ]);
 });

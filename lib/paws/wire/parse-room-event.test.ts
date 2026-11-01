@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 import { test } from "node:test";
 
 import { parseRoomEvent } from "./parse-room-event";
+import { WIRE_LIMITS } from "./wire-limits";
 
 test("reads each kind of room event", () => {
   assert.deepEqual(
@@ -97,4 +98,33 @@ test("drops unknown kinds and malformed events", () => {
     undefined
   );
   assert.equal(parseRoomEvent({ kind: "sound", sound: "meow" }), undefined);
+});
+
+test("reads a request to place a known toy and drops one for an unknown toy", () => {
+  assert.deepEqual(
+    parseRoomEvent({
+      kind: "placeToy",
+      userId: "u",
+      itemId: "yarn-3",
+      x: 40,
+      y: 1e6,
+    }),
+    {
+      kind: "placeToy",
+      userId: "u",
+      itemId: "yarn-3",
+      x: 40,
+      y: WIRE_LIMITS.maxY,
+    }
+  );
+  assert.equal(
+    parseRoomEvent({
+      kind: "placeToy",
+      userId: "u",
+      itemId: "box-1",
+      x: 4,
+      y: 4,
+    }),
+    undefined
+  );
 });

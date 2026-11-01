@@ -125,6 +125,11 @@ export const de = {
     findingRoom: "Wir suchen dir einen Raum…",
     roomEntered: "Du bist in {room}",
     roomMoved: "Jetzt in {room}",
+    toys: "Spielzeug",
+    toyRoll: "Klopapierrolle",
+    toyYarn: "Wollknäuel",
+    toyPlaceHint: "Tippe auf eine Stelle, um es hinzulegen",
+    toyInRoom: "Im Raum",
   },
   guide: {
     open: "So funktioniert's",

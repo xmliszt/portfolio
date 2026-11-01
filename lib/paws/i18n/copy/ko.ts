@@ -123,6 +123,11 @@ export const ko = {
     findingRoom: "방을 찾는 중…",
     roomEntered: "{room}에 들어왔어요",
     roomMoved: "{room}(으)로 옮겼어요",
+    toys: "장난감",
+    toyRoll: "두루마리 휴지",
+    toyYarn: "털실 뭉치",
+    toyPlaceHint: "놓을 곳을 탭하세요",
+    toyInRoom: "방에 있어요",
   },
   guide: {
     open: "이렇게 놀아요",

@@ -123,6 +123,11 @@ export const ru = {
     findingRoom: "Ищем для вас комнату…",
     roomEntered: "Ваша комната: {room}",
     roomMoved: "Новая комната: {room}",
+    toys: "Игрушки",
+    toyRoll: "Рулон бумаги",
+    toyYarn: "Клубок пряжи",
+    toyPlaceHint: "Коснитесь места, чтобы положить",
+    toyInRoom: "В комнате",
   },
   guide: {
     open: "Как это работает",

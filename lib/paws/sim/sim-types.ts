@@ -1,5 +1,5 @@
 import type { CatLook } from "@/lib/paws/cat-look";
-import type { RoomEvent } from "@/lib/paws/wire-types";
+import type { RoomEvent, ToySnapshot } from "@/lib/paws/wire-types";
 
 import type { Pose, PoseWeights, Vec2 } from "./cat-poses";
 import type { DerivedCat } from "./derive-cat";
@@ -21,6 +21,7 @@ export type SimState =
   | "chased"
   | "bat"
   | "zoom"
+  | "box"
   | "leave"
   | "flee";
 
@@ -85,6 +86,16 @@ export type Social =
 
 export type Point = { x: number; y: number };
 
+/** A cat's trip into the box `boxId`: walking to its edge, hopping in, resting inside, and hopping out to `to`. */
+export type BoxVisit = {
+  boxId: string;
+  phase: "go" | "hop" | "in" | "out";
+  t: number;
+  from: Point;
+  to: Point;
+  restSeconds: number;
+};
+
 export type SimCat = {
   userId: string;
   look: CatLook;
@@ -122,6 +133,8 @@ export type SimCat = {
   /** Pressed fingers this cat has its paws on, by player `userId`: one normally, two in a shared moment. */
   pawFingerIds: string[];
   social: Social | undefined;
+  boxVisit: BoxVisit | undefined;
+  boxCooldownUntil: number;
   partnerId: string | undefined;
   isSnuggling: boolean;
   socialCooldownUntil: number;
@@ -157,6 +170,13 @@ export type SimFinger = {
   absentSeconds: number;
 };
 
+/** A toy as the host runs it: its snapshot plus how fast it slides and hops. */
+export type SimToy = ToySnapshot & {
+  vx: number;
+  vy: number;
+  vh: number;
+};
+
 export type World = {
   random: () => number;
   /** Seconds since the world started. */
@@ -165,6 +185,9 @@ export type World = {
   height: number;
   cats: { [userId: string]: SimCat };
   fingers: { [userId: string]: SimFinger };
+  toys: SimToy[];
+  /** Points of the thread or paper strip each toy has laid on the glass, by toy id, oldest first. */
+  trails: { [toyId: string]: [number, number][] | undefined };
 };
 
 /** What one step needs: the world it changes, its length, and the events it reports. */

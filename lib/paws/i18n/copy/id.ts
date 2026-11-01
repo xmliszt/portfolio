@@ -123,6 +123,11 @@ export const id = {
     findingRoom: "Mencarikan ruangan…",
     roomEntered: "Kamu di {room}",
     roomMoved: "Sekarang di {room}",
+    toys: "Mainan",
+    toyRoll: "Gulungan tisu",
+    toyYarn: "Gulungan benang",
+    toyPlaceHint: "Ketuk satu tempat untuk menaruhnya",
+    toyInRoom: "Di ruangan",
   },
   guide: {
     open: "Cara mainnya",
