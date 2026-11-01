@@ -13,7 +13,10 @@ import type { PlatformId } from "@/lib/cc/platforms";
 import { sgtToUtc } from "@/lib/cc/sgt-to-utc";
 import { cn } from "@/lib/utils";
 
+import { SuggestSlotButton } from "./suggest-slot-button";
+
 type PostEditorProps = {
+  campaignId: string;
   post: {
     id: string;
     platformId: PlatformId;
@@ -130,6 +133,17 @@ export function PostEditor(props: PostEditorProps) {
             Edit text in composer →
           </Link>
         </form>
+      )}
+      {!isPosted && (
+        <SuggestSlotButton
+          campaignId={props.campaignId}
+          platformId={post.platformId}
+          postId={post.id}
+          onSuggest={(slot) => {
+            setDate(slot.date);
+            setTime(slot.time);
+          }}
+        />
       )}
       {post.childCount > 0 && !isPosted && (
         <span className="text-muted-foreground text-[11px]">

@@ -2,6 +2,7 @@
 
 import { CcField } from "@/app/cc/_ui/cc-field";
 import { countPostCharacters } from "@/lib/cc/count-post-characters";
+import { getDefaultWave } from "@/lib/cc/get-default-wave";
 import { type Platform, type PlatformId, PLATFORMS } from "@/lib/cc/platforms";
 
 import { AssetsEditor } from "./assets-editor";
@@ -16,12 +17,15 @@ type PostFieldsEditorProps = {
   onChange: (draft: DraftFields) => void;
 };
 
+const WAVES = [1, 2, 3, 4];
+
 export function PostFieldsEditor(props: PostFieldsEditorProps) {
   const platform = PLATFORMS[props.platformId];
   const titleLimit: number | undefined = platform.titleLimit;
   const bodyLimit: number | undefined = platform.bodyLimit;
   const draft = props.draft;
   const targetField: Platform["target"] = platform.target;
+  const defaultWave = getDefaultWave(draft.assets);
 
   function update(fields: Partial<DraftFields>) {
     props.onChange({ ...draft, ...fields });
@@ -49,16 +53,45 @@ export function PostFieldsEditor(props: PostFieldsEditorProps) {
           </div>
         </CcField>
       )}
-      {targetField !== undefined && (
-        <CcField label={targetField.label} htmlFor={`target-${props.postId}`}>
-          <input
-            id={`target-${props.postId}`}
-            className="cc-input"
-            placeholder={targetField.placeholder}
-            value={draft.target}
-            onChange={(event) => update({ target: event.target.value })}
-          />
-        </CcField>
+      {(targetField !== undefined || !platform.plannerPinned) && (
+        <div className="flex flex-wrap gap-x-4 gap-y-4">
+          {targetField !== undefined && (
+            <div className="min-w-0 flex-[1_1_240px]">
+              <CcField
+                label={targetField.label}
+                htmlFor={`target-${props.postId}`}
+              >
+                <input
+                  id={`target-${props.postId}`}
+                  className="cc-input"
+                  placeholder={targetField.placeholder}
+                  value={draft.target}
+                  onChange={(event) => update({ target: event.target.value })}
+                />
+              </CcField>
+            </div>
+          )}
+          {!platform.plannerPinned && (
+            <CcField label="PLANNER WAVE" htmlFor={`wave-${props.postId}`}>
+              <select
+                id={`wave-${props.postId}`}
+                className="cc-input"
+                value={draft.wave}
+                onChange={(event) => update({ wave: event.target.value })}
+              >
+                <option value="">
+                  Auto ·{" "}
+                  {defaultWave === undefined ? "last" : `wave ${defaultWave}`}
+                </option>
+                {WAVES.map((wave) => (
+                  <option key={wave} value={String(wave)}>
+                    Wave {wave}
+                  </option>
+                ))}
+              </select>
+            </CcField>
+          )}
+        </div>
       )}
       <CcField label="TEXT" htmlFor={`body-${props.postId}`}>
         <div className="flex flex-col gap-y-1">

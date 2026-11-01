@@ -15,12 +15,14 @@ import { getPostCopyText } from "@/lib/cc/get-post-copy-text";
 import { getPostName } from "@/lib/cc/get-post-name";
 import { getRepostSuggestions } from "@/lib/cc/get-repost-suggestions";
 import { isPlatformId } from "@/lib/cc/is-platform-id";
+import { parseCampaignPlan } from "@/lib/cc/parse-campaign-plan";
 import { PLATFORMS } from "@/lib/cc/platforms";
 
 import { buildDueItems } from "./_overview/build-due-items";
 import { buildRunSheet } from "./_overview/build-run-sheet";
 import { CampaignClock } from "./_overview/campaign-clock";
 import { CampaignPanel } from "./_overview/campaign-panel";
+import { CampaignPlanPanel } from "./_overview/campaign-plan-panel";
 import { DueNowPanel } from "./_overview/due-now-panel";
 import { getThreadsStatus } from "./_overview/get-threads-status";
 import { IntegrationsPanel } from "./_overview/integrations-panel";
@@ -132,6 +134,10 @@ export default async function OverviewPage() {
         />
       </div>
       <CampaignPanel campaign={campaign} />
+      <CampaignPlanPanel
+        campaignId={campaign.id}
+        plan={parseCampaignPlan(campaign.plan)}
+      />
       <IntegrationsPanel threads={threadsStatus} />
     </>
   );

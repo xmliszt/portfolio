@@ -6,7 +6,7 @@ function toNullable(text: string) {
   return trimmed === "" ? null : trimmed;
 }
 
-/** Return `draft` as `posts` column values, with empty text fields as `null` and asset rows without a file dropped. */
+/** Return `draft` as `posts` column values, with empty text fields and an automatic `wave` as `null` and asset rows without a file dropped. */
 export function toPostFields(draft: DraftFields) {
   return {
     title: toNullable(draft.title),
@@ -21,5 +21,6 @@ export function toPostFields(draft: DraftFields) {
         alt: asset.alt.trim(),
         ...(asset.path === undefined ? {} : { path: asset.path }),
       })),
+    wave: draft.wave === "" ? null : Number(draft.wave),
   };
 }

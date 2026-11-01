@@ -16,6 +16,8 @@ import {
 } from "@/lib/cc/platforms";
 import { sgtToUtc } from "@/lib/cc/sgt-to-utc";
 
+import { SuggestSlotButton } from "./suggest-slot-button";
+
 type SchedulePostFormProps = {
   campaignId: string;
   campaignLink: string | undefined;
@@ -153,6 +155,15 @@ export function SchedulePostForm(props: SchedulePostFormProps) {
             />
           </CcField>
         </div>
+        <SuggestSlotButton
+          key={platformId}
+          campaignId={props.campaignId}
+          platformId={platformId}
+          onSuggest={(slot) => {
+            setDate(slot.date);
+            setTime(slot.time);
+          }}
+        />
         <div className="flex flex-wrap items-center gap-x-3 gap-y-2">
           <CcButton type="submit" variant="primary" disabled={isPending}>
             {isPending ? "SAVING…" : "+ SCHEDULE POST"}

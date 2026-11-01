@@ -43,24 +43,25 @@ function buildMetric(options: {
   };
 }
 
-test("uses researched windows before a platform has 10 measured posts", () => {
+test("uses researched day weight times hour strength before a platform has 10 measured posts", () => {
   const heat = getHourHeat({ posts: [], metrics: [], platformId: "x" });
   assert.equal(heat.kind, "researched");
   assert.equal(heat.cells.length, 7);
   assert.ok(heat.cells.every((day) => day.length === 24));
-  assert.equal(heat.cells[0][22], 1);
-  assert.equal(heat.cells[4][23], 1);
-  assert.equal(heat.cells[5][22], 0);
+  assert.equal(heat.cells[1][22], 1);
+  assert.equal(heat.cells[0][22], 0.6);
+  assert.equal(heat.cells[5][22], 0.3);
   assert.equal(heat.cells[0][12], 0);
 });
 
-test("carries a window past midnight into the next weekday", () => {
+test("carries a window past midnight with the weight of the day it starts on", () => {
   const heat = getHourHeat({ posts: [], metrics: [], platformId: "instagram" });
-  assert.equal(heat.cells[0][22], 0.7);
-  assert.equal(heat.cells[1][0], 0.7);
-  assert.equal(heat.cells[4][0], 0.7);
-  assert.equal(heat.cells[0][0], 0);
-  assert.equal(heat.cells[4][22], 0);
+  assert.equal(heat.cells[2][22], 1);
+  assert.equal(heat.cells[3][0], 0.8);
+  assert.equal(heat.cells[3][1], 0.8);
+  assert.equal(heat.cells[2][2], 0);
+  const x = getHourHeat({ posts: [], metrics: [], platformId: "x" });
+  assert.equal(x.cells[2][1], 0.6);
 });
 
 test("takes the strongest overlapping window", () => {
@@ -69,7 +70,7 @@ test("takes the strongest overlapping window", () => {
     metrics: [],
     platformId: "xiaohongshu",
   });
-  assert.deepEqual(heat.cells[2].slice(19, 24), [0, 0.7, 1, 0.7, 0]);
+  assert.deepEqual(heat.cells[5].slice(19, 24), [0, 0.6, 1, 1, 0.6]);
 });
 
 test("switches to the platform's own views at 10 measured posts", () => {
