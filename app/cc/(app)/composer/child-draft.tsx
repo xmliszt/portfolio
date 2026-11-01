@@ -3,7 +3,9 @@
 import { countPostCharacters } from "@/lib/cc/count-post-characters";
 import type { PostRow } from "@/lib/cc/data/cc-rows";
 import type { PlatformId } from "@/lib/cc/platforms";
+import type { PostAsset } from "@/lib/cc/post-asset";
 
+import { AssetsEditor } from "./assets-editor";
 import { CharacterCount } from "./character-count";
 import { CopyButton } from "./copy-button";
 import { MarkPostedControl } from "./mark-posted-control";
@@ -15,7 +17,9 @@ type ChildDraftProps = {
   limit: number | undefined;
   body: string;
   focused: boolean;
+  assets: readonly PostAsset[];
   onBodyChange: (body: string) => void;
+  onAssetsChange: (assets: readonly PostAsset[]) => void;
 };
 
 export function ChildDraft(props: ChildDraftProps) {
@@ -59,6 +63,11 @@ export function ChildDraft(props: ChildDraftProps) {
           platformId={props.platformId}
         />
       </div>
+      <AssetsEditor
+        postId={props.post.id}
+        assets={props.assets}
+        onChange={props.onAssetsChange}
+      />
     </div>
   );
 }

@@ -203,10 +203,17 @@ export function Composer(props: ComposerProps) {
                 }
                 body={childDraft.body}
                 focused={child.id === props.focusPostId}
+                assets={childDraft.assets}
                 onBodyChange={(body) =>
                   updateDraft({
                     postId: child.id,
                     draft: { ...childDraft, body },
+                  })
+                }
+                onAssetsChange={(assets) =>
+                  updateDraft({
+                    postId: child.id,
+                    draft: { ...childDraft, assets },
                   })
                 }
               />
