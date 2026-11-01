@@ -73,10 +73,33 @@ export async function sendDueReminders(options: { now: Date }) {
       const message = await (async () => {
         switch (reminder.kind) {
           case "post": {
-            const assets = parsePostAssets(post.assets).flatMap((asset) =>
-              asset.path === undefined
-                ? []
-                : [{ file: asset.file, path: asset.path }]
+            const { data: children, error: childrenError } = await supabase
+              .from("posts")
+              .select("title, assets")
+              .eq("parent_post_id", post.id)
+              .neq("status", "skipped")
+              .order("created_at", { ascending: true });
+            if (childrenError) throw childrenError;
+            const assets = [
+              { label: undefined, assets: post.assets },
+              ...children.map((child) => ({
+                label: child.title ?? "Reply",
+                assets: child.assets,
+              })),
+            ].flatMap((group) =>
+              parsePostAssets(group.assets).flatMap((asset) =>
+                asset.path === undefined
+                  ? []
+                  : [
+                      {
+                        file:
+                          group.label === undefined
+                            ? asset.file
+                            : `${group.label} · ${asset.file}`,
+                        path: asset.path,
+                      },
+                    ]
+              )
             );
             const urls = await signAssetUrls({
               paths: assets.map((asset) => asset.path),
