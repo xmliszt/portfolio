@@ -6,9 +6,9 @@ import { CcButton } from "@/app/cc/_ui/cc-button";
 import { buildComposeUrl } from "@/lib/cc/build-compose-url";
 import type { PostRow } from "@/lib/cc/data/cc-rows";
 import { type PlatformId, PLATFORMS } from "@/lib/cc/platforms";
+import type { PostAsset } from "@/lib/cc/post-asset";
 
 import { CopyButton } from "./copy-button";
-import type { PostAsset } from "./draft-fields";
 import { MarkPostedControl } from "./mark-posted-control";
 import { writeClipboard } from "./write-clipboard";
 

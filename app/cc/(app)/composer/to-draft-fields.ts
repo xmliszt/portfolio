@@ -1,7 +1,7 @@
 import type { PostRow } from "@/lib/cc/data/cc-rows";
+import { parsePostAssets } from "@/lib/cc/parse-post-assets";
 
 import type { DraftFields } from "./draft-fields";
-import { parsePostAssets } from "./parse-post-assets";
 
 /** Return the editable fields of `post`, with unset text fields as empty strings. */
 export function toDraftFields(post: PostRow): DraftFields {

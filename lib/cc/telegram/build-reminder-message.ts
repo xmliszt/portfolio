@@ -15,7 +15,13 @@ type ReminderPost = {
 };
 
 type ReminderMessageInput =
-  | { kind: "post"; post: ReminderPost; timeLabel: string; composeUrl: string }
+  | {
+      kind: "post";
+      post: ReminderPost;
+      timeLabel: string;
+      composeUrl: string;
+      media: readonly { file: string; url: string }[];
+    }
   | { kind: "reply"; post: ReminderPost }
   | {
       kind: "log";
@@ -54,6 +60,13 @@ export function buildReminderMessage(input: ReminderMessageInput) {
           ...(name === "" ? [] : [name]),
           "",
           preview,
+          ...(input.media.length === 0
+            ? []
+            : [
+                "",
+                "Media (links work for 24 h):",
+                ...input.media.map((item) => `📎 ${item.file}\n${item.url}`),
+              ]),
         ].join("\n"),
         buttons: [
           { text: "Copy in composer", url: composerUrl },

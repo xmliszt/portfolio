@@ -1,4 +1,4 @@
-export type PostAsset = { file: string; alt: string };
+import type { PostAsset } from "@/lib/cc/post-asset";
 
 export type DraftFields = {
   title: string;
