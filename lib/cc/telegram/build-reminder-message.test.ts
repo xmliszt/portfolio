@@ -22,7 +22,11 @@ test("tells the owner a scheduled Product Hunt launch goes live, not to post it"
   });
   assert.match(message.text, /^🚀 Launch goes live · Product Hunt · 16:01/);
   assert.deepEqual(message.buttons, [
-    { text: "Open Product Hunt", url: "https://www.producthunt.com/" },
+    {
+      kind: "url",
+      text: "Open Product Hunt",
+      url: "https://www.producthunt.com/",
+    },
   ]);
 });
 

@@ -16,7 +16,7 @@ export async function POST(request: Request) {
       body: JSON.stringify({
         url: `${CC_ORIGIN}/api/cc/telegram`,
         secret_token: process.env.CC_TELEGRAM_WEBHOOK_SECRET,
-        allowed_updates: ["message"],
+        allowed_updates: ["message", "callback_query"],
       }),
     }
   );

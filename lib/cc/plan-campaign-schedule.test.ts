@@ -14,7 +14,7 @@ import {
   type PlannerPost,
   type PlanRow,
 } from "./plan-campaign-schedule";
-import { PLATFORMS } from "./platforms";
+import { type PlatformId, PLATFORMS } from "./platforms";
 
 const NOW = new Date("2026-11-02T04:00:00Z");
 const MINUTE_MS = 60_000;
@@ -44,6 +44,7 @@ function buildPosts(options: { scheduledBy: "user" | "planner" }) {
 function plan(options: {
   posts: readonly PlannerPost[];
   includeUserPlaced: boolean;
+  reposts?: readonly { at: Date; platformId: PlatformId }[];
 }) {
   return planCampaignSchedule({
     posts: options.posts,
@@ -51,6 +52,7 @@ function plan(options: {
     heat: HEAT,
     now: NOW,
     includeUserPlaced: options.includeUserPlaced,
+    reposts: options.reposts ?? [],
   });
 }
 
@@ -211,4 +213,25 @@ test("holds later waves behind a wave 1 post placed by hand", () => {
   });
   const features = getProposed({ rows, postId: "features" });
   assert.ok(features !== undefined && features.getTime() > promoAt.getTime());
+});
+
+test("keeps planned posts clear of reposts", () => {
+  const free = plan({
+    posts: buildPosts({ scheduledBy: "planner" }),
+    includeUserPlaced: false,
+  });
+  const first = free.find((row) => row.kind === "moved");
+  assert.ok(first?.kind === "moved");
+  const rows = plan({
+    posts: buildPosts({ scheduledBy: "planner" }),
+    includeUserPlaced: false,
+    reposts: [{ at: first.proposed, platformId: "x" }],
+  });
+  assert.ok(
+    rows.every(
+      (row) =>
+        row.kind !== "moved" ||
+        row.proposed.getTime() !== first.proposed.getTime()
+    )
+  );
 });

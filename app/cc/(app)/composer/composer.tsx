@@ -34,6 +34,7 @@ type ComposerProps = {
   post: PostRow;
   platformId: PlatformId;
   childPosts: readonly PostRow[];
+  repostOf: PostRow | undefined;
   chatgptVariant: PostRow | undefined;
   tabs: readonly ComposerTab[];
   focusPostId: string | undefined;
@@ -259,6 +260,13 @@ export function Composer(props: ComposerProps) {
             copyText,
             target: draft.target,
             assets: draft.assets,
+            original:
+              props.repostOf === undefined
+                ? undefined
+                : getPostCopyText({
+                    body: props.repostOf.body,
+                    hashtags: props.repostOf.hashtags,
+                  }),
           })}
         />
         {props.platformId === "threads" && (

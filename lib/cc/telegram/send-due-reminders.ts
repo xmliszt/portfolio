@@ -16,7 +16,7 @@ const BATCH_SIZE = 10;
 const STALE_CLAIM_MS = 5 * 60_000;
 const MEDIA_LINK_EXPIRES_IN_S = 24 * 60 * 60;
 
-/** Claim up to `BATCH_SIZE` due reminders that are unsent, or were claimed over 5 minutes ago without a `telegram_message_id`, by stamping `sent_at`; send each one, store its `telegram_message_id`, close "repost" ones, release a reminder whose send failed for a passing reason so the next run retries it, and close one Telegram rejected; return how many were sent. */
+/** Claim up to `BATCH_SIZE` due reminders that are unsent, or were claimed over 5 minutes ago without a `telegram_message_id`, by stamping `sent_at`; send each one, store its `telegram_message_id`, close one of a kind it has no message for, release a reminder whose send failed for a passing reason so the next run retries it, and close one Telegram rejected; return how many were sent. */
 export async function sendDueReminders(options: { now: Date }) {
   const supabase = createCcServiceClient();
   const staleBefore = new Date(
@@ -77,6 +77,7 @@ export async function sendDueReminders(options: { now: Date }) {
               .from("posts")
               .select("title, assets")
               .eq("parent_post_id", post.id)
+              .in("kind", ["reply", "comment"])
               .neq("status", "skipped")
               .order("created_at", { ascending: true });
             if (childrenError) throw childrenError;
@@ -149,12 +150,6 @@ export async function sendDueReminders(options: { now: Date }) {
               lastValues: last ?? {},
             });
           }
-          case "repost":
-            return buildReminderMessage({
-              kind: "repost",
-              post: reminderPost,
-              ratio: undefined,
-            });
           default:
             return undefined;
         }
@@ -187,11 +182,7 @@ export async function sendDueReminders(options: { now: Date }) {
       if (messageId === undefined) return { id: reminder.id, isSent: false };
       const { error: updateError } = await supabase
         .from("reminders")
-        .update(
-          reminder.kind === "repost"
-            ? { telegram_message_id: messageId, done_at: claimedAt }
-            : { telegram_message_id: messageId }
-        )
+        .update({ telegram_message_id: messageId })
         .eq("id", reminder.id);
       if (updateError) throw updateError;
       return { id: reminder.id, isSent: true };

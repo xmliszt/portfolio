@@ -23,6 +23,7 @@ create table "command_center"."posts" (
 );
 
 create index "posts_campaign_id_scheduled_at_idx" on "command_center"."posts" ("campaign_id", "scheduled_at");
+create unique index "posts_one_repost_per_original_idx" on "command_center"."posts" ("parent_post_id") where "kind" = 'repost';
 create index "posts_parent_post_id_idx" on "command_center"."posts" ("parent_post_id");
 
 alter table "command_center"."posts" enable row level security;

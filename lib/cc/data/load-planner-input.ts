@@ -16,7 +16,7 @@ import { listCampaignPosts } from "./list-campaign-posts";
 import { listPostMetrics } from "./list-post-metrics";
 import { toStatRows } from "./to-stat-rows";
 
-/** Return what scheduling needs for `campaignId`: its parsed plan settings, its own-variant posts, those posts' top-level `kind = 'post'` rows as planner posts, and slot scores per platform. */
+/** Return what scheduling needs for `campaignId`: its parsed plan settings, its own-variant posts, those posts' top-level `kind = 'post'` rows as planner posts, the times and platforms of its unskipped reposts, and slot scores per platform. */
 export async function loadPlannerInput(options: { campaignId: string }) {
   const { data: campaign, error } = await createCcServiceClient()
     .from("campaigns")
@@ -53,10 +53,19 @@ export async function loadPlannerInput(options: { campaignId: string }) {
         ]
       : []
   );
+  const reposts = posts.flatMap((post) =>
+    post.kind === "repost" &&
+    post.status !== "skipped" &&
+    post.scheduled_at !== null &&
+    isPlatformId(post.platform)
+      ? [{ at: new Date(post.scheduled_at), platformId: post.platform }]
+      : []
+  );
   return {
     plan: parseCampaignPlan(campaign.plan),
     posts,
     plannerPosts,
+    reposts,
     heat: mapValues(PLATFORMS, (platform) =>
       getSlotScores({
         heat: getHourHeat({ ...stats, platformId: platform.id }),

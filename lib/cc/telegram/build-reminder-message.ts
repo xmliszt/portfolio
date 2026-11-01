@@ -5,6 +5,8 @@ import {
   PLATFORMS,
 } from "@/lib/cc/platforms";
 
+import type { TelegramButton } from "./telegram-button";
+
 type ReminderPost = {
   id: string;
   platformId: PlatformId;
@@ -28,8 +30,7 @@ type ReminderMessageInput =
       post: ReminderPost;
       checkpoint: string;
       lastValues: { [field in MetricField]?: number | null };
-    }
-  | { kind: "repost"; post: ReminderPost; ratio: number | undefined };
+    };
 
 const PREVIEW_LENGTH = 280;
 const MAX_BUTTON_URL_LENGTH = 2000;
@@ -45,7 +46,10 @@ function describePost(post: ReminderPost) {
 }
 
 /** Build the text and link buttons of one reminder message, without sending it. */
-export function buildReminderMessage(input: ReminderMessageInput) {
+export function buildReminderMessage(input: ReminderMessageInput): {
+  text: string;
+  buttons: TelegramButton[];
+} {
   const { where, name } = describePost(input.post);
   const composerUrl = `${CC_ORIGIN}/composer?post=${input.post.id}`;
   switch (input.kind) {
@@ -62,11 +66,12 @@ export function buildReminderMessage(input: ReminderMessageInput) {
             input.post.url === null
               ? [
                   {
+                    kind: "url",
                     text: "Open Product Hunt",
                     url: "https://www.producthunt.com/",
                   },
                 ]
-              : [{ text: "Open the launch", url: input.post.url }],
+              : [{ kind: "url", text: "Open the launch", url: input.post.url }],
         };
       }
       const preview =
@@ -88,8 +93,9 @@ export function buildReminderMessage(input: ReminderMessageInput) {
               ]),
         ].join("\n"),
         buttons: [
-          { text: "Copy in composer", url: composerUrl },
+          { kind: "url", text: "Copy in composer", url: composerUrl },
           {
+            kind: "url",
             text: `Open ${PLATFORMS[input.post.platformId].label}`,
             url:
               input.composeUrl.length > MAX_BUTTON_URL_LENGTH
@@ -105,7 +111,7 @@ export function buildReminderMessage(input: ReminderMessageInput) {
         buttons:
           input.post.url === null
             ? []
-            : [{ text: "Open the post", url: input.post.url }],
+            : [{ kind: "url", text: "Open the post", url: input.post.url }],
       };
     case "log": {
       const fields = PLATFORMS[input.post.platformId].metrics;
@@ -123,18 +129,7 @@ export function buildReminderMessage(input: ReminderMessageInput) {
           `Last: ${last.join(" ")}`,
           "Use - to skip a number. Send undo to revert the last entry.",
         ].join("\n"),
-        buttons: [{ text: "Log in CC", url: `${CC_ORIGIN}/log` }],
-      };
-    }
-    case "repost": {
-      const label = PLATFORMS[input.post.platformId].label;
-      const ratioText =
-        input.ratio === undefined
-          ? "1.5× or more of"
-          : `${input.ratio.toFixed(1)}×`;
-      return {
-        text: `🔁 Repost idea · ${where}\n${name}\nIt did ${ratioText} your ${label} median at +24h. Repost or re-cut it in the next ${label} window.`,
-        buttons: [{ text: "Open composer", url: composerUrl }],
+        buttons: [{ kind: "url", text: "Log in CC", url: `${CC_ORIGIN}/log` }],
       };
     }
     default: {

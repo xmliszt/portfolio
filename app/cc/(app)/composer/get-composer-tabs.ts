@@ -5,12 +5,11 @@ import { formatSgt } from "@/lib/cc/format-sgt";
 import { PLATFORM_IDS, PLATFORMS } from "@/lib/cc/platforms";
 
 import type { ComposerTab } from "./composer-tab";
+import { isComposerTopLevel } from "./is-composer-top-level";
 
-/** Return one tab per top-level `mine` post, grouped in `PLATFORM_IDS` order, with a subreddit or time to tell apart posts on the same platform. */
+/** Return one tab per post `isComposerTopLevel` accepts, grouped in `PLATFORM_IDS` order, with a subreddit or time to tell apart posts on the same platform. */
 export function getComposerTabs(posts: readonly PostRow[]) {
-  const topLevel = posts.filter(
-    (post) => post.variant === "mine" && post.parent_post_id === null
-  );
+  const topLevel = posts.filter(isComposerTopLevel);
   const byPlatform = groupBy(topLevel, (post) => post.platform);
   return PLATFORM_IDS.flatMap((platformId) => {
     const group = byPlatform[platformId] ?? [];

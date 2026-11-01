@@ -6,7 +6,7 @@ import type { StatMetric, StatPost } from "./stats-types";
 
 /** Return the median 24h views of `platformId`'s posts that have them, or `undefined` when none do. */
 export function getPlatformMedian(options: {
-  posts: readonly StatPost[];
+  posts: readonly Pick<StatPost, "id" | "platform">[];
   metrics: readonly StatMetric[];
   platformId: PlatformId;
 }) {

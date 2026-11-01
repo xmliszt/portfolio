@@ -1,7 +1,6 @@
 import "server-only";
 
 import { getPlatformMedian } from "@/lib/cc/get-platform-median";
-import { getRepostSuggestions } from "@/lib/cc/get-repost-suggestions";
 import { isPlatformId } from "@/lib/cc/is-platform-id";
 import type { MetricField } from "@/lib/cc/platforms";
 import { createCcServiceClient } from "@/lib/cc/supabase/create-cc-service-client";
@@ -10,7 +9,7 @@ import { toStatRows } from "./to-stat-rows";
 
 type Checkpoint = "1h" | "24h" | "7d" | "extra";
 
-/** Insert one metric row for a post, close its log reminder for `checkpoint`, and return how its views compare with the campaign's median on that platform; at +24 h a post that `getRepostSuggestions` picks also gets one "repost" reminder, due now. */
+/** Insert one metric row for a post, close its log reminder for `checkpoint`, and return how its views compare with the campaign's median on that platform. */
 export async function saveMetricEntry(options: {
   postId: string;
   checkpoint: Checkpoint;
@@ -67,19 +66,5 @@ export async function saveMetricEntry(options: {
   });
   const ratio =
     median === undefined || median === 0 ? undefined : views / median;
-  const isRepostCandidate =
-    options.checkpoint === "24h" &&
-    getRepostSuggestions(rows).some(
-      (suggestion) => suggestion.post.id === post.id
-    );
-  if (isRepostCandidate) {
-    const { error: repostError } = await supabase
-      .from("reminders")
-      .upsert(
-        { post_id: post.id, kind: "repost", checkpoint: "24h", fire_at: now },
-        { onConflict: "post_id,kind,checkpoint", ignoreDuplicates: true }
-      );
-    if (repostError) throw repostError;
-  }
   return { metric, ratio, platformId: post.platform };
 }
