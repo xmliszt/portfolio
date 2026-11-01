@@ -69,11 +69,21 @@ export const config = {
     },
     {
       source: "/((?!api/|_next/|.*\\..*).*)",
-      has: [{ type: "host", value: "paws\\.(liyuxuan\\.dev|localhost)" }],
+      has: [
+        {
+          type: "host",
+          value: "((www\\.)?paws\\.garden|paws\\.localhost)",
+        },
+      ],
     },
     {
       source: "/(robots\\.txt|sitemap\\.xml|favicon\\.ico)",
-      has: [{ type: "host", value: "paws\\.(liyuxuan\\.dev|localhost)" }],
+      has: [
+        {
+          type: "host",
+          value: "((www\\.)?paws\\.garden|paws\\.localhost)",
+        },
+      ],
     },
     {
       source: "/paws/:path*",

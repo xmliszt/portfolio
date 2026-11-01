@@ -13,11 +13,9 @@ const request = (options: {
   search: options.search ?? "",
 });
 
-test("serves the paws page at the root of its subdomain", () => {
+test("serves the paws page at the root of its domain", () => {
   assert.deepEqual(
-    resolvePawsRequest(
-      request({ hostname: "paws.liyuxuan.dev", pathname: "/" })
-    ),
+    resolvePawsRequest(request({ hostname: "paws.garden", pathname: "/" })),
     {
       kind: "rewrite",
       pathname: "/paws",
@@ -25,7 +23,7 @@ test("serves the paws page at the root of its subdomain", () => {
   );
 });
 
-test("prefixes other subdomain paths with the paws base path", () => {
+test("prefixes other paths on the paws domain with the paws base path", () => {
   assert.deepEqual(
     resolvePawsRequest(
       request({ hostname: "paws.localhost", pathname: "/room" })
@@ -37,23 +35,21 @@ test("prefixes other subdomain paths with the paws base path", () => {
   );
 });
 
-test("passes subdomain paths that already sit under the base path", () => {
+test("passes paws domain paths that already sit under the base path", () => {
   assert.deepEqual(
-    resolvePawsRequest(
-      request({ hostname: "paws.liyuxuan.dev", pathname: "/paws" })
-    ),
+    resolvePawsRequest(request({ hostname: "paws.garden", pathname: "/paws" })),
     {
       kind: "pass",
     }
   );
 });
 
-test("redirects the portfolio's /paws path to the subdomain, keeping the query", () => {
+test("redirects the portfolio's /paws path to the paws domain, keeping the query", () => {
   assert.deepEqual(
     resolvePawsRequest(
       request({ hostname: "liyuxuan.dev", pathname: "/paws", search: "?a=1" })
     ),
-    { kind: "redirect", url: "https://paws.liyuxuan.dev/?a=1" }
+    { kind: "redirect", url: "https://paws.garden/?a=1" }
   );
 });
 
@@ -71,5 +67,18 @@ test("leaves other hosts and paths alone", () => {
     {
       kind: "pass",
     }
+  );
+});
+
+test("redirects www to paws.garden, keeping the path and query", () => {
+  assert.deepEqual(
+    resolvePawsRequest(
+      request({
+        hostname: "www.paws.garden",
+        pathname: "/room",
+        search: "?r=2",
+      })
+    ),
+    { kind: "redirect", url: "https://paws.garden/room?r=2" }
   );
 });
