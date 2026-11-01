@@ -22,6 +22,8 @@ import { buildRunSheet } from "./_overview/build-run-sheet";
 import { CampaignClock } from "./_overview/campaign-clock";
 import { CampaignPanel } from "./_overview/campaign-panel";
 import { DueNowPanel } from "./_overview/due-now-panel";
+import { getThreadsStatus } from "./_overview/get-threads-status";
+import { IntegrationsPanel } from "./_overview/integrations-panel";
 import { RunSheetPanel } from "./_overview/run-sheet-panel";
 import { TopHashtagsPanel } from "./_overview/top-hashtags-panel";
 import { TotalsStrip } from "./_overview/totals-strip";
@@ -30,12 +32,16 @@ import { VoiceCheckPanel } from "./_overview/voice-check-panel";
 
 export default async function OverviewPage() {
   await requireCcOwner();
-  const campaign = await getCurrentCampaign();
+  const [campaign, threadsStatus] = await Promise.all([
+    getCurrentCampaign(),
+    getThreadsStatus(),
+  ]);
   if (campaign === undefined) {
     return (
       <>
         <PageHeader eyebrow="CAMPAIGN // NONE YET" title="Mission control" />
         <CampaignPanel campaign={undefined} />
+        <IntegrationsPanel threads={threadsStatus} />
       </>
     );
   }
@@ -126,6 +132,7 @@ export default async function OverviewPage() {
         />
       </div>
       <CampaignPanel campaign={campaign} />
+      <IntegrationsPanel threads={threadsStatus} />
     </>
   );
 }

@@ -13,6 +13,7 @@ import { type PlatformId, PLATFORMS } from "@/lib/cc/platforms";
 import { cn } from "@/lib/utils";
 
 import { ChatgptPanel } from "./chatgpt-panel";
+import { CheckTagsPanel } from "./check-tags-panel";
 import { ChildDraft } from "./child-draft";
 import type { ComposerTab } from "./composer-tab";
 import { ComposerTabs } from "./composer-tabs";
@@ -258,6 +259,10 @@ export function Composer(props: ComposerProps) {
             target: draft.target,
             assets: draft.assets,
           })}
+        />
+        <CheckTagsPanel
+          hashtags={parseHashtags(draft.hashtagsText)}
+          className="flex-[1_1_380px]"
         />
       </div>
     </>
