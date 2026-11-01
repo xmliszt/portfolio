@@ -72,7 +72,7 @@ export function RoomMenu(props: RoomMenuProps) {
   }
 
   return (
-    <div ref={rootRef} className="relative" onKeyDown={handleKeyDown}>
+    <div ref={rootRef} className="relative flex" onKeyDown={handleKeyDown}>
       <button
         ref={buttonRef}
         type="button"
