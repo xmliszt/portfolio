@@ -96,7 +96,9 @@ export function RunSheetRow(props: RunSheetRowProps) {
           className="text-cc-text-2 hover:text-primary min-h-11 min-w-[140px] flex-1 truncate leading-[44px] underline-offset-4 hover:underline"
         >
           {item.kind !== "post" && (
-            <span className="text-muted-foreground">↳ </span>
+            <span className="text-muted-foreground">
+              {item.kind === "repost" ? "↻ Repost · " : "↳ "}
+            </span>
           )}
           {item.label}
         </Link>

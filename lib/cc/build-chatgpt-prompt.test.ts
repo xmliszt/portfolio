@@ -11,6 +11,7 @@ const fields = {
   audience: "people who like slow, artful web things",
   assets: ["a 62-second riso-style video", "a cover image"],
   draft: "I made a small room on the Internet 🐾",
+  repost: undefined,
 } as const;
 
 test("fills the English template", () => {
@@ -55,4 +56,21 @@ test("fills the 中文 template", () => {
   );
   assert.ok(prompt.includes(`"""\n${fields.draft}\n"""`));
   assert.ok(prompt.includes("不要用破折号"));
+});
+
+test("asks for a new opening on a repost, showing the original and the platform's advice", () => {
+  const prompt = buildChatgptPrompt({
+    ...fields,
+    language: "en",
+    repost: { original: "The first post", how: "Quote your own post." },
+  });
+  assert.ok(
+    prompt.includes(
+      'This is a repost of a post that did well. The original:\n"""\nThe first post\n"""\nHow to repost on X: Quote your own post.\n\nMy draft:'
+    )
+  );
+  assert.ok(
+    prompt.includes("Please give me a different opening on the same idea:")
+  );
+  assert.ok(!prompt.includes("a friend who loves poems"));
 });

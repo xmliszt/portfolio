@@ -1,10 +1,8 @@
 import type { PostRow } from "@/lib/cc/data/cc-rows";
 
-function isTopLevelMine(post: PostRow) {
-  return post.variant === "mine" && post.parent_post_id === null;
-}
+import { isComposerTopLevel } from "./is-composer-top-level";
 
-/** Return the top-level `mine` post to open for `postId` (its parent for a reply, its original for a ChatGPT variant), else the next scheduled one; `focusPostId` is the reply asked for. */
+/** Return the top-level `mine` post to open for `postId` (itself for a repost, its parent for a reply, its original for a ChatGPT variant), else the next scheduled one; `focusPostId` is the reply asked for. */
 export function getSelectedPost(options: {
   posts: readonly PostRow[];
   postId: string | undefined;
@@ -20,16 +18,16 @@ export function getSelectedPost(options: {
         )
       : requested;
   const parent =
-    original?.parent_post_id === null || original === undefined
+    original === undefined || isComposerTopLevel(original)
       ? original
       : options.posts.find((post) => post.id === original.parent_post_id);
-  if (parent !== undefined && isTopLevelMine(parent)) {
+  if (parent !== undefined && isComposerTopLevel(parent)) {
     return {
       post: parent,
       focusPostId: original?.id === parent.id ? undefined : original?.id,
     };
   }
-  const topLevel = options.posts.filter(isTopLevelMine);
+  const topLevel = options.posts.filter(isComposerTopLevel);
   const next =
     topLevel.find(
       (post) =>

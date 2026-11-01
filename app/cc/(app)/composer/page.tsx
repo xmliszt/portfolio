@@ -11,6 +11,7 @@ import { isPlatformId } from "@/lib/cc/is-platform-id";
 import { Composer } from "./composer";
 import { getComposerTabs } from "./get-composer-tabs";
 import { getSelectedPost } from "./get-selected-post";
+import { isComposerTopLevel } from "./is-composer-top-level";
 
 export const metadata = { title: "Composer" };
 
@@ -72,8 +73,15 @@ export default async function ComposerPage(props: ComposerPageProps) {
   }
 
   const childPosts = posts.filter(
-    (row) => row.parent_post_id === post.id && row.variant === "mine"
+    (row) =>
+      row.parent_post_id === post.id &&
+      row.variant === "mine" &&
+      row.kind !== "repost"
   );
+  const repostOf =
+    post.kind === "repost"
+      ? posts.find((row) => row.id === post.parent_post_id)
+      : undefined;
   const chatgptVariant =
     post.variant_group === null
       ? undefined
@@ -88,8 +96,7 @@ export default async function ComposerPage(props: ComposerPageProps) {
       (row) =>
         row.id !== post.id &&
         row.platform === post.platform &&
-        row.variant === "mine" &&
-        row.parent_post_id === null &&
+        isComposerTopLevel(row) &&
         row.status !== "skipped" &&
         postDay !== undefined &&
         getSgtDay(row.scheduled_at) === postDay
@@ -109,6 +116,7 @@ export default async function ComposerPage(props: ComposerPageProps) {
         post={post}
         platformId={post.platform}
         childPosts={childPosts}
+        repostOf={repostOf}
         chatgptVariant={chatgptVariant}
         tabs={getComposerTabs(posts)}
         focusPostId={selected.focusPostId}
