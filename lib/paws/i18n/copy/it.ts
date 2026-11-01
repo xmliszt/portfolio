@@ -178,6 +178,31 @@ export const it = {
       "pisolino",
       "corse pazze",
     ],
+    things: "Cose nella stanza",
+    yarnToy: {
+      act: "Porta un gomitolo",
+      result:
+        "Sceglilo dal vassoio e poi un punto, oppure trascinalo dentro. I gatti lo fanno rotolare e si srotola in una scia. Quando finisce, torna nel vassoio.",
+    },
+    rollToy: {
+      act: "Porta un rotolo di carta",
+      result:
+        "I gatti lo fanno cadere e si srotola per la stanza. Quando finisce, torna nel vassoio.",
+    },
+    box: {
+      act: "Scatole di cartone",
+      result:
+        "Un gatto può saltarci dentro per un pisolino. Premi sulla scatola per svegliarlo.",
+    },
+    bowl: {
+      act: "Ciotole d’acqua",
+      result:
+        "Un gatto può rovesciarne una. La pozza si asciuga in pochi minuti.",
+    },
+    light: {
+      act: "La luce",
+      result: "Segue l’ora e la stagione dove ti trovi.",
+    },
     around: "Muoversi",
     lookAround: "Guarda nella stanza",
     dragMap: "Trascina la mappa",

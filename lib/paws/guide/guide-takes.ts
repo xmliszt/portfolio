@@ -1,13 +1,53 @@
 import { beginSocial } from "@/lib/paws/sim/begin-social";
+import { getToyFingerId } from "@/lib/paws/sim/get-toy-finger-id";
 import { makeCurious } from "@/lib/paws/sim/make-curious";
 import { setCatState } from "@/lib/paws/sim/set-cat-state";
-import type { World } from "@/lib/paws/sim/sim-types";
+import type { SimToy, World } from "@/lib/paws/sim/sim-types";
+import { startBoxVisit } from "@/lib/paws/sim/start-box-visit";
 import { startZoomies } from "@/lib/paws/sim/start-zoomies";
+import { getSky } from "@/lib/paws/sky/get-sky";
 
 import { guideFinger } from "./guide-finger";
 import { GUIDE_LOOKS } from "./guide-looks";
 import type { GuideTake } from "./guide-types";
 import { poseGuideCat } from "./pose-guide-cat";
+
+const STILL_TOY = { h: 0, angle: 0, spin: 0, vx: 0, vy: 0, vh: 0 };
+const TOY_SPOT = { ...STILL_TOY, x: 830, y: 505 };
+
+/** Return a take of a sitting cat that grows curious about `toy`, placed in front of it, and plays with it. */
+function toyTake(options: {
+  seed: number;
+  catId: string;
+  toy: SimToy;
+}): GuideTake {
+  const { toy } = options;
+  return {
+    seed: options.seed,
+    loopSeconds: 8,
+    span: 640,
+    camera: { kind: "fixed", x: 800, y: 500 },
+    cats: [{ userId: options.catId, look: GUIDE_LOOKS.hero }],
+    setup: (world) => {
+      world.toys = [{ ...toy }];
+      poseGuideCat({
+        world,
+        userId: options.catId,
+        at: { x: 650, y: 520, heading: -0.05 },
+        then: { kind: "rest", pose: "sit" },
+      });
+    },
+    directions: [
+      {
+        at: 0.4,
+        run: curious({
+          catId: options.catId,
+          fingerId: getToyFingerId(options.toy.id),
+        }),
+      },
+    ],
+  };
+}
 
 const ease = (u: number) => (u <= 0 ? 0 : u >= 1 ? 1 : u * u * (3 - 2 * u));
 
@@ -509,5 +549,80 @@ export const GUIDE_TAKES = {
         },
       },
     ],
+  },
+  yarn: toyTake({
+    seed: 3,
+    catId: "yarn-cat",
+    toy: { ...TOY_SPOT, kind: "yarn", id: "yarn-1", left: 0.85, fade: 0 },
+  }),
+  roll: toyTake({
+    seed: 4,
+    catId: "roll-cat",
+    toy: {
+      ...TOY_SPOT,
+      kind: "roll",
+      id: "roll-1",
+      isStanding: true,
+      unrolled: 0,
+      fade: 0,
+    },
+  }),
+  bowl: toyTake({
+    seed: 4,
+    catId: "bowl-cat",
+    toy: { ...TOY_SPOT, kind: "bowl", id: "bowl-1", spill: undefined },
+  }),
+  box: {
+    seed: 101,
+    loopSeconds: 9,
+    span: 640,
+    camera: { kind: "fixed", x: 700, y: 510 },
+    cats: [{ userId: "box-cat", look: GUIDE_LOOKS.calico }],
+    setup: (world) => {
+      world.toys = [
+        { ...STILL_TOY, kind: "box", id: "box-1", x: 760, y: 500, angle: 0.06 },
+      ];
+      poseGuideCat({
+        world,
+        userId: "box-cat",
+        at: { x: 520, y: 540, heading: -0.1 },
+        then: { kind: "rest", pose: "sit" },
+      });
+    },
+    directions: [
+      {
+        at: 0.3,
+        run: (world) => {
+          const cat = world.cats["box-cat"];
+          if (cat === undefined) return;
+          startBoxVisit({ world, cat, boxId: "box-1" });
+          if (cat.boxVisit !== undefined) cat.boxVisit.restSeconds = 2.5;
+        },
+      },
+    ],
+  },
+  light: {
+    seed: 107,
+    loopSeconds: 12,
+    span: 1500,
+    camera: { kind: "fixed", x: 800, y: 500 },
+    cats: [{ userId: "light-cat", look: GUIDE_LOOKS.cream }],
+    setup: (world) =>
+      poseGuideCat({
+        world,
+        userId: "light-cat",
+        at: { x: 820, y: 520, heading: 0.4 },
+        then: { kind: "rest", pose: "sleep" },
+      }),
+    skyAt: (t) =>
+      getSky({
+        date: new Date(2026, 6, 15, 12),
+        latitude: 40,
+        override: {
+          hour: (5 + (t / 12) * 24) % 24,
+          season: "summer",
+          weather: "clear",
+        },
+      }),
   },
 } satisfies { [item: string]: GuideTake };

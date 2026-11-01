@@ -6,7 +6,7 @@ import { useReducedMotion } from "motion/react";
 import { GUIDE_FADE_SECONDS } from "@/lib/paws/guide/guide-fade-seconds";
 import { GUIDE_STEPS_PER_SECOND } from "@/lib/paws/guide/guide-steps-per-second";
 import { GUIDE_TAKES } from "@/lib/paws/guide/guide-takes";
-import type { GuideFrame } from "@/lib/paws/guide/guide-types";
+import type { GuideFrame, GuideTake } from "@/lib/paws/guide/guide-types";
 import { runGuideTake } from "@/lib/paws/guide/run-guide-take";
 import { createSceneResources } from "@/lib/paws/render/create-scene-resources";
 import { drawScene } from "@/lib/paws/render/draw-scene";
@@ -37,7 +37,7 @@ export function GuidePreview(props: GuidePreviewProps) {
     const canvas = canvasRef.current;
     const g = canvas?.getContext("2d");
     if (canvas === null || g === null || g === undefined) return;
-    const take = GUIDE_TAKES[props.take];
+    const take: GuideTake = GUIDE_TAKES[props.take];
     const looks = Object.fromEntries(
       take.cats.map((cat) => [cat.userId, cat.look])
     );
@@ -94,6 +94,19 @@ export function GuidePreview(props: GuidePreviewProps) {
         fingers: frame.fingers,
         time: options.clock,
         resources,
+        toys: frame.toys,
+        trails: frame.trails,
+        toyMarks: {
+          wetPrints: frame.marks.wetPrints.map((print) => ({
+            ...print,
+            bornAt: print.bornAt + shift,
+          })),
+          ripples: frame.marks.ripples.map((ripple) => ({
+            ...ripple,
+            bornAt: ripple.bornAt + shift,
+          })),
+        },
+        sky: take.skyAt?.(frame.time),
       });
     }
 

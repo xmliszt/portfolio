@@ -178,6 +178,31 @@ export const fr = {
       "sieste",
       "folle course",
     ],
+    things: "Dans la pièce",
+    yarnToy: {
+      act: "Apporter une pelote",
+      result:
+        "Choisis-la dans le plateau, puis un endroit, ou fais-la glisser. Les chats la font rouler et elle se déroule en un fil. Une fois finie, elle revient dans le plateau.",
+    },
+    rollToy: {
+      act: "Apporter un rouleau de papier",
+      result:
+        "Les chats le renversent et il se déroule dans la pièce. Une fois fini, il revient dans le plateau.",
+    },
+    box: {
+      act: "Cartons",
+      result:
+        "Un chat peut sauter dedans pour une sieste. Appuie sur le carton pour le réveiller.",
+    },
+    bowl: {
+      act: "Bols d’eau",
+      result:
+        "Un chat peut en renverser un. La flaque sèche en quelques minutes.",
+    },
+    light: {
+      act: "La lumière",
+      result: "Elle suit l’heure et la saison là où tu es.",
+    },
     around: "Se déplacer",
     lookAround: "Parcourir la pièce",
     dragMap: "Fais glisser la carte",

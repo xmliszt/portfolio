@@ -1,3 +1,4 @@
+import { createToyMarks } from "@/lib/paws/client/create-toy-marks";
 import { pruneScenePrints } from "@/lib/paws/render/prune-scene-prints";
 import type {
   FingertipKind,
@@ -9,7 +10,10 @@ import { toScenePrint } from "@/lib/paws/render/to-scene-print";
 import { createResidentWorld } from "@/lib/paws/sim/create-resident-world";
 import { createSeededRandom } from "@/lib/paws/sim/create-seeded-random";
 import { damp } from "@/lib/paws/sim/damp";
+import { deriveCat } from "@/lib/paws/sim/derive-cat";
 import { getCatSnapshots } from "@/lib/paws/sim/get-cat-snapshots";
+import { getToySnapshots } from "@/lib/paws/sim/get-toy-snapshots";
+import { getToyTrails } from "@/lib/paws/sim/get-toy-trails";
 import { isCatOnstage } from "@/lib/paws/sim/is-cat-onstage";
 import { stepWorld } from "@/lib/paws/sim/step-world";
 import type { RoomEvent } from "@/lib/paws/wire-types";
@@ -23,12 +27,14 @@ const CAMERA_RATE = 2.5;
 const SHOWN_VISIBILITY = 0.3;
 const PRINT_PRESS = 0.2;
 
-/** Run `take` through the real room simulation from a second before its clock starts until its fade ends, and return every step from clock 0 at 60 steps a second. */
+/** Run `take` through the real room simulation, in a room with only the toys its `setup` adds, from a second before its clock starts until its fade ends, and return every step from clock 0 at 60 steps a second. */
 export function runGuideTake(take: GuideTake) {
   const world = createResidentWorld({
     random: createSeededRandom({ seed: take.seed }),
     players: take.cats,
+    toys: [],
   });
+  const toyMarks = createToyMarks();
   take.setup?.(world);
   const dtSeconds = 1 / GUIDE_STEPS_PER_SECOND;
   const fingers = take.fingers ?? [];
@@ -152,9 +158,24 @@ export function runGuideTake(take: GuideTake) {
               dtSeconds,
             }),
           };
+    const snapshots = getCatSnapshots(world);
+    const toys = getToySnapshots(world);
+    const marks = toyMarks.step({
+      toys,
+      cats: snapshots.flatMap((snapshot) => {
+        const look = looks[snapshot.userId];
+        return look === undefined
+          ? []
+          : [deriveCat({ snapshot, look, time: t })];
+      }),
+      time: t,
+    });
     if (step >= 0)
       frames.push({
-        cats: getCatSnapshots(world),
+        cats: snapshots,
+        toys,
+        trails: getToyTrails(world),
+        marks: { wetPrints: [...marks.wetPrints], ripples: [...marks.ripples] },
         fingers: sceneFingers,
         prints: state.prints,
         time: t,

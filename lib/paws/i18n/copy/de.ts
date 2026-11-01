@@ -180,6 +180,31 @@ export const de = {
       "dösen",
       "flitzen",
     ],
+    things: "Dinge im Raum",
+    yarnToy: {
+      act: "Ein Wollknäuel mitbringen",
+      result:
+        "Wähle es aus der Ablage und dann eine Stelle, oder zieh es hinein. Katzen schubsen es herum, und es wickelt sich zu einer Spur ab. Ist es aufgebraucht, kommt es zurück in die Ablage.",
+    },
+    rollToy: {
+      act: "Eine Klopapierrolle mitbringen",
+      result:
+        "Katzen werfen sie um, und sie rollt sich durch den Raum ab. Ist sie aufgebraucht, kommt sie zurück in die Ablage.",
+    },
+    box: {
+      act: "Kartons",
+      result:
+        "Eine Katze springt vielleicht hinein und macht ein Nickerchen. Drück auf den Karton, um sie zu wecken.",
+    },
+    bowl: {
+      act: "Wassernäpfe",
+      result:
+        "Eine Katze kann einen umwerfen. Die Pfütze trocknet in ein paar Minuten.",
+    },
+    light: {
+      act: "Das Licht",
+      result: "Es folgt der Tageszeit und der Jahreszeit bei dir.",
+    },
     around: "Unterwegs",
     lookAround: "Im Raum umsehen",
     dragMap: "Karte ziehen",

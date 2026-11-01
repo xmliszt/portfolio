@@ -177,6 +177,30 @@ export const pl = {
       "drzemka",
       "szaleństwo",
     ],
+    things: "Rzeczy w pokoju",
+    yarnToy: {
+      act: "Przynieś kłębek",
+      result:
+        "Wybierz go z tacki, a potem miejsce, albo przeciągnij. Koty go turlają, a włóczka rozwija się w ślad. Gdy się skończy, wraca na tackę.",
+    },
+    rollToy: {
+      act: "Przynieś rolkę papieru",
+      result:
+        "Koty ją przewracają, a ona rozwija się po pokoju. Gdy się skończy, wraca na tackę.",
+    },
+    box: {
+      act: "Kartony",
+      result:
+        "Kot może wskoczyć do środka na drzemkę. Naciśnij karton, aby go obudzić.",
+    },
+    bowl: {
+      act: "Miski z wodą",
+      result: "Kot może przewrócić miskę. Kałuża wysycha po kilku minutach.",
+    },
+    light: {
+      act: "Światło",
+      result: "Zmienia się z porą dnia i porą roku tam, gdzie jesteś.",
+    },
     around: "Poruszanie się",
     lookAround: "Rozejrzyj się po pokoju",
     dragMap: "Przeciągnij mapę",

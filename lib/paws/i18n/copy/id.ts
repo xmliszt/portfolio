@@ -181,6 +181,31 @@ export const id = {
       "tidur siang",
       "lari-lari",
     ],
+    things: "Benda di ruangan",
+    yarnToy: {
+      act: "Bawa gulungan benang",
+      result:
+        "Pilih dari baki, lalu satu tempat, atau seret ke dalam. Kucing memukulnya dan benangnya terurai menjadi jejak. Setelah habis, kembali ke baki.",
+    },
+    rollToy: {
+      act: "Bawa gulungan tisu",
+      result:
+        "Kucing menjatuhkannya dan tisunya terurai di ruangan. Setelah habis, kembali ke baki.",
+    },
+    box: {
+      act: "Kardus",
+      result:
+        "Kucing bisa melompat masuk untuk tidur. Tekan kardusnya untuk membangunkannya.",
+    },
+    bowl: {
+      act: "Mangkuk air",
+      result:
+        "Kucing bisa menjatuhkan satu. Genangannya kering dalam beberapa menit.",
+    },
+    light: {
+      act: "Cahaya",
+      result: "Mengikuti waktu dan musim di tempatmu.",
+    },
     around: "Berkeliling",
     lookAround: "Lihat sekeliling ruangan",
     dragMap: "Seret peta",
