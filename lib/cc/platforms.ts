@@ -184,7 +184,7 @@ export const PLATFORMS = {
     bodyLimit: 3000,
     titleLimit: undefined,
     maxHashtags: 5,
-    metrics: ["views", "likes", "comments", "shares", "clicks"],
+    metrics: ["views", "likes", "comments", "shares", "saves"],
     composeUrl: "https://www.linkedin.com/feed/?shareActive=true",
     postsFromPhone: false,
     target: undefined,
