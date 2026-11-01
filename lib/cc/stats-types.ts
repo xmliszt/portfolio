@@ -3,6 +3,7 @@ import type { MetricField, PlatformId } from "./platforms";
 export type StatPost = {
   id: string;
   platform: PlatformId;
+  kind: string;
   postedAt: Date | undefined;
   hashtags: string[];
   body: string;

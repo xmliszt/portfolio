@@ -8,12 +8,14 @@ import type { MetricCheckpoint, StatMetric, StatPost } from "./stats-types";
 function buildPost(options: {
   id: string;
   platform?: PlatformId;
+  kind?: string;
   postedAt?: Date;
   hashtags?: string[];
 }): StatPost {
   return {
     id: options.id,
     platform: options.platform ?? "x",
+    kind: options.kind ?? "post",
     postedAt: options.postedAt,
     hashtags: options.hashtags ?? [],
     body: "",
@@ -80,4 +82,20 @@ test("ignores other platforms and posts without 24h views", () => {
     getPlatformMedian({ posts, metrics, platformId: "reddit" }),
     undefined
   );
+});
+
+test("leaves reposts out so a strong repost does not move the median", () => {
+  const posts = [
+    buildPost({ id: "a" }),
+    buildPost({ id: "b" }),
+    buildPost({ id: "c" }),
+    buildPost({ id: "repost", kind: "repost" }),
+  ];
+  const metrics = [
+    buildMetric({ postId: "a", views: 100 }),
+    buildMetric({ postId: "b", views: 200 }),
+    buildMetric({ postId: "c", views: 300 }),
+    buildMetric({ postId: "repost", views: 5000 }),
+  ];
+  assert.equal(getPlatformMedian({ posts, metrics, platformId: "x" }), 200);
 });

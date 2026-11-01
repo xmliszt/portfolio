@@ -16,6 +16,10 @@ import {
 } from "@/lib/cc/platforms";
 import { sgtToUtc } from "@/lib/cc/sgt-to-utc";
 
+import {
+  ScheduleClashWarning,
+  type ScheduleContext,
+} from "./schedule-clash-warning";
 import { SuggestSlotButton } from "./suggest-slot-button";
 
 type SchedulePostFormProps = {
@@ -23,6 +27,7 @@ type SchedulePostFormProps = {
   campaignLink: string | undefined;
   defaultDate: string;
   defaultPlatformId: PlatformId;
+  schedule: ScheduleContext;
 };
 
 type Result =
@@ -155,6 +160,11 @@ export function SchedulePostForm(props: SchedulePostFormProps) {
             />
           </CcField>
         </div>
+        <ScheduleClashWarning
+          at={sgtToUtc({ date, time })}
+          postId={undefined}
+          schedule={props.schedule}
+        />
         <SuggestSlotButton
           key={platformId}
           campaignId={props.campaignId}

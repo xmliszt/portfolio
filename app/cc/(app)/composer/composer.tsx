@@ -6,6 +6,7 @@ import isEqual from "lodash/isEqual.js";
 import { CcButton } from "@/app/cc/_ui/cc-button";
 import { Panel } from "@/app/cc/_ui/panel";
 import { savePost } from "@/app/cc/(app)/_actions/save-post";
+import { isInternalNavigation } from "@/app/cc/(app)/is-internal-navigation";
 import type { PostRow } from "@/lib/cc/data/cc-rows";
 import { formatSgt } from "@/lib/cc/format-sgt";
 import { getPostCopyText } from "@/lib/cc/get-post-copy-text";
@@ -120,8 +121,21 @@ export function Composer(props: ComposerProps) {
     function handleBeforeUnload(event: BeforeUnloadEvent) {
       event.preventDefault();
     }
+    function handleClick(event: MouseEvent) {
+      if (
+        isInternalNavigation(event) &&
+        !window.confirm("Leave without saving this draft?")
+      ) {
+        event.preventDefault();
+        event.stopPropagation();
+      }
+    }
     window.addEventListener("beforeunload", handleBeforeUnload);
-    return () => window.removeEventListener("beforeunload", handleBeforeUnload);
+    document.addEventListener("click", handleClick, true);
+    return () => {
+      window.removeEventListener("beforeunload", handleBeforeUnload);
+      document.removeEventListener("click", handleClick, true);
+    };
   }, [isDirty]);
 
   const scheduledLabel =
@@ -131,11 +145,7 @@ export function Composer(props: ComposerProps) {
 
   return (
     <>
-      <ComposerTabs
-        tabs={props.tabs}
-        selectedPostId={props.post.id}
-        dirty={isDirty}
-      />
+      <ComposerTabs tabs={props.tabs} selectedPostId={props.post.id} />
       <div className="flex flex-wrap items-start gap-x-5 gap-y-5">
         <Panel
           title={`Draft · ${platform.label}`}
@@ -176,6 +186,9 @@ export function Composer(props: ComposerProps) {
           <PostFieldsEditor
             postId={props.post.id}
             platformId={props.platformId}
+            planned={
+              props.post.variant !== "chatgpt" && props.post.kind === "post"
+            }
             draft={draft}
             copyText={copyText}
             onChange={(next) =>
@@ -236,6 +249,7 @@ export function Composer(props: ComposerProps) {
             scheduledAt: props.post.scheduled_at,
             childBodies,
             sameDayTargets: props.sameDayTargets,
+            now: new Date(),
           })}
         />
       </div>

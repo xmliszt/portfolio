@@ -9,17 +9,9 @@ import type { ComposerTab } from "./composer-tab";
 type ComposerTabsProps = {
   tabs: readonly ComposerTab[];
   selectedPostId: string;
-  dirty: boolean;
 };
 
 export function ComposerTabs(props: ComposerTabsProps) {
-  function handleClick(event: React.MouseEvent<HTMLAnchorElement>) {
-    if (props.dirty && !window.confirm("Leave without saving this draft?")) {
-      event.preventDefault();
-      event.stopPropagation();
-    }
-  }
-
   return (
     <nav
       aria-label="Posts by platform"
@@ -32,7 +24,6 @@ export function ComposerTabs(props: ComposerTabsProps) {
             key={tab.postId}
             href={`/composer?post=${tab.postId}`}
             aria-current={isSelected ? "page" : undefined}
-            onClick={isSelected ? undefined : handleClick}
             className={cn(
               "flex min-h-11 items-center gap-x-2 border px-3.5 text-[12px]",
               isSelected

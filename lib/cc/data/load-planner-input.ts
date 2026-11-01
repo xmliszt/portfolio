@@ -34,6 +34,7 @@ export async function loadPlannerInput(options: { campaignId: string }) {
   });
   const stats = toStatRows({ posts, metrics });
   const plan = parseCampaignPlan(campaign.plan);
+  const now = new Date();
   const plannerPosts = posts.flatMap((post): PlannerPost[] => {
     if (post.kind !== "post" || !isPlatformId(post.platform)) return [];
     const wave =
@@ -69,8 +70,7 @@ export async function loadPlannerInput(options: { campaignId: string }) {
     reposts,
     heat: mapValues(PLATFORMS, (platform) =>
       getSlotScores({
-        heat: getHourHeat({ ...stats, platformId: platform.id }),
-        platformId: platform.id,
+        heat: getHourHeat({ ...stats, platformId: platform.id, weekOf: now }),
       })
     ),
   };

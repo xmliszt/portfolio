@@ -10,6 +10,7 @@ function buildPost(options: { id: string; platform: PlatformId }): StatPost {
     id: options.id,
     platform: options.platform,
     postedAt: undefined,
+    kind: "post",
     hashtags: [],
     body: "",
     variant: "mine",

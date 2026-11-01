@@ -1,4 +1,5 @@
 import { Panel } from "@/app/cc/_ui/panel";
+import { getSgtWindow } from "@/lib/cc/get-sgt-window";
 import { type PlatformId, PLATFORMS } from "@/lib/cc/platforms";
 import { REPOST_MODE_LABEL, REPOST_STRATEGY } from "@/lib/cc/repost-strategy";
 import { RESEARCH_SOURCES } from "@/lib/cc/research-sources";
@@ -8,6 +9,7 @@ type HeatLegendPanelProps = {
   platformId: PlatformId;
   source: "own" | "researched";
   isEmpty: boolean;
+  weekOf: Date;
 };
 
 const WEEKDAYS = ["MON", "TUE", "WED", "THU", "FRI", "SAT", "SUN"];
@@ -74,10 +76,14 @@ export function HeatLegendPanel(props: HeatLegendPanelProps) {
       {research.hours.length > 0 && (
         <span className="text-cc-text-2 text-[12px]">
           {research.hours
-            .map(
-              (window) =>
-                `${String(window.startHour % 24).padStart(2, "0")}:00–${String(window.endHour % 24).padStart(2, "0")}:00 ${window.label}`
-            )
+            .map((window) => {
+              const sgt = getSgtWindow({
+                window,
+                timeZone: research.timeZone,
+                at: props.weekOf,
+              });
+              return `${String(sgt.startHour % 24).padStart(2, "0")}:00–${String(sgt.endHour % 24).padStart(2, "0")}:00 ${window.label}`;
+            })
             .join(" · ")}
         </span>
       )}

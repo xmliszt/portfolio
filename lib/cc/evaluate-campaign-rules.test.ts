@@ -15,7 +15,7 @@ import type { StatMetric } from "./stats-types";
 
 const NOW = new Date("2026-11-02T02:40:00Z");
 const FLAT_HEAT: SlotScores = {
-  source: "researched",
+  source: "own",
   cells: range(7).map(() => range(24).map(() => 1)),
 };
 const HEAT = mapValues(PLATFORMS, () => FLAT_HEAT);

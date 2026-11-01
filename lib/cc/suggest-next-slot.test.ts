@@ -15,17 +15,22 @@ function buildOptions(options: {
   excludedDays?: string[];
 }) {
   const platformId = options.platformId ?? "instagram";
+  const notBefore =
+    options.notBefore ?? sgtToUtc({ date: "2026-11-02", time: "12:00" });
   return {
     platformId,
-    notBefore:
-      options.notBefore ?? sgtToUtc({ date: "2026-11-02", time: "12:00" }),
+    notBefore,
     occupied: options.occupied ?? [],
     minGapMinutes: DEFAULT_CAMPAIGN_PLAN.minGapMinutes,
     maxPerDay: DEFAULT_CAMPAIGN_PLAN.maxPerDay,
     availability: DEFAULT_CAMPAIGN_PLAN.availability,
     heat: getSlotScores({
-      heat: getHourHeat({ posts: [], metrics: [], platformId }),
-      platformId,
+      heat: getHourHeat({
+        posts: [],
+        metrics: [],
+        platformId,
+        weekOf: notBefore,
+      }),
     }),
     excludedDays: options.excludedDays,
   };
@@ -110,4 +115,16 @@ test("keeps the gap from an occupied time just after midnight", () => {
     Math.abs(slot.at.getTime() - sgt("2026-11-05", "00:15").getTime()) >=
       45 * 60_000
   );
+});
+
+test("scores each day with the New York offset of that day", () => {
+  const slot = suggestNextSlot(
+    buildOptions({
+      platformId: "x",
+      notBefore: sgt("2026-10-27", "12:00"),
+      excludedDays: ["2026-10-27", "2026-10-28", "2026-10-29", "2026-10-30"],
+    })
+  );
+  assert.deepEqual(slot?.at, sgt("2026-11-03", "22:00"));
+  assert.equal(slot?.reason, "Tue 22:00 SGT · X's best day · 9 am ET");
 });

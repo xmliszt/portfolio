@@ -22,8 +22,12 @@ const MINUTE_MS = 60_000;
 
 const HEAT = mapValues(PLATFORMS, (platform) =>
   getSlotScores({
-    heat: getHourHeat({ posts: [], metrics: [], platformId: platform.id }),
-    platformId: platform.id,
+    heat: getHourHeat({
+      posts: [],
+      metrics: [],
+      platformId: platform.id,
+      weekOf: NOW,
+    }),
   })
 );
 

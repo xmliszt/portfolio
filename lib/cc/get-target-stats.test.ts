@@ -13,6 +13,7 @@ const post = (options: {
   platform: "threads" as const,
   postedAt:
     options.posted === false ? undefined : new Date("2026-11-01T14:00:00Z"),
+  kind: "post",
   hashtags: [],
   body: "",
   variant: "mine" as const,

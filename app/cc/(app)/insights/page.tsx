@@ -119,7 +119,7 @@ export default async function InsightsPage() {
 
   const heats = usedPlatforms.map((platformId) => ({
     platformId,
-    heat: getHourHeat({ posts, metrics, platformId }),
+    heat: getHourHeat({ posts, metrics, platformId, weekOf: new Date() }),
     measured: posts.filter(
       (post) =>
         post.platform === platformId &&

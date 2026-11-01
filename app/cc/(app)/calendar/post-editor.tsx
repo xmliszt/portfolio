@@ -13,6 +13,10 @@ import type { PlatformId } from "@/lib/cc/platforms";
 import { sgtToUtc } from "@/lib/cc/sgt-to-utc";
 import { cn } from "@/lib/utils";
 
+import {
+  ScheduleClashWarning,
+  type ScheduleContext,
+} from "./schedule-clash-warning";
 import { SuggestSlotButton } from "./suggest-slot-button";
 
 type PostEditorProps = {
@@ -27,6 +31,7 @@ type PostEditorProps = {
     childCount: number;
   };
   closeHref: string;
+  schedule: ScheduleContext;
 };
 
 export function PostEditor(props: PostEditorProps) {
@@ -133,6 +138,13 @@ export function PostEditor(props: PostEditorProps) {
             Edit text in composer →
           </Link>
         </form>
+      )}
+      {!isPosted && (
+        <ScheduleClashWarning
+          at={sgtToUtc({ date, time })}
+          postId={post.id}
+          schedule={props.schedule}
+        />
       )}
       {!isPosted && (
         <SuggestSlotButton

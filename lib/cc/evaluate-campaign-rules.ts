@@ -88,6 +88,7 @@ export function evaluateCampaignRules(options: {
       const measuredCount = options.posts.filter(
         (other) =>
           other.platform === post.platform &&
+          other.kind !== "repost" &&
           getViewsAt24h({ metrics: options.metrics, postId: other.id }) !==
             undefined
       ).length;

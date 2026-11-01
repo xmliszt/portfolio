@@ -288,6 +288,7 @@ export function getPreflightChecks(options: {
   scheduledAt: string | null;
   childBodies: readonly string[];
   sameDayTargets: readonly string[];
+  now: Date;
 }) {
   return [
     ...getLengthChecks(options),
@@ -303,6 +304,7 @@ export function getPreflightChecks(options: {
     getPostingWindowCheck({
       platformId: options.platformId,
       scheduledAt: options.scheduledAt,
+      now: options.now,
     }),
     ...PLATFORM_PREFLIGHT[options.platformId].manualChecks.map(
       (check): PreflightCheck => ({ kind: "manual", ...check })

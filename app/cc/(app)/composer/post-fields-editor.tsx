@@ -12,6 +12,7 @@ import type { DraftFields } from "./draft-fields";
 type PostFieldsEditorProps = {
   postId: string;
   platformId: PlatformId;
+  planned: boolean;
   draft: DraftFields;
   copyText: string;
   onChange: (draft: DraftFields) => void;
@@ -26,6 +27,7 @@ export function PostFieldsEditor(props: PostFieldsEditorProps) {
   const draft = props.draft;
   const targetField: Platform["target"] = platform.target;
   const defaultWave = getDefaultWave(draft.assets);
+  const hasWave = props.planned && !platform.plannerPinned;
 
   function update(fields: Partial<DraftFields>) {
     props.onChange({ ...draft, ...fields });
@@ -53,7 +55,7 @@ export function PostFieldsEditor(props: PostFieldsEditorProps) {
           </div>
         </CcField>
       )}
-      {(targetField !== undefined || !platform.plannerPinned) && (
+      {(targetField !== undefined || hasWave) && (
         <div className="flex flex-wrap gap-x-4 gap-y-4">
           {targetField !== undefined && (
             <div className="min-w-0 flex-[1_1_240px]">
@@ -71,7 +73,7 @@ export function PostFieldsEditor(props: PostFieldsEditorProps) {
               </CcField>
             </div>
           )}
-          {!platform.plannerPinned && (
+          {hasWave && (
             <CcField label="PLANNER WAVE" htmlFor={`wave-${props.postId}`}>
               <select
                 id={`wave-${props.postId}`}

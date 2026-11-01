@@ -16,6 +16,7 @@ export function toStatRows(options: {
       {
         id: post.id,
         platform: post.platform,
+        kind: post.kind,
         postedAt:
           post.posted_at === null ? undefined : new Date(post.posted_at),
         hashtags: post.hashtags,
