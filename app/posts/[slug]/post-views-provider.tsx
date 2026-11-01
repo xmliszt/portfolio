@@ -15,12 +15,11 @@ export function PostViewsProvider(props: PostViewsProviderProps) {
   const countedSlugRef = useRef<string>(undefined);
 
   useEffect(() => {
-    // React runs effects twice in development; count each visit once.
     if (countedSlugRef.current === props.slug) return;
     countedSlugRef.current = props.slug;
     incrementPostView({ slug: props.slug })
       .then((result) => setViews(result.views))
-      .catch(() => setViews(undefined));
+      .catch((error) => console.error(error));
   }, [props.slug]);
 
   return (

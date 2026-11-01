@@ -95,7 +95,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: 1,
   }));
 
-  const experimentsSiteMap: MetadataRoute.Sitemap = [
+  const playgroundSiteMap: MetadataRoute.Sitemap = [
     {
       url: "https://liyuxuan.dev/playground/piano",
       lastModified: new Date(),
@@ -141,7 +141,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
   return siteMapContent.concat(
     postsSiteMap,
     hobbiesSiteMap,
-    experimentsSiteMap,
+    playgroundSiteMap,
     tagsSiteMap,
     appHomePagesSiteMap,
     appDocsSiteMap

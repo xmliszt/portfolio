@@ -30,7 +30,7 @@ export function generateMetadata(): Metadata {
 export default async function PostsPage() {
   const postViews = await fetchPostViews();
 
-  const sortedPosts = posts.sort((a, b) => {
+  const sortedPosts = posts.toSorted((a, b) => {
     if (a.date > b.date) {
       return -1;
     } else {

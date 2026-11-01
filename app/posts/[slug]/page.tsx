@@ -25,14 +25,15 @@ export async function generateMetadata(props: PostProps): Promise<Metadata> {
   const params = await props.params;
   const post = getPostBySlug(params.slug);
   if (post == null) return {};
+  const description = post.meta.description ?? post.description ?? post.excerpt;
   return {
     title: `Li Yuxuan | ${post.title}`,
-    description: post.meta.description ?? post.description ?? post.excerpt,
+    description,
     alternates: { canonical: `https://liyuxuan.dev/posts/${post.slug}` },
     openGraph: {
       ...openGraph,
       title: `Li Yuxuan | posts | ${post.title}`,
-      description: post.meta.description ?? post.description ?? post.excerpt,
+      description,
     },
   };
 }

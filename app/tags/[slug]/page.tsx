@@ -13,7 +13,6 @@ export const revalidate = 3600;
 interface TagProps {
   params: Promise<{
     slug: string;
-    postCount: number;
   }>;
 }
 
@@ -31,16 +30,17 @@ function getPostsByTag(tag: string) {
 
 export async function generateMetadata(props: TagProps): Promise<Metadata> {
   const params = await props.params;
+  const postCount = getPostsByTag(params.slug).length;
   return {
     title: `posts | ${params.slug}`,
-    description: `${params.postCount} posts tagged with ${params.slug}`,
+    description: `${pluralize("post", postCount, true)} tagged with ${params.slug}`,
     alternates: {
       canonical: `https://liyuxuan.dev/tags/${params.slug}`,
     },
     openGraph: {
       ...openGraph,
       title: `Li Yuxuan | tags | ${params.slug}`,
-      description: `A collection of my thoughts and experiences. These are some of the things I have written. Here are ${params.postCount} posts tagged with ${params.slug}.`,
+      description: `A collection of my thoughts and experiences. These are some of the things I have written. Here are ${pluralize("post", postCount, true)} tagged with ${params.slug}.`,
     },
   };
 }
