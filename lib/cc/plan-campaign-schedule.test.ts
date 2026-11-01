@@ -15,7 +15,7 @@ import {
   type PlannerPost,
   type PlanRow,
 } from "./plan-campaign-schedule";
-import { PLATFORMS } from "./platforms";
+import { type PlatformId, PLATFORMS } from "./platforms";
 
 const NOW = new Date("2026-11-02T04:00:00Z");
 const MINUTE_MS = 60_000;
@@ -47,6 +47,7 @@ function buildPosts(options: { scheduledBy: "user" | "planner" }) {
 function plan(options: {
   posts: readonly PlannerPost[];
   includeUserPlaced: boolean;
+  reposts?: readonly { at: Date; platformId: PlatformId }[];
 }) {
   return planCampaignSchedule({
     posts: options.posts,
@@ -54,6 +55,7 @@ function plan(options: {
     heat: HEAT,
     now: NOW,
     includeUserPlaced: options.includeUserPlaced,
+    reposts: options.reposts ?? [],
   });
 }
 
@@ -255,6 +257,7 @@ test("places an event's reminders on the day before and its posts on the day, or
     heat: HEAT,
     now: NOW,
     includeUserPlaced: false,
+    reposts: [],
   });
   const days = Object.fromEntries(
     rows.map((row) => {
@@ -275,4 +278,25 @@ test("places an event's reminders on the day before and its posts on the day, or
     "threads-2": "2026-11-10",
     "linkedin-2": "unplaced",
   });
+});
+
+test("keeps planned posts clear of reposts", () => {
+  const free = plan({
+    posts: buildPosts({ scheduledBy: "planner" }),
+    includeUserPlaced: false,
+  });
+  const first = free.find((row) => row.kind === "moved");
+  assert.ok(first?.kind === "moved");
+  const rows = plan({
+    posts: buildPosts({ scheduledBy: "planner" }),
+    includeUserPlaced: false,
+    reposts: [{ at: first.proposed, platformId: "x" }],
+  });
+  assert.ok(
+    rows.every(
+      (row) =>
+        row.kind !== "moved" ||
+        row.proposed.getTime() !== first.proposed.getTime()
+    )
+  );
 });

@@ -1,6 +1,7 @@
 import { buildChatgptPrompt } from "@/lib/cc/build-chatgpt-prompt";
 import { type PlatformId, PLATFORMS } from "@/lib/cc/platforms";
 import type { PostAsset } from "@/lib/cc/post-asset";
+import { REPOST_STRATEGY } from "@/lib/cc/repost-strategy";
 
 import { PLATFORM_PREFLIGHT } from "./platform-preflight";
 
@@ -38,7 +39,7 @@ function getLimitRule(options: {
   }
 }
 
-/** Return the ChatGPT critique prompt for a draft, in Chinese when its title or text has Han characters and in English otherwise. */
+/** Return the ChatGPT critique prompt for a draft, or for a repost of `original` a prompt for a new opening, in Chinese when its title or text has Han characters and in English otherwise. */
 export function getChatgptPrompt(options: {
   campaignName: string;
   makersNote: string | null;
@@ -47,6 +48,7 @@ export function getChatgptPrompt(options: {
   copyText: string;
   target: string;
   assets: readonly PostAsset[];
+  original: string | undefined;
 }) {
   const title = options.title.trim();
   const language = /\p{Script=Han}/u.test(`${title}${options.copyText}`)
@@ -80,5 +82,12 @@ export function getChatgptPrompt(options: {
         ? options.copyText
         : `${titleLabel}${title}\n\n${options.copyText}`,
     language,
+    repost:
+      options.original === undefined
+        ? undefined
+        : {
+            original: options.original,
+            how: REPOST_STRATEGY[options.platformId].how,
+          },
   });
 }

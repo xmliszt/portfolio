@@ -1,9 +1,10 @@
 import "server-only";
 
+import { isTrackedPost } from "@/lib/cc/is-tracked-post";
 import { planPostReminders } from "@/lib/cc/plan-post-reminders";
 import { createCcServiceClient } from "@/lib/cc/supabase/create-cc-service-client";
 
-/** Bring a post's reminders in line with its schedule: for drafts and skipped posts delete the unsent ones and close the sent ones; otherwise replace a "post" reminder whose `fire_at` no longer matches the schedule and upsert the other planned ones without touching those already sent. */
+/** Bring a post's reminders in line with its schedule: for posts `isTrackedPost` leaves out delete the unsent ones and close the sent ones; otherwise replace a "post" reminder whose `fire_at` no longer matches the schedule and upsert the other planned ones without touching those already sent. */
 export async function syncPostReminders(options: {
   postId: string;
   status: string;
@@ -13,11 +14,7 @@ export async function syncPostReminders(options: {
 }) {
   const supabase = createCcServiceClient();
   const scheduledAt = options.scheduledAt ?? options.postedAt;
-  const isTracked =
-    options.kind === "post" &&
-    (options.status === "scheduled" || options.status === "posted");
-
-  if (!isTracked || scheduledAt === null) {
+  if (!isTrackedPost(options) || scheduledAt === null) {
     const { error: deleteError } = await supabase
       .from("reminders")
       .delete()

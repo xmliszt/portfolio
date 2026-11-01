@@ -13,7 +13,7 @@ export type DueItem = {
   cta: { label: string; href: string; isExternal: boolean };
 };
 
-/** Return the "Due now" cards for due `reminders` and for `repostSuggestions` that have no repost post yet, using `posts` to describe each one. */
+/** Return the "Due now" cards for due `reminders` and for `repostSuggestions` on `kind = 'post'` posts that have no repost yet, using `posts` to describe each one. */
 export function buildDueItems(options: {
   reminders: ReminderRow[];
   posts: PostRow[];
@@ -79,39 +79,18 @@ export function buildDueItems(options: {
             cta: { label: "Log numbers", href: "/log", isExternal: false },
           },
         ];
-      case "repost":
-        return repostedIds.has(post.id)
-          ? []
-          : [
-              {
-                key: `reminder-${reminder.id}`,
-                kindLabel: "REPOST",
-                whenLabel,
-                text: `${name} beat its ${platform.label} median. Plan a repost or re-cut in the next window.`,
-                cta: {
-                  label: "Plan in composer",
-                  href: composerHref(post.id),
-                  isExternal: false,
-                },
-              },
-            ];
       default:
         return [];
     }
   });
 
-  const remindedRepostIds = new Set(
-    options.reminders
-      .filter((reminder) => reminder.kind === "repost")
-      .map((reminder) => reminder.post_id)
-  );
   const suggestionItems = options.repostSuggestions.flatMap(
     (suggestion): DueItem[] => {
       const post = postsById[suggestion.post.id];
       if (
         post === undefined ||
-        repostedIds.has(post.id) ||
-        remindedRepostIds.has(post.id)
+        post.kind !== "post" ||
+        repostedIds.has(post.id)
       ) {
         return [];
       }
