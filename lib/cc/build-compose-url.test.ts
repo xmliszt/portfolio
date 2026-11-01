@@ -17,11 +17,11 @@ test("prefills X and Threads with the encoded body", () => {
   });
 });
 
-test("builds a Reddit link post when a link is given", () => {
+test("builds a Reddit link post when there is a link and no text", () => {
   assert.deepEqual(
     buildComposeUrl({
       platformId: "reddit",
-      body: "ignored",
+      body: "",
       title: "A quiet room",
       link: "https://paws.garden",
       target: "r/InternetIsBeautiful",
@@ -30,6 +30,19 @@ test("builds a Reddit link post when a link is given", () => {
       kind: "prefilled",
       url: "https://www.reddit.com/r/InternetIsBeautiful/submit?title=A%20quiet%20room&url=https%3A%2F%2Fpaws.garden",
     }
+  );
+});
+
+test("builds a Reddit text post when there is text, even with a link", () => {
+  assert.equal(
+    buildComposeUrl({
+      platformId: "reddit",
+      body: "Hi",
+      title: "t",
+      link: "https://paws.garden",
+      target: "SideProject",
+    }).url,
+    "https://www.reddit.com/r/SideProject/submit?title=t&type=TEXT&text=Hi"
   );
 });
 

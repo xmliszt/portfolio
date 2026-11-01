@@ -17,6 +17,8 @@ const MULTIPLIERS: { [suffix: string]: number } = {
   万: 10_000,
 };
 
+const MAX_METRIC_VALUE = 2_147_483_647;
+
 function parseToken(token: string) {
   if (SKIP_TOKENS.includes(token)) {
     return { kind: "skip" } as const;
@@ -26,10 +28,11 @@ function parseToken(token: string) {
   if (!match || multiplier === undefined) {
     return { kind: "unreadable" } as const;
   }
-  return {
-    kind: "number",
-    value: Math.round(Number(match[1]) * multiplier),
-  } as const;
+  const value = Math.round(Number(match[1]) * multiplier);
+  if (value > MAX_METRIC_VALUE) {
+    return { kind: "unreadable" } as const;
+  }
+  return { kind: "number", value } as const;
 }
 
 /** Parse one reply line of numbers into `fields` in order, or recognise `undo`. */

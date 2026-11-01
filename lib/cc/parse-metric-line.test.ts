@@ -83,3 +83,10 @@ test("rejects an unreadable token or an empty line", () => {
   });
   assert.equal(parseMetricLine({ line: "   ", fields }).kind, "error");
 });
+
+test("rejects a number larger than the database can store", () => {
+  assert.equal(
+    parseMetricLine({ line: "9".repeat(400), fields: ["views"] }).kind,
+    "error"
+  );
+});

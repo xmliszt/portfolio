@@ -50,3 +50,8 @@ test("counts graphemes on other platforms", () => {
     442
   );
 });
+
+test("counts flag and keycap emoji as 2 on X", () => {
+  assert.equal(countPostCharacters({ text: "🇸🇬", platformId: "x" }), 2);
+  assert.equal(countPostCharacters({ text: "1️⃣", platformId: "x" }), 2);
+});

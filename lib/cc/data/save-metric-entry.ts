@@ -5,14 +5,12 @@ import { getRepostSuggestions } from "@/lib/cc/get-repost-suggestions";
 import { isPlatformId } from "@/lib/cc/is-platform-id";
 import type { MetricField } from "@/lib/cc/platforms";
 import { createCcServiceClient } from "@/lib/cc/supabase/create-cc-service-client";
-import { buildReminderMessage } from "@/lib/cc/telegram/build-reminder-message";
-import { sendTelegramMessage } from "@/lib/cc/telegram/send-telegram-message";
 
 import { toStatRows } from "./to-stat-rows";
 
 type Checkpoint = "1h" | "24h" | "7d" | "extra";
 
-/** Insert one metric row for a post, close its log reminder for `checkpoint`, and return how its views compare with the campaign's median on that platform; at +24 h a post that `getRepostSuggestions` picks also gets one repost message on Telegram, recorded as a closed "repost" reminder. */
+/** Insert one metric row for a post, close its log reminder for `checkpoint`, and return how its views compare with the campaign's median on that platform; at +24 h a post that `getRepostSuggestions` picks also gets one "repost" reminder, due now. */
 export async function saveMetricEntry(options: {
   postId: string;
   checkpoint: Checkpoint;
@@ -74,7 +72,7 @@ export async function saveMetricEntry(options: {
     getRepostSuggestions(rows).some(
       (suggestion) => suggestion.post.id === post.id
     );
-  if (isRepostCandidate && ratio !== undefined) {
+  if (isRepostCandidate) {
     const { data: existing, error: existingError } = await supabase
       .from("reminders")
       .select("id")
@@ -83,33 +81,11 @@ export async function saveMetricEntry(options: {
       .maybeSingle();
     if (existingError) throw existingError;
     if (existing === null) {
-      const isTelegramSetUp =
-        process.env.CC_TELEGRAM_BOT_TOKEN !== undefined &&
-        process.env.CC_TELEGRAM_CHAT_ID !== undefined;
-      const messageId = isTelegramSetUp
-        ? await sendTelegramMessage(
-            buildReminderMessage({
-              kind: "repost",
-              post: {
-                id: post.id,
-                platformId: post.platform,
-                title: post.title,
-                body: post.body,
-                target: post.target,
-                url: post.url,
-              },
-              ratio,
-            })
-          )
-        : null;
       const { error: repostError } = await supabase.from("reminders").insert({
         post_id: post.id,
         kind: "repost",
         checkpoint: "24h",
         fire_at: now,
-        sent_at: messageId === null ? null : now,
-        telegram_message_id: messageId,
-        done_at: now,
       });
       if (repostError) throw repostError;
     }

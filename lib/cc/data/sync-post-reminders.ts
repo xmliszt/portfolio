@@ -3,7 +3,7 @@ import "server-only";
 import { planPostReminders } from "@/lib/cc/plan-post-reminders";
 import { createCcServiceClient } from "@/lib/cc/supabase/create-cc-service-client";
 
-/** Bring a post's reminders in line with its schedule: for drafts and skipped posts delete the unsent ones and close the sent ones; otherwise replace the "post" reminder while it is unposted and upsert the other planned ones without touching those already sent. */
+/** Bring a post's reminders in line with its schedule: for drafts and skipped posts delete the unsent ones and close the sent ones; otherwise replace a "post" reminder whose `fire_at` no longer matches the schedule and upsert the other planned ones without touching those already sent. */
 export async function syncPostReminders(options: {
   postId: string;
   status: string;
@@ -12,12 +12,12 @@ export async function syncPostReminders(options: {
   postedAt: string | null;
 }) {
   const supabase = createCcServiceClient();
+  const scheduledAt = options.scheduledAt ?? options.postedAt;
   const isTracked =
     options.kind === "post" &&
-    options.scheduledAt !== null &&
     (options.status === "scheduled" || options.status === "posted");
 
-  if (!isTracked || options.scheduledAt === null) {
+  if (!isTracked || scheduledAt === null) {
     const { error: deleteError } = await supabase
       .from("reminders")
       .delete()
@@ -33,20 +33,21 @@ export async function syncPostReminders(options: {
     return;
   }
 
-  if (options.postedAt === null) {
+  const planned = planPostReminders({
+    scheduledAt: new Date(scheduledAt),
+    postedAt:
+      options.postedAt === null ? undefined : new Date(options.postedAt),
+  });
+  const plannedPost = planned.find((reminder) => reminder.kind === "post");
+  if (plannedPost !== undefined) {
     const { error: deleteError } = await supabase
       .from("reminders")
       .delete()
       .eq("post_id", options.postId)
-      .eq("kind", "post");
+      .eq("kind", "post")
+      .neq("fire_at", plannedPost.fireAt.toISOString());
     if (deleteError) throw deleteError;
   }
-
-  const planned = planPostReminders({
-    scheduledAt: new Date(options.scheduledAt),
-    postedAt:
-      options.postedAt === null ? undefined : new Date(options.postedAt),
-  });
   const { data: sent, error: sentError } = await supabase
     .from("reminders")
     .select("kind, checkpoint")

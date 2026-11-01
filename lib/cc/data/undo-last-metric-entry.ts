@@ -2,7 +2,7 @@ import "server-only";
 
 import { createCcServiceClient } from "@/lib/cc/supabase/create-cc-service-client";
 
-/** Delete the most recently captured metric row and reopen its log reminder; return the deleted row, or `undefined` when there is none. */
+/** Delete the most recently captured metric row and, when no other row remains for its post and checkpoint, reopen that log reminder; return the deleted row, or `undefined` when there is none. */
 export async function undoLastMetricEntry() {
   const supabase = createCcServiceClient();
   const { data: last, error } = await supabase
@@ -20,6 +20,13 @@ export async function undoLastMetricEntry() {
     .delete()
     .eq("id", last.id);
   if (deleteError) throw deleteError;
+  const { count, error: countError } = await supabase
+    .from("post_metrics")
+    .select("id", { count: "exact", head: true })
+    .eq("post_id", last.post_id)
+    .eq("checkpoint", last.checkpoint);
+  if (countError) throw countError;
+  if (count !== 0) return last;
   const { error: reminderError } = await supabase
     .from("reminders")
     .update({ done_at: null })

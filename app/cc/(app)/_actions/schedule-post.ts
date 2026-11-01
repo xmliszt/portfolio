@@ -37,41 +37,46 @@ export async function schedulePost(options: {
       ? 0
       : nextTime.getTime() - new Date(post.scheduled_at).getTime();
   const now = new Date().toISOString();
-  const moves = [
-    { id: post.id, scheduledAt: nextTime.toISOString() },
-    ...children.map((child) => ({
-      id: child.id,
-      scheduledAt: new Date(
-        child.scheduled_at === null
-          ? nextTime.getTime()
-          : new Date(child.scheduled_at).getTime() + shiftMs
-      ).toISOString(),
-    })),
-  ];
+  async function move(options: { id: string; scheduledAt: string }) {
+    const { data, error: updateError } = await supabase
+      .from("posts")
+      .update({
+        scheduled_at: options.scheduledAt,
+        status: "scheduled",
+        updated_at: now,
+      })
+      .eq("id", options.id)
+      .neq("status", "posted")
+      .select("*")
+      .single();
+    if (updateError) throw updateError;
+    await syncPostReminders({
+      postId: data.id,
+      status: data.status,
+      kind: data.kind,
+      scheduledAt: data.scheduled_at,
+      postedAt: data.posted_at,
+    });
+    return data;
+  }
 
-  const moved = await Promise.all(
-    moves.map(async (move) => {
-      const { data, error: updateError } = await supabase
-        .from("posts")
-        .update({
-          scheduled_at: move.scheduledAt,
-          status: "scheduled",
-          updated_at: now,
-        })
-        .eq("id", move.id)
-        .select("*")
-        .single();
-      if (updateError) throw updateError;
-      await syncPostReminders({
-        postId: data.id,
-        status: data.status,
-        kind: data.kind,
-        scheduledAt: data.scheduled_at,
-        postedAt: data.posted_at,
-      });
-      return data;
-    })
+  // Children move before the parent so a failed run can be retried with the same shift.
+  await Promise.all(
+    children.map((child) =>
+      move({
+        id: child.id,
+        scheduledAt: new Date(
+          child.scheduled_at === null
+            ? nextTime.getTime()
+            : new Date(child.scheduled_at).getTime() + shiftMs
+        ).toISOString(),
+      })
+    )
   );
+  const moved = await move({
+    id: post.id,
+    scheduledAt: nextTime.toISOString(),
+  });
   revalidatePath("/cc", "layout");
-  return moved[0];
+  return moved;
 }

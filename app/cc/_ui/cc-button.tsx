@@ -26,7 +26,7 @@ export function CcButton(props: CcButtonProps) {
         "focus-visible:outline-primary focus-visible:outline focus-visible:outline-1 focus-visible:outline-offset-2",
         size === "md"
           ? "min-h-11 px-4 text-[12px]"
-          : "min-h-8 px-2.5 text-[11px]",
+          : "min-h-11 px-3 text-[11px]",
         VARIANT_CLASS[variant],
         className
       )}

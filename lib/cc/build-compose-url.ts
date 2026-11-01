@@ -35,9 +35,10 @@ export function buildComposeUrl(options: {
         ? `https://www.reddit.com/r/${encodeURIComponent(subreddit)}/submit`
         : "https://www.reddit.com/submit";
       const title = options.title ?? "";
-      const query = options.link
-        ? buildQuery({ title, url: options.link })
-        : buildQuery({ title, type: "TEXT", text: options.body });
+      const query =
+        options.link && options.body.trim() === ""
+          ? buildQuery({ title, url: options.link })
+          : buildQuery({ title, type: "TEXT", text: options.body });
       return { kind: "prefilled", url: `${base}?${query}` };
     }
     default:

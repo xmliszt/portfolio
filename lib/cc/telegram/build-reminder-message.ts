@@ -23,7 +23,7 @@ type ReminderMessageInput =
       checkpoint: string;
       lastValues: { [field in MetricField]?: number | null };
     }
-  | { kind: "repost"; post: ReminderPost; ratio: number };
+  | { kind: "repost"; post: ReminderPost; ratio: number | undefined };
 
 const PREVIEW_LENGTH = 280;
 const MAX_BUTTON_URL_LENGTH = 2000;
@@ -94,11 +94,17 @@ export function buildReminderMessage(input: ReminderMessageInput) {
         buttons: [{ text: "Log in CC", url: `${CC_ORIGIN}/log` }],
       };
     }
-    case "repost":
+    case "repost": {
+      const label = PLATFORMS[input.post.platformId].label;
+      const ratioText =
+        input.ratio === undefined
+          ? "1.5× or more of"
+          : `${input.ratio.toFixed(1)}×`;
       return {
-        text: `🔁 Repost idea · ${where}\n${name}\nIt did ${input.ratio.toFixed(1)}× your ${PLATFORMS[input.post.platformId].label} median at +24h. Repost or re-cut it in the next ${PLATFORMS[input.post.platformId].label} window.`,
+        text: `🔁 Repost idea · ${where}\n${name}\nIt did ${ratioText} your ${label} median at +24h. Repost or re-cut it in the next ${label} window.`,
         buttons: [{ text: "Open composer", url: composerUrl }],
       };
+    }
     default: {
       const unhandled: never = input;
       return unhandled;

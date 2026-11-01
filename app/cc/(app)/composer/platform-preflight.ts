@@ -3,7 +3,6 @@ import type { PlatformId } from "@/lib/cc/platforms";
 type ManualCheck = { id: string; label: string; why: string };
 
 type PlatformPreflight = {
-  /** Hashtag count range from research/platform-limits.md. */
   hashtags: { min: number; max: number; why: string };
   media: "video" | "image" | "none";
   audience: { en: string; zh: string };

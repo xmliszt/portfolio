@@ -1,4 +1,5 @@
 import { handleTelegramMessage } from "@/lib/cc/telegram/handle-telegram-message";
+import { sendTelegramMessage } from "@/lib/cc/telegram/send-telegram-message";
 
 type TelegramUpdate = {
   message?: {
@@ -24,8 +25,12 @@ export async function POST(request: Request) {
       messageId: update.message.message_id,
       text: update.message.text,
       replyToMessageId: update.message.reply_to_message?.message_id,
-    }).catch((error: unknown) => {
+    }).catch(async (error: unknown) => {
       console.error("CC Telegram update failed", error);
+      await sendTelegramMessage({
+        chatId: update.message?.chat.id,
+        text: "Something went wrong and nothing changed for sure. Check /log before you send it again.",
+      }).catch(() => undefined);
     });
   }
   return Response.json({ ok: true });

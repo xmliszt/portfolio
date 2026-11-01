@@ -116,7 +116,7 @@ export function RunSheetRow(props: RunSheetRowProps) {
                     href={open.url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="border-primary bg-primary text-primary-foreground hover:bg-primary/85 inline-flex min-h-8 items-center border px-2.5 text-[11px] font-bold tracking-[0.1em]"
+                    className="border-primary bg-primary text-primary-foreground hover:bg-primary/85 inline-flex min-h-11 items-center border px-3 text-[11px] font-bold tracking-[0.1em]"
                   >
                     OPEN ↗
                   </a>

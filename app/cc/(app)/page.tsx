@@ -20,6 +20,7 @@ import { PLATFORMS } from "@/lib/cc/platforms";
 import { buildDueItems } from "./_overview/build-due-items";
 import { buildRunSheet } from "./_overview/build-run-sheet";
 import { CampaignClock } from "./_overview/campaign-clock";
+import { CampaignPanel } from "./_overview/campaign-panel";
 import { DueNowPanel } from "./_overview/due-now-panel";
 import { RunSheetPanel } from "./_overview/run-sheet-panel";
 import { TopHashtagsPanel } from "./_overview/top-hashtags-panel";
@@ -32,7 +33,10 @@ export default async function OverviewPage() {
   const campaign = await getCurrentCampaign();
   if (campaign === undefined) {
     return (
-      <PageHeader eyebrow="CAMPAIGN // NONE YET" title="Mission control" />
+      <>
+        <PageHeader eyebrow="CAMPAIGN // NONE YET" title="Mission control" />
+        <CampaignPanel campaign={undefined} />
+      </>
     );
   }
 
@@ -121,6 +125,7 @@ export default async function OverviewPage() {
           flagged={flagged}
         />
       </div>
+      <CampaignPanel campaign={campaign} />
     </>
   );
 }

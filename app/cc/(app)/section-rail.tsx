@@ -74,7 +74,7 @@ export function SectionRail(props: SectionRailProps) {
           </span>
         </span>
         <form action={signOut}>
-          <button type="submit" className="hover:text-foreground min-h-8">
+          <button type="submit" className="hover:text-foreground min-h-11">
             SIGN OUT
           </button>
         </form>

@@ -17,7 +17,9 @@ const URL_PATTERN =
 const segmenter = new Intl.Segmenter(undefined, { granularity: "grapheme" });
 
 function getXGraphemeWeight(grapheme: string) {
-  if (/\p{Extended_Pictographic}/u.test(grapheme)) {
+  if (
+    /\p{Extended_Pictographic}|\p{Regional_Indicator}|\u20E3/u.test(grapheme)
+  ) {
     return X_EMOJI_WEIGHT;
   }
   return Array.from(grapheme).reduce((sum, character) => {
