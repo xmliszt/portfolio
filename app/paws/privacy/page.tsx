@@ -28,8 +28,9 @@ export default function PawsPrivacyPage() {
           To make and bring your own cat, you sign in with your email address.
           The site emails you a 6-digit code; there is no password. Your email
           address is added to your account and stored by Supabase, which runs
-          the sign-in and sends the code. It is used only to sign you in, and is
-          never shown to other visitors or used for anything else.
+          the sign-in. The code is sent from hello@paws.garden through Resend.
+          Your email address is used only to sign you in, and is never shown to
+          other visitors or used for anything else.
         </p>
         <p>
           Cloudflare Turnstile checks that a person, not a bot, is using the
@@ -153,6 +154,17 @@ export default function PawsPrivacyPage() {
             )
           </li>
           <li>Cloudflare: the Turnstile bot check</li>
+          <li>
+            Resend: your email address, to send the sign-in code (
+            <a
+              href="https://resend.com/legal/privacy-policy"
+              target="_blank"
+              rel="noopener"
+            >
+              privacy policy
+            </a>
+            )
+          </li>
         </ul>
         <p>I do not sell your data or use it for ads.</p>
       </PawsLegalSection>
