@@ -8,7 +8,7 @@ import { fetchXPostCounts } from "./fetch-x-post-counts";
 
 export const MAX_ACTIVE_KEYWORDS = 30;
 
-/** Fetch X's daily post counts for the 6 full UTC days before `now` for every active keyword (at most 30), upsert them into `keyword_counts`, and return which keywords were saved and which were skipped. */
+/** Fetch X's daily post counts for the 6 full UTC days before `now` for every active keyword (at most 30), upsert them into `keyword_counts`, and return each saved keyword with how many days it stored out of the buckets X sent, plus the skipped ones. */
 export async function runKeywordCounts(options: {
   bearerToken: string;
   now: Date;
@@ -55,13 +55,21 @@ export async function runKeywordCounts(options: {
         );
         return { term: keyword.term, saved: false, status: undefined };
       }
-      return { term: keyword.term, saved: true, status: 200 };
+      return {
+        term: keyword.term,
+        saved: true,
+        status: 200,
+        days: rows.length,
+        buckets: counts.response.data?.length ?? 0,
+      };
     })
   );
   return {
-    saved: results
-      .filter((result) => result.saved)
-      .map((result) => result.term),
+    saved: results.flatMap((result) =>
+      result.saved && "days" in result
+        ? [{ term: result.term, days: result.days, buckets: result.buckets }]
+        : []
+    ),
     skipped: results.filter((result) => !result.saved),
   };
 }

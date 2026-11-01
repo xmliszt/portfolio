@@ -4,5 +4,6 @@ export type XCountsResponse = {
     start: string;
     end: string;
     post_count?: number;
+    tweet_count?: number;
   }[];
 };
