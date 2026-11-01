@@ -12,7 +12,7 @@ const FLUFF = { small: 0.45, medium: 1, large: 1.7 } as const satisfies {
 const TAIL_RADIUS = { small: 7, medium: 9.5, large: 13 } as const satisfies {
   [step in Step]: number;
 };
-const EAR_SCALE = { small: 0.85, medium: 1, large: 1.3 } as const satisfies {
+const EAR_SCALE = { small: 0.9, medium: 1, large: 1.12 } as const satisfies {
   [step in Step]: number;
 };
 

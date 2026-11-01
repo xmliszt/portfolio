@@ -180,13 +180,13 @@ export function drawCat(options: {
     h,
   ];
   const nearHead = (lift: number) => Math.max(0, head[3] - lift);
-  const earH = head[3] + 4 + 10 * (1 - cat.sleepWeight);
+  const earH = head[3] + 2 + 5 * (1 - cat.sleepWeight);
   const earSize = cat.build.earScale;
   for (const side of [-1, 1]) {
     const ear = [
-      onHead(-10, side * 20, 11, earH),
-      onHead(-10 - 9 * earSize, side * (20 + 12 * earSize), 6.5, earH),
-      onHead(-10 - 16 * earSize, side * (20 + 23 * earSize), 1.5, earH),
+      onHead(-12, side * 18, 13, earH),
+      onHead(-12 - 12.5 * earSize, side * (18 + 20 * earSize), 8.5, earH),
+      onHead(-12 - 25 * earSize, side * (18 + 40 * earSize), 1.5, earH),
     ];
     parts.push({
       h: earH,
@@ -194,7 +194,7 @@ export function drawCat(options: {
         softOutline({
           draw,
           samples: ear,
-          blur: blurOf(earH, k) + fluff * 0.4,
+          blur: blurOf(earH, k) + fluff * 0.25,
           color: palette.ears,
         }),
     });
