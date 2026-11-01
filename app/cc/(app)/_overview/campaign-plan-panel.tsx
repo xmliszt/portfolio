@@ -5,7 +5,6 @@ import { useState, useTransition } from "react";
 import { CcButton } from "@/app/cc/_ui/cc-button";
 import { CcField } from "@/app/cc/_ui/cc-field";
 import { Panel } from "@/app/cc/_ui/panel";
-import { PlatformChip } from "@/app/cc/_ui/platform-chip";
 import { applyCampaignPlan } from "@/app/cc/(app)/_actions/apply-campaign-plan";
 import { previewCampaignPlan } from "@/app/cc/(app)/_actions/preview-campaign-plan";
 import { saveCampaignPlan } from "@/app/cc/(app)/_actions/save-campaign-plan";
@@ -13,6 +12,7 @@ import type { CampaignPlan, DayAvailability } from "@/lib/cc/campaign-plan";
 import { cn } from "@/lib/utils";
 
 import type { PlanPreviewRow } from "./plan-preview-row";
+import { PlanPreviewTable } from "./plan-preview-table";
 
 type CampaignPlanPanelProps = {
   campaignId: string;
@@ -23,15 +23,6 @@ type Preview = { plannedAt: string; rows: PlanPreviewRow[] };
 
 const WEEKDAYS = ["MON", "TUE", "WED", "THU", "FRI", "SAT", "SUN"];
 const HOURS = Array.from({ length: 25 }, (_, hour) => hour);
-
-const MARKERS = {
-  moved: { label: "MOVED", className: "text-primary" },
-  unchanged: { label: "SAME", className: "text-muted-foreground" },
-  pinned: { label: "PINNED", className: "text-muted-foreground" },
-  unplaced: { label: "NO SLOT", className: "text-cc-warn" },
-} as const satisfies {
-  [kind in PlanPreviewRow["kind"]]: { label: string; className: string };
-};
 
 function formatHour(hour: number) {
   return `${String(hour).padStart(2, "0")}:00`;
@@ -258,64 +249,7 @@ export function CampaignPlanPanel(props: CampaignPlanPanelProps) {
         )}
       </div>
       {preview !== undefined && preview.rows.length > 0 && (
-        <div className="overflow-x-auto">
-          <table className="w-full min-w-[760px] text-left">
-            <thead className="text-muted-foreground text-[11px] tracking-[0.1em]">
-              <tr>
-                <th className="py-2 pr-2 font-normal">POST</th>
-                <th className="px-2 py-2 font-normal">WAVE</th>
-                <th className="px-2 py-2 font-normal">CURRENT → PROPOSED</th>
-                <th className="px-2 py-2 font-normal">WHY</th>
-                <th className="py-2 pl-2 text-right font-normal">CHANGE</th>
-              </tr>
-            </thead>
-            <tbody>
-              {preview.rows.map((row) => (
-                <tr key={row.postId} className="border-cc-line-soft border-t">
-                  <td className="py-2.5 pr-2">
-                    <span className="flex items-center gap-x-2">
-                      <PlatformChip platformId={row.platformId} />
-                      <span className="text-cc-text-2 max-w-[260px] truncate">
-                        {row.name}
-                      </span>
-                    </span>
-                  </td>
-                  <td className="text-muted-foreground px-2 py-2.5 tabular-nums">
-                    {row.wave ?? "–"}
-                  </td>
-                  <td className="px-2 py-2.5 whitespace-nowrap tabular-nums">
-                    <span className="text-muted-foreground">
-                      {row.currentLabel ?? "unscheduled"}
-                    </span>
-                    {row.proposedLabel !== undefined && (
-                      <>
-                        {" → "}
-                        <span
-                          className={cn(
-                            row.kind === "moved" && "text-primary font-bold"
-                          )}
-                        >
-                          {row.proposedLabel}
-                        </span>
-                      </>
-                    )}
-                  </td>
-                  <td className="text-cc-text-2 px-2 py-2.5 text-[12px]">
-                    {row.reason}
-                  </td>
-                  <td
-                    className={cn(
-                      "py-2.5 pl-2 text-right text-[11px] tracking-[0.1em]",
-                      MARKERS[row.kind].className
-                    )}
-                  >
-                    {MARKERS[row.kind].label}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+        <PlanPreviewTable rows={preview.rows} />
       )}
     </Panel>
   );

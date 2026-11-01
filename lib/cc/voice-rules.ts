@@ -12,6 +12,8 @@ export type VoiceRule = {
   id: string;
   label: string;
   reason: string;
+  /** The rule as one line for ChatGPT, in the rule's `language`. */
+  instruction: string;
   language: "en" | "zh";
   matcher: VoiceMatcher;
 };
@@ -88,6 +90,8 @@ export const VOICE_RULES: readonly VoiceRule[] = [
     label: "Em dash",
     reason:
       "Readers now treat the em dash as the most common AI tell. Use two sentences or a comma.",
+    instruction:
+      "No em dashes (—), and no spaced hyphen used as one. Use two sentences or a comma.",
     language: "en",
     matcher: {
       kind: "pattern",
@@ -98,6 +102,7 @@ export const VOICE_RULES: readonly VoiceRule[] = [
     id: "not-x-its-y",
     label: '"Not X, it\'s Y"',
     reason: "A stock contrast formula.",
+    instruction: "No \"it's not X, it's Y\" contrasts.",
     language: "en",
     matcher: {
       kind: "pattern",
@@ -109,6 +114,8 @@ export const VOICE_RULES: readonly VoiceRule[] = [
     id: "triplet",
     label: "List of three",
     reason: "Rhythmic triplets are a default AI cadence.",
+    instruction:
+      'No lists of three adjectives or clauses ("soft, slow and quiet").',
     language: "en",
     matcher: {
       kind: "pattern-min-count",
@@ -123,6 +130,8 @@ export const VOICE_RULES: readonly VoiceRule[] = [
     id: "stock-opener",
     label: "Stock opener",
     reason: "A template hook.",
+    instruction:
+      'No template openers: "In a world where", "Ever wondered", "Imagine", "Here\'s the thing".',
     language: "en",
     matcher: {
       kind: "pattern",
@@ -134,6 +143,8 @@ export const VOICE_RULES: readonly VoiceRule[] = [
     id: "stock-closer",
     label: "Stock closer",
     reason: "A template ending.",
+    instruction:
+      'No template closers: "Let\'s dive in", "The best part?", "And that\'s the magic", "Give it a try".',
     language: "en",
     matcher: {
       kind: "pattern",
@@ -145,6 +156,8 @@ export const VOICE_RULES: readonly VoiceRule[] = [
     id: "hype-word",
     label: "Hype word",
     reason: "Marketing filler, and off-brand for Paws.",
+    instruction:
+      "No hype words: revolutionary, immersive, game-changer, seamless, unlock, elevate, delve, tapestry, testament, journey, cozy digital sanctuary, meaningful connections.",
     language: "en",
     matcher: {
       kind: "pattern",
@@ -156,6 +169,8 @@ export const VOICE_RULES: readonly VoiceRule[] = [
     id: "hedged-grandeur",
     label: "Hedged grandeur",
     reason: "Inflated framing.",
+    instruction:
+      'No inflated framing: "a celebration of", "a love letter to", "more than just".',
     language: "en",
     matcher: {
       kind: "pattern",
@@ -166,6 +181,7 @@ export const VOICE_RULES: readonly VoiceRule[] = [
     id: "broetry",
     label: "Broetry",
     reason: `One short sentence per line for ${BROETRY_MIN_LINES}+ lines is an engagement-bait layout.`,
+    instruction: `No one short sentence per line for ${BROETRY_MIN_LINES} lines or more.`,
     language: "en",
     matcher: { kind: "custom", find: findBroetry },
   },
@@ -174,6 +190,7 @@ export const VOICE_RULES: readonly VoiceRule[] = [
     label: "Too many hashtags",
     reason:
       "More hashtags than the platform's pre-flight count looks automated.",
+    instruction: "No more hashtags than the platform allows below.",
     language: "en",
     matcher: { kind: "custom", find: findExtraHashtags },
   },
@@ -181,6 +198,7 @@ export const VOICE_RULES: readonly VoiceRule[] = [
     id: "exclamations",
     label: "Exclamation marks",
     reason: "Two or more in one post reads as forced enthusiasm.",
+    instruction: "At most one exclamation mark in a post.",
     language: "en",
     matcher: { kind: "pattern-min-count", pattern: /!/g, minCount: 2 },
   },
@@ -188,6 +206,8 @@ export const VOICE_RULES: readonly VoiceRule[] = [
     id: "zh-big-words",
     label: "空泛大词",
     reason: "套话，承诺太满。",
+    instruction:
+      "不要空泛大词：治愈每一个孤独的灵魂、重新定义、沉浸式、颠覆、赋能、极致体验。",
     language: "zh",
     matcher: {
       kind: "pattern",
@@ -199,6 +219,7 @@ export const VOICE_RULES: readonly VoiceRule[] = [
     id: "zh-triplet",
     label: "排比三连",
     reason: "三个并列的词，机器腔节奏。",
+    instruction: "不要排比三连（温暖、柔软、治愈）。",
     language: "zh",
     matcher: {
       kind: "pattern-min-count",
@@ -213,6 +234,7 @@ export const VOICE_RULES: readonly VoiceRule[] = [
     id: "zh-stock-opener",
     label: "模板开头",
     reason: "模板化的开头。",
+    instruction: "不要模板开头：你有没有想过、你是否也曾、在这个快节奏的时代。",
     language: "zh",
     matcher: {
       kind: "pattern",
@@ -223,6 +245,7 @@ export const VOICE_RULES: readonly VoiceRule[] = [
     id: "zh-stock-closer",
     label: "模板结尾",
     reason: "模板化的结尾。",
+    instruction: "不要模板结尾：快来试试吧、你还在等什么、赶紧冲。",
     language: "zh",
     matcher: {
       kind: "pattern",
@@ -233,6 +256,7 @@ export const VOICE_RULES: readonly VoiceRule[] = [
     id: "zh-dash",
     label: "破折号滥用",
     reason: "破折号用了两次以上，是常见的 AI 痕迹。",
+    instruction: "破折号（——）最多用一次。",
     language: "zh",
     matcher: { kind: "pattern-min-count", pattern: /——/g, minCount: 2 },
   },
@@ -240,6 +264,7 @@ export const VOICE_RULES: readonly VoiceRule[] = [
     id: "zh-exclamation-stack",
     label: "感叹号堆叠",
     reason: "用力过猛。",
+    instruction: "不要连用感叹号（！！）。",
     language: "zh",
     matcher: { kind: "pattern", pattern: /[！!]{2,}/g },
   },

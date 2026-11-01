@@ -10,5 +10,7 @@ export type PlanPreviewRow = {
   kind: PlanRow["kind"];
   currentLabel: string | undefined;
   proposedLabel: string | undefined;
+  /** The proposed time as an ISO string, or `undefined` when the row has none. */
+  proposedAt: string | undefined;
   reason: string;
 };

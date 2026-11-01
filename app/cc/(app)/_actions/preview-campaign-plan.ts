@@ -49,6 +49,10 @@ export async function previewCampaignPlan(options: {
           row.kind === "moved" || row.kind === "unchanged"
             ? formatTime(row.proposed)
             : undefined,
+        proposedAt:
+          row.kind === "moved" || row.kind === "unchanged"
+            ? row.proposed.toISOString()
+            : undefined,
         reason: row.reason,
       };
     }),
