@@ -1,0 +1,9 @@
+{
+  "name": "film",
+  "private": true,
+  "type": "module",
+  "devDependencies": {
+    "esbuild": "0.25.12",
+    "playwright": "1.48.2"
+  }
+}

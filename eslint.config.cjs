@@ -15,6 +15,7 @@ module.exports = [
       "./components/ui/*",
       "./content/*",
       "./.velite/*",
+      "tools/*",
     ],
   },
   {
