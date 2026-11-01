@@ -1,7 +1,9 @@
 import type { CatLook } from "@/lib/paws/cat-look";
 import type { SceneFinger, ScenePrint } from "@/lib/paws/render/render-types";
+import type { ToyMarks } from "@/lib/paws/render/toy-marks";
 import type { World } from "@/lib/paws/sim/sim-types";
-import type { CatSnapshot } from "@/lib/paws/wire-types";
+import type { Sky } from "@/lib/paws/sky/sky-types";
+import type { CatSnapshot, ToySnapshot, ToyTrail } from "@/lib/paws/wire-types";
 
 /** A scripted fingertip: where it is at take time `t`, or `undefined` while it is away; `own` draws it as the viewer's. */
 export type GuideFinger = {
@@ -26,13 +28,18 @@ export type GuideTake = {
   setup?: (world: World) => void;
   fingers?: GuideFinger[];
   directions?: { at: number; run: (world: World) => void }[];
+  /** The sky at take time `t`, for a take that shows the light changing; the plain paper when absent. */
+  skyAt?: (t: number) => Sky;
 };
 
-/** What one step of a take shows, with print and fingertip times on the take clock. */
+/** What one step of a take shows, with print, mark and fingertip times on the take clock. */
 export type GuideFrame = {
   cats: CatSnapshot[];
   fingers: SceneFinger[];
   prints: ScenePrint[];
+  toys: ToySnapshot[];
+  trails: ToyTrail[];
+  marks: ToyMarks;
   time: number;
   camera: { x: number; y: number };
 };

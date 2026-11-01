@@ -39,3 +39,41 @@ test("the cats take shows a tail bat before its loop fades", () => {
     )
   );
 });
+
+test("the toy takes show the cat knocking its toy before the loop fades", () => {
+  for (const name of ["yarn", "roll", "bowl"] as const) {
+    const take = GUIDE_TAKES[name];
+    const knocked = runGuideTake(take).find((frame) => {
+      const toy = frame.toys.at(0);
+      if (toy === undefined) return false;
+      return toy.kind === "bowl"
+        ? toy.spill !== undefined
+        : Math.hypot(toy.x - 830, toy.y - 505) > 30;
+    });
+    assert.ok(
+      knocked !== undefined && knocked.time < take.loopSeconds / 2,
+      `${name} was not knocked early enough`
+    );
+  }
+});
+
+test("the box take shows the cat going into the box and coming back out", () => {
+  const take = GUIDE_TAKES.box;
+  const frames = runGuideTake(take).filter(
+    (frame) => frame.time < take.loopSeconds
+  );
+  const box = frames.at(0)?.toys.at(0);
+  assert.ok(box !== undefined);
+  const gapAt = (frame: (typeof frames)[number]) => {
+    const cat = frame.cats.at(0);
+    return cat === undefined
+      ? Infinity
+      : Math.hypot(cat.x - box.x, cat.y - box.y);
+  };
+  const inside = frames.findIndex((frame) => gapAt(frame) < 10);
+  assert.ok(inside > 0, "the cat never got into the box");
+  assert.ok(
+    frames.slice(inside).some((frame) => gapAt(frame) > 80),
+    "the cat never came back out"
+  );
+});

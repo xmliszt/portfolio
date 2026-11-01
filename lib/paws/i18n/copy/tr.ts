@@ -177,6 +177,31 @@ export const tr = {
       "şekerleme",
       "koşturma",
     ],
+    things: "Odadaki şeyler",
+    yarnToy: {
+      act: "Yün yumağı getir",
+      result:
+        "Tepsiden seç, sonra bir yer seç ya da sürükleyip bırak. Kediler onu yuvarlar ve iz bırakarak çözülür. Bitince tepsiye geri döner.",
+    },
+    rollToy: {
+      act: "Tuvalet kâğıdı getir",
+      result:
+        "Kediler onu devirir ve odada açılarak yuvarlanır. Bitince tepsiye geri döner.",
+    },
+    box: {
+      act: "Karton kutular",
+      result:
+        "Bir kedi şekerleme için içine atlayabilir. Uyandırmak için kutuya bas.",
+    },
+    bowl: {
+      act: "Su kapları",
+      result:
+        "Bir kedi birini devirebilir. Su birikintisi birkaç dakikada kurur.",
+    },
+    light: {
+      act: "Işık",
+      result: "Bulunduğun yerin saatine ve mevsimine göre değişir.",
+    },
     around: "Gezinme",
     lookAround: "Odada gezin",
     dragMap: "Haritayı sürükle",

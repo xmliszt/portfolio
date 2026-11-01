@@ -68,7 +68,7 @@ function KeyRow(props: {
   );
 }
 
-/** Render the how-it-works sheet over the room: what a cursor or finger does to the cats, what happens with other people, what cats do on their own, and the controls for the visitor's pointer, with the look-around rows only while `pannable`. */
+/** Render the how-it-works sheet over the room: what a cursor or finger does to the cats, what happens with other people, what cats do on their own, the toys, boxes, bowls and light in the room, and the controls for the visitor's pointer, with the look-around rows only while `pannable`. */
 export function RoomGuide(props: RoomGuideProps) {
   const { copy } = usePawsCopy();
   const guide = copy.guide;
@@ -157,6 +157,19 @@ export function RoomGuide(props: RoomGuideProps) {
               {act}
             </li>
           ))}
+        </ul>
+      </section>
+
+      <section className="flex flex-col gap-y-3">
+        <SectionTitle dotClass="before:bg-[var(--pw-ink-soft)]">
+          {guide.things}
+        </SectionTitle>
+        <ul className="flex flex-col gap-y-6">
+          <PreviewItem take="yarn" posterAt={4} {...guide.yarnToy} />
+          <PreviewItem take="roll" posterAt={5} {...guide.rollToy} />
+          <PreviewItem take="box" posterAt={4.5} {...guide.box} />
+          <PreviewItem take="bowl" posterAt={5} {...guide.bowl} />
+          <PreviewItem take="light" posterAt={9} {...guide.light} />
         </ul>
       </section>
 

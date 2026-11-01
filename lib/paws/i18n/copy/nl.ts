@@ -178,6 +178,31 @@ export const nl = {
       "dutje",
       "rondrennen",
     ],
+    things: "Dingen in de kamer",
+    yarnToy: {
+      act: "Een bol wol meenemen",
+      result:
+        "Kies hem uit het bakje en dan een plek, of sleep hem erin. Katten tikken hem rond en hij rolt af tot een spoor. Is hij op, dan gaat hij terug naar het bakje.",
+    },
+    rollToy: {
+      act: "Een wc-rol meenemen",
+      result:
+        "Katten gooien hem om en hij rolt af door de kamer. Is hij op, dan gaat hij terug naar het bakje.",
+    },
+    box: {
+      act: "Kartonnen dozen",
+      result:
+        "Een kat springt er misschien in voor een dutje. Druk op de doos om hem te wekken.",
+    },
+    bowl: {
+      act: "Waterbakjes",
+      result:
+        "Een kat kan er een omgooien. De plas droogt in een paar minuten.",
+    },
+    light: {
+      act: "Het licht",
+      result: "Het volgt het tijdstip en het seizoen waar jij bent.",
+    },
     around: "Rondgaan",
     lookAround: "Rondkijken in de kamer",
     dragMap: "Sleep de kaart",

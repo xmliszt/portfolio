@@ -174,6 +174,29 @@ export const en = {
     cats: "Cats on their own",
     catsHint: "Leave them be, and they play with each other.",
     catActs: ["say hi", "chase", "bat a tail", "snuggle", "nap", "zoomies"],
+    things: "Things in the room",
+    yarnToy: {
+      act: "Bring in a yarn ball",
+      result:
+        "Pick it from the tray, then a spot, or drag it in. Cats bat it around and it unwinds into a trail. Once it runs out, it goes back to the tray.",
+    },
+    rollToy: {
+      act: "Bring in a toilet roll",
+      result:
+        "Cats knock it over and it unrolls across the room. Once it runs out, it goes back to the tray.",
+    },
+    box: {
+      act: "Cardboard boxes",
+      result: "A cat may hop in for a nap. Press on the box to wake it.",
+    },
+    bowl: {
+      act: "Water bowls",
+      result: "A cat may knock one over. The puddle dries in a few minutes.",
+    },
+    light: {
+      act: "The light",
+      result: "It follows the time of day and the season where you are.",
+    },
     around: "Getting around",
     lookAround: "Look around the room",
     dragMap: "Drag the map",

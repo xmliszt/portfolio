@@ -177,6 +177,29 @@ export const vi = {
       "ngủ trưa",
       "chạy loạn",
     ],
+    things: "Đồ vật trong phòng",
+    yarnToy: {
+      act: "Mang cuộn len vào",
+      result:
+        "Chọn trong khay rồi chọn chỗ, hoặc kéo vào. Mèo đánh nó lăn đi và len tháo ra thành vệt. Khi hết, nó quay lại khay.",
+    },
+    rollToy: {
+      act: "Mang cuộn giấy vào",
+      result:
+        "Mèo làm đổ nó và giấy trải ra khắp phòng. Khi hết, nó quay lại khay.",
+    },
+    box: {
+      act: "Hộp các-tông",
+      result: "Mèo có thể nhảy vào ngủ trưa. Nhấn vào hộp để đánh thức nó.",
+    },
+    bowl: {
+      act: "Bát nước",
+      result: "Mèo có thể làm đổ một bát. Vũng nước khô sau vài phút.",
+    },
+    light: {
+      act: "Ánh sáng",
+      result: "Thay đổi theo giờ trong ngày và mùa ở nơi bạn ở.",
+    },
     around: "Đi quanh",
     lookAround: "Nhìn quanh phòng",
     dragMap: "Kéo bản đồ",

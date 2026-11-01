@@ -179,6 +179,30 @@ export const es = {
       "siesta",
       "carreras locas",
     ],
+    things: "Cosas en la sala",
+    yarnToy: {
+      act: "Trae un ovillo",
+      result:
+        "Elígelo en la bandeja y luego un sitio, o arrástralo. Los gatos lo empujan y se desenrolla en un rastro. Cuando se acaba, vuelve a la bandeja.",
+    },
+    rollToy: {
+      act: "Trae un rollo de papel",
+      result:
+        "Los gatos lo tiran y se desenrolla por la sala. Cuando se acaba, vuelve a la bandeja.",
+    },
+    box: {
+      act: "Cajas de cartón",
+      result:
+        "Un gato puede meterse a echar la siesta. Presiona la caja para despertarlo.",
+    },
+    bowl: {
+      act: "Cuencos de agua",
+      result: "Un gato puede volcar uno. El charco se seca en unos minutos.",
+    },
+    light: {
+      act: "La luz",
+      result: "Sigue la hora del día y la estación donde estás.",
+    },
     around: "Moverse por la sala",
     lookAround: "Mirar por la sala",
     dragMap: "Arrastra el mapa",

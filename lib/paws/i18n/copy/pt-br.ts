@@ -178,6 +178,30 @@ export const ptBR = {
       "soneca",
       "correria",
     ],
+    things: "Coisas na sala",
+    yarnToy: {
+      act: "Traga um novelo",
+      result:
+        "Escolha na bandeja e depois um lugar, ou arraste para dentro. Os gatos rolam o novelo e ele se desenrola num rastro. Quando acaba, volta para a bandeja.",
+    },
+    rollToy: {
+      act: "Traga um rolo de papel",
+      result:
+        "Os gatos derrubam o rolo e ele se desenrola pela sala. Quando acaba, volta para a bandeja.",
+    },
+    box: {
+      act: "Caixas de papelão",
+      result:
+        "Um gato pode pular dentro para tirar uma soneca. Pressione a caixa para acordá-lo.",
+    },
+    bowl: {
+      act: "Tigelas de água",
+      result: "Um gato pode derrubar uma. A poça seca em alguns minutos.",
+    },
+    light: {
+      act: "A luz",
+      result: "Ela acompanha a hora do dia e a estação onde você está.",
+    },
     around: "Andando pela sala",
     lookAround: "Olhar pela sala",
     dragMap: "Arraste o mapa",
