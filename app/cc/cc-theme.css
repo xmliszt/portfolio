@@ -84,3 +84,25 @@
     outline-offset: 0;
   }
 }
+
+@layer utilities {
+  .animate-cc-progress {
+    animation: cc-progress 0.9s ease-in-out infinite;
+  }
+}
+
+@keyframes cc-progress {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(300%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-cc-progress {
+    animation: none;
+    width: 100%;
+  }
+}

@@ -1,6 +1,9 @@
+import { Suspense } from "react";
+
 import { requireCcOwner } from "@/lib/cc/auth/require-cc-owner";
 import { listDueReminders } from "@/lib/cc/data/list-due-reminders";
 
+import { NavigationProgress } from "./navigation-progress";
 import { SectionRail } from "./section-rail";
 
 type CcAppLayoutProps = {
@@ -19,6 +22,9 @@ export default async function CcAppLayout(props: CcAppLayoutProps) {
 
   return (
     <div className="flex min-h-full flex-wrap">
+      <Suspense>
+        <NavigationProgress />
+      </Suspense>
       <SectionRail
         dueLogCount={dueLogCount}
         telegramLinked={isTelegramLinked}
