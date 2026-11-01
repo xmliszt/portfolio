@@ -90,6 +90,14 @@ const config = {
         piano: "416px",
       },
       colors: {
+        cc: {
+          "panel-2": "hsl(var(--cc-panel-2))",
+          "line-soft": "hsl(var(--cc-line-soft))",
+          "text-2": "hsl(var(--cc-text-2))",
+          warn: "hsl(var(--cc-warn))",
+          ok: "hsl(var(--cc-ok))",
+          chatgpt: "hsl(var(--cc-chatgpt))",
+        },
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",

@@ -20,3 +20,4 @@ gen_types() {
 gen_types portfolio lib/supabase/__generated__/types.ts
 gen_types laundro_cafe lib/laundromat/supabase/__generated__/types.ts
 gen_types paws lib/paws/supabase/__generated__/types.ts
+gen_types command_center lib/cc/supabase/__generated__/types.ts
