@@ -116,7 +116,7 @@ export function ChatLayer(props: ChatLayerProps) {
               className={ANCHOR_CLASS}
             >
               <BubbleFrame accent={bubble.accent} className="px-2 py-1">
-                <p className="break-words">
+                <p className="[overflow-wrap:anywhere]">
                   <RevealedText
                     text={bubble.message.text}
                     steps={bubble.reveal}
@@ -136,10 +136,10 @@ export function ChatLayer(props: ChatLayerProps) {
               <label htmlFor={inputId} className="sr-only">
                 {copy.room.chatLabel}
               </label>
-              <div className="grid min-w-[140px] *:col-start-1 *:row-start-1">
+              <div className="grid min-w-[140px] *:col-start-1 *:row-start-1 *:min-w-0">
                 <span
                   aria-hidden
-                  className="invisible border-b border-dashed px-0.5 pb-0.5 text-[16px] break-words whitespace-pre-wrap sm:text-[13px]"
+                  className="invisible border-b border-dashed px-0.5 pb-0.5 text-[16px] [overflow-wrap:anywhere] whitespace-pre-wrap sm:text-[13px]"
                 >
                   {`${text || copy.room.chatPlaceholder} `}
                 </span>
@@ -155,7 +155,7 @@ export function ChatLayer(props: ChatLayerProps) {
                   onChange={handleChange}
                   onKeyDown={handleKeyDown}
                   onBlur={handleBlur}
-                  className="resize-none overflow-hidden border-b border-dashed border-[var(--pw-ink-soft)] bg-transparent px-0.5 pb-0.5 text-[16px] break-words text-[var(--pw-ink)] outline-none placeholder:text-[var(--pw-ink-soft)]/70 focus-visible:border-[var(--pw-ink)] sm:text-[13px]"
+                  className="resize-none overflow-hidden border-b border-dashed border-[var(--pw-ink-soft)] bg-transparent px-0.5 pb-0.5 text-[16px] [overflow-wrap:anywhere] text-[var(--pw-ink)] outline-none placeholder:text-[var(--pw-ink-soft)]/70 focus-visible:border-[var(--pw-ink)] sm:text-[13px]"
                 />
               </div>
               <p
