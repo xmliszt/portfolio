@@ -55,7 +55,7 @@ for (const [name, sample] of entries) {
       duration_seconds: sample.durationSeconds,
       prompt_influence: sample.promptInfluence,
       loop: LOOP_NAMES.some((loop) => loop === name),
-      model_id: "eleven_text_to_sound_v2",
+      model_id: "eleven_text_to_sound_v3",
     }),
   });
   if (!response.ok) {
