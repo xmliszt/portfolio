@@ -12,6 +12,7 @@ import { previewCampaignPlan } from "@/app/cc/(app)/_actions/preview-campaign-pl
 import type { PlanPreviewRow } from "@/app/cc/(app)/_overview/plan-preview-row";
 import { PlanPreviewTable } from "@/app/cc/(app)/_overview/plan-preview-table";
 import type { SmartCampaignDraft } from "@/lib/cc/match-smart-campaign-reply";
+import type { PlatformId } from "@/lib/cc/platforms";
 import { sgtToUtc } from "@/lib/cc/sgt-to-utc";
 import type { SmartCampaignForm } from "@/lib/cc/smart-campaign-state";
 import { cn } from "@/lib/utils";
@@ -20,6 +21,7 @@ type SmartCampaignCreatePanelProps = {
   form: SmartCampaignForm;
   defaultName: string;
   drafts: readonly SmartCampaignDraft[];
+  notBefore: { [id in PlatformId]?: string };
   missingCount: number;
   createdCampaignId: string | undefined;
   onCreated: (campaignId: string) => void;
@@ -85,6 +87,13 @@ export function SmartCampaignCreatePanel(props: SmartCampaignCreatePanelProps) {
         link: props.form.link,
         makersNote: props.form.makersNote,
         startDate: props.form.startDate,
+        kind: props.form.kind,
+        intent: props.form.intent,
+        eventDate:
+          props.form.kind === "event" && props.form.eventDate !== ""
+            ? props.form.eventDate
+            : undefined,
+        notBefore: props.notBefore,
         drafts: props.drafts,
       });
       props.onCreated(result.campaignId);

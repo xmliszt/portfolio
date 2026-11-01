@@ -4,12 +4,18 @@ import { revalidatePath } from "next/cache";
 import { randomUUID } from "node:crypto";
 
 import { requireCcOwner } from "@/lib/cc/auth/require-cc-owner";
-import { DEFAULT_CAMPAIGN_PLAN } from "@/lib/cc/campaign-plan";
+import {
+  type CampaignKind,
+  DEFAULT_CAMPAIGN_PLAN,
+} from "@/lib/cc/campaign-plan";
 import { getCurrentCampaign } from "@/lib/cc/data/get-current-campaign";
 import { listCampaignPosts } from "@/lib/cc/data/list-campaign-posts";
+import { getLinkHost } from "@/lib/cc/get-link-host";
 import { isPlatformId } from "@/lib/cc/is-platform-id";
 import type { SmartCampaignDraft } from "@/lib/cc/match-smart-campaign-reply";
+import { parseCampaignPlan } from "@/lib/cc/parse-campaign-plan";
 import { parsePostAssets } from "@/lib/cc/parse-post-assets";
+import type { PlatformId } from "@/lib/cc/platforms";
 import { sgtToUtc } from "@/lib/cc/sgt-to-utc";
 import { createCcServiceClient } from "@/lib/cc/supabase/create-cc-service-client";
 import { toCampaignPlanJson } from "@/lib/cc/to-campaign-plan-json";
@@ -21,21 +27,16 @@ type KitSource =
   | { kind: "no-link" }
   | { kind: "no-current" };
 
-function getHost(link: string | null | undefined) {
-  if (!link) return undefined;
-  try {
-    return new URL(link).host.replace(/^www\./, "");
-  } catch {
-    return undefined;
-  }
-}
-
-/** Create a campaign starting on `startDate` (SGT) with the default planner settings and `drafts` as its draft posts, with media from the current campaign's kit when both campaigns link to the same site; return the new campaign's id, how many posts were saved, where media came from, and the refs left without media or without a parent. */
+/** Create a campaign of `kind` starting on `startDate` (SGT) with the default planner settings (an event allows one post per platform a day) plus `kind`, `intent`, `eventDate` and `notBefore`, and `drafts` as its draft posts, with media from the current campaign's kit when both campaigns link to the same site; return the new campaign's id, how many posts were saved, where media came from, and the refs left without media or without a parent. */
 export async function createSmartCampaign(options: {
   name: string;
   link: string;
   makersNote: string;
   startDate: string;
+  kind: CampaignKind;
+  intent: string;
+  eventDate: string | undefined;
+  notBefore: { [id in PlatformId]?: string };
   drafts: readonly SmartCampaignDraft[];
 }) {
   await requireCcOwner();
@@ -52,13 +53,13 @@ export async function createSmartCampaign(options: {
   }
 
   const current = await getCurrentCampaign();
-  const host = getHost(link);
+  const host = getLinkHost(link);
   const kitSource: KitSource =
     current === undefined
       ? { kind: "no-current" }
       : host === undefined
         ? { kind: "no-link" }
-        : getHost(current.link) === host
+        : getLinkHost(current.link) === host
           ? { kind: "kit", campaignName: current.name }
           : { kind: "other-host", campaignName: current.name };
   const kitCampaign = kitSource.kind === "kit" ? current : undefined;
@@ -92,10 +93,26 @@ export async function createSmartCampaign(options: {
         date: options.startDate,
         time: "00:00",
       }).toISOString(),
-      plan: toCampaignPlanJson({
-        ...DEFAULT_CAMPAIGN_PLAN,
-        startDate: options.startDate,
-      }),
+      plan: toCampaignPlanJson(
+        parseCampaignPlan(
+          toCampaignPlanJson({
+            ...DEFAULT_CAMPAIGN_PLAN,
+            startDate: options.startDate,
+            maxPerDay:
+              options.kind === "event"
+                ? Math.max(
+                    DEFAULT_CAMPAIGN_PLAN.maxPerDay,
+                    new Set(options.drafts.map((draft) => draft.platformId))
+                      .size
+                  )
+                : DEFAULT_CAMPAIGN_PLAN.maxPerDay,
+            kind: options.kind,
+            intent: options.intent.trim(),
+            eventDate: options.eventDate,
+            notBefore: options.notBefore,
+          })
+        )
+      ),
     })
     .select("id")
     .single();

@@ -1,12 +1,18 @@
 import uniqBy from "lodash/uniqBy.js";
 
 import type {
+  SkippedPlatform,
   SmartCampaignLanguage,
   SmartCampaignMedia,
   SmartCampaignSlot,
   SmartCampaignWave,
 } from "./build-smart-campaign-plan";
+import { CAMPAIGN_KIND_LABEL, type CampaignKind } from "./campaign-plan";
+import { formatSgt } from "./format-sgt";
+import type { RepostGap } from "./get-repost-gaps";
 import { type PlatformId, PLATFORMS } from "./platforms";
+import { REPOST_MODE_LABEL, REPOST_STRATEGY } from "./repost-strategy";
+import { sgtToUtc } from "./sgt-to-utc";
 import { VOICE_RULES } from "./voice-rules";
 
 type PlatformAudience = {
@@ -138,13 +144,96 @@ function describePlatform(options: {
 ${lines.map((line) => `- ${line}`).join("\n")}`;
 }
 
+function formatDay(day: string) {
+  return formatSgt({
+    date: sgtToUtc({ date: day, time: "00:00" }),
+    pattern: "EEE dd MMM",
+  });
+}
+
 function describeSlot(slot: SmartCampaignSlot) {
   const platform = PLATFORMS[slot.platformId];
   const kind =
     slot.parentRef === undefined
       ? "post"
       : `${slot.kind} to \`${slot.parentRef}\``;
-  return `- \`${slot.ref}\` · ${platform.label} ${kind} · ${slot.language} · media: ${slot.media}${slot.optional ? " · optional" : ""}. ${slot.brief}`;
+  const notBefore =
+    slot.notBefore === undefined || slot.parentRef !== undefined
+      ? ""
+      : ` · not before ${formatDay(slot.notBefore)}`;
+  return `- \`${slot.ref}\` · ${platform.label} ${kind} · ${slot.language} · media: ${slot.media}${slot.optional ? " · optional" : ""}${notBefore}. ${slot.brief}`;
+}
+
+function getOpening(options: { kind: CampaignKind; product: string }) {
+  switch (options.kind) {
+    case "launch":
+      return `I'm launching ${options.product}, and I'd like you to write every post for the launch.`;
+    case "follow-up":
+      return `I'm running another campaign for ${options.product}, and I'd like you to write every post for it.`;
+    case "feature-update":
+      return `I shipped something new in ${options.product}, and I'd like you to write every post about it.`;
+    case "event":
+      return `I'm posting about ${options.product} for a date that matters, and I'd like you to write every post for it.`;
+    default: {
+      const unhandled: never = options.kind;
+      return unhandled;
+    }
+  }
+}
+
+function getKindLine(options: {
+  kind: CampaignKind;
+  eventDate: string | undefined;
+}) {
+  switch (options.kind) {
+    case "launch":
+      return "This is the first time I introduce the product.";
+    case "follow-up":
+      return "Readers may have seen the launch. Don't reintroduce the product or reuse the earlier first lines below. Lead with the focus above.";
+    case "feature-update":
+      return "Something new shipped. Readers may know the product already: lead with what changed, not with what the product is, and don't reuse the earlier first lines below.";
+    case "event":
+      return `This campaign is about a date${options.eventDate === undefined ? "" : ` (${formatDay(options.eventDate)})`}. A reminder goes out the day before and the main posts on the day. Don't reintroduce the product from scratch.`;
+    default: {
+      const unhandled: never = options.kind;
+      return unhandled;
+    }
+  }
+}
+
+function describeGap(options: {
+  gap: RepostGap;
+  skip: SkippedPlatform | undefined;
+}) {
+  const gap = options.gap;
+  switch (gap.kind) {
+    case "no-history":
+      return "No earlier post tracked by CC.";
+    case "ready":
+      return `Last post ${gap.daysSince} days before the start: fine to post again with a new angle.`;
+    case "wait":
+    case "after-window":
+      return options.skip !== undefined
+        ? `Last post ${gap.daysSince} days before the start: not past the gap until ${formatDay(gap.readyOn)}, so it is left out of this campaign.`
+        : `Last post ${gap.daysSince} days before the start: wait until ${formatDay(gap.readyOn)}; its first post goes out on or after that day.`;
+    default: {
+      const unhandled: never = gap;
+      return unhandled;
+    }
+  }
+}
+
+function describeRepost(options: {
+  gap: RepostGap;
+  skip: SkippedPlatform | undefined;
+}) {
+  const platformId = options.gap.platformId;
+  const strategy = REPOST_STRATEGY[platformId];
+  const status =
+    options.skip?.reason === "kind"
+      ? "Not part of this kind of campaign; left out."
+      : describeGap(options);
+  return `- ${PLATFORMS[platformId].label} · ${REPOST_MODE_LABEL[strategy.mode]} · at least ${strategy.minGapDays} days apart · ${strategy.confidence === "sourced" ? "sourced" : "common practice"}. ${strategy.how} ${status}`;
 }
 
 function buildExample(slots: readonly SmartCampaignSlot[]) {
@@ -180,11 +269,16 @@ function buildExample(slots: readonly SmartCampaignSlot[]) {
   );
 }
 
-/** Return the prompt that asks ChatGPT to write every post in `plan.slots` in the owner's voice and reply with one JSON block. */
+/** Return the prompt that asks ChatGPT to write every post in `plan.slots` in the owner's voice and reply with one JSON block, with the campaign's `kind` and `intent`, `earlierPosts` and `history`, and each `repostGaps` platform's repost rule and gap. */
 export function buildSmartCampaignPrompt(options: {
+  kind: CampaignKind;
+  intent: string;
+  eventDate: string | undefined;
   product: { name: string; link: string };
   thoughts: string;
   makersNote: string;
+  earlierPosts: string;
+  history: string;
   startDate: string;
   lengthDays: number;
   media: {
@@ -192,11 +286,14 @@ export function buildSmartCampaignPrompt(options: {
     features: boolean;
     images: boolean;
     notes: string;
+    newMedia: string;
   };
   plan: {
     waves: readonly SmartCampaignWave[];
     slots: readonly SmartCampaignSlot[];
+    skipped: readonly SkippedPlatform[];
   };
+  repostGaps: readonly RepostGap[];
   preflight: { [id in PlatformId]: PlatformAudience };
 }) {
   const product = options.product.name.trim();
@@ -212,11 +309,30 @@ export function buildSmartCampaignPrompt(options: {
       .join("\n");
   const makersNote = options.makersNote.trim();
   const mediaNotes = options.media.notes.trim();
+  const newMedia = options.media.newMedia.trim();
+  const intent = options.intent.trim();
+  const earlierPosts = options.earlierPosts.trim();
+  const history = options.history.trim();
+  const purpose =
+    options.kind === "launch" && intent === ""
+      ? ""
+      : `
+## What this campaign is for
+${CAMPAIGN_KIND_LABEL[options.kind]}.${intent === "" ? "" : `\n"""\n${intent}\n"""`}
+${getKindLine({ kind: options.kind, eventDate: options.eventDate })}
+`;
+  const workedBefore =
+    earlierPosts === "" && history === ""
+      ? ""
+      : `
+## What worked before
+${earlierPosts === "" ? "" : `### Earlier posts (from me)\n"""\n${earlierPosts}\n"""\n\n`}${history === "" ? "" : `### Tracked by CC (24 h views, best first)\n${history}\n\n`}Lean into what worked; never repeat an earlier first line.
+`;
 
-  return `I'm Yuxuan. I make small things on the Internet. I'm launching ${product}${link === "" ? "" : ` (${link})`}, and I'd like you to write every post for the launch. They should sound like me, not like marketing and not like AI.
+  return `I'm Yuxuan. I make small things on the Internet. ${getOpening({ kind: options.kind, product: `${product}${link === "" ? "" : ` (${link})`}` })} They should sound like me, not like marketing and not like AI.
 
 The campaign runs ${options.lengthDays} days from ${options.startDate} (Singapore time). I post by hand; CC, my planner, picks the times.
-
+${purpose}
 ## How I think about it, in my own words
 """
 ${options.thoughts.trim()}
@@ -232,11 +348,11 @@ ${makersNote}
 `
 }
 Use my words above as the reference for both the voice and the ideas. Borrow my phrases and small details. Don't invent features or promises I don't mention.
-
+${workedBefore}
 ## Media I have
 - Promo video: ${options.media.promo ? "yes" : "no"}
 - Features video: ${options.media.features ? "yes" : "no"}
-- Image set: ${options.media.images ? "yes" : "no"}${mediaNotes === "" ? "" : `\n- Notes: ${mediaNotes}`}
+- Image set: ${options.media.images ? "yes" : "no"}${mediaNotes === "" ? "" : `\n- Notes: ${mediaNotes}`}${newMedia === "" ? "" : `\n- New for this campaign: ${newMedia}`}
 
 ## How I write
 - First person, plain words, one honest feeling, uneven sentence lengths.
@@ -269,6 +385,18 @@ ${platforms
     })
   )
   .join("\n\n")}
+
+## When and how to post again
+${options.repostGaps
+  .map((gap) =>
+    describeRepost({
+      gap,
+      skip: options.plan.skipped.find(
+        (entry) => entry.platformId === gap.platformId
+      ),
+    })
+  )
+  .join("\n")}
 
 ## The posts to write
 Write exactly these posts, one object each, with the same \`ref\`, \`platform\`, \`wave\`, \`kind\`, \`parent_ref\`, \`language\` and \`media\` as listed. You may leave out a post marked optional. Each post in a wave says something different from the others; don't paste the same text across platforms.

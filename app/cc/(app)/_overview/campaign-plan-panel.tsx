@@ -74,6 +74,7 @@ export function CampaignPlanPanel(props: CampaignPlanPanelProps) {
     const saved = await saveCampaignPlan({
       campaignId: props.campaignId,
       plan: {
+        ...props.plan,
         availability,
         maxPerDay,
         minGapMinutes,

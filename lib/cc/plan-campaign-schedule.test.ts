@@ -8,6 +8,7 @@ import { DEFAULT_CAMPAIGN_PLAN } from "./campaign-plan";
 import { formatSgt } from "./format-sgt";
 import { getDefaultWave } from "./get-default-wave";
 import { getHourHeat } from "./get-hour-heat";
+import { getPostWindow } from "./get-post-window";
 import { getSlotScores } from "./get-slot-scores";
 import {
   planCampaignSchedule,
@@ -37,6 +38,8 @@ function buildPosts(options: { scheduledBy: "user" | "planner" }) {
       wave: PLATFORMS[post.platformId].plannerPinned
         ? undefined
         : getDefaultWave(post.files.map((file) => ({ file, alt: "" }))),
+      notBefore: undefined,
+      notAfter: undefined,
     })
   );
 }
@@ -155,6 +158,8 @@ function buildPost(options: {
   scheduledAt?: Date;
   scheduledBy?: PlannerPost["scheduledBy"];
   wave?: number;
+  notBefore?: Date;
+  notAfter?: Date;
 }): PlannerPost {
   return {
     id: options.id,
@@ -163,6 +168,8 @@ function buildPost(options: {
     scheduledAt: options.scheduledAt,
     scheduledBy: options.scheduledBy ?? "user",
     wave: options.wave,
+    notBefore: options.notBefore,
+    notAfter: options.notAfter,
   };
 }
 
@@ -211,4 +218,61 @@ test("holds later waves behind a wave 1 post placed by hand", () => {
   });
   const features = getProposed({ rows, postId: "features" });
   assert.ok(features !== undefined && features.getTime() > promoAt.getTime());
+});
+
+test("places a post no earlier than its own notBefore without holding later waves", () => {
+  const notBefore = new Date("2026-11-12T16:00:00Z");
+  const rows = plan({
+    posts: [
+      buildPost({ id: "late", platformId: "linkedin", wave: 1, notBefore }),
+      buildPost({ id: "features", platformId: "instagram", wave: 2 }),
+    ],
+    includeUserPlaced: false,
+  });
+  const late = getProposed({ rows, postId: "late" });
+  const features = getProposed({ rows, postId: "features" });
+  assert.ok(late !== undefined && late.getTime() >= notBefore.getTime());
+  assert.ok(features !== undefined && features.getTime() < notBefore.getTime());
+});
+
+test("places an event's reminders on the day before and its posts on the day, or leaves them unplaced", () => {
+  const eventPlan = {
+    ...DEFAULT_CAMPAIGN_PLAN,
+    kind: "event" as const,
+    startDate: "2026-11-03",
+    eventDate: "2026-11-10",
+  };
+  const platformIds = ["x", "threads", "linkedin"] as const;
+  const posts = [1, 2].flatMap((wave) =>
+    platformIds.map((platformId) => ({
+      ...buildPost({ id: `${platformId}-${wave}`, platformId, wave }),
+      ...getPostWindow({ plan: eventPlan, platformId, wave }),
+    }))
+  );
+  const rows = planCampaignSchedule({
+    posts,
+    plan: eventPlan,
+    heat: HEAT,
+    now: NOW,
+    includeUserPlaced: false,
+  });
+  const days = Object.fromEntries(
+    rows.map((row) => {
+      const time = getTime(row);
+      return [
+        row.postId,
+        time === undefined
+          ? row.kind
+          : formatSgt({ date: time, pattern: "yyyy-MM-dd" }),
+      ];
+    })
+  );
+  assert.deepEqual(days, {
+    "x-1": "2026-11-09",
+    "threads-1": "2026-11-09",
+    "linkedin-1": "unplaced",
+    "x-2": "2026-11-10",
+    "threads-2": "2026-11-10",
+    "linkedin-2": "unplaced",
+  });
 });

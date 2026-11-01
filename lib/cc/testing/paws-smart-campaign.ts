@@ -1,5 +1,11 @@
 /** The Paws launch as smart campaign input: product, the owner's words and the start of the maker's note from `campaigns.notes`. */
 export const PAWS_SMART_CAMPAIGN = {
+  kind: "launch",
+  intent: "",
+  eventDate: undefined,
+  earlierPosts: "",
+  history: "",
+  repostGaps: [],
   product: { name: "Paws", link: "https://paws.garden" },
   thoughts:
     "Strangers meet through their cats, behind a frosted layer. Hazier feels truer. I want it to feel soft and relaxing, a place to slow down.",
@@ -12,6 +18,7 @@ export const PAWS_SMART_CAMPAIGN = {
     features: true,
     images: true,
     notes: "Promo in 16x9, 9x16 and 3x4-zh; features in 16x9.",
+    newMedia: "",
   },
 } as const;
 

@@ -18,7 +18,7 @@ function toDay(date: Date) {
   return formatSgt({ date, pattern: "yyyy-MM-dd" });
 }
 
-/** Return the earliest 15-minute slot in the 14 days from `notBefore` that is inside `availability`, at least `minGapMinutes` from every `occupied` time, on a day with fewer than `maxPerDay` of them and not in `excludedDays`, and scores within 10% of the best such slot; `undefined` when there is none. */
+/** Return the earliest 15-minute slot in the 14 days from `notBefore`, and before `notAfter` when set, that is inside `availability`, at least `minGapMinutes` from every `occupied` time, on a day with fewer than `maxPerDay` of them and not in `excludedDays`, and scores within 10% of the best such slot; `undefined` when there is none. */
 export function suggestNextSlot(options: {
   platformId: PlatformId;
   notBefore: Date;
@@ -28,8 +28,12 @@ export function suggestNextSlot(options: {
   availability: readonly DayAvailability[];
   heat: SlotScores;
   excludedDays?: readonly string[];
+  notAfter?: Date;
 }) {
-  const end = options.notBefore.getTime() + HORIZON_DAYS * DAY_MS;
+  const end = Math.min(
+    options.notBefore.getTime() + HORIZON_DAYS * DAY_MS,
+    options.notAfter?.getTime() ?? Number.POSITIVE_INFINITY
+  );
   const gapMs = options.minGapMinutes * MINUTE_MS;
   const firstMidnight = sgtToUtc({
     date: toDay(options.notBefore),

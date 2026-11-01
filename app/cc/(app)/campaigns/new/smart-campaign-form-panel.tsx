@@ -1,6 +1,11 @@
 import { CcField } from "@/app/cc/_ui/cc-field";
 import { Panel } from "@/app/cc/_ui/panel";
 import type { SmartCampaignLanguage } from "@/lib/cc/build-smart-campaign-plan";
+import {
+  CAMPAIGN_KIND_LABEL,
+  CAMPAIGN_KINDS,
+  type CampaignKind,
+} from "@/lib/cc/campaign-plan";
 import { PLATFORM_IDS, type PlatformId, PLATFORMS } from "@/lib/cc/platforms";
 import type { SmartCampaignForm } from "@/lib/cc/smart-campaign-state";
 
@@ -9,6 +14,13 @@ type SmartCampaignFormPanelProps = {
   current: { name: string; startDate: string | undefined } | undefined;
   onChange: (form: SmartCampaignForm) => void;
 };
+
+const KIND_HINT = {
+  launch: "The first time you introduce the product.",
+  "follow-up": "People may have seen the launch; a new angle, no intro posts.",
+  "feature-update": "Something new shipped; the posts lead with it.",
+  event: "A date-bound moment: a reminder the day before, then the day.",
+} as const satisfies { [kind in CampaignKind]: string };
 
 const MEDIA_OPTIONS = [
   { key: "promo", label: "Promo video" },
@@ -46,6 +58,44 @@ export function SmartCampaignFormPanel(props: SmartCampaignFormPanelProps) {
       className="flex-[1_1_100%]"
       bodyClassName="flex flex-col gap-y-4 px-[18px] py-4"
     >
+      <div className="flex flex-wrap items-end gap-x-4 gap-y-2">
+        <CcField label="KIND" htmlFor="smart-kind">
+          <select
+            id="smart-kind"
+            className="cc-input w-auto"
+            value={form.kind}
+            onChange={(event) =>
+              update({
+                kind:
+                  CAMPAIGN_KINDS.find((kind) => kind === event.target.value) ??
+                  form.kind,
+              })
+            }
+          >
+            {CAMPAIGN_KINDS.map((kind) => (
+              <option key={kind} value={kind}>
+                {CAMPAIGN_KIND_LABEL[kind]}
+              </option>
+            ))}
+          </select>
+        </CcField>
+        <span className="text-muted-foreground min-h-11 py-3 text-[12px]">
+          {KIND_HINT[form.kind]}
+        </span>
+      </div>
+      <CcField
+        label={`WHAT THIS CAMPAIGN SHOULD FOCUS ON${form.kind === "launch" ? " · OPTIONAL" : ""}`}
+        htmlFor="smart-intent"
+      >
+        <textarea
+          id="smart-intent"
+          rows={3}
+          placeholder="e.g. second laundro.cafe campaign: focus on the shared notebook and the late-night regulars, not the intro"
+          className="cc-input resize-y"
+          value={form.intent}
+          onChange={(event) => update({ intent: event.target.value })}
+        />
+      </CcField>
       <div className="flex flex-wrap gap-x-4 gap-y-4">
         <div className="min-w-[200px] flex-1">
           <CcField label="PRODUCT NAME" htmlFor="smart-name">
@@ -91,6 +141,19 @@ export function SmartCampaignFormPanel(props: SmartCampaignFormPanelProps) {
           className="cc-input resize-y"
           value={form.makersNote}
           onChange={(event) => update({ makersNote: event.target.value })}
+        />
+      </CcField>
+      <CcField
+        label="WHAT'S ALREADY OUT THERE · OPTIONAL · EARLIER POSTS CC DIDN'T TRACK"
+        htmlFor="smart-earlier"
+      >
+        <textarea
+          id="smart-earlier"
+          rows={3}
+          placeholder="Earlier posts, dates, what did well"
+          className="cc-input resize-y"
+          value={form.earlierPosts}
+          onChange={(event) => update({ earlierPosts: event.target.value })}
         />
       </CcField>
       <fieldset className="flex flex-col gap-y-2">
@@ -146,6 +209,17 @@ export function SmartCampaignFormPanel(props: SmartCampaignFormPanelProps) {
             onChange={(event) => update({ startDate: event.target.value })}
           />
         </CcField>
+        {form.kind === "event" && (
+          <CcField label="EVENT DAY (SGT)" htmlFor="smart-event">
+            <input
+              id="smart-event"
+              type="date"
+              className="cc-input"
+              value={form.eventDate}
+              onChange={(event) => update({ eventDate: event.target.value })}
+            />
+          </CcField>
+        )}
         <CcField label="LENGTH (DAYS)" htmlFor="smart-length">
           <input
             id="smart-length"
@@ -213,6 +287,19 @@ export function SmartCampaignFormPanel(props: SmartCampaignFormPanelProps) {
             update({ media: { ...form.media, notes: event.target.value } })
           }
         />
+        {form.kind !== "launch" && (
+          <input
+            aria-label="New media for this campaign"
+            placeholder="New media for this campaign, e.g. a clip of the notebook filling up, 4 screenshots of visitors' notes"
+            className="cc-input"
+            value={form.media.newMedia}
+            onChange={(event) =>
+              update({
+                media: { ...form.media, newMedia: event.target.value },
+              })
+            }
+          />
+        )}
       </fieldset>
     </Panel>
   );

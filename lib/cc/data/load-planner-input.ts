@@ -4,6 +4,7 @@ import mapValues from "lodash/mapValues.js";
 
 import { getDefaultWave } from "@/lib/cc/get-default-wave";
 import { getHourHeat } from "@/lib/cc/get-hour-heat";
+import { getPostWindow } from "@/lib/cc/get-post-window";
 import { getSlotScores } from "@/lib/cc/get-slot-scores";
 import { isPlatformId } from "@/lib/cc/is-platform-id";
 import { parseCampaignPlan } from "@/lib/cc/parse-campaign-plan";
@@ -32,29 +33,29 @@ export async function loadPlannerInput(options: { campaignId: string }) {
     postIds: posts.map((post) => post.id),
   });
   const stats = toStatRows({ posts, metrics });
-  const plannerPosts = posts.flatMap((post): PlannerPost[] =>
-    post.kind === "post" && isPlatformId(post.platform)
-      ? [
-          {
-            id: post.id,
-            platformId: post.platform,
-            status: post.status,
-            scheduledAt:
-              post.scheduled_at === null
-                ? undefined
-                : new Date(post.scheduled_at),
-            scheduledBy: post.scheduled_by === "planner" ? "planner" : "user",
-            wave:
-              post.wave ??
-              (PLATFORMS[post.platform].plannerPinned
-                ? undefined
-                : getDefaultWave(parsePostAssets(post.assets))),
-          },
-        ]
-      : []
-  );
+  const plan = parseCampaignPlan(campaign.plan);
+  const plannerPosts = posts.flatMap((post): PlannerPost[] => {
+    if (post.kind !== "post" || !isPlatformId(post.platform)) return [];
+    const wave =
+      post.wave ??
+      (PLATFORMS[post.platform].plannerPinned
+        ? undefined
+        : getDefaultWave(parsePostAssets(post.assets)));
+    return [
+      {
+        id: post.id,
+        platformId: post.platform,
+        status: post.status,
+        scheduledAt:
+          post.scheduled_at === null ? undefined : new Date(post.scheduled_at),
+        scheduledBy: post.scheduled_by === "planner" ? "planner" : "user",
+        wave,
+        ...getPostWindow({ plan, platformId: post.platform, wave }),
+      },
+    ];
+  });
   return {
-    plan: parseCampaignPlan(campaign.plan),
+    plan,
     posts,
     plannerPosts,
     heat: mapValues(PLATFORMS, (platform) =>

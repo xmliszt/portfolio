@@ -15,6 +15,10 @@ export type PlannerPost = {
   scheduledAt: Date | undefined;
   scheduledBy: "user" | "planner";
   wave: number | undefined;
+  /** Earliest time the planner may place this post, or `undefined` when only the campaign start and earlier waves hold it back. */
+  notBefore: Date | undefined;
+  /** Time by which the planner must place this post, or `undefined` for its usual 14-day search. */
+  notAfter: Date | undefined;
 };
 
 type PlanRowBase = {
@@ -55,7 +59,7 @@ function toDay(date: Date) {
   return formatSgt({ date, pattern: "yyyy-MM-dd" });
 }
 
-/** Return a proposed time and reason for each unposted, unskipped post the planner may move, placing wave 1 before wave 2 and so on with unwaved posts last; posted posts, Product Hunt, YouTube and (unless `includeUserPlaced`) timed posts with `scheduledBy` "user" stay where they are, count as occupied, and hold later waves behind their own. */
+/** Return a proposed time and reason for each unposted, unskipped post the planner may move, placing wave 1 before wave 2 and so on with unwaved posts last and no post before its own `notBefore` or after its own `notAfter`; a post with its own `notBefore` holds no later wave back; posted posts, Product Hunt, YouTube and (unless `includeUserPlaced`) timed posts with `scheduledBy` "user" stay where they are, count as occupied, and hold later waves behind their own. */
 export function planCampaignSchedule(options: {
   posts: readonly PlannerPost[];
   plan: CampaignPlan;
@@ -95,6 +99,7 @@ export function planCampaignSchedule(options: {
       const notBefore = new Date(
         Math.max(
           startAt.getTime(),
+          post.notBefore?.getTime() ?? 0,
           ...state.placed
             .filter((entry) => entry.waveRank < waveRank)
             .map((entry) => entry.at.getTime())
@@ -108,6 +113,7 @@ export function planCampaignSchedule(options: {
         maxPerDay: options.plan.maxPerDay,
         availability: options.plan.availability,
         heat: options.heat[post.platformId],
+        notAfter: post.notAfter,
         excludedDays:
           post.platformId === "reddit"
             ? state.occupied
@@ -129,7 +135,10 @@ export function planCampaignSchedule(options: {
             {
               ...base,
               kind: "unplaced",
-              reason: "No free slot in the next 14 days",
+              reason:
+                post.notAfter === undefined
+                  ? "No free slot in the next 14 days"
+                  : `No free slot before ${formatSgt({ date: post.notAfter, pattern: "EEE dd MMM" })}`,
             },
           ],
         };
@@ -139,7 +148,10 @@ export function planCampaignSchedule(options: {
           ...state.occupied,
           { at: slot.at, platformId: post.platformId },
         ],
-        placed: [...state.placed, { at: slot.at, waveRank }],
+        placed:
+          post.notBefore === undefined
+            ? [...state.placed, { at: slot.at, waveRank }]
+            : state.placed,
         rows: [
           ...state.rows,
           {
