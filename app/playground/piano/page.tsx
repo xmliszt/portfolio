@@ -8,7 +8,7 @@ export function generateMetadata(): Metadata {
   return {
     title: "Mini piano | 迷你钢琴",
     alternates: {
-      canonical: "https://www.liyuxuan.dev/playground/piano",
+      canonical: "https://liyuxuan.dev/playground/piano",
     },
     openGraph: {
       ...openGraph,

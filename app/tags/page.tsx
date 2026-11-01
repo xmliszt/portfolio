@@ -8,7 +8,7 @@ import { tags } from "#site/content";
 export function generateMetadata(): Metadata {
   return {
     title: "tags | 标签",
-    alternates: { canonical: "https://www.liyuxuan.dev/tags" },
+    alternates: { canonical: "https://liyuxuan.dev/tags" },
     openGraph: {
       ...openGraph,
       title: "Li Yuxuan | tags",

@@ -10,7 +10,7 @@ import { getMoireGraph } from "./moire-data";
 export function generateMetadata(): Metadata {
   return {
     title: "moiré | 摩尔纹",
-    alternates: { canonical: "https://www.liyuxuan.dev/moire" },
+    alternates: { canonical: "https://liyuxuan.dev/moire" },
     openGraph: {
       ...openGraph,
       title: "Li Yuxuan | moiré",

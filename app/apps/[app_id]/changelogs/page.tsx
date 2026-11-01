@@ -47,7 +47,7 @@ export async function generateMetadata(props: Props): Promise<Metadata> {
 
   const title = `Changelogs | ${app.name}`;
   const description = `View all version changelogs and release notes for ${app.name}. Stay updated with the latest features, improvements, and bug fixes.`;
-  const url = `https://www.liyuxuan.dev/apps/${params.app_id}/changelogs`;
+  const url = `https://liyuxuan.dev/apps/${params.app_id}/changelogs`;
 
   return {
     title,

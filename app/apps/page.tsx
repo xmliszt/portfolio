@@ -10,7 +10,7 @@ export async function generateMetadata(): Promise<Metadata> {
   return {
     title: "apps | Li Yuxuan",
     alternates: {
-      canonical: "https://www.liyuxuan.dev/apps",
+      canonical: "https://liyuxuan.dev/apps",
     },
     openGraph: {
       ...openGraph,

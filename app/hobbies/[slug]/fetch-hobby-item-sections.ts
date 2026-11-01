@@ -1,5 +1,3 @@
-import { unstable_noStore as noStore } from "next/cache";
-
 import { Tables } from "@/lib/supabase/__generated__/types";
 import { createServiceRoleClient } from "@/lib/supabase/create-service-role-client";
 
@@ -30,8 +28,6 @@ export type HobbyItemSection = {
 export async function fetchHobbyItemSections(
   hobbySlug: string
 ): Promise<HobbyItemSection[]> {
-  noStore();
-
   const supabase = createServiceRoleClient();
   const groupsResponse = await supabase
     .from("hobby_item_groups")
@@ -46,7 +42,9 @@ export async function fetchHobbyItemSections(
   const groupIds = groups.map((group) => group.id);
   const itemsResponse = await supabase
     .from("hobby_items")
-    .select("group_id,title,subtitle,creator,year,image_url,external_url,sort_order")
+    .select(
+      "group_id,title,subtitle,creator,year,image_url,external_url,sort_order"
+    )
     .in("group_id", groupIds)
     .order("sort_order");
 

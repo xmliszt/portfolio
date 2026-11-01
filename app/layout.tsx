@@ -80,7 +80,7 @@ export const metadata: Metadata = {
   authors: [{ name: "Li Yuxuan", url: "https://liyuxuan.dev/about" }],
   creator: "Li Yuxuan",
   alternates: {
-    canonical: "https://www.liyuxuan.dev/about",
+    canonical: "https://liyuxuan.dev/about",
   },
   category: "portfolio",
   openGraph: openGraph,
