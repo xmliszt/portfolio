@@ -10,7 +10,10 @@ export type UiSound =
   | "chatSend"
   | "refused"
   | "soundOn"
-  | "language";
+  | "language"
+  | "cameraUp"
+  | "shutter"
+  | "eject";
 
 export type UiNote = {
   freq: number;
@@ -80,4 +83,7 @@ export const UI_SOUNDS = {
   refused: [mallet(E4, 0, 0.2, 0.25), mallet(330 * 0.75, 0.1, 0.3, 0.22)],
   soundOn: [tick(900, 0, 0.22), tick(1300, 0.03, 0.12)],
   language: [tick(1600, 0, 0.16), tick(1100, 0.04, 0.1)],
+  cameraUp: [bubble(380, 0, 620, 0.1), tick(1200, 0.1, 0.12)],
+  shutter: [tick(2600, 0, 0.26), tick(1500, 0.04, 0.22)],
+  eject: [bubble(260, 0, 180, 0.4), tick(900, 0.42, 0.12)],
 } as const satisfies { [sound in UiSound]: UiNote[] };

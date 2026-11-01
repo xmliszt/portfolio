@@ -57,7 +57,7 @@ type ViewfinderProps = {
   onFrameChange: (frame: ViewfinderFrame) => void;
 };
 
-/** Render the draggable, corner-resizable viewfinder over a dimmed screen, with rule-of-thirds lines, the photo ratio in its corner and a white flash each time `flashCount` goes up. */
+/** Render the draggable, corner-resizable viewfinder over a screen dimmed with `--camera-dim`, with rule-of-thirds lines, the photo ratio in its corner and a white flash each time `flashCount` goes up, drawn in the `--camera-ink`, `--camera-ink-hi` and `--camera-accent` colours set around it. */
 export function Viewfinder(props: ViewfinderProps) {
   const gestureRef = useRef<Gesture>(undefined);
   const minShortPx = INSTANT_CAMERA.viewfinderMinShortPx;
@@ -129,7 +129,7 @@ export function Viewfinder(props: ViewfinderProps) {
       tabIndex={0}
       aria-label={props.label}
       data-instant-camera-viewfinder
-      className="absolute cursor-grab touch-none shadow-[0_0_0_200vmax_rgba(6,7,8,0.62)] outline-none focus-visible:outline-1 focus-visible:outline-offset-4 focus-visible:outline-[var(--lm-ink)] focus-visible:outline-dashed active:cursor-grabbing"
+      className="absolute cursor-grab touch-none shadow-[0_0_0_200vmax_var(--camera-dim)] outline-none focus-visible:outline-1 focus-visible:outline-offset-4 focus-visible:outline-[var(--camera-ink)] focus-visible:outline-dashed active:cursor-grabbing"
       style={{
         left: props.frame.x,
         top: props.frame.y,
@@ -149,19 +149,19 @@ export function Viewfinder(props: ViewfinderProps) {
         {Array.from({ length: 9 }, (_, index) => (
           <span
             key={index}
-            className="border-[var(--lm-ink-hi)]/15 [&:not(:nth-child(3n))]:border-r [&:nth-child(-n+6)]:border-b"
+            className="border-[var(--camera-ink-hi)]/15 [&:not(:nth-child(3n))]:border-r [&:nth-child(-n+6)]:border-b"
           />
         ))}
       </div>
       <span
         aria-hidden
-        className="pointer-events-none absolute top-1/2 left-1/2 size-3 -translate-1/2 before:absolute before:top-0 before:left-1/2 before:h-full before:w-px before:bg-[var(--lm-ink-hi)]/50 after:absolute after:top-1/2 after:left-0 after:h-px after:w-full after:bg-[var(--lm-ink-hi)]/50"
+        className="pointer-events-none absolute top-1/2 left-1/2 size-3 -translate-1/2 before:absolute before:top-0 before:left-1/2 before:h-full before:w-px before:bg-[var(--camera-ink-hi)]/50 after:absolute after:top-1/2 after:left-0 after:h-px after:w-full after:bg-[var(--camera-ink-hi)]/50"
       />
       <span
         aria-hidden
-        className="pointer-events-none absolute top-1.5 left-1.5 flex items-center gap-x-1.5 text-[9px] tracking-wide text-[var(--lm-ink-hi)]"
+        className="pointer-events-none absolute top-1.5 left-1.5 flex items-center gap-x-1.5 text-[9px] tracking-wide text-[var(--camera-ink-hi)]"
       >
-        <span className="size-1.5 rounded-full bg-[var(--lm-accent)]" />
+        <span className="size-1.5 rounded-full bg-[var(--camera-accent)]" />
         {props.orientation === "portrait" ? "3:4" : "4:3"}
       </span>
       {CORNERS.map(({ corner, place, mark }) => (
@@ -173,7 +173,7 @@ export function Viewfinder(props: ViewfinderProps) {
         >
           <span
             className={cn(
-              "pointer-events-none absolute size-3.5 border-[var(--lm-ink-hi)]",
+              "pointer-events-none absolute size-3.5 border-[var(--camera-ink-hi)]",
               mark
             )}
           />

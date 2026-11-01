@@ -5,10 +5,12 @@ import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 
 import { usePawsCopy } from "@/app/paws/_i18n/use-paws-copy";
 import { FOCUS_RING_CLASS } from "@/app/paws/_ui/focus-ring-class";
+import type { CatLook } from "@/lib/paws/cat-look";
 import { ROOM_LIMITS } from "@/lib/paws/room-limits";
 import { getRoomNumber } from "@/lib/paws/rooms/get-room-number";
 import { parseListRoomsResponse } from "@/lib/paws/rooms/parse-list-rooms-response";
 import type { RoomSummary } from "@/lib/paws/rooms/room-api-types";
+import { getInviteUrl } from "@/lib/paws/share/get-invite-url";
 import { cn } from "@/lib/utils";
 
 import { postRoomApi } from "./post-room-api";
@@ -19,6 +21,7 @@ type RoomPickerProps = {
   roomId: string;
   accessToken: string;
   isPlayer: boolean;
+  look: CatLook | undefined;
   onSwitch: (roomId: string) => void;
 };
 
@@ -166,11 +169,13 @@ export function RoomPicker(props: RoomPickerProps) {
   }
 
   async function handleCopyLink() {
-    const url = new URL(window.location.href);
-    url.search = "";
-    url.searchParams.set("room", props.roomId);
+    const url = getInviteUrl({
+      href: window.location.href,
+      roomId: props.roomId,
+      look: props.look,
+    });
     try {
-      await navigator.clipboard.writeText(url.toString());
+      await navigator.clipboard.writeText(url);
       setIsCopied(true);
     } catch {
       setIsCopied(false);

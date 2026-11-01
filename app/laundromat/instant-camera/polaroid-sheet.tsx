@@ -6,33 +6,22 @@ import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { useLaundromatCopy } from "@/app/laundromat/i18n/use-laundromat-copy";
 import { HANDWRITING_FONT_FAMILIES } from "@/app/laundromat/notebook/handwriting-fonts";
 import { useRenderQuality } from "@/app/laundromat/settings/use-render-quality";
+import { SHARE_TARGET_ICON_PATHS } from "@/components/instant-camera/share-target-icon-paths";
+import { usePolaroidShare } from "@/components/instant-camera/use-polaroid-share";
+import { useViewportSize } from "@/components/instant-camera/use-viewport-size";
 import { LAUNDROMAT_ORIGIN } from "@/lib/laundromat/hosts";
 import { getNoteFontScale } from "@/lib/laundromat/instant-camera/get-note-font-scale";
 import { getPolaroidMetrics } from "@/lib/laundromat/instant-camera/get-polaroid-metrics";
-import { getShareIntentUrl } from "@/lib/laundromat/instant-camera/get-share-intent-url";
 import { INSTANT_CAMERA } from "@/lib/laundromat/instant-camera/instant-camera-config";
-import { MASTODON_SERVER_STORAGE_KEY } from "@/lib/laundromat/instant-camera/mastodon-server-storage-key";
-import { normalizeMastodonServer } from "@/lib/laundromat/instant-camera/normalize-mastodon-server";
-import type { ShareTargetId } from "@/lib/laundromat/instant-camera/share-targets";
 import { SHARE_TARGETS } from "@/lib/laundromat/instant-camera/share-targets";
 import { splitGraphemes } from "@/lib/laundromat/instant-camera/split-graphemes";
 import type { ViewfinderOrientation } from "@/lib/laundromat/instant-camera/viewfinder-frame";
 import { detectScript } from "@/lib/laundromat/notebook/detect-script";
 import { cn } from "@/lib/utils";
 
-import { canShareImageFiles } from "./can-share-image-files";
-import { convertToJpeg } from "./convert-to-jpeg";
-import { copyImageToClipboard } from "./copy-image-to-clipboard";
-import { renderPolaroidBlob } from "./render-polaroid-blob";
-import { saveBlobAsFile } from "./save-blob-as-file";
-import type { Handoff } from "./share-handoff";
 import { ShareHandoff } from "./share-handoff";
-import { SHARE_TARGET_ICON_PATHS } from "./share-target-icon-paths";
-import { useViewportSize } from "./use-viewport-size";
 
-const PRERENDER_DELAY_MS = 400;
 const NOTE_FOCUS_DELAY_MS = 700;
-const TOAST_MS = 2600;
 const UNDEVELOPED_FILTER =
   "brightness(0.25) sepia(0.6) contrast(0.6) saturate(0.2)";
 const DEVELOPED_FILTER = "brightness(1) sepia(0) contrast(1) saturate(1)";
@@ -49,31 +38,11 @@ export type Photo = {
   tiltDeg: number;
 };
 
-type ReadyPrint = { note: string; blob: Blob };
-
 type PolaroidSheetProps = {
   photo: Photo;
   onRetake: () => void;
   onDone: () => void;
 };
-
-function readMastodonServer() {
-  try {
-    return (
-      window.localStorage.getItem(MASTODON_SERVER_STORAGE_KEY) ?? undefined
-    );
-  } catch {
-    return undefined;
-  }
-}
-
-function rememberMastodonServer(server: string) {
-  try {
-    window.localStorage.setItem(MASTODON_SERVER_STORAGE_KEY, server);
-  } catch {
-    return;
-  }
-}
 
 /** Show the developed polaroid with a note to write on it, the platforms to share it to, and buttons to retake, copy or close it. */
 export function PolaroidSheet(props: PolaroidSheetProps) {
@@ -83,31 +52,12 @@ export function PolaroidSheet(props: PolaroidSheetProps) {
   const prefersReducedMotion = useReducedMotion() ?? false;
   const viewport = useViewportSize();
   const [note, setNote] = useState("");
-  const [toast, setToast] = useState<{
-    text: string;
-    id: number;
-    visible: boolean;
-  }>();
-  const [handoff, setHandoff] = useState<Handoff>();
-  const [isAskingMastodon, setIsAskingMastodon] = useState(false);
-  const [mastodonInput, setMastodonInput] = useState("");
   const noteRef = useRef<HTMLTextAreaElement>(null);
   const cardRef = useRef<HTMLDivElement>(null);
   const stampRef = useRef<HTMLDivElement>(null);
-  const printRef = useRef<{ note: string; blob: Promise<Blob> }>(undefined);
-  const [readyPrint, setReadyPrint] = useState<ReadyPrint>();
-  const [canShareFiles] = useState(canShareImageFiles);
   const contentRef = useRef<HTMLDivElement>(null);
-  const [failedNote, setFailedNote] = useState<string>();
-  const [isCopying, setIsCopying] = useState(false);
-  const isWaitingForPrint =
-    canShareFiles && readyPrint?.note !== note && failedNote !== note;
-  const isShareDisabled = isWaitingForPrint || isCopying;
   const shownNote = note === "" ? text.notePlaceholder : note;
   const noteFont = HANDWRITING_FONT_FAMILIES[detectScript(shownNote)];
-  const pasteKeys = /Mac|iPhone|iPad/.test(navigator.userAgent)
-    ? "⌘ V"
-    : "Ctrl V";
   const stampDate = new Intl.DateTimeFormat(copy.locale, {
     day: "2-digit",
     month: "2-digit",
@@ -125,54 +75,50 @@ export function PolaroidSheet(props: PolaroidSheetProps) {
     longPx,
   });
   const notePx = Math.round(metrics.notePx * getNoteFontScale(shownNote));
-
-  function getPrint() {
-    const current = printRef.current;
-    if (current !== undefined && current.note === note) return current.blob;
-    const card = cardRef.current;
-    const stamp = stampRef.current;
-    const noteElement = noteRef.current;
-    const printedNote = note;
-    const blob = renderPolaroidBlob({
-      photoUrl: props.photo.url,
-      orientation: props.photo.orientation,
-      note: printedNote,
-      noteFont,
-      stampFont:
-        stamp === null ? "monospace" : getComputedStyle(stamp).fontFamily,
-      stamp: { left: new URL(LAUNDROMAT_ORIGIN).host, right: stampDate },
-      colors: {
-        paper:
-          card === null ? "#e4dfd4" : getComputedStyle(card).backgroundColor,
-        ink:
-          noteElement === null
-            ? "#2a2b2e"
-            : getComputedStyle(noteElement).color,
-        stamp: stamp === null ? "#9a958a" : getComputedStyle(stamp).color,
-      },
-    });
-    printRef.current = { note: printedNote, blob };
-    blob
-      .then((png) => (canShareFiles ? convertToJpeg(png) : png))
-      .then(
-        (ready) => {
-          if (printRef.current?.blob === blob) {
-            setReadyPrint({ note: printedNote, blob: ready });
-          }
+  const trimmedNote = note.trim();
+  const shareText =
+    trimmedNote === "" ? text.shareText : `${trimmedNote}\n\n${text.shareText}`;
+  const share = usePolaroidShare({
+    photo: props.photo,
+    note,
+    readPrintLook: () => {
+      const card = cardRef.current;
+      const stamp = stampRef.current;
+      const noteElement = noteRef.current;
+      return {
+        noteFont,
+        stampFont:
+          stamp === null ? "monospace" : getComputedStyle(stamp).fontFamily,
+        stamp: { left: new URL(LAUNDROMAT_ORIGIN).host, right: stampDate },
+        colors: {
+          paper:
+            card === null ? "#e4dfd4" : getComputedStyle(card).backgroundColor,
+          ink:
+            noteElement === null
+              ? "#2a2b2e"
+              : getComputedStyle(noteElement).color,
+          stamp: stamp === null ? "#9a958a" : getComputedStyle(stamp).color,
         },
-        () => {
-          if (printRef.current?.blob !== blob) return;
-          printRef.current = undefined;
-          setFailedNote(printedNote);
-        }
-      );
-    return blob;
-  }
-
-  useEffect(() => {
-    const timer = window.setTimeout(getPrint, PRERENDER_DELAY_MS);
-    return () => window.clearTimeout(timer);
+      };
+    },
+    shareText,
+    sheetText: shareText,
+    siteUrl: LAUNDROMAT_ORIGIN,
+    fileNames: {
+      print: INSTANT_CAMERA.printFileName,
+      shared: INSTANT_CAMERA.sharedFileName,
+    },
+    messages: {
+      copied: text.copied,
+      copyFailed: text.copyFailed,
+      downloaded: text.downloaded,
+      printFailed: text.snapFailed,
+      mastodonAsk: text.mastodon.ask,
+      pasteReminder: text.handoff.pasteReminder,
+      savedReminder: text.handoff.savedReminder,
+    },
   });
+  const { toast, handoff } = share;
 
   useEffect(() => {
     const content = contentRef.current;
@@ -191,32 +137,6 @@ export function PolaroidSheet(props: PolaroidSheetProps) {
     return () => window.clearTimeout(timer);
   }, []);
 
-  const toastId = toast?.visible === true ? toast.id : undefined;
-  useEffect(() => {
-    if (toastId === undefined) return;
-    const timer = window.setTimeout(
-      () =>
-        setToast((current) =>
-          current === undefined ? current : { ...current, visible: false }
-        ),
-      TOAST_MS
-    );
-    return () => window.clearTimeout(timer);
-  }, [toastId]);
-
-  function showToast(next: string) {
-    setToast((current) => ({
-      text: next,
-      id: (current?.id ?? 0) + 1,
-      visible: true,
-    }));
-  }
-
-  function shareText() {
-    const trimmed = note.trim();
-    return trimmed === "" ? text.shareText : `${trimmed}\n\n${text.shareText}`;
-  }
-
   function handleNoteChange(event: React.ChangeEvent<HTMLTextAreaElement>) {
     const element = event.currentTarget;
     element.value = splitGraphemes(element.value.replace(/\n/g, " "))
@@ -229,142 +149,6 @@ export function PolaroidSheet(props: PolaroidSheetProps) {
       element.value = splitGraphemes(element.value).slice(0, -1).join("");
     }
     setNote(element.value);
-  }
-
-  function shareThroughSheet() {
-    if (!canShareFiles) return false;
-    if (readyPrint?.note !== note) return failedNote !== note;
-    const file = new File([readyPrint.blob], INSTANT_CAMERA.sharedFileName, {
-      type: readyPrint.blob.type,
-    });
-    navigator
-      .share({ files: [file], text: shareText() })
-      .catch((error: unknown) => {
-        if (error instanceof DOMException && error.name === "AbortError") {
-          return;
-        }
-        handleCopy();
-      });
-    return true;
-  }
-
-  function handleTarget(options: {
-    id: ShareTargetId;
-    mastodonServer?: string;
-  }) {
-    if (shareThroughSheet()) return;
-    const target = SHARE_TARGETS.find(({ id }) => id === options.id);
-    if (target === undefined) return;
-    if (target.id === "mastodon" && options.mastodonServer === undefined) {
-      setMastodonInput(readMastodonServer() ?? "");
-      setIsAskingMastodon(true);
-      showToast(text.mastodon.ask);
-      return;
-    }
-    const url = getShareIntentUrl({
-      target: target.id,
-      text: shareText(),
-      siteUrl: LAUNDROMAT_ORIGIN,
-      mastodonServer: options.mastodonServer,
-    });
-    if (url === undefined) return;
-    const print = getPrint();
-    const copied = copyImageToClipboard(print);
-    const isSaved = target.step === "pick-from-downloads";
-    if (isSaved) {
-      print.then(
-        (blob) =>
-          saveBlobAsFile({ blob, fileName: INSTANT_CAMERA.printFileName }),
-        () => {}
-      );
-    }
-    setToast(undefined);
-    setIsCopying(true);
-    copied.then((isCopied) => {
-      setIsCopying(false);
-      if (!isCopied && !isSaved) {
-        showToast(text.copyFailed);
-        return;
-      }
-      setHandoff({
-        label:
-          target.id === "mastodon" && options.mastodonServer !== undefined
-            ? options.mastodonServer
-            : target.label,
-        iconPath: SHARE_TARGET_ICON_PATHS[target.id],
-        step: target.step,
-        url,
-        pasteKeys,
-      });
-    });
-  }
-
-  function handleMastodonSubmit(event: React.FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-    const server = normalizeMastodonServer(mastodonInput);
-    if (server === undefined) {
-      showToast(text.mastodon.ask);
-      return;
-    }
-    rememberMastodonServer(server);
-    setIsAskingMastodon(false);
-    handleTarget({ id: "mastodon", mastodonServer: server });
-  }
-
-  function handleMore() {
-    if (shareThroughSheet()) return;
-    const print = getPrint();
-    if (navigator.share !== undefined) {
-      print
-        .then((blob) =>
-          navigator.share({
-            files: [
-              new File([blob], INSTANT_CAMERA.printFileName, {
-                type: "image/png",
-              }),
-            ],
-            text: shareText(),
-            url: LAUNDROMAT_ORIGIN,
-          })
-        )
-        .catch((error: unknown) => {
-          if (error instanceof DOMException && error.name === "AbortError")
-            return;
-          handleCopy();
-        });
-      return;
-    }
-    handleCopy();
-  }
-
-  function handleDownload() {
-    getPrint().then(
-      (blob) => {
-        saveBlobAsFile({ blob, fileName: INSTANT_CAMERA.printFileName });
-        showToast(text.downloaded);
-      },
-      () => showToast(text.snapFailed)
-    );
-  }
-
-  function handleCopy() {
-    copyImageToClipboard(getPrint()).then((copied) =>
-      showToast(copied ? text.copied : text.copyFailed)
-    );
-  }
-
-  function handleHandoffOpened() {
-    const current = handoff;
-    setHandoff(undefined);
-    if (current === undefined) return;
-    showToast(
-      current.step === "pick-from-downloads"
-        ? text.handoff.savedReminder({ platform: current.label })
-        : text.handoff.pasteReminder({
-            platform: current.label,
-            keys: pasteKeys,
-          })
-    );
   }
 
   const developMs = INSTANT_CAMERA.developMs[quality];
@@ -467,13 +251,13 @@ export function PolaroidSheet(props: PolaroidSheetProps) {
           </div>
         </motion.div>
 
-        {canShareFiles ? (
+        {share.canShareFiles ? (
           <button
             type="button"
             aria-label={text.shareLabel}
-            disabled={isShareDisabled}
+            disabled={share.isShareDisabled}
             className="flex h-11 cursor-pointer items-center gap-x-2.5 rounded-full border border-[var(--lm-line)] bg-transparent px-5 text-[12px] text-[var(--lm-ink-hi)] lowercase outline-none focus-visible:outline-1 focus-visible:outline-offset-2 focus-visible:outline-[var(--lm-ink)] focus-visible:outline-dashed disabled:cursor-default disabled:opacity-40"
-            onClick={handleMore}
+            onClick={share.shareMore}
           >
             <svg
               aria-hidden
@@ -494,9 +278,9 @@ export function PolaroidSheet(props: PolaroidSheetProps) {
                 key={target.id}
                 type="button"
                 aria-label={text.shareOn({ platform: target.label })}
-                disabled={isShareDisabled}
+                disabled={share.isShareDisabled}
                 className={SHARE_BUTTON_CLASS}
-                onClick={() => handleTarget({ id: target.id })}
+                onClick={() => share.shareToTarget({ id: target.id })}
               >
                 <svg
                   aria-hidden
@@ -515,9 +299,9 @@ export function PolaroidSheet(props: PolaroidSheetProps) {
             <button
               type="button"
               aria-label={text.moreLabel}
-              disabled={isShareDisabled}
+              disabled={share.isShareDisabled}
               className={SHARE_BUTTON_CLASS}
-              onClick={handleMore}
+              onClick={share.shareMore}
             >
               <svg
                 aria-hidden
@@ -534,12 +318,12 @@ export function PolaroidSheet(props: PolaroidSheetProps) {
             <button
               type="button"
               aria-label={text.downloadLabel}
-              disabled={isShareDisabled}
+              disabled={share.isShareDisabled}
               className={cn(
                 SHARE_BUTTON_CLASS,
                 "[@media(pointer:coarse)]:hidden"
               )}
-              onClick={handleDownload}
+              onClick={share.download}
             >
               <svg
                 aria-hidden
@@ -556,10 +340,10 @@ export function PolaroidSheet(props: PolaroidSheetProps) {
           </div>
         )}
 
-        {isAskingMastodon && (
+        {share.isAskingMastodon && (
           <form
             className="flex items-center gap-x-1.5 text-[10px]"
-            onSubmit={handleMastodonSubmit}
+            onSubmit={share.submitMastodon}
           >
             <label
               htmlFor="lm-mastodon-server"
@@ -569,13 +353,15 @@ export function PolaroidSheet(props: PolaroidSheetProps) {
             </label>
             <input
               id="lm-mastodon-server"
-              value={mastodonInput}
+              value={share.mastodonInput}
               placeholder="mastodon.social"
               autoComplete="off"
               spellCheck={false}
               autoFocus
               className="w-44 border border-[var(--lm-line)] bg-[var(--lm-panel)] px-2 py-1.5 text-[var(--lm-ink-hi)] outline-none focus-visible:border-[var(--lm-ink)]"
-              onChange={(event) => setMastodonInput(event.currentTarget.value)}
+              onChange={(event) =>
+                share.setMastodonInput(event.currentTarget.value)
+              }
             />
             <button
               type="submit"
@@ -608,7 +394,11 @@ export function PolaroidSheet(props: PolaroidSheetProps) {
           >
             {text.retake}
           </button>
-          <button type="button" className={ACTION_CLASS} onClick={handleCopy}>
+          <button
+            type="button"
+            className={ACTION_CLASS}
+            onClick={share.copyPhoto}
+          >
             {text.copy}
           </button>
           <button type="button" className={ACTION_CLASS} onClick={props.onDone}>
@@ -622,8 +412,8 @@ export function PolaroidSheet(props: PolaroidSheetProps) {
           <ShareHandoff
             key={handoff.url}
             handoff={handoff}
-            onOpened={handleHandoffOpened}
-            onCancel={() => setHandoff(undefined)}
+            onOpened={share.finishHandoff}
+            onCancel={share.cancelHandoff}
           />
         )}
       </AnimatePresence>

@@ -2,7 +2,11 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import { clamp, isEqual } from "lodash";
+import { AnimatePresence } from "motion/react";
 
+import { drawRoomPhoto } from "@/app/paws/_camera/draw-room-photo";
+import { PawsCamera } from "@/app/paws/_camera/paws-camera";
+import type { RoomScene } from "@/app/paws/_camera/room-scene";
 import { LanguagePicker } from "@/app/paws/_i18n/language-picker";
 import { usePawsCopy } from "@/app/paws/_i18n/use-paws-copy";
 import { usePawsSession } from "@/app/paws/_session/use-paws-session";
@@ -13,6 +17,7 @@ import {
 } from "@/app/paws/_ui/paws-onboarding";
 import { ReturnFocusContext } from "@/app/paws/_ui/return-focus-context";
 import { RisoButton } from "@/app/paws/_ui/riso-button";
+import type { ViewfinderFrame } from "@/lib/laundromat/instant-camera/viewfinder-frame";
 import type { SavedCat } from "@/lib/paws/cat-api-types";
 import { COAT_INKS } from "@/lib/paws/cat-look";
 import { getRevealSteps } from "@/lib/paws/chat/get-reveal-steps";
@@ -21,13 +26,17 @@ import {
   type RoomFrame,
 } from "@/lib/paws/client/create-room-engine";
 import { shuffleCatLook } from "@/lib/paws/maker/shuffle-cat-look";
-import { createSceneResources } from "@/lib/paws/render/create-scene-resources";
+import {
+  createSceneResources,
+  type SceneResources,
+} from "@/lib/paws/render/create-scene-resources";
 import { drawScene } from "@/lib/paws/render/draw-scene";
 import { getWorldView } from "@/lib/paws/render/get-world-view";
 import { RISO } from "@/lib/paws/riso-inks";
 import { ROOM_LIMITS } from "@/lib/paws/room-limits";
 import { getRoomNumber } from "@/lib/paws/rooms/get-room-number";
 import { LOCAL_ROOM_ID } from "@/lib/paws/rooms/local-room-id";
+import { getInviteUrl } from "@/lib/paws/share/get-invite-url";
 import type { DerivedCat } from "@/lib/paws/sim/derive-cat";
 import { TOY_ITEMS, type ToyItemId } from "@/lib/paws/sim/toy-items";
 import { getSky } from "@/lib/paws/sky/get-sky";
@@ -37,10 +46,12 @@ import { createPawsSoundPlayer } from "@/lib/paws/sound/create-paws-sound-player
 import type { ChatMessage } from "@/lib/paws/wire-types";
 import { cn } from "@/lib/utils";
 
+import { CameraButton } from "./camera-button";
 import type { ChatBubble } from "./chat-bubble";
 import { ChatLayer } from "./chat-layer";
 import { COMPOSE_ANCHOR_PREFIX } from "./compose-anchor-prefix";
 import { CreatorNote } from "./creator-note";
+import { InviteButton } from "./invite-button";
 import { OtherAppsSheet } from "./other-apps-sheet";
 import { PanBar, type PanBarHandle } from "./pan-bar";
 import { PortfolioLink } from "./portfolio-link";
@@ -81,6 +92,13 @@ const ROOM_BANNER_MS = 2600;
 const RESIDENT_LINE_EVERY_MS = 15_000;
 const RESIDENT_LINE_CHANCE = { alone: 0.25, shared: 0.06 } as const;
 const TOY_DRAG_PX = 6;
+
+function createCanvas(options: { width: number; height: number }) {
+  const created = document.createElement("canvas");
+  created.width = options.width;
+  created.height = options.height;
+  return created;
+}
 
 function isTypingTarget(target: EventTarget | null) {
   return (
@@ -131,6 +149,11 @@ export function PawsRoom(props: PawsRoomProps) {
   const heldToyRef = useRef<ToyItemId | undefined>(undefined);
   const toyGhostRef = useRef<HTMLDivElement>(null);
   const [unavailableToyIds, setUnavailableToyIds] = useState<ToyItemId[]>([]);
+  const [isCameraOut, setIsCameraOut] = useState(false);
+  const [paperSeed] = useState(Math.random);
+  const sceneRef = useRef<RoomScene>(undefined);
+  const photoResourcesRef = useRef<SceneResources>(undefined);
+  const ownPointerRef = useRef({ x: 0, y: 0 });
   const ownUserId = "userId" in session ? session.userId : undefined;
   const engine = useMemo(() => createRoomEngine({ random: Math.random }), []);
   const [sound] = useState(() =>
@@ -359,15 +382,7 @@ export function PawsRoom(props: PawsRoomProps) {
     const canvas = canvasRef.current;
     const g = canvas?.getContext("2d");
     if (canvas === null || g === null || g === undefined) return;
-    const resources = createSceneResources({
-      createCanvas: ({ width, height }) => {
-        const created = document.createElement("canvas");
-        created.width = width;
-        created.height = height;
-        return created;
-      },
-      paperSeed: Math.random(),
-    });
+    const resources = createSceneResources({ createCanvas, paperSeed });
     const ownCat: { isHere: boolean; centeredOn: string | undefined } = {
       isHere: false,
       centeredOn: undefined,
@@ -545,22 +560,21 @@ export function PawsRoom(props: PawsRoomProps) {
         element.style.transform = `translate(${x}px, ${y}px) translate(-50%, -100%)`;
         element.style.visibility = "visible";
       }
-      drawScene({
-        g,
+      const scene: RoomScene = {
         width,
         height,
-        dpr,
         view,
         cats: room.cats,
         prints: room.prints,
         fingers: room.fingers,
         time: room.time,
-        resources,
         sky: skyClock.sky,
         toys: room.toys,
         trails: room.trails,
         toyMarks: room.toyMarks,
-      });
+      };
+      sceneRef.current = scene;
+      drawScene({ ...scene, g, dpr, resources });
       frame.id = window.requestAnimationFrame(tick);
     }
 
@@ -574,7 +588,13 @@ export function PawsRoom(props: PawsRoomProps) {
     ownCatIdRef,
     roomIdRef,
     props.location,
+    paperSeed,
   ]);
+
+  function setOwnPointer(pointer: Parameters<typeof engine.setOwnPointer>[0]) {
+    ownPointerRef.current = { x: pointer.x, y: pointer.y };
+    engine.setOwnPointer(pointer);
+  }
 
   function toWorld(event: { clientX: number; clientY: number }) {
     const canvas = canvasRef.current;
@@ -687,7 +707,7 @@ export function PawsRoom(props: PawsRoomProps) {
     }
     const isTouch = event.pointerType !== "mouse";
     const pressed = (event.buttons & 1) === 1;
-    engine.setOwnPointer({
+    setOwnPointer({
       ...toWorld(event),
       present: !isTouch || pressed,
       pressed,
@@ -704,7 +724,7 @@ export function PawsRoom(props: PawsRoomProps) {
       touchesRef.current[event.pointerId] = event.clientX;
     if (Object.keys(touchesRef.current).length >= 2) {
       restartPinch();
-      engine.setOwnPointer({
+      setOwnPointer({
         ...toWorld(event),
         present: false,
         pressed: false,
@@ -713,7 +733,7 @@ export function PawsRoom(props: PawsRoomProps) {
     }
     if (pinchRef.current !== undefined) return;
     event.currentTarget.setPointerCapture(event.pointerId);
-    engine.setOwnPointer({ ...toWorld(event), present: true, pressed: true });
+    setOwnPointer({ ...toWorld(event), present: true, pressed: true });
   }
 
   function restartPinch() {
@@ -734,7 +754,7 @@ export function PawsRoom(props: PawsRoomProps) {
 
   function handlePointerUp(event: React.PointerEvent<HTMLCanvasElement>) {
     if (releaseTouch(event.pointerId)) return;
-    engine.setOwnPointer({
+    setOwnPointer({
       ...toWorld(event),
       present: event.pointerType === "mouse",
       pressed: false,
@@ -743,7 +763,7 @@ export function PawsRoom(props: PawsRoomProps) {
 
   function handlePointerLeave(event: React.PointerEvent<HTMLCanvasElement>) {
     if (releaseTouch(event.pointerId)) return;
-    engine.setOwnPointer({ ...toWorld(event), present: false, pressed: false });
+    setOwnPointer({ ...toWorld(event), present: false, pressed: false });
   }
 
   async function handleSend(text: string) {
@@ -832,6 +852,35 @@ export function PawsRoom(props: PawsRoomProps) {
     sound.playUi("language");
   }
 
+  function handleOpenCamera() {
+    sound.playUi("cameraUp");
+    holdToy(undefined);
+    setIsComposing(false);
+    setOwnPointer({ ...ownPointerRef.current, present: false, pressed: false });
+    touchesRef.current = {};
+    pinchRef.current = undefined;
+    setIsCameraOut(true);
+  }
+
+  function handlePutCameraDown() {
+    photoResourcesRef.current = undefined;
+    setIsCameraOut(false);
+  }
+
+  function captureRoom(options: { frame: ViewfinderFrame; longPx: number }) {
+    const scene = sceneRef.current;
+    if (scene === undefined) throw new Error("the room has not drawn yet");
+    photoResourcesRef.current ??= createSceneResources({
+      createCanvas,
+      paperSeed,
+    });
+    return drawRoomPhoto({
+      ...options,
+      scene,
+      resources: photoResourcesRef.current,
+    });
+  }
+
   function handleBringCatIn(cat: SavedCat) {
     sound.playUi("bringIn");
     setSavedCat(cat);
@@ -852,163 +901,188 @@ export function PawsRoom(props: PawsRoomProps) {
             onPointerLeave={handlePointerLeave}
             onContextMenu={handleContextMenu}
           />
-          <RoomLoading
-            text={
-              isChecked &&
-              !useFakeRoom &&
-              "accessToken" in session &&
-              roomId === undefined &&
-              !isFull
-                ? copy.room.findingRoom
-                : undefined
-            }
-          />
-          <div className="absolute top-4 right-4 flex items-start gap-x-2 group-has-[[aria-modal=true]]/room:hidden sm:top-6 sm:right-6">
-            {hasOwnCatInRoom && (
-              <button
-                type="button"
-                onClick={handleTalk}
-                aria-keyshortcuts="/"
-                className={cn(
-                  FOCUS_RING_CLASS,
-                  "flex h-10 items-center gap-x-2 border-[1.5px] border-[var(--pw-ink)] bg-[var(--pw-paper)] px-3 text-[12px] text-[var(--pw-ink)] hover:bg-[var(--pw-paper-deep)] sm:h-8"
-                )}
-              >
-                {copy.room.talk}
-                <kbd
-                  aria-hidden
-                  className="grid size-5 place-items-center border border-[var(--pw-ink-soft)] font-[inherit] text-[11px] leading-none text-[var(--pw-ink-soft)] [@media(pointer:coarse)]:hidden"
-                >
-                  /
-                </kbd>
-              </button>
-            )}
-            {session.kind !== "loading" && !hasCatToEdit && (
-              <RisoButton
-                variant="primary"
-                onClick={handleStartOnboardingFromRoom}
-              >
-                {session.kind === "member"
-                  ? copy.watch.bringYourCat
-                  : copy.watch.signInToBring}
-              </RisoButton>
-            )}
-            <RoomMenu>
-              {(menu) => [
-                hasCatToEdit && (
-                  <RisoButton
-                    key="cat"
-                    variant="quiet"
-                    onClick={() => handleStartOnboarding(menu)}
-                  >
-                    {copy.watch.yourCat}
-                  </RisoButton>
-                ),
-                roomId !== undefined &&
-                  !useFakeRoom &&
-                  "accessToken" in session && (
-                    <RoomPicker
-                      key="room"
-                      roomId={roomId}
-                      accessToken={session.accessToken}
-                      isPlayer={self !== undefined}
-                      onSwitch={handleSwitchRoom}
-                    />
-                  ),
-                <SoundSwitch
-                  key="sound"
-                  muted={isMuted}
-                  label={copy.room.mute}
-                  onToggle={handleToggleMute}
-                />,
-                <LanguagePicker
-                  key="language"
-                  onChange={handleLanguageChange}
-                />,
-                <SheetButton
-                  key="guide"
-                  icon="guide"
-                  label={copy.guide.open}
-                  onOpen={() => handleOpenSheet({ menu, sheet: "guide" })}
-                />,
-                <SheetButton
-                  key="note"
-                  icon="note"
-                  label={copy.note.open}
-                  onOpen={() => handleOpenSheet({ menu, sheet: "note" })}
-                />,
-                <PortfolioLink key="credit" />,
-                <SheetButton
-                  key="apps"
-                  icon="apps"
-                  label={copy.otherApps.title}
-                  onOpen={() => handleOpenSheet({ menu, sheet: "apps" })}
-                />,
-              ]}
-            </RoomMenu>
-          </div>
-          <div className="absolute right-4 bottom-4 group-has-[[role=dialog]]/room:hidden sm:right-6 sm:bottom-6">
-            <ToyTray
-              label={copy.room.toys}
-              rollLabel={copy.room.toyRoll}
-              yarnLabel={copy.room.toyYarn}
-              inRoomLabel={copy.room.toyInRoom}
-              hint={copy.room.toyPlaceHint}
-              unavailableIds={unavailableToyIds}
-              heldId={heldToyId}
-              onPress={handleToyPress}
-              onKeyPick={handleToyKeyPick}
+          <div className={cn("contents", isCameraOut && "hidden")}>
+            <RoomLoading
+              text={
+                isChecked &&
+                !useFakeRoom &&
+                "accessToken" in session &&
+                roomId === undefined &&
+                !isFull
+                  ? copy.room.findingRoom
+                  : undefined
+              }
             />
-          </div>
-          <div
-            ref={toyGhostRef}
-            aria-hidden
-            className="pointer-events-none invisible fixed top-0 left-0 z-10 drop-shadow-[0_4px_3px_rgba(43,58,99,0.35)]"
-          >
-            {heldToyId !== undefined && (
-              <ToyIcon itemId={heldToyId} className="size-9" />
-            )}
-          </div>
-          {isPannable && (
-            <div className="absolute bottom-4 left-4 group-has-[[role=dialog]]/room:hidden sm:bottom-6 sm:left-6">
-              <PanBar
-                label={copy.room.lookAround}
-                centerX={readCenterX}
-                handleRef={panBarRef}
-                onPan={handlePan}
+            <div className="absolute top-4 right-4 flex items-start gap-x-2 group-has-[[aria-modal=true]]/room:hidden sm:top-6 sm:right-6">
+              {hasOwnCatInRoom && (
+                <button
+                  type="button"
+                  onClick={handleTalk}
+                  aria-keyshortcuts="/"
+                  className={cn(
+                    FOCUS_RING_CLASS,
+                    "flex h-10 items-center gap-x-2 border-[1.5px] border-[var(--pw-ink)] bg-[var(--pw-paper)] px-3 text-[12px] text-[var(--pw-ink)] hover:bg-[var(--pw-paper-deep)] sm:h-8"
+                  )}
+                >
+                  {copy.room.talk}
+                  <kbd
+                    aria-hidden
+                    className="grid size-5 place-items-center border border-[var(--pw-ink-soft)] font-[inherit] text-[11px] leading-none text-[var(--pw-ink-soft)] [@media(pointer:coarse)]:hidden"
+                  >
+                    /
+                  </kbd>
+                </button>
+              )}
+              {session.kind !== "loading" && !hasCatToEdit && (
+                <RisoButton
+                  variant="primary"
+                  onClick={handleStartOnboardingFromRoom}
+                >
+                  {session.kind === "member"
+                    ? copy.watch.bringYourCat
+                    : copy.watch.signInToBring}
+                </RisoButton>
+              )}
+              <CameraButton
+                label={copy.camera.open}
+                onOpen={handleOpenCamera}
+              />
+              <RoomMenu>
+                {(menu) => [
+                  hasCatToEdit && (
+                    <RisoButton
+                      key="cat"
+                      variant="quiet"
+                      onClick={() => handleStartOnboarding(menu)}
+                    >
+                      {copy.watch.yourCat}
+                    </RisoButton>
+                  ),
+                  roomId !== undefined &&
+                    !useFakeRoom &&
+                    "accessToken" in session && (
+                      <RoomPicker
+                        key="room"
+                        roomId={roomId}
+                        accessToken={session.accessToken}
+                        isPlayer={self !== undefined}
+                        look={self?.look}
+                        onSwitch={handleSwitchRoom}
+                      />
+                    ),
+                  <SoundSwitch
+                    key="sound"
+                    muted={isMuted}
+                    label={copy.room.mute}
+                    onToggle={handleToggleMute}
+                  />,
+                  <LanguagePicker
+                    key="language"
+                    onChange={handleLanguageChange}
+                  />,
+                  <SheetButton
+                    key="guide"
+                    icon="guide"
+                    label={copy.guide.open}
+                    onOpen={() => handleOpenSheet({ menu, sheet: "guide" })}
+                  />,
+                  <SheetButton
+                    key="note"
+                    icon="note"
+                    label={copy.note.open}
+                    onOpen={() => handleOpenSheet({ menu, sheet: "note" })}
+                  />,
+                  <InviteButton
+                    key="invite"
+                    roomId={roomId === LOCAL_ROOM_ID ? undefined : roomId}
+                    look={self?.look}
+                  />,
+                  <PortfolioLink key="credit" />,
+                  <SheetButton
+                    key="apps"
+                    icon="apps"
+                    label={copy.otherApps.title}
+                    onOpen={() => handleOpenSheet({ menu, sheet: "apps" })}
+                  />,
+                ]}
+              </RoomMenu>
+            </div>
+            <div className="absolute right-4 bottom-4 group-has-[[role=dialog]]/room:hidden sm:right-6 sm:bottom-6">
+              <ToyTray
+                label={copy.room.toys}
+                rollLabel={copy.room.toyRoll}
+                yarnLabel={copy.room.toyYarn}
+                inRoomLabel={copy.room.toyInRoom}
+                hint={copy.room.toyPlaceHint}
+                unavailableIds={unavailableToyIds}
+                heldId={heldToyId}
+                onPress={handleToyPress}
+                onKeyPick={handleToyKeyPick}
               />
             </div>
-          )}
-          <RoomBanner
-            text={
-              isFull
-                ? copy.watch.roomFull
-                : banner === undefined
-                  ? undefined
-                  : (banner.isMove
-                      ? copy.room.roomMoved
-                      : copy.room.roomEntered
-                    ).replace(
-                      "{room}",
-                      copy.room.roomName.replace(
-                        "{number}",
-                        String(getRoomNumber(banner.roomId))
+            <div
+              ref={toyGhostRef}
+              aria-hidden
+              className="pointer-events-none invisible fixed top-0 left-0 z-10 drop-shadow-[0_4px_3px_rgba(43,58,99,0.35)]"
+            >
+              {heldToyId !== undefined && (
+                <ToyIcon itemId={heldToyId} className="size-9" />
+              )}
+            </div>
+            {isPannable && (
+              <div className="absolute bottom-4 left-4 group-has-[[role=dialog]]/room:hidden sm:bottom-6 sm:left-6">
+                <PanBar
+                  label={copy.room.lookAround}
+                  centerX={readCenterX}
+                  handleRef={panBarRef}
+                  onPan={handlePan}
+                />
+              </div>
+            )}
+            <RoomBanner
+              text={
+                isFull
+                  ? copy.watch.roomFull
+                  : banner === undefined
+                    ? undefined
+                    : (banner.isMove
+                        ? copy.room.roomMoved
+                        : copy.room.roomEntered
+                      ).replace(
+                        "{room}",
+                        copy.room.roomName.replace(
+                          "{number}",
+                          String(getRoomNumber(banner.roomId))
+                        )
                       )
-                    )
-            }
-          />
-          <ChatLayer
-            bubbles={bubbles}
-            ownUserId={ownUserId}
-            ownAccent={
-              self === undefined ? RISO.pink : COAT_INKS[self.look.coat]
-            }
-            composing={isComposing && hasOwnCatInRoom}
-            anchors={anchorsRef}
-            onSend={handleSend}
-            onCloseCompose={handleCloseCompose}
-            onReopenCompose={handleReopenCompose}
-          />
+              }
+            />
+            <ChatLayer
+              bubbles={bubbles}
+              ownUserId={ownUserId}
+              ownAccent={
+                self === undefined ? RISO.pink : COAT_INKS[self.look.coat]
+              }
+              composing={isComposing && hasOwnCatInRoom}
+              anchors={anchorsRef}
+              onSend={handleSend}
+              onCloseCompose={handleCloseCompose}
+              onReopenCompose={handleReopenCompose}
+            />
+          </div>
+          <AnimatePresence>
+            {isCameraOut && (
+              <PawsCamera
+                inviteUrl={getInviteUrl({
+                  href: window.location.href,
+                  roomId: roomId === LOCAL_ROOM_ID ? undefined : roomId,
+                  look: self?.look,
+                })}
+                capture={captureRoom}
+                onPutDown={handlePutCameraDown}
+              />
+            )}
+          </AnimatePresence>
           {openSheet === "guide" && (
             <RoomGuide pannable={isPannable} onClose={handleCloseSheet} />
           )}

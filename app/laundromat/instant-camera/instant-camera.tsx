@@ -11,17 +11,10 @@ import {
 import { useLaundromatCopy } from "@/app/laundromat/i18n/use-laundromat-copy";
 import { useRenderQuality } from "@/app/laundromat/settings/use-render-quality";
 import { useSoundBoard } from "@/app/laundromat/sound/use-sound-board";
-import { clampViewfinder } from "@/lib/laundromat/instant-camera/clamp-viewfinder";
-import { getStartingViewfinder } from "@/lib/laundromat/instant-camera/get-starting-viewfinder";
+import { useViewfinderFrame } from "@/components/instant-camera/use-viewfinder-frame";
+import { Viewfinder } from "@/components/instant-camera/viewfinder";
 import { INSTANT_CAMERA } from "@/lib/laundromat/instant-camera/instant-camera-config";
 import { pickPolaroidTiltDeg } from "@/lib/laundromat/instant-camera/pick-polaroid-tilt-deg";
-import { scaleViewfinder } from "@/lib/laundromat/instant-camera/scale-viewfinder";
-import { sizeViewfinder } from "@/lib/laundromat/instant-camera/size-viewfinder";
-import { turnViewfinder } from "@/lib/laundromat/instant-camera/turn-viewfinder";
-import type {
-  ViewfinderFrame,
-  ViewfinderOrientation,
-} from "@/lib/laundromat/instant-camera/viewfinder-frame";
 import { cn } from "@/lib/utils";
 
 import { CameraGrip } from "./camera-grip";
@@ -29,14 +22,9 @@ import { captureRoomPhoto } from "./capture-room-photo";
 import { paintFilmLook } from "./paint-film-look";
 import type { Photo } from "./polaroid-sheet";
 import { PolaroidSheet } from "./polaroid-sheet";
-import { useViewportSize } from "./use-viewport-size";
-import { Viewfinder } from "./viewfinder";
 
 const MIN_FLASH_MS = 380;
 const PUT_DOWN_MS = 450;
-const KEY_STEP_PX = 10;
-const KEY_STEP_LARGE_PX = 40;
-const KEY_SCALE_STEP = 0.08;
 
 export type InstantCameraSubject = "laundromat" | "bedroom";
 
@@ -57,37 +45,16 @@ export function InstantCamera(props: InstantCameraProps) {
   const { quality } = useRenderQuality();
   const sound = useSoundBoard();
   const prefersReducedMotion = useReducedMotion() ?? false;
-  const viewport = useViewportSize();
+  const { viewport, orientation, visibleFrame, setFrame, turn, pressKey } =
+    useViewfinderFrame();
   const [stage, setStage] = useState<CameraStage>({ kind: "framing" });
-  const [orientation, setOrientation] =
-    useState<ViewfinderOrientation>("portrait");
-  const [frame, setFrame] = useState<ViewfinderFrame>();
   const [flashCount, setFlashCount] = useState(0);
   const [isSnapFailed, setIsSnapFailed] = useState(false);
   const snapRunRef = useRef(0);
   const ejectTimerRef = useRef<number>(undefined);
   const [isPresent, safeToRemove] = usePresence();
   const fontCacheRef = useRef<{ [url: string]: string | undefined }>({});
-  const minShortPx = INSTANT_CAMERA.viewfinderMinShortPx;
   const isMeasured = viewport !== undefined;
-  const visibleFrame = (() => {
-    if (viewport === undefined) return undefined;
-    if (frame === undefined) {
-      return getStartingViewfinder({ orientation, viewport, minShortPx });
-    }
-    return clampViewfinder({
-      frame: {
-        ...frame,
-        ...sizeViewfinder({
-          orientation,
-          width: frame.width,
-          viewport,
-          minShortPx,
-        }),
-      },
-      viewport,
-    });
-  })();
 
   useEffect(() => {
     const root = document.querySelector("[data-laundromat-root]");
@@ -166,21 +133,6 @@ export function InstantCamera(props: InstantCameraProps) {
     }
   }
 
-  function turn() {
-    const next = orientation === "portrait" ? "landscape" : "portrait";
-    setOrientation(next);
-    if (visibleFrame !== undefined && viewport !== undefined) {
-      setFrame(
-        turnViewfinder({
-          frame: visibleFrame,
-          orientation: next,
-          viewport,
-          minShortPx,
-        })
-      );
-    }
-  }
-
   function handleKeyDown(event: React.KeyboardEvent<HTMLDivElement>) {
     if (event.key === "Escape" && stage.kind !== "print") {
       props.onPutDown();
@@ -189,62 +141,8 @@ export function InstantCamera(props: InstantCameraProps) {
     const isOnViewfinder =
       event.target instanceof HTMLElement &&
       event.target.matches("[data-instant-camera-viewfinder]");
-    if (
-      !isOnViewfinder ||
-      stage.kind !== "framing" ||
-      visibleFrame === undefined ||
-      viewport === undefined
-    ) {
-      return;
-    }
-    const step = event.shiftKey ? KEY_STEP_LARGE_PX : KEY_STEP_PX;
-    const moves: { [key: string]: [number, number] } = {
-      ArrowLeft: [-step, 0],
-      ArrowRight: [step, 0],
-      ArrowUp: [0, -step],
-      ArrowDown: [0, step],
-    };
-    const move = moves[event.key];
-    if (move !== undefined) {
-      event.preventDefault();
-      setFrame(
-        clampViewfinder({
-          frame: {
-            ...visibleFrame,
-            x: visibleFrame.x + move[0],
-            y: visibleFrame.y + move[1],
-          },
-          viewport,
-        })
-      );
-      return;
-    }
-    switch (event.key) {
-      case "Enter":
-      case " ":
-        event.preventDefault();
-        void snap();
-        return;
-      case "o":
-      case "O":
-        turn();
-        return;
-      case "+":
-      case "=":
-      case "-":
-        setFrame(
-          scaleViewfinder({
-            frame: visibleFrame,
-            factor: event.key === "-" ? 1 - KEY_SCALE_STEP : 1 + KEY_SCALE_STEP,
-            orientation,
-            viewport,
-            minShortPx,
-          })
-        );
-        return;
-      default:
-        return;
-    }
+    if (!isOnViewfinder || stage.kind !== "framing") return;
+    if (pressKey(event) === "snap") void snap();
   }
 
   const isFraming = isPresent && stage.kind !== "print";
@@ -261,7 +159,7 @@ export function InstantCamera(props: InstantCameraProps) {
         {isFraming && visibleFrame !== undefined && viewport !== undefined && (
           <motion.div
             key="viewfinder"
-            className="fixed inset-0 z-[400] touch-none"
+            className="fixed inset-0 z-[400] touch-none [--camera-accent:var(--lm-accent)] [--camera-dim:rgba(6,7,8,0.62)] [--camera-ink-hi:var(--lm-ink-hi)] [--camera-ink:var(--lm-ink)]"
             initial={prefersReducedMotion ? false : { opacity: 0, scale: 1.04 }}
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0 }}

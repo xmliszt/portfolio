@@ -2,6 +2,7 @@ import { GeistSerifRegular } from "geist/font/serif/regular";
 import { Metadata, Viewport } from "next";
 import { IBM_Plex_Mono } from "next/font/google";
 
+import { getPawsShareMetadata } from "@/lib/paws/get-paws-share-metadata";
 import { PAWS_ORIGIN } from "@/lib/paws/paws-hosts";
 import { PAWS_SEO } from "@/lib/paws/paws-seo";
 import { RISO, RISO_CSS_VARIABLES } from "@/lib/paws/riso-inks";
@@ -31,27 +32,17 @@ export const metadata: Metadata = {
     apple: "/paws/apple-touch-icon.png",
   },
   appleWebApp: { title: PAWS_SEO.name },
-  openGraph: {
-    type: "website",
+  ...getPawsShareMetadata({
     url: "/",
-    siteName: PAWS_SEO.name,
     title: PAWS_SEO.shareTitle,
     description: PAWS_SEO.shareDescription,
-    images: [
-      {
-        url: PAWS_SEO.shareImage.path,
-        width: PAWS_SEO.shareImage.width,
-        height: PAWS_SEO.shareImage.height,
-        alt: PAWS_SEO.shareDescription,
-      },
-    ],
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: PAWS_SEO.shareTitle,
-    description: PAWS_SEO.shareDescription,
-    images: [PAWS_SEO.shareImage.path],
-  },
+    image: {
+      url: PAWS_SEO.shareImage.path,
+      width: PAWS_SEO.shareImage.width,
+      height: PAWS_SEO.shareImage.height,
+      alt: PAWS_SEO.shareDescription,
+    },
+  }),
   authors: [{ name: "Li Yuxuan", url: "https://liyuxuan.dev/about" }],
   creator: "Li Yuxuan",
   robots: { index: true, follow: true, "max-image-preview": "large" },
