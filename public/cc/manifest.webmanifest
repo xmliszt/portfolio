@@ -1,0 +1,14 @@
+{
+  "name": "CC//",
+  "short_name": "CC//",
+  "description": "A private command center for planning, posting and tracking social posts.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#06080c",
+  "theme_color": "#06080c",
+  "icons": [
+    { "src": "/cc/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "/cc/icon-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "/cc/icon.svg", "sizes": "any", "type": "image/svg+xml" }
+  ]
+}

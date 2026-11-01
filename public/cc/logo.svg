@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+<defs><filter id="glow" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="10" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>
+<rect width="512" height="512" fill="#06080c"/>
+<g stroke="#2de2ff" stroke-opacity="0.07" stroke-width="1"><path d="M0 0V512M0 0H512" /><path d="M32 0V512M0 32H512" /><path d="M64 0V512M0 64H512" /><path d="M96 0V512M0 96H512" /><path d="M128 0V512M0 128H512" /><path d="M160 0V512M0 160H512" /><path d="M192 0V512M0 192H512" /><path d="M224 0V512M0 224H512" /><path d="M256 0V512M0 256H512" /><path d="M288 0V512M0 288H512" /><path d="M320 0V512M0 320H512" /><path d="M352 0V512M0 352H512" /><path d="M384 0V512M0 384H512" /><path d="M416 0V512M0 416H512" /><path d="M448 0V512M0 448H512" /><path d="M480 0V512M0 480H512" /><path d="M512 0V512M0 512H512" /></g>
+<g filter="url(#glow)" transform="translate(-4 0)"><g fill="none" stroke="#2de2ff" stroke-width="34" stroke-linecap="butt"><path d="M192.8 208.4 A64 64 0 1 0 192.8 303.6"/><path d="M314.8 208.4 A64 64 0 1 0 314.8 303.6"/></g><g fill="#2de2ff"><path d="M336.0 331.0 L360.0 331.0 L406.0 181.0 L382.0 181.0 Z"/><path d="M380.0 331.0 L404.0 331.0 L450.0 181.0 L426.0 181.0 Z"/></g></g>
+</svg>

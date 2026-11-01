@@ -7,7 +7,7 @@ const LOGIN_PATHNAME = "/cc/login";
 
 type SessionCookie = { name: string; value: string; options: CookieOptions };
 
-/** Refresh the sign-in session cookies and return a rewrite of `request` to `url`, or a redirect to the login page for anyone but the owner and to the overview for an owner opening the login page; every response carries the refreshed cookies. */
+/** Refresh the sign-in session cookies and return a rewrite of `request` to `url`, or a redirect to the login page for anyone but the owner (files such as `robots.txt` stay open) and to the overview for an owner opening the login page; every response carries the refreshed cookies. */
 export async function respondWithCcSession(options: {
   request: NextRequest;
   url: URL;
@@ -31,9 +31,10 @@ export async function respondWithCcSession(options: {
   const { data } = await supabase.auth.getUser();
   const isOwner = isCcOwnerEmail(data.user?.email);
   const isLoginPage = options.url.pathname === LOGIN_PATHNAME;
+  const isPublicFile = /\.[a-z0-9]+$/i.test(options.url.pathname);
 
   const response = (() => {
-    if (!isOwner && !isLoginPage) {
+    if (!isOwner && !isLoginPage && !isPublicFile) {
       return NextResponse.redirect(new URL("/login", options.request.url));
     }
     if (isOwner && isLoginPage && options.request.method === "GET") {
