@@ -6,6 +6,9 @@ import { CcButton } from "@/app/cc/_ui/cc-button";
 import { Panel } from "@/app/cc/_ui/panel";
 import { checkXTags } from "@/app/cc/(app)/_actions/check-x-tags";
 import { formatMetricNumber } from "@/lib/cc/format-metric-number";
+import { rateTagUsage } from "@/lib/cc/rate-tag-usage";
+
+import { TagRatingBadge } from "./tag-rating-badge";
 
 type XTagCheckPanelProps = {
   hashtags: readonly string[];
@@ -93,10 +96,20 @@ export function XTagCheckPanel(props: XTagCheckPanelProps) {
                       className="flex justify-between gap-x-3 border-b border-dashed py-1.5 text-[12px]"
                     >
                       <span className="truncate">{result.term}</span>
-                      <span className="text-muted-foreground tabular-nums">
-                        {result.kind === "failed"
-                          ? `X refused (${result.status})`
-                          : `${formatMetricNumber(result.total)} posts`}
+                      <span className="text-muted-foreground flex items-center gap-x-2 tabular-nums">
+                        {result.kind === "failed" ? (
+                          `X refused (${result.status})`
+                        ) : (
+                          <>
+                            {`${formatMetricNumber(result.total)} posts`}
+                            <TagRatingBadge
+                              rating={rateTagUsage({
+                                platform: "x",
+                                weeklyPosts: result.total,
+                              })}
+                            />
+                          </>
+                        )}
                       </span>
                     </li>
                   ))}
