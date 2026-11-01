@@ -14,5 +14,5 @@ export const TOY_LIMITS = {
   maxUnrolled: 1500,
   threadLength: 2000,
   spillSeconds: 210,
-  fadeSeconds: 90,
+  fadeSeconds: 30,
 } as const;
