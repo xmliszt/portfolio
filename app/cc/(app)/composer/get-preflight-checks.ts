@@ -12,6 +12,7 @@ const LINK_PATTERN =
 const VIDEO_PATTERN = /\.(?:mp4|mov|m4v|webm)$/i;
 const IMAGE_PATTERN = /\.(?:png|jpe?g|gif|webp|heic)$/i;
 const INSTAGRAM_HOOK_LENGTH = 125;
+const LINKEDIN_FOLD_LENGTH = 210;
 
 function getHashtagCheck(options: {
   platformId: PlatformId;
@@ -186,6 +187,20 @@ function getPlatformChecks(options: {
           why: hasComment
             ? "Ready to post as soon as the launch is live."
             : "Write the maker comment before launch.",
+        },
+      ];
+    }
+    case "linkedin": {
+      const opening = options.body.slice(0, LINKEDIN_FOLD_LENGTH);
+      const hasOpeningBreak = opening.includes("\n");
+      return [
+        {
+          kind: "computed",
+          id: "linkedin-hook",
+          label: `The point lands before “see more” (about ${LINKEDIN_FOLD_LENGTH} characters)`,
+          passed:
+            options.body.length <= LINKEDIN_FOLD_LENGTH || hasOpeningBreak,
+          why: "LinkedIn folds a post after about 2 to 3 lines; open with one short line.",
         },
       ];
     }

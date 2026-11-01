@@ -61,6 +61,7 @@
   --cc-platform-tiktok: 188 100% 58.8%;
   --cc-platform-reddit: 24 100% 62%;
   --cc-platform-youtube: 0 100% 64%;
+  --cc-platform-linkedin: 210 90% 62%;
 }
 
 @layer components {
