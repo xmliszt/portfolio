@@ -16,6 +16,7 @@ export function ComposerTabs(props: ComposerTabsProps) {
   function handleClick(event: React.MouseEvent<HTMLAnchorElement>) {
     if (props.dirty && !window.confirm("Leave without saving this draft?")) {
       event.preventDefault();
+      event.stopPropagation();
     }
   }
 

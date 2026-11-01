@@ -8,7 +8,6 @@ import { cn } from "@/lib/utils";
 /** `true` if a click on `event.target` follows an in-app link to a different URL; `false` for new tabs, downloads, other origins and the current URL. */
 function isInternalNavigation(event: MouseEvent) {
   if (
-    event.defaultPrevented ||
     event.button !== 0 ||
     event.metaKey ||
     event.ctrlKey ||
