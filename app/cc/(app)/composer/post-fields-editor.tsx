@@ -2,7 +2,7 @@
 
 import { CcField } from "@/app/cc/_ui/cc-field";
 import { countPostCharacters } from "@/lib/cc/count-post-characters";
-import { type PlatformId, PLATFORMS } from "@/lib/cc/platforms";
+import { type Platform, type PlatformId, PLATFORMS } from "@/lib/cc/platforms";
 
 import { AssetsEditor } from "./assets-editor";
 import { CharacterCount } from "./character-count";
@@ -21,6 +21,7 @@ export function PostFieldsEditor(props: PostFieldsEditorProps) {
   const titleLimit: number | undefined = platform.titleLimit;
   const bodyLimit: number | undefined = platform.bodyLimit;
   const draft = props.draft;
+  const targetField: Platform["target"] = platform.target;
 
   function update(fields: Partial<DraftFields>) {
     props.onChange({ ...draft, ...fields });
@@ -48,12 +49,12 @@ export function PostFieldsEditor(props: PostFieldsEditorProps) {
           </div>
         </CcField>
       )}
-      {props.platformId === "reddit" && (
-        <CcField label="SUBREDDIT" htmlFor={`target-${props.postId}`}>
+      {targetField !== undefined && (
+        <CcField label={targetField.label} htmlFor={`target-${props.postId}`}>
           <input
             id={`target-${props.postId}`}
             className="cc-input"
-            placeholder="r/SideProject"
+            placeholder={targetField.placeholder}
             value={draft.target}
             onChange={(event) => update({ target: event.target.value })}
           />

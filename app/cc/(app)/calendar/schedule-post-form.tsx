@@ -8,7 +8,12 @@ import { CcField } from "@/app/cc/_ui/cc-field";
 import { Panel } from "@/app/cc/_ui/panel";
 import { savePost } from "@/app/cc/(app)/_actions/save-post";
 import { isPlatformId } from "@/lib/cc/is-platform-id";
-import { PLATFORM_IDS, type PlatformId, PLATFORMS } from "@/lib/cc/platforms";
+import {
+  type Platform,
+  PLATFORM_IDS,
+  type PlatformId,
+  PLATFORMS,
+} from "@/lib/cc/platforms";
 import { sgtToUtc } from "@/lib/cc/sgt-to-utc";
 
 type SchedulePostFormProps = {
@@ -35,6 +40,8 @@ export function SchedulePostForm(props: SchedulePostFormProps) {
   const [result, setResult] = useState<Result>({ kind: "idle" });
   const [isPending, startTransition] = useTransition();
 
+  const targetField: Platform["target"] = PLATFORMS[platformId].target;
+
   function changePlatform(event: React.ChangeEvent<HTMLSelectElement>) {
     if (isPlatformId(event.target.value)) setPlatformId(event.target.value);
   }
@@ -53,7 +60,7 @@ export function SchedulePostForm(props: SchedulePostFormProps) {
           fields: {
             platform: platformId,
             kind: "post",
-            target: platformId === "reddit" ? target.trim() || null : null,
+            target: targetField === undefined ? null : target.trim() || null,
             title: title.trim() || null,
             scheduled_at: sgtToUtc({ date, time }).toISOString(),
             status,
@@ -103,13 +110,13 @@ export function SchedulePostForm(props: SchedulePostFormProps) {
             </select>
           </CcField>
         </div>
-        {platformId === "reddit" && (
-          <CcField label="SUBREDDIT" htmlFor="schedule-target">
+        {targetField !== undefined && (
+          <CcField label={targetField.label} htmlFor="schedule-target">
             <input
               id="schedule-target"
-              required
+              required={platformId === "reddit"}
               className="cc-input"
-              placeholder="r/SideProject"
+              placeholder={targetField.placeholder}
               value={target}
               onChange={(event) => setTarget(event.target.value)}
             />

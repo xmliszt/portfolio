@@ -19,6 +19,7 @@ import { getHashtagLift } from "@/lib/cc/get-hashtag-lift";
 import { getHourHeat } from "@/lib/cc/get-hour-heat";
 import { getLatestMetric } from "@/lib/cc/get-latest-metric";
 import { getPlatformMedian } from "@/lib/cc/get-platform-median";
+import { getTargetStats } from "@/lib/cc/get-target-stats";
 import { getViewsAt24h } from "@/lib/cc/get-views-at-24h";
 import { PLATFORM_IDS } from "@/lib/cc/platforms";
 
@@ -29,6 +30,7 @@ import { HourHeatPanel } from "./hour-heat-panel";
 import { KeywordsSection } from "./keywords-section";
 import { LearningsPanel } from "./learnings-panel";
 import { PlatformTable } from "./platform-table";
+import { TargetTable } from "./target-table";
 
 const MIN_OWN_POSTS = 10;
 const ENGAGEMENT_FIELDS = ["likes", "comments", "shares", "saves"] as const;
@@ -202,6 +204,16 @@ export default async function InsightsPage() {
           minPosts={MIN_OWN_POSTS}
         />
       </div>
+      <TargetTable
+        rows={getTargetStats({
+          posts: posts.map((post) => ({
+            ...post,
+            target:
+              postRows.find((row) => row.id === post.id)?.target ?? undefined,
+          })),
+          metrics,
+        })}
+      />
       <div className="flex flex-wrap gap-x-5 gap-y-5">
         <AbPairsPanel pairs={pairs} />
         <LearningsPanel
