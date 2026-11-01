@@ -38,7 +38,15 @@ export function buildComposeUrl(options: {
       const query =
         options.link && options.body.trim() === ""
           ? buildQuery({ title, url: options.link })
-          : buildQuery({ title, type: "TEXT", text: options.body });
+          : buildQuery({
+              title,
+              type: "TEXT",
+              text:
+                options.link === undefined ||
+                options.body.includes(options.link)
+                  ? options.body
+                  : `${options.body}\n\n${options.link}`,
+            });
       return { kind: "prefilled", url: `${base}?${query}` };
     }
     default:

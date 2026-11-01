@@ -42,7 +42,7 @@ test("builds a Reddit text post when there is text, even with a link", () => {
       link: "https://paws.garden",
       target: "SideProject",
     }).url,
-    "https://www.reddit.com/r/SideProject/submit?title=t&type=TEXT&text=Hi"
+    "https://www.reddit.com/r/SideProject/submit?title=t&type=TEXT&text=Hi%0A%0Ahttps%3A%2F%2Fpaws.garden"
   );
 });
 

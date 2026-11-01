@@ -29,7 +29,7 @@ export async function POST(request: Request) {
       console.error("CC Telegram update failed", error);
       await sendTelegramMessage({
         chatId: update.message?.chat.id,
-        text: "Something went wrong and nothing changed for sure. Check /log before you send it again.",
+        text: "Something went wrong. Check /log before you send it again.",
       }).catch(() => undefined);
     });
   }

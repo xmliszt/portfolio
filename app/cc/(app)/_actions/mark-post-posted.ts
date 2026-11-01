@@ -6,7 +6,7 @@ import { requireCcOwner } from "@/lib/cc/auth/require-cc-owner";
 import { syncPostReminders } from "@/lib/cc/data/sync-post-reminders";
 import { createCcServiceClient } from "@/lib/cc/supabase/create-cc-service-client";
 
-/** Mark a post as posted now with its live `url` unless it already is, close its "post" reminder, and move its reply and log reminders to count from its `posted_at`. */
+/** Mark a post as posted now with its live `url` (a post already posted keeps its `posted_at` and `url`), close its "post" reminder, and move its reply and log reminders to count from its `posted_at`. */
 export async function markPostPosted(options: {
   postId: string;
   url: string | undefined;

@@ -31,6 +31,11 @@ export function CampaignPanel(props: CampaignPanelProps) {
       ? undefined
       : new Date(campaign.starts_at);
 
+  function toggleMode() {
+    setStatus(undefined);
+    setMode(mode === "new" ? "edit" : "new");
+  }
+
   function submit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const form = new FormData(event.currentTarget);
@@ -101,6 +106,7 @@ export function CampaignPanel(props: CampaignPanelProps) {
                 id="campaign-date"
                 name="date"
                 type="date"
+                required={mode === "new"}
                 defaultValue={
                   startsAt === undefined
                     ? ""
@@ -128,13 +134,7 @@ export function CampaignPanel(props: CampaignPanelProps) {
             {mode === "new" ? "CREATE CAMPAIGN" : "SAVE CAMPAIGN"}
           </CcButton>
           {props.campaign !== undefined && (
-            <CcButton
-              type="button"
-              onClick={() => {
-                setStatus(undefined);
-                setMode(mode === "new" ? "edit" : "new");
-              }}
-            >
+            <CcButton type="button" onClick={toggleMode}>
               {mode === "new" ? "CANCEL" : "+ NEW CAMPAIGN"}
             </CcButton>
           )}

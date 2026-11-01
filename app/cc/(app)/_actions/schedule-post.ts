@@ -6,77 +6,32 @@ import { requireCcOwner } from "@/lib/cc/auth/require-cc-owner";
 import { syncPostReminders } from "@/lib/cc/data/sync-post-reminders";
 import { createCcServiceClient } from "@/lib/cc/supabase/create-cc-service-client";
 
-/** Move an unposted post to `scheduledAt` with status "scheduled", move its unposted replies and comments by the same amount, resync their reminders, and return the moved post. */
+/** Move an unposted post to `scheduledAt` with status "scheduled" and its unposted replies and comments by the same amount in one database call, resync their reminders, and return the moved post. */
 export async function schedulePost(options: {
   postId: string;
   scheduledAt: string;
 }) {
   await requireCcOwner();
   const supabase = createCcServiceClient();
-  const { data: post, error } = await supabase
-    .from("posts")
-    .select("*")
-    .eq("id", options.postId)
-    .single();
+  const { data: moved, error } = await supabase.rpc("reschedule_post", {
+    p_post_id: options.postId,
+    p_scheduled_at: new Date(options.scheduledAt).toISOString(),
+  });
   if (error) throw error;
-  if (post.status === "posted") {
-    throw new Error("A posted post cannot be rescheduled");
-  }
-
-  const { data: children, error: childrenError } = await supabase
-    .from("posts")
-    .select("*")
-    .eq("parent_post_id", post.id)
-    .in("kind", ["reply", "comment"])
-    .neq("status", "posted");
-  if (childrenError) throw childrenError;
-
-  const nextTime = new Date(options.scheduledAt);
-  const shiftMs =
-    post.scheduled_at === null
-      ? 0
-      : nextTime.getTime() - new Date(post.scheduled_at).getTime();
-  const now = new Date().toISOString();
-  async function move(options: { id: string; scheduledAt: string }) {
-    const { data, error: updateError } = await supabase
-      .from("posts")
-      .update({
-        scheduled_at: options.scheduledAt,
-        status: "scheduled",
-        updated_at: now,
-      })
-      .eq("id", options.id)
-      .neq("status", "posted")
-      .select("*")
-      .single();
-    if (updateError) throw updateError;
-    await syncPostReminders({
-      postId: data.id,
-      status: data.status,
-      kind: data.kind,
-      scheduledAt: data.scheduled_at,
-      postedAt: data.posted_at,
-    });
-    return data;
-  }
-
-  // Children move before the parent so a failed run can be retried with the same shift.
   await Promise.all(
-    children.map((child) =>
-      move({
-        id: child.id,
-        scheduledAt: new Date(
-          child.scheduled_at === null
-            ? nextTime.getTime()
-            : new Date(child.scheduled_at).getTime() + shiftMs
-        ).toISOString(),
+    moved.map((row) =>
+      syncPostReminders({
+        postId: row.id,
+        status: row.status,
+        kind: row.kind,
+        scheduledAt: row.scheduled_at,
+        postedAt: row.posted_at,
       })
     )
   );
-  const moved = await move({
-    id: post.id,
-    scheduledAt: nextTime.toISOString(),
-  });
   revalidatePath("/cc", "layout");
-  return moved;
+  const post = moved.find((row) => row.id === options.postId);
+  if (post === undefined)
+    throw new Error("The rescheduled post was not returned");
+  return post;
 }

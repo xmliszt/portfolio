@@ -8,11 +8,12 @@ import { createCcServiceClient } from "@/lib/cc/supabase/create-cc-service-clien
 
 import { buildReminderMessage } from "./build-reminder-message";
 import { sendTelegramMessage } from "./send-telegram-message";
+import { TelegramSendError } from "./telegram-send-error";
 
 const BATCH_SIZE = 10;
 const STALE_CLAIM_MS = 5 * 60_000;
 
-/** Claim up to `BATCH_SIZE` due reminders that are unsent, or were claimed over 5 minutes ago without a `telegram_message_id`, by stamping `sent_at`; send each one, store its `telegram_message_id`, close "repost" ones, and release a reminder whose send failed so the next run retries it; return how many were sent. */
+/** Claim up to `BATCH_SIZE` due reminders that are unsent, or were claimed over 5 minutes ago without a `telegram_message_id`, by stamping `sent_at`; send each one, store its `telegram_message_id`, close "repost" ones, release a reminder whose send failed for a passing reason so the next run retries it, and close one Telegram rejected; return how many were sent. */
 export async function sendDueReminders(options: { now: Date }) {
   const supabase = createCcServiceClient();
   const staleBefore = new Date(
@@ -28,6 +29,7 @@ export async function sendDueReminders(options: { now: Date }) {
     .order("fire_at", { ascending: true })
     .limit(BATCH_SIZE);
   if (error) throw error;
+  if (reminders.length === 0) return { sent: 0 };
   const claimedAt = options.now.toISOString();
   const { data: claimed, error: claimError } = await supabase
     .from("reminders")
@@ -125,9 +127,14 @@ export async function sendDueReminders(options: { now: Date }) {
         const messageId = await sendTelegramMessage(message).catch(
           async (sendError: unknown) => {
             console.error("CC reminder send failed", reminder.id, sendError);
+            const isPermanent =
+              sendError instanceof TelegramSendError &&
+              sendError.status >= 400 &&
+              sendError.status < 500 &&
+              sendError.status !== 429;
             const { error: releaseError } = await supabase
               .from("reminders")
-              .update({ sent_at: null })
+              .update(isPermanent ? { done_at: claimedAt } : { sent_at: null })
               .eq("id", reminder.id);
             if (releaseError) throw releaseError;
             return undefined;
@@ -136,10 +143,11 @@ export async function sendDueReminders(options: { now: Date }) {
         if (messageId === undefined) return { id: reminder.id, isSent: false };
         const { error: updateError } = await supabase
           .from("reminders")
-          .update({
-            telegram_message_id: messageId,
-            done_at: reminder.kind === "repost" ? claimedAt : null,
-          })
+          .update(
+            reminder.kind === "repost"
+              ? { telegram_message_id: messageId, done_at: claimedAt }
+              : { telegram_message_id: messageId }
+          )
           .eq("id", reminder.id);
         if (updateError) throw updateError;
         return { id: reminder.id, isSent: true };

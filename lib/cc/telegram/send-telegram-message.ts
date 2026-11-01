@@ -1,5 +1,7 @@
 import "server-only";
 
+import { TelegramSendError } from "./telegram-send-error";
+
 type InlineButton = { text: string; url: string };
 
 /** Send a plain-text message through the bot to `chatId` (the owner's chat by default) and return its `message_id`. */
@@ -35,7 +37,10 @@ export async function sendTelegramMessage(options: {
     result?: { message_id: number };
   } = await response.json();
   if (!payload.ok || payload.result === undefined) {
-    throw new Error(`Telegram sendMessage failed: ${payload.description}`);
+    throw new TelegramSendError({
+      status: response.status,
+      description: payload.description,
+    });
   }
   return payload.result.message_id;
 }

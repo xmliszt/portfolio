@@ -19,6 +19,9 @@ export async function saveCampaign(options: {
   await requireCcOwner();
   const fields = { ...options.fields, name: options.fields.name.trim() };
   if (fields.name === "") throw new Error("A campaign needs a name");
+  if (options.campaignId === undefined && fields.starts_at === null) {
+    throw new Error("A new campaign needs a start date");
+  }
   const supabase = createCcServiceClient();
   const { data, error } = await (
     options.campaignId === undefined

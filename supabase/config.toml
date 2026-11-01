@@ -86,6 +86,7 @@ schema_paths = [
   "./schemas/command_center/post_metrics.sql",
   "./schemas/command_center/reminders.sql",
   "./schemas/command_center/notes.sql",
+  "./schemas/command_center/reschedule_post.sql",
 ]
 
 [db.seed]

@@ -73,22 +73,13 @@ export async function saveMetricEntry(options: {
       (suggestion) => suggestion.post.id === post.id
     );
   if (isRepostCandidate) {
-    const { data: existing, error: existingError } = await supabase
+    const { error: repostError } = await supabase
       .from("reminders")
-      .select("id")
-      .eq("post_id", post.id)
-      .eq("kind", "repost")
-      .maybeSingle();
-    if (existingError) throw existingError;
-    if (existing === null) {
-      const { error: repostError } = await supabase.from("reminders").insert({
-        post_id: post.id,
-        kind: "repost",
-        checkpoint: "24h",
-        fire_at: now,
-      });
-      if (repostError) throw repostError;
-    }
+      .upsert(
+        { post_id: post.id, kind: "repost", checkpoint: "24h", fire_at: now },
+        { onConflict: "post_id,kind,checkpoint", ignoreDuplicates: true }
+      );
+    if (repostError) throw repostError;
   }
   return { metric, ratio, platformId: post.platform };
 }

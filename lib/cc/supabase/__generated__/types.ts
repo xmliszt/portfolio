@@ -250,7 +250,36 @@ export type Database = {
       [_ in never]: never;
     };
     Functions: {
-      [_ in never]: never;
+      reschedule_post: {
+        Args: { p_post_id: string; p_scheduled_at: string };
+        Returns: {
+          assets: Json;
+          body: string;
+          campaign_id: string;
+          created_at: string;
+          hashtags: string[];
+          id: string;
+          kind: string;
+          link: string | null;
+          parent_post_id: string | null;
+          platform: string;
+          posted_at: string | null;
+          scheduled_at: string | null;
+          status: string;
+          target: string | null;
+          title: string | null;
+          updated_at: string;
+          url: string | null;
+          variant: string;
+          variant_group: string | null;
+        }[];
+        SetofOptions: {
+          from: "*";
+          to: "posts";
+          isOneToOne: false;
+          isSetofReturn: true;
+        };
+      };
     };
     Enums: {
       [_ in never]: never;
