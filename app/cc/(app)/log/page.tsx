@@ -2,6 +2,7 @@ import Link from "next/link";
 
 import { PageHeader } from "@/app/cc/_ui/page-header";
 import { Panel } from "@/app/cc/_ui/panel";
+import { requireCcOwner } from "@/lib/cc/auth/require-cc-owner";
 import { getCurrentCampaign } from "@/lib/cc/data/get-current-campaign";
 import { listCampaignPosts } from "@/lib/cc/data/list-campaign-posts";
 import { listDueReminders } from "@/lib/cc/data/list-due-reminders";
@@ -23,6 +24,7 @@ import { TelegramReplyMock } from "./telegram-reply-mock";
 const CHECKPOINTS = ["1h", "24h", "7d"] as const;
 
 export default async function LogPage() {
+  await requireCcOwner();
   const now = new Date();
   const campaign = await getCurrentCampaign();
   const posts =

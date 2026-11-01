@@ -24,6 +24,8 @@ export async function POST(request: Request) {
       messageId: update.message.message_id,
       text: update.message.text,
       replyToMessageId: update.message.reply_to_message?.message_id,
+    }).catch((error: unknown) => {
+      console.error("CC Telegram update failed", error);
     });
   }
   return Response.json({ ok: true });

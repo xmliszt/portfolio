@@ -16,7 +16,8 @@ export function toStatRows(options: {
       {
         id: post.id,
         platform: post.platform,
-        postedAt: post.posted_at === null ? undefined : new Date(post.posted_at),
+        postedAt:
+          post.posted_at === null ? undefined : new Date(post.posted_at),
         hashtags: post.hashtags,
         body: post.body,
         variant: post.variant === "chatgpt" ? "chatgpt" : "mine",

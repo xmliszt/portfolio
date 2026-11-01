@@ -53,9 +53,17 @@ export async function handleTelegramMessage(options: {
           .eq("kind", "log")
           .maybeSingle();
   if (error) throw error;
-  const checkpoint = CHECKPOINTS.find((value) => value === reminder?.checkpoint);
-  if (reminder === null || checkpoint === undefined || !isPlatformId(reminder.post.platform)) {
-    await answer("Reply to a “Log numbers” message with one line of numbers, or send undo.");
+  const checkpoint = CHECKPOINTS.find(
+    (value) => value === reminder?.checkpoint
+  );
+  if (
+    reminder === null ||
+    checkpoint === undefined ||
+    !isPlatformId(reminder.post.platform)
+  ) {
+    await answer(
+      "Reply to a “Log numbers” message with one line of numbers, or send undo."
+    );
     return;
   }
 
@@ -63,7 +71,9 @@ export async function handleTelegramMessage(options: {
   const parsed = parseMetricLine({ line: text, fields: platform.metrics });
   switch (parsed.kind) {
     case "error":
-      await answer(`Couldn't read that: ${parsed.reason}\nOrder: ${platform.metrics.join(" ")}`);
+      await answer(
+        `Couldn't read that: ${parsed.reason}\nOrder: ${platform.metrics.join(" ")}`
+      );
       return;
     case "undo":
       return;

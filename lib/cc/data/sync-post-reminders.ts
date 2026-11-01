@@ -3,7 +3,7 @@ import "server-only";
 import { planPostReminders } from "@/lib/cc/plan-post-reminders";
 import { createCcServiceClient } from "@/lib/cc/supabase/create-cc-service-client";
 
-/** Bring a post's unsent reminders in line with its schedule: delete them for drafts and skipped posts, otherwise upsert the planned ones without touching reminders already sent. */
+/** Bring a post's reminders in line with its schedule: for drafts and skipped posts delete the unsent ones and close the sent ones; otherwise replace the "post" reminder while it is unposted and upsert the other planned ones without touching those already sent. */
 export async function syncPostReminders(options: {
   postId: string;
   status: string;
@@ -17,14 +17,30 @@ export async function syncPostReminders(options: {
     options.scheduledAt !== null &&
     (options.status === "scheduled" || options.status === "posted");
 
-  const { error: deleteError } = await supabase
-    .from("reminders")
-    .delete()
-    .eq("post_id", options.postId)
-    .is("sent_at", null)
-    .in("kind", isTracked ? ["post"] : ["post", "reply", "log"]);
-  if (deleteError) throw deleteError;
-  if (!isTracked || options.scheduledAt === null) return;
+  if (!isTracked || options.scheduledAt === null) {
+    const { error: deleteError } = await supabase
+      .from("reminders")
+      .delete()
+      .eq("post_id", options.postId)
+      .is("sent_at", null);
+    if (deleteError) throw deleteError;
+    const { error: closeError } = await supabase
+      .from("reminders")
+      .update({ done_at: new Date().toISOString() })
+      .eq("post_id", options.postId)
+      .is("done_at", null);
+    if (closeError) throw closeError;
+    return;
+  }
+
+  if (options.postedAt === null) {
+    const { error: deleteError } = await supabase
+      .from("reminders")
+      .delete()
+      .eq("post_id", options.postId)
+      .eq("kind", "post");
+    if (deleteError) throw deleteError;
+  }
 
   const planned = planPostReminders({
     scheduledAt: new Date(options.scheduledAt),

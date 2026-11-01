@@ -11,6 +11,7 @@ import { schedulePost } from "@/app/cc/(app)/_actions/schedule-post";
 import { skipPost } from "@/app/cc/(app)/_actions/skip-post";
 import type { PlatformId } from "@/lib/cc/platforms";
 import { sgtToUtc } from "@/lib/cc/sgt-to-utc";
+import { cn } from "@/lib/utils";
 
 type PostEditorProps = {
   post: {
@@ -29,7 +30,9 @@ export function PostEditor(props: PostEditorProps) {
   const post = props.post;
   const [date, setDate] = useState(post.date);
   const [time, setTime] = useState(post.time);
-  const [message, setMessage] = useState<string | undefined>(undefined);
+  const [message, setMessage] = useState<
+    { kind: "done" | "error"; text: string } | undefined
+  >(undefined);
   const [isPending, startTransition] = useTransition();
   const isPosted = post.status === "posted";
 
@@ -38,9 +41,9 @@ export function PostEditor(props: PostEditorProps) {
     startTransition(async () => {
       try {
         await options.action();
-        setMessage(options.done);
+        setMessage({ kind: "done", text: options.done });
       } catch {
-        setMessage("Could not save. Try again.");
+        setMessage({ kind: "error", text: "Could not save. Try again." });
       }
     });
   }
@@ -138,8 +141,14 @@ export function PostEditor(props: PostEditorProps) {
         </span>
       )}
       {message !== undefined && (
-        <span role="status" className="text-cc-ok text-[12px]">
-          {message}
+        <span
+          role="status"
+          className={cn(
+            "text-[12px]",
+            message.kind === "done" ? "text-cc-ok" : "text-cc-warn"
+          )}
+        >
+          {message.text}
         </span>
       )}
     </Panel>

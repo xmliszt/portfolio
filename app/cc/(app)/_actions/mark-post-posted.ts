@@ -23,6 +23,7 @@ export async function markPostPosted(options: {
       updated_at: now,
     })
     .eq("id", options.postId)
+    .neq("status", "posted")
     .select("*")
     .single();
   if (error) throw error;

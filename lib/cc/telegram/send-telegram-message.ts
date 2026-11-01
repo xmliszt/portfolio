@@ -29,8 +29,11 @@ export async function sendTelegramMessage(options: {
       }),
     }
   );
-  const payload: { ok: boolean; description?: string; result?: { message_id: number } } =
-    await response.json();
+  const payload: {
+    ok: boolean;
+    description?: string;
+    result?: { message_id: number };
+  } = await response.json();
   if (!payload.ok || payload.result === undefined) {
     throw new Error(`Telegram sendMessage failed: ${payload.description}`);
   }

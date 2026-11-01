@@ -18,10 +18,7 @@ export async function proxy(request: NextRequest) {
     case "rewrite": {
       const url = request.nextUrl.clone();
       url.pathname = ccResolution.pathname;
-      return refreshCcSession({
-        request,
-        response: NextResponse.rewrite(url),
-      });
+      return refreshCcSession({ request, url });
     }
     case "redirect":
       return NextResponse.redirect(ccResolution.url, 308);

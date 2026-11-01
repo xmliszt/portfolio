@@ -7,6 +7,7 @@ import uniq from "lodash/uniq.js";
 import { PageHeader } from "@/app/cc/_ui/page-header";
 import { Panel } from "@/app/cc/_ui/panel";
 import { getPostLabel } from "@/app/cc/(app)/log/get-post-label";
+import { requireCcOwner } from "@/lib/cc/auth/require-cc-owner";
 import { getCurrentCampaign } from "@/lib/cc/data/get-current-campaign";
 import { listCampaignNotes } from "@/lib/cc/data/list-campaign-notes";
 import { listCampaignPosts } from "@/lib/cc/data/list-campaign-posts";
@@ -32,6 +33,7 @@ const MIN_OWN_POSTS = 10;
 const ENGAGEMENT_FIELDS = ["likes", "comments", "shares", "saves"] as const;
 
 export default async function InsightsPage() {
+  await requireCcOwner();
   const campaign = await getCurrentCampaign();
   if (campaign === undefined) {
     return <PageHeader eyebrow="NO CAMPAIGN" title="Insights · nothing yet" />;

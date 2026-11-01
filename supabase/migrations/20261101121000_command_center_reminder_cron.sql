@@ -1,7 +1,6 @@
 create extension if not exists "pg_cron";
 create extension if not exists "pg_net";
 
--- The bearer token lives in Vault as `cc_cron_secret` and must match `CC_CRON_SECRET` in Vercel.
 select cron.schedule(
   'command-center-reminders',
   '* * * * *',

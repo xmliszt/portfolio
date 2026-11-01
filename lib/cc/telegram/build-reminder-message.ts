@@ -1,5 +1,9 @@
 import { CC_ORIGIN } from "@/lib/cc/cc-hosts";
-import { type MetricField, type PlatformId,PLATFORMS } from "@/lib/cc/platforms";
+import {
+  type MetricField,
+  type PlatformId,
+  PLATFORMS,
+} from "@/lib/cc/platforms";
 
 type ReminderPost = {
   id: string;
@@ -22,11 +26,15 @@ type ReminderMessageInput =
   | { kind: "repost"; post: ReminderPost; ratio: number };
 
 const PREVIEW_LENGTH = 280;
+const MAX_BUTTON_URL_LENGTH = 2000;
 
 function describePost(post: ReminderPost) {
   const platform = PLATFORMS[post.platformId].label;
   const where = post.target === null ? platform : `${platform} ${post.target}`;
-  const name = post.title ?? post.body.split("\n").find((line) => line.trim() !== "") ?? "";
+  const name =
+    post.title ??
+    post.body.split("\n").find((line) => line.trim() !== "") ??
+    "";
   return { where, name: name.slice(0, 80) };
 }
 
@@ -49,7 +57,13 @@ export function buildReminderMessage(input: ReminderMessageInput) {
         ].join("\n"),
         buttons: [
           { text: "Copy in composer", url: composerUrl },
-          { text: `Open ${PLATFORMS[input.post.platformId].label}`, url: input.composeUrl },
+          {
+            text: `Open ${PLATFORMS[input.post.platformId].label}`,
+            url:
+              input.composeUrl.length > MAX_BUTTON_URL_LENGTH
+                ? PLATFORMS[input.post.platformId].composeUrl
+                : input.composeUrl,
+          },
         ],
       };
     }
@@ -57,7 +71,9 @@ export function buildReminderMessage(input: ReminderMessageInput) {
       return {
         text: `💬 Reply to comments · ${where}\n${name}\nThe first 30–60 minutes matter most.`,
         buttons:
-          input.post.url === null ? [] : [{ text: "Open the post", url: input.post.url }],
+          input.post.url === null
+            ? []
+            : [{ text: "Open the post", url: input.post.url }],
       };
     case "log": {
       const fields = PLATFORMS[input.post.platformId].metrics;
