@@ -1,9 +1,11 @@
 import "server-only";
 
 import { buildComposeUrl } from "@/lib/cc/build-compose-url";
+import { signAssetUrls } from "@/lib/cc/data/sign-asset-urls";
 import { formatSgt } from "@/lib/cc/format-sgt";
 import { getPostCopyText } from "@/lib/cc/get-post-copy-text";
 import { isPlatformId } from "@/lib/cc/is-platform-id";
+import { parsePostAssets } from "@/lib/cc/parse-post-assets";
 import { createCcServiceClient } from "@/lib/cc/supabase/create-cc-service-client";
 
 import { buildReminderMessage } from "./build-reminder-message";
@@ -12,6 +14,7 @@ import { TelegramSendError } from "./telegram-send-error";
 
 const BATCH_SIZE = 10;
 const STALE_CLAIM_MS = 5 * 60_000;
+const MEDIA_LINK_EXPIRES_IN_S = 24 * 60 * 60;
 
 /** Claim up to `BATCH_SIZE` due reminders that are unsent, or were claimed over 5 minutes ago without a `telegram_message_id`, by stamping `sent_at`; send each one, store its `telegram_message_id`, close "repost" ones, release a reminder whose send failed for a passing reason so the next run retries it, and close one Telegram rejected; return how many were sent. */
 export async function sendDueReminders(options: { now: Date }) {
@@ -69,10 +72,24 @@ export async function sendDueReminders(options: { now: Date }) {
       };
       const message = await (async () => {
         switch (reminder.kind) {
-          case "post":
+          case "post": {
+            const assets = parsePostAssets(post.assets).flatMap((asset) =>
+              asset.path === undefined
+                ? []
+                : [{ file: asset.file, path: asset.path }]
+            );
+            const urls = await signAssetUrls({
+              paths: assets.map((asset) => asset.path),
+              expiresInS: MEDIA_LINK_EXPIRES_IN_S,
+              isDownload: true,
+            });
             return buildReminderMessage({
               kind: "post",
               post: reminderPost,
+              media: assets.flatMap((asset) => {
+                const url = urls[asset.path];
+                return url === undefined ? [] : [{ file: asset.file, url }];
+              }),
               timeLabel: formatSgt({
                 date: new Date(post.scheduled_at ?? reminder.fire_at),
                 pattern: "HH:mm",
@@ -88,6 +105,7 @@ export async function sendDueReminders(options: { now: Date }) {
                 target: post.target ?? undefined,
               }).url,
             });
+          }
           case "reply":
             return buildReminderMessage({
               kind: "reply",

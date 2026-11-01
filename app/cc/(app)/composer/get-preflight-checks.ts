@@ -1,7 +1,7 @@
 import { countPostCharacters } from "@/lib/cc/count-post-characters";
 import { type PlatformId, PLATFORMS } from "@/lib/cc/platforms";
+import type { PostAsset } from "@/lib/cc/post-asset";
 
-import type { PostAsset } from "./draft-fields";
 import { getPostingWindowCheck } from "./get-posting-window-check";
 import { PLATFORM_PREFLIGHT } from "./platform-preflight";
 import type { PreflightCheck } from "./preflight-check";

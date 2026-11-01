@@ -16,6 +16,10 @@ export function toPostFields(draft: DraftFields) {
     link: toNullable(draft.link),
     assets: draft.assets
       .filter((asset) => asset.file.trim() !== "")
-      .map((asset) => ({ file: asset.file.trim(), alt: asset.alt.trim() })),
+      .map((asset) => ({
+        file: asset.file.trim(),
+        alt: asset.alt.trim(),
+        ...(asset.path === undefined ? {} : { path: asset.path }),
+      })),
   };
 }

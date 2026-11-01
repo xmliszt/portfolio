@@ -1,7 +1,7 @@
 import { buildChatgptPrompt } from "@/lib/cc/build-chatgpt-prompt";
 import { type PlatformId, PLATFORMS } from "@/lib/cc/platforms";
+import type { PostAsset } from "@/lib/cc/post-asset";
 
-import type { PostAsset } from "./draft-fields";
 import { PLATFORM_PREFLIGHT } from "./platform-preflight";
 
 function getLimitRule(options: {
