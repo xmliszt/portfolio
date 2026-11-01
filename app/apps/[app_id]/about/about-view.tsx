@@ -8,7 +8,7 @@ import { notFound } from "next/navigation";
 import { getAppById } from "@/app/apps/data";
 import { openGraph } from "@/app/metadata";
 import { MDXContent } from "@/components/mdx-content";
-import { DEFAULT_LOCALE, type Locale,SUPPORTED_LOCALES } from "@/lib/i18n";
+import { DEFAULT_LOCALE, type Locale, SUPPORTED_LOCALES } from "@/lib/i18n";
 
 import { abouts } from "#site/content";
 
@@ -45,13 +45,13 @@ export function buildAboutMetadata(options: {
 
   const title = `${document.title} | ${app.name}`;
   const description = document.description ?? app.description;
-  const url = `https://www.liyuxuan.dev${document.permalink}`;
+  const url = `https://liyuxuan.dev${document.permalink}`;
 
   const languages = Object.fromEntries(
     getAvailableAboutLocales(options.appId).flatMap((locale) => {
       const doc = getAboutDocument(options.appId, locale);
       if (doc == null) return [];
-      return [[doc.locale, `https://www.liyuxuan.dev${doc.permalink}`]];
+      return [[doc.locale, `https://liyuxuan.dev${doc.permalink}`]];
     })
   );
 
@@ -72,7 +72,7 @@ export function buildAboutMetadata(options: {
       canonical: url,
       languages: {
         ...languages,
-        "x-default": `https://www.liyuxuan.dev/apps/${options.appId}/about`,
+        "x-default": `https://liyuxuan.dev/apps/${options.appId}/about`,
       },
     },
     openGraph: {

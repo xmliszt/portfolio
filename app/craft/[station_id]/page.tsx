@@ -18,7 +18,7 @@ export async function generateMetadata(props: StationProps): Promise<Metadata> {
   return {
     title: "craft | 作坊",
     alternates: {
-      canonical: `https://www.liyuxuan.dev/craft/${params.station_id}`,
+      canonical: `https://liyuxuan.dev/craft/${params.station_id}`,
     },
     openGraph: station
       ? {

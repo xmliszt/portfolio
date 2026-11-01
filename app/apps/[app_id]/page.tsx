@@ -38,14 +38,14 @@ export async function generateMetadata(props: Props): Promise<Metadata> {
       startupImage: app.ogImages,
     },
     alternates: {
-      canonical: `https://www.liyuxuan.dev/apps/${params.app_id}`,
+      canonical: `https://liyuxuan.dev/apps/${params.app_id}`,
     },
     openGraph: {
       ...openGraph,
       title: app.name,
       description: app.description,
       images: app.ogImages,
-      url: `https://www.liyuxuan.dev/apps/${params.app_id}`,
+      url: `https://liyuxuan.dev/apps/${params.app_id}`,
       type: "website",
     },
     keywords: app.keywords,
@@ -59,7 +59,7 @@ export async function generateMetadata(props: Props): Promise<Metadata> {
       description: app.description,
       images: app.ogImagesTwitter,
       siteId: `1704579643-apps-${params.app_id}`,
-      site: `https://www.liyuxuan.dev/apps/${params.app_id}`,
+      site: `https://liyuxuan.dev/apps/${params.app_id}`,
     },
   };
 }

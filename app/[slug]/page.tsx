@@ -31,7 +31,7 @@ export async function generateMetadata(props: Props): Promise<Metadata> {
       description: page.ogDescription ?? openGraph?.description ?? "",
     },
     alternates: {
-      canonical: `https://www.liyuxuan.dev/${page.slug}`,
+      canonical: `https://liyuxuan.dev/${page.slug}`,
     },
   };
 }

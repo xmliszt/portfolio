@@ -1,15 +1,17 @@
-import { cookies } from "next/headers";
+"use server";
 
 import { createServiceRoleClient } from "@/lib/supabase/create-service-role-client";
+
+import { posts } from "#site/content";
 
 type IncrementPostViewOptions = {
   slug: string;
 };
 
 export async function incrementPostView(options: IncrementPostViewOptions) {
-  // Force revalidate the cache
-  await cookies();
-
+  if (!posts.some((post) => post.slug === options.slug)) {
+    throw new Error(`Unknown post: ${options.slug}`);
+  }
   const supabase = createServiceRoleClient();
   const fetchCurrentViewResponse = await supabase
     .from("post_views")

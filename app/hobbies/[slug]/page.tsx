@@ -11,6 +11,8 @@ import { HobbyItemSections } from "./hobby-item-sections";
 
 import { hobbies } from "#site/content";
 
+export const revalidate = 3600;
+
 type HobbyProps = {
   params: Promise<{ slug: string }>;
 };
@@ -28,7 +30,7 @@ export async function generateMetadata(props: HobbyProps): Promise<Metadata> {
   return {
     title: hobby.title + (hobby.subtitle ? ` | ${hobby.subtitle}` : ""),
     description: hobby.synopsis,
-    alternates: { canonical: `https://www.liyuxuan.dev/hobbies/${hobby.slug}` },
+    alternates: { canonical: `https://liyuxuan.dev/hobbies/${hobby.slug}` },
     openGraph: {
       ...openGraph,
       title: `Li Yuxuan | hobbies | ${hobby.title}`,
@@ -69,7 +71,9 @@ export default async function HobbyPage(props: HobbyProps) {
         <MDXContent code={hobby.body} />
       )}
 
-      {!shouldRenderStructuredItems && <TOCLoader toc={hobby.toc} showToc={true} />}
+      {!shouldRenderStructuredItems && (
+        <TOCLoader toc={hobby.toc} showToc={true} />
+      )}
     </article>
   );
 }
