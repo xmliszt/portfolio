@@ -3,7 +3,7 @@ import type { DerivedCat } from "@/lib/paws/sim/derive-cat";
 import { getPuddleRadius } from "@/lib/paws/sim/get-puddle-radius";
 import type { ToySnapshot, ToySpill } from "@/lib/paws/wire-types";
 
-import { drawCat } from "./draw-cat";
+import { drawCats } from "./draw-cats";
 import { flattenCat } from "./flatten-cat";
 import { getCoatPalette } from "./get-coat-palette";
 import type { AnyContext, DrawContext } from "./render-types";
@@ -59,12 +59,13 @@ export function drawPuddles(options: {
     const nearCats = cats.filter(
       (cat) => Math.hypot(cat.x - spill.x, cat.y - spill.y) < NEAR_PUDDLE
     );
-    for (const cat of nearCats)
-      drawCat({
-        draw,
+    drawCats({
+      draw,
+      cats: nearCats.map((cat) => ({
         cat: flattenCat({ cat, factor: CLEAR_HEIGHT_FACTOR }),
         palette: getCoatPalette({ look: cat.look, userId: cat.userId }),
-      });
+      })),
+    });
     options.drawToysOnGlass();
     g.strokeStyle = RIPPLE_INK;
     g.lineWidth = 1.5;

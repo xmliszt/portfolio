@@ -274,6 +274,10 @@ export const pl = {
   otherApps: {
     title: "Inne aplikacje",
   },
+  legal: {
+    privacy: "Prywatność",
+    terms: "Regulamin",
+  },
   note: {
     open: "Kilka słów ode mnie",
     title: "Kilka słów ode mnie",

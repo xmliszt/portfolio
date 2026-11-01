@@ -274,6 +274,10 @@ export const it = {
   otherApps: {
     title: "Altre app",
   },
+  legal: {
+    privacy: "Privacy",
+    terms: "Termini",
+  },
   note: {
     open: "Due parole da parte mia",
     title: "Due parole da parte mia",

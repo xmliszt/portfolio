@@ -273,6 +273,10 @@ export const nl = {
   otherApps: {
     title: "Andere apps",
   },
+  legal: {
+    privacy: "Privacy",
+    terms: "Voorwaarden",
+  },
   note: {
     open: "Een woordje van de maker",
     title: "Een woordje van de maker",

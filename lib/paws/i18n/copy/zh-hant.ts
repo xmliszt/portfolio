@@ -246,6 +246,10 @@ export const zhHant = {
   otherApps: {
     title: "其他應用程式",
   },
+  legal: {
+    privacy: "隱私",
+    terms: "條款",
+  },
   note: {
     open: "創作者的話",
     title: "創作者的話",

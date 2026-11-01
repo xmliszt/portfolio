@@ -272,6 +272,10 @@ export const ja = {
   otherApps: {
     title: "ほかのアプリ",
   },
+  legal: {
+    privacy: "プライバシー",
+    terms: "利用規約",
+  },
   note: {
     open: "作り手のことば",
     title: "作り手のことば",

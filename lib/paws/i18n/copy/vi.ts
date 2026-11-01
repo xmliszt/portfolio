@@ -270,6 +270,10 @@ export const vi = {
   otherApps: {
     title: "Ứng dụng khác",
   },
+  legal: {
+    privacy: "Quyền riêng tư",
+    terms: "Điều khoản",
+  },
   note: {
     open: "Đôi lời từ người làm ra Paws",
     title: "Đôi lời từ người làm ra Paws",

@@ -258,6 +258,10 @@ export const zhHans = {
   otherApps: {
     title: "其他应用",
   },
+  legal: {
+    privacy: "隐私",
+    terms: "条款",
+  },
   note: {
     open: "创作者的话",
     title: "创作者的话",

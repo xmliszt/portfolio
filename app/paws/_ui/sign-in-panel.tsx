@@ -3,6 +3,7 @@
 import { useEffect, useId, useRef, useState } from "react";
 
 import { usePawsCopy } from "@/app/paws/_i18n/use-paws-copy";
+import { PawsLegalLinks } from "@/app/paws/_legal/paws-legal-links";
 import { useUiSound } from "@/app/paws/_room/use-ui-sound";
 import type { PawsCopy } from "@/lib/paws/i18n/paws-copy";
 import { fillCopy } from "@/lib/paws/maker/fill-copy";
@@ -247,6 +248,7 @@ export function SignInPanel(props: SignInPanelProps) {
                   />
                 </div>
                 {notice}
+                <PawsLegalLinks />
               </form>
             );
           case "code":

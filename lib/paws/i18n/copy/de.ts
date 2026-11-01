@@ -278,6 +278,10 @@ export const de = {
   otherApps: {
     title: "Weitere Apps",
   },
+  legal: {
+    privacy: "Datenschutz",
+    terms: "Nutzungsbedingungen",
+  },
   note: {
     open: "Ein paar Worte von mir",
     title: "Ein paar Worte von mir",
