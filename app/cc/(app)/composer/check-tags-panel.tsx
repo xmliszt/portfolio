@@ -6,6 +6,9 @@ import { CcButton } from "@/app/cc/_ui/cc-button";
 import { Panel } from "@/app/cc/_ui/panel";
 import { checkThreadsTags } from "@/app/cc/(app)/_actions/check-threads-tags";
 import { formatSgt } from "@/lib/cc/format-sgt";
+import { rateTagUsage } from "@/lib/cc/rate-tag-usage";
+
+import { TagRatingBadge } from "./tag-rating-badge";
 
 type CheckTagsPanelProps = {
   hashtags: readonly string[];
@@ -114,7 +117,20 @@ export function CheckTagsPanel(props: CheckTagsPanelProps) {
                       className="flex justify-between gap-x-3 border-b border-dashed py-1.5 text-[12px]"
                     >
                       <span className="truncate">{result.term}</span>
-                      <span className="text-muted-foreground tabular-nums">
+                      <span className="text-muted-foreground flex items-center gap-x-2 tabular-nums">
+                        {result.kind === "found" && (
+                          <TagRatingBadge
+                            rating={rateTagUsage({
+                              platform: "threads",
+                              count: result.count,
+                              newestAt:
+                                result.newestAt === undefined
+                                  ? undefined
+                                  : new Date(result.newestAt),
+                              now: new Date(),
+                            })}
+                          />
+                        )}
                         {result.kind === "failed"
                           ? "search failed"
                           : result.count === 0
