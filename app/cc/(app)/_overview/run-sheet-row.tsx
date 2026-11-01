@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState, useTransition } from "react";
+import Link from "next/link";
 
 import { CcButton } from "@/app/cc/_ui/cc-button";
 import { PlatformChip } from "@/app/cc/_ui/platform-chip";
@@ -89,12 +90,16 @@ export function RunSheetRow(props: RunSheetRowProps) {
           {item.timeLabel}
         </span>
         <PlatformChip platformId={item.platformId} />
-        <span className="text-cc-text-2 min-w-[140px] flex-1 truncate">
+        <Link
+          href={`/composer?post=${item.id}`}
+          title="Open in composer"
+          className="text-cc-text-2 hover:text-primary min-h-11 min-w-[140px] flex-1 truncate leading-[44px] underline-offset-4 hover:underline"
+        >
           {item.kind !== "post" && (
             <span className="text-muted-foreground">↳ </span>
           )}
           {item.label}
-        </span>
+        </Link>
         <span
           className={cn(
             "w-[64px] text-[11px] tracking-[0.1em]",
