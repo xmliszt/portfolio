@@ -10,9 +10,9 @@ import { createCcServiceClient } from "@/lib/cc/supabase/create-cc-service-clien
 
 type ForkPostResult =
   | { kind: "ok"; postId: string }
-  | { kind: "error"; message: string };
+  | { kind: "error"; message: string; openPostId: string | undefined };
 
-/** Copy a post's text, hashtags, link, title and uploaded media into a new post on `platformId` (a repost when the source is posted on the same platform), scheduled at `scheduledAt` or saved as a draft without it, and return the new post's id. */
+/** Save the copy of `postId` on `platformId` that `buildForkPost` returns, as a new row or over a skipped repost, scheduled at `scheduledAt` or as a draft without it, and return its id, or the error with the post to open instead. */
 export async function forkPost(options: {
   postId: string;
   platformId: PlatformId;
@@ -26,55 +26,65 @@ export async function forkPost(options: {
     .eq("id", options.postId)
     .single();
   if (error) throw error;
-  const { count, error: countError } = await supabase
+  const { data: existingRepost, error: repostError } = await supabase
     .from("posts")
-    .select("id", { count: "exact", head: true })
+    .select("id, status")
     .eq("parent_post_id", source.id)
-    .eq("kind", "repost");
-  if (countError) throw countError;
+    .eq("kind", "repost")
+    .maybeSingle();
+  if (repostError) throw repostError;
   const fork = buildForkPost({
     source,
     platformId: options.platformId,
-    hasRepost: (count ?? 0) > 0,
+    existingRepost: existingRepost ?? undefined,
   });
   if (fork.kind === "error") return fork;
 
-  const { data: created, error: insertError } = await supabase
-    .from("posts")
-    .insert({ ...fork.fields, status: "draft", variant: "mine" })
+  const now = new Date().toISOString();
+  const row = {
+    ...fork.fields,
+    variant: "mine",
+    status: options.scheduledAt === undefined ? "draft" : "scheduled",
+    scheduled_at:
+      options.scheduledAt === undefined
+        ? null
+        : new Date(options.scheduledAt).toISOString(),
+    scheduled_by: "user",
+    posted_at: null,
+    url: null,
+    auto_publish: false,
+    publish_claimed_at: null,
+    publish_error: null,
+    platform_post_id: null,
+    updated_at: now,
+  };
+  const { data: saved, error: saveError } = await (
+    fork.kind === "revive"
+      ? supabase
+          .from("posts")
+          .update(row)
+          .eq("id", fork.repostId)
+          .eq("status", "skipped")
+      : supabase.from("posts").insert(row)
+  )
     .select("*")
-    .single();
-  if (insertError?.code === "23505") {
+    .maybeSingle();
+  if (saveError !== null && saveError.code !== "23505") throw saveError;
+  if (saved === null) {
     return {
       kind: "error",
-      message:
-        "This post already has a repost. Open that repost and fork it instead.",
+      message: "This post already has a repost. Reload and open that one.",
+      openPostId: undefined,
     };
   }
-  if (insertError) throw insertError;
 
-  if (options.scheduledAt !== undefined) {
-    const { data: moved, error: moveError } = await supabase.rpc(
-      "reschedule_post",
-      {
-        p_post_id: created.id,
-        p_scheduled_at: new Date(options.scheduledAt).toISOString(),
-        p_scheduled_by: "user",
-      }
-    );
-    if (moveError) throw moveError;
-    await Promise.all(
-      moved.map((row) =>
-        syncPostReminders({
-          postId: row.id,
-          status: row.status,
-          kind: row.kind,
-          scheduledAt: row.scheduled_at,
-          postedAt: row.posted_at,
-        })
-      )
-    );
-  }
+  await syncPostReminders({
+    postId: saved.id,
+    status: saved.status,
+    kind: saved.kind,
+    scheduledAt: saved.scheduled_at,
+    postedAt: saved.posted_at,
+  });
   revalidatePath("/cc", "layout");
-  return { kind: "ok", postId: created.id };
+  return { kind: "ok", postId: saved.id };
 }

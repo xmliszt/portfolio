@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useTransition } from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 
 import { CcButton } from "@/app/cc/_ui/cc-button";
@@ -14,6 +15,7 @@ import { sgtToUtc } from "@/lib/cc/sgt-to-utc";
 type ForkPostControlProps = {
   post: PostRow;
   platformId: PlatformId;
+  dirty: boolean;
 };
 
 export function ForkPostControl(props: ForkPostControlProps) {
@@ -22,7 +24,9 @@ export function ForkPostControl(props: ForkPostControlProps) {
   const [platformId, setPlatformId] = useState<PlatformId>(props.platformId);
   const [date, setDate] = useState("");
   const [time, setTime] = useState("");
-  const [error, setError] = useState<string | undefined>(undefined);
+  const [error, setError] = useState<
+    { message: string; openPostId: string | undefined } | undefined
+  >(undefined);
   const [isPending, startTransition] = useTransition();
   const isRepost =
     platformId === props.platformId && props.post.status === "posted";
@@ -34,23 +38,31 @@ export function ForkPostControl(props: ForkPostControlProps) {
   function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setError(undefined);
+    if ((date === "") !== (time === "")) {
+      setError({
+        message: "Set both date and time, or neither.",
+        openPostId: undefined,
+      });
+      return;
+    }
     startTransition(async () => {
       try {
         const result = await forkPost({
           postId: props.post.id,
           platformId,
           scheduledAt:
-            date === "" || time === ""
-              ? undefined
-              : sgtToUtc({ date, time }).toISOString(),
+            date === "" ? undefined : sgtToUtc({ date, time }).toISOString(),
         });
         if (result.kind === "error") {
-          setError(result.message);
+          setError(result);
           return;
         }
         router.push(`/composer?post=${result.postId}`);
       } catch {
-        setError("Could not fork. Try again.");
+        setError({
+          message: "Could not fork. Try again.",
+          openPostId: undefined,
+        });
       }
     });
   }
@@ -116,16 +128,29 @@ export function ForkPostControl(props: ForkPostControlProps) {
           type="submit"
           variant="primary"
           size="sm"
-          disabled={isPending}
+          disabled={isPending || props.dirty}
         >
           {isPending ? "FORKING…" : "CREATE FORK"}
         </CcButton>
         <CcButton type="button" size="sm" onClick={() => setIsOpen(false)}>
           CANCEL
         </CcButton>
+        {props.dirty && (
+          <span className="text-muted-foreground text-[11px]">
+            Save first: the fork copies the saved post.
+          </span>
+        )}
         {error !== undefined && (
           <span role="alert" className="text-cc-warn text-[12px]">
-            {error}
+            {error.message}{" "}
+            {error.openPostId !== undefined && (
+              <Link
+                href={`/composer?post=${error.openPostId}`}
+                className="text-primary"
+              >
+                Open it →
+              </Link>
+            )}
           </span>
         )}
       </div>

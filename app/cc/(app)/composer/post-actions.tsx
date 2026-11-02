@@ -94,7 +94,11 @@ export function PostActions(props: PostActionsProps) {
           url={props.post.url}
         />
       </div>
-      <ForkPostControl post={props.post} platformId={props.platformId} />
+      <ForkPostControl
+        post={props.post}
+        platformId={props.platformId}
+        dirty={props.dirty}
+      />
       {isAutoPublishPlatform(props.platformId) &&
         (props.post.kind === "post" || props.post.kind === "repost") &&
         (props.post.status === "draft" ||
