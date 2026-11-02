@@ -8,11 +8,11 @@ import { createBlueskySession } from "@/lib/cc/bluesky/create-bluesky-session";
 import { findOversizedBlueskyImage } from "@/lib/cc/bluesky/find-oversized-bluesky-image";
 import { getBlueskyCredentials } from "@/lib/cc/bluesky/get-bluesky-credentials";
 import { getIntegration } from "@/lib/cc/data/get-integration";
-import { getPostCopyText } from "@/lib/cc/get-post-copy-text";
+import { loadRepostOriginal } from "@/lib/cc/data/load-repost-original";
 import { getReplyAutoPublishError } from "@/lib/cc/get-reply-auto-publish-error";
+import { getRepostMode } from "@/lib/cc/get-repost-mode";
 import { isAutoPublishPlatform } from "@/lib/cc/is-auto-publish-platform";
-import { parsePostAssets } from "@/lib/cc/parse-post-assets";
-import { prepareAutoPublish } from "@/lib/cc/prepare-auto-publish";
+import { prepareRepostPublish } from "@/lib/cc/prepare-repost-publish";
 import { createCcServiceClient } from "@/lib/cc/supabase/create-cc-service-client";
 import { checkThreadsPublishing } from "@/lib/cc/threads/check-threads-publishing";
 import { getXUserCredentials } from "@/lib/cc/x/get-x-user-credentials";
@@ -133,13 +133,19 @@ export async function setAutoPublish(options: {
     }
     const setupError = await getSetupError(post.platform);
     if (setupError !== undefined) return { kind: "error", message: setupError };
-    const prepared = prepareAutoPublish({
+    const original =
+      getRepostMode(post) === "post"
+        ? undefined
+        : await loadRepostOriginal({ post });
+    if (original?.kind === "error") return original;
+    const preparedPublish = prepareRepostPublish({
+      post,
       platformId: post.platform,
-      text: getPostCopyText(post),
-      assets: parsePostAssets(post.assets),
-      target: post.target ?? undefined,
+      original: original?.original,
     });
-    if (prepared.kind === "error") return prepared;
+    if (preparedPublish.kind === "error") return preparedPublish;
+    const prepared = preparedPublish.prepared;
+
     const oversized =
       post.platform === "bluesky"
         ? await findOversizedBlueskyImage({ media: prepared.media })

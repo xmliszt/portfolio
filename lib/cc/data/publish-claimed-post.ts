@@ -2,26 +2,53 @@ import "server-only";
 
 import { getBlueskyCredentials } from "@/lib/cc/bluesky/get-bluesky-credentials";
 import { publishBlueskyPost } from "@/lib/cc/bluesky/publish-bluesky-post";
+import { repostBlueskyPost } from "@/lib/cc/bluesky/repost-bluesky-post";
 import { resolveBlueskyReplyRef } from "@/lib/cc/bluesky/resolve-bluesky-reply-ref";
 import { PARENT_NOT_AUTO_POSTED } from "@/lib/cc/get-auto-publish-state";
-import { getPostCopyText } from "@/lib/cc/get-post-copy-text";
+import { getRepostMode } from "@/lib/cc/get-repost-mode";
 import { isAutoPublishPlatform } from "@/lib/cc/is-auto-publish-platform";
-import { parsePostAssets } from "@/lib/cc/parse-post-assets";
-import { prepareAutoPublish } from "@/lib/cc/prepare-auto-publish";
+import { prepareRepostPublish } from "@/lib/cc/prepare-repost-publish";
 import type { PublishResult } from "@/lib/cc/publish-result";
 import { createCcServiceClient } from "@/lib/cc/supabase/create-cc-service-client";
 import { findThreadsMediaId } from "@/lib/cc/threads/find-threads-media-id";
 import { publishThreadsPost } from "@/lib/cc/threads/publish-threads-post";
+import { repostThreadsPost } from "@/lib/cc/threads/repost-threads-post";
 import { getXUserCredentials } from "@/lib/cc/x/get-x-user-credentials";
 import { parseXCommunityId } from "@/lib/cc/x/parse-x-community-id";
-import { parseXStatusId } from "@/lib/cc/x/parse-x-status-id";
 import { publishXPost } from "@/lib/cc/x/publish-x-post";
+import { repostXPost } from "@/lib/cc/x/repost-x-post";
+import { resolveXPostId } from "@/lib/cc/x/resolve-x-post-id";
 
 import type { PostRow } from "./cc-rows";
 import { getIntegration } from "./get-integration";
 import { loadReplyTarget } from "./load-reply-target";
+import { loadRepostOriginal } from "./load-repost-original";
 import { markPostLive } from "./mark-post-live";
 import { notifyPublishOutcome } from "./notify-publish-outcome";
+
+type Resolved<T> =
+  | { kind: "ok"; value: T }
+  | { kind: "error"; message: string };
+
+async function resolveThreadsMediaId(options: {
+  post: PostRow;
+  accessToken: string;
+}): Promise<Resolved<string>> {
+  if (options.post.platform_post_id !== null) {
+    return { kind: "ok", value: options.post.platform_post_id };
+  }
+  if (options.post.url === null) {
+    return {
+      kind: "error",
+      message: "CC could not find that Threads post. Paste its live link.",
+    };
+  }
+  const found = await findThreadsMediaId({
+    accessToken: options.accessToken,
+    permalink: options.post.url,
+  });
+  return found.kind === "ok" ? { kind: "ok", value: found.id } : found;
+}
 
 async function publishOnPlatform(options: {
   post: PostRow;
@@ -31,13 +58,18 @@ async function publishOnPlatform(options: {
   if (!isAutoPublishPlatform(post.platform)) {
     return { kind: "error", message: "CC cannot post on this platform." };
   }
-  const prepared = prepareAutoPublish({
+  const original =
+    getRepostMode(post) === "post"
+      ? undefined
+      : await loadRepostOriginal({ post });
+  if (original?.kind === "error") return original;
+  const preparedPublish = prepareRepostPublish({
+    post,
     platformId: post.platform,
-    text: getPostCopyText(post),
-    assets: parsePostAssets(post.assets),
-    target: post.target ?? undefined,
+    original: original?.original,
   });
-  if (prepared.kind === "error") return prepared;
+  if (preparedPublish.kind === "error") return preparedPublish;
+  const { plan, prepared } = preparedPublish;
   const replyTarget = await loadReplyTarget({ post });
   if (replyTarget.kind === "error") return replyTarget;
   const target = replyTarget.kind === "ok" ? replyTarget.target : undefined;
@@ -47,18 +79,13 @@ async function publishOnPlatform(options: {
       if (credentials === undefined) {
         return { kind: "error", message: "X posting is not set up in Vercel." };
       }
-      const replyToId =
-        target === undefined
-          ? undefined
-          : (target.platform_post_id ??
-            (target.url === null ? undefined : parseXStatusId(target.url)));
-      if (target !== undefined && replyToId === undefined) {
-        return {
-          kind: "error",
-          message:
-            "CC could not find the X post to reply to. Paste its live link.",
-        };
+      if (plan.kind === "repost") {
+        const originalId = resolveXPostId(plan.original);
+        if (originalId.kind === "error") return originalId;
+        return repostXPost({ credentials, postId: originalId.value });
       }
+      const replyTo = target === undefined ? undefined : resolveXPostId(target);
+      if (replyTo?.kind === "error") return replyTo;
       const communityId =
         target === undefined && post.target !== null
           ? parseXCommunityId(post.target)
@@ -78,7 +105,7 @@ async function publishOnPlatform(options: {
         credentials,
         text: prepared.text,
         media: prepared.media,
-        replyToId,
+        replyToId: replyTo?.value,
         communityId,
       });
     }
@@ -94,33 +121,36 @@ async function publishOnPlatform(options: {
           message: "Threads is not connected. Reconnect it in CC.",
         };
       }
-      const replyTo = await (async (): Promise<
-        | { kind: "ok"; id: string | undefined }
-        | { kind: "error"; message: string }
-      > => {
-        if (target === undefined) return { kind: "ok", id: undefined };
-        if (target.platform_post_id !== null) {
-          return { kind: "ok", id: target.platform_post_id };
-        }
-        if (target.url === null) {
-          return {
-            kind: "error",
-            message:
-              "CC could not find the Threads post to reply to. Paste its live link.",
-          };
-        }
-        return findThreadsMediaId({
-          accessToken: integration.access_token,
-          permalink: target.url,
+      const accessToken = integration.access_token;
+      if (plan.kind === "repost") {
+        const originalId = await resolveThreadsMediaId({
+          post: plan.original,
+          accessToken,
         });
-      })();
-      if (replyTo.kind === "error") return replyTo;
+        if (originalId.kind === "error") return originalId;
+        return repostThreadsPost({
+          accessToken,
+          mediaId: originalId.value,
+          permalink: plan.original.url ?? undefined,
+        });
+      }
+      const originalId =
+        plan.kind === "quote"
+          ? await resolveThreadsMediaId({ post: plan.original, accessToken })
+          : undefined;
+      if (originalId?.kind === "error") return originalId;
+      const replyTo =
+        target === undefined
+          ? undefined
+          : await resolveThreadsMediaId({ post: target, accessToken });
+      if (replyTo?.kind === "error") return replyTo;
       return publishThreadsPost({
-        accessToken: integration.access_token,
+        accessToken,
         text: prepared.text,
         media: prepared.media,
         topicTag: target === undefined ? prepared.topicTag : undefined,
-        replyToId: replyTo.id,
+        replyToId: replyTo?.value,
+        quotePostId: originalId?.value,
       });
     }
     case "bluesky": {
@@ -131,6 +161,26 @@ async function publishOnPlatform(options: {
           message: "Bluesky posting is not set up in Vercel.",
         };
       }
+      if (plan.kind === "repost") {
+        const originalRef = await resolveBlueskyReplyRef({
+          uri: plan.original.platform_post_id,
+          url: plan.original.url,
+        });
+        if (originalRef.kind === "error") return originalRef;
+        return repostBlueskyPost({
+          ...credentials,
+          subject: originalRef.ref.parent,
+          originalUrl: plan.original.url ?? undefined,
+        });
+      }
+      const originalRef =
+        plan.kind === "quote"
+          ? await resolveBlueskyReplyRef({
+              uri: plan.original.platform_post_id,
+              url: plan.original.url,
+            })
+          : undefined;
+      if (originalRef?.kind === "error") return originalRef;
       const replyTo =
         target === undefined
           ? undefined
@@ -144,6 +194,7 @@ async function publishOnPlatform(options: {
         text: prepared.text,
         media: prepared.media,
         replyTo: replyTo?.ref,
+        quote: originalRef?.ref.parent,
       });
     }
     default: {

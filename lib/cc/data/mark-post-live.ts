@@ -50,6 +50,7 @@ export async function markPostLive(options: {
     postId: post.id,
     status: post.status,
     kind: post.kind,
+    repostAs: post.repost_as,
     scheduledAt: post.scheduled_at,
     postedAt: post.posted_at,
   });

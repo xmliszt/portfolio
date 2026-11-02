@@ -5,7 +5,7 @@ import { PLATFORMS } from "./platforms";
 import type { PostAsset } from "./post-asset";
 import type { PublishMedia } from "./publish-media";
 
-type PreparedPost =
+export type PreparedPost =
   | {
       kind: "ok";
       text: string;

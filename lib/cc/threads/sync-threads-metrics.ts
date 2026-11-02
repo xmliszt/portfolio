@@ -79,6 +79,7 @@ export async function syncThreadsMetrics(options: { now: Date }) {
     )
     .eq("platform", "threads")
     .in("kind", ["post", "repost"])
+    .neq("repost_as", "repost")
     .eq("status", "posted")
     .or("url.not.is.null,platform_post_id.not.is.null");
   if (postsError) throw postsError;

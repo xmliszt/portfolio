@@ -146,13 +146,13 @@ Rescheduling a failed post clears the failure and turns auto-post off, so it has
 - CC skips a post more than 30 minutes late (for example, if the server was down) and marks it failed instead of posting it late.
 - A post on X with a link costs about $0.20 on the owner's X credits; without a link, about $0.015. Threads and Bluesky are free.
 
-**Replies and comments** (after the reply auto-posting update ships): each reply has its own auto-post control.
-- **AUTO-POST AFTER PARENT** needs the parent post to have auto-post on, or to be live already with the reply's time still ahead.
+**Replies and comments** (X, Threads, Bluesky): each reply has its own auto-post control.
+- **AUTO-POST AFTER PARENT** needs the parent post to have auto-post on, or to be live already with the reply at most 30 minutes past its time. If the parent's auto-post fails, its replies are marked failed, then re-armed automatically once the parent goes live through CC.
 - A reply goes out at the parent's actual posting time plus the planned gap.
 - Each reply answers the latest earlier reply that is live, so replies read as a thread.
 - If the parent was marked posted by hand without a time, the gap is 0 and the reply is due at once. Use **POST NOW VIA API** for it.
 
-**X community** (after the same update): put the community id, or its `x.com/i/communities/<id>` link, in the X post's community field.
+**X community:** put the community id, or its `x.com/i/communities/<id>` link, in the X post's community field.
 
 ### Forking (reuse a post)
 
@@ -184,6 +184,13 @@ Rescheduling a failed post clears the failure and turns auto-post off, so it has
 | TikTok | A new edit with a new hook in the first second | 14 days |
 | LinkedIn | Same idea with a new opening line | 60–90 days |
 | Reddit, Product Hunt, 朋友圈, YouTube | Never repost | — |
+
+**PUBLISH AS** (Composer, on an unposted repost on X, Threads or Bluesky) sets how the repost goes out:
+- **New post:** its own text, as a new post.
+- **Quote the original:** its text with the original embedded. On X the API quotes only on Enterprise, so CC adds the original's link to the text; X shows a quote card, and the link makes the post cost about $0.20.
+- **Plain repost:** reposts the original as it is. The text and media are not used, and no numbers are logged.
+
+Changing PUBLISH AS turns auto-post off; turn it on again to recheck. The original must be live.
 
 Follow-ups never introduce the product again. A daily rules job suggests reposts for posts that did well and sends them on Telegram.
 

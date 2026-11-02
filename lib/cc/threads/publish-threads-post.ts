@@ -75,13 +75,14 @@ function toMediaParams(options: { media: PublishMedia; url: string }) {
   };
 }
 
-/** Create the Threads container for `text` and `media` (a carousel for two or more files), as a reply to `replyToId` when set, wait until Threads has processed it, publish it, and return the new post's id and permalink, or the step that failed. */
+/** Create the Threads container for `text` and `media` (a carousel for two or more files), as a reply to `replyToId` or a quote of `quotePostId` when set, wait until Threads has processed it, publish it, and return the new post's id and permalink, or the step that failed. */
 export async function publishThreadsPost(options: {
   accessToken: string;
   text: string;
   media: readonly PublishMedia[];
   topicTag: string | undefined;
   replyToId: string | undefined;
+  quotePostId: string | undefined;
 }): Promise<PublishResult> {
   const deadlineMs = Date.now() + MAX_PROCESSING_MS;
   const urls = await signAssetUrls({
@@ -102,6 +103,9 @@ export async function publishThreadsPost(options: {
     ...(options.replyToId === undefined
       ? {}
       : { reply_to_id: options.replyToId }),
+    ...(options.quotePostId === undefined
+      ? {}
+      : { quote_post_id: options.quotePostId }),
   };
 
   const container = await (async (): Promise<

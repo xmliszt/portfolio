@@ -238,6 +238,7 @@ export type Database = {
           posted_at: string | null
           publish_claimed_at: string | null
           publish_error: string | null
+          repost_as: string
           scheduled_at: string | null
           scheduled_by: string
           status: string
@@ -265,6 +266,7 @@ export type Database = {
           posted_at?: string | null
           publish_claimed_at?: string | null
           publish_error?: string | null
+          repost_as?: string
           scheduled_at?: string | null
           scheduled_by?: string
           status?: string
@@ -292,6 +294,7 @@ export type Database = {
           posted_at?: string | null
           publish_claimed_at?: string | null
           publish_error?: string | null
+          repost_as?: string
           scheduled_at?: string | null
           scheduled_by?: string
           status?: string
@@ -403,6 +406,7 @@ export type Database = {
           posted_at: string | null
           publish_claimed_at: string | null
           publish_error: string | null
+          repost_as: string
           scheduled_at: string | null
           scheduled_by: string
           status: string
