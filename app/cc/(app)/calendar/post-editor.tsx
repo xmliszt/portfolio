@@ -5,6 +5,7 @@ import Link from "next/link";
 
 import { CcButton } from "@/app/cc/_ui/cc-button";
 import { CcField } from "@/app/cc/_ui/cc-field";
+import { DeletePostButton } from "@/app/cc/_ui/delete-post-button";
 import { Panel } from "@/app/cc/_ui/panel";
 import { PlatformChip } from "@/app/cc/_ui/platform-chip";
 import { schedulePost } from "@/app/cc/(app)/_actions/schedule-post";
@@ -90,9 +91,16 @@ export function PostEditor(props: PostEditorProps) {
         </span>
       </div>
       {isPosted ? (
-        <span className="text-muted-foreground">
-          Already posted; it stays where it went live.
-        </span>
+        <div className="flex flex-wrap items-center gap-x-3 gap-y-2">
+          <span className="text-muted-foreground">
+            Already posted; it stays where it went live.
+          </span>
+          <DeletePostButton
+            postId={post.id}
+            name={post.name}
+            afterHref={props.closeHref}
+          />
+        </div>
       ) : (
         <form
           onSubmit={reschedule}
@@ -131,6 +139,11 @@ export function PostEditor(props: PostEditorProps) {
               SKIP
             </CcButton>
           )}
+          <DeletePostButton
+            postId={post.id}
+            name={post.name}
+            afterHref={props.closeHref}
+          />
           <Link
             href={`/composer?post=${post.id}`}
             className="text-primary flex min-h-11 items-center text-[12px] tracking-[0.08em]"

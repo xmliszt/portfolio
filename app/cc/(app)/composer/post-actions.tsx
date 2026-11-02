@@ -3,8 +3,10 @@
 import { useState } from "react";
 
 import { CcButton } from "@/app/cc/_ui/cc-button";
+import { DeletePostButton } from "@/app/cc/_ui/delete-post-button";
 import { buildComposeUrl } from "@/lib/cc/build-compose-url";
 import type { PostRow } from "@/lib/cc/data/cc-rows";
+import { getPostName } from "@/lib/cc/get-post-name";
 import { isAutoPublishPlatform } from "@/lib/cc/is-auto-publish-platform";
 import { type PlatformId, PLATFORMS } from "@/lib/cc/platforms";
 import type { PostAsset } from "@/lib/cc/post-asset";
@@ -94,11 +96,19 @@ export function PostActions(props: PostActionsProps) {
           url={props.post.url}
         />
       </div>
-      <ForkPostControl
-        post={props.post}
-        platformId={props.platformId}
-        dirty={props.dirty}
-      />
+      <div className="flex flex-wrap items-start gap-x-2 gap-y-2">
+        <ForkPostControl
+          post={props.post}
+          platformId={props.platformId}
+          dirty={props.dirty}
+        />
+        <DeletePostButton
+          postId={props.post.id}
+          name={getPostName(props.post)}
+          afterHref="/composer"
+          size="sm"
+        />
+      </div>
       {isAutoPublishPlatform(props.platformId) &&
         (props.post.kind === "post" || props.post.kind === "repost") &&
         (props.post.status === "draft" ||
