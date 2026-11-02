@@ -6,7 +6,7 @@ All times in CC are Singapore time (SGT, UTC+8) unless a label says ET or PT.
 
 ## Ground rules for an agent
 
-1. **Save before anything else.** The Composer shows `● UNSAVED` while edits are pending. FORK POST, AUTO-POST and POST NOW VIA API are disabled until you press **SAVE ⌘S**. Auto-post and fork use the saved text, never the unsaved text.
+1. **Save before anything else.** The Composer shows `● UNSAVED` while edits are pending. CREATE FORK, AUTO-POST and POST NOW VIA API are disabled until you press **SAVE ⌘S**. Auto-post and fork use the saved text, never the unsaved text.
 2. **Never post the same content twice.** Each platform's repost rule is under "Reposting" below. Fork a post and change its first line instead of reusing text as is.
 3. **Do not upload media you cannot see.** Reuse media by forking a post that already has it.
 4. **Ask the owner before you delete a post, post now, or turn on auto-post for something they have not approved.** These actions publish or remove content.
@@ -68,11 +68,12 @@ For platforms without auto-post, the owner posts by hand: CC copies the text and
 ## OVERVIEW
 
 - **DUE NOW:** reminders that are due, the same ones Telegram sends. These are posts to publish, replies to answer and numbers to log.
-- **Run sheet:** each post with its time, a copy button, **Open in composer**, and **MARK POSTED + PASTE URL**.
-- **Campaign:** edit the name, link, start date (SGT) and notes, or create a new campaign.
-- **Schedule planner:** set MAX POSTS PER DAY and MIN GAP (MINUTES), then press **PLAN SCHEDULE**. It previews CURRENT → PROPOSED times; press **APPLY** to move the posts. Pinned platforms (Product Hunt, YouTube) never move.
+- **Run sheet:** today's posts, one row each: time, platform, name (click it to open the Composer), status, **COPY**, **OPEN ↗** and **MARK POSTED**. The open posts' buttons are highlighted.
+- **Setup** (collapsed at the bottom; open it with a click): the campaign details, the schedule planner and the integrations. It opens by itself when Threads needs reconnecting.
+- **Campaign** (in Setup): edit the name, link, start date (SGT) and notes, or create a new campaign.
+- **Schedule planner** (in Setup): set MAX POSTS PER DAY and MIN GAP (MINUTES), then press **PLAN SCHEDULE**. It previews CURRENT → PROPOSED times; press **APPLY** to move the posts. Pinned platforms (Product Hunt, YouTube) never move.
 - **VOICE CHECK · QUEUE:** flags text that breaks the owner's voice rules.
-- **Integrations:** shows what is connected.
+- **Integrations** (in Setup): shows what is connected.
   - Threads: the token, plus RECONNECT and DISCONNECT.
   - X posting: on or off.
   - Bluesky posting: on or off.
@@ -87,39 +88,55 @@ For platforms without auto-post, the owner posts by hand: CC copies the text and
   - **SKIP:** drops the post and its unposted replies.
   - **DELETE POST:** see "Deleting".
   - "Edit text in composer →".
-- The heat overlay picker shades the hours that worked best for one platform.
+- **HEAT OVERLAY** (a dropdown above the grid) shades the hours that worked best for one platform.
 
 ## COMPOSER
 
-The Composer edits one main post at a time, with its replies and comments under it. The tabs across the top list every main post in the campaign: platform, time, and ✓ once posted. A URL like `/composer?post=<id>` opens that post.
+The Composer edits one main post at a time, with its replies and comments under it. A URL like `/composer?post=<id>` opens that post.
+
+The page has three columns:
+
+1. **POSTS** (left): every main post in the campaign in time order, grouped by SGT day. Each row shows the time, the platform, a status (POSTED, AUTO, MANUAL, DRAFT, FAILED, SKIPPED) and the name. Click a row to open it.
+2. **The post** (middle): its fields, then its replies as a numbered thread, then the **action bar** pinned to the bottom.
+3. **Checks** (right): tabs for **PRE-FLIGHT**, **VOICE**, **CHATGPT** and, on X and Threads, **TAGS**. The PRE-FLIGHT tab shows how many checks need fixing.
+
+**The action bar** (bottom of the middle column) shows SAVED ✓ / ● UNSAVED and the scheduled time, then the actions:
+- **SAVE ⌘S**
+- **SCHEDULE ▾**: date and time
+- **COPY TEXT**
+- **OPEN … ↗** or **COPY + OPEN … ↗**
+- **MARK POSTED**
+- **MORE ▾**: fork and delete
+
+On X, Threads and Bluesky, a second row holds **PUBLISH AS** (on reposts) and the auto-post controls.
 
 ### Writing
 
-- **Fields:** TITLE (where the platform has one), the main text, HASHTAGS, LINK, the target field, PLANNER WAVE, and assets.
+- **Fields**, top to bottom: TITLE (where the platform has one), TEXT, HASHTAGS and LINK, the target field (subreddit, topic or X community) and PLANNER WAVE, then ASSETS.
 - The character counter turns red over the limit.
-- **PRE-FLIGHT** on the right lists computed checks (✓ or "Needs a look") and manual checks to tick.
-- **Check tags** (X and Threads) shows recent use of the hashtags.
-- **Critique in ChatGPT** opens ChatGPT with a prompt. Paste its version back, then save it as a `chatgpt` A/B variant with **SAVE · KEEP BOTH (A/B)**.
-- **SAVE ⌘S** saves every edited post on the page.
+- **PRE-FLIGHT** (Checks column) lists computed checks (✓ or "Needs a look") and manual checks to tick.
+- **TAGS** (Checks column, X and Threads) shows recent use of the hashtags.
+- **CHATGPT** (Checks column) opens ChatGPT with a prompt. Paste its version back, then save it as a `chatgpt` A/B variant with **SAVE · KEEP BOTH (A/B)**.
+- **SAVE ⌘S** (action bar) saves every edited post on the page.
 
 ### Media
 
-- Upload files in the assets editor and give each one alt text (COPY ALT copies it).
+- Upload files with **↑ UPLOAD FILES** and give each one alt text (COPY ALT copies it). Videos preview large enough to play with native controls. On a reply, media sits under **+ MEDIA**.
 - Auto-post needs uploaded files of these types: JPG, PNG, WebP, GIF, MP4, MOV.
   - **X:** up to 4 images, or 1 video or GIF on its own.
   - **Threads:** up to 20 images or videos (a carousel when there is more than one). No GIF.
   - **Bluesky:** up to 4 images of 2 MB each, or 1 MP4 on its own. No GIF or MOV.
-- To reuse a video without uploading it again, use **FORK POST**.
+- To reuse a video without uploading it again, fork the post (**MORE ▾ → CREATE FORK**).
 
 ### Posting by hand
 
-- **COPY TEXT**, then **OPEN X COMPOSE ↗** (prefilled) or **COPY + OPEN … ↗**.
-- Phone platforms show **POST FROM YOUR PHONE** and the list of assets.
-- After posting, press **MARK POSTED + PASTE URL**, paste the live link, and confirm. This starts the reply and log reminders from that moment.
+- **COPY TEXT**, then **OPEN … ↗** (prefilled) or **COPY + OPEN … ↗**, in the action bar.
+- Phone platforms show **POST FROM PHONE** and the list of assets.
+- After posting, press **MARK POSTED**, paste the live link, and confirm. This starts the reply and log reminders from that moment.
 
 ### Scheduling
 
-Any post that is not posted has **DATE (SGT)**, **TIME (SGT)** and a **SCHEDULE** or **RESCHEDULE** button. This works for drafts with no time too; they don't appear on the calendar until they have one. Replies move with the post.
+Any post that is not posted has **SCHEDULE ▾** in the action bar. It opens **DATE (SGT)**, **TIME (SGT)** and a **SCHEDULE** or **RESCHEDULE** button. This works for drafts with no time too; they don't appear on the calendar until they have one. Replies move with the post.
 
 ### Auto-posting (X, Threads, Bluesky)
 
@@ -156,7 +173,7 @@ Rescheduling a failed post clears the failure and turns auto-post off, so it has
 
 ### Forking (reuse a post)
 
-**FORK POST** opens a form with PLATFORM, DATE (SGT) and TIME (SGT). Leave both date and time empty to save a draft. Then press **CREATE FORK**.
+**MORE ▾** in the action bar opens the fork form: PLATFORM, DATE (SGT) and TIME (SGT). Leave both date and time empty to save a draft. Then press **CREATE FORK**.
 - The fork copies the saved text, hashtags, link, title and uploaded media, then opens the new post.
 - **Fork a posted post on the same platform:** the fork is saved as its **repost**.
 - **Fork onto another platform, or from an unposted post:** the fork is saved as a **new post**.
@@ -168,7 +185,7 @@ Rescheduling a failed post clears the failure and turns auto-post off, so it has
 
 ### Deleting
 
-**DELETE POST** is in the Composer and in EDIT SLOT, and asks for confirmation.
+**DELETE POST** is in the Composer (**MORE ▾**) and in EDIT SLOT, and asks for confirmation.
 - It removes the post from CC along with its ChatGPT version, replies, unposted reposts, reminders and logged numbers.
 - A live post stays up on the platform; delete it there separately.
 - It is refused while CC is auto-posting the post or one of its replies, and when a repost of it is live.
@@ -196,7 +213,7 @@ Follow-ups never introduce the product again. A daily rules job suggests reposts
 
 ## LOG NUMBERS
 
-- Each row is a post due for numbers at +1 h, +24 h or +7 d after it was marked posted.
+- **QUICK ENTRY** lists each post due for numbers at +1 h, +24 h or +7 d after it was marked posted. Below each row, **OR PASTE A LINE** takes all the numbers at once. **EXTRA ENTRY FOR** adds a row for any posted post. **REPLY ON TELEGRAM INSTEAD** (collapsed) shows the Telegram format.
 - Type the numbers in the platform's own fields and press Enter to save. Tab moves between fields.
 - The same numbers can be sent as one Telegram reply to a "📊 Log numbers" message, in the order the message lists, separated by spaces. Use `-` to skip one. `1.2k`, `1,240` and `1.2万` are accepted. Send `undo` to remove the last entry.
 - Threads numbers are synced automatically each day for main posts.
@@ -243,12 +260,12 @@ Buttons open the Composer or the platform. **Skip** on a suggestion skips that p
 4. Press AUTO-POST AT SCHEDULED TIME and confirm the label reads `AUTO-POSTS … ✓`.
 
 **Repost last week's Threads post with a new first line and the same video:**
-1. Open the original in the Composer → FORK POST.
+1. Open the original in the Composer → **MORE ▾** (fork).
 2. Keep PLATFORM Threads, set DATE and TIME → CREATE FORK.
 3. Change the first line, SAVE, then turn on auto-post.
 
 **Reuse an X video on Bluesky:**
-1. Open the X post → FORK POST.
+1. Open the X post → **MORE ▾** (fork).
 2. PLATFORM Bluesky, set DATE and TIME → CREATE FORK.
 3. Trim the text to 300 characters. Make sure the video is an MP4. SAVE, then auto-post.
 
@@ -257,7 +274,7 @@ Buttons open the Composer or the platform. **Skip** on a suggestion skips that p
 2. Then Composer or EDIT SLOT → DELETE POST.
 
 **A post went out by hand:**
-- MARK POSTED + PASTE URL with the live link.
+- MARK POSTED with the live link.
 
 **A post moved to another time:**
 - Composer → DATE/TIME → RESCHEDULE, or Calendar → EDIT SLOT → RESCHEDULE.
