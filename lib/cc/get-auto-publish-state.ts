@@ -7,6 +7,11 @@ type StatePost = {
   posted_at: string | null;
 };
 
+type StateParent = StatePost & {
+  auto_publish: boolean;
+  publish_error: string | null;
+};
+
 type AutoPublishState =
   | { kind: "due" }
   | { kind: "wait" }
@@ -14,10 +19,10 @@ type AutoPublishState =
 
 const MISSED_AFTER_MS = 30 * 60_000;
 
-/** Return whether an auto-post `candidate` is due now, still waiting (before its time, or a reply whose `parent` is not posted yet), or missed (over 30 minutes late, or a reply whose parent was skipped or is gone). */
+/** Return whether an auto-post `candidate` is due now, still waiting (before its time, or a reply whose `parent` is not posted yet), or missed (over 30 minutes late, or a reply whose parent was skipped, is gone, or will not be auto-posted). */
 export function getAutoPublishState(options: {
   candidate: StatePost;
-  parent: StatePost | undefined;
+  parent: StateParent | undefined;
   now: Date;
 }): AutoPublishState {
   const isReply =
@@ -36,6 +41,17 @@ export function getAutoPublishState(options: {
   }
   if (isReply && options.parent?.status === "skipped") {
     return { kind: "missed", reason: "Its parent post was skipped." };
+  }
+  if (
+    isReply &&
+    options.parent !== undefined &&
+    options.parent.status !== "posted" &&
+    (!options.parent.auto_publish || options.parent.publish_error !== null)
+  ) {
+    return {
+      kind: "missed",
+      reason: "Its parent's auto-post failed or was turned off.",
+    };
   }
   if (dueAt === undefined || dueAt > options.now) return { kind: "wait" };
   return options.now.getTime() - dueAt.getTime() > MISSED_AFTER_MS

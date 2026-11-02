@@ -10,12 +10,16 @@ function buildPost(options: {
   status?: string;
   scheduledAt: string | null;
   postedAt?: string;
+  autoPublish?: boolean;
+  publishError?: string;
 }) {
   return {
     kind: options.kind ?? "post",
     status: options.status ?? "scheduled",
     scheduled_at: options.scheduledAt,
     posted_at: options.postedAt ?? null,
+    auto_publish: options.autoPublish ?? true,
+    publish_error: options.publishError ?? null,
   };
 }
 
@@ -82,6 +86,35 @@ test("a reply whose parent was skipped or deleted is missed", () => {
   );
   assert.equal(
     getAutoPublishState({ candidate: reply, parent: undefined, now }).kind,
+    "missed"
+  );
+});
+
+test("a reply under a parent whose auto-post failed or was turned off is missed", () => {
+  const reply = buildPost({
+    kind: "reply",
+    scheduledAt: "2026-11-03T13:55:00.000Z",
+  });
+  assert.equal(
+    getAutoPublishState({
+      candidate: reply,
+      parent: buildPost({
+        scheduledAt: "2026-11-03T13:50:00.000Z",
+        publishError: "boom",
+      }),
+      now,
+    }).kind,
+    "missed"
+  );
+  assert.equal(
+    getAutoPublishState({
+      candidate: reply,
+      parent: buildPost({
+        scheduledAt: "2026-11-03T13:50:00.000Z",
+        autoPublish: false,
+      }),
+      now,
+    }).kind,
     "missed"
   );
 });

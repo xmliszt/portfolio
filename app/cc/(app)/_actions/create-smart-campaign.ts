@@ -27,7 +27,7 @@ type KitSource =
   | { kind: "no-link" }
   | { kind: "no-current" };
 
-/** Create a campaign of `kind` starting on `startDate` (SGT) with the default planner settings (an event allows one post per platform a day) plus `kind`, `intent`, `eventDate` and `notBefore`, and `drafts` as its draft posts, with media from the current campaign's kit when both campaigns link to the same site; return the new campaign's id, how many posts were saved, where media came from, and the refs left without media or without a parent. */
+/** Create a campaign of `kind` starting on `startDate` (SGT) with the default planner settings (an event allows one post per platform a day) plus `kind`, `intent`, `eventDate` and `notBefore`, and `drafts` as its draft posts (replies and comments created a millisecond apart, in plan order), with media from the current campaign's kit when both campaigns link to the same site; return the new campaign's id, how many posts were saved, where media came from, and the refs left without media or without a parent. */
 export async function createSmartCampaign(options: {
   name: string;
   link: string;
@@ -125,12 +125,18 @@ export async function createSmartCampaign(options: {
     kitPosts,
     createId: randomUUID,
   });
+  const createdAtMs = Date.now();
   const { error: parentsError } = await supabase
     .from("posts")
     .insert(rows.parents);
   const { error: childrenError } =
     parentsError === null && rows.children.length > 0
-      ? await supabase.from("posts").insert(rows.children)
+      ? await supabase.from("posts").insert(
+          rows.children.map((row, index) => ({
+            ...row,
+            created_at: new Date(createdAtMs + index).toISOString(),
+          }))
+        )
       : { error: null };
   const postsError = parentsError ?? childrenError;
   if (postsError !== null) {

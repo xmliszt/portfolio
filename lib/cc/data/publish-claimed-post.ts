@@ -93,23 +93,28 @@ async function publishOnPlatform(options: {
           message: "Threads is not connected. Reconnect it in CC.",
         };
       }
-      const replyToId =
-        target === undefined
-          ? undefined
-          : (target.platform_post_id ??
-            (target.url === null
-              ? undefined
-              : await findThreadsMediaId({
-                  accessToken: integration.access_token,
-                  permalink: target.url,
-                })));
-      if (target !== undefined && replyToId === undefined) {
-        return {
-          kind: "error",
-          message:
-            "CC could not find the Threads post to reply to among your last 50 threads.",
-        };
-      }
+      const replyTo = await (async (): Promise<
+        | { kind: "ok"; id: string | undefined }
+        | { kind: "error"; message: string }
+      > => {
+        if (target === undefined) return { kind: "ok", id: undefined };
+        if (target.platform_post_id !== null) {
+          return { kind: "ok", id: target.platform_post_id };
+        }
+        if (target.url === null) {
+          return {
+            kind: "error",
+            message:
+              "CC could not find the Threads post to reply to. Paste its live link.",
+          };
+        }
+        return findThreadsMediaId({
+          accessToken: integration.access_token,
+          permalink: target.url,
+        });
+      })();
+      if (replyTo.kind === "error") return replyTo;
+      const replyToId = replyTo.id;
       return publishThreadsPost({
         accessToken: integration.access_token,
         text: prepared.text,

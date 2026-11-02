@@ -67,6 +67,8 @@ export async function publishDuePosts(options: { now: Date }) {
     .is("publish_error", null)
     .is("publish_claimed_at", null)
     .order("scheduled_at", { ascending: true })
+    .order("created_at", { ascending: true })
+    .order("id", { ascending: true })
     .limit(PENDING_LIMIT);
   if (pendingError) throw pendingError;
   const parentIds = uniq(
@@ -79,7 +81,9 @@ export async function publishDuePosts(options: { now: Date }) {
       ? { data: [], error: null }
       : await supabase
           .from("posts")
-          .select("id, kind, status, scheduled_at, posted_at")
+          .select(
+            "id, kind, status, scheduled_at, posted_at, auto_publish, publish_error"
+          )
           .in("id", parentIds);
   if (parentsError) throw parentsError;
   const parentsById = keyBy(parents, (parent) => parent.id);
