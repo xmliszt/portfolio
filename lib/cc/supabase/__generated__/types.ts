@@ -218,8 +218,8 @@ export type Database = {
           kind: string
           link: string | null
           parent_post_id: string | null
-          platform_post_id: string | null
           platform: string
+          platform_post_id: string | null
           posted_at: string | null
           publish_claimed_at: string | null
           publish_error: string | null
@@ -245,8 +245,8 @@ export type Database = {
           kind?: string
           link?: string | null
           parent_post_id?: string | null
-          platform_post_id?: string | null
           platform: string
+          platform_post_id?: string | null
           posted_at?: string | null
           publish_claimed_at?: string | null
           publish_error?: string | null
@@ -272,8 +272,8 @@ export type Database = {
           kind?: string
           link?: string | null
           parent_post_id?: string | null
-          platform_post_id?: string | null
           platform?: string
+          platform_post_id?: string | null
           posted_at?: string | null
           publish_claimed_at?: string | null
           publish_error?: string | null
@@ -374,6 +374,7 @@ export type Database = {
         }
         Returns: {
           assets: Json
+          auto_publish: boolean
           body: string
           campaign_id: string
           created_at: string
@@ -383,7 +384,10 @@ export type Database = {
           link: string | null
           parent_post_id: string | null
           platform: string
+          platform_post_id: string | null
           posted_at: string | null
+          publish_claimed_at: string | null
+          publish_error: string | null
           scheduled_at: string | null
           scheduled_by: string
           status: string
