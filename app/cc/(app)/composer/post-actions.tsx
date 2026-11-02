@@ -11,6 +11,7 @@ import type { PostAsset } from "@/lib/cc/post-asset";
 
 import { AutoPublishControl } from "./auto-publish-control";
 import { CopyButton } from "./copy-button";
+import { ForkPostControl } from "./fork-post-control";
 import { MarkPostedControl } from "./mark-posted-control";
 import { writeClipboard } from "./write-clipboard";
 
@@ -93,6 +94,7 @@ export function PostActions(props: PostActionsProps) {
           url={props.post.url}
         />
       </div>
+      <ForkPostControl post={props.post} platformId={props.platformId} />
       {isAutoPublishPlatform(props.platformId) &&
         (props.post.kind === "post" || props.post.kind === "repost") &&
         (props.post.status === "draft" ||
