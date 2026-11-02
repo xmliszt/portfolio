@@ -16,7 +16,7 @@ import { refreshThreadsToken } from "./refresh-threads-token";
 const DAY_MS = 86_400_000;
 const CHECKPOINTS: readonly MetricCheckpoint[] = ["1h", "24h", "7d", "extra"];
 
-/** Refresh the stored Threads token when under 10 days are left, then save one `post_metrics` row from Threads insights for each posted Threads post that links to one of the account's recent threads and is due a checkpoint; return the saved checkpoints, and why nothing ran when it could not. A token Threads rejects gets `expires_at` set to `now`. */
+/** Refresh the stored Threads token when under 10 days are left, then save one `post_metrics` row from Threads insights for each posted Threads post with a stored media id or a link to one of the account's recent threads and is due a checkpoint; return the saved checkpoints, and why nothing ran when it could not. A token Threads rejects gets `expires_at` set to `now`. */
 export async function syncThreadsMetrics(options: { now: Date }) {
   const supabase = createCcServiceClient();
   const { data: integration, error } = await supabase
@@ -74,10 +74,12 @@ export async function syncThreadsMetrics(options: { now: Date }) {
 
   const { data: posts, error: postsError } = await supabase
     .from("posts")
-    .select("id, url, posted_at, post_metrics(checkpoint, captured_at)")
+    .select(
+      "id, url, platform_post_id, posted_at, post_metrics(checkpoint, captured_at)"
+    )
     .eq("platform", "threads")
     .eq("status", "posted")
-    .not("url", "is", null);
+    .or("url.not.is.null,platform_post_id.not.is.null");
   if (postsError) throw postsError;
   const postsById = keyBy(posts, (post) => post.id);
 

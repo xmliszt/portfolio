@@ -209,6 +209,7 @@ export type Database = {
       posts: {
         Row: {
           assets: Json
+          auto_publish: boolean
           body: string
           campaign_id: string
           created_at: string
@@ -218,7 +219,10 @@ export type Database = {
           link: string | null
           parent_post_id: string | null
           platform: string
+          platform_post_id: string | null
           posted_at: string | null
+          publish_claimed_at: string | null
+          publish_error: string | null
           scheduled_at: string | null
           scheduled_by: string
           status: string
@@ -232,6 +236,7 @@ export type Database = {
         }
         Insert: {
           assets?: Json
+          auto_publish?: boolean
           body?: string
           campaign_id: string
           created_at?: string
@@ -241,7 +246,10 @@ export type Database = {
           link?: string | null
           parent_post_id?: string | null
           platform: string
+          platform_post_id?: string | null
           posted_at?: string | null
+          publish_claimed_at?: string | null
+          publish_error?: string | null
           scheduled_at?: string | null
           scheduled_by?: string
           status?: string
@@ -255,6 +263,7 @@ export type Database = {
         }
         Update: {
           assets?: Json
+          auto_publish?: boolean
           body?: string
           campaign_id?: string
           created_at?: string
@@ -264,7 +273,10 @@ export type Database = {
           link?: string | null
           parent_post_id?: string | null
           platform?: string
+          platform_post_id?: string | null
           posted_at?: string | null
+          publish_claimed_at?: string | null
+          publish_error?: string | null
           scheduled_at?: string | null
           scheduled_by?: string
           status?: string
@@ -362,6 +374,7 @@ export type Database = {
         }
         Returns: {
           assets: Json
+          auto_publish: boolean
           body: string
           campaign_id: string
           created_at: string
@@ -371,7 +384,10 @@ export type Database = {
           link: string | null
           parent_post_id: string | null
           platform: string
+          platform_post_id: string | null
           posted_at: string | null
+          publish_claimed_at: string | null
+          publish_error: string | null
           scheduled_at: string | null
           scheduled_by: string
           status: string

@@ -11,14 +11,34 @@ test("matches posts to threads across hosts and trailing slashes", () => {
       { id: "m3", permalink: undefined },
     ],
     posts: [
-      { id: "p1", url: "https://www.threads.net/@yx/post/AAA/" },
-      { id: "p2", url: null },
-      { id: "p3", url: "https://www.threads.net/@yx/post/CCC" },
-      { id: "p4", url: "threads.com/@yx/post/BBB?igshid=1" },
+      {
+        id: "p1",
+        url: "https://www.threads.net/@yx/post/AAA/",
+        platform_post_id: null,
+      },
+      { id: "p2", url: null, platform_post_id: null },
+      {
+        id: "p3",
+        url: "https://www.threads.net/@yx/post/CCC",
+        platform_post_id: null,
+      },
+      {
+        id: "p4",
+        url: "threads.com/@yx/post/BBB?igshid=1",
+        platform_post_id: null,
+      },
     ],
   });
   assert.deepEqual(matches, [
     { postId: "p1", mediaId: "m1" },
     { postId: "p4", mediaId: "m2" },
   ]);
+});
+
+test("uses a post's stored media id without looking at its url", () => {
+  const matches = matchThreadsPosts({
+    threads: [],
+    posts: [{ id: "p1", url: null, platform_post_id: "m9" }],
+  });
+  assert.deepEqual(matches, [{ postId: "p1", mediaId: "m9" }]);
 });

@@ -203,6 +203,7 @@ export function Composer(props: ComposerProps) {
             link={draft.link}
             target={draft.target}
             assets={draft.assets}
+            dirty={isDirty}
           />
           {props.childPosts.map((child, index) => {
             const childDraft = drafts[child.id] ?? toDraftFields(child);

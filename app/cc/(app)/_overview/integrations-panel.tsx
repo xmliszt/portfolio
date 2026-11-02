@@ -11,6 +11,7 @@ import type { ThreadsStatus } from "./get-threads-status";
 
 type IntegrationsPanelProps = {
   threads: ThreadsStatus;
+  xPosting: boolean;
 };
 
 export function IntegrationsPanel(props: IntegrationsPanelProps) {
@@ -42,7 +43,7 @@ export function IntegrationsPanel(props: IntegrationsPanelProps) {
   return (
     <Panel
       title="Integrations"
-      aside="Threads · daily sync at 10:20 SGT"
+      aside="Threads · daily sync at 10:20 SGT · auto-posts every minute"
       className="flex-[1_1_100%]"
       bodyClassName="flex flex-col gap-y-3 px-[18px] py-4"
     >
@@ -61,8 +62,8 @@ export function IntegrationsPanel(props: IntegrationsPanelProps) {
                     URL.
                   </li>
                   <li>
-                    Give it threads_basic, threads_manage_insights and
-                    threads_keyword_search.
+                    Give it threads_basic, threads_manage_insights,
+                    threads_keyword_search and threads_content_publish.
                   </li>
                   <li>
                     Set <code>CC_THREADS_APP_ID</code> and{" "}
@@ -77,8 +78,8 @@ export function IntegrationsPanel(props: IntegrationsPanelProps) {
               <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
                 {renderConnectForm("CONNECT THREADS")}
                 <span className="text-muted-foreground text-[12px]">
-                  Logs views on your Threads posts and powers “Check tags” in
-                  the Composer.
+                  Logs views on your Threads posts, powers “Check tags” in the
+                  Composer, and auto-posts scheduled Threads posts.
                 </span>
               </div>
             );
@@ -116,6 +117,10 @@ export function IntegrationsPanel(props: IntegrationsPanelProps) {
                       ? "Token expiry unknown"
                       : `Token expires ${props.threads.expiresLabel} SGT · refreshed when under 10 days are left`}
                   </span>
+                  <span className="text-muted-foreground text-[11px]">
+                    Auto-posting needs the threads_content_publish permission.
+                    Reconnect once if Threads refuses a post.
+                  </span>
                 </span>
                 {renderConnectForm("RECONNECT")}
                 <CcButton
@@ -134,6 +139,23 @@ export function IntegrationsPanel(props: IntegrationsPanelProps) {
           }
         }
       })()}
+      <p className="text-muted-foreground border-t pt-3 text-[12px] leading-relaxed">
+        {props.xPosting ? (
+          <>
+            <span className="text-foreground font-bold">X posting · on.</span>{" "}
+            Auto-posts are paid from your X API credits.
+          </>
+        ) : (
+          <>
+            <span className="text-foreground font-bold">X posting · off.</span>{" "}
+            In the X developer portal, set the app&apos;s user permission to
+            Read and write, generate an access token and secret, then set{" "}
+            <code>CC_X_API_KEY</code>, <code>CC_X_API_SECRET</code>,{" "}
+            <code>CC_X_ACCESS_TOKEN</code> and{" "}
+            <code>CC_X_ACCESS_TOKEN_SECRET</code> in Vercel and redeploy.
+          </>
+        )}
+      </p>
       {error !== undefined && (
         <span role="alert" className="text-cc-warn text-[11px]">
           {error}
