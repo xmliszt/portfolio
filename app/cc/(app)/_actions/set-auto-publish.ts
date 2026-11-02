@@ -55,6 +55,15 @@ export async function setAutoPublish(options: {
     .eq("id", options.postId)
     .single();
   if (error) throw error;
+  if (post.platform_post_id !== null) {
+    return {
+      kind: "error",
+      message: "CC posted this; it will show as live within 10 minutes.",
+    };
+  }
+  if (post.status !== "draft" && post.status !== "scheduled") {
+    return { kind: "error", message: "This post is no longer scheduled." };
+  }
   if (post.publish_claimed_at !== null && post.publish_error === null) {
     return { kind: "error", message: "CC is posting this right now." };
   }
@@ -97,12 +106,16 @@ export async function setAutoPublish(options: {
       updated_at: new Date().toISOString(),
     })
     .eq("id", options.postId)
+    .in("status", ["draft", "scheduled"])
     .is("platform_post_id", null)
     .or("publish_claimed_at.is.null,publish_error.not.is.null")
     .select("id");
   if (updateError) throw updateError;
   if (updated.length === 0) {
-    return { kind: "error", message: "CC is posting this right now." };
+    return {
+      kind: "error",
+      message: "The post changed while saving. Reload and try again.",
+    };
   }
   if (!options.isOn) {
     const { error: reopenError } = await supabase

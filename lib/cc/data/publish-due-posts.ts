@@ -97,8 +97,10 @@ export async function publishDuePosts(options: { now: Date }) {
   if (dueError) throw dueError;
 
   const failedEarly = stuck.length + missed.length;
+  const finished = livePosts.length;
   const candidate = due.at(0);
-  if (candidate === undefined) return { published: 0, failed: failedEarly };
+  if (candidate === undefined)
+    return { published: finished, failed: failedEarly };
   const { data: claimed, error: claimError } = await supabase
     .from("posts")
     .update({ publish_claimed_at: nowIso })
@@ -110,9 +112,9 @@ export async function publishDuePosts(options: { now: Date }) {
     .select("*")
     .maybeSingle();
   if (claimError) throw claimError;
-  if (claimed === null) return { published: 0, failed: failedEarly };
+  if (claimed === null) return { published: finished, failed: failedEarly };
   const result = await publishClaimedPost({ post: claimed, now: options.now });
   return result.kind === "ok"
-    ? { published: 1, failed: failedEarly }
-    : { published: 0, failed: failedEarly + 1 };
+    ? { published: finished + 1, failed: failedEarly }
+    : { published: finished, failed: failedEarly + 1 };
 }
