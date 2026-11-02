@@ -258,7 +258,9 @@ function buildExample(slots: readonly SmartCampaignSlot[]) {
       : { title: "…" }),
     body: "…",
     hashtags: [],
-    ...(PLATFORMS[slot.platformId].target === undefined ? {} : { target: "…" }),
+    ...(slot.platformId === "reddit" || slot.platformId === "threads"
+      ? { target: "…" }
+      : {}),
     media: slot.media,
     why: "…",
   });

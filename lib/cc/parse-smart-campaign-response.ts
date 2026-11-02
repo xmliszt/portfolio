@@ -191,8 +191,15 @@ function readMedia(value: unknown): SmartCampaignMedia {
 
 function readTarget(options: { value: unknown; platformId: PlatformId }) {
   const target = readString(options.value);
-  if (target === undefined || options.platformId !== "reddit") return target;
-  return `r/${target.replace(/^\/?r\//i, "")}`;
+  if (target === undefined) return undefined;
+  switch (options.platformId) {
+    case "reddit":
+      return `r/${target.replace(/^\/?r\//i, "")}`;
+    case "threads":
+      return target;
+    default:
+      return undefined;
+  }
 }
 
 function readPost(options: { value: unknown; index: number }): ReadPostResult {
