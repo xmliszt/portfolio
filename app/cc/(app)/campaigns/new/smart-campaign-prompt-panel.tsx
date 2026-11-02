@@ -82,7 +82,7 @@ export function SmartCampaignPromptPanel(props: SmartCampaignPromptPanelProps) {
       title="Prompt for ChatGPT"
       aside={`${postCount} posts · ${childCount} replies and comments · ${props.plan.waves.length} ${props.plan.waves.length === 1 ? "wave" : "waves"}`}
       className="flex-[1_1_100%]"
-      bodyClassName="flex flex-col gap-y-3 px-[18px] py-4"
+      bodyClassName="flex flex-col gap-y-3 px-3 py-2.5"
     >
       {props.isStale && (
         <p role="status" className="text-cc-warn text-[12px]">

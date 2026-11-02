@@ -221,7 +221,7 @@ export default async function CalendarPage(props: CalendarPageProps) {
           >
             <Link
               href={buildHref({ week: week.previous })}
-              className="hover:border-primary hover:text-primary flex min-h-11 items-center border px-3 text-[12px] tracking-[0.1em]"
+              className="hover:border-primary hover:text-primary flex min-h-7 items-center border px-3 text-[12px] tracking-[0.04em]"
             >
               ← PREV
             </Link>
@@ -229,19 +229,19 @@ export default async function CalendarPage(props: CalendarPageProps) {
               href={buildHref({
                 week: getSgtWeek({ date: today }).days[0],
               })}
-              className="hover:border-primary hover:text-primary flex min-h-11 items-center border px-3 text-[12px] tracking-[0.1em]"
+              className="hover:border-primary hover:text-primary flex min-h-7 items-center border px-3 text-[12px] tracking-[0.04em]"
             >
               THIS WEEK
             </Link>
             <Link
               href={buildHref({ week: week.next })}
-              className="hover:border-primary hover:text-primary flex min-h-11 items-center border px-3 text-[12px] tracking-[0.1em]"
+              className="hover:border-primary hover:text-primary flex min-h-7 items-center border px-3 text-[12px] tracking-[0.04em]"
             >
               NEXT →
             </Link>
             <a
               href="#schedule"
-              className="border-primary bg-primary text-primary-foreground hover:bg-primary/85 flex min-h-11 items-center border px-4 text-[12px] font-bold tracking-[0.1em]"
+              className="border-primary bg-primary text-primary-foreground hover:bg-primary/85 flex min-h-7 items-center border px-3 text-[12px] font-bold tracking-[0.04em]"
             >
               + SCHEDULE POST
             </a>
@@ -297,10 +297,10 @@ export default async function CalendarPage(props: CalendarPageProps) {
         heatPlatformId={heatPlatformId}
       />
       <p className="text-muted-foreground text-[11px]">
-        Pick a post to reschedule or skip it. Posting is manual; the calendar
-        only plans and reminds.
+        Pick a post to reschedule, skip or delete it. X, Threads and Bluesky
+        posts can auto-post from the Composer.
       </p>
-      <div className="flex flex-wrap gap-x-5 gap-y-5">
+      <div className="flex flex-wrap gap-x-3 gap-y-3">
         <HeatLegendPanel
           platformId={heatPlatformId}
           source={heat.kind}

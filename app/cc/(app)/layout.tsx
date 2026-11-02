@@ -29,7 +29,7 @@ export default async function CcAppLayout(props: CcAppLayoutProps) {
         dueLogCount={dueLogCount}
         telegramLinked={isTelegramLinked}
       />
-      <main className="flex min-w-0 flex-[999_1_560px] flex-col gap-y-5 px-4 pt-6 pb-10 sm:px-8">
+      <main className="flex min-w-0 flex-[999_1_560px] flex-col gap-y-3 px-3 pt-3 pb-8">
         {props.children}
       </main>
     </div>

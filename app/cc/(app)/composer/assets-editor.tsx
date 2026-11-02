@@ -124,7 +124,7 @@ export function AssetsEditor(props: AssetsEditorProps) {
 
   return (
     <fieldset className="flex min-w-0 flex-col gap-y-2">
-      <legend className="text-muted-foreground mb-1.5 text-[11px] tracking-[0.14em]">
+      <legend className="text-muted-foreground mb-1.5 text-[10.5px] tracking-[0.04em] uppercase">
         ASSETS · FILE AND ALT TEXT
       </legend>
       {props.assets.length === 0 && (
@@ -191,7 +191,7 @@ export function AssetsEditor(props: AssetsEditorProps) {
                 {assetUrls !== undefined && (
                   <a
                     href={assetUrls.download}
-                    className="border-primary text-primary hover:bg-primary/10 inline-flex min-h-11 items-center border px-3 text-[11px] font-bold tracking-[0.1em]"
+                    className="border-border text-cc-text-2 hover:border-primary hover:text-foreground inline-flex h-6 items-center border px-2 text-[10.5px] font-semibold tracking-[0.04em]"
                   >
                     DOWNLOAD
                   </a>

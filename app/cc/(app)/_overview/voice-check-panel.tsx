@@ -20,14 +20,14 @@ export function VoiceCheckPanel(props: VoiceCheckPanelProps) {
     <Panel
       title="VOICE CHECK · QUEUE"
       className="flex-[1_1_280px]"
-      bodyClassName="flex flex-col gap-y-2.5 px-[18px] py-4"
+      bodyClassName="flex flex-col gap-y-2.5 px-3 py-2.5"
     >
       <div className="flex flex-wrap items-baseline gap-x-2.5">
-        <span className="text-cc-ok text-[32px] leading-none font-bold">
+        <span className="text-cc-ok text-[18px] leading-none font-bold">
           {props.cleanCount}
         </span>
         <span className="text-muted-foreground">clean</span>
-        <span className="text-cc-warn ml-3 text-[32px] leading-none font-bold">
+        <span className="text-cc-warn ml-3 text-[18px] leading-none font-bold">
           {props.flagged.length}
         </span>
         <span className="text-muted-foreground">flagged</span>
@@ -42,7 +42,7 @@ export function VoiceCheckPanel(props: VoiceCheckPanelProps) {
             <li key={item.postId}>
               <Link
                 href={`/composer?post=${item.postId}`}
-                className="hover:bg-cc-panel-2 flex min-h-11 items-center gap-x-2 border-b border-dashed py-1.5"
+                className="hover:bg-cc-panel-2 flex min-h-7 items-center gap-x-2 border-b border-dashed py-1.5"
               >
                 <PlatformChip platformId={item.platformId} />
                 <span className="flex min-w-0 flex-1 flex-col">

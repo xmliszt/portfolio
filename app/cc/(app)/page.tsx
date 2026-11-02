@@ -1,5 +1,6 @@
 import uniq from "lodash/uniq.js";
 
+import { CollapsibleSection } from "@/app/cc/_ui/collapsible-section";
 import { PageHeader } from "@/app/cc/_ui/page-header";
 import { requireCcOwner } from "@/lib/cc/auth/require-cc-owner";
 import { getBlueskyCredentials } from "@/lib/cc/bluesky/get-bluesky-credentials";
@@ -77,7 +78,7 @@ export default async function OverviewPage() {
       ? [
           {
             atIso: post.scheduled_at,
-            label: `${PLATFORMS[post.platform].shortLabel} ${formatSgt({ date: new Date(post.scheduled_at), pattern: "EEE dd MMM HH:mm" }).toUpperCase()}`,
+            label: `${PLATFORMS[post.platform].label} · ${formatSgt({ date: new Date(post.scheduled_at), pattern: "EEE dd MMM HH:mm" })}`,
           },
         ]
       : []
@@ -127,11 +128,11 @@ export default async function OverviewPage() {
         plannedCount={mainPosts.length}
         totals={totals}
       />
-      <div className="flex flex-wrap gap-x-5 gap-y-5">
+      <div className="grid grid-cols-1 items-start gap-x-3 gap-y-3 xl:grid-cols-[minmax(0,1fr)_400px]">
         <RunSheetPanel dayLabel={runSheet.dayLabel} items={runSheet.items} />
         <DueNowPanel items={dueItems} />
       </div>
-      <div className="flex flex-wrap gap-x-5 gap-y-5">
+      <div className="flex flex-wrap items-start gap-x-3 gap-y-3">
         <ViewsByPlatformPanel rows={totals.viewsByPlatform} />
         <TopHashtagsPanel lifts={getHashtagLift(stats)} />
         <VoiceCheckPanel
@@ -139,16 +140,25 @@ export default async function OverviewPage() {
           flagged={flagged}
         />
       </div>
-      <CampaignPanel campaign={campaign} />
-      <CampaignPlanPanel
-        campaignId={campaign.id}
-        plan={parseCampaignPlan(campaign.plan)}
-      />
-      <IntegrationsPanel
-        threads={threadsStatus}
-        xPosting={getXUserCredentials() !== undefined}
-        blueskyPosting={getBlueskyCredentials() !== undefined}
-      />
+      <CollapsibleSection
+        title="Setup"
+        summary="campaign details, schedule planner, integrations"
+        defaultOpen={
+          threadsStatus.kind === "expired" ||
+          threadsStatus.kind === "not-connected"
+        }
+      >
+        <CampaignPanel campaign={campaign} />
+        <CampaignPlanPanel
+          campaignId={campaign.id}
+          plan={parseCampaignPlan(campaign.plan)}
+        />
+        <IntegrationsPanel
+          threads={threadsStatus}
+          xPosting={getXUserCredentials() !== undefined}
+          blueskyPosting={getBlueskyCredentials() !== undefined}
+        />
+      </CollapsibleSection>
     </>
   );
 }

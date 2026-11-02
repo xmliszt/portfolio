@@ -232,7 +232,7 @@ export const PLATFORMS = {
     id: "wechat_moments",
     label: "朋友圈",
     shortLabel: "朋友圈",
-    colorVar: "--cc-platform-wechat",
+    colorVar: "--cc-platform-wechat-moments",
     bodyLimit: undefined,
     titleLimit: undefined,
     maxHashtags: 0,

@@ -1,5 +1,6 @@
 import Link from "next/link";
 
+import { CollapsibleSection } from "@/app/cc/_ui/collapsible-section";
 import { PageHeader } from "@/app/cc/_ui/page-header";
 import { Panel } from "@/app/cc/_ui/panel";
 import { requireCcOwner } from "@/lib/cc/auth/require-cc-owner";
@@ -132,28 +133,25 @@ export default async function LogPage() {
         eyebrow={campaign?.name.toUpperCase() ?? "NO CAMPAIGN"}
         title={`Log numbers · ${dueRows.length === 0 ? "nothing due" : `${dueRows.length} due`}`}
       />
-      <p className="text-muted-foreground">
-        Two ways in. Both take “1.2k”, “1,240” and “1.2万”. Fields you skip stay
-        empty, never zero.
-      </p>
-      <div className="flex flex-wrap items-start gap-x-5 gap-y-5">
+      <Panel
+        title="Quick entry"
+        aside="Tab to move · Enter saves the row · takes 1.2k, 1,240, 1.2万 · skipped fields stay empty"
+      >
+        <LogEntryList
+          dueRows={dueRows}
+          postedPosts={entryPosts.filter((post) => post.status === "posted")}
+          emptyNote={emptyNote}
+        />
+      </Panel>
+      <CollapsibleSection
+        title="Reply on Telegram instead"
+        summary="the bot asks at +1 h, +24 h and +7 d; reply with one line"
+      >
         <TelegramReplyMock
           platformId={dueRows.at(0)?.platformId ?? "xiaohongshu"}
           telegramLinked={isTelegramLinked}
         />
-        <Panel
-          title="2 · Quick entry here"
-          aside="TAB TO MOVE · ENTER TO SAVE THE ROW"
-          glow={dueRows.length > 0}
-          className="flex-[2_1_600px]"
-        >
-          <LogEntryList
-            dueRows={dueRows}
-            postedPosts={entryPosts.filter((post) => post.status === "posted")}
-            emptyNote={emptyNote}
-          />
-        </Panel>
-      </div>
+      </CollapsibleSection>
     </>
   );
 }

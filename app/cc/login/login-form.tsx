@@ -16,13 +16,13 @@ export function LoginForm() {
     <form
       action={formAction}
       aria-label="Sign in"
-      className="bg-card flex w-full max-w-[380px] flex-col gap-y-5 border p-7"
+      className="bg-card flex w-full max-w-[380px] flex-col gap-y-3 border p-7"
     >
       <div className="flex flex-col gap-y-1">
-        <span className="text-primary font-[family-name:var(--cc-font-display)] text-xl font-bold tracking-[0.08em]">
+        <span className="text-primary font-[family-name:var(--cc-font-display)] text-xl font-bold tracking-[0.04em]">
           CC//
         </span>
-        <span className="text-muted-foreground text-[11px] tracking-[0.14em]">
+        <span className="text-muted-foreground text-[10.5px] tracking-[0.04em] uppercase">
           CC.LIYUXUAN.DEV · RESTRICTED
         </span>
       </div>

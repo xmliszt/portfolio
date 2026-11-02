@@ -6,10 +6,10 @@ type CcFieldProps = {
 
 export function CcField(props: CcFieldProps) {
   return (
-    <div className="flex flex-col gap-y-1.5">
+    <div className="flex min-w-0 flex-col gap-y-1">
       <label
         htmlFor={props.htmlFor}
-        className="text-muted-foreground text-[11px] tracking-[0.14em]"
+        className="text-muted-foreground text-[10.5px] tracking-[0.04em] uppercase"
       >
         {props.label}
       </label>

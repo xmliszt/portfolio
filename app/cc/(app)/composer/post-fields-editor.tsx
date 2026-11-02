@@ -34,7 +34,7 @@ export function PostFieldsEditor(props: PostFieldsEditorProps) {
   }
 
   return (
-    <div className="flex flex-col gap-y-4 px-[18px] py-4">
+    <div className="flex flex-col gap-y-3 px-3 py-2.5">
       {titleLimit !== undefined && (
         <CcField label="TITLE" htmlFor={`title-${props.postId}`}>
           <div className="flex flex-col gap-y-1">
@@ -55,8 +55,55 @@ export function PostFieldsEditor(props: PostFieldsEditorProps) {
           </div>
         </CcField>
       )}
+      <CcField label="TEXT" htmlFor={`body-${props.postId}`}>
+        <div className="flex flex-col gap-y-1">
+          <textarea
+            id={`body-${props.postId}`}
+            className="cc-input field-sizing-content max-h-[60dvh] min-h-[160px] resize-y text-[13px] leading-[1.7]"
+            value={draft.body}
+            onChange={(event) => update({ body: event.target.value })}
+          />
+          <CharacterCount
+            count={countPostCharacters({
+              text: props.copyText,
+              platformId: props.platformId,
+            })}
+            limit={bodyLimit}
+            platformId={props.platformId}
+            showRule
+          />
+        </div>
+      </CcField>
+      <div className="flex flex-wrap gap-x-3 gap-y-3">
+        <div className="min-w-0 flex-[1_1_240px]">
+          <CcField
+            label={`HASHTAGS · MAX ${platform.maxHashtags}`}
+            htmlFor={`hashtags-${props.postId}`}
+          >
+            <input
+              id={`hashtags-${props.postId}`}
+              className="cc-input"
+              placeholder="digitalart cats"
+              value={draft.hashtagsText}
+              onChange={(event) => update({ hashtagsText: event.target.value })}
+            />
+          </CcField>
+        </div>
+        <div className="min-w-0 flex-[1_1_240px]">
+          <CcField label="LINK" htmlFor={`link-${props.postId}`}>
+            <input
+              id={`link-${props.postId}`}
+              type="url"
+              className="cc-input"
+              placeholder="https://paws.garden"
+              value={draft.link}
+              onChange={(event) => update({ link: event.target.value })}
+            />
+          </CcField>
+        </div>
+      </div>
       {(targetField !== undefined || hasWave) && (
-        <div className="flex flex-wrap gap-x-4 gap-y-4">
+        <div className="flex flex-wrap gap-x-3 gap-y-3">
           {targetField !== undefined && (
             <div className="min-w-0 flex-[1_1_240px]">
               <CcField
@@ -95,53 +142,6 @@ export function PostFieldsEditor(props: PostFieldsEditorProps) {
           )}
         </div>
       )}
-      <CcField label="TEXT" htmlFor={`body-${props.postId}`}>
-        <div className="flex flex-col gap-y-1">
-          <textarea
-            id={`body-${props.postId}`}
-            className="cc-input min-h-[220px] resize-y text-[15px] leading-[1.75]"
-            value={draft.body}
-            onChange={(event) => update({ body: event.target.value })}
-          />
-          <CharacterCount
-            count={countPostCharacters({
-              text: props.copyText,
-              platformId: props.platformId,
-            })}
-            limit={bodyLimit}
-            platformId={props.platformId}
-            showRule
-          />
-        </div>
-      </CcField>
-      <div className="flex flex-wrap gap-x-4 gap-y-4">
-        <div className="min-w-0 flex-[1_1_240px]">
-          <CcField
-            label={`HASHTAGS · SPACE-SEPARATED, NO # · MAX ${platform.maxHashtags}`}
-            htmlFor={`hashtags-${props.postId}`}
-          >
-            <input
-              id={`hashtags-${props.postId}`}
-              className="cc-input"
-              placeholder="digitalart cats"
-              value={draft.hashtagsText}
-              onChange={(event) => update({ hashtagsText: event.target.value })}
-            />
-          </CcField>
-        </div>
-        <div className="min-w-0 flex-[1_1_240px]">
-          <CcField label="LINK" htmlFor={`link-${props.postId}`}>
-            <input
-              id={`link-${props.postId}`}
-              type="url"
-              className="cc-input"
-              placeholder="https://paws.garden"
-              value={draft.link}
-              onChange={(event) => update({ link: event.target.value })}
-            />
-          </CcField>
-        </div>
-      </div>
       <AssetsEditor
         postId={props.postId}
         assets={draft.assets}

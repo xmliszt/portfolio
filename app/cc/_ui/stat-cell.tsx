@@ -17,13 +17,13 @@ const TONE_CLASS = {
 
 export function StatCell(props: StatCellProps) {
   return (
-    <div className="bg-card flex min-w-0 flex-col gap-y-1.5 px-[18px] py-4">
-      <span className="text-muted-foreground text-[11px] tracking-[0.14em]">
+    <div className="bg-card flex min-w-0 flex-col gap-y-1 px-3 py-2">
+      <span className="text-muted-foreground text-[10.5px] tracking-[0.04em] uppercase">
         {props.label}
       </span>
       <span
         className={cn(
-          "text-[28px] leading-none font-bold tabular-nums",
+          "text-[20px] leading-6 font-semibold tabular-nums",
           TONE_CLASS[props.tone ?? "default"]
         )}
       >

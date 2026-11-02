@@ -42,7 +42,7 @@ export function DeletePostButton(props: DeletePostButtonProps) {
     <span className="flex flex-wrap items-center gap-x-2 gap-y-1">
       <CcButton
         type="button"
-        variant="warn"
+        variant="danger"
         size={props.size}
         onClick={handleDelete}
         disabled={isPending}

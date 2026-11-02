@@ -128,16 +128,16 @@ export function LogEntryRow(props: LogEntryRowProps) {
   }
 
   return (
-    <div className="border-cc-line-soft flex flex-col gap-y-3 border-b px-[18px] py-4 last:border-b-0">
+    <div className="border-cc-line-soft flex flex-col gap-y-1.5 border-b px-3 py-2 last:border-b-0">
       <form
         onSubmit={handleSubmit}
         aria-label={`${platform.label} ${formatCheckpoint(props.row.checkpoint)}`}
-        className="flex flex-wrap items-end gap-x-3 gap-y-3"
+        className="flex flex-wrap items-end gap-x-2 gap-y-2"
       >
-        <div className="flex w-full min-w-0 flex-col gap-y-1 lg:w-[220px]">
+        <div className="flex w-full min-w-0 flex-col gap-y-0.5 lg:w-[240px]">
           <div className="flex items-center gap-x-2">
             <PlatformChip platformId={props.row.platformId} />
-            <span className="text-primary text-[12px] font-bold">
+            <span className="text-primary text-[11px] font-semibold">
               {formatCheckpoint(props.row.checkpoint)}
             </span>
           </div>
@@ -156,10 +156,10 @@ export function LogEntryRow(props: LogEntryRowProps) {
         {platform.metrics.map((field) => {
           const last = props.row.lastValues[field];
           return (
-            <div key={field} className="flex w-[92px] flex-col gap-y-1">
+            <div key={field} className="flex w-[76px] flex-col gap-y-0.5">
               <label
                 htmlFor={`${idPrefix}-${field}`}
-                className="text-muted-foreground text-[11px] tracking-[0.14em] uppercase"
+                className="text-muted-foreground truncate text-[10px] tracking-[0.04em] uppercase"
               >
                 {getMetricLabel({ platformId: props.row.platformId, field })}
               </label>
@@ -173,7 +173,7 @@ export function LogEntryRow(props: LogEntryRowProps) {
                 onChange={(event) =>
                   setTexts({ ...texts, [field]: event.target.value })
                 }
-                className="cc-input text-[15px] font-bold tabular-nums"
+                className="cc-input font-semibold tabular-nums"
               />
             </div>
           );
@@ -194,10 +194,10 @@ export function LogEntryRow(props: LogEntryRowProps) {
           )}
         </div>
       </form>
-      <div className="flex flex-wrap items-center gap-x-3 gap-y-2">
+      <div className="flex flex-wrap items-center gap-x-2 gap-y-1.5 lg:pl-[248px]">
         <label
           htmlFor={`${idPrefix}-paste`}
-          className="text-muted-foreground text-[11px] tracking-[0.14em]"
+          className="text-muted-foreground text-[10.5px] tracking-[0.04em] uppercase"
         >
           OR PASTE A LINE
         </label>

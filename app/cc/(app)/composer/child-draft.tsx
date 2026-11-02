@@ -1,5 +1,7 @@
 "use client";
 
+import { useState } from "react";
+
 import { countPostCharacters } from "@/lib/cc/count-post-characters";
 import type { PostRow } from "@/lib/cc/data/cc-rows";
 import { isAutoPublishPlatform } from "@/lib/cc/is-auto-publish-platform";
@@ -23,31 +25,49 @@ type ChildDraftProps = {
   onBodyChange: (body: string) => void;
   onAssetsChange: (assets: readonly PostAsset[]) => void;
   dirty: boolean;
+  index: number;
 };
 
 export function ChildDraft(props: ChildDraftProps) {
   const inputId = `body-${props.post.id}`;
+  const [isMediaOpen, setIsMediaOpen] = useState(props.assets.length > 0);
   return (
-    <div
+    <li
       id={`post-${props.post.id}`}
-      className="border-cc-line-soft flex flex-col gap-y-2 border-t px-[18px] py-4"
+      className="border-cc-line-soft grid grid-cols-[28px_minmax(0,1fr)] gap-x-2 border-b px-3 py-2"
     >
-      <label
-        htmlFor={inputId}
-        className="text-muted-foreground text-[11px] tracking-[0.14em]"
-      >
-        ↳ {props.label.toUpperCase()}
-      </label>
-      <textarea
-        id={inputId}
-        rows={4}
-        autoFocus={props.focused}
-        className="cc-input resize-y"
-        value={props.body}
-        onChange={(event) => props.onBodyChange(event.target.value)}
-      />
-      <div className="flex flex-wrap items-start justify-between gap-x-3 gap-y-2">
-        <div className="flex flex-wrap items-center gap-x-2 gap-y-2">
+      <div className="flex flex-col items-center gap-y-1 pt-0.5">
+        <span className="bg-cc-panel-2 text-cc-text-2 flex size-5 items-center justify-center text-[10.5px] font-semibold tabular-nums">
+          {props.index}
+        </span>
+        <span aria-hidden className="bg-border w-px flex-1" />
+      </div>
+      <div className="flex min-w-0 flex-col gap-y-1.5">
+        <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-1">
+          <label
+            htmlFor={inputId}
+            className="text-muted-foreground text-[10.5px] tracking-[0.04em] uppercase"
+          >
+            ↳ {props.label}
+          </label>
+          <CharacterCount
+            count={countPostCharacters({
+              text: props.body,
+              platformId: props.platformId,
+            })}
+            limit={props.limit}
+            platformId={props.platformId}
+          />
+        </div>
+        <textarea
+          id={inputId}
+          rows={3}
+          autoFocus={props.focused}
+          className="cc-input resize-y"
+          value={props.body}
+          onChange={(event) => props.onBodyChange(event.target.value)}
+        />
+        <div className="flex flex-wrap items-center gap-x-1.5 gap-y-1.5">
           <CopyButton text={props.body.trimEnd()} size="sm" />
           <MarkPostedControl
             postId={props.post.id}
@@ -57,29 +77,34 @@ export function ChildDraft(props: ChildDraftProps) {
             size="sm"
           />
         </div>
-        <CharacterCount
-          count={countPostCharacters({
-            text: props.body,
-            platformId: props.platformId,
-          })}
-          limit={props.limit}
-          platformId={props.platformId}
-        />
+        {isAutoPublishPlatform(props.platformId) &&
+          (props.post.status === "draft" ||
+            props.post.status === "scheduled") && (
+            <AutoPublishControl
+              post={props.post}
+              platformId={props.platformId}
+              dirty={props.dirty}
+            />
+          )}
+        <details
+          open={isMediaOpen}
+          onToggle={(event) => setIsMediaOpen(event.currentTarget.open)}
+          className="group"
+        >
+          <summary className="text-muted-foreground hover:text-foreground w-fit cursor-pointer list-none text-[10.5px] tracking-[0.04em] uppercase [&::-webkit-details-marker]:hidden">
+            {props.assets.length === 0
+              ? "+ Media"
+              : `Media (${props.assets.length})`}
+          </summary>
+          <div className="flex flex-col pt-1.5">
+            <AssetsEditor
+              postId={props.post.id}
+              assets={props.assets}
+              onChange={props.onAssetsChange}
+            />
+          </div>
+        </details>
       </div>
-      {isAutoPublishPlatform(props.platformId) &&
-        (props.post.status === "draft" ||
-          props.post.status === "scheduled") && (
-          <AutoPublishControl
-            post={props.post}
-            platformId={props.platformId}
-            dirty={props.dirty}
-          />
-        )}
-      <AssetsEditor
-        postId={props.post.id}
-        assets={props.assets}
-        onChange={props.onAssetsChange}
-      />
-    </div>
+    </li>
   );
 }

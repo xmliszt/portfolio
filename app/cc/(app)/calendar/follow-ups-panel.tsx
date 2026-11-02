@@ -24,7 +24,7 @@ export function FollowUpsPanel() {
     <Panel
       title="FOLLOW-UPS EVERY POST GETS"
       className="flex-[2_1_520px]"
-      bodyClassName="grid grid-cols-1 gap-x-2.5 gap-y-2.5 px-[18px] py-3.5 sm:grid-cols-2 lg:grid-cols-4"
+      bodyClassName="grid grid-cols-1 gap-x-2.5 gap-y-2.5 px-3 py-2 sm:grid-cols-2 lg:grid-cols-4"
       footer="Times count from when you mark a post posted."
     >
       {FOLLOW_UPS.map((followUp) => (

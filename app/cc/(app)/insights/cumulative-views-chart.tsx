@@ -73,7 +73,7 @@ export function CumulativeViewsChart(props: CumulativeViewsChartProps) {
 
   return (
     <div className="flex flex-col gap-y-3">
-      <ul className="text-muted-foreground flex flex-wrap gap-x-4 gap-y-1 text-[11px]">
+      <ul className="text-muted-foreground flex flex-wrap gap-x-3 gap-y-1 text-[11px]">
         {props.series.map((line) => (
           <li key={line.platformId} className="flex items-center gap-x-1.5">
             <svg aria-hidden width="16" height="4" className="overflow-visible">

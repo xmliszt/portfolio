@@ -40,7 +40,7 @@ export function TagRatingBadge(props: TagRatingBadgeProps) {
     <span
       title={rating.hint}
       className={cn(
-        "inline-flex shrink-0 items-center border px-1.5 text-[10px] font-bold tracking-[0.1em]",
+        "inline-flex shrink-0 items-center border px-1.5 text-[10px] font-bold tracking-[0.04em]",
         rating.className
       )}
     >

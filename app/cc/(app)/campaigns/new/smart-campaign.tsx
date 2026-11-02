@@ -273,7 +273,7 @@ export function SmartCampaign(props: SmartCampaignProps) {
         >
           GENERATE PROMPT
         </CcButton>
-        <CcButton type="button" variant="warn" onClick={startOver}>
+        <CcButton type="button" variant="danger" onClick={startOver}>
           START OVER
         </CcButton>
         {missingFields.length > 0 && (
@@ -294,7 +294,7 @@ export function SmartCampaign(props: SmartCampaignProps) {
           title="ChatGPT's reply"
           aside="Paste the whole reply; CC finds the JSON"
           className="flex-[1_1_100%]"
-          bodyClassName="flex flex-col gap-y-3 px-[18px] py-4"
+          bodyClassName="flex flex-col gap-y-3 px-3 py-2.5"
         >
           <textarea
             aria-label="ChatGPT's reply"
@@ -336,7 +336,7 @@ export function SmartCampaign(props: SmartCampaignProps) {
                   Removed: {state.removedRefs.join(", ")}{" "}
                   <button
                     type="button"
-                    className="text-primary min-h-11 hover:underline"
+                    className="text-primary min-h-7 hover:underline"
                     onClick={() => update({ removedRefs: [] })}
                   >
                     RESTORE
@@ -361,7 +361,7 @@ export function SmartCampaign(props: SmartCampaignProps) {
               title={PLATFORMS[platformId].label}
               aside={`${platformDrafts.length} to create`}
               className="flex-[1_1_100%]"
-              bodyClassName="flex flex-col gap-y-4 px-[18px] py-4"
+              bodyClassName="flex flex-col gap-y-3 px-3 py-2.5"
             >
               {waves.map((wave) => (
                 <section
@@ -369,7 +369,7 @@ export function SmartCampaign(props: SmartCampaignProps) {
                   aria-label={`Wave ${wave ?? "none"}`}
                   className="flex flex-col gap-y-2"
                 >
-                  <h3 className="text-muted-foreground text-[11px] tracking-[0.14em]">
+                  <h3 className="text-muted-foreground text-[10.5px] tracking-[0.04em] uppercase">
                     {generated.plan.waves
                       .find((entry) => entry.wave === wave)
                       ?.title.toUpperCase() ?? `WAVE ${wave ?? "–"}`}

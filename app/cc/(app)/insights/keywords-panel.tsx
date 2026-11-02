@@ -68,9 +68,9 @@ export function KeywordsPanel(props: KeywordsPanelProps) {
       <Panel
         title="Keywords · X posts per day"
         className="flex-[1_1_100%]"
-        bodyClassName="flex flex-col gap-y-2 px-[18px] py-4"
+        bodyClassName="flex flex-col gap-y-2 px-3 py-2.5"
       >
-        <p className="text-cc-text-2 leading-relaxed">
+        <p className="text-cc-text-2 text-[11px] leading-relaxed">
           X keyword tracking is not set up.
         </p>
         <ol className="text-muted-foreground flex list-decimal flex-col gap-y-1 pl-5 text-[12px] leading-relaxed">
@@ -94,15 +94,15 @@ export function KeywordsPanel(props: KeywordsPanelProps) {
       title="Keywords · X posts per day"
       aside="Last 30 UTC days · each line on its own scale · ticks mark days you posted"
       className="flex-[1_1_100%]"
-      bodyClassName="flex flex-col gap-y-4 px-[18px] py-4"
+      bodyClassName="flex flex-col gap-y-3 px-3 py-2.5"
     >
       {props.keywords.length === 0 ? (
-        <p className="text-cc-text-2 leading-relaxed">
+        <p className="text-cc-text-2 text-[11px] leading-relaxed">
           No keywords yet. Add a term, like your product name or a hashtag, and
           the daily job starts counting X posts that use it.
         </p>
       ) : (
-        <ul className="grid grid-cols-[repeat(auto-fill,minmax(260px,1fr))] gap-x-5 gap-y-5">
+        <ul className="grid grid-cols-[repeat(auto-fill,minmax(260px,1fr))] gap-x-3 gap-y-3">
           {props.keywords.map((keyword) => (
             <li key={keyword.id} className="flex flex-col gap-y-1.5">
               <div className="flex items-start justify-between gap-x-2">
@@ -142,7 +142,7 @@ export function KeywordsPanel(props: KeywordsPanelProps) {
         <div className="flex min-w-[220px] flex-1 flex-col gap-y-1.5">
           <label
             htmlFor="keyword-term"
-            className="text-muted-foreground text-[11px] tracking-[0.14em]"
+            className="text-muted-foreground text-[10.5px] tracking-[0.04em] uppercase"
           >
             NEW KEYWORD
           </label>

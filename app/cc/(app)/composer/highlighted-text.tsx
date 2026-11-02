@@ -19,7 +19,7 @@ export function HighlightedText(props: HighlightedTextProps) {
     return { start, text: props.text.slice(start, end), labels };
   });
   return (
-    <div className="text-[14px] leading-[1.75] break-words whitespace-pre-wrap">
+    <div className="text-[12px] leading-[1.75] break-words whitespace-pre-wrap">
       {segments.map((segment) =>
         segment.labels.length === 0 ? (
           <span key={segment.start}>{segment.text}</span>

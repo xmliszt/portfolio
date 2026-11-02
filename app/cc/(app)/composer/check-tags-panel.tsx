@@ -52,7 +52,7 @@ export function CheckTagsPanel(props: CheckTagsPanelProps) {
       title="Check tags on Threads"
       aside="Recent Threads posts · up to 25"
       className={props.className}
-      bodyClassName="flex flex-col gap-y-3 px-[18px] py-4"
+      bodyClassName="flex flex-col gap-y-3 px-3 py-2.5"
     >
       <form
         onSubmit={handleSubmit}
@@ -61,7 +61,7 @@ export function CheckTagsPanel(props: CheckTagsPanelProps) {
         <div className="flex min-w-[180px] flex-1 flex-col gap-y-1.5">
           <label
             htmlFor="check-tags-term"
-            className="text-muted-foreground text-[11px] tracking-[0.14em]"
+            className="text-muted-foreground text-[10.5px] tracking-[0.04em] uppercase"
           >
             TERM · BLANK CHECKS THIS POST&apos;S HASHTAGS
           </label>

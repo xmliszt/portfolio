@@ -38,7 +38,7 @@ export function MarkPostedControl(props: MarkPostedControlProps) {
 
   if (props.status === "posted") {
     return (
-      <span className="text-cc-ok flex flex-wrap items-center gap-x-2 text-[11px] tracking-[0.1em]">
+      <span className="text-cc-ok flex flex-wrap items-center gap-x-2 text-[11px] tracking-[0.04em]">
         POSTED ✓
         {props.postedAt !== null &&
           ` ${formatSgt({ date: new Date(props.postedAt), pattern: "EEE dd MMM HH:mm" })} SGT`}
@@ -64,7 +64,7 @@ export function MarkPostedControl(props: MarkPostedControlProps) {
         size={props.size}
         onClick={() => setIsMarking(true)}
       >
-        MARK POSTED + PASTE URL
+        MARK POSTED
       </CcButton>
     );
   }

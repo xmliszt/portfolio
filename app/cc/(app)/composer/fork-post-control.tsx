@@ -16,11 +16,12 @@ type ForkPostControlProps = {
   post: PostRow;
   platformId: PlatformId;
   dirty: boolean;
+  startOpen?: boolean;
 };
 
 export function ForkPostControl(props: ForkPostControlProps) {
   const router = useRouter();
-  const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(props.startOpen ?? false);
   const [platformId, setPlatformId] = useState<PlatformId>(props.platformId);
   const [date, setDate] = useState("");
   const [time, setTime] = useState("");
@@ -83,7 +84,7 @@ export function ForkPostControl(props: ForkPostControlProps) {
     <form
       onSubmit={handleSubmit}
       aria-label="Fork post"
-      className="flex w-full flex-col gap-y-3 border p-3"
+      className="flex w-full flex-col gap-y-2"
     >
       <p className="text-muted-foreground text-[12px]">
         Copies the saved text, hashtags, link, title and uploaded media into a
@@ -95,7 +96,7 @@ export function ForkPostControl(props: ForkPostControlProps) {
             : "It is saved as a new post."}{" "}
         Leave the time empty to save a draft.
       </p>
-      <div className="grid grid-cols-1 gap-x-3 gap-y-3 sm:grid-cols-3">
+      <div className="grid grid-cols-1 gap-x-2 gap-y-2">
         <CcField label="PLATFORM" htmlFor={`fork-platform-${props.post.id}`}>
           <select
             id={`fork-platform-${props.post.id}`}
@@ -138,9 +139,11 @@ export function ForkPostControl(props: ForkPostControlProps) {
         >
           {isPending ? "FORKING…" : "CREATE FORK"}
         </CcButton>
-        <CcButton type="button" size="sm" onClick={() => setIsOpen(false)}>
-          CANCEL
-        </CcButton>
+        {!props.startOpen && (
+          <CcButton type="button" size="sm" onClick={() => setIsOpen(false)}>
+            CANCEL
+          </CcButton>
+        )}
         {props.dirty && (
           <span className="text-muted-foreground text-[11px]">
             Save first: the fork copies the saved post.

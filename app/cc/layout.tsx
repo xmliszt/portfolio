@@ -63,7 +63,7 @@ export default function CcLayout(props: CcLayoutProps) {
     <div
       className={cn(
         "cc-theme fixed inset-0 z-[100] overflow-auto antialiased",
-        "font-[family-name:var(--font-geist-mono)] text-[13px]",
+        "font-[family-name:var(--font-geist-mono)] text-[12px] leading-[18px]",
         "[--cc-font-display:var(--font-geist-sans)]",
         GeistSans.variable,
         GeistMono.variable

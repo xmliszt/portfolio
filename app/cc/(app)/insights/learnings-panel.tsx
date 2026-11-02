@@ -47,10 +47,10 @@ export function LearningsPanel(props: LearningsPanelProps) {
     <Panel
       title="Learnings"
       className="border-cc-ok flex-[2_1_360px]"
-      bodyClassName="flex flex-col gap-y-4 px-[18px] py-4"
+      bodyClassName="flex flex-col gap-y-3 px-3 py-2.5"
     >
       {props.notes.length === 0 ? (
-        <p className="text-cc-text-2 leading-relaxed">
+        <p className="text-cc-text-2 text-[11px] leading-relaxed">
           No notes yet. Write down what you notice as the numbers come in, like
           “the link in reply 1 did better than the link in the post”.
         </p>
@@ -84,7 +84,7 @@ export function LearningsPanel(props: LearningsPanelProps) {
       <form onSubmit={handleSubmit} className="flex flex-col gap-y-2">
         <label
           htmlFor="learning-note"
-          className="text-muted-foreground text-[11px] tracking-[0.14em]"
+          className="text-muted-foreground text-[10.5px] tracking-[0.04em] uppercase"
         >
           NEW NOTE
         </label>
