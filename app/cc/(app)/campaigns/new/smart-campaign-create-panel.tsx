@@ -156,7 +156,7 @@ export function SmartCampaignCreatePanel(props: SmartCampaignCreatePanelProps) {
       title={campaignId === undefined ? "Create campaign" : "Schedule"}
       aside="Posts start as drafts; Apply schedules them"
       className="flex-[1_1_100%]"
-      bodyClassName="flex flex-col gap-y-4 px-[18px] py-4"
+      bodyClassName="flex flex-col gap-y-3 px-3 py-2.5"
     >
       {campaignId === undefined ? (
         <div className="flex flex-wrap items-end gap-x-3 gap-y-3">

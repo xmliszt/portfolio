@@ -18,11 +18,9 @@ export function RunSheetPanel(props: RunSheetPanelProps) {
           : `RUN SHEET · ${props.dayLabel.toUpperCase()}`
       }
       aside="ALL TIMES SGT"
-      className="flex-[3_1_560px]"
-      footer="Posting is manual: copy the text, open the platform, press Post yourself, then mark it posted."
     >
       {props.items.length === 0 ? (
-        <p className="text-muted-foreground px-[18px] py-6">
+        <p className="text-muted-foreground px-3 py-3 text-[11px]">
           Nothing scheduled. Add a post in the{" "}
           <Link href="/calendar" className="text-primary">
             calendar

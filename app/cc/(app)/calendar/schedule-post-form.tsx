@@ -87,7 +87,7 @@ export function SchedulePostForm(props: SchedulePostFormProps) {
       title="SCHEDULE POST"
       aside="TIMES IN SGT"
       className="flex-[1_1_360px]"
-      bodyClassName="px-[18px] py-4"
+      bodyClassName="px-3 py-2.5"
     >
       <form id="schedule" onSubmit={create} className="flex flex-col gap-y-3.5">
         <div className="grid grid-cols-1 gap-x-3 gap-y-3.5 sm:grid-cols-2">

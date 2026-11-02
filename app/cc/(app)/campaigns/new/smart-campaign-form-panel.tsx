@@ -56,9 +56,9 @@ export function SmartCampaignFormPanel(props: SmartCampaignFormPanelProps) {
       title="Product"
       aside="CC plans the posts; ChatGPT writes them"
       className="flex-[1_1_100%]"
-      bodyClassName="flex flex-col gap-y-4 px-[18px] py-4"
+      bodyClassName="flex flex-col gap-y-3 px-3 py-2.5"
     >
-      <div className="flex flex-wrap items-end gap-x-4 gap-y-2">
+      <div className="flex flex-wrap items-end gap-x-3 gap-y-2">
         <CcField label="KIND" htmlFor="smart-kind">
           <select
             id="smart-kind"
@@ -79,7 +79,7 @@ export function SmartCampaignFormPanel(props: SmartCampaignFormPanelProps) {
             ))}
           </select>
         </CcField>
-        <span className="text-muted-foreground min-h-11 py-3 text-[12px]">
+        <span className="text-muted-foreground min-h-7 py-3 text-[12px]">
           {KIND_HINT[form.kind]}
         </span>
       </div>
@@ -96,7 +96,7 @@ export function SmartCampaignFormPanel(props: SmartCampaignFormPanelProps) {
           onChange={(event) => update({ intent: event.target.value })}
         />
       </CcField>
-      <div className="flex flex-wrap gap-x-4 gap-y-4">
+      <div className="flex flex-wrap gap-x-3 gap-y-3">
         <div className="min-w-[200px] flex-1">
           <CcField label="PRODUCT NAME" htmlFor="smart-name">
             <input
@@ -157,7 +157,7 @@ export function SmartCampaignFormPanel(props: SmartCampaignFormPanelProps) {
         />
       </CcField>
       <fieldset className="flex flex-col gap-y-2">
-        <legend className="text-muted-foreground mb-1.5 text-[11px] tracking-[0.14em]">
+        <legend className="text-muted-foreground mb-1.5 text-[10.5px] tracking-[0.04em] uppercase">
           PLATFORMS · LANGUAGE
         </legend>
         <div className="grid grid-cols-1 gap-x-3 gap-y-2 sm:grid-cols-2 lg:grid-cols-3">
@@ -166,7 +166,7 @@ export function SmartCampaignFormPanel(props: SmartCampaignFormPanelProps) {
             return (
               <div
                 key={platformId}
-                className="flex min-h-11 items-center justify-between gap-x-2 border px-3"
+                className="flex min-h-7 items-center justify-between gap-x-2 border px-3"
               >
                 <label className="flex items-center gap-x-2 text-[12px]">
                   <input
@@ -199,7 +199,7 @@ export function SmartCampaignFormPanel(props: SmartCampaignFormPanelProps) {
           })}
         </div>
       </fieldset>
-      <div className="flex flex-wrap items-end gap-x-4 gap-y-3">
+      <div className="flex flex-wrap items-end gap-x-3 gap-y-3">
         <CcField label="STARTS (SGT)" htmlFor="smart-start">
           <input
             id="smart-start"
@@ -253,14 +253,14 @@ export function SmartCampaignFormPanel(props: SmartCampaignFormPanelProps) {
           </p>
         )}
       <fieldset className="flex flex-col gap-y-2">
-        <legend className="text-muted-foreground mb-1.5 text-[11px] tracking-[0.14em]">
+        <legend className="text-muted-foreground mb-1.5 text-[10.5px] tracking-[0.04em] uppercase">
           MEDIA I HAVE
         </legend>
-        <div className="flex flex-wrap gap-x-4 gap-y-2">
+        <div className="flex flex-wrap gap-x-3 gap-y-2">
           {MEDIA_OPTIONS.map((option) => (
             <label
               key={option.key}
-              className="flex min-h-11 items-center gap-x-2 text-[12px]"
+              className="flex min-h-7 items-center gap-x-2 text-[12px]"
             >
               <input
                 type="checkbox"

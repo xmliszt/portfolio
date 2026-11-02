@@ -9,7 +9,7 @@ export const metadata = { title: "Sign in" };
 export default async function LoginPage() {
   if ((await getCcOwner()) !== undefined) redirect("/");
   return (
-    <main className="flex min-h-full items-center justify-center p-4">
+    <main className="flex min-h-full items-center justify-center p-3">
       <LoginForm />
     </main>
   );

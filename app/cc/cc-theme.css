@@ -1,36 +1,33 @@
 .cc-theme {
-  --background: 220 33.3% 3.5%;
-  --foreground: 210 55.6% 92.9%;
-  --card: 213 33.3% 6.5%;
-  --card-foreground: 210 55.6% 92.9%;
-  --popover: 213 33.3% 6.5%;
-  --popover-foreground: 210 55.6% 92.9%;
-  --primary: 188 100% 58.8%;
-  --primary-foreground: 220 33.3% 3.5%;
-  --secondary: 215 36.2% 9.2%;
-  --secondary-foreground: 210 55.6% 92.9%;
-  --muted: 215 36.2% 9.2%;
-  --muted-foreground: 213 19.6% 60%;
-  --accent: 188 100% 58.8%;
-  --accent-foreground: 220 33.3% 3.5%;
-  --destructive: 5 100% 66.5%;
-  --destructive-foreground: 220 33.3% 3.5%;
-  --border: 212 30.8% 15.3%;
-  --input: 212 30.8% 15.3%;
-  --ring: 188 100% 58.8%;
+  --background: 220 20% 4%;
+  --foreground: 210 20% 90%;
+  --card: 218 20% 7%;
+  --card-foreground: 210 20% 90%;
+  --popover: 218 20% 9%;
+  --popover-foreground: 210 20% 90%;
+  --primary: 188 90% 55%;
+  --primary-foreground: 220 20% 4%;
+  --secondary: 216 18% 10%;
+  --secondary-foreground: 210 20% 90%;
+  --muted: 216 18% 10%;
+  --muted-foreground: 213 10% 52%;
+  --accent: 188 90% 55%;
+  --accent-foreground: 220 20% 4%;
+  --destructive: 4 72% 58%;
+  --destructive-foreground: 220 20% 4%;
+  --border: 214 16% 16%;
+  --input: 214 16% 16%;
+  --ring: 188 90% 55%;
   --radius: 0px;
-  --cc-panel-2: 215 36.2% 9.2%;
-  --cc-line-soft: 213 33.3% 10.6%;
-  --cc-text-2: 210 31.1% 82.4%;
-  --cc-warn: 36 100% 63.9%;
-  --cc-ok: 150 100% 65.1%;
-  --cc-chatgpt: 334 100% 65.5%;
+  --cc-panel-2: 216 18% 10%;
+  --cc-line-soft: 214 16% 12%;
+  --cc-text-2: 212 14% 72%;
+  --cc-warn: 36 90% 58%;
+  --cc-ok: 150 60% 52%;
+  --cc-danger: 4 72% 58%;
+  --cc-chatgpt: 334 70% 62%;
   color-scheme: dark;
   background-color: hsl(var(--background));
-  background-image:
-    linear-gradient(hsl(var(--primary) / 0.035) 1px, transparent 1px),
-    linear-gradient(90deg, hsl(var(--primary) / 0.035) 1px, transparent 1px);
-  background-size: 32px 32px;
   color: hsl(var(--foreground));
 }
 
@@ -52,33 +49,40 @@
 }
 
 .cc-theme {
-  --cc-platform-producthunt: 5 100% 66.5%;
-  --cc-platform-xiaohongshu: 334 100% 65.5%;
-  --cc-platform-wechat: 150 100% 65.1%;
-  --cc-platform-x: 210 55.6% 92.9%;
-  --cc-platform-threads: 210 31.1% 82.4%;
-  --cc-platform-instagram: 36 100% 63.9%;
-  --cc-platform-tiktok: 188 100% 58.8%;
-  --cc-platform-reddit: 24 100% 62%;
-  --cc-platform-youtube: 0 100% 64%;
-  --cc-platform-linkedin: 210 90% 62%;
-  --cc-platform-bluesky: 211 100% 64%;
+  --cc-platform-producthunt: 12 70% 62%;
+  --cc-platform-xiaohongshu: 330 60% 66%;
+  --cc-platform-wechat: 95 40% 60%;
+  --cc-platform-wechat-moments: 125 40% 58%;
+  --cc-platform-x: 210 15% 92%;
+  --cc-platform-threads: 210 12% 74%;
+  --cc-platform-instagram: 300 55% 68%;
+  --cc-platform-tiktok: 172 50% 58%;
+  --cc-platform-reddit: 30 80% 60%;
+  --cc-platform-youtube: 352 65% 62%;
+  --cc-platform-linkedin: 225 60% 66%;
+  --cc-platform-bluesky: 205 85% 64%;
 }
 
 @layer components {
   .cc-theme .cc-input {
-    min-height: 44px;
+    min-height: 28px;
     width: 100%;
     border: 1px solid hsl(var(--border));
     background: hsl(var(--cc-panel-2));
-    padding: 0 12px;
+    padding: 0 8px;
     color: hsl(var(--foreground));
     font: inherit;
+    font-size: 12px;
   }
 
   .cc-theme textarea.cc-input {
-    padding: 10px 12px;
+    padding: 6px 8px;
     line-height: 1.6;
+    font-size: 13px;
+  }
+
+  .cc-theme select.cc-input {
+    padding-right: 4px;
   }
 
   .cc-theme .cc-input:focus-visible {

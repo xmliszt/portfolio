@@ -3,18 +3,16 @@
 import { useEffect, useState, useTransition } from "react";
 import isEqual from "lodash/isEqual.js";
 
-import { CcButton } from "@/app/cc/_ui/cc-button";
 import { Panel } from "@/app/cc/_ui/panel";
 import { savePost } from "@/app/cc/(app)/_actions/save-post";
 import { isInternalNavigation } from "@/app/cc/(app)/is-internal-navigation";
 import type { PostRow } from "@/lib/cc/data/cc-rows";
-import { formatSgt } from "@/lib/cc/format-sgt";
 import { getPostCopyText } from "@/lib/cc/get-post-copy-text";
 import { type PlatformId, PLATFORMS } from "@/lib/cc/platforms";
-import { cn } from "@/lib/utils";
 
 import { ChatgptPanel } from "./chatgpt-panel";
 import { CheckTagsPanel } from "./check-tags-panel";
+import { ChecksColumn } from "./checks-column";
 import { ChildDraft } from "./child-draft";
 import type { ComposerTab } from "./composer-tab";
 import { ComposerTabs } from "./composer-tabs";
@@ -138,166 +136,184 @@ export function Composer(props: ComposerProps) {
     };
   }, [isDirty]);
 
-  const scheduledLabel =
-    props.post.scheduled_at === null
-      ? "UNSCHEDULED"
-      : `SCHEDULED ${formatSgt({ date: new Date(props.post.scheduled_at), pattern: "EEE dd MMM HH:mm" }).toUpperCase()} SGT`;
+  const checks = getPreflightChecks({
+    platformId: props.platformId,
+    title: draft.title,
+    body: draft.body,
+    copyText,
+    target: draft.target,
+    assets: draft.assets,
+    scheduledAt: props.post.scheduled_at,
+    childBodies,
+    sameDayTargets: props.sameDayTargets,
+    now: new Date(),
+  });
+  const passedCount = checks.filter(
+    (check) => check.kind !== "computed" || check.passed
+  ).length;
+  const failedCount = checks.filter(
+    (check) => check.kind === "computed" && !check.passed
+  ).length;
 
   return (
-    <>
+    <div className="grid grid-cols-1 items-start gap-x-3 gap-y-3 lg:grid-cols-[220px_minmax(0,1fr)] xl:grid-cols-[220px_minmax(0,1fr)_340px]">
       <ComposerTabs tabs={props.tabs} selectedPostId={props.post.id} />
-      <div className="flex flex-wrap items-start gap-x-5 gap-y-5">
-        <Panel
-          title={`Draft · ${platform.label}`}
-          className="flex-[3_1_520px]"
-          aside={
-            <span className="flex flex-wrap items-center gap-x-3 gap-y-1">
-              <span>{scheduledLabel}</span>
-              <span
-                aria-live="polite"
-                className={cn(
-                  "tracking-[0.1em]",
-                  isDirty ? "text-cc-warn" : "text-cc-ok"
-                )}
-              >
-                {isSaving ? "SAVING…" : isDirty ? "● UNSAVED" : "SAVED ✓"}
-              </span>
-              <CcButton
-                type="button"
-                size="sm"
-                variant={isDirty ? "primary" : "ghost"}
-                disabled={!isDirty || isSaving}
-                onClick={save}
-                title="Save (⌘S / Ctrl+S)"
-              >
-                SAVE ⌘S
-              </CcButton>
-            </span>
-          }
-        >
-          {saveError !== undefined && (
-            <p
-              role="alert"
-              className="text-cc-warn border-b px-[18px] py-2 text-[12px]"
-            >
-              {saveError}
-            </p>
-          )}
-          <PostFieldsEditor
-            postId={props.post.id}
-            platformId={props.platformId}
-            planned={
-              props.post.variant !== "chatgpt" && props.post.kind === "post"
-            }
-            draft={draft}
-            copyText={copyText}
-            onChange={(next) =>
-              updateDraft({ postId: props.post.id, draft: next })
-            }
-          />
-          <PostActions
-            post={props.post}
-            platformId={props.platformId}
-            title={draft.title}
-            copyText={copyText}
-            link={draft.link}
-            target={draft.target}
-            assets={draft.assets}
-            dirty={isDirty}
-          />
-          {props.childPosts.map((child, index) => {
-            const childDraft = drafts[child.id] ?? toDraftFields(child);
-            return (
-              <ChildDraft
-                key={child.id}
-                post={child}
-                platformId={props.platformId}
-                label={child.title ?? `${child.kind} ${index + 1}`}
-                limit={
-                  props.platformId === "producthunt"
-                    ? undefined
-                    : platform.bodyLimit
-                }
-                body={childDraft.body}
-                focused={child.id === props.focusPostId}
-                assets={childDraft.assets}
-                onBodyChange={(body) =>
-                  updateDraft({
-                    postId: child.id,
-                    draft: { ...childDraft, body },
-                  })
-                }
-                onAssetsChange={(assets) =>
-                  updateDraft({
-                    postId: child.id,
-                    draft: { ...childDraft, assets },
-                  })
-                }
-                dirty={isDirty}
-              />
-            );
-          })}
-        </Panel>
-        <PreflightPanel
-          platformLabel={platform.label}
-          className="flex-[2_1_340px]"
-          checks={getPreflightChecks({
-            platformId: props.platformId,
-            title: draft.title,
-            body: draft.body,
-            copyText,
-            target: draft.target,
-            assets: draft.assets,
-            scheduledAt: props.post.scheduled_at,
-            childBodies,
-            sameDayTargets: props.sameDayTargets,
-            now: new Date(),
-          })}
-        />
-      </div>
-      <div className="flex flex-wrap items-start gap-x-5 gap-y-5">
-        <VoiceCheckPanel
-          text={voiceText}
-          maxHashtags={platform.maxHashtags}
-          className="flex-[1_1_380px]"
-        />
-        <ChatgptPanel
-          key={props.chatgptVariant?.id ?? "none"}
+      <Panel
+        title={`${props.post.kind === "post" ? "Post" : props.post.kind} · ${platform.label}`}
+        aside={
+          <span className="tabular-nums">
+            {props.childPosts.length === 0
+              ? "no replies"
+              : `${props.childPosts.length} ${props.childPosts.length === 1 ? "reply" : "replies"}`}
+          </span>
+        }
+      >
+        <PostFieldsEditor
           postId={props.post.id}
           platformId={props.platformId}
+          planned={
+            props.post.variant !== "chatgpt" && props.post.kind === "post"
+          }
+          draft={draft}
           copyText={copyText}
-          variant={props.chatgptVariant}
-          className="flex-[2_1_560px]"
-          prompt={getChatgptPrompt({
-            campaignName: props.campaign.name,
-            makersNote: props.campaign.notes,
-            platformId: props.platformId,
-            title: hasTitle ? draft.title : "",
-            copyText,
-            target: draft.target,
-            assets: draft.assets,
-            original:
-              props.repostOf === undefined
-                ? undefined
-                : getPostCopyText({
-                    body: props.repostOf.body,
-                    hashtags: props.repostOf.hashtags,
-                  }),
-          })}
+          onChange={(next) =>
+            updateDraft({ postId: props.post.id, draft: next })
+          }
         />
-        {props.platformId === "threads" && (
-          <CheckTagsPanel
-            hashtags={parseHashtags(draft.hashtagsText)}
-            className="flex-[1_1_380px]"
-          />
+        {props.childPosts.length > 0 && (
+          <ol className="flex flex-col border-t" aria-label="Replies">
+            {props.childPosts.map((child, index) => {
+              const childDraft = drafts[child.id] ?? toDraftFields(child);
+              return (
+                <ChildDraft
+                  key={child.id}
+                  index={index + 1}
+                  post={child}
+                  platformId={props.platformId}
+                  label={child.title ?? `${child.kind} ${index + 1}`}
+                  limit={
+                    props.platformId === "producthunt"
+                      ? undefined
+                      : platform.bodyLimit
+                  }
+                  body={childDraft.body}
+                  focused={child.id === props.focusPostId}
+                  assets={childDraft.assets}
+                  onBodyChange={(body) =>
+                    updateDraft({
+                      postId: child.id,
+                      draft: { ...childDraft, body },
+                    })
+                  }
+                  onAssetsChange={(assets) =>
+                    updateDraft({
+                      postId: child.id,
+                      draft: { ...childDraft, assets },
+                    })
+                  }
+                  dirty={isDirty}
+                />
+              );
+            })}
+          </ol>
         )}
-        {props.platformId === "x" && (
-          <XTagCheckPanel
-            hashtags={parseHashtags(draft.hashtagsText)}
-            className="flex-[1_1_380px]"
-          />
-        )}
+        <PostActions
+          post={props.post}
+          platformId={props.platformId}
+          title={draft.title}
+          copyText={copyText}
+          link={draft.link}
+          target={draft.target}
+          assets={draft.assets}
+          dirty={isDirty}
+          saving={isSaving}
+          saveError={saveError}
+          onSave={save}
+        />
+      </Panel>
+      <div className="lg:col-span-2 xl:col-span-1">
+        <ChecksColumn
+          tabs={[
+            {
+              id: "preflight",
+              label:
+                failedCount > 0
+                  ? `Pre-flight · ${failedCount} to fix`
+                  : `Pre-flight ${passedCount}/${checks.length}`,
+              content: (
+                <PreflightPanel
+                  platformLabel={platform.label}
+                  checks={checks}
+                />
+              ),
+            },
+            {
+              id: "voice",
+              label: "Voice",
+              content: (
+                <VoiceCheckPanel
+                  text={voiceText}
+                  maxHashtags={platform.maxHashtags}
+                />
+              ),
+            },
+            {
+              id: "chatgpt",
+              label: "ChatGPT",
+              content: (
+                <ChatgptPanel
+                  key={props.chatgptVariant?.id ?? "none"}
+                  postId={props.post.id}
+                  platformId={props.platformId}
+                  copyText={copyText}
+                  variant={props.chatgptVariant}
+                  prompt={getChatgptPrompt({
+                    campaignName: props.campaign.name,
+                    makersNote: props.campaign.notes,
+                    platformId: props.platformId,
+                    title: hasTitle ? draft.title : "",
+                    copyText,
+                    target: draft.target,
+                    assets: draft.assets,
+                    original:
+                      props.repostOf === undefined
+                        ? undefined
+                        : getPostCopyText({
+                            body: props.repostOf.body,
+                            hashtags: props.repostOf.hashtags,
+                          }),
+                  })}
+                />
+              ),
+            },
+            ...(props.platformId === "threads"
+              ? [
+                  {
+                    id: "tags",
+                    label: "Tags",
+                    content: (
+                      <CheckTagsPanel
+                        hashtags={parseHashtags(draft.hashtagsText)}
+                      />
+                    ),
+                  },
+                ]
+              : props.platformId === "x"
+                ? [
+                    {
+                      id: "tags",
+                      label: "Tags",
+                      content: (
+                        <XTagCheckPanel
+                          hashtags={parseHashtags(draft.hashtagsText)}
+                        />
+                      ),
+                    },
+                  ]
+                : []),
+          ]}
+        />
       </div>
-    </>
+    </div>
   );
 }

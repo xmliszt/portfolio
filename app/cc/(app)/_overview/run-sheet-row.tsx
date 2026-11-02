@@ -79,11 +79,11 @@ export function RunSheetRow(props: RunSheetRowProps) {
   const isOpen = item.status !== "posted" && item.status !== "skipped";
 
   return (
-    <li className="border-cc-line-soft flex flex-col gap-y-2 border-b px-[18px] py-3">
-      <div className="flex flex-wrap items-center gap-x-3 gap-y-2">
+    <li className="border-cc-line-soft hover:bg-cc-panel-2/60 flex flex-col gap-y-1.5 border-b px-3 py-1">
+      <div className="flex min-h-7 flex-wrap items-center gap-x-2.5 gap-y-1">
         <span
           className={cn(
-            "w-[52px] text-[15px] font-bold tabular-nums",
+            "w-[40px] text-[12px] font-semibold tabular-nums",
             item.status === "next" && "text-primary"
           )}
         >
@@ -93,7 +93,7 @@ export function RunSheetRow(props: RunSheetRowProps) {
         <Link
           href={`/composer?post=${item.id}`}
           title="Open in composer"
-          className="text-cc-text-2 hover:text-primary min-h-11 min-w-[140px] flex-1 truncate leading-[44px] underline-offset-4 hover:underline"
+          className="text-cc-text-2 hover:text-primary min-w-[140px] flex-1 truncate underline-offset-4 hover:underline"
         >
           {item.kind !== "post" && (
             <span className="text-muted-foreground">
@@ -104,13 +104,13 @@ export function RunSheetRow(props: RunSheetRowProps) {
         </Link>
         <span
           className={cn(
-            "w-[64px] text-[11px] tracking-[0.1em]",
+            "w-[64px] text-[10.5px] font-semibold tracking-[0.04em]",
             STATUS_CLASS[item.status]
           )}
         >
           {item.status.toUpperCase()}
         </span>
-        <div className="ml-auto flex items-center justify-end gap-x-2">
+        <div className="flex items-center justify-end gap-x-1.5">
           <CcButton size="sm" onClick={copyText}>
             {isCopied ? "COPIED ✓" : "COPY"}
           </CcButton>
@@ -123,7 +123,12 @@ export function RunSheetRow(props: RunSheetRowProps) {
                     href={open.url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="border-primary bg-primary text-primary-foreground hover:bg-primary/85 inline-flex min-h-11 items-center border px-3 text-[11px] font-bold tracking-[0.1em]"
+                    className={cn(
+                      "inline-flex h-6 items-center border px-2 text-[10.5px] font-semibold tracking-[0.04em]",
+                      isOpen
+                        ? "border-primary bg-primary text-primary-foreground hover:bg-primary/85"
+                        : "text-cc-text-2 hover:border-primary hover:text-foreground"
+                    )}
                   >
                     OPEN ↗
                   </a>
@@ -132,7 +137,7 @@ export function RunSheetRow(props: RunSheetRowProps) {
                 return (
                   <CcButton
                     size="sm"
-                    variant="primary"
+                    variant={isOpen ? "primary" : "ghost"}
                     onClick={() => copyThenOpen(open.url)}
                   >
                     COPY + OPEN ↗
@@ -163,7 +168,7 @@ export function RunSheetRow(props: RunSheetRowProps) {
       {isMarking && (
         <form
           onSubmit={savePosted}
-          className="flex flex-wrap items-center gap-x-2 gap-y-2 pl-[64px]"
+          className="flex flex-wrap items-center gap-x-2 gap-y-2 pb-1.5 pl-[50px]"
         >
           <label htmlFor={`posted-url-${item.id}`} className="sr-only">
             Live URL

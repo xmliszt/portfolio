@@ -69,7 +69,7 @@ export function TelegramReplyMock(props: TelegramReplyMockProps) {
     >
       <div
         aria-label="Example chat"
-        className="bg-background/60 flex flex-col gap-y-3 p-4 text-[12px] leading-relaxed"
+        className="bg-background/60 flex flex-col gap-y-3 p-3 text-[12px] leading-relaxed"
       >
         <div className="bg-cc-panel-2 max-w-[85%] self-start border px-3 py-2.5">
           <span className="text-primary">CC bot</span>
@@ -82,7 +82,7 @@ export function TelegramReplyMock(props: TelegramReplyMockProps) {
             {listMetricLabels({ platformId: props.platformId }).join(" · ")}
           </span>
         </div>
-        <div className="border-primary bg-primary/15 max-w-[85%] self-end border px-3 py-2.5 text-[15px] font-bold">
+        <div className="border-primary bg-primary/15 max-w-[85%] self-end border px-3 py-2.5 text-[13px] font-bold">
           {reply}
         </div>
         <div className="bg-cc-panel-2 max-w-[85%] self-start border px-3 py-2.5">

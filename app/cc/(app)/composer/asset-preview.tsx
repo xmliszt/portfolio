@@ -8,8 +8,6 @@ const VIDEO_EXTENSIONS = ["mp4", "mov", "webm"];
 
 export function AssetPreview(props: AssetPreviewProps) {
   const extension = props.file.split(".").at(-1)?.toLowerCase() ?? "";
-  const frameClass =
-    "bg-cc-panel-2 flex size-24 shrink-0 items-center justify-center overflow-hidden border";
 
   if (props.url !== undefined && IMAGE_EXTENSIONS.includes(extension)) {
     return (
@@ -17,7 +15,7 @@ export function AssetPreview(props: AssetPreviewProps) {
         href={props.url}
         target="_blank"
         rel="noopener noreferrer"
-        className={frameClass}
+        className="bg-cc-panel-2 flex h-[180px] w-full max-w-[320px] shrink-0 items-center justify-center overflow-hidden border"
       >
         <img src={props.url} alt="" className="size-full object-contain" />
       </a>
@@ -29,14 +27,12 @@ export function AssetPreview(props: AssetPreviewProps) {
         src={props.url}
         controls
         preload="metadata"
-        className={`${frameClass} object-contain`}
+        className="bg-cc-panel-2 aspect-video w-full max-w-[480px] min-w-[320px] shrink-0 border object-contain"
       />
     );
   }
   return (
-    <div
-      className={`${frameClass} text-muted-foreground text-[11px] uppercase`}
-    >
+    <div className="bg-cc-panel-2 text-muted-foreground flex h-16 w-24 shrink-0 items-center justify-center border text-[11px] uppercase">
       {extension === "" ? "FILE" : extension}
     </div>
   );

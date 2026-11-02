@@ -20,7 +20,7 @@ export function PlanPreviewTable(props: PlanPreviewTableProps) {
   return (
     <div className="overflow-x-auto">
       <table className="w-full min-w-[760px] text-left">
-        <thead className="text-muted-foreground text-[11px] tracking-[0.1em]">
+        <thead className="text-muted-foreground text-[11px] tracking-[0.04em]">
           <tr>
             <th className="py-2 pr-2 font-normal">POST</th>
             <th className="px-2 py-2 font-normal">WAVE</th>
@@ -65,7 +65,7 @@ export function PlanPreviewTable(props: PlanPreviewTableProps) {
               </td>
               <td
                 className={cn(
-                  "py-2.5 pl-2 text-right text-[11px] tracking-[0.1em]",
+                  "py-2.5 pl-2 text-right text-[11px] tracking-[0.04em]",
                   MARKERS[row.kind].className
                 )}
               >

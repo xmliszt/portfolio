@@ -39,7 +39,7 @@ export function AbPairsPanel(props: AbPairsPanelProps) {
       className="flex-[3_1_560px]"
     >
       {props.pairs.length === 0 ? (
-        <p className="text-cc-text-2 px-[18px] py-6 leading-relaxed">
+        <p className="text-cc-text-2 px-3 py-6 leading-relaxed">
           No A/B pairs yet. In the composer, “Keep both” saves your draft and
           ChatGPT&apos;s edit as a pair; once both are posted and logged at +24
           h, they are compared here.
@@ -47,15 +47,15 @@ export function AbPairsPanel(props: AbPairsPanelProps) {
       ) : (
         <div className="overflow-x-auto">
           <table className="w-full min-w-[520px] text-left">
-            <thead className="text-muted-foreground text-[11px] tracking-[0.1em]">
+            <thead className="text-muted-foreground text-[11px] tracking-[0.04em]">
               <tr>
-                <th className="px-[18px] py-2 font-normal">PLATFORM</th>
+                <th className="px-3 py-2 font-normal">PLATFORM</th>
                 <th className="px-2 py-2 font-normal">POST</th>
                 <th className="px-2 py-2 text-right font-normal">MINE</th>
                 <th className="text-cc-chatgpt px-2 py-2 text-right font-normal">
                   CHATGPT
                 </th>
-                <th className="px-[18px] py-2 text-right font-normal">AHEAD</th>
+                <th className="px-3 py-2 text-right font-normal">AHEAD</th>
               </tr>
             </thead>
             <tbody>
@@ -63,7 +63,7 @@ export function AbPairsPanel(props: AbPairsPanelProps) {
                 const result = describeResult(pair);
                 return (
                   <tr key={pair.group} className="border-cc-line-soft border-t">
-                    <td className="px-[18px] py-2.5">
+                    <td className="px-3 py-2.5">
                       <PlatformChip platformId={pair.platformId} />
                     </td>
                     <td className="text-cc-text-2 px-2 py-2.5">
@@ -80,7 +80,7 @@ export function AbPairsPanel(props: AbPairsPanelProps) {
                     <td className="px-2 py-2.5 text-right tabular-nums">
                       {formatMetricNumber(pair.chatgptViews)}
                     </td>
-                    <td className="px-[18px] py-2.5 text-right font-bold whitespace-nowrap">
+                    <td className="px-3 py-2.5 text-right font-bold whitespace-nowrap">
                       {result.kind === "waiting" ? (
                         <span className="text-muted-foreground font-normal">
                           waiting

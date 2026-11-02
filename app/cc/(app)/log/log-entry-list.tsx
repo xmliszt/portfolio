@@ -101,7 +101,7 @@ export function LogEntryList(props: LogEntryListProps) {
         <div
           role="status"
           className={cn(
-            "flex flex-wrap items-center justify-between gap-x-3 gap-y-2 border-b px-[18px] py-3",
+            "flex flex-wrap items-center justify-between gap-x-3 gap-y-2 border-b px-3 py-3",
             status.kind === "logged" && "text-cc-ok bg-cc-ok/5",
             status.kind === "undone" && "text-cc-text-2",
             status.kind === "error" && "text-cc-warn"
@@ -111,7 +111,7 @@ export function LogEntryList(props: LogEntryListProps) {
           {status.kind === "logged" && (
             <CcButton
               size="sm"
-              variant="warn"
+              variant="ghost"
               onClick={handleUndo}
               disabled={isUndoing}
             >
@@ -121,7 +121,7 @@ export function LogEntryList(props: LogEntryListProps) {
         </div>
       )}
       {rows.length === 0 ? (
-        <div className="text-cc-text-2 px-[18px] py-6 leading-relaxed">
+        <div className="text-cc-text-2 px-3 py-6 leading-relaxed">
           {props.emptyNote}
         </div>
       ) : (
@@ -140,11 +140,11 @@ export function LogEntryList(props: LogEntryListProps) {
       )}
       <form
         onSubmit={handleAddExtra}
-        className="flex flex-wrap items-center gap-x-3 gap-y-2 border-t px-[18px] py-3"
+        className="flex flex-wrap items-center gap-x-3 gap-y-2 border-t px-3 py-3"
       >
         <label
           htmlFor="log-extra-post"
-          className="text-muted-foreground text-[11px] tracking-[0.14em]"
+          className="text-muted-foreground text-[10.5px] tracking-[0.04em] uppercase"
         >
           EXTRA ENTRY FOR
         </label>

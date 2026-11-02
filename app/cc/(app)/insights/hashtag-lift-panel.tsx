@@ -31,7 +31,7 @@ export function HashtagLiftPanel(props: HashtagLiftPanelProps) {
       footer="A tag gets a score once 3 posts on one platform use it and have +24 h views. Trending tags would need a paid tool; not in V1."
     >
       {props.lifts.length === 0 ? (
-        <div className="flex flex-col gap-y-3 px-[18px] py-5">
+        <div className="flex flex-col gap-y-3 px-3 py-3">
           <p className="text-cc-text-2 leading-relaxed">
             No tag has 3 measured uses yet, so there is nothing to compare.
           </p>
@@ -41,7 +41,7 @@ export function HashtagLiftPanel(props: HashtagLiftPanelProps) {
             </p>
           ) : (
             <div className="flex flex-col gap-y-1.5">
-              <span className="text-muted-foreground text-[11px] tracking-[0.14em]">
+              <span className="text-muted-foreground text-[10.5px] tracking-[0.04em] uppercase">
                 REPEATED IN THIS CAMPAIGN
               </span>
               <ul className="flex flex-wrap gap-x-2 gap-y-2">
@@ -66,7 +66,7 @@ export function HashtagLiftPanel(props: HashtagLiftPanelProps) {
             return (
               <li
                 key={`${row.platform}-${row.tag}`}
-                className="border-cc-line-soft grid grid-cols-[minmax(0,1.4fr)_auto_44px_minmax(0,1fr)_64px] items-center gap-x-3 border-t px-[18px] py-2.5 first:border-t-0"
+                className="border-cc-line-soft grid grid-cols-[minmax(0,1.4fr)_auto_44px_minmax(0,1fr)_64px] items-center gap-x-3 border-t px-3 py-2.5 first:border-t-0"
               >
                 <span className="truncate">#{row.tag}</span>
                 <PlatformChip platformId={row.platform} />

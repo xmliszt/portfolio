@@ -12,7 +12,7 @@ export function TopHashtagsPanel(props: TopHashtagsPanelProps) {
     <Panel
       title="TOP TAGS · VIEWS/POST"
       className="flex-[1_1_280px]"
-      bodyClassName="flex flex-col px-[18px] py-3"
+      bodyClassName="flex flex-col px-3 py-3"
     >
       {props.lifts.length === 0 ? (
         <p className="text-muted-foreground py-1 leading-normal">

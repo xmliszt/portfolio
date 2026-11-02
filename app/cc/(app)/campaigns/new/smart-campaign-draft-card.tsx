@@ -50,7 +50,7 @@ export function SmartCampaignDraftCard(props: SmartCampaignDraftCardProps) {
         isChild && "ml-4 border-dashed"
       )}
     >
-      <header className="flex flex-wrap items-center gap-x-2 gap-y-1.5 text-[11px] tracking-[0.08em]">
+      <header className="flex flex-wrap items-center gap-x-2 gap-y-1.5 text-[11px] tracking-[0.04em]">
         <PlatformChip platformId={draft.platformId} />
         <span className="font-bold">{draft.ref}</span>
         <span className="text-muted-foreground">
@@ -83,7 +83,7 @@ export function SmartCampaignDraftCard(props: SmartCampaignDraftCardProps) {
               <div className="flex items-center justify-between gap-x-2">
                 <label
                   htmlFor={`${id}-title`}
-                  className="text-muted-foreground text-[11px] tracking-[0.14em]"
+                  className="text-muted-foreground text-[10.5px] tracking-[0.04em] uppercase"
                 >
                   TITLE
                 </label>
@@ -108,7 +108,7 @@ export function SmartCampaignDraftCard(props: SmartCampaignDraftCardProps) {
             <div className="flex min-w-[160px] flex-1 flex-col gap-y-1.5">
               <label
                 htmlFor={`${id}-target`}
-                className="text-muted-foreground text-[11px] tracking-[0.14em]"
+                className="text-muted-foreground text-[10.5px] tracking-[0.04em] uppercase"
               >
                 {platform.target?.label}
               </label>
@@ -127,7 +127,7 @@ export function SmartCampaignDraftCard(props: SmartCampaignDraftCardProps) {
         <div className="flex items-center justify-between gap-x-2">
           <label
             htmlFor={`${id}-body`}
-            className="text-muted-foreground text-[11px] tracking-[0.14em]"
+            className="text-muted-foreground text-[10.5px] tracking-[0.04em] uppercase"
           >
             TEXT
           </label>
@@ -153,7 +153,7 @@ export function SmartCampaignDraftCard(props: SmartCampaignDraftCardProps) {
           <div className="flex items-center justify-between gap-x-2">
             <label
               htmlFor={`${id}-hashtags`}
-              className="text-muted-foreground text-[11px] tracking-[0.14em]"
+              className="text-muted-foreground text-[10.5px] tracking-[0.04em] uppercase"
             >
               HASHTAGS
             </label>

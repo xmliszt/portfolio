@@ -81,12 +81,12 @@ export function PostEditor(props: PostEditorProps) {
           CLOSE ✕
         </Link>
       }
-      bodyClassName="flex flex-col gap-y-3.5 px-[18px] py-4"
+      bodyClassName="flex flex-col gap-y-3.5 px-3 py-2.5"
     >
       <div className="flex flex-wrap items-center gap-x-3 gap-y-2">
         <PlatformChip platformId={post.platformId} />
         <span className="text-cc-text-2 min-w-0 truncate">{post.name}</span>
-        <span className="text-muted-foreground text-[11px] tracking-[0.1em]">
+        <span className="text-muted-foreground text-[11px] tracking-[0.04em]">
           {post.status.toUpperCase()}
         </span>
       </div>
@@ -132,7 +132,7 @@ export function PostEditor(props: PostEditorProps) {
           {post.status !== "skipped" && (
             <CcButton
               type="button"
-              variant="warn"
+              variant="danger"
               disabled={isPending}
               onClick={skip}
             >
@@ -146,7 +146,7 @@ export function PostEditor(props: PostEditorProps) {
           />
           <Link
             href={`/composer?post=${post.id}`}
-            className="text-primary flex min-h-11 items-center text-[12px] tracking-[0.08em]"
+            className="text-primary flex min-h-7 items-center text-[12px] tracking-[0.04em]"
           >
             Edit text in composer →
           </Link>

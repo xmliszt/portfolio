@@ -50,7 +50,7 @@ export function PreflightPanel(props: PreflightPanelProps) {
         {computed.map((check) => (
           <li
             key={check.id}
-            className="border-cc-line-soft grid grid-cols-[22px_minmax(0,1fr)] gap-x-2.5 border-b px-[18px] py-2.5"
+            className="border-cc-line-soft grid grid-cols-[22px_minmax(0,1fr)] gap-x-2.5 border-b px-3 py-2.5"
           >
             <span
               aria-label={check.passed ? "Passed" : "Needs a look"}
@@ -72,7 +72,7 @@ export function PreflightPanel(props: PreflightPanelProps) {
       </ul>
       {manual.length > 0 && (
         <div className="flex flex-col">
-          <div className="text-muted-foreground px-[18px] pt-3 pb-1 text-[11px] tracking-[0.14em]">
+          <div className="text-muted-foreground px-3 pt-3 pb-1 text-[10.5px] tracking-[0.04em] uppercase">
             CHECK BY HAND · NOT SAVED
           </div>
           <ul>
@@ -80,7 +80,7 @@ export function PreflightPanel(props: PreflightPanelProps) {
               const isTicked = tickedIds.includes(check.id);
               return (
                 <li key={check.id} className="border-cc-line-soft border-b">
-                  <label className="grid min-h-11 cursor-pointer grid-cols-[22px_minmax(0,1fr)] gap-x-2.5 px-[18px] py-2.5">
+                  <label className="grid min-h-7 cursor-pointer grid-cols-[22px_minmax(0,1fr)] gap-x-2.5 px-3 py-2.5">
                     <input
                       type="checkbox"
                       checked={isTicked}

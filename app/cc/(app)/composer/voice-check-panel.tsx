@@ -30,7 +30,7 @@ export function VoiceCheckPanel(props: VoiceCheckPanelProps) {
       className={cn(flags.length > 0 && "border-cc-warn", props.className)}
       aside="A flag is a prompt, not an error"
     >
-      <div className="flex flex-col gap-y-4 px-[18px] py-4">
+      <div className="flex flex-col gap-y-3 px-3 py-2.5">
         {props.text.trim() === "" ? (
           <p className="text-muted-foreground">Nothing to check yet.</p>
         ) : (

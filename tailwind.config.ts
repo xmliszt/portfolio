@@ -96,6 +96,7 @@ const config = {
           "text-2": "hsl(var(--cc-text-2))",
           warn: "hsl(var(--cc-warn))",
           ok: "hsl(var(--cc-ok))",
+          danger: "hsl(var(--cc-danger))",
           chatgpt: "hsl(var(--cc-chatgpt))",
         },
         border: "hsl(var(--border))",

@@ -83,14 +83,14 @@ export function ChatgptPanel(props: ChatgptPanelProps) {
         </CcButton>
       }
     >
-      <div className="flex flex-col gap-y-4 px-[18px] py-4">
+      <div className="flex flex-col gap-y-3 px-3 py-2.5">
         {message !== undefined && (
           <p role="status" className="text-cc-chatgpt text-[12px]">
             {message}
           </p>
         )}
         <details className="group border">
-          <summary className="text-muted-foreground flex min-h-11 cursor-pointer items-center justify-between gap-x-2 px-3 text-[11px] tracking-[0.14em]">
+          <summary className="text-muted-foreground flex min-h-7 cursor-pointer items-center justify-between gap-x-2 px-3 text-[10.5px] tracking-[0.04em] uppercase">
             <span>PROMPT · BUILT FROM YOUR NOTE AND THIS DRAFT</span>
             <span aria-hidden className="group-open:rotate-90">
               ▸
@@ -108,7 +108,7 @@ export function ChatgptPanel(props: ChatgptPanelProps) {
         <div className="flex flex-col gap-y-2">
           <label
             htmlFor={`chatgpt-paste-${props.postId}`}
-            className="text-muted-foreground text-[11px] tracking-[0.14em]"
+            className="text-muted-foreground text-[10.5px] tracking-[0.04em] uppercase"
           >
             PASTE CHATGPT&apos;S REWRITE
           </label>
@@ -147,7 +147,9 @@ export function ChatgptPanel(props: ChatgptPanelProps) {
           <div className="bg-border grid grid-cols-1 gap-x-px gap-y-px border md:grid-cols-2">
             <div className="bg-card flex min-w-0 flex-col gap-y-2 p-3">
               <div className="flex items-center justify-between gap-x-2">
-                <span className="text-[11px] tracking-[0.14em]">A · MINE</span>
+                <span className="text-[10.5px] tracking-[0.04em] uppercase">
+                  A · MINE
+                </span>
                 <CharacterCount
                   count={countPostCharacters({
                     text: props.copyText,
@@ -166,7 +168,7 @@ export function ChatgptPanel(props: ChatgptPanelProps) {
             </div>
             <div className="bg-card flex min-w-0 flex-col gap-y-2 p-3">
               <div className="flex items-center justify-between gap-x-2">
-                <span className="text-cc-chatgpt text-[11px] tracking-[0.14em]">
+                <span className="text-cc-chatgpt text-[10.5px] tracking-[0.04em] uppercase">
                   B · CHATGPT
                 </span>
                 <CharacterCount

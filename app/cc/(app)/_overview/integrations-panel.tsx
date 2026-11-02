@@ -46,7 +46,7 @@ export function IntegrationsPanel(props: IntegrationsPanelProps) {
       title="Integrations"
       aside="Threads sync 10:20 SGT · X, Threads, Bluesky auto-post"
       className="flex-[1_1_100%]"
-      bodyClassName="flex flex-col gap-y-3 px-[18px] py-4"
+      bodyClassName="flex flex-col gap-y-3 px-3 py-2.5"
     >
       {(() => {
         switch (props.threads.kind) {
@@ -76,7 +76,7 @@ export function IntegrationsPanel(props: IntegrationsPanelProps) {
             );
           case "not-connected":
             return (
-              <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
+              <div className="flex flex-wrap items-center gap-x-3 gap-y-2">
                 {renderConnectForm("CONNECT THREADS")}
                 <span className="text-muted-foreground text-[12px]">
                   Logs views on your Threads posts, powers “Check tags” in the
@@ -86,7 +86,7 @@ export function IntegrationsPanel(props: IntegrationsPanelProps) {
             );
           case "expired":
             return (
-              <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
+              <div className="flex flex-wrap items-center gap-x-3 gap-y-2">
                 <span className="flex flex-col gap-y-0.5">
                   <span className="font-bold">
                     Threads · @{props.threads.username ?? "unknown"}
@@ -98,7 +98,7 @@ export function IntegrationsPanel(props: IntegrationsPanelProps) {
                 {renderConnectForm("RECONNECT")}
                 <CcButton
                   type="button"
-                  variant="warn"
+                  variant="danger"
                   onClick={handleDisconnect}
                   disabled={isPending}
                 >
@@ -108,7 +108,7 @@ export function IntegrationsPanel(props: IntegrationsPanelProps) {
             );
           case "connected":
             return (
-              <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
+              <div className="flex flex-wrap items-center gap-x-3 gap-y-2">
                 <span className="flex flex-col gap-y-0.5">
                   <span className="font-bold">
                     Threads · @{props.threads.username ?? "unknown"}
@@ -126,7 +126,7 @@ export function IntegrationsPanel(props: IntegrationsPanelProps) {
                 {renderConnectForm("RECONNECT")}
                 <CcButton
                   type="button"
-                  variant="warn"
+                  variant="danger"
                   onClick={handleDisconnect}
                   disabled={isPending}
                 >

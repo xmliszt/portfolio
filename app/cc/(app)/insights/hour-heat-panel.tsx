@@ -19,7 +19,7 @@ export function HourHeatPanel(props: HourHeatPanelProps) {
       aside="SGT · mean +24 h views"
       className="flex-[1_1_420px]"
       footer={`Shown per platform after ${props.minPosts} posted items with +24 h views. Until then the calendar uses the researched windows.`}
-      bodyClassName="flex flex-col gap-y-5 px-[18px] py-4"
+      bodyClassName="flex flex-col gap-y-3 px-3 py-2.5"
     >
       {props.ownGrids.map((grid) => {
         const maxViews = Math.max(

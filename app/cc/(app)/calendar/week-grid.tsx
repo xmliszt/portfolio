@@ -55,7 +55,7 @@ export function WeekGrid(props: WeekGridProps) {
           <div
             key={day.date}
             className={cn(
-              "flex justify-between border-b border-l px-3 py-2.5 tracking-[0.14em]",
+              "flex justify-between border-b border-l px-2 py-1.5 text-[11px] font-semibold tracking-[0.04em]",
               day.isToday ? "text-primary" : "text-muted-foreground"
             )}
           >
@@ -64,7 +64,7 @@ export function WeekGrid(props: WeekGridProps) {
         ))}
         {props.hours.map((hour) => (
           <div key={hour} className="contents">
-            <div className="text-muted-foreground border-cc-line-soft border-b px-2 py-1.5 text-[11px] tabular-nums">
+            <div className="text-muted-foreground border-cc-line-soft border-b px-2 py-1 text-[10.5px] tabular-nums">
               {String(hour).padStart(2, "0")}:00
             </div>
             {props.days.map((day, weekday) => {
@@ -80,7 +80,7 @@ export function WeekGrid(props: WeekGridProps) {
               return (
                 <div
                   key={day.date}
-                  className="border-cc-line-soft flex min-h-14 flex-col gap-y-1 border-b border-l p-1"
+                  className="border-cc-line-soft flex min-h-8 flex-col gap-y-0.5 border-b border-l p-0.5"
                   style={
                     alpha > 0
                       ? { backgroundColor: `hsl(var(${colorVar}) / ${alpha})` }
@@ -95,7 +95,7 @@ export function WeekGrid(props: WeekGridProps) {
                         href={post.href}
                         aria-current={post.isSelected ? "true" : undefined}
                         className={cn(
-                          "bg-cc-panel-2 hover:bg-secondary flex min-h-11 flex-col gap-y-0.5 border-l-[3px] px-1.5 py-1",
+                          "bg-cc-panel-2 hover:bg-secondary flex flex-col border-l-2 px-1.5 py-0.5",
                           post.isSelected &&
                             "outline-primary outline outline-1",
                           post.status === "skipped" && "opacity-50"
@@ -105,7 +105,7 @@ export function WeekGrid(props: WeekGridProps) {
                         }}
                       >
                         <span
-                          className="flex justify-between gap-x-1 text-[10px] tracking-[0.08em]"
+                          className="flex justify-between gap-x-1 text-[10px] tracking-[0.04em]"
                           style={{ color: `hsl(var(${platform.colorVar}))` }}
                         >
                           <span className="truncate">

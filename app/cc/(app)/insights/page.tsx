@@ -172,12 +172,12 @@ export default async function InsightsPage() {
         eyebrow={campaign.name.toUpperCase()}
         title={`Insights · ${postedCount} of ${posts.length} posted`}
       />
-      <div className="flex flex-wrap gap-x-5 gap-y-5">
+      <div className="flex flex-wrap gap-x-3 gap-y-3">
         <Panel
           title="Cumulative views"
           aside="by platform · SGT days"
           className="flex-[3_1_620px]"
-          bodyClassName="px-[18px] py-4"
+          bodyClassName="px-3 py-2.5"
         >
           {cumulative.dayEnds.length === 0 ? (
             <p className="text-cc-text-2 leading-relaxed">
@@ -200,7 +200,7 @@ export default async function InsightsPage() {
         </Panel>
         <PlatformTable rows={tableRows} />
       </div>
-      <div className="flex flex-wrap gap-x-5 gap-y-5">
+      <div className="flex flex-wrap gap-x-3 gap-y-3">
         <HashtagLiftPanel
           lifts={getHashtagLift({ posts, metrics })}
           plannedTags={plannedTags}
@@ -221,7 +221,7 @@ export default async function InsightsPage() {
           metrics,
         })}
       />
-      <div className="flex flex-wrap gap-x-5 gap-y-5">
+      <div className="flex flex-wrap gap-x-3 gap-y-3">
         <AbPairsPanel pairs={pairs} />
         <LearningsPanel
           campaignId={campaign.id}

@@ -63,7 +63,7 @@ export function AutoPublishControl(props: AutoPublishControlProps) {
 
   return (
     <div className="flex flex-col gap-y-1.5">
-      <div className="flex flex-wrap items-center gap-x-2 gap-y-2 text-[11px] tracking-[0.1em]">
+      <div className="flex flex-wrap items-center gap-x-2 gap-y-2 text-[11px] tracking-[0.04em]">
         {(() => {
           if (post.publish_claimed_at !== null && post.publish_error === null) {
             return (
@@ -80,7 +80,7 @@ export function AutoPublishControl(props: AutoPublishControlProps) {
                 <CcButton
                   type="button"
                   size="sm"
-                  variant="warn"
+                  variant="danger"
                   onClick={() => handleToggle(false)}
                   disabled={isPending}
                 >

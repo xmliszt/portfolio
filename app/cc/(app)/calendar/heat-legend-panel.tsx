@@ -29,7 +29,7 @@ export function HeatLegendPanel(props: HeatLegendPanelProps) {
         props.source === "own" ? "YOUR VIEWS BY HOUR" : "RESEARCHED WINDOWS"
       }
       className="flex-[1_1_360px]"
-      bodyClassName="flex flex-col gap-y-2.5 px-[18px] py-3.5"
+      bodyClassName="flex flex-col gap-y-2.5 px-3 py-2"
     >
       <div className="text-muted-foreground flex items-center gap-x-2.5 text-[11px]">
         LOW
@@ -49,7 +49,7 @@ export function HeatLegendPanel(props: HeatLegendPanelProps) {
             : `Researched posting windows for ${platform.label} (SGT). After 10+ posted items with 24 h views it switches to your own views by hour.`}
       </span>
       <div className="flex flex-col gap-y-1.5">
-        <span className="text-muted-foreground text-[11px] tracking-[0.14em]">
+        <span className="text-muted-foreground text-[10.5px] tracking-[0.04em] uppercase">
           RESEARCHED DAY WEIGHT
         </span>
         <div className="grid grid-cols-7 gap-x-1 gap-y-1 text-[10px]">
@@ -89,7 +89,7 @@ export function HeatLegendPanel(props: HeatLegendPanelProps) {
       )}
       {sources.length > 0 && (
         <div className="flex flex-col gap-y-1.5">
-          <span className="text-muted-foreground text-[11px] tracking-[0.14em]">
+          <span className="text-muted-foreground text-[10.5px] tracking-[0.04em] uppercase">
             WHY THESE WINDOWS · CHECKED {sources.at(0)?.checkedOn}
           </span>
           <ul className="flex flex-col gap-y-1.5 text-[12px]">
@@ -113,7 +113,7 @@ export function HeatLegendPanel(props: HeatLegendPanelProps) {
         </div>
       )}
       <div className="flex flex-col gap-y-1.5">
-        <span className="text-muted-foreground text-[11px] tracking-[0.14em]">
+        <span className="text-muted-foreground text-[10.5px] tracking-[0.04em] uppercase">
           POSTING AGAIN ·{" "}
           {repost.confidence === "sourced" ? "SOURCED" : "COMMON PRACTICE"}
         </span>

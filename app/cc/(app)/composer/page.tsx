@@ -64,7 +64,7 @@ export default async function ComposerPage(props: ComposerPageProps) {
       <>
         {header}
         <Panel title="No drafts">
-          <p className="text-muted-foreground px-[18px] py-4">
+          <p className="text-muted-foreground px-3 py-2.5">
             {campaign === undefined
               ? "There is no campaign yet."
               : "This campaign has no posts yet. Schedule one from the Calendar."}
