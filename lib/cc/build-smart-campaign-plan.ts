@@ -311,6 +311,7 @@ function buildPlatformSlots(options: {
       case "reddit":
       case "xiaohongshu":
       case "wechat_channels":
+      case "bluesky":
         return [post];
       default: {
         const unhandled: never = options.platformId;

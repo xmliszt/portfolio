@@ -8,6 +8,7 @@ export type ResearchSource = {
 };
 
 const CHECKED_ON = "2026-11-01";
+const BLUESKY_CHECKED_ON = "2026-11-03";
 
 /** The studies behind `RESEARCHED_WINDOWS`, one row per claim used. */
 export const RESEARCH_SOURCES: readonly ResearchSource[] = [
@@ -77,5 +78,18 @@ export const RESEARCH_SOURCES: readonly ResearchSource[] = [
       "Weekends beat weekdays for low-follower accounts (2023 report); 情感 and 娱乐 peak 21:00–23:00, also 07:00–09:00.",
     url: "https://www.digitaling.com/articles/1432997.html",
     checkedOn: CHECKED_ON,
+  },
+  {
+    platform: "bluesky",
+    claim:
+      "Weekday mornings beat weekends, Tuesday and Wednesday most; 9–11 am (1M+ posts).",
+    url: "https://www.socialpilot.co/insights/best-time-to-post-on-bluesky",
+    checkedOn: BLUESKY_CHECKED_ON,
+  },
+  {
+    platform: "bluesky",
+    claim: "Weekdays 9 am–1 pm in the audience's local time work best.",
+    url: "https://recurpost.com/bluesky-scheduler/best-time-to-post-on-bluesky/",
+    checkedOn: BLUESKY_CHECKED_ON,
   },
 ];

@@ -3,6 +3,10 @@
 import { revalidatePath } from "next/cache";
 
 import { requireCcOwner } from "@/lib/cc/auth/require-cc-owner";
+import type { AutoPublishPlatformId } from "@/lib/cc/auto-publish-platforms";
+import { createBlueskySession } from "@/lib/cc/bluesky/create-bluesky-session";
+import { findOversizedBlueskyImage } from "@/lib/cc/bluesky/find-oversized-bluesky-image";
+import { getBlueskyCredentials } from "@/lib/cc/bluesky/get-bluesky-credentials";
 import { getIntegration } from "@/lib/cc/data/get-integration";
 import { getPostCopyText } from "@/lib/cc/get-post-copy-text";
 import { isAutoPublishPlatform } from "@/lib/cc/is-auto-publish-platform";
@@ -16,7 +20,7 @@ type SetAutoPublishResult = { kind: "ok" } | { kind: "error"; message: string };
 
 const MIN_LEAD_MS = 60_000;
 
-async function getSetupError(platform: "x" | "threads") {
+async function getSetupError(platform: AutoPublishPlatformId) {
   switch (platform) {
     case "x":
       return getXUserCredentials() === undefined
@@ -35,6 +39,16 @@ async function getSetupError(platform: "x" | "threads") {
         ? "Reconnect Threads on the Overview page so CC may post."
         : `Threads did not answer: ${checked.message}`;
     }
+    case "bluesky": {
+      const credentials = getBlueskyCredentials();
+      if (credentials === undefined) {
+        return "Bluesky posting is not set up: add CC_BLUESKY_HANDLE and CC_BLUESKY_APP_PASSWORD in Vercel.";
+      }
+      const session = await createBlueskySession(credentials);
+      return session.kind === "ok"
+        ? undefined
+        : `Bluesky sign-in failed: ${session.message}`;
+    }
     default: {
       const unhandled: never = platform;
       return unhandled;
@@ -42,7 +56,7 @@ async function getSetupError(platform: "x" | "threads") {
   }
 }
 
-/** Turn CC's auto-posting of a scheduled X or Threads post on or off, clearing an earlier failure either way and, when off, reopening its unsent "post" reminder; refuse to turn it on for a post that is not scheduled in the future, a platform that is not set up or may not post, or a post the platform would reject, and refuse either change while CC is posting it or after the platform took it. */
+/** Turn CC's auto-posting of a scheduled X, Threads or Bluesky post on or off, clearing an earlier failure either way and, when off, reopening its unsent "post" reminder; refuse to turn it on for a post that is not scheduled in the future, a platform that is not set up or may not post, or a post the platform would reject, and refuse either change while CC is posting it or after the platform took it. */
 export async function setAutoPublish(options: {
   postId: string;
   isOn: boolean;
@@ -71,7 +85,7 @@ export async function setAutoPublish(options: {
     if (!isAutoPublishPlatform(post.platform)) {
       return {
         kind: "error",
-        message: "CC can only auto-post on X and Threads.",
+        message: "CC can only auto-post on X, Threads and Bluesky.",
       };
     }
     if (post.kind !== "post" && post.kind !== "repost") {
@@ -96,6 +110,11 @@ export async function setAutoPublish(options: {
       target: post.target ?? undefined,
     });
     if (prepared.kind === "error") return prepared;
+    const oversized =
+      post.platform === "bluesky"
+        ? await findOversizedBlueskyImage({ media: prepared.media })
+        : undefined;
+    if (oversized !== undefined) return { kind: "error", message: oversized };
   }
   const updateQuery = supabase
     .from("posts")

@@ -101,6 +101,13 @@ export const REPOST_STRATEGY = {
     confidence: "common-practice",
     sources: [],
   },
+  bluesky: {
+    mode: "quote",
+    minGapDays: 7,
+    how: "Quote your own post with a new first line, or write a new post on the same idea. A plain repost only shows it again to people who already follow you.",
+    confidence: "common-practice",
+    sources: [],
+  },
 } as const satisfies { [id in PlatformId]: RepostStrategy };
 
 export const REPOST_MODE_LABEL = {

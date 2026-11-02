@@ -111,6 +111,11 @@ function getPlatformRules(platformId: PlatformId) {
         "No link in the post: LinkedIn shows posts with outside links to fewer people. The link goes in the first comment.",
         "Open with one short line; LinkedIn folds the post after about 210 characters.",
       ];
+    case "bluesky":
+      return [
+        "At most 300 characters, and a link counts in full.",
+        "The link can go in the post itself.",
+      ];
     default: {
       const unhandled: never = platformId;
       return unhandled;

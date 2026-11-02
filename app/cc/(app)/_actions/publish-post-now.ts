@@ -7,7 +7,7 @@ import { publishClaimedPost } from "@/lib/cc/data/publish-claimed-post";
 import type { PublishResult } from "@/lib/cc/publish-result";
 import { createCcServiceClient } from "@/lib/cc/supabase/create-cc-service-client";
 
-/** Claim an unposted X or Threads post and publish it now through the platform's API, whether or not auto-posting is on; return the outcome, or why it was not started. */
+/** Claim an unposted post on a platform in `AUTO_PUBLISH_PLATFORM_IDS` and publish it now through the platform's API, whether or not auto-posting is on; return the outcome, or why it was not started. */
 export async function publishPostNow(options: {
   postId: string;
 }): Promise<PublishResult> {

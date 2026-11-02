@@ -15,7 +15,7 @@ type PreparedPost =
   | { kind: "error"; message: string };
 
 const THREADS_MAX_CAROUSEL = 20;
-const X_MAX_IMAGES = 4;
+const MAX_IMAGES = 4;
 const THREADS_TOPIC_MAX = 50;
 
 function checkMedia(options: {
@@ -29,10 +29,25 @@ function checkMedia(options: {
         kinds.length === 1 &&
         (kinds.at(0) === "video" || kinds.at(0) === "gif");
       const isImagesOnly =
-        kinds.length <= X_MAX_IMAGES && kinds.every((kind) => kind === "image");
+        kinds.length <= MAX_IMAGES && kinds.every((kind) => kind === "image");
       return isSingleMotion || isImagesOnly
         ? undefined
         : "X takes up to 4 images, or 1 video or GIF on its own.";
+    }
+    case "bluesky": {
+      if (kinds.includes("gif"))
+        return "Bluesky auto-posts do not take GIF files.";
+      const isSingleVideo = kinds.length === 1 && kinds.at(0) === "video";
+      const isImagesOnly =
+        kinds.length <= MAX_IMAGES && kinds.every((kind) => kind === "image");
+      if (!isSingleVideo && !isImagesOnly) {
+        return "Bluesky takes up to 4 images, or 1 video on its own.";
+      }
+      return options.media.some(
+        (item) => item.kind === "video" && item.mimeType !== "video/mp4"
+      )
+        ? "Bluesky only takes MP4 video."
+        : undefined;
     }
     case "threads":
       if (kinds.includes("gif")) return "Threads does not take GIF files.";

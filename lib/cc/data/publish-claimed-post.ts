@@ -1,5 +1,7 @@
 import "server-only";
 
+import { getBlueskyCredentials } from "@/lib/cc/bluesky/get-bluesky-credentials";
+import { publishBlueskyPost } from "@/lib/cc/bluesky/publish-bluesky-post";
 import { getPostCopyText } from "@/lib/cc/get-post-copy-text";
 import { isAutoPublishPlatform } from "@/lib/cc/is-auto-publish-platform";
 import { parsePostAssets } from "@/lib/cc/parse-post-assets";
@@ -59,6 +61,20 @@ async function publishOnPlatform(options: {
         text: prepared.text,
         media: prepared.media,
         topicTag: prepared.topicTag,
+      });
+    }
+    case "bluesky": {
+      const credentials = getBlueskyCredentials();
+      if (credentials === undefined) {
+        return {
+          kind: "error",
+          message: "Bluesky posting is not set up in Vercel.",
+        };
+      }
+      return publishBlueskyPost({
+        ...credentials,
+        text: prepared.text,
+        media: prepared.media,
       });
     }
     default: {

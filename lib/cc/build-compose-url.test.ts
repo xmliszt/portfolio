@@ -3,7 +3,7 @@ import { test } from "node:test";
 
 import { buildComposeUrl } from "./build-compose-url";
 
-test("prefills X and Threads with the encoded body", () => {
+test("prefills X, Threads and Bluesky with the encoded body", () => {
   assert.deepEqual(
     buildComposeUrl({ platformId: "x", body: "Hi & bye 🐾\npaws.garden" }),
     {
@@ -14,6 +14,10 @@ test("prefills X and Threads with the encoded body", () => {
   assert.deepEqual(buildComposeUrl({ platformId: "threads", body: "a b" }), {
     kind: "prefilled",
     url: "https://www.threads.net/intent/post?text=a%20b",
+  });
+  assert.deepEqual(buildComposeUrl({ platformId: "bluesky", body: "a b" }), {
+    kind: "prefilled",
+    url: "https://bsky.app/intent/compose?text=a%20b",
   });
 });
 

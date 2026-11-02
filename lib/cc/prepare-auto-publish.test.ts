@@ -129,3 +129,32 @@ test("rejects a post with no text and no media", () => {
     "error"
   );
 });
+
+test("enforces Bluesky's media mix: up to 4 images, or one MP4 alone", () => {
+  function prepare(names: readonly string[]) {
+    return prepareAutoPublish({
+      platformId: "bluesky",
+      text: "Hi",
+      assets: names.map((name) => image({ name })),
+      target: undefined,
+    }).kind;
+  }
+  assert.equal(prepare(["a.mp4"]), "ok");
+  assert.equal(prepare(["1.png", "2.png", "3.png", "4.png"]), "ok");
+  assert.equal(prepare(["1.png", "2.png", "3.png", "4.png", "5.png"]), "error");
+  assert.equal(prepare(["a.png", "b.mp4"]), "error");
+  assert.equal(prepare(["a.mov"]), "error");
+  assert.equal(prepare(["a.gif"]), "error");
+});
+
+test("rejects Bluesky text over 300 characters", () => {
+  assert.equal(
+    prepareAutoPublish({
+      platformId: "bluesky",
+      text: "a".repeat(301),
+      assets: [],
+      target: undefined,
+    }).kind,
+    "error"
+  );
+});
