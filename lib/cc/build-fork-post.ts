@@ -18,10 +18,10 @@ type ForkFields = Pick<
 
 type ForkPost =
   | { kind: "insert"; fields: ForkFields }
-  | { kind: "revive"; repostId: string; fields: ForkFields }
+  | { kind: "replace"; repostId: string; fields: ForkFields }
   | { kind: "error"; message: string; openPostId: string | undefined };
 
-/** Return how to fork `source` onto `platformId`: insert a repost of `source` when it is posted on the same platform and has no `existingRepost`, reuse a skipped `existingRepost`, insert a new post on another platform or from an unposted post, or refuse with the post to open instead. */
+/** Return how to fork `source` onto `platformId`: insert a repost of `source` when it is posted on the same platform and has no `existingRepost`, replace a skipped `existingRepost`, insert a new post on another platform or from an unposted post, or refuse with the post to open instead. */
 export function buildForkPost(options: {
   source: PostRow;
   platformId: PlatformId;
@@ -34,12 +34,18 @@ export function buildForkPost(options: {
     source.kind === "repost" &&
     source.status !== "posted"
   ) {
-    return {
-      kind: "error",
-      message:
-        "This repost is not posted yet. Edit it here instead of forking it.",
-      openPostId: undefined,
-    };
+    return source.status === "skipped"
+      ? {
+          kind: "error",
+          message: "This repost was skipped. Fork the original to reuse it.",
+          openPostId: source.parent_post_id ?? undefined,
+        }
+      : {
+          kind: "error",
+          message:
+            "This repost is not posted yet. Edit it here instead of forking it.",
+          openPostId: undefined,
+        };
   }
   const isRepost = isSamePlatform && source.status === "posted";
   const fields: ForkFields = {
@@ -59,7 +65,7 @@ export function buildForkPost(options: {
   if (!isRepost || existing === undefined) return { kind: "insert", fields };
   switch (existing.status) {
     case "skipped":
-      return { kind: "revive", repostId: existing.id, fields };
+      return { kind: "replace", repostId: existing.id, fields };
     case "posted":
       return {
         kind: "error",

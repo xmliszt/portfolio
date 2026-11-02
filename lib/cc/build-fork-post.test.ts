@@ -53,14 +53,14 @@ test("a fork of an unposted post is a new post", () => {
   assert.equal(fork.fields.kind, "post");
 });
 
-test("reuses a skipped repost instead of adding a second one", () => {
+test("replaces a skipped repost instead of adding a second one", () => {
   const fork = buildForkPost({
     source: buildPostRow({ status: "posted" }),
     platformId: "x",
     existingRepost: { id: "r1", status: "skipped" },
   });
-  assert.equal(fork.kind, "revive");
-  if (fork.kind !== "revive") return;
+  assert.equal(fork.kind, "replace");
+  if (fork.kind !== "replace") return;
   assert.equal(fork.repostId, "r1");
   assert.equal(fork.fields.kind, "repost");
 });
@@ -79,7 +79,7 @@ test("points at the existing repost when it is posted or waiting", () => {
 });
 
 test("refuses to fork an unposted repost on its own platform", () => {
-  const fork = buildForkPost({
+  const draft = buildForkPost({
     source: buildPostRow({
       kind: "repost",
       parent_post_id: "p0",
@@ -88,5 +88,19 @@ test("refuses to fork an unposted repost on its own platform", () => {
     platformId: "x",
     existingRepost: undefined,
   });
-  assert.equal(fork.kind, "error");
+  assert.equal(draft.kind, "error");
+  if (draft.kind !== "error") return;
+  assert.equal(draft.openPostId, undefined);
+  const skipped = buildForkPost({
+    source: buildPostRow({
+      kind: "repost",
+      parent_post_id: "p0",
+      status: "skipped",
+    }),
+    platformId: "x",
+    existingRepost: undefined,
+  });
+  assert.equal(skipped.kind, "error");
+  if (skipped.kind !== "error") return;
+  assert.equal(skipped.openPostId, "p0");
 });

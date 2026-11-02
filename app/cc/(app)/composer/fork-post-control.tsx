@@ -28,8 +28,12 @@ export function ForkPostControl(props: ForkPostControlProps) {
     { message: string; openPostId: string | undefined } | undefined
   >(undefined);
   const [isPending, startTransition] = useTransition();
-  const isRepost =
-    platformId === props.platformId && props.post.status === "posted";
+  const isSamePlatform = platformId === props.platformId;
+  const isUnpostedRepost =
+    isSamePlatform &&
+    props.post.kind === "repost" &&
+    props.post.status !== "posted";
+  const isRepost = isSamePlatform && props.post.status === "posted";
 
   function changePlatform(event: React.ChangeEvent<HTMLSelectElement>) {
     if (isPlatformId(event.target.value)) setPlatformId(event.target.value);
@@ -84,9 +88,11 @@ export function ForkPostControl(props: ForkPostControlProps) {
       <p className="text-muted-foreground text-[12px]">
         Copies the saved text, hashtags, link, title and uploaded media into a
         new post you can edit.{" "}
-        {isRepost
-          ? "It is saved as a repost of this post."
-          : "It is saved as a new post."}{" "}
+        {isUnpostedRepost
+          ? "This repost is not posted, so pick another platform or edit it here."
+          : isRepost
+            ? "It is saved as a repost of this post."
+            : "It is saved as a new post."}{" "}
         Leave the time empty to save a draft.
       </p>
       <div className="grid grid-cols-1 gap-x-3 gap-y-3 sm:grid-cols-3">
@@ -128,7 +134,7 @@ export function ForkPostControl(props: ForkPostControlProps) {
           type="submit"
           variant="primary"
           size="sm"
-          disabled={isPending || props.dirty}
+          disabled={isPending || props.dirty || isUnpostedRepost}
         >
           {isPending ? "FORKING…" : "CREATE FORK"}
         </CcButton>

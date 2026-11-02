@@ -12,7 +12,7 @@ type ForkPostResult =
   | { kind: "ok"; postId: string }
   | { kind: "error"; message: string; openPostId: string | undefined };
 
-/** Save the copy of `postId` on `platformId` that `buildForkPost` returns, as a new row or over a skipped repost, scheduled at `scheduledAt` or as a draft without it, and return its id, or the error with the post to open instead. */
+/** Save the copy of `postId` on `platformId` that `buildForkPost` returns, as a new row (deleting a skipped repost it replaces), scheduled at `scheduledAt` or as a draft without it, and return its id, or the error with the post to open instead. */
 export async function forkPost(options: {
   postId: string;
   platformId: PlatformId;
@@ -40,7 +40,6 @@ export async function forkPost(options: {
   });
   if (fork.kind === "error") return fork;
 
-  const now = new Date().toISOString();
   const row = {
     ...fork.fields,
     variant: "mine",
@@ -50,23 +49,18 @@ export async function forkPost(options: {
         ? null
         : new Date(options.scheduledAt).toISOString(),
     scheduled_by: "user",
-    posted_at: null,
-    url: null,
-    auto_publish: false,
-    publish_claimed_at: null,
-    publish_error: null,
-    platform_post_id: null,
-    updated_at: now,
   };
-  const { data: saved, error: saveError } = await (
-    fork.kind === "revive"
-      ? supabase
-          .from("posts")
-          .update(row)
-          .eq("id", fork.repostId)
-          .eq("status", "skipped")
-      : supabase.from("posts").insert(row)
-  )
+  if (fork.kind === "replace") {
+    const { error: deleteError } = await supabase
+      .from("posts")
+      .delete()
+      .eq("id", fork.repostId)
+      .eq("status", "skipped");
+    if (deleteError) throw deleteError;
+  }
+  const { data: saved, error: saveError } = await supabase
+    .from("posts")
+    .insert(row)
     .select("*")
     .maybeSingle();
   if (saveError !== null && saveError.code !== "23505") throw saveError;
