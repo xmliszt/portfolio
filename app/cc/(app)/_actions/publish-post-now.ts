@@ -19,6 +19,7 @@ export async function publishPostNow(options: {
     .eq("id", options.postId)
     .in("status", ["draft", "scheduled"])
     .in("kind", ["post", "repost"])
+    .is("platform_post_id", null)
     .or("publish_claimed_at.is.null,publish_error.not.is.null")
     .select("*")
     .maybeSingle();

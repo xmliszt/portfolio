@@ -1,9 +1,12 @@
 import "server-only";
 
+import range from "lodash/range.js";
+
 import type { PublishMedia } from "@/lib/cc/publish-media";
 import { wait } from "@/lib/cc/wait";
 
-import { callXApi, type XApiResult } from "./call-x-api";
+import { callXApi } from "./call-x-api";
+import type { XApiResult } from "./x-api-result";
 import type { XUserCredentials } from "./x-user-credentials";
 
 const X_API_ORIGIN = "https://api.x.com";
@@ -72,7 +75,7 @@ async function uploadChunked(options: {
   if (initialized.kind === "error") return initialized;
   const mediaId = initialized.data.data.id;
   const chunkCount = Math.ceil(options.bytes.size / CHUNK_BYTES);
-  for (const index of Array.from({ length: chunkCount }, (_, i) => i)) {
+  for (const index of range(chunkCount)) {
     const form = new FormData();
     form.set("segment_index", String(index));
     form.set(

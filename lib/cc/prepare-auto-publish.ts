@@ -26,7 +26,8 @@ function checkMedia(options: {
   switch (options.platformId) {
     case "x": {
       const isSingleMotion =
-        kinds.length === 1 && (kinds[0] === "video" || kinds[0] === "gif");
+        kinds.length === 1 &&
+        (kinds.at(0) === "video" || kinds.at(0) === "gif");
       const isImagesOnly =
         kinds.length <= X_MAX_IMAGES && kinds.every((kind) => kind === "image");
       return isSingleMotion || isImagesOnly

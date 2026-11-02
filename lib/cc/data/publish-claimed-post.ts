@@ -84,7 +84,10 @@ export async function publishClaimedPost(options: {
     case "ok": {
       const { error } = await supabase
         .from("posts")
-        .update({ platform_post_id: result.platformPostId })
+        .update({
+          platform_post_id: result.platformPostId,
+          url: result.url ?? null,
+        })
         .eq("id", options.post.id);
       if (error) throw error;
       await markPostLive({

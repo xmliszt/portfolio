@@ -3,11 +3,8 @@ import "server-only";
 import { randomBytes } from "node:crypto";
 
 import { buildXOAuthHeader } from "./build-x-oauth-header";
+import type { XApiResult } from "./x-api-result";
 import type { XUserCredentials } from "./x-user-credentials";
-
-export type XApiResult<T> =
-  | { kind: "ok"; data: T }
-  | { kind: "error"; status: number; message: string };
 
 type XErrorBody = {
   title?: string;

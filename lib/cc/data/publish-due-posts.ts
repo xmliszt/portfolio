@@ -3,6 +3,7 @@ import "server-only";
 import { AUTO_PUBLISH_PLATFORM_IDS } from "@/lib/cc/auto-publish-platforms";
 import { createCcServiceClient } from "@/lib/cc/supabase/create-cc-service-client";
 
+import { markPostLive } from "./mark-post-live";
 import { notifyPublishOutcome } from "./notify-publish-outcome";
 import { publishClaimedPost } from "./publish-claimed-post";
 
@@ -10,10 +11,36 @@ const MINUTE_MS = 60_000;
 const MISSED_AFTER_MS = 30 * MINUTE_MS;
 const STUCK_AFTER_MS = 10 * MINUTE_MS;
 
-/** Fail posts claimed for publishing over 10 minutes ago that never finished and auto-posts over 30 minutes late, then claim the earliest due auto-post by stamping `publish_claimed_at` and publish it; return how many went live and how many failed. */
+/** Finish posts claimed over 10 minutes ago that the platform already took (`platform_post_id` set) by marking them live, fail the other claimed posts that never finished and auto-posts over 30 minutes late, then claim the earliest due auto-post by stamping `publish_claimed_at` and publish it; return how many went live and how many failed. */
 export async function publishDuePosts(options: { now: Date }) {
   const supabase = createCcServiceClient();
   const nowIso = options.now.toISOString();
+  const stuckBefore = new Date(
+    options.now.getTime() - STUCK_AFTER_MS
+  ).toISOString();
+  const { data: livePosts, error: liveError } = await supabase
+    .from("posts")
+    .select("*")
+    .in("status", ["draft", "scheduled"])
+    .is("publish_error", null)
+    .not("platform_post_id", "is", null)
+    .lt("publish_claimed_at", stuckBefore);
+  if (liveError) throw liveError;
+  await Promise.all(
+    livePosts.map(async (post) => {
+      await markPostLive({
+        postId: post.id,
+        url: post.url ?? undefined,
+        platformPostId: post.platform_post_id ?? undefined,
+      });
+      await notifyPublishOutcome({
+        post,
+        now: options.now,
+        outcome: { kind: "posted", url: post.url ?? undefined },
+      });
+    })
+  );
+
   const { data: stuck, error: stuckError } = await supabase
     .from("posts")
     .update({
@@ -22,10 +49,8 @@ export async function publishDuePosts(options: { now: Date }) {
     })
     .in("status", ["draft", "scheduled"])
     .is("publish_error", null)
-    .lt(
-      "publish_claimed_at",
-      new Date(options.now.getTime() - STUCK_AFTER_MS).toISOString()
-    )
+    .is("platform_post_id", null)
+    .lt("publish_claimed_at", stuckBefore)
     .select("*");
   if (stuckError) throw stuckError;
 
@@ -76,7 +101,7 @@ export async function publishDuePosts(options: { now: Date }) {
   if (candidate === undefined) return { published: 0, failed: failedEarly };
   const { data: claimed, error: claimError } = await supabase
     .from("posts")
-    .update({ publish_claimed_at: new Date().toISOString() })
+    .update({ publish_claimed_at: nowIso })
     .eq("id", candidate.id)
     .eq("auto_publish", true)
     .eq("status", "scheduled")
@@ -86,7 +111,7 @@ export async function publishDuePosts(options: { now: Date }) {
     .maybeSingle();
   if (claimError) throw claimError;
   if (claimed === null) return { published: 0, failed: failedEarly };
-  const result = await publishClaimedPost({ post: claimed, now: new Date() });
+  const result = await publishClaimedPost({ post: claimed, now: options.now });
   return result.kind === "ok"
     ? { published: 1, failed: failedEarly }
     : { published: 0, failed: failedEarly + 1 };
