@@ -100,7 +100,10 @@ export const PLATFORMS = {
     composeUrl: "https://x.com/intent/post",
     postsFromPhone: false,
     plannerPinned: false,
-    target: undefined,
+    target: {
+      label: "COMMUNITY (ID OR LINK, OPTIONAL)",
+      placeholder: "https://x.com/i/communities/1493446837214187523",
+    },
   },
   threads: {
     id: "threads",

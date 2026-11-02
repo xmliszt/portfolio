@@ -21,6 +21,7 @@ export function AutoPublishControl(props: AutoPublishControlProps) {
   const [isPending, startTransition] = useTransition();
   const label = PLATFORMS[props.platformId].label;
   const post = props.post;
+  const isReply = post.kind === "reply" || post.kind === "comment";
 
   function handleToggle(isOn: boolean) {
     setMessage(undefined);
@@ -124,7 +125,9 @@ export function AutoPublishControl(props: AutoPublishControlProps) {
                   post.scheduled_at === null
                 }
               >
-                AUTO-POST AT SCHEDULED TIME
+                {isReply
+                  ? "AUTO-POST AFTER PARENT"
+                  : "AUTO-POST AT SCHEDULED TIME"}
               </CcButton>
               {postNowButton}
             </>

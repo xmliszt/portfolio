@@ -16,10 +16,28 @@ export async function publishPostNow(options: {
   const supabase = createCcServiceClient();
   const { data: post, error: readError } = await supabase
     .from("posts")
-    .select("publish_claimed_at, publish_error")
+    .select("kind, parent_post_id, publish_claimed_at, publish_error")
     .eq("id", options.postId)
     .single();
   if (readError) throw readError;
+  if (
+    (post.kind === "reply" || post.kind === "comment") &&
+    post.parent_post_id !== null
+  ) {
+    const { data: parent, error: parentError } = await supabase
+      .from("posts")
+      .select("status")
+      .eq("id", post.parent_post_id)
+      .maybeSingle();
+    if (parentError) throw parentError;
+    if (parent?.status !== "posted") {
+      return {
+        kind: "error",
+        message:
+          "Its parent post is not live yet, so there is nothing to reply to.",
+      };
+    }
+  }
   if (post.publish_claimed_at !== null && post.publish_error === null) {
     return { kind: "error", message: "CC is posting this right now." };
   }
@@ -28,7 +46,7 @@ export async function publishPostNow(options: {
     .update({ publish_claimed_at: now.toISOString(), publish_error: null })
     .eq("id", options.postId)
     .in("status", ["draft", "scheduled"])
-    .in("kind", ["post", "repost"])
+    .in("kind", ["post", "repost", "reply", "comment"])
     .is("platform_post_id", null);
   const { data: claimed, error } = await (
     post.publish_claimed_at === null

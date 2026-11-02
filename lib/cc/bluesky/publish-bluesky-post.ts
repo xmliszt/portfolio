@@ -4,18 +4,20 @@ import { downloadAsset } from "@/lib/cc/data/download-asset";
 import type { PublishMedia } from "@/lib/cc/publish-media";
 import type { PublishResult } from "@/lib/cc/publish-result";
 
+import type { BlueskyReplyRef } from "./bluesky-reply-ref";
 import { buildBlueskyFacets } from "./build-bluesky-facets";
 import { callBlueskyApi } from "./call-bluesky-api";
 import { createBlueskySession } from "./create-bluesky-session";
 import { BLUESKY_MAX_IMAGE_BYTES } from "./find-oversized-bluesky-image";
 import { uploadBlueskyVideo } from "./upload-bluesky-video";
 
-/** Sign in, upload `media`, and publish `text` with clickable links and hashtags on Bluesky; return the new post's URI and web URL, or the step that failed. */
+/** Sign in, upload `media`, and publish `text` with clickable links and hashtags on Bluesky, as a reply to `replyTo` when set; return the new post's URI and web URL, or the step that failed. */
 export async function publishBlueskyPost(options: {
   handle: string;
   appPassword: string;
   text: string;
   media: readonly PublishMedia[];
+  replyTo: BlueskyReplyRef | undefined;
 }): Promise<PublishResult> {
   const signedIn = await createBlueskySession(options);
   if (signedIn.kind === "error") {
@@ -95,6 +97,7 @@ export async function publishBlueskyPost(options: {
           createdAt: new Date().toISOString(),
           ...(facets.length === 0 ? {} : { facets }),
           ...(embed.value === undefined ? {} : { embed: embed.value }),
+          ...(options.replyTo === undefined ? {} : { reply: options.replyTo }),
         },
       },
     },

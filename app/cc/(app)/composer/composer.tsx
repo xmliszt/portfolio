@@ -233,6 +233,7 @@ export function Composer(props: ComposerProps) {
                     draft: { ...childDraft, assets },
                   })
                 }
+                dirty={isDirty}
               />
             );
           })}

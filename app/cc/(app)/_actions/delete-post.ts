@@ -23,13 +23,12 @@ export async function deletePost(options: {
     .maybeSingle();
   if (error) throw error;
   if (post === null) return { kind: "ok" };
-  const { data: reposts, error: repostsError } = await supabase
+  const { data: children, error: childrenError } = await supabase
     .from("posts")
-    .select("status, publish_claimed_at, publish_error")
-    .eq("parent_post_id", post.id)
-    .eq("kind", "repost");
-  if (repostsError) throw repostsError;
-  const blocker = getDeleteBlocker({ post, reposts });
+    .select("kind, status, publish_claimed_at, publish_error")
+    .eq("parent_post_id", post.id);
+  if (childrenError) throw childrenError;
+  const blocker = getDeleteBlocker({ post, children });
   if (blocker !== undefined) return { kind: "error", message: blocker };
 
   const deleteQuery = supabase.from("posts").delete().eq("id", post.id);

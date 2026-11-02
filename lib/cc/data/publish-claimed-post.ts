@@ -2,18 +2,23 @@ import "server-only";
 
 import { getBlueskyCredentials } from "@/lib/cc/bluesky/get-bluesky-credentials";
 import { publishBlueskyPost } from "@/lib/cc/bluesky/publish-bluesky-post";
+import { resolveBlueskyReplyRef } from "@/lib/cc/bluesky/resolve-bluesky-reply-ref";
 import { getPostCopyText } from "@/lib/cc/get-post-copy-text";
 import { isAutoPublishPlatform } from "@/lib/cc/is-auto-publish-platform";
 import { parsePostAssets } from "@/lib/cc/parse-post-assets";
 import { prepareAutoPublish } from "@/lib/cc/prepare-auto-publish";
 import type { PublishResult } from "@/lib/cc/publish-result";
 import { createCcServiceClient } from "@/lib/cc/supabase/create-cc-service-client";
+import { findThreadsMediaId } from "@/lib/cc/threads/find-threads-media-id";
 import { publishThreadsPost } from "@/lib/cc/threads/publish-threads-post";
 import { getXUserCredentials } from "@/lib/cc/x/get-x-user-credentials";
+import { parseXCommunityId } from "@/lib/cc/x/parse-x-community-id";
+import { parseXStatusId } from "@/lib/cc/x/parse-x-status-id";
 import { publishXPost } from "@/lib/cc/x/publish-x-post";
 
 import type { PostRow } from "./cc-rows";
 import { getIntegration } from "./get-integration";
+import { loadReplyTarget } from "./load-reply-target";
 import { markPostLive } from "./mark-post-live";
 import { notifyPublishOutcome } from "./notify-publish-outcome";
 
@@ -32,16 +37,48 @@ async function publishOnPlatform(options: {
     target: post.target ?? undefined,
   });
   if (prepared.kind === "error") return prepared;
+  const replyTarget = await loadReplyTarget({ post });
+  if (replyTarget.kind === "error") return replyTarget;
+  const target = replyTarget.kind === "ok" ? replyTarget.target : undefined;
   switch (post.platform) {
     case "x": {
       const credentials = getXUserCredentials();
       if (credentials === undefined) {
         return { kind: "error", message: "X posting is not set up in Vercel." };
       }
+      const replyToId =
+        target === undefined
+          ? undefined
+          : (target.platform_post_id ??
+            (target.url === null ? undefined : parseXStatusId(target.url)));
+      if (target !== undefined && replyToId === undefined) {
+        return {
+          kind: "error",
+          message:
+            "CC could not find the X post to reply to. Paste its live link.",
+        };
+      }
+      const communityId =
+        target === undefined && post.target !== null
+          ? parseXCommunityId(post.target)
+          : undefined;
+      if (
+        target === undefined &&
+        post.target !== null &&
+        communityId === undefined
+      ) {
+        return {
+          kind: "error",
+          message:
+            "The X community must be its id or its x.com/i/communities link.",
+        };
+      }
       return publishXPost({
         credentials,
         text: prepared.text,
         media: prepared.media,
+        replyToId,
+        communityId,
       });
     }
     case "threads": {
@@ -56,11 +93,29 @@ async function publishOnPlatform(options: {
           message: "Threads is not connected. Reconnect it in CC.",
         };
       }
+      const replyToId =
+        target === undefined
+          ? undefined
+          : (target.platform_post_id ??
+            (target.url === null
+              ? undefined
+              : await findThreadsMediaId({
+                  accessToken: integration.access_token,
+                  permalink: target.url,
+                })));
+      if (target !== undefined && replyToId === undefined) {
+        return {
+          kind: "error",
+          message:
+            "CC could not find the Threads post to reply to among your last 100 threads.",
+        };
+      }
       return publishThreadsPost({
         accessToken: integration.access_token,
         text: prepared.text,
         media: prepared.media,
-        topicTag: prepared.topicTag,
+        topicTag: target === undefined ? prepared.topicTag : undefined,
+        replyToId,
       });
     }
     case "bluesky": {
@@ -71,10 +126,19 @@ async function publishOnPlatform(options: {
           message: "Bluesky posting is not set up in Vercel.",
         };
       }
+      const replyTo =
+        target === undefined
+          ? undefined
+          : await resolveBlueskyReplyRef({
+              uri: target.platform_post_id,
+              url: target.url,
+            });
+      if (replyTo?.kind === "error") return replyTo;
       return publishBlueskyPost({
         ...credentials,
         text: prepared.text,
         media: prepared.media,
+        replyTo: replyTo?.ref,
       });
     }
     default: {

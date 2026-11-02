@@ -8,11 +8,13 @@ import { callXApi } from "./call-x-api";
 import { uploadXMedia } from "./upload-x-media";
 import type { XUserCredentials } from "./x-user-credentials";
 
-/** Upload `media` and publish `text` with it on X as the owner, and return the new post's id and URL, or X's error. */
+/** Upload `media` and publish `text` with it on X as the owner, as a reply to `replyToId` and in community `communityId` when set, and return the new post's id and URL, or X's error. */
 export async function publishXPost(options: {
   credentials: XUserCredentials;
   text: string;
   media: readonly PublishMedia[];
+  replyToId: string | undefined;
+  communityId: string | undefined;
 }): Promise<PublishResult> {
   const mediaIds: string[] = [];
   for (const media of options.media) {
@@ -38,6 +40,12 @@ export async function publishXPost(options: {
       value: {
         text: options.text,
         ...(mediaIds.length === 0 ? {} : { media: { media_ids: mediaIds } }),
+        ...(options.replyToId === undefined
+          ? {}
+          : { reply: { in_reply_to_tweet_id: options.replyToId } }),
+        ...(options.communityId === undefined
+          ? {}
+          : { community_id: options.communityId }),
       },
     },
   });
