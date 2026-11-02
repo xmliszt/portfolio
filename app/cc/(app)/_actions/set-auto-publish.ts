@@ -97,7 +97,7 @@ export async function setAutoPublish(options: {
     });
     if (prepared.kind === "error") return prepared;
   }
-  const { data: updated, error: updateError } = await supabase
+  const updateQuery = supabase
     .from("posts")
     .update({
       auto_publish: options.isOn,
@@ -107,9 +107,14 @@ export async function setAutoPublish(options: {
     })
     .eq("id", options.postId)
     .in("status", ["draft", "scheduled"])
-    .is("platform_post_id", null)
-    .or("publish_claimed_at.is.null,publish_error.not.is.null")
-    .select("id");
+    .is("platform_post_id", null);
+  const { data: updated, error: updateError } = await (
+    post.publish_claimed_at === null
+      ? updateQuery.is("publish_claimed_at", null)
+      : updateQuery
+          .eq("publish_claimed_at", post.publish_claimed_at)
+          .not("publish_error", "is", null)
+  ).select("id");
   if (updateError) throw updateError;
   if (updated.length === 0) {
     return {
