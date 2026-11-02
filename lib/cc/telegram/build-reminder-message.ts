@@ -127,7 +127,7 @@ export function buildReminderMessage(input: ReminderMessageInput): {
           "",
           "Reply to this message with one line, in this order:",
           listMetricLabels({ platformId: input.post.platformId }).join(" · "),
-          `Last: ${last.join(" ")}`,
+          `Last: ${last.join(" · ")}`,
           "Use - to skip a number. Send undo to revert the last entry.",
         ].join("\n"),
         buttons: [{ kind: "url", text: "Log in CC", url: `${CC_ORIGIN}/log` }],

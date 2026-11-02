@@ -32,4 +32,12 @@ test("leaves out metrics Threads did not return", () => {
       shares: undefined,
     }
   );
+  assert.deepEqual(toThreadsMetricValues([]), {
+    views: undefined,
+    likes: undefined,
+    comments: undefined,
+    reposts: undefined,
+    quotes: undefined,
+    shares: undefined,
+  });
 });
