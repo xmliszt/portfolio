@@ -68,7 +68,7 @@ test("refuses under a parent that is posted by hand later, skipped, or long live
   );
 });
 
-test("allows a reply whose time after a live parent is still ahead", () => {
+test("allows a reply under a live parent until it is 30 minutes late", () => {
   assert.equal(
     getReplyAutoPublishError({
       reply,

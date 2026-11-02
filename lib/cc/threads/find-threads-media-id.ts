@@ -15,7 +15,7 @@ export async function findThreadsMediaId(options: {
   if (path === undefined) {
     return {
       kind: "error",
-      message: "The parent's link is not a Threads link.",
+      message: "The link of the post to reply to is not a Threads link.",
     };
   }
   const threads = await listMyThreads({

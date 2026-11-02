@@ -3,6 +3,7 @@ import "server-only";
 import { getBlueskyCredentials } from "@/lib/cc/bluesky/get-bluesky-credentials";
 import { publishBlueskyPost } from "@/lib/cc/bluesky/publish-bluesky-post";
 import { resolveBlueskyReplyRef } from "@/lib/cc/bluesky/resolve-bluesky-reply-ref";
+import { PARENT_NOT_AUTO_POSTED } from "@/lib/cc/get-auto-publish-state";
 import { getPostCopyText } from "@/lib/cc/get-post-copy-text";
 import { isAutoPublishPlatform } from "@/lib/cc/is-auto-publish-platform";
 import { parsePostAssets } from "@/lib/cc/parse-post-assets";
@@ -114,13 +115,12 @@ async function publishOnPlatform(options: {
         });
       })();
       if (replyTo.kind === "error") return replyTo;
-      const replyToId = replyTo.id;
       return publishThreadsPost({
         accessToken: integration.access_token,
         text: prepared.text,
         media: prepared.media,
         topicTag: target === undefined ? prepared.topicTag : undefined,
-        replyToId,
+        replyToId: replyTo.id,
       });
     }
     case "bluesky": {
@@ -153,7 +153,7 @@ async function publishOnPlatform(options: {
   }
 }
 
-/** Publish a post this run has claimed through `publish_claimed_at`: store the platform's post id as soon as it exists, then mark the post live; on failure store `publish_error`, keeping the claim so no later run posts it twice; message the owner either way. */
+/** Publish a post this run has claimed through `publish_claimed_at`: store the platform's post id as soon as it exists, then mark the post live and re-arm its replies that failed only because it had not posted; on failure store `publish_error`, keeping the claim so no later run posts it twice; message the owner either way. */
 export async function publishClaimedPost(options: {
   post: PostRow;
   now: Date;
@@ -183,6 +183,14 @@ export async function publishClaimedPost(options: {
         url: result.url,
         platformPostId: result.platformPostId,
       });
+      const { error: rearmError } = await supabase
+        .from("posts")
+        .update({ publish_claimed_at: null, publish_error: null })
+        .eq("parent_post_id", options.post.id)
+        .eq("status", "scheduled")
+        .eq("publish_error", PARENT_NOT_AUTO_POSTED)
+        .is("platform_post_id", null);
+      if (rearmError) throw rearmError;
       await notifyPublishOutcome({
         post: options.post,
         now: options.now,
