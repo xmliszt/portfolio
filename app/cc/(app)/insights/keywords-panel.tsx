@@ -70,7 +70,7 @@ export function KeywordsPanel(props: KeywordsPanelProps) {
         className="flex-[1_1_100%]"
         bodyClassName="flex flex-col gap-y-2 px-3 py-2.5"
       >
-        <p className="text-cc-text-2 leading-relaxed">
+        <p className="text-cc-text-2 text-[11px] leading-relaxed">
           X keyword tracking is not set up.
         </p>
         <ol className="text-muted-foreground flex list-decimal flex-col gap-y-1 pl-5 text-[12px] leading-relaxed">
@@ -97,7 +97,7 @@ export function KeywordsPanel(props: KeywordsPanelProps) {
       bodyClassName="flex flex-col gap-y-3 px-3 py-2.5"
     >
       {props.keywords.length === 0 ? (
-        <p className="text-cc-text-2 leading-relaxed">
+        <p className="text-cc-text-2 text-[11px] leading-relaxed">
           No keywords yet. Add a term, like your product name or a hashtag, and
           the daily job starts counting X posts that use it.
         </p>

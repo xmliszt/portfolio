@@ -16,7 +16,7 @@ export function TargetTable(props: TargetTableProps) {
       footer="Set the subreddit, Threads topic or community in the Composer. Median and best: +24 h views."
     >
       {props.rows.length === 0 ? (
-        <p className="text-cc-text-2 px-3 py-6">
+        <p className="text-cc-text-2 px-3 py-3 text-[11px]">
           No posted subreddits, topics or communities yet.
         </p>
       ) : (

@@ -148,9 +148,10 @@ export function Composer(props: ComposerProps) {
     sameDayTargets: props.sameDayTargets,
     now: new Date(),
   });
-  const passedCount = checks.filter(
-    (check) => check.kind !== "computed" || check.passed
-  ).length;
+  const computedChecks = checks.flatMap((check) =>
+    check.kind === "computed" ? [check] : []
+  );
+  const passedCount = computedChecks.filter((check) => check.passed).length;
   const failedCount = checks.filter(
     (check) => check.kind === "computed" && !check.passed
   ).length;
@@ -239,7 +240,7 @@ export function Composer(props: ComposerProps) {
               label:
                 failedCount > 0
                   ? `Pre-flight · ${failedCount} to fix`
-                  : `Pre-flight ${passedCount}/${checks.length}`,
+                  : `Pre-flight ${passedCount}/${computedChecks.length}`,
               content: (
                 <PreflightPanel
                   platformLabel={platform.label}

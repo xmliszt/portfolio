@@ -59,7 +59,7 @@ export function PostFieldsEditor(props: PostFieldsEditorProps) {
         <div className="flex flex-col gap-y-1">
           <textarea
             id={`body-${props.postId}`}
-            className="cc-input min-h-[200px] resize-y text-[13px] leading-[1.7]"
+            className="cc-input field-sizing-content max-h-[60dvh] min-h-[160px] resize-y text-[13px] leading-[1.7]"
             value={draft.body}
             onChange={(event) => update({ body: event.target.value })}
           />

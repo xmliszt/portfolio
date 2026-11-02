@@ -39,7 +39,7 @@ export function AbPairsPanel(props: AbPairsPanelProps) {
       className="flex-[3_1_560px]"
     >
       {props.pairs.length === 0 ? (
-        <p className="text-cc-text-2 px-3 py-6 leading-relaxed">
+        <p className="text-cc-text-2 px-3 py-3 text-[11px] leading-relaxed">
           No A/B pairs yet. In the composer, “Keep both” saves your draft and
           ChatGPT&apos;s edit as a pair; once both are posted and logged at +24
           h, they are compared here.

@@ -50,7 +50,7 @@ export function LearningsPanel(props: LearningsPanelProps) {
       bodyClassName="flex flex-col gap-y-3 px-3 py-2.5"
     >
       {props.notes.length === 0 ? (
-        <p className="text-cc-text-2 leading-relaxed">
+        <p className="text-cc-text-2 text-[11px] leading-relaxed">
           No notes yet. Write down what you notice as the numbers come in, like
           “the link in reply 1 did better than the link in the post”.
         </p>

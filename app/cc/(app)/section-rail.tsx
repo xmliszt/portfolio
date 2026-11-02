@@ -64,12 +64,12 @@ export function SectionRail(props: SectionRailProps) {
       </div>
       <div className="text-muted-foreground flex flex-col gap-y-1 border-t px-2 pt-2 text-[10.5px] md:mt-auto">
         <span>TZ ASIA/SINGAPORE</span>
-        <span>
+        <span className="whitespace-nowrap">
           TELEGRAM{" "}
           <span
             className={props.telegramLinked ? "text-cc-ok" : "text-cc-warn"}
           >
-            ● {props.telegramLinked ? "LINKED" : "NOT SET UP"}
+            ● {props.telegramLinked ? "LINKED" : "OFF"}
           </span>
         </span>
         <form action={signOut}>

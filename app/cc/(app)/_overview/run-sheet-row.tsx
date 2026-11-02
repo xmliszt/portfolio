@@ -110,7 +110,7 @@ export function RunSheetRow(props: RunSheetRowProps) {
         >
           {item.status.toUpperCase()}
         </span>
-        <div className="flex items-center justify-end gap-x-1.5">
+        <div className="flex w-[300px] shrink-0 items-center justify-end gap-x-1.5">
           <CcButton size="sm" onClick={copyText}>
             {isCopied ? "COPIED ✓" : "COPY"}
           </CcButton>

@@ -191,7 +191,7 @@ export function AssetsEditor(props: AssetsEditorProps) {
                 {assetUrls !== undefined && (
                   <a
                     href={assetUrls.download}
-                    className="border-primary text-primary hover:bg-primary/10 inline-flex min-h-7 items-center border px-3 text-[11px] font-bold tracking-[0.04em]"
+                    className="border-border text-cc-text-2 hover:border-primary hover:text-foreground inline-flex h-6 items-center border px-2 text-[10.5px] font-semibold tracking-[0.04em]"
                   >
                     DOWNLOAD
                   </a>

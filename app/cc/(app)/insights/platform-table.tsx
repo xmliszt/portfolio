@@ -28,12 +28,12 @@ export function PlatformTable(props: PlatformTableProps) {
       footer="Median: +24 h views. Engagement: (likes + comments + shares + saves) ÷ views, at each post's latest entry. “—” until there are numbers."
     >
       {props.rows.length === 0 ? (
-        <p className="text-cc-text-2 px-3 py-6">
+        <p className="text-cc-text-2 px-3 py-3 text-[11px]">
           No posts in this campaign yet.
         </p>
       ) : (
         <div className="overflow-x-auto">
-          <table className="w-full min-w-[520px] text-left">
+          <table className="w-full text-left">
             <thead className="text-muted-foreground text-[11px] tracking-[0.04em]">
               <tr>
                 <th className="px-3 py-1.5 font-normal">PLATFORM</th>
@@ -66,7 +66,7 @@ export function PlatformTable(props: PlatformTableProps) {
                     ) : (
                       <span
                         title={row.best.label}
-                        className="block max-w-[150px] truncate"
+                        className="block max-w-[120px] truncate"
                       >
                         <span className="text-foreground font-bold tabular-nums">
                           {formatMetricNumber(row.best.views)}

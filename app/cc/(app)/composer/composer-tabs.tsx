@@ -33,13 +33,13 @@ export function ComposerTabs(props: ComposerTabsProps) {
       aria-label="Posts in this campaign"
       className="bg-card relative flex max-h-[calc(100dvh-88px)] min-w-0 flex-col overflow-y-auto border lg:sticky lg:top-3"
     >
-      <div className="text-muted-foreground flex h-8 items-center justify-between border-b px-3 text-[10.5px] font-semibold tracking-[0.06em] uppercase">
+      <div className="text-muted-foreground bg-card sticky top-0 z-20 flex h-8 shrink-0 items-center justify-between border-b px-3 text-[10.5px] font-semibold tracking-[0.06em] uppercase">
         <span>Posts</span>
         <span className="tabular-nums">{props.tabs.length}</span>
       </div>
       {days.map(([day, tabs]) => (
         <div key={day} className="flex flex-col">
-          <div className="text-muted-foreground bg-cc-panel-2 sticky top-0 z-10 border-b px-3 py-1 text-[10px] tracking-[0.06em]">
+          <div className="text-muted-foreground bg-cc-panel-2 sticky top-8 z-10 border-b px-3 py-1 text-[10px] tracking-[0.06em]">
             {day}
           </div>
           {tabs.map((tab) => {

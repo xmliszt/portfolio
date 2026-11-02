@@ -15,7 +15,7 @@ export function TopHashtagsPanel(props: TopHashtagsPanelProps) {
       bodyClassName="flex flex-col px-3 py-3"
     >
       {props.lifts.length === 0 ? (
-        <p className="text-muted-foreground py-1 leading-normal">
+        <p className="text-muted-foreground py-1 text-[11px] leading-normal">
           A tag shows here once it is on 3+ posts with 24 h views logged.
         </p>
       ) : (

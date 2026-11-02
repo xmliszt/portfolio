@@ -25,7 +25,7 @@ type WeekGridProps = {
   heatPlatformId: PlatformId;
 };
 
-const MAX_HEAT_ALPHA = 0.32;
+const MAX_HEAT_ALPHA = 0.18;
 
 function getHeatAlpha(options: {
   heat: WeekGridProps["heat"];
@@ -95,7 +95,7 @@ export function WeekGrid(props: WeekGridProps) {
                         href={post.href}
                         aria-current={post.isSelected ? "true" : undefined}
                         className={cn(
-                          "bg-cc-panel-2 hover:bg-secondary flex flex-col border-l-2 px-1.5 py-0.5",
+                          "bg-card hover:bg-cc-panel-2 flex flex-col border-l-2 px-1.5 py-0.5",
                           post.isSelected &&
                             "outline-primary outline outline-1",
                           post.status === "skipped" && "opacity-50"

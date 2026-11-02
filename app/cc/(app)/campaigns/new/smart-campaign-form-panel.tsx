@@ -55,7 +55,7 @@ export function SmartCampaignFormPanel(props: SmartCampaignFormPanelProps) {
     <Panel
       title="Product"
       aside="CC plans the posts; ChatGPT writes them"
-      className="flex-[1_1_100%]"
+      className="max-w-[960px] flex-[1_1_100%]"
       bodyClassName="flex flex-col gap-y-3 px-3 py-2.5"
     >
       <div className="flex flex-wrap items-end gap-x-3 gap-y-2">

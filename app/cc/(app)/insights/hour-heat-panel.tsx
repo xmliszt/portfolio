@@ -68,7 +68,7 @@ export function HourHeatPanel(props: HourHeatPanelProps) {
       {props.progress.length > 0 && (
         <div className="flex flex-col gap-y-2">
           {props.ownGrids.length === 0 && (
-            <p className="text-cc-text-2 leading-relaxed">
+            <p className="text-cc-text-2 text-[11px] leading-relaxed">
               Not enough of your own posts yet. Each platform needs{" "}
               {props.minPosts} posted items with +24 h views before its hours
               mean anything.

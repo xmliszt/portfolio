@@ -78,7 +78,7 @@ export default async function OverviewPage() {
       ? [
           {
             atIso: post.scheduled_at,
-            label: `${PLATFORMS[post.platform].shortLabel} ${formatSgt({ date: new Date(post.scheduled_at), pattern: "EEE dd MMM HH:mm" }).toUpperCase()}`,
+            label: `${PLATFORMS[post.platform].label} · ${formatSgt({ date: new Date(post.scheduled_at), pattern: "EEE dd MMM HH:mm" })}`,
           },
         ]
       : []

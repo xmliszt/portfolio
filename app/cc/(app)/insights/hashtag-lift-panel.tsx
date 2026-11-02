@@ -32,7 +32,7 @@ export function HashtagLiftPanel(props: HashtagLiftPanelProps) {
     >
       {props.lifts.length === 0 ? (
         <div className="flex flex-col gap-y-3 px-3 py-3">
-          <p className="text-cc-text-2 leading-relaxed">
+          <p className="text-cc-text-2 text-[11px] leading-relaxed">
             No tag has 3 measured uses yet, so there is nothing to compare.
           </p>
           {props.plannedTags.length === 0 ? (
