@@ -30,7 +30,8 @@ export function HeatPicker(props: HeatPickerProps) {
       <select
         id="heat-platform"
         className="cc-input w-auto"
-        value={props.selected}
+        key={props.selected}
+        defaultValue={props.selected}
         onChange={handleChange}
         style={{ color: `hsl(var(${PLATFORMS[props.selected].colorVar}))` }}
       >

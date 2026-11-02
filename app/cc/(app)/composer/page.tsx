@@ -9,7 +9,7 @@ import { formatSgt } from "@/lib/cc/format-sgt";
 import { isPlatformId } from "@/lib/cc/is-platform-id";
 
 import { Composer } from "./composer";
-import { getComposerTabs } from "./get-composer-tabs";
+import { getComposerPostRows } from "./get-composer-post-rows";
 import { getSelectedPost } from "./get-selected-post";
 import { isComposerTopLevel } from "./is-composer-top-level";
 
@@ -120,7 +120,7 @@ export default async function ComposerPage(props: ComposerPageProps) {
         childPosts={childPosts}
         repostOf={repostOf}
         chatgptVariant={chatgptVariant}
-        tabs={getComposerTabs(posts)}
+        rows={getComposerPostRows(posts)}
         focusPostId={selected.focusPostId}
         sameDayTargets={sameDayTargets}
       />

@@ -6,7 +6,6 @@ import { cn } from "@/lib/utils";
 
 type PopoverMenuProps = {
   label: string;
-  primary?: boolean;
   align?: "start" | "end";
   widthClassName?: string;
   children: React.ReactNode;
@@ -47,9 +46,7 @@ export function PopoverMenu(props: PopoverMenuProps) {
         className={cn(
           "inline-flex h-7 cursor-pointer list-none items-center gap-x-1.5 border px-2.5 text-[11px] font-semibold tracking-[0.04em] whitespace-nowrap select-none [&::-webkit-details-marker]:hidden",
           "focus-visible:outline-primary focus-visible:outline focus-visible:outline-1 focus-visible:outline-offset-1",
-          props.primary
-            ? "border-primary bg-primary text-primary-foreground hover:bg-primary/85"
-            : "text-cc-text-2 hover:border-primary hover:text-foreground group-open:border-primary group-open:text-foreground"
+          "text-cc-text-2 hover:border-primary hover:text-foreground group-open:border-primary group-open:text-foreground"
         )}
       >
         {props.label}

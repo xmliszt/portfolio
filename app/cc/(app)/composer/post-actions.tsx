@@ -91,7 +91,7 @@ export function PostActions(props: PostActionsProps) {
           >
             SAVE ⌘S
           </CcButton>
-          {isUnposted && (
+          {props.post.status !== "posted" && (
             <PopoverMenu label="SCHEDULE">
               <ScheduleControl post={props.post} />
             </PopoverMenu>

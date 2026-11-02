@@ -27,7 +27,7 @@ export function AssetPreview(props: AssetPreviewProps) {
         src={props.url}
         controls
         preload="metadata"
-        className="bg-cc-panel-2 aspect-video w-full max-w-[480px] min-w-[320px] shrink-0 border object-contain"
+        className="bg-cc-panel-2 aspect-video w-full max-w-[480px] shrink-0 border object-contain"
       />
     );
   }

@@ -1,5 +1,7 @@
 "use client";
 
+import { useState } from "react";
+
 import { countPostCharacters } from "@/lib/cc/count-post-characters";
 import type { PostRow } from "@/lib/cc/data/cc-rows";
 import { isAutoPublishPlatform } from "@/lib/cc/is-auto-publish-platform";
@@ -28,6 +30,7 @@ type ChildDraftProps = {
 
 export function ChildDraft(props: ChildDraftProps) {
   const inputId = `body-${props.post.id}`;
+  const [isMediaOpen, setIsMediaOpen] = useState(props.assets.length > 0);
   return (
     <li
       id={`post-${props.post.id}`}
@@ -83,7 +86,11 @@ export function ChildDraft(props: ChildDraftProps) {
               dirty={props.dirty}
             />
           )}
-        <details open={props.assets.length > 0} className="group">
+        <details
+          open={isMediaOpen}
+          onToggle={(event) => setIsMediaOpen(event.currentTarget.open)}
+          className="group"
+        >
           <summary className="text-muted-foreground hover:text-foreground w-fit cursor-pointer list-none text-[10.5px] tracking-[0.04em] uppercase [&::-webkit-details-marker]:hidden">
             {props.assets.length === 0
               ? "+ Media"

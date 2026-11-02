@@ -14,8 +14,8 @@ import { ChatgptPanel } from "./chatgpt-panel";
 import { CheckTagsPanel } from "./check-tags-panel";
 import { ChecksColumn } from "./checks-column";
 import { ChildDraft } from "./child-draft";
-import type { ComposerTab } from "./composer-tab";
-import { ComposerTabs } from "./composer-tabs";
+import { ComposerPostList } from "./composer-post-list";
+import type { ComposerPostRow } from "./composer-post-row";
 import type { DraftFields } from "./draft-fields";
 import { getChatgptPrompt } from "./get-chatgpt-prompt";
 import { getPreflightChecks } from "./get-preflight-checks";
@@ -35,7 +35,7 @@ type ComposerProps = {
   childPosts: readonly PostRow[];
   repostOf: PostRow | undefined;
   chatgptVariant: PostRow | undefined;
-  tabs: readonly ComposerTab[];
+  rows: readonly ComposerPostRow[];
   focusPostId: string | undefined;
   sameDayTargets: readonly string[];
 };
@@ -158,7 +158,7 @@ export function Composer(props: ComposerProps) {
 
   return (
     <div className="grid grid-cols-1 items-start gap-x-3 gap-y-3 lg:grid-cols-[220px_minmax(0,1fr)] xl:grid-cols-[220px_minmax(0,1fr)_340px]">
-      <ComposerTabs tabs={props.tabs} selectedPostId={props.post.id} />
+      <ComposerPostList rows={props.rows} selectedPostId={props.post.id} />
       <Panel
         title={`${props.post.kind === "post" ? "Post" : props.post.kind} · ${platform.label}`}
         aside={
@@ -232,7 +232,7 @@ export function Composer(props: ComposerProps) {
           onSave={save}
         />
       </Panel>
-      <div className="lg:col-span-2 xl:col-span-1">
+      <div className="lg:sticky lg:top-3 lg:col-span-2 xl:col-span-1">
         <ChecksColumn
           tabs={[
             {

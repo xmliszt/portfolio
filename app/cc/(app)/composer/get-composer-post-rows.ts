@@ -5,7 +5,7 @@ import { getPostName } from "@/lib/cc/get-post-name";
 import { isPlatformId } from "@/lib/cc/is-platform-id";
 import { PLATFORMS } from "@/lib/cc/platforms";
 
-import type { ComposerTab } from "./composer-tab";
+import type { ComposerPostRow } from "./composer-post-row";
 import { isComposerTopLevel } from "./is-composer-top-level";
 
 function getTone(post: PostRow): { tone: PostStatusTone; label: string } {
@@ -18,13 +18,15 @@ function getTone(post: PostRow): { tone: PostStatusTone; label: string } {
 }
 
 /** Return one list row per post `isComposerTopLevel` accepts, in time order (unscheduled last), with its SGT day and time, name, and a status tone and word. */
-export function getComposerTabs(posts: readonly PostRow[]) {
+export function getComposerPostRows(posts: readonly PostRow[]) {
   return posts
     .filter(isComposerTopLevel)
-    .toSorted((a, b) =>
-      (a.scheduled_at ?? "~").localeCompare(b.scheduled_at ?? "~")
-    )
-    .flatMap((post): ComposerTab[] => {
+    .toSorted((a, b) => {
+      if (a.scheduled_at === null) return b.scheduled_at === null ? 0 : 1;
+      if (b.scheduled_at === null) return -1;
+      return a.scheduled_at.localeCompare(b.scheduled_at);
+    })
+    .flatMap((post): ComposerPostRow[] => {
       if (!isPlatformId(post.platform)) return [];
       const at =
         post.scheduled_at === null ? undefined : new Date(post.scheduled_at);

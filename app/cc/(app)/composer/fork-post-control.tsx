@@ -139,9 +139,11 @@ export function ForkPostControl(props: ForkPostControlProps) {
         >
           {isPending ? "FORKING…" : "CREATE FORK"}
         </CcButton>
-        <CcButton type="button" size="sm" onClick={() => setIsOpen(false)}>
-          CANCEL
-        </CcButton>
+        {!props.startOpen && (
+          <CcButton type="button" size="sm" onClick={() => setIsOpen(false)}>
+            CANCEL
+          </CcButton>
+        )}
         {props.dirty && (
           <span className="text-muted-foreground text-[11px]">
             Save first: the fork copies the saved post.

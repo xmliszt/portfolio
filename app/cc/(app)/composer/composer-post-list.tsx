@@ -8,15 +8,15 @@ import { PlatformChip } from "@/app/cc/_ui/platform-chip";
 import { StatusDot } from "@/app/cc/_ui/status-dot";
 import { cn } from "@/lib/utils";
 
-import type { ComposerTab } from "./composer-tab";
+import type { ComposerPostRow } from "./composer-post-row";
 
-type ComposerTabsProps = {
-  tabs: readonly ComposerTab[];
+type ComposerPostListProps = {
+  rows: readonly ComposerPostRow[];
   selectedPostId: string;
 };
 
-export function ComposerTabs(props: ComposerTabsProps) {
-  const days = Object.entries(groupBy(props.tabs, (tab) => tab.dayLabel));
+export function ComposerPostList(props: ComposerPostListProps) {
+  const days = Object.entries(groupBy(props.rows, (tab) => tab.dayLabel));
   const navRef = useRef<HTMLElement>(null);
   const selectedRef = useRef<HTMLAnchorElement>(null);
 
@@ -35,7 +35,7 @@ export function ComposerTabs(props: ComposerTabsProps) {
     >
       <div className="text-muted-foreground bg-card sticky top-0 z-20 flex h-8 shrink-0 items-center justify-between border-b px-3 text-[10.5px] font-semibold tracking-[0.06em] uppercase">
         <span>Posts</span>
-        <span className="tabular-nums">{props.tabs.length}</span>
+        <span className="tabular-nums">{props.rows.length}</span>
       </div>
       {days.map(([day, tabs]) => (
         <div key={day} className="flex flex-col">

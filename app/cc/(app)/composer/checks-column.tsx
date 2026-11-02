@@ -12,11 +12,35 @@ type ChecksColumnProps = {
 
 export function ChecksColumn(props: ChecksColumnProps) {
   const [selectedId, setSelectedId] = useState(props.tabs.at(0)?.id);
+
+  function handleKeyDown(event: React.KeyboardEvent<HTMLDivElement>) {
+    const index = props.tabs.findIndex((tab) => tab.id === selectedId);
+    const nextIndex = (() => {
+      switch (event.key) {
+        case "ArrowRight":
+          return (index + 1) % props.tabs.length;
+        case "ArrowLeft":
+          return (index - 1 + props.tabs.length) % props.tabs.length;
+        case "Home":
+          return 0;
+        case "End":
+          return props.tabs.length - 1;
+        default:
+          return undefined;
+      }
+    })();
+    const next = nextIndex === undefined ? undefined : props.tabs.at(nextIndex);
+    if (next === undefined) return;
+    event.preventDefault();
+    setSelectedId(next.id);
+    document.getElementById(`checks-tab-${next.id}`)?.focus();
+  }
   return (
-    <div className="flex min-w-0 flex-col gap-y-2 lg:sticky lg:top-3">
+    <div className="flex min-w-0 flex-col gap-y-2">
       <div
         role="tablist"
         aria-label="Checks"
+        onKeyDown={handleKeyDown}
         className="bg-card flex flex-wrap border"
       >
         {props.tabs.map((tab) => {
@@ -28,6 +52,7 @@ export function ChecksColumn(props: ChecksColumnProps) {
               role="tab"
               id={`checks-tab-${tab.id}`}
               aria-selected={isSelected}
+              tabIndex={isSelected ? 0 : -1}
               aria-controls={`checks-panel-${tab.id}`}
               onClick={() => setSelectedId(tab.id)}
               className={cn(
@@ -49,6 +74,7 @@ export function ChecksColumn(props: ChecksColumnProps) {
           id={`checks-panel-${tab.id}`}
           aria-labelledby={`checks-tab-${tab.id}`}
           hidden={tab.id !== selectedId}
+          tabIndex={0}
           className="min-w-0"
         >
           {tab.content}
