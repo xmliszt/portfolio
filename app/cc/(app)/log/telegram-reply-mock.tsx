@@ -1,5 +1,7 @@
 import { Panel } from "@/app/cc/_ui/panel";
 import { formatMetricNumber } from "@/lib/cc/format-metric-number";
+import { getMetricLabel } from "@/lib/cc/get-metric-label";
+import { listMetricLabels } from "@/lib/cc/list-metric-labels";
 import { parseMetricLine } from "@/lib/cc/parse-metric-line";
 import { PLATFORM_IDS, type PlatformId, PLATFORMS } from "@/lib/cc/platforms";
 
@@ -8,7 +10,18 @@ type TelegramReplyMockProps = {
   telegramLinked: boolean;
 };
 
-const EXAMPLE_TOKENS = ["7.9k", "512", "260", "41", "22", "9"];
+const EXAMPLE_TOKENS = [
+  "7.9k",
+  "512",
+  "260",
+  "41",
+  "22",
+  "9",
+  "6",
+  "5",
+  "3",
+  "2",
+];
 
 export function TelegramReplyMock(props: TelegramReplyMockProps) {
   const platform = PLATFORMS[props.platformId];
@@ -18,7 +31,8 @@ export function TelegramReplyMock(props: TelegramReplyMockProps) {
     parsed.kind === "ok"
       ? platform.metrics
           .map(
-            (field) => `${field} ${formatMetricNumber(parsed.values[field])}`
+            (field) =>
+              `${getMetricLabel({ platformId: props.platformId, field })} ${formatMetricNumber(parsed.values[field])}`
           )
           .join(" · ")
       : "";
@@ -46,7 +60,7 @@ export function TelegramReplyMock(props: TelegramReplyMockProps) {
                 <dt className="text-cc-text-2">
                   {PLATFORMS[platformId].label}
                 </dt>
-                <dd>{PLATFORMS[platformId].metrics.join(" ")}</dd>
+                <dd>{listMetricLabels({ platformId }).join(" · ")}</dd>
               </div>
             ))}
           </dl>
@@ -64,7 +78,9 @@ export function TelegramReplyMock(props: TelegramReplyMockProps) {
           <br />
           Reply with:
           <br />
-          <span className="text-cc-warn">{platform.metrics.join(" ")}</span>
+          <span className="text-cc-warn">
+            {listMetricLabels({ platformId: props.platformId }).join(" · ")}
+          </span>
         </div>
         <div className="border-primary bg-primary/15 max-w-[85%] self-end border px-3 py-2.5 text-[15px] font-bold">
           {reply}

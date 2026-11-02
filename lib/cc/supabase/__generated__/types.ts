@@ -161,6 +161,11 @@ export type Database = {
           comments: number | null
           id: number
           likes: number | null
+          follows: number | null
+          profile_visits: number | null
+          quotes: number | null
+          reach: number | null
+          reposts: number | null
           post_id: string
           rank: number | null
           saves: number | null
@@ -175,6 +180,11 @@ export type Database = {
           comments?: number | null
           id?: never
           likes?: number | null
+          follows?: number | null
+          profile_visits?: number | null
+          quotes?: number | null
+          reach?: number | null
+          reposts?: number | null
           post_id: string
           rank?: number | null
           saves?: number | null
@@ -189,6 +199,11 @@ export type Database = {
           comments?: number | null
           id?: never
           likes?: number | null
+          follows?: number | null
+          profile_visits?: number | null
+          quotes?: number | null
+          reach?: number | null
+          reposts?: number | null
           post_id?: string
           rank?: number | null
           saves?: number | null

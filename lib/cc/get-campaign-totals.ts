@@ -59,7 +59,9 @@ export function getCampaignTotals(options: {
       (entry) =>
         (entry.metric.likes ?? 0) +
         (entry.metric.comments ?? 0) +
-        (entry.metric.shares ?? 0)
+        (entry.metric.shares ?? 0) +
+        (entry.metric.reposts ?? 0) +
+        (entry.metric.quotes ?? 0)
     )
   );
   const productHunt = maxBy(
