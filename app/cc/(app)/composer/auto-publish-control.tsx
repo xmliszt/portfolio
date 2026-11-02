@@ -89,6 +89,23 @@ export function AutoPublishControl(props: AutoPublishControlProps) {
               </>
             );
           }
+          if (post.auto_publish && isReply) {
+            return (
+              <>
+                <span className="text-cc-ok">
+                  AUTO-POSTS AFTER ITS PARENT ✓
+                </span>
+                <CcButton
+                  type="button"
+                  size="sm"
+                  onClick={() => handleToggle(false)}
+                  disabled={isPending}
+                >
+                  TURN OFF
+                </CcButton>
+              </>
+            );
+          }
           if (post.auto_publish && post.scheduled_at !== null) {
             return (
               <>

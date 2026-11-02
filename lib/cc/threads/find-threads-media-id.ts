@@ -4,9 +4,9 @@ import { normaliseThreadsUrl } from "@/lib/cc/normalise-threads-url";
 
 import { listMyThreads } from "./list-my-threads";
 
-const LOOKUP_LIMIT = 100;
+const LOOKUP_LIMIT = 50;
 
-/** Return the media id of the account's recent thread at `permalink`, or `undefined` when it is not among the last 100. */
+/** Return the media id of the account's recent thread at `permalink`, or `undefined` when it is not among the last 50. */
 export async function findThreadsMediaId(options: {
   accessToken: string;
   permalink: string;

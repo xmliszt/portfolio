@@ -107,7 +107,7 @@ async function publishOnPlatform(options: {
         return {
           kind: "error",
           message:
-            "CC could not find the Threads post to reply to among your last 100 threads.",
+            "CC could not find the Threads post to reply to among your last 50 threads.",
         };
       }
       return publishThreadsPost({

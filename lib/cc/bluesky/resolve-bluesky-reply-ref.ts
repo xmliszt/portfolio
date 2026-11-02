@@ -6,10 +6,12 @@ import { parseBlueskyPostUrl } from "./parse-bluesky-post-url";
 
 const PUBLIC_API = "https://public.api.bsky.app";
 
-type PostView = {
+const ENTRYWAY = "https://bsky.social";
+
+type RecordView = {
   uri: string;
   cid: string;
-  record?: { reply?: { root?: { uri?: string; cid?: string } } };
+  value?: { reply?: { root?: { uri?: string; cid?: string } } };
 };
 
 async function toPostUri(options: { uri: string | null; url: string | null }) {
@@ -46,19 +48,23 @@ export async function resolveBlueskyReplyRef(options: {
         "CC could not find the Bluesky post to reply to. Paste its live link.",
     };
   }
-  const url = new URL("/xrpc/app.bsky.feed.getPosts", PUBLIC_API);
-  url.searchParams.set("uris", uri);
-  const found = await callBlueskyApi<{ posts: PostView[] }>({
-    url,
-    method: "GET",
-  });
-  const post = found.kind === "ok" ? found.data.posts.at(0) : undefined;
-  if (post === undefined) {
+  const [, , did, collection, recordKey] = uri.split("/");
+  const url = new URL("/xrpc/com.atproto.repo.getRecord", ENTRYWAY);
+  url.searchParams.set("repo", did);
+  url.searchParams.set("collection", collection);
+  url.searchParams.set("rkey", recordKey);
+  const found = await callBlueskyApi<RecordView>({ url, method: "GET" });
+  if (found.kind === "error") {
     return {
       kind: "error",
-      message: "Bluesky did not return the post to reply to.",
+      message: `Bluesky did not return the post to reply to: ${found.message}`,
     };
   }
+  const post = {
+    uri: found.data.uri,
+    cid: found.data.cid,
+    record: found.data.value,
+  };
   const parent = { uri: post.uri, cid: post.cid };
   const root = post.record?.reply?.root;
   return {

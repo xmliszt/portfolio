@@ -7,6 +7,7 @@ import type { PostRow } from "@/lib/cc/data/cc-rows";
 import { syncPostReminders } from "@/lib/cc/data/sync-post-reminders";
 import { isPlatformId } from "@/lib/cc/is-platform-id";
 import { createCcServiceClient } from "@/lib/cc/supabase/create-cc-service-client";
+import { parseXCommunityId } from "@/lib/cc/x/parse-x-community-id";
 
 type EditablePostFields = Partial<
   Pick<
@@ -29,7 +30,7 @@ type EditablePostFields = Partial<
   >
 >;
 
-/** Create a post in `campaignId` (when `postId` is unset) or update the given fields of `postId`, then resync its reminders; return the saved post. */
+/** Create a post in `campaignId` (when `postId` is unset) or update the given fields of `postId`, with an X community link stored as its id, then resync its reminders; return the saved post. */
 export async function savePost(options: {
   postId?: string;
   campaignId: string;
@@ -42,17 +43,22 @@ export async function savePost(options: {
   ) {
     throw new Error(`Unknown platform ${options.fields.platform}`);
   }
+  const target = options.fields.target;
+  const fields =
+    typeof target === "string" && target.includes("/i/communities/")
+      ? { ...options.fields, target: parseXCommunityId(target) ?? target }
+      : options.fields;
   const supabase = createCcServiceClient();
   const query =
     options.postId === undefined
       ? supabase.from("posts").insert({
           campaign_id: options.campaignId,
-          platform: options.fields.platform ?? "x",
-          ...options.fields,
+          platform: fields.platform ?? "x",
+          ...fields,
         })
       : supabase
           .from("posts")
-          .update({ ...options.fields, updated_at: new Date().toISOString() })
+          .update({ ...fields, updated_at: new Date().toISOString() })
           .eq("id", options.postId)
           .eq("campaign_id", options.campaignId);
   const { data: post, error } = await query.select("*").single();
