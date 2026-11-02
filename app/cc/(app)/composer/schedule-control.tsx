@@ -13,6 +13,8 @@ type ScheduleControlProps = {
   post: PostRow;
 };
 
+type ScheduleMessage = { kind: "done" | "error"; text: string };
+
 function toSgtField(options: { at: string | null; pattern: SgtPattern }) {
   return options.at === null
     ? ""
@@ -26,9 +28,9 @@ export function ScheduleControl(props: ScheduleControlProps) {
   const [time, setTime] = useState(
     toSgtField({ at: props.post.scheduled_at, pattern: "HH:mm" })
   );
-  const [message, setMessage] = useState<
-    { kind: "done" | "error"; text: string } | undefined
-  >(undefined);
+  const [message, setMessage] = useState<ScheduleMessage | undefined>(
+    undefined
+  );
   const [isPending, startTransition] = useTransition();
 
   function handleSubmit(event: React.FormEvent<HTMLFormElement>) {

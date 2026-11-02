@@ -97,14 +97,7 @@ export function PostActions(props: PostActionsProps) {
           url={props.post.url}
         />
       </div>
-      {(props.post.status === "draft" ||
-        props.post.status === "scheduled" ||
-        props.post.status === "skipped") && (
-        <ScheduleControl
-          key={props.post.scheduled_at ?? "unscheduled"}
-          post={props.post}
-        />
-      )}
+      {props.post.status !== "posted" && <ScheduleControl post={props.post} />}
       <div className="flex flex-wrap items-start gap-x-2 gap-y-2">
         <ForkPostControl
           post={props.post}
