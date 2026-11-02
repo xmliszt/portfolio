@@ -97,6 +97,8 @@ async function applyRuleAction(options: {
         postId: repost.id,
         status: repost.status,
         kind: repost.kind,
+
+        repostAs: repost.repost_as,
         scheduledAt: repost.scheduled_at,
         postedAt: repost.posted_at,
       });

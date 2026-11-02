@@ -114,7 +114,8 @@ export function PostActions(props: PostActionsProps) {
       </div>
       {isAutoPublishPlatform(props.platformId) &&
         props.post.kind === "repost" &&
-        props.post.status !== "posted" && (
+        (props.post.status === "draft" ||
+          props.post.status === "scheduled") && (
           <RepostModeControl post={props.post} platformId={props.platformId} />
         )}
       {isAutoPublishPlatform(props.platformId) &&

@@ -185,6 +185,13 @@ Rescheduling a failed post clears the failure and turns auto-post off, so it has
 | LinkedIn | Same idea with a new opening line | 60–90 days |
 | Reddit, Product Hunt, 朋友圈, YouTube | Never repost | — |
 
+**PUBLISH AS** (Composer, on an unposted repost on X, Threads or Bluesky) sets how the repost goes out:
+- **New post:** its own text, as a new post.
+- **Quote the original:** its text with the original embedded. On X the API quotes only on Enterprise, so CC adds the original's link to the text; X shows a quote card, and the link makes the post cost about $0.20.
+- **Plain repost:** reposts the original as it is. The text and media are not used, and no numbers are logged.
+
+Changing PUBLISH AS turns auto-post off; turn it on again to recheck. The original must be live.
+
 Follow-ups never introduce the product again. A daily rules job suggests reposts for posts that did well and sends them on Telegram.
 
 ## LOG NUMBERS

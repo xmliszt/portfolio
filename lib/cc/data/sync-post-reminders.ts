@@ -11,6 +11,7 @@ export async function syncPostReminders(options: {
   postId: string;
   status: string;
   kind: string;
+  repostAs: string;
   scheduledAt: string | null;
   postedAt: string | null;
 }) {

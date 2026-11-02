@@ -3,6 +3,7 @@ import { test } from "node:test";
 
 import { parseXCommunityId } from "./parse-x-community-id";
 import { parseXStatusId } from "./parse-x-status-id";
+import { parseXUserIdFromToken } from "./parse-x-user-id-from-token";
 
 test("reads the post id from X and Twitter post links", () => {
   assert.equal(
@@ -26,4 +27,9 @@ test("reads a community id from a raw id or a community link", () => {
     "1493446837214187523"
   );
   assert.equal(parseXCommunityId("Digital Art"), undefined);
+});
+
+test("reads the user id prefix of an OAuth 1.0a access token", () => {
+  assert.equal(parseXUserIdFromToken("123456-AbCdEf"), "123456");
+  assert.equal(parseXUserIdFromToken("AbCdEf"), undefined);
 });

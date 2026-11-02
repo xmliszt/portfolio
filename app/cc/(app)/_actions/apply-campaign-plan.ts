@@ -48,6 +48,8 @@ export async function applyCampaignPlan(options: {
           postId: row.id,
           status: row.status,
           kind: row.kind,
+
+          repostAs: row.repost_as,
           scheduledAt: row.scheduled_at,
           postedAt: row.posted_at,
         })

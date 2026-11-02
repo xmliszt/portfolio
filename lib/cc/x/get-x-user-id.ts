@@ -1,6 +1,7 @@
 import "server-only";
 
 import { callXApi } from "./call-x-api";
+import { parseXUserIdFromToken } from "./parse-x-user-id-from-token";
 import type { XApiResult } from "./x-api-result";
 import type { XUserCredentials } from "./x-user-credentials";
 
@@ -8,7 +9,7 @@ import type { XUserCredentials } from "./x-user-credentials";
 export async function getXUserId(options: {
   credentials: XUserCredentials;
 }): Promise<XApiResult<string>> {
-  const prefix = /^(\d{1,19})-/.exec(options.credentials.accessToken)?.at(1);
+  const prefix = parseXUserIdFromToken(options.credentials.accessToken);
   if (prefix !== undefined) return { kind: "ok", data: prefix };
   const me = await callXApi<{ data: { id: string } }>({
     method: "GET",

@@ -44,8 +44,7 @@ export async function resolveBlueskyReplyRef(options: {
   if (uri === undefined) {
     return {
       kind: "error",
-      message:
-        "CC could not find the Bluesky post to reply to. Paste its live link.",
+      message: "CC could not find that Bluesky post. Paste its live link.",
     };
   }
   const [, , did, collection, recordKey] = uri.split("/");
@@ -57,7 +56,7 @@ export async function resolveBlueskyReplyRef(options: {
   if (found.kind === "error") {
     return {
       kind: "error",
-      message: `Bluesky did not return the post to reply to: ${found.message}`,
+      message: `Bluesky did not return that post: ${found.message}`,
     };
   }
   const post = {

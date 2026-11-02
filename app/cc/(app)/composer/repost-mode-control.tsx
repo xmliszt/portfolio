@@ -30,7 +30,7 @@ function describeMode(options: {
       return "Posts this text as a new post.";
     case "quote":
       return options.platformId === "x"
-        ? "X quote posts need an Enterprise plan, so CC adds the original's link to the text; X shows it as a quote card."
+        ? "X quote posts need an Enterprise plan, so CC adds the original's link to the text (X shows a quote card; a post with a link costs about $0.20)."
         : "Posts this text with the original embedded as a quote.";
     case "repost":
       return "Reposts the original as it is. The text and media here are not used, and no numbers are logged.";
@@ -52,7 +52,11 @@ export function RepostModeControl(props: RepostModeControlProps) {
     setError(undefined);
     startTransition(async () => {
       try {
-        await setRepostMode({ postId: props.post.id, mode: next });
+        const result = await setRepostMode({
+          postId: props.post.id,
+          mode: next,
+        });
+        if (result.kind === "error") setError(result.message);
       } catch {
         setError("Could not save. Try again.");
       }

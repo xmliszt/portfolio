@@ -2,7 +2,6 @@
 
 import { revalidatePath } from "next/cache";
 
-import { appendLink } from "@/lib/cc/append-link";
 import { requireCcOwner } from "@/lib/cc/auth/require-cc-owner";
 import type { AutoPublishPlatformId } from "@/lib/cc/auto-publish-platforms";
 import { createBlueskySession } from "@/lib/cc/bluesky/create-bluesky-session";
@@ -15,10 +14,7 @@ import { getReplyAutoPublishError } from "@/lib/cc/get-reply-auto-publish-error"
 import { getRepostMode } from "@/lib/cc/get-repost-mode";
 import { isAutoPublishPlatform } from "@/lib/cc/is-auto-publish-platform";
 import { parsePostAssets } from "@/lib/cc/parse-post-assets";
-import {
-  prepareAutoPublish,
-  type PreparedPost,
-} from "@/lib/cc/prepare-auto-publish";
+import { prepareRepostPublish } from "@/lib/cc/prepare-repost-publish";
 import { createCcServiceClient } from "@/lib/cc/supabase/create-cc-service-client";
 import { checkThreadsPublishing } from "@/lib/cc/threads/check-threads-publishing";
 import { getXUserCredentials } from "@/lib/cc/x/get-x-user-credentials";
@@ -139,30 +135,19 @@ export async function setAutoPublish(options: {
     }
     const setupError = await getSetupError(post.platform);
     if (setupError !== undefined) return { kind: "error", message: setupError };
-    const mode = getRepostMode(post);
     const original =
-      mode === "post" ? undefined : await loadRepostOriginal({ post });
+      getRepostMode(post) === "post"
+        ? undefined
+        : await loadRepostOriginal({ post });
     if (original?.kind === "error") return original;
-    const copyText = getPostCopyText(post);
-    const originalUrl = original?.original.url;
-    const prepared =
-      mode === "repost"
-        ? ({
-            kind: "ok",
-            text: "",
-            media: [],
-            topicTag: undefined,
-          } satisfies PreparedPost)
-        : prepareAutoPublish({
-            platformId: post.platform,
-            text:
-              mode === "quote" && post.platform === "x" && originalUrl
-                ? appendLink({ text: copyText, link: originalUrl })
-                : copyText,
-            assets: parsePostAssets(post.assets),
-            target: post.target ?? undefined,
-          });
-    if (prepared.kind === "error") return prepared;
+    const preparedPublish = prepareRepostPublish({
+      post,
+      platformId: post.platform,
+      original: original?.original,
+    });
+    if (preparedPublish.kind === "error") return preparedPublish;
+    const prepared = preparedPublish.prepared;
+
     const oversized =
       post.platform === "bluesky"
         ? await findOversizedBlueskyImage({ media: prepared.media })
