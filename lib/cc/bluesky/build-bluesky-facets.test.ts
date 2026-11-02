@@ -60,3 +60,11 @@ test("keeps balanced parentheses in a link and drops a stray closing one", () =>
 test("skips tags that are numbers only, too long, or inside words", () => {
   assert.deepEqual(readFacets(`#2026 #${"a".repeat(65)} issue#12 C# code`), []);
 });
+
+test("needs a dotted host and ends a link at a Chinese character", () => {
+  assert.deepEqual(readFacets("https://. hi"), []);
+  assert.deepEqual(
+    readFacets("https://zh.wikipedia.org/wiki/猫").map((facet) => facet.text),
+    ["https://zh.wikipedia.org/wiki/"]
+  );
+});

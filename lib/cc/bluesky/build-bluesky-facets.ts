@@ -6,7 +6,8 @@ export type BlueskyFacet = {
   )[];
 };
 
-const LINK_PATTERN = /https?:\/\/[^\s　-〿＀-￯一-鿿]+/g;
+const LINK_PATTERN =
+  /https?:\/\/[^\s\u3000-\u303F\uFF00-\uFFEF\u4E00-\u9FFF]+\.[^\s\u3000-\u303F\uFF00-\uFFEF\u4E00-\u9FFF]+/g;
 const TRAILING_PUNCTUATION = /[.,;:!?"'”’\]]+$/;
 const TAG_PATTERN = /(^|\s)#([^\s#.,;:!?)\]"'”’　-〿＀-￯]+)/gu;
 const MAX_TAG_GRAPHEMES = 64;

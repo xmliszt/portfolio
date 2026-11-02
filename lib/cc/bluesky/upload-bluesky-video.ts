@@ -18,10 +18,24 @@ type JobStatus = {
   message?: string;
 };
 
+function isObject(value: unknown): value is { [key: string]: unknown } {
+  return typeof value === "object" && value !== null;
+}
+
 function readJobStatus(body: unknown): JobStatus {
-  if (typeof body !== "object" || body === null) return {};
-  const status: { jobStatus?: JobStatus } & JobStatus = body;
-  return status.jobStatus ?? status;
+  const status =
+    isObject(body) && isObject(body.jobStatus) ? body.jobStatus : body;
+  if (!isObject(status)) return {};
+  function read(key: string) {
+    const value = isObject(status) ? status[key] : undefined;
+    return typeof value === "string" ? value : undefined;
+  }
+  return {
+    jobId: read("jobId"),
+    state: read("state"),
+    error: read("error"),
+    message: read("message"),
+  };
 }
 
 /** Upload an MP4 to Bluesky's video service for `session`'s account, wait until it is processed, and return its blob reference; a video the service already has returns its earlier blob. */
@@ -62,41 +76,26 @@ export async function uploadBlueskyVideo(options: {
   const uploadBody = uploaded.kind === "ok" ? uploaded.data : uploaded.body;
   const existingBlob = readBlobRef(uploadBody);
   if (existingBlob !== undefined) return { kind: "ok", data: existingBlob };
-  if (uploaded.kind === "error") return uploaded;
+  const jobId = readJobStatus(uploadBody).jobId;
+  if (jobId === undefined) {
+    return uploaded.kind === "error"
+      ? uploaded
+      : {
+          kind: "error",
+          status: 0,
+          message: "Bluesky returned no video job",
+          body: uploadBody,
+        };
+  }
 
   const deadlineMs = Date.now() + MAX_PROCESSING_MS;
-  let job = readJobStatus(uploadBody);
   while (Date.now() <= deadlineMs) {
-    if (job.jobId === undefined) {
-      return {
-        kind: "error",
-        status: 0,
-        message: "Bluesky returned no video job",
-        body: job,
-      };
-    }
-    if (job.state === "JOB_STATE_COMPLETED") {
-      return {
-        kind: "error",
-        status: 0,
-        message: "Bluesky finished the video but returned no blob",
-        body: job,
-      };
-    }
-    if (job.state === "JOB_STATE_FAILED") {
-      return {
-        kind: "error",
-        status: 0,
-        message: `Bluesky could not process the video: ${job.message ?? job.error ?? "failed"}`,
-        body: job,
-      };
-    }
     await wait(POLL_MS);
     const statusUrl = new URL(
       "/xrpc/app.bsky.video.getJobStatus",
       VIDEO_SERVICE
     );
-    statusUrl.searchParams.set("jobId", job.jobId);
+    statusUrl.searchParams.set("jobId", jobId);
     const status = await callBlueskyApi<unknown>({
       url: statusUrl,
       method: "GET",
@@ -104,7 +103,18 @@ export async function uploadBlueskyVideo(options: {
     if (status.kind === "error") return status;
     const blob = readBlobRef(status.data);
     if (blob !== undefined) return { kind: "ok", data: blob };
-    job = readJobStatus(status.data);
+    const job = readJobStatus(status.data);
+    if (
+      job.state === "JOB_STATE_FAILED" ||
+      job.state === "JOB_STATE_COMPLETED"
+    ) {
+      return {
+        kind: "error",
+        status: 0,
+        message: `Bluesky could not process the video: ${job.message ?? job.error ?? job.state}`,
+        body: job,
+      };
+    }
   }
   return {
     kind: "error",
