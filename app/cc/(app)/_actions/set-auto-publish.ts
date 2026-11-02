@@ -5,6 +5,7 @@ import { revalidatePath } from "next/cache";
 import { requireCcOwner } from "@/lib/cc/auth/require-cc-owner";
 import type { AutoPublishPlatformId } from "@/lib/cc/auto-publish-platforms";
 import { createBlueskySession } from "@/lib/cc/bluesky/create-bluesky-session";
+import { findOversizedBlueskyImage } from "@/lib/cc/bluesky/find-oversized-bluesky-image";
 import { getBlueskyCredentials } from "@/lib/cc/bluesky/get-bluesky-credentials";
 import { getIntegration } from "@/lib/cc/data/get-integration";
 import { getPostCopyText } from "@/lib/cc/get-post-copy-text";
@@ -109,6 +110,11 @@ export async function setAutoPublish(options: {
       target: post.target ?? undefined,
     });
     if (prepared.kind === "error") return prepared;
+    const oversized =
+      post.platform === "bluesky"
+        ? await findOversizedBlueskyImage({ media: prepared.media })
+        : undefined;
+    if (oversized !== undefined) return { kind: "error", message: oversized };
   }
   const updateQuery = supabase
     .from("posts")

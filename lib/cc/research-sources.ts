@@ -8,6 +8,7 @@ export type ResearchSource = {
 };
 
 const CHECKED_ON = "2026-11-01";
+const BLUESKY_CHECKED_ON = "2026-11-03";
 
 /** The studies behind `RESEARCHED_WINDOWS`, one row per claim used. */
 export const RESEARCH_SOURCES: readonly ResearchSource[] = [
@@ -83,13 +84,12 @@ export const RESEARCH_SOURCES: readonly ResearchSource[] = [
     claim:
       "Weekday mornings beat weekends, Tuesday and Wednesday most; 9–11 am (1M+ posts).",
     url: "https://www.socialpilot.co/insights/best-time-to-post-on-bluesky",
-    checkedOn: "2026-11-03",
+    checkedOn: BLUESKY_CHECKED_ON,
   },
   {
     platform: "bluesky",
-    claim:
-      "Engagement peaks 1–3 pm ET, with 9 am–noon close behind (2M+ posts).",
-    url: "https://recurpost.com/?p=162527",
-    checkedOn: "2026-11-03",
+    claim: "Weekdays 9 am–1 pm in the audience's local time work best.",
+    url: "https://recurpost.com/bluesky-scheduler/best-time-to-post-on-bluesky/",
+    checkedOn: BLUESKY_CHECKED_ON,
   },
 ];

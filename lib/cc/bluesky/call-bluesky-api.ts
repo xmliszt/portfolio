@@ -2,9 +2,9 @@ import "server-only";
 
 export type BlueskyApiResult<T> =
   | { kind: "ok"; data: T }
-  | { kind: "error"; status: number; message: string };
+  | { kind: "error"; status: number; message: string; body: unknown };
 
-/** Send an XRPC request to Bluesky and return the parsed JSON body or its error message; never throws for an HTTP or network error. */
+/** Send an XRPC request to Bluesky and return the parsed JSON body, or the error message with the parsed error `body`; never throws for an HTTP or network error. */
 export async function callBlueskyApi<T>(options: {
   url: URL;
   method: "GET" | "POST";
@@ -41,7 +41,7 @@ export async function callBlueskyApi<T>(options: {
       const data: T = JSON.parse(text === "" ? "{}" : text);
       return { kind: "ok", data };
     }
-    const error: { error?: string; message?: string } = (() => {
+    const error: { error?: string; message?: string; blob?: unknown } = (() => {
       try {
         return JSON.parse(text);
       } catch {
@@ -52,12 +52,14 @@ export async function callBlueskyApi<T>(options: {
       kind: "error",
       status: response.status,
       message: error.message ?? error.error ?? response.statusText,
+      body: error,
     };
   } catch (error) {
     return {
       kind: "error",
       status: 0,
       message: error instanceof Error ? error.message : String(error),
+      body: undefined,
     };
   }
 }

@@ -3,28 +3,60 @@ import { test } from "node:test";
 
 import { buildBlueskyFacets } from "./build-bluesky-facets";
 
-test("marks links and hashtags with UTF-8 byte ranges", () => {
-  const text = "猫 visit https://paws.garden. #digitalart";
-  const facets = buildBlueskyFacets(text);
+function readFacets(text: string) {
   const bytes = new TextEncoder().encode(text);
-  const decode = (start: number, end: number) =>
-    new TextDecoder().decode(bytes.slice(start, end));
-  assert.equal(facets.length, 2);
-  const [link, tag] = facets;
-  assert.equal(
-    decode(link.index.byteStart, link.index.byteEnd),
-    "https://paws.garden"
-  );
-  assert.deepEqual(link.features, [
-    { $type: "app.bsky.richtext.facet#link", uri: "https://paws.garden" },
-  ]);
-  assert.equal(decode(tag.index.byteStart, tag.index.byteEnd), "#digitalart");
-  assert.deepEqual(tag.features, [
-    { $type: "app.bsky.richtext.facet#tag", tag: "digitalart" },
+  return buildBlueskyFacets(text).map((facet) => ({
+    text: new TextDecoder().decode(
+      bytes.slice(facet.index.byteStart, facet.index.byteEnd)
+    ),
+    feature: facet.features.at(0),
+  }));
+}
+
+test("marks links and hashtags with UTF-8 byte ranges", () => {
+  assert.deepEqual(readFacets("猫 visit https://paws.garden. #digitalart"), [
+    {
+      text: "https://paws.garden",
+      feature: {
+        $type: "app.bsky.richtext.facet#link",
+        uri: "https://paws.garden",
+      },
+    },
+    {
+      text: "#digitalart",
+      feature: { $type: "app.bsky.richtext.facet#tag", tag: "digitalart" },
+    },
   ]);
 });
 
-test("ignores # inside words and returns nothing for plain text", () => {
-  assert.deepEqual(buildBlueskyFacets("issue#12 and C# code"), []);
-  assert.deepEqual(buildBlueskyFacets("just words"), []);
+test("ends a link at Chinese text and full-width punctuation", () => {
+  assert.deepEqual(
+    readFacets("看看https://paws.garden，很可爱").map((facet) => facet.text),
+    ["https://paws.garden"]
+  );
+  assert.deepEqual(
+    readFacets("（https://paws.garden）").map((facet) => facet.text),
+    ["https://paws.garden"]
+  );
+  assert.deepEqual(
+    readFacets("来 https://paws.garden。 #猫").map((facet) => facet.text),
+    ["https://paws.garden", "#猫"]
+  );
+});
+
+test("keeps balanced parentheses in a link and drops a stray closing one", () => {
+  assert.deepEqual(
+    readFacets("see https://en.wikipedia.org/wiki/Cat_(disambiguation)").map(
+      (facet) => facet.text
+    ),
+    ["https://en.wikipedia.org/wiki/Cat_(disambiguation)"]
+  );
+  assert.deepEqual(
+    readFacets("(see https://paws.garden)").map((facet) => facet.text),
+    ["https://paws.garden"]
+  );
+});
+
+test("skips tags that are numbers only, too long, or inside words", () => {
+  assert.deepEqual(readFacets(`#2026 #${"a".repeat(65)} issue#12 C# code`), []);
 });

@@ -7,9 +7,8 @@ import type { PublishResult } from "@/lib/cc/publish-result";
 import { buildBlueskyFacets } from "./build-bluesky-facets";
 import { callBlueskyApi } from "./call-bluesky-api";
 import { createBlueskySession } from "./create-bluesky-session";
+import { BLUESKY_MAX_IMAGE_BYTES } from "./find-oversized-bluesky-image";
 import { uploadBlueskyVideo } from "./upload-bluesky-video";
-
-const MAX_IMAGE_BYTES = 2_000_000;
 
 /** Sign in, upload `media`, and publish `text` with clickable links and hashtags on Bluesky; return the new post's URI and web URL, or the step that failed. */
 export async function publishBlueskyPost(options: {
@@ -56,7 +55,7 @@ export async function publishBlueskyPost(options: {
     const images: unknown[] = [];
     for (const media of options.media) {
       const bytes = await downloadAsset({ path: media.path });
-      if (bytes.size > MAX_IMAGE_BYTES) {
+      if (bytes.size > BLUESKY_MAX_IMAGE_BYTES) {
         return {
           kind: "error",
           message: `${media.path.split("/").at(-1)} is over Bluesky's 2 MB image limit.`,

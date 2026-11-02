@@ -6,37 +6,69 @@ export type BlueskyFacet = {
   )[];
 };
 
-const LINK_PATTERN = /https?:\/\/[^\s]+[^\s.,;:!?)\]"'”’]/g;
-const TAG_PATTERN = /(^|\s)#([^\s#.,;:!?)\]"'”’]+)/gu;
+const LINK_PATTERN = /https?:\/\/[^\s　-〿＀-￯一-鿿]+/g;
+const TRAILING_PUNCTUATION = /[.,;:!?"'”’\]]+$/;
+const TAG_PATTERN = /(^|\s)#([^\s#.,;:!?)\]"'”’　-〿＀-￯]+)/gu;
+const MAX_TAG_GRAPHEMES = 64;
 
 const encoder = new TextEncoder();
+const segmenter = new Intl.Segmenter(undefined, { granularity: "grapheme" });
 
-function toByteIndex(text: string, index: number) {
-  return encoder.encode(text.slice(0, index)).length;
+function toByteRange(options: { text: string; start: number; length: number }) {
+  return {
+    byteStart: encoder.encode(options.text.slice(0, options.start)).length,
+    byteEnd: encoder.encode(
+      options.text.slice(0, options.start + options.length)
+    ).length,
+  };
 }
 
-/** Return the link and hashtag facets of `text`, with UTF-8 byte ranges as Bluesky expects, so they become clickable. */
+function trimLink(match: string): string {
+  const trimmed = match.replace(TRAILING_PUNCTUATION, "");
+  return trimmed.endsWith(")") && !trimmed.includes("(")
+    ? trimLink(trimmed.slice(0, -1))
+    : trimmed;
+}
+
+function isValidTag(tag: string) {
+  return (
+    /\p{L}/u.test(tag) &&
+    Array.from(segmenter.segment(tag)).length <= MAX_TAG_GRAPHEMES
+  );
+}
+
+/** Return the link and hashtag facets of `text`, with UTF-8 byte ranges as Bluesky expects, so they become clickable; tags with no letter or over 64 graphemes are left as plain text. */
 export function buildBlueskyFacets(text: string): BlueskyFacet[] {
   const links = Array.from(
     text.matchAll(LINK_PATTERN),
-    (match): BlueskyFacet => ({
-      index: {
-        byteStart: toByteIndex(text, match.index ?? 0),
-        byteEnd: toByteIndex(text, (match.index ?? 0) + match[0].length),
-      },
-      features: [{ $type: "app.bsky.richtext.facet#link", uri: match[0] }],
-    })
+    (match): BlueskyFacet => {
+      const uri = trimLink(match[0]);
+      return {
+        index: toByteRange({
+          text,
+          start: match.index ?? 0,
+          length: uri.length,
+        }),
+        features: [{ $type: "app.bsky.richtext.facet#link", uri }],
+      };
+    }
   );
-  const tags = Array.from(text.matchAll(TAG_PATTERN), (match): BlueskyFacet => {
-    const start = (match.index ?? 0) + match[1].length;
-    return {
-      index: {
-        byteStart: toByteIndex(text, start),
-        byteEnd: toByteIndex(text, start + 1 + match[2].length),
-      },
-      features: [{ $type: "app.bsky.richtext.facet#tag", tag: match[2] }],
-    };
-  });
+  const tags = Array.from(text.matchAll(TAG_PATTERN)).flatMap(
+    (match): BlueskyFacet[] => {
+      const tag = match[2];
+      if (!isValidTag(tag)) return [];
+      return [
+        {
+          index: toByteRange({
+            text,
+            start: (match.index ?? 0) + match[1].length,
+            length: tag.length + 1,
+          }),
+          features: [{ $type: "app.bsky.richtext.facet#tag", tag }],
+        },
+      ];
+    }
+  );
   return [...links, ...tags].toSorted(
     (a, b) => a.index.byteStart - b.index.byteStart
   );

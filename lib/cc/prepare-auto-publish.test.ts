@@ -131,33 +131,23 @@ test("rejects a post with no text and no media", () => {
 });
 
 test("enforces Bluesky's media mix: up to 4 images, or one MP4 alone", () => {
-  assert.equal(
-    prepareAutoPublish({
+  function prepare(names: readonly string[]) {
+    return prepareAutoPublish({
       platformId: "bluesky",
       text: "Hi",
-      assets: [image({ name: "a.mp4" })],
+      assets: names.map((name) => image({ name })),
       target: undefined,
-    }).kind,
-    "ok"
-  );
-  assert.equal(
-    prepareAutoPublish({
-      platformId: "bluesky",
-      text: "Hi",
-      assets: [image({ name: "a.mov" })],
-      target: undefined,
-    }).kind,
-    "error"
-  );
-  assert.equal(
-    prepareAutoPublish({
-      platformId: "bluesky",
-      text: "Hi",
-      assets: [image({ name: "a.gif" })],
-      target: undefined,
-    }).kind,
-    "error"
-  );
+    }).kind;
+  }
+  assert.equal(prepare(["a.mp4"]), "ok");
+  assert.equal(prepare(["1.png", "2.png", "3.png", "4.png"]), "ok");
+  assert.equal(prepare(["1.png", "2.png", "3.png", "4.png", "5.png"]), "error");
+  assert.equal(prepare(["a.png", "b.mp4"]), "error");
+  assert.equal(prepare(["a.mov"]), "error");
+  assert.equal(prepare(["a.gif"]), "error");
+});
+
+test("rejects Bluesky text over 300 characters", () => {
   assert.equal(
     prepareAutoPublish({
       platformId: "bluesky",

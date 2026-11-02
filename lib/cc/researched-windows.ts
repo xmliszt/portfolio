@@ -113,7 +113,7 @@ export const RESEARCHED_WINDOWS: { [id in PlatformId]: PlatformResearch } = {
     dayWeights: [0.8, 1, 1, 0.85, 0.7, 0.5, 0.5],
     hours: [
       { startHour: 9, endHour: 11, strength: 1, label: "9–11 am ET" },
-      { startHour: 13, endHour: 15, strength: 0.8, label: "1–3 pm ET" },
+      { startHour: 11, endHour: 13, strength: 0.8, label: "11 am–1 pm ET" },
     ],
     ...US_EASTERN,
   },
