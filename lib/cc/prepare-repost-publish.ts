@@ -5,7 +5,7 @@ import type { AutoPublishPlatformId } from "./auto-publish-platforms";
 import { getPostCopyText } from "./get-post-copy-text";
 import { getRepostMode } from "./get-repost-mode";
 import { parsePostAssets } from "./parse-post-assets";
-import { prepareAutoPublish,type PreparedPost } from "./prepare-auto-publish";
+import { prepareAutoPublish, type PreparedPost } from "./prepare-auto-publish";
 
 type PublishPost = {
   kind: string;
@@ -18,12 +18,12 @@ type PublishPost = {
 
 type OriginalPost = { platform_post_id: string | null; url: string | null };
 
-export type RepostPublishPlan<T extends OriginalPost> =
+type RepostPublishPlan<T extends OriginalPost> =
   | { kind: "post" }
   | { kind: "quote"; original: T }
   | { kind: "repost"; original: T };
 
-/** Return how `post` goes out on `platformId` (a new post, a quote of `original`, or a plain repost of it) with the text, media and topic to send, or why it cannot; an X quote gets the original's status link added to its text, since X's API quotes only on Enterprise. */
+/** Return how `post` goes out on `platformId` (a new post, a quote of `original`, or a plain repost of it) with the text, media and topic to send, or why it cannot; an X quote gets the original's status link added to its text. */
 export function prepareRepostPublish<T extends OriginalPost>(options: {
   post: PublishPost;
   platformId: AutoPublishPlatformId;

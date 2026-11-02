@@ -41,7 +41,11 @@ test("leaves out drafts, skipped posts, replies and comments", () => {
   );
 });
 
-test("leaves out plain reposts", () => {
+test("leaves out plain reposts once they are live", () => {
+  assert.equal(
+    isTrackedPost({ kind: "repost", status: "scheduled", repostAs: "repost" }),
+    true
+  );
   assert.equal(
     isTrackedPost({ kind: "repost", status: "posted", repostAs: "repost" }),
     false

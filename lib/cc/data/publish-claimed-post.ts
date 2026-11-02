@@ -122,18 +122,23 @@ async function publishOnPlatform(options: {
         };
       }
       const accessToken = integration.access_token;
-      const originalId =
-        plan.kind === "post"
-          ? undefined
-          : await resolveThreadsMediaId({ post: plan.original, accessToken });
-      if (originalId?.kind === "error") return originalId;
-      if (plan.kind === "repost" && originalId !== undefined) {
+      if (plan.kind === "repost") {
+        const originalId = await resolveThreadsMediaId({
+          post: plan.original,
+          accessToken,
+        });
+        if (originalId.kind === "error") return originalId;
         return repostThreadsPost({
           accessToken,
           mediaId: originalId.value,
           permalink: plan.original.url ?? undefined,
         });
       }
+      const originalId =
+        plan.kind === "quote"
+          ? await resolveThreadsMediaId({ post: plan.original, accessToken })
+          : undefined;
+      if (originalId?.kind === "error") return originalId;
       const replyTo =
         target === undefined
           ? undefined
@@ -145,7 +150,7 @@ async function publishOnPlatform(options: {
         media: prepared.media,
         topicTag: target === undefined ? prepared.topicTag : undefined,
         replyToId: replyTo?.value,
-        quotePostId: plan.kind === "quote" ? originalId?.value : undefined,
+        quotePostId: originalId?.value,
       });
     }
     case "bluesky": {
@@ -156,21 +161,26 @@ async function publishOnPlatform(options: {
           message: "Bluesky posting is not set up in Vercel.",
         };
       }
-      const originalRef =
-        plan.kind === "post"
-          ? undefined
-          : await resolveBlueskyReplyRef({
-              uri: plan.original.platform_post_id,
-              url: plan.original.url,
-            });
-      if (originalRef?.kind === "error") return originalRef;
-      if (plan.kind === "repost" && originalRef !== undefined) {
+      if (plan.kind === "repost") {
+        const originalRef = await resolveBlueskyReplyRef({
+          uri: plan.original.platform_post_id,
+          url: plan.original.url,
+        });
+        if (originalRef.kind === "error") return originalRef;
         return repostBlueskyPost({
           ...credentials,
           subject: originalRef.ref.parent,
           originalUrl: plan.original.url ?? undefined,
         });
       }
+      const originalRef =
+        plan.kind === "quote"
+          ? await resolveBlueskyReplyRef({
+              uri: plan.original.platform_post_id,
+              url: plan.original.url,
+            })
+          : undefined;
+      if (originalRef?.kind === "error") return originalRef;
       const replyTo =
         target === undefined
           ? undefined
@@ -184,7 +194,7 @@ async function publishOnPlatform(options: {
         text: prepared.text,
         media: prepared.media,
         replyTo: replyTo?.ref,
-        quote: plan.kind === "quote" ? originalRef?.ref.parent : undefined,
+        quote: originalRef?.ref.parent,
       });
     }
     default: {

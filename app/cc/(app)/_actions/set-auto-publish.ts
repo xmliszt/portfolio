@@ -9,11 +9,9 @@ import { findOversizedBlueskyImage } from "@/lib/cc/bluesky/find-oversized-blues
 import { getBlueskyCredentials } from "@/lib/cc/bluesky/get-bluesky-credentials";
 import { getIntegration } from "@/lib/cc/data/get-integration";
 import { loadRepostOriginal } from "@/lib/cc/data/load-repost-original";
-import { getPostCopyText } from "@/lib/cc/get-post-copy-text";
 import { getReplyAutoPublishError } from "@/lib/cc/get-reply-auto-publish-error";
 import { getRepostMode } from "@/lib/cc/get-repost-mode";
 import { isAutoPublishPlatform } from "@/lib/cc/is-auto-publish-platform";
-import { parsePostAssets } from "@/lib/cc/parse-post-assets";
 import { prepareRepostPublish } from "@/lib/cc/prepare-repost-publish";
 import { createCcServiceClient } from "@/lib/cc/supabase/create-cc-service-client";
 import { checkThreadsPublishing } from "@/lib/cc/threads/check-threads-publishing";
