@@ -15,6 +15,7 @@ import { AutoPublishControl } from "./auto-publish-control";
 import { CopyButton } from "./copy-button";
 import { ForkPostControl } from "./fork-post-control";
 import { MarkPostedControl } from "./mark-posted-control";
+import { ScheduleControl } from "./schedule-control";
 import { writeClipboard } from "./write-clipboard";
 
 type PostActionsProps = {
@@ -96,6 +97,14 @@ export function PostActions(props: PostActionsProps) {
           url={props.post.url}
         />
       </div>
+      {(props.post.status === "draft" ||
+        props.post.status === "scheduled" ||
+        props.post.status === "skipped") && (
+        <ScheduleControl
+          key={props.post.scheduled_at ?? "unscheduled"}
+          post={props.post}
+        />
+      )}
       <div className="flex flex-wrap items-start gap-x-2 gap-y-2">
         <ForkPostControl
           post={props.post}
