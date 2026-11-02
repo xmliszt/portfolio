@@ -1,4 +1,4 @@
-type SgtPattern =
+export type SgtPattern =
   | "HH:mm"
   | "HH:mm:ss"
   | "EEE dd MMM"
