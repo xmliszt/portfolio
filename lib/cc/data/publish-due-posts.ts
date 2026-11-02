@@ -7,11 +7,10 @@ import { notifyPublishOutcome } from "./notify-publish-outcome";
 import { publishClaimedPost } from "./publish-claimed-post";
 
 const MINUTE_MS = 60_000;
-const BATCH_SIZE = 3;
 const MISSED_AFTER_MS = 30 * MINUTE_MS;
 const STUCK_AFTER_MS = 10 * MINUTE_MS;
 
-/** Fail auto-posts claimed over 10 minutes ago that never finished and auto-posts over 30 minutes late, then claim up to `BATCH_SIZE` due auto-posts by stamping `publish_claimed_at` and publish them one at a time; return how many went live and how many failed. */
+/** Fail posts claimed for publishing over 10 minutes ago that never finished and auto-posts over 30 minutes late, then claim the earliest due auto-post by stamping `publish_claimed_at` and publish it; return how many went live and how many failed. */
 export async function publishDuePosts(options: { now: Date }) {
   const supabase = createCcServiceClient();
   const nowIso = options.now.toISOString();
@@ -21,8 +20,7 @@ export async function publishDuePosts(options: { now: Date }) {
       publish_error:
         "The auto-post stopped part way, so it may or may not be live. Check the platform before you post again.",
     })
-    .eq("auto_publish", true)
-    .eq("status", "scheduled")
+    .in("status", ["draft", "scheduled"])
     .is("publish_error", null)
     .lt(
       "publish_claimed_at",
@@ -70,29 +68,26 @@ export async function publishDuePosts(options: { now: Date }) {
     .is("publish_claimed_at", null)
     .lte("scheduled_at", nowIso)
     .order("scheduled_at", { ascending: true })
-    .limit(BATCH_SIZE);
+    .limit(1);
   if (dueError) throw dueError;
 
-  const outcomes: string[] = [];
-  for (const candidate of due) {
-    const { data: claimed, error: claimError } = await supabase
-      .from("posts")
-      .update({ publish_claimed_at: new Date().toISOString() })
-      .eq("id", candidate.id)
-      .eq("auto_publish", true)
-      .eq("status", "scheduled")
-      .is("publish_claimed_at", null)
-      .is("publish_error", null)
-      .select("*")
-      .maybeSingle();
-    if (claimError) throw claimError;
-    if (claimed === null) continue;
-    const result = await publishClaimedPost({ post: claimed, now: new Date() });
-    outcomes.push(result.kind);
-  }
-  const published = outcomes.filter((kind) => kind === "ok").length;
-  return {
-    published,
-    failed: outcomes.length - published + stuck.length + missed.length,
-  };
+  const failedEarly = stuck.length + missed.length;
+  const candidate = due.at(0);
+  if (candidate === undefined) return { published: 0, failed: failedEarly };
+  const { data: claimed, error: claimError } = await supabase
+    .from("posts")
+    .update({ publish_claimed_at: new Date().toISOString() })
+    .eq("id", candidate.id)
+    .eq("auto_publish", true)
+    .eq("status", "scheduled")
+    .is("publish_claimed_at", null)
+    .is("publish_error", null)
+    .select("*")
+    .maybeSingle();
+  if (claimError) throw claimError;
+  if (claimed === null) return { published: 0, failed: failedEarly };
+  const result = await publishClaimedPost({ post: claimed, now: new Date() });
+  return result.kind === "ok"
+    ? { published: 1, failed: failedEarly }
+    : { published: 0, failed: failedEarly + 1 };
 }

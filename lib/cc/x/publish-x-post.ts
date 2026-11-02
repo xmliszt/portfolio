@@ -44,7 +44,10 @@ export async function publishXPost(options: {
   if (created.kind === "error") {
     return {
       kind: "error",
-      message: `X (${created.status}): ${created.message}`,
+      message:
+        created.status === 0
+          ? `Lost the connection to X while posting (${created.message}), so it may or may not be live. Check X before you post again.`
+          : `X (${created.status}): ${created.message}`,
     };
   }
   const id = created.data.data.id;

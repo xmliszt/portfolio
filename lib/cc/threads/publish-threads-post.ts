@@ -11,7 +11,7 @@ import type { ThreadsApiResult } from "./threads-api-result";
 
 const MEDIA_LINK_EXPIRES_IN_S = 60 * 60;
 const STATUS_POLL_MS = 5_000;
-const MAX_STATUS_WAIT_MS = 4 * 60_000;
+const MAX_PROCESSING_MS = 4 * 60_000;
 
 type ContainerStatus = { status?: string; error_message?: string };
 
@@ -42,9 +42,9 @@ async function createContainer(options: {
 async function waitUntilFinished(options: {
   accessToken: string;
   containerId: string;
+  deadlineMs: number;
 }): Promise<string | undefined> {
-  const startedAt = Date.now();
-  while (Date.now() - startedAt < MAX_STATUS_WAIT_MS) {
+  while (Date.now() < options.deadlineMs) {
     const url = new URL(`/v1.0/${options.containerId}`, THREADS_GRAPH_ORIGIN);
     url.searchParams.set("fields", "status,error_message");
     url.searchParams.set("access_token", options.accessToken);
@@ -82,6 +82,7 @@ export async function publishThreadsPost(options: {
   media: readonly PublishMedia[];
   topicTag: string | undefined;
 }): Promise<PublishResult> {
+  const deadlineMs = Date.now() + MAX_PROCESSING_MS;
   const urls = await signAssetUrls({
     paths: options.media.map((media) => media.path),
     expiresInS: MEDIA_LINK_EXPIRES_IN_S,
@@ -131,6 +132,7 @@ export async function publishThreadsPost(options: {
       const childError = await waitUntilFinished({
         accessToken: options.accessToken,
         containerId: child.data.id,
+        deadlineMs,
       });
       if (childError !== undefined) {
         return {
@@ -160,6 +162,7 @@ export async function publishThreadsPost(options: {
   const containerError = await waitUntilFinished({
     accessToken: options.accessToken,
     containerId: container.data.id,
+    deadlineMs,
   });
   if (containerError !== undefined)
     return { kind: "error", message: containerError };
@@ -174,7 +177,10 @@ export async function publishThreadsPost(options: {
   if (published.kind === "error") {
     return {
       kind: "error",
-      message: describeError({ step: "publish", result: published }),
+      message:
+        published.status === 0
+          ? `Lost the connection to Threads while posting (${published.message}), so it may or may not be live. Check Threads before you post again.`
+          : describeError({ step: "publish", result: published }),
     };
   }
 

@@ -117,7 +117,12 @@ export function AutoPublishControl(props: AutoPublishControlProps) {
                 size="sm"
                 variant="primary"
                 onClick={() => handleToggle(true)}
-                disabled={isPending || props.dirty}
+                disabled={
+                  isPending ||
+                  props.dirty ||
+                  post.status !== "scheduled" ||
+                  post.scheduled_at === null
+                }
               >
                 AUTO-POST AT SCHEDULED TIME
               </CcButton>
