@@ -15,6 +15,8 @@ import { isComposerTopLevel } from "./is-composer-top-level";
 
 export const metadata = { title: "Composer" };
 
+export const maxDuration = 300;
+
 type ComposerPageProps = {
   searchParams: Promise<{ post?: string | string[] }>;
 };

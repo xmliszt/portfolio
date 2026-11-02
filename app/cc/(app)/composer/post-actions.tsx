@@ -5,9 +5,11 @@ import { useState } from "react";
 import { CcButton } from "@/app/cc/_ui/cc-button";
 import { buildComposeUrl } from "@/lib/cc/build-compose-url";
 import type { PostRow } from "@/lib/cc/data/cc-rows";
+import { isAutoPublishPlatform } from "@/lib/cc/is-auto-publish-platform";
 import { type PlatformId, PLATFORMS } from "@/lib/cc/platforms";
 import type { PostAsset } from "@/lib/cc/post-asset";
 
+import { AutoPublishControl } from "./auto-publish-control";
 import { CopyButton } from "./copy-button";
 import { MarkPostedControl } from "./mark-posted-control";
 import { writeClipboard } from "./write-clipboard";
@@ -20,6 +22,7 @@ type PostActionsProps = {
   link: string;
   target: string;
   assets: readonly PostAsset[];
+  dirty: boolean;
 };
 
 export function PostActions(props: PostActionsProps) {
@@ -90,6 +93,16 @@ export function PostActions(props: PostActionsProps) {
           url={props.post.url}
         />
       </div>
+      {isAutoPublishPlatform(props.platformId) &&
+        (props.post.kind === "post" || props.post.kind === "repost") &&
+        (props.post.status === "draft" ||
+          props.post.status === "scheduled") && (
+          <AutoPublishControl
+            post={props.post}
+            platformId={props.platformId}
+            dirty={props.dirty}
+          />
+        )}
       {platform.postsFromPhone && (
         <div className="flex flex-col gap-y-1 text-[12px]">
           <span className="text-muted-foreground text-[11px] tracking-[0.14em]">

@@ -17,6 +17,7 @@ import { getRepostSuggestions } from "@/lib/cc/get-repost-suggestions";
 import { isPlatformId } from "@/lib/cc/is-platform-id";
 import { parseCampaignPlan } from "@/lib/cc/parse-campaign-plan";
 import { PLATFORMS } from "@/lib/cc/platforms";
+import { getXUserCredentials } from "@/lib/cc/x/get-x-user-credentials";
 
 import { buildDueItems } from "./_overview/build-due-items";
 import { buildRunSheet } from "./_overview/build-run-sheet";
@@ -43,7 +44,10 @@ export default async function OverviewPage() {
       <>
         <PageHeader eyebrow="CAMPAIGN // NONE YET" title="Mission control" />
         <CampaignPanel campaign={undefined} />
-        <IntegrationsPanel threads={threadsStatus} />
+        <IntegrationsPanel
+          threads={threadsStatus}
+          xPosting={getXUserCredentials() !== undefined}
+        />
       </>
     );
   }
@@ -138,7 +142,10 @@ export default async function OverviewPage() {
         campaignId={campaign.id}
         plan={parseCampaignPlan(campaign.plan)}
       />
-      <IntegrationsPanel threads={threadsStatus} />
+      <IntegrationsPanel
+        threads={threadsStatus}
+        xPosting={getXUserCredentials() !== undefined}
+      />
     </>
   );
 }
