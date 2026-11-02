@@ -159,15 +159,15 @@ export type Database = {
           checkpoint: string
           clicks: number | null
           comments: number | null
+          follows: number | null
           id: number
           likes: number | null
-          follows: number | null
+          post_id: string
           profile_visits: number | null
           quotes: number | null
+          rank: number | null
           reach: number | null
           reposts: number | null
-          post_id: string
-          rank: number | null
           saves: number | null
           shares: number | null
           upvotes: number | null
@@ -178,15 +178,15 @@ export type Database = {
           checkpoint: string
           clicks?: number | null
           comments?: number | null
+          follows?: number | null
           id?: never
           likes?: number | null
-          follows?: number | null
+          post_id: string
           profile_visits?: number | null
           quotes?: number | null
+          rank?: number | null
           reach?: number | null
           reposts?: number | null
-          post_id: string
-          rank?: number | null
           saves?: number | null
           shares?: number | null
           upvotes?: number | null
@@ -197,15 +197,15 @@ export type Database = {
           checkpoint?: string
           clicks?: number | null
           comments?: number | null
+          follows?: number | null
           id?: never
           likes?: number | null
-          follows?: number | null
+          post_id?: string
           profile_visits?: number | null
           quotes?: number | null
+          rank?: number | null
           reach?: number | null
           reposts?: number | null
-          post_id?: string
-          rank?: number | null
           saves?: number | null
           shares?: number | null
           upvotes?: number | null
