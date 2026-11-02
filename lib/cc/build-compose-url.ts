@@ -29,6 +29,11 @@ export function buildComposeUrl(options: {
         kind: "prefilled",
         url: `https://www.threads.net/intent/post?${buildQuery({ text: options.body })}`,
       };
+    case "bluesky":
+      return {
+        kind: "prefilled",
+        url: `https://bsky.app/intent/compose?${buildQuery({ text: options.body })}`,
+      };
     case "reddit": {
       const subreddit = options.target?.trim().replace(/^\/?r\//i, "");
       const base = subreddit

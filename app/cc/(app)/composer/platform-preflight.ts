@@ -231,4 +231,17 @@ export const PLATFORM_PREFLIGHT = {
       },
     ],
   },
+  bluesky: {
+    hashtags: {
+      min: 0,
+      max: 2,
+      why: "One or two tags help custom feeds find the post; more reads as spam.",
+    },
+    media: "video",
+    audience: {
+      en: "artists, developers and people who left X for a calmer feed",
+      zh: "从 X 搬过来、喜欢安静时间线的艺术家和开发者",
+    },
+    manualChecks: [],
+  },
 } as const satisfies { [id in PlatformId]: PlatformPreflight };

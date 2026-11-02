@@ -78,4 +78,18 @@ export const RESEARCH_SOURCES: readonly ResearchSource[] = [
     url: "https://www.digitaling.com/articles/1432997.html",
     checkedOn: CHECKED_ON,
   },
+  {
+    platform: "bluesky",
+    claim:
+      "Weekday mornings beat weekends, Tuesday and Wednesday most; 9–11 am (1M+ posts).",
+    url: "https://www.socialpilot.co/insights/best-time-to-post-on-bluesky",
+    checkedOn: "2026-11-03",
+  },
+  {
+    platform: "bluesky",
+    claim:
+      "Engagement peaks 1–3 pm ET, with 9 am–noon close behind (2M+ posts).",
+    url: "https://recurpost.com/?p=162527",
+    checkedOn: "2026-11-03",
+  },
 ];

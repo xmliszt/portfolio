@@ -62,6 +62,7 @@
   --cc-platform-reddit: 24 100% 62%;
   --cc-platform-youtube: 0 100% 64%;
   --cc-platform-linkedin: 210 90% 62%;
+  --cc-platform-bluesky: 211 100% 64%;
 }
 
 @layer components {

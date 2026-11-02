@@ -28,6 +28,7 @@ const VIDEO_FORMAT = {
   wechat_moments: "9x16",
   youtube: "16x9",
   linkedin: "16x9",
+  bluesky: "16x9",
 } as const satisfies { [id in PlatformId]: string };
 
 function toKitAssets(assets: readonly PostAsset[]) {

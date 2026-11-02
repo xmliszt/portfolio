@@ -10,6 +10,7 @@ export const PLATFORM_IDS = [
   "wechat_moments",
   "youtube",
   "linkedin",
+  "bluesky",
 ] as const;
 
 export type PlatformId = (typeof PLATFORM_IDS)[number];
@@ -278,6 +279,21 @@ export const PLATFORMS = {
       shares: "sends",
     },
     composeUrl: "https://www.linkedin.com/feed/?shareActive=true",
+    postsFromPhone: false,
+    plannerPinned: false,
+    target: undefined,
+  },
+  bluesky: {
+    id: "bluesky",
+    label: "Bluesky",
+    shortLabel: "BSKY",
+    colorVar: "--cc-platform-bluesky",
+    bodyLimit: 300,
+    titleLimit: undefined,
+    maxHashtags: 2,
+    metrics: ["likes", "comments", "reposts", "quotes"],
+    metricLabels: { comments: "replies" },
+    composeUrl: "https://bsky.app/intent/compose",
     postsFromPhone: false,
     plannerPinned: false,
     target: undefined,

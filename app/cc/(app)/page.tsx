@@ -2,6 +2,7 @@ import uniq from "lodash/uniq.js";
 
 import { PageHeader } from "@/app/cc/_ui/page-header";
 import { requireCcOwner } from "@/lib/cc/auth/require-cc-owner";
+import { getBlueskyCredentials } from "@/lib/cc/bluesky/get-bluesky-credentials";
 import { checkVoice } from "@/lib/cc/check-voice";
 import { getCurrentCampaign } from "@/lib/cc/data/get-current-campaign";
 import { listCampaignPosts } from "@/lib/cc/data/list-campaign-posts";
@@ -47,6 +48,7 @@ export default async function OverviewPage() {
         <IntegrationsPanel
           threads={threadsStatus}
           xPosting={getXUserCredentials() !== undefined}
+          blueskyPosting={getBlueskyCredentials() !== undefined}
         />
       </>
     );
@@ -145,6 +147,7 @@ export default async function OverviewPage() {
       <IntegrationsPanel
         threads={threadsStatus}
         xPosting={getXUserCredentials() !== undefined}
+        blueskyPosting={getBlueskyCredentials() !== undefined}
       />
     </>
   );

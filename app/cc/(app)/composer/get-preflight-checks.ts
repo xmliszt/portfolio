@@ -223,6 +223,7 @@ function getPlatformChecks(options: {
     case "wechat_channels":
     case "wechat_moments":
     case "youtube":
+    case "bluesky":
       return [];
     default: {
       const unhandled: never = options.platformId;

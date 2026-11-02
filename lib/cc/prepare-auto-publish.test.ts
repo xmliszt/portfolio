@@ -129,3 +129,42 @@ test("rejects a post with no text and no media", () => {
     "error"
   );
 });
+
+test("enforces Bluesky's media mix: up to 4 images, or one MP4 alone", () => {
+  assert.equal(
+    prepareAutoPublish({
+      platformId: "bluesky",
+      text: "Hi",
+      assets: [image({ name: "a.mp4" })],
+      target: undefined,
+    }).kind,
+    "ok"
+  );
+  assert.equal(
+    prepareAutoPublish({
+      platformId: "bluesky",
+      text: "Hi",
+      assets: [image({ name: "a.mov" })],
+      target: undefined,
+    }).kind,
+    "error"
+  );
+  assert.equal(
+    prepareAutoPublish({
+      platformId: "bluesky",
+      text: "Hi",
+      assets: [image({ name: "a.gif" })],
+      target: undefined,
+    }).kind,
+    "error"
+  );
+  assert.equal(
+    prepareAutoPublish({
+      platformId: "bluesky",
+      text: "a".repeat(301),
+      assets: [],
+      target: undefined,
+    }).kind,
+    "error"
+  );
+});

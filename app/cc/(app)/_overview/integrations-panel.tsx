@@ -12,6 +12,7 @@ import type { ThreadsStatus } from "./get-threads-status";
 type IntegrationsPanelProps = {
   threads: ThreadsStatus;
   xPosting: boolean;
+  blueskyPosting: boolean;
 };
 
 export function IntegrationsPanel(props: IntegrationsPanelProps) {
@@ -43,7 +44,7 @@ export function IntegrationsPanel(props: IntegrationsPanelProps) {
   return (
     <Panel
       title="Integrations"
-      aside="Threads · daily sync at 10:20 SGT · auto-posts every minute"
+      aside="Threads sync 10:20 SGT · X, Threads, Bluesky auto-post"
       className="flex-[1_1_100%]"
       bodyClassName="flex flex-col gap-y-3 px-[18px] py-4"
     >
@@ -153,6 +154,25 @@ export function IntegrationsPanel(props: IntegrationsPanelProps) {
             <code>CC_X_API_KEY</code>, <code>CC_X_API_SECRET</code>,{" "}
             <code>CC_X_ACCESS_TOKEN</code> and{" "}
             <code>CC_X_ACCESS_TOKEN_SECRET</code> in Vercel and redeploy.
+          </>
+        )}
+      </p>
+      <p className="text-muted-foreground text-[12px] leading-relaxed">
+        {props.blueskyPosting ? (
+          <>
+            <span className="text-foreground font-bold">
+              Bluesky posting · on.
+            </span>{" "}
+            Free; posts as the account in <code>CC_BLUESKY_HANDLE</code>.
+          </>
+        ) : (
+          <>
+            <span className="text-foreground font-bold">
+              Bluesky posting · off.
+            </span>{" "}
+            In Bluesky, open Settings → Privacy and security → App passwords,
+            create one, then set <code>CC_BLUESKY_HANDLE</code> and{" "}
+            <code>CC_BLUESKY_APP_PASSWORD</code> in Vercel and redeploy.
           </>
         )}
       </p>
