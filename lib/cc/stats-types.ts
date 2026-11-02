@@ -17,4 +17,4 @@ export type StatMetric = {
   postId: string;
   checkpoint: MetricCheckpoint;
   capturedAt: Date;
-} & { [field in MetricField]: number | undefined };
+} & { [field in MetricField]?: number };

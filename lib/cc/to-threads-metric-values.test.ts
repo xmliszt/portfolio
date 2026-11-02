@@ -3,7 +3,7 @@ import { test } from "node:test";
 
 import { toThreadsMetricValues } from "./to-threads-metric-values";
 
-test("maps replies to comments and adds reposts, quotes and shares", () => {
+test("maps replies to comments and keeps reposts, quotes and shares apart", () => {
   assert.deepEqual(
     toThreadsMetricValues([
       { name: "views", values: [{ value: 1200 }] },
@@ -13,7 +13,7 @@ test("maps replies to comments and adds reposts, quotes and shares", () => {
       { name: "quotes", values: [{ value: 1 }] },
       { name: "shares", values: [{ value: 2 }] },
     ]),
-    { views: 1200, likes: 40, comments: 6, shares: 6 }
+    { views: 1200, likes: 40, comments: 6, reposts: 3, quotes: 1, shares: 2 }
   );
 });
 
@@ -23,12 +23,21 @@ test("leaves out metrics Threads did not return", () => {
       { name: "likes", values: [{ value: 0 }] },
       { name: "quotes", total_value: { value: 2 } },
     ]),
-    { views: undefined, likes: 0, comments: undefined, shares: 2 }
+    {
+      views: undefined,
+      likes: 0,
+      comments: undefined,
+      reposts: undefined,
+      quotes: 2,
+      shares: undefined,
+    }
   );
   assert.deepEqual(toThreadsMetricValues([]), {
     views: undefined,
     likes: undefined,
     comments: undefined,
+    reposts: undefined,
+    quotes: undefined,
     shares: undefined,
   });
 });

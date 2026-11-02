@@ -1,4 +1,5 @@
 import { CC_ORIGIN } from "@/lib/cc/cc-hosts";
+import { listMetricLabels } from "@/lib/cc/list-metric-labels";
 import {
   type MetricField,
   type PlatformId,
@@ -125,8 +126,8 @@ export function buildReminderMessage(input: ReminderMessageInput): {
           name,
           "",
           "Reply to this message with one line, in this order:",
-          fields.join(" "),
-          `Last: ${last.join(" ")}`,
+          listMetricLabels({ platformId: input.post.platformId }).join(" · "),
+          `Last: ${last.join(" · ")}`,
           "Use - to skip a number. Send undo to revert the last entry.",
         ].join("\n"),
         buttons: [{ kind: "url", text: "Log in CC", url: `${CC_ORIGIN}/log` }],

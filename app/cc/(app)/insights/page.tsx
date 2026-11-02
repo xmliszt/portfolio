@@ -33,7 +33,14 @@ import { PlatformTable } from "./platform-table";
 import { TargetTable } from "./target-table";
 
 const MIN_OWN_POSTS = 10;
-const ENGAGEMENT_FIELDS = ["likes", "comments", "shares", "saves"] as const;
+const ENGAGEMENT_FIELDS = [
+  "likes",
+  "comments",
+  "shares",
+  "reposts",
+  "quotes",
+  "saves",
+] as const;
 
 export default async function InsightsPage() {
   await requireCcOwner();

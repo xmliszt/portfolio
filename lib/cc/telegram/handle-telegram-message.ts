@@ -3,7 +3,9 @@ import "server-only";
 import { saveMetricEntry } from "@/lib/cc/data/save-metric-entry";
 import { undoLastMetricEntry } from "@/lib/cc/data/undo-last-metric-entry";
 import { formatMetricNumber } from "@/lib/cc/format-metric-number";
+import { getMetricLabel } from "@/lib/cc/get-metric-label";
 import { isPlatformId } from "@/lib/cc/is-platform-id";
+import { listMetricLabels } from "@/lib/cc/list-metric-labels";
 import { parseMetricLine } from "@/lib/cc/parse-metric-line";
 import { PLATFORMS } from "@/lib/cc/platforms";
 import { createCcServiceClient } from "@/lib/cc/supabase/create-cc-service-client";
@@ -72,7 +74,7 @@ export async function handleTelegramMessage(options: {
   switch (parsed.kind) {
     case "error":
       await answer(
-        `Couldn't read that: ${parsed.reason}\nOrder: ${platform.metrics.join(" ")}`
+        `Couldn't read that: ${parsed.reason}\nOrder: ${listMetricLabels({ platformId: platform.id }).join(" · ")}`
       );
       return;
     case "undo":
@@ -85,7 +87,10 @@ export async function handleTelegramMessage(options: {
       });
       const summary = platform.metrics
         .filter((field) => parsed.values[field] !== undefined)
-        .map((field) => `${field} ${formatMetricNumber(parsed.values[field])}`)
+        .map(
+          (field) =>
+            `${getMetricLabel({ platformId: platform.id, field })} ${formatMetricNumber(parsed.values[field])}`
+        )
         .join(" · ");
       const comparison =
         saved.ratio === undefined

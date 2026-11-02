@@ -4,7 +4,7 @@ import { createCcServiceClient } from "@/lib/cc/supabase/create-cc-service-clien
 
 import { syncPostReminders } from "./sync-post-reminders";
 
-/** Mark a post as posted now with its live `url` and `platformPostId` (a post already posted keeps its `posted_at` and `url`), close its "post" reminder, move its reply and log reminders to count from its `posted_at`, and return the post. */
+/** Mark a post as posted now with its live `url` and `platformPostId` (a post already posted keeps its `posted_at` and `url`), close its "post" reminder, plan its reply and log reminders from its `posted_at`, and return the post. */
 export async function markPostLive(options: {
   postId: string;
   url: string | undefined;

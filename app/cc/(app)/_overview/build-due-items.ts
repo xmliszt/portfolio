@@ -3,6 +3,7 @@ import { formatSgt } from "@/lib/cc/format-sgt";
 import { getPostName } from "@/lib/cc/get-post-name";
 import type { getRepostSuggestions } from "@/lib/cc/get-repost-suggestions";
 import { isPlatformId } from "@/lib/cc/is-platform-id";
+import { listMetricLabels } from "@/lib/cc/list-metric-labels";
 import { PLATFORMS } from "@/lib/cc/platforms";
 
 export type DueItem = {
@@ -75,7 +76,7 @@ export function buildDueItems(options: {
             key: `reminder-${reminder.id}`,
             kindLabel: `LOG · +${(reminder.checkpoint ?? "").toUpperCase()}`,
             whenLabel,
-            text: `Log ${platform.metrics.join(", ")} for ${name}`,
+            text: `Log ${listMetricLabels({ platformId: platform.id }).join(", ")} for ${name}`,
             cta: { label: "Log numbers", href: "/log", isExternal: false },
           },
         ];

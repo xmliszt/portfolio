@@ -1,10 +1,12 @@
 import "server-only";
 
+import uniq from "lodash/uniq.js";
+
 import { isTrackedPost } from "@/lib/cc/is-tracked-post";
 import { planPostReminders } from "@/lib/cc/plan-post-reminders";
 import { createCcServiceClient } from "@/lib/cc/supabase/create-cc-service-client";
 
-/** Bring a post's reminders in line with its schedule: for posts `isTrackedPost` leaves out delete the unsent ones and close the sent ones; otherwise replace a "post" reminder whose `fire_at` no longer matches the schedule and upsert the other planned ones without touching those already sent. */
+/** Bring a post's reminders in line with its schedule: for posts `isTrackedPost` leaves out delete the unsent ones and close the sent ones; otherwise delete unsent reminders of kinds no longer planned, replace a "post" reminder whose `fire_at` no longer matches the schedule and upsert the other planned ones without touching those already sent. */
 export async function syncPostReminders(options: {
   postId: string;
   status: string;
@@ -35,6 +37,17 @@ export async function syncPostReminders(options: {
     postedAt:
       options.postedAt === null ? undefined : new Date(options.postedAt),
   });
+  const { error: staleError } = await supabase
+    .from("reminders")
+    .delete()
+    .eq("post_id", options.postId)
+    .is("sent_at", null)
+    .not(
+      "kind",
+      "in",
+      `(${uniq(planned.map((reminder) => reminder.kind)).join(",")})`
+    );
+  if (staleError) throw staleError;
   const plannedPost = planned.find((reminder) => reminder.kind === "post");
   if (plannedPost !== undefined) {
     const { error: deleteError } = await supabase

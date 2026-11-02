@@ -7,6 +7,8 @@ import { PlatformChip } from "@/app/cc/_ui/platform-chip";
 import { logMetricEntry } from "@/app/cc/(app)/_actions/log-metric-entry";
 import { formatCheckpoint } from "@/app/cc/(app)/log/format-checkpoint";
 import { formatMetricNumber } from "@/lib/cc/format-metric-number";
+import { getMetricLabel } from "@/lib/cc/get-metric-label";
+import { listMetricLabels } from "@/lib/cc/list-metric-labels";
 import { parseMetricLine } from "@/lib/cc/parse-metric-line";
 import { type MetricField, PLATFORMS } from "@/lib/cc/platforms";
 import { cn } from "@/lib/utils";
@@ -159,7 +161,7 @@ export function LogEntryRow(props: LogEntryRowProps) {
                 htmlFor={`${idPrefix}-${field}`}
                 className="text-muted-foreground text-[11px] tracking-[0.14em] uppercase"
               >
-                {field}
+                {getMetricLabel({ platformId: props.row.platformId, field })}
               </label>
               <input
                 id={`${idPrefix}-${field}`}
@@ -203,7 +205,9 @@ export function LogEntryRow(props: LogEntryRowProps) {
           id={`${idPrefix}-paste`}
           type="text"
           autoComplete="off"
-          placeholder={platform.metrics.join(" ")}
+          placeholder={listMetricLabels({
+            platformId: props.row.platformId,
+          }).join(" · ")}
           value={pasteLine}
           onChange={(event) => setPasteLine(event.target.value)}
           onKeyDown={handlePasteKeyDown}

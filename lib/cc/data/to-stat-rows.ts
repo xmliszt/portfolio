@@ -1,4 +1,5 @@
 import { isPlatformId } from "@/lib/cc/is-platform-id";
+import { METRIC_FIELDS } from "@/lib/cc/platforms";
 import type { StatMetric, StatPost } from "@/lib/cc/stats-types";
 
 import type { PostMetricRow, PostRow } from "./cc-rows";
@@ -34,14 +35,12 @@ export function toStatRows(options: {
         postId: metric.post_id,
         checkpoint,
         capturedAt: new Date(metric.captured_at),
-        views: metric.views ?? undefined,
-        likes: metric.likes ?? undefined,
-        comments: metric.comments ?? undefined,
-        shares: metric.shares ?? undefined,
-        saves: metric.saves ?? undefined,
-        clicks: metric.clicks ?? undefined,
-        upvotes: metric.upvotes ?? undefined,
-        rank: metric.rank ?? undefined,
+        ...Object.fromEntries(
+          METRIC_FIELDS.flatMap((field) => {
+            const value = metric[field];
+            return value === null ? [] : [[field, value]];
+          })
+        ),
       },
     ];
   });
