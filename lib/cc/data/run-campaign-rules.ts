@@ -85,6 +85,7 @@ async function applyRuleAction(options: {
               : original.link,
           assets: original.assets,
           status: action.mode === "quote" ? "scheduled" : "draft",
+          repost_as: action.mode === "quote" ? "quote" : "post",
           scheduled_at: action.at.toISOString(),
           scheduled_by: "planner",
           wave: original.wave,

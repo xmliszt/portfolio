@@ -2,17 +2,23 @@
 
 import { revalidatePath } from "next/cache";
 
+import { appendLink } from "@/lib/cc/append-link";
 import { requireCcOwner } from "@/lib/cc/auth/require-cc-owner";
 import type { AutoPublishPlatformId } from "@/lib/cc/auto-publish-platforms";
 import { createBlueskySession } from "@/lib/cc/bluesky/create-bluesky-session";
 import { findOversizedBlueskyImage } from "@/lib/cc/bluesky/find-oversized-bluesky-image";
 import { getBlueskyCredentials } from "@/lib/cc/bluesky/get-bluesky-credentials";
 import { getIntegration } from "@/lib/cc/data/get-integration";
+import { loadRepostOriginal } from "@/lib/cc/data/load-repost-original";
 import { getPostCopyText } from "@/lib/cc/get-post-copy-text";
 import { getReplyAutoPublishError } from "@/lib/cc/get-reply-auto-publish-error";
+import { getRepostMode } from "@/lib/cc/get-repost-mode";
 import { isAutoPublishPlatform } from "@/lib/cc/is-auto-publish-platform";
 import { parsePostAssets } from "@/lib/cc/parse-post-assets";
-import { prepareAutoPublish } from "@/lib/cc/prepare-auto-publish";
+import {
+  prepareAutoPublish,
+  type PreparedPost,
+} from "@/lib/cc/prepare-auto-publish";
 import { createCcServiceClient } from "@/lib/cc/supabase/create-cc-service-client";
 import { checkThreadsPublishing } from "@/lib/cc/threads/check-threads-publishing";
 import { getXUserCredentials } from "@/lib/cc/x/get-x-user-credentials";
@@ -133,12 +139,29 @@ export async function setAutoPublish(options: {
     }
     const setupError = await getSetupError(post.platform);
     if (setupError !== undefined) return { kind: "error", message: setupError };
-    const prepared = prepareAutoPublish({
-      platformId: post.platform,
-      text: getPostCopyText(post),
-      assets: parsePostAssets(post.assets),
-      target: post.target ?? undefined,
-    });
+    const mode = getRepostMode(post);
+    const original =
+      mode === "post" ? undefined : await loadRepostOriginal({ post });
+    if (original?.kind === "error") return original;
+    const copyText = getPostCopyText(post);
+    const originalUrl = original?.original.url;
+    const prepared =
+      mode === "repost"
+        ? ({
+            kind: "ok",
+            text: "",
+            media: [],
+            topicTag: undefined,
+          } satisfies PreparedPost)
+        : prepareAutoPublish({
+            platformId: post.platform,
+            text:
+              mode === "quote" && post.platform === "x" && originalUrl
+                ? appendLink({ text: copyText, link: originalUrl })
+                : copyText,
+            assets: parsePostAssets(post.assets),
+            target: post.target ?? undefined,
+          });
     if (prepared.kind === "error") return prepared;
     const oversized =
       post.platform === "bluesky"

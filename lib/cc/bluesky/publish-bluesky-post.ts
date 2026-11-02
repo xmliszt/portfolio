@@ -11,13 +11,14 @@ import { createBlueskySession } from "./create-bluesky-session";
 import { BLUESKY_MAX_IMAGE_BYTES } from "./find-oversized-bluesky-image";
 import { uploadBlueskyVideo } from "./upload-bluesky-video";
 
-/** Sign in, upload `media`, and publish `text` with clickable links and hashtags on Bluesky, as a reply to `replyTo` when set; return the new post's URI and web URL, or the step that failed. */
+/** Sign in, upload `media`, and publish `text` with clickable links and hashtags on Bluesky, as a reply to `replyTo` or a quote of `quote` when set; return the new post's URI and web URL, or the step that failed. */
 export async function publishBlueskyPost(options: {
   handle: string;
   appPassword: string;
   text: string;
   media: readonly PublishMedia[];
   replyTo: BlueskyReplyRef | undefined;
+  quote: { uri: string; cid: string } | undefined;
 }): Promise<PublishResult> {
   const signedIn = await createBlueskySession(options);
   if (signedIn.kind === "error") {
@@ -96,7 +97,25 @@ export async function publishBlueskyPost(options: {
           text: options.text,
           createdAt: new Date().toISOString(),
           ...(facets.length === 0 ? {} : { facets }),
-          ...(embed.value === undefined ? {} : { embed: embed.value }),
+          ...(() => {
+            if (options.quote === undefined) {
+              return embed.value === undefined ? {} : { embed: embed.value };
+            }
+            const record = {
+              $type: "app.bsky.embed.record",
+              record: options.quote,
+            };
+            return {
+              embed:
+                embed.value === undefined
+                  ? record
+                  : {
+                      $type: "app.bsky.embed.recordWithMedia",
+                      record,
+                      media: embed.value,
+                    },
+            };
+          })(),
           ...(options.replyTo === undefined ? {} : { reply: options.replyTo }),
         },
       },

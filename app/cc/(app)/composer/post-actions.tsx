@@ -15,6 +15,7 @@ import { AutoPublishControl } from "./auto-publish-control";
 import { CopyButton } from "./copy-button";
 import { ForkPostControl } from "./fork-post-control";
 import { MarkPostedControl } from "./mark-posted-control";
+import { RepostModeControl } from "./repost-mode-control";
 import { ScheduleControl } from "./schedule-control";
 import { writeClipboard } from "./write-clipboard";
 
@@ -111,6 +112,11 @@ export function PostActions(props: PostActionsProps) {
           size="sm"
         />
       </div>
+      {isAutoPublishPlatform(props.platformId) &&
+        props.post.kind === "repost" &&
+        props.post.status !== "posted" && (
+          <RepostModeControl post={props.post} platformId={props.platformId} />
+        )}
       {isAutoPublishPlatform(props.platformId) &&
         (props.post.kind === "post" || props.post.kind === "repost") &&
         (props.post.status === "draft" ||

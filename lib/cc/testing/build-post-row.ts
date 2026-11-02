@@ -25,6 +25,7 @@ export function buildPostRow(options: Partial<PostRow>): PostRow {
     auto_publish: false,
     publish_claimed_at: null,
     publish_error: null,
+    repost_as: "post",
     platform_post_id: null,
     created_at: "2026-11-01T00:00:00.000Z",
     updated_at: "2026-11-01T00:00:00.000Z",

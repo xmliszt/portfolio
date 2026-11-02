@@ -1,27 +1,70 @@
 import "server-only";
 
+import { appendLink } from "@/lib/cc/append-link";
 import { getBlueskyCredentials } from "@/lib/cc/bluesky/get-bluesky-credentials";
 import { publishBlueskyPost } from "@/lib/cc/bluesky/publish-bluesky-post";
+import { repostBlueskyPost } from "@/lib/cc/bluesky/repost-bluesky-post";
 import { resolveBlueskyReplyRef } from "@/lib/cc/bluesky/resolve-bluesky-reply-ref";
 import { PARENT_NOT_AUTO_POSTED } from "@/lib/cc/get-auto-publish-state";
 import { getPostCopyText } from "@/lib/cc/get-post-copy-text";
+import { getRepostMode } from "@/lib/cc/get-repost-mode";
 import { isAutoPublishPlatform } from "@/lib/cc/is-auto-publish-platform";
 import { parsePostAssets } from "@/lib/cc/parse-post-assets";
-import { prepareAutoPublish } from "@/lib/cc/prepare-auto-publish";
+import {
+  prepareAutoPublish,
+  type PreparedPost,
+} from "@/lib/cc/prepare-auto-publish";
 import type { PublishResult } from "@/lib/cc/publish-result";
 import { createCcServiceClient } from "@/lib/cc/supabase/create-cc-service-client";
 import { findThreadsMediaId } from "@/lib/cc/threads/find-threads-media-id";
 import { publishThreadsPost } from "@/lib/cc/threads/publish-threads-post";
+import { repostThreadsPost } from "@/lib/cc/threads/repost-threads-post";
 import { getXUserCredentials } from "@/lib/cc/x/get-x-user-credentials";
 import { parseXCommunityId } from "@/lib/cc/x/parse-x-community-id";
 import { parseXStatusId } from "@/lib/cc/x/parse-x-status-id";
 import { publishXPost } from "@/lib/cc/x/publish-x-post";
+import { repostXPost } from "@/lib/cc/x/repost-x-post";
 
 import type { PostRow } from "./cc-rows";
 import { getIntegration } from "./get-integration";
 import { loadReplyTarget } from "./load-reply-target";
+import { loadRepostOriginal } from "./load-repost-original";
 import { markPostLive } from "./mark-post-live";
 import { notifyPublishOutcome } from "./notify-publish-outcome";
+
+type Ref<T> = { kind: "ok"; value: T } | { kind: "error"; message: string };
+
+function resolveXPostId(post: PostRow): Ref<string> {
+  const id =
+    post.platform_post_id ??
+    (post.url === null ? undefined : parseXStatusId(post.url));
+  return id === undefined
+    ? {
+        kind: "error",
+        message: "CC could not find that X post. Paste its live link.",
+      }
+    : { kind: "ok", value: id };
+}
+
+async function resolveThreadsMediaId(options: {
+  post: PostRow;
+  accessToken: string;
+}): Promise<Ref<string>> {
+  if (options.post.platform_post_id !== null) {
+    return { kind: "ok", value: options.post.platform_post_id };
+  }
+  if (options.post.url === null) {
+    return {
+      kind: "error",
+      message: "CC could not find that Threads post. Paste its live link.",
+    };
+  }
+  const found = await findThreadsMediaId({
+    accessToken: options.accessToken,
+    permalink: options.post.url,
+  });
+  return found.kind === "ok" ? { kind: "ok", value: found.id } : found;
+}
 
 async function publishOnPlatform(options: {
   post: PostRow;
@@ -31,12 +74,30 @@ async function publishOnPlatform(options: {
   if (!isAutoPublishPlatform(post.platform)) {
     return { kind: "error", message: "CC cannot post on this platform." };
   }
-  const prepared = prepareAutoPublish({
-    platformId: post.platform,
-    text: getPostCopyText(post),
-    assets: parsePostAssets(post.assets),
-    target: post.target ?? undefined,
-  });
+  const mode = getRepostMode(post);
+  const original =
+    mode === "post" ? undefined : await loadRepostOriginal({ post });
+  if (original?.kind === "error") return original;
+  const originalPost = original?.original;
+  const copyText = getPostCopyText(post);
+  const text =
+    mode === "quote" && post.platform === "x" && originalPost?.url
+      ? appendLink({ text: copyText, link: originalPost.url })
+      : copyText;
+  const prepared =
+    mode === "repost"
+      ? ({
+          kind: "ok",
+          text: "",
+          media: [],
+          topicTag: undefined,
+        } satisfies PreparedPost)
+      : prepareAutoPublish({
+          platformId: post.platform,
+          text,
+          assets: parsePostAssets(post.assets),
+          target: post.target ?? undefined,
+        });
   if (prepared.kind === "error") return prepared;
   const replyTarget = await loadReplyTarget({ post });
   if (replyTarget.kind === "error") return replyTarget;
@@ -47,18 +108,13 @@ async function publishOnPlatform(options: {
       if (credentials === undefined) {
         return { kind: "error", message: "X posting is not set up in Vercel." };
       }
-      const replyToId =
-        target === undefined
-          ? undefined
-          : (target.platform_post_id ??
-            (target.url === null ? undefined : parseXStatusId(target.url)));
-      if (target !== undefined && replyToId === undefined) {
-        return {
-          kind: "error",
-          message:
-            "CC could not find the X post to reply to. Paste its live link.",
-        };
+      if (mode === "repost" && originalPost !== undefined) {
+        const originalId = resolveXPostId(originalPost);
+        if (originalId.kind === "error") return originalId;
+        return repostXPost({ credentials, postId: originalId.value });
       }
+      const replyTo = target === undefined ? undefined : resolveXPostId(target);
+      if (replyTo?.kind === "error") return replyTo;
       const communityId =
         target === undefined && post.target !== null
           ? parseXCommunityId(post.target)
@@ -78,7 +134,7 @@ async function publishOnPlatform(options: {
         credentials,
         text: prepared.text,
         media: prepared.media,
-        replyToId,
+        replyToId: replyTo?.value,
         communityId,
       });
     }
@@ -94,33 +150,31 @@ async function publishOnPlatform(options: {
           message: "Threads is not connected. Reconnect it in CC.",
         };
       }
-      const replyTo = await (async (): Promise<
-        | { kind: "ok"; id: string | undefined }
-        | { kind: "error"; message: string }
-      > => {
-        if (target === undefined) return { kind: "ok", id: undefined };
-        if (target.platform_post_id !== null) {
-          return { kind: "ok", id: target.platform_post_id };
-        }
-        if (target.url === null) {
-          return {
-            kind: "error",
-            message:
-              "CC could not find the Threads post to reply to. Paste its live link.",
-          };
-        }
-        return findThreadsMediaId({
-          accessToken: integration.access_token,
-          permalink: target.url,
+      const accessToken = integration.access_token;
+      const originalId =
+        originalPost === undefined
+          ? undefined
+          : await resolveThreadsMediaId({ post: originalPost, accessToken });
+      if (originalId?.kind === "error") return originalId;
+      if (mode === "repost" && originalId !== undefined) {
+        return repostThreadsPost({
+          accessToken,
+          mediaId: originalId.value,
+          permalink: originalPost?.url ?? undefined,
         });
-      })();
-      if (replyTo.kind === "error") return replyTo;
+      }
+      const replyTo =
+        target === undefined
+          ? undefined
+          : await resolveThreadsMediaId({ post: target, accessToken });
+      if (replyTo?.kind === "error") return replyTo;
       return publishThreadsPost({
-        accessToken: integration.access_token,
+        accessToken,
         text: prepared.text,
         media: prepared.media,
         topicTag: target === undefined ? prepared.topicTag : undefined,
-        replyToId: replyTo.id,
+        replyToId: replyTo?.value,
+        quotePostId: mode === "quote" ? originalId?.value : undefined,
       });
     }
     case "bluesky": {
@@ -130,6 +184,21 @@ async function publishOnPlatform(options: {
           kind: "error",
           message: "Bluesky posting is not set up in Vercel.",
         };
+      }
+      const originalRef =
+        originalPost === undefined
+          ? undefined
+          : await resolveBlueskyReplyRef({
+              uri: originalPost.platform_post_id,
+              url: originalPost.url,
+            });
+      if (originalRef?.kind === "error") return originalRef;
+      if (mode === "repost" && originalRef !== undefined) {
+        return repostBlueskyPost({
+          ...credentials,
+          subject: originalRef.ref.parent,
+          originalUrl: originalPost?.url ?? undefined,
+        });
       }
       const replyTo =
         target === undefined
@@ -144,6 +213,7 @@ async function publishOnPlatform(options: {
         text: prepared.text,
         media: prepared.media,
         replyTo: replyTo?.ref,
+        quote: mode === "quote" ? originalRef?.ref.parent : undefined,
       });
     }
     default: {
@@ -153,7 +223,7 @@ async function publishOnPlatform(options: {
   }
 }
 
-/** Publish a post this run has claimed through `publish_claimed_at`: store the platform's post id as soon as it exists, then mark the post live and re-arm its replies that failed only because it had not posted; on failure store `publish_error`, keeping the claim so no later run posts it twice; message the owner either way. */
+/** Publish a post this run has claimed through `publish_claimed_at`: store the platform's post id as soon as it exists, then mark the post live, close the reminders of a plain repost, and re-arm its replies that failed only because it had not posted; on failure store `publish_error`, keeping the claim so no later run posts it twice; message the owner either way. */
 export async function publishClaimedPost(options: {
   post: PostRow;
   now: Date;
@@ -183,6 +253,14 @@ export async function publishClaimedPost(options: {
         url: result.url,
         platformPostId: result.platformPostId,
       });
+      if (getRepostMode(options.post) === "repost") {
+        const { error: closeError } = await supabase
+          .from("reminders")
+          .update({ done_at: new Date().toISOString() })
+          .eq("post_id", options.post.id)
+          .is("done_at", null);
+        if (closeError) throw closeError;
+      }
       const { error: rearmError } = await supabase
         .from("posts")
         .update({ publish_claimed_at: null, publish_error: null })
