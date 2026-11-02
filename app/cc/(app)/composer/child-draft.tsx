@@ -2,10 +2,12 @@
 
 import { countPostCharacters } from "@/lib/cc/count-post-characters";
 import type { PostRow } from "@/lib/cc/data/cc-rows";
+import { isAutoPublishPlatform } from "@/lib/cc/is-auto-publish-platform";
 import type { PlatformId } from "@/lib/cc/platforms";
 import type { PostAsset } from "@/lib/cc/post-asset";
 
 import { AssetsEditor } from "./assets-editor";
+import { AutoPublishControl } from "./auto-publish-control";
 import { CharacterCount } from "./character-count";
 import { CopyButton } from "./copy-button";
 import { MarkPostedControl } from "./mark-posted-control";
@@ -20,6 +22,7 @@ type ChildDraftProps = {
   assets: readonly PostAsset[];
   onBodyChange: (body: string) => void;
   onAssetsChange: (assets: readonly PostAsset[]) => void;
+  dirty: boolean;
 };
 
 export function ChildDraft(props: ChildDraftProps) {
@@ -63,6 +66,15 @@ export function ChildDraft(props: ChildDraftProps) {
           platformId={props.platformId}
         />
       </div>
+      {isAutoPublishPlatform(props.platformId) &&
+        (props.post.status === "draft" ||
+          props.post.status === "scheduled") && (
+          <AutoPublishControl
+            post={props.post}
+            platformId={props.platformId}
+            dirty={props.dirty}
+          />
+        )}
       <AssetsEditor
         postId={props.post.id}
         assets={props.assets}

@@ -12,15 +12,19 @@ function isPublishing(post: DeletablePost) {
   );
 }
 
-/** Return why `post` cannot be deleted: CC is posting it or one of its `reposts`, or a repost is already live; `undefined` when it can be deleted. */
+/** Return why `post` cannot be deleted: CC is posting it or one of its `children`, or a child repost is already live; `undefined` when it can be deleted. */
 export function getDeleteBlocker(options: {
   post: DeletablePost;
-  reposts: readonly DeletablePost[];
+  children: readonly (DeletablePost & { kind: string })[];
 }) {
-  if (isPublishing(options.post) || options.reposts.some(isPublishing)) {
+  if (isPublishing(options.post) || options.children.some(isPublishing)) {
     return "CC is posting this right now.";
   }
-  if (options.reposts.some((repost) => repost.status === "posted")) {
+  if (
+    options.children.some(
+      (child) => child.kind === "repost" && child.status === "posted"
+    )
+  ) {
     return "This post has a live repost. Delete the repost first.";
   }
   return undefined;

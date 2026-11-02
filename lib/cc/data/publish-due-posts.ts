@@ -1,6 +1,10 @@
 import "server-only";
 
+import keyBy from "lodash/keyBy.js";
+import uniq from "lodash/uniq.js";
+
 import { AUTO_PUBLISH_PLATFORM_IDS } from "@/lib/cc/auto-publish-platforms";
+import { getAutoPublishState } from "@/lib/cc/get-auto-publish-state";
 import { createCcServiceClient } from "@/lib/cc/supabase/create-cc-service-client";
 
 import { markPostLive } from "./mark-post-live";
@@ -8,10 +12,10 @@ import { notifyPublishOutcome } from "./notify-publish-outcome";
 import { publishClaimedPost } from "./publish-claimed-post";
 
 const MINUTE_MS = 60_000;
-const MISSED_AFTER_MS = 30 * MINUTE_MS;
+const PENDING_LIMIT = 50;
 const STUCK_AFTER_MS = 10 * MINUTE_MS;
 
-/** Finish posts claimed over 10 minutes ago that the platform already took (`platform_post_id` set) by marking them live, fail the other claimed posts that never finished and auto-posts over 30 minutes late, then claim the earliest due auto-post by stamping `publish_claimed_at` and publish it; return how many went live and how many failed. */
+/** Finish posts claimed over 10 minutes ago that the platform already took (`platform_post_id` set) by marking them live, fail the other claimed posts that never finished and the auto-posts `getAutoPublishState` calls missed, then claim the earliest due auto-post by stamping `publish_claimed_at` and publish it; return how many went live and how many failed. */
 export async function publishDuePosts(options: { now: Date }) {
   const supabase = createCcServiceClient();
   const nowIso = options.now.toISOString();
@@ -54,26 +58,74 @@ export async function publishDuePosts(options: { now: Date }) {
     .select("*");
   if (stuckError) throw stuckError;
 
-  const { data: missed, error: missedError } = await supabase
+  const { data: pending, error: pendingError } = await supabase
     .from("posts")
-    .update({
-      publish_claimed_at: nowIso,
-      publish_error:
-        "CC missed this post's time by over 30 minutes, so it did not post it.",
-    })
+    .select("*")
     .eq("auto_publish", true)
     .eq("status", "scheduled")
+    .in("platform", [...AUTO_PUBLISH_PLATFORM_IDS])
     .is("publish_error", null)
     .is("publish_claimed_at", null)
-    .lt(
-      "scheduled_at",
-      new Date(options.now.getTime() - MISSED_AFTER_MS).toISOString()
+    .order("scheduled_at", { ascending: true })
+    .order("created_at", { ascending: true })
+    .order("id", { ascending: true })
+    .limit(PENDING_LIMIT);
+  if (pendingError) throw pendingError;
+  const parentIds = uniq(
+    pending.flatMap((post) =>
+      post.parent_post_id === null ? [] : [post.parent_post_id]
     )
-    .select("*");
-  if (missedError) throw missedError;
+  );
+  const { data: parents, error: parentsError } =
+    parentIds.length === 0
+      ? { data: [], error: null }
+      : await supabase
+          .from("posts")
+          .select(
+            "id, kind, status, scheduled_at, posted_at, auto_publish, publish_error"
+          )
+          .in("id", parentIds);
+  if (parentsError) throw parentsError;
+  const parentsById = keyBy(parents, (parent) => parent.id);
+  const states = pending.map((candidate) => ({
+    candidate,
+    state: getAutoPublishState({
+      candidate,
+      parent:
+        candidate.parent_post_id === null
+          ? undefined
+          : parentsById[candidate.parent_post_id],
+      now: options.now,
+    }),
+  }));
+
+  const missed = await Promise.all(
+    states.flatMap(({ candidate, state }) =>
+      state.kind === "missed"
+        ? [
+            (async () => {
+              const { data, error } = await supabase
+                .from("posts")
+                .update({
+                  publish_claimed_at: nowIso,
+                  publish_error: state.reason,
+                })
+                .eq("id", candidate.id)
+                .is("publish_claimed_at", null)
+                .is("publish_error", null)
+                .select("*")
+                .maybeSingle();
+              if (error) throw error;
+              return data;
+            })(),
+          ]
+        : []
+    )
+  );
+  const missedPosts = missed.flatMap((post) => (post === null ? [] : [post]));
 
   await Promise.all(
-    [...stuck, ...missed].map((post) =>
+    [...stuck, ...missedPosts].map((post) =>
       notifyPublishOutcome({
         post,
         now: options.now,
@@ -82,23 +134,9 @@ export async function publishDuePosts(options: { now: Date }) {
     )
   );
 
-  const { data: due, error: dueError } = await supabase
-    .from("posts")
-    .select("*")
-    .eq("auto_publish", true)
-    .eq("status", "scheduled")
-    .in("kind", ["post", "repost"])
-    .in("platform", [...AUTO_PUBLISH_PLATFORM_IDS])
-    .is("publish_error", null)
-    .is("publish_claimed_at", null)
-    .lte("scheduled_at", nowIso)
-    .order("scheduled_at", { ascending: true })
-    .limit(1);
-  if (dueError) throw dueError;
-
-  const failedEarly = stuck.length + missed.length;
+  const failedEarly = stuck.length + missedPosts.length;
   const finished = livePosts.length;
-  const candidate = due.at(0);
+  const candidate = states.find(({ state }) => state.kind === "due")?.candidate;
   if (candidate === undefined)
     return { published: finished, failed: failedEarly };
   const { data: claimed, error: claimError } = await supabase

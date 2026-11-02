@@ -19,28 +19,28 @@ test("allows deleting a scheduled or posted post with no live reposts", () => {
   assert.equal(
     getDeleteBlocker({
       post: buildPost({ status: "posted" }),
-      reposts: [
-        buildPost({ status: "skipped" }),
-        buildPost({ status: "draft" }),
+      children: [
+        { ...buildPost({ status: "skipped" }), kind: "repost" },
+        { ...buildPost({ status: "posted" }), kind: "reply" },
       ],
     }),
     undefined
   );
 });
 
-test("refuses while CC is posting the post or one of its reposts", () => {
+test("refuses while CC is posting the post or one of its replies", () => {
   const claimed = buildPost({
     status: "scheduled",
     publish_claimed_at: "2026-11-03T00:00:00Z",
   });
   assert.match(
-    getDeleteBlocker({ post: claimed, reposts: [] }) ?? "",
+    getDeleteBlocker({ post: claimed, children: [] }) ?? "",
     /posting/
   );
   assert.match(
     getDeleteBlocker({
       post: buildPost({ status: "posted" }),
-      reposts: [claimed],
+      children: [{ ...claimed, kind: "reply" }],
     }) ?? "",
     /posting/
   );
@@ -54,7 +54,7 @@ test("allows a failed auto-post to be deleted", () => {
         publish_claimed_at: "2026-11-03T00:00:00Z",
         publish_error: "boom",
       }),
-      reposts: [],
+      children: [],
     }),
     undefined
   );
@@ -64,7 +64,7 @@ test("refuses when a repost is already live", () => {
   assert.match(
     getDeleteBlocker({
       post: buildPost({ status: "posted" }),
-      reposts: [buildPost({ status: "posted" })],
+      children: [{ ...buildPost({ status: "posted" }), kind: "repost" }],
     }) ?? "",
     /live repost/
   );

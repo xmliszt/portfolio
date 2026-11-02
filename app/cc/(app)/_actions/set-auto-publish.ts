@@ -9,12 +9,14 @@ import { findOversizedBlueskyImage } from "@/lib/cc/bluesky/find-oversized-blues
 import { getBlueskyCredentials } from "@/lib/cc/bluesky/get-bluesky-credentials";
 import { getIntegration } from "@/lib/cc/data/get-integration";
 import { getPostCopyText } from "@/lib/cc/get-post-copy-text";
+import { getReplyAutoPublishError } from "@/lib/cc/get-reply-auto-publish-error";
 import { isAutoPublishPlatform } from "@/lib/cc/is-auto-publish-platform";
 import { parsePostAssets } from "@/lib/cc/parse-post-assets";
 import { prepareAutoPublish } from "@/lib/cc/prepare-auto-publish";
 import { createCcServiceClient } from "@/lib/cc/supabase/create-cc-service-client";
 import { checkThreadsPublishing } from "@/lib/cc/threads/check-threads-publishing";
 import { getXUserCredentials } from "@/lib/cc/x/get-x-user-credentials";
+import { parseXCommunityId } from "@/lib/cc/x/parse-x-community-id";
 
 type SetAutoPublishResult = { kind: "ok" } | { kind: "error"; message: string };
 
@@ -56,7 +58,7 @@ async function getSetupError(platform: AutoPublishPlatformId) {
   }
 }
 
-/** Turn CC's auto-posting of a scheduled X, Threads or Bluesky post on or off, clearing an earlier failure either way and, when off, reopening its unsent "post" reminder; refuse to turn it on for a post that is not scheduled in the future, a platform that is not set up or may not post, or a post the platform would reject, and refuse either change while CC is posting it or after the platform took it. */
+/** Turn CC's auto-posting of a scheduled X, Threads or Bluesky post on or off, clearing an earlier failure either way and, when off, reopening its unsent "post" reminder; refuse to turn it on for a post that is not scheduled in the future (for a reply or comment, one `getReplyAutoPublishError` refuses), an X post whose `target` is not a community, a platform that is not set up or may not post, or a post the platform would reject, and refuse either change while CC is posting it or after the platform took it. */
 export async function setAutoPublish(options: {
   postId: string;
   isOn: boolean;
@@ -88,17 +90,45 @@ export async function setAutoPublish(options: {
         message: "CC can only auto-post on X, Threads and Bluesky.",
       };
     }
-    if (post.kind !== "post" && post.kind !== "repost") {
-      return { kind: "error", message: "Replies and comments stay manual." };
+    const timingError = await (async () => {
+      if (post.kind === "reply" || post.kind === "comment") {
+        const { data: parent, error: parentError } =
+          post.parent_post_id === null
+            ? { data: null, error: null }
+            : await supabase
+                .from("posts")
+                .select("status, scheduled_at, posted_at, auto_publish")
+                .eq("id", post.parent_post_id)
+                .maybeSingle();
+        if (parentError) throw parentError;
+        return post.status === "scheduled"
+          ? getReplyAutoPublishError({
+              reply: post,
+              parent: parent ?? undefined,
+              now: new Date(),
+            })
+          : "Schedule this reply's parent post so the reply is scheduled with it.";
+      }
+      return post.status !== "scheduled" ||
+        post.scheduled_at === null ||
+        new Date(post.scheduled_at).getTime() < Date.now() + MIN_LEAD_MS
+        ? "Schedule the post for a future time first, or use Post now."
+        : undefined;
+    })();
+    if (timingError !== undefined) {
+      return { kind: "error", message: timingError };
     }
+    const isTopLevel = post.kind === "post" || post.kind === "repost";
     if (
-      post.status !== "scheduled" ||
-      post.scheduled_at === null ||
-      new Date(post.scheduled_at).getTime() < Date.now() + MIN_LEAD_MS
+      post.platform === "x" &&
+      isTopLevel &&
+      post.target !== null &&
+      parseXCommunityId(post.target) === undefined
     ) {
       return {
         kind: "error",
-        message: "Schedule the post for a future time first, or use Post now.",
+        message:
+          "The X community must be its id or its x.com/i/communities link.",
       };
     }
     const setupError = await getSetupError(post.platform);
