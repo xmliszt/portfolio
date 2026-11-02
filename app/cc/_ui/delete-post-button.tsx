@@ -3,14 +3,14 @@
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 
-import { CcButton } from "@/app/cc/_ui/cc-button";
+import { CcButton, type CcButtonSize } from "@/app/cc/_ui/cc-button";
 import { deletePost } from "@/app/cc/(app)/_actions/delete-post";
 
 type DeletePostButtonProps = {
   postId: string;
   name: string;
   afterHref: string;
-  size?: "md" | "sm";
+  size?: CcButtonSize;
 };
 
 export function DeletePostButton(props: DeletePostButtonProps) {

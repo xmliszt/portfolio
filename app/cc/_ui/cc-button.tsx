@@ -1,8 +1,10 @@
 import { cn } from "@/lib/utils";
 
+export type CcButtonSize = "md" | "sm";
+
 type CcButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement> & {
   variant?: "primary" | "ghost" | "warn" | "chatgpt" | "ok";
-  size?: "md" | "sm";
+  size?: CcButtonSize;
 };
 
 const VARIANT_CLASS = {

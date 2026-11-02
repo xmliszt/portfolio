@@ -1,0 +1,27 @@
+type DeletablePost = {
+  status: string;
+  publish_claimed_at: string | null;
+  publish_error: string | null;
+};
+
+function isPublishing(post: DeletablePost) {
+  return (
+    post.status !== "posted" &&
+    post.publish_claimed_at !== null &&
+    post.publish_error === null
+  );
+}
+
+/** Return why `post` cannot be deleted: CC is posting it or one of its `reposts`, or a repost is already live; `undefined` when it can be deleted. */
+export function getDeleteBlocker(options: {
+  post: DeletablePost;
+  reposts: readonly DeletablePost[];
+}) {
+  if (isPublishing(options.post) || options.reposts.some(isPublishing)) {
+    return "CC is posting this right now.";
+  }
+  if (options.reposts.some((repost) => repost.status === "posted")) {
+    return "This post has a live repost. Delete the repost first.";
+  }
+  return undefined;
+}

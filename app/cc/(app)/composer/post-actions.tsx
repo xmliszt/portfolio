@@ -104,7 +104,7 @@ export function PostActions(props: PostActionsProps) {
         />
         <DeletePostButton
           postId={props.post.id}
-          name={getPostName(props.post)}
+          name={getPostName(props.post) || platform.label}
           afterHref="/composer"
           size="sm"
         />

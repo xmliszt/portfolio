@@ -3,11 +3,12 @@
 import { revalidatePath } from "next/cache";
 
 import { requireCcOwner } from "@/lib/cc/auth/require-cc-owner";
+import { getDeleteBlocker } from "@/lib/cc/get-delete-blocker";
 import { createCcServiceClient } from "@/lib/cc/supabase/create-cc-service-client";
 
 type DeletePostResult = { kind: "ok" } | { kind: "error"; message: string };
 
-/** Delete a post with its ChatGPT version, and through the database's cascades its replies, comments, reposts, reminders and logged numbers; refuse while CC is posting it. */
+/** Delete `postId` and, for a `mine` post, its `chatgpt` version in the same `variant_group`; refuse when `getDeleteBlocker` names a reason or CC claims the post meanwhile. */
 export async function deletePost(options: {
   postId: string;
 }): Promise<DeletePostResult> {
@@ -22,11 +23,23 @@ export async function deletePost(options: {
     .maybeSingle();
   if (error) throw error;
   if (post === null) return { kind: "ok" };
-  const isPublishing =
-    post.status !== "posted" &&
-    post.publish_claimed_at !== null &&
-    post.publish_error === null;
-  if (isPublishing) {
+  const { data: reposts, error: repostsError } = await supabase
+    .from("posts")
+    .select("status, publish_claimed_at, publish_error")
+    .eq("parent_post_id", post.id)
+    .eq("kind", "repost");
+  if (repostsError) throw repostsError;
+  const blocker = getDeleteBlocker({ post, reposts });
+  if (blocker !== undefined) return { kind: "error", message: blocker };
+
+  const deleteQuery = supabase.from("posts").delete().eq("id", post.id);
+  const { data: deleted, error: deleteError } = await (
+    post.publish_claimed_at === null
+      ? deleteQuery.is("publish_claimed_at", null)
+      : deleteQuery.eq("publish_claimed_at", post.publish_claimed_at)
+  ).select("id");
+  if (deleteError) throw deleteError;
+  if (deleted.length === 0) {
     return { kind: "error", message: "CC is posting this right now." };
   }
   if (post.variant === "mine" && post.variant_group !== null) {
@@ -37,11 +50,6 @@ export async function deletePost(options: {
       .eq("variant", "chatgpt");
     if (variantError) throw variantError;
   }
-  const deleteQuery = supabase.from("posts").delete().eq("id", post.id);
-  const { error: deleteError } = await (post.publish_claimed_at === null
-    ? deleteQuery.is("publish_claimed_at", null)
-    : deleteQuery.eq("publish_claimed_at", post.publish_claimed_at));
-  if (deleteError) throw deleteError;
   revalidatePath("/cc", "layout");
   return { kind: "ok" };
 }
