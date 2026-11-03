@@ -2121,15 +2121,36 @@ export function createAutumnPlanet(container, options = {}) {
     t: 0,
     dur: 1.8,
     runner: 0,
+    stillLeft: 2,
     att: undefined,
     def: undefined,
     loser: undefined,
     restKind: "loaf",
   };
-  const INVITE_DUR = { bow: 1.3, flop: 2.8, crab: 2.4 };
+  const INVITE_DUR = { bow: 1.3, flop: 2.8, crab: 2.4, rub: 4, rest: 4 };
   const _rubF = new THREE.Vector3(),
     _rubS = new THREE.Vector3();
+  const STILL_MODES = new Set([
+    "greet",
+    "rub",
+    "bow",
+    "flop",
+    "crab",
+    "wrestle",
+    "tumble",
+    "rest",
+    "stretch",
+  ]);
   function setMode(mode, dur) {
+    // stalk and ambush use up a still turn but always go ahead, since they lead into a pounce
+    if (mode === "stalk" || mode === "ambush") play.stillLeft--;
+    if (STILL_MODES.has(mode)) {
+      if (play.stillLeft <= 0) {
+        startChase(pick(cats));
+        return;
+      }
+      play.stillLeft--;
+    }
     play.mode = mode;
     play.t = 0;
     play.dur = dur;
@@ -2140,6 +2161,7 @@ export function createAutumnPlanet(container, options = {}) {
     runner.burst = rand(1.05, 1.3);
     runner.burstT = rand(1.2, 2);
     runner.wanderH = runner.gazeAngle + Math.PI;
+    play.stillLeft = pick([1, 2]);
     setMode("chase", rand(9, 15));
   }
   function startPounce(att, def, dist) {
@@ -2319,8 +2341,13 @@ export function createAutumnPlanet(container, options = {}) {
           break;
         }
         if ((play.t > play.dur && waiting) || play.t > play.dur + 6) {
-          if (Math.random() < 0.4) setMode("ambush", 4);
-          else setMode("stalk", 1.6);
+          const r = Math.random();
+          if (r < 0.2) setMode("ambush", 4);
+          else if (r < 0.55) setMode("stalk", 1.6);
+          else {
+            const next = pick(["bow", "flop", "crab", "rub", "rest"]);
+            setMode(next, INVITE_DUR[next]);
+          }
         }
         break;
       }
