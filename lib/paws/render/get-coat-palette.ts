@@ -19,8 +19,6 @@ export type CoatPalette = {
   spine: Four<string>;
   neck: string;
   head: string;
-  cheeks: Two<string>;
-  muzzle: string;
   ears: string;
   thighs: Two<string>;
   leg: string;
@@ -79,8 +77,6 @@ export function getCoatPalette(options: {
     spine: [base, base, base, base],
     neck: base,
     head: base,
-    cheeks: [base, base],
-    muzzle: bellyInk ?? base,
     ears: base,
     thighs: [base, base],
     leg: base,
@@ -108,7 +104,7 @@ export function getCoatPalette(options: {
       }
       case "tuxedo": {
         const marks = bellyInk ?? WHITE;
-        return { ...solid(fur), belly: marks, muzzle: marks, sock: marks };
+        return { ...solid(fur), belly: marks, sock: marks };
       }
       case "calico": {
         const orange = COAT_INKS.ginger;
@@ -121,7 +117,6 @@ export function getCoatPalette(options: {
           spine: [dark, WHITE, orange, WHITE],
           neck: orange,
           head: dark,
-          cheeks: [orange, WHITE],
           ears: orange,
           thighs: [orange, dark],
           tail: tail(() => dark),
@@ -134,7 +129,6 @@ export function getCoatPalette(options: {
           : fur;
         return {
           ...solid(body),
-          muzzle: points,
           ears: points,
           lowerLeg: points,
           sock: points,

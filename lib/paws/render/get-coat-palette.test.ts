@@ -35,7 +35,6 @@ test("no fur or belly ink matches the paper", () => {
       const inks = [
         ...palette.spine,
         palette.head,
-        palette.muzzle,
         palette.sock,
         palette.belly,
       ];
@@ -56,7 +55,6 @@ test("a tuxedo keeps white marks even with a coat-coloured belly", () => {
     look: buildLook({ coat: "black", pattern: "tuxedo", belly: "coat" }),
     userId: "a",
   });
-  assert.equal(palette.muzzle, COAT_INKS.white);
   assert.equal(palette.sock, COAT_INKS.white);
   assert.equal(palette.spine[0], COAT_INKS.black);
 });

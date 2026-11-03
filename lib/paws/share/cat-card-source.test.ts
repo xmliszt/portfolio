@@ -7,8 +7,8 @@ import { test } from "node:test";
 import { CAT_CARD } from "./cat-card";
 
 const DRAWN_FROM = {
-  version: "3",
-  hash: "6852a13002442eb50e268e09b8fadff41296e6deaeb28b75628a735dfe229d7e",
+  version: "4",
+  hash: "2d38d4ccaede030fc792d3e0d61e98351bd2a14cc997c555d99e76dc01830e86",
 };
 
 const SOURCE_DIRS = ["lib/paws/render", "lib/paws/sim"];
