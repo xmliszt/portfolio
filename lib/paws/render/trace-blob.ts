@@ -14,18 +14,18 @@ export function traceBlob(options: {
   amount: number;
 }) {
   const { g, x, y, r, seed, amount } = options;
-  const points = Array.from({ length: POINTS }, (_, i) => {
+  const points = Array.from({ length: POINTS }, (_, i): [number, number] => {
     const angle = (2 * Math.PI * i) / POINTS;
     const cos = Math.cos(angle);
     const sin = Math.sin(angle);
     const bump = valueNoise(4 + 1.3 * cos, seed + 1.3 * sin) - 0.5;
     const radius = r * (1 + 2 * amount * bump);
-    return [x + cos * radius, y + sin * radius] as const;
+    return [x + cos * radius, y + sin * radius];
   });
-  const midpoint = (i: number) => {
+  const midpoint = (i: number): [number, number] => {
     const [ax, ay] = points[i % POINTS];
     const [bx, by] = points[(i + 1) % POINTS];
-    return [(ax + bx) / 2, (ay + by) / 2] as const;
+    return [(ax + bx) / 2, (ay + by) / 2];
   };
   g.beginPath();
   g.moveTo(...midpoint(POINTS - 1));

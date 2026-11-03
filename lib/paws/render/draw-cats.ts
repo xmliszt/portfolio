@@ -45,15 +45,14 @@ function getCatParts(options: { draw: DrawContext } & CatToDraw) {
     alpha?: number;
     h?: number;
   }) => {
-    const { a, b, color, seed } = capsuleOptions;
+    const { a, b, color } = capsuleOptions;
     const h = capsuleOptions.h ?? (a[3] + b[3]) / 2;
     const r = (a[2] + b[2]) / 2;
-    const isRound = Math.hypot(b[0] - a[0], b[1] - a[1]) < 0.01;
     const samples = wobbleSamples({
       samples: [0, 0.5, 1].map(
         (t): Vec4 => [lerp(a[0], b[0], t), lerp(a[1], b[1], t), r, h]
       ),
-      seed: seedOf(seed),
+      seed: seedOf(capsuleOptions.seed),
       amount: 0.06,
       bumps: 2,
     });
@@ -62,17 +61,7 @@ function getCatParts(options: { draw: DrawContext } & CatToDraw) {
       draw: () =>
         softFill({
           draw,
-          trace: () =>
-            isRound
-              ? traceBlob({
-                  g: draw.g,
-                  x: a[0],
-                  y: a[1],
-                  r,
-                  seed: seedOf(seed),
-                  amount: 0.08,
-                })
-              : traceOutline({ g: draw.g, samples }),
+          trace: () => traceOutline({ g: draw.g, samples }),
           blur: blurOf(h, k) + fluff,
           color,
           alpha: capsuleOptions.alpha,
@@ -84,14 +73,28 @@ function getCatParts(options: { draw: DrawContext } & CatToDraw) {
     color: string;
     seed: number;
     h?: number;
-  }) =>
-    capsule({
-      a: discOptions.point,
-      b: discOptions.point,
-      color: discOptions.color,
-      seed: discOptions.seed,
-      h: discOptions.h,
+  }) => {
+    const [x, y, r, pointH] = discOptions.point;
+    const h = discOptions.h ?? pointH;
+    parts.push({
+      h,
+      draw: () =>
+        softFill({
+          draw,
+          trace: () =>
+            traceBlob({
+              g: draw.g,
+              x,
+              y,
+              r,
+              seed: seedOf(discOptions.seed),
+              amount: 0.08,
+            }),
+          blur: blurOf(h, k) + fluff,
+          color: discOptions.color,
+        }),
     });
+  };
 
   const head = cat.head;
   const neck = cat.spine.at(-1) ?? head;
