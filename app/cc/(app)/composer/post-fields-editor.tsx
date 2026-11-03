@@ -1,8 +1,10 @@
 "use client";
 
+import Link from "next/link";
+
 import { CcField } from "@/app/cc/_ui/cc-field";
-import { CcSelect } from "@/app/cc/_ui/cc-select";
 import { countPostCharacters } from "@/lib/cc/count-post-characters";
+import { formatSgt } from "@/lib/cc/format-sgt";
 import { getDefaultWave } from "@/lib/cc/get-default-wave";
 import { type Platform, type PlatformId, PLATFORMS } from "@/lib/cc/platforms";
 
@@ -14,12 +16,11 @@ type PostFieldsEditorProps = {
   postId: string;
   platformId: PlatformId;
   planned: boolean;
+  scheduledAt: string | undefined;
   draft: DraftFields;
   copyText: string;
   onChange: (draft: DraftFields) => void;
 };
-
-const WAVES = [1, 2, 3, 4];
 
 export function PostFieldsEditor(props: PostFieldsEditorProps) {
   const platform = PLATFORMS[props.platformId];
@@ -27,7 +28,8 @@ export function PostFieldsEditor(props: PostFieldsEditorProps) {
   const bodyLimit: number | undefined = platform.bodyLimit;
   const draft = props.draft;
   const targetField: Platform["target"] = platform.target;
-  const defaultWave = getDefaultWave(draft.assets);
+  const wave =
+    draft.wave === "" ? getDefaultWave(draft.assets) : Number(draft.wave);
   const hasWave = props.planned && !platform.plannerPinned;
 
   function update(fields: Partial<DraftFields>) {
@@ -122,24 +124,42 @@ export function PostFieldsEditor(props: PostFieldsEditorProps) {
             </div>
           )}
           {hasWave && (
-            <CcField label="PLANNER WAVE" htmlFor={`wave-${props.postId}`}>
-              <CcSelect
-                id={`wave-${props.postId}`}
-                className="w-[160px]"
-                value={draft.wave}
-                onChange={(wave) => update({ wave })}
-                options={[
-                  {
-                    value: "",
-                    label: `Auto · ${defaultWave === undefined ? "last" : `wave ${defaultWave}`}`,
-                  },
-                  ...WAVES.map((wave) => ({
-                    value: String(wave),
-                    label: `Wave ${wave}`,
-                  })),
-                ]}
-              />
-            </CcField>
+            <div className="flex min-w-0 flex-col gap-y-1">
+              <span className="text-muted-foreground text-[10.5px] tracking-[0.04em] uppercase">
+                PLANNER WAVE ·{" "}
+                {draft.wave === "" ? "FROM MEDIA" : "SET"}
+              </span>
+              {(() => {
+                const waveLabel =
+                  wave === undefined ? "Last wave" : `Wave ${wave}`;
+                if (props.scheduledAt === undefined) {
+                  return (
+                    <span className="text-cc-text-2 flex min-h-7 items-center">
+                      {waveLabel} · not scheduled
+                    </span>
+                  );
+                }
+                const scheduledAt = new Date(props.scheduledAt);
+                const params = new URLSearchParams({
+                  week: formatSgt({ date: scheduledAt, pattern: "yyyy-MM-dd" }),
+                  edit: props.postId,
+                });
+                return (
+                  <Link
+                    href={`/calendar?${params.toString()}`}
+                    title="Show in the calendar"
+                    className="text-cc-text-2 hover:text-primary flex min-h-7 items-center underline-offset-4 hover:underline"
+                  >
+                    {waveLabel} ·{" "}
+                    {formatSgt({
+                      date: scheduledAt,
+                      pattern: "EEE dd MMM HH:mm",
+                    })}{" "}
+                    →
+                  </Link>
+                );
+              })()}
+            </div>
           )}
         </div>
       )}

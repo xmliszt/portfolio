@@ -48,7 +48,7 @@ CC always shows the **current campaign**: the one with the newest start date.
   - Reddit: the subreddit (`r/Name`).
   - Threads: the topic (`topic_tag`).
   - X: the community id or link (optional).
-- **Wave:** the planner's group for a post. "Auto" lets the planner choose.
+- **Wave:** the order the schedule planner places main posts in: wave 1 first, then 2, 3, 4, then posts with no wave. A smart campaign sets it (SET); otherwise it comes from the media (FROM MEDIA): a video with "promo" in its name is wave 1, another video wave 2, images only wave 3, no media last. The Composer shows it read-only; click it to open the post's slot in the calendar.
 
 ## Platforms
 
