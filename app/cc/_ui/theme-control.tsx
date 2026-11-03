@@ -14,7 +14,7 @@ export function ThemeControl() {
   if (context === undefined) return null;
 
   return (
-    <div role="group" aria-label="Theme" className="flex w-fit border">
+    <div role="group" aria-label="Theme" className="grid w-full grid-cols-3 border">
       {CC_THEME_PREFERENCES.map((preference) => (
         <button
           key={preference}
@@ -22,7 +22,7 @@ export function ThemeControl() {
           aria-pressed={context.preference === preference}
           onClick={() => context.setPreference(preference)}
           className={cn(
-            "h-6 px-2 text-[10.5px] font-semibold tracking-[0.04em] not-first:border-l",
+            "h-6 text-center text-[10.5px] font-semibold tracking-[0.04em] not-first:border-l",
             context.preference === preference
               ? "bg-primary text-primary-foreground"
               : "text-muted-foreground hover:text-foreground"
