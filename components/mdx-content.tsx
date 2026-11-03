@@ -7,6 +7,7 @@ import { slugify } from "@/lib/utils";
 import { BackToTopLink } from "./ui/back-to-top-link";
 import { BadgeGroup } from "./ui/badge-group";
 import { BookGrid } from "./ui/book-grid";
+import { CatPlanetPreviewLink } from "./ui/cat-planet-preview-link";
 import { CopyablePre } from "./ui/copyable-pre";
 import { CustomLink } from "./ui/custom-link";
 import { ExternalActionButtonLink } from "./ui/external-action-button-link";
@@ -140,6 +141,7 @@ export function MDXContent({ code, components }: MdxProps) {
         ),
         BadgeGroup,
         PhotoBentoGrid,
+        CatPlanetPreviewLink,
         ExternalActionButtonLink,
         LoadMoreLinks,
         CustomLink,
