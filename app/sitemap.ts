@@ -97,6 +97,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
 
   const playgroundSiteMap: MetadataRoute.Sitemap = [
     {
+      url: "https://liyuxuan.dev/playground/autumn-planet",
+      lastModified: new Date(),
+      changeFrequency: "always",
+      priority: 1,
+    },
+    {
       url: "https://liyuxuan.dev/playground/piano",
       lastModified: new Date(),
       changeFrequency: "always",
