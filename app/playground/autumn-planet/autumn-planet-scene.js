@@ -2286,7 +2286,10 @@ export function createAutumnPlanet(container, options = {}) {
         break;
       }
       case "crab": {
-        if (first) A.crabSide = Math.random() < 0.5 ? -1 : 1;
+        if (first) {
+          A.crabSide = Math.random() < 0.5 ? -1 : 1;
+          A.crabHops = 0;
+        }
         face(A);
         A.target.arch = 1;
         A.target.tailUp = 1;
@@ -2298,9 +2301,13 @@ export function createAutumnPlanet(container, options = {}) {
         B.target.wiggle = play.t > play.dur - 0.8 ? 1 : 0;
         A.hopIn = (A.hopIn ?? 0) - dt;
         if (A.hopIn <= 0 && !A.air && play.t > 0.4) {
-          const a = A.gazeAngle + (A.crabSide * Math.PI) / 2;
+          // hop around the crouching cat at about 0.55 apart, turning back after three hops
+          const inward = clamp((dist - 0.55) * 2, -0.6, 0.6);
+          const a = A.gazeAngle + A.crabSide * (Math.PI / 2 - inward);
           launch(A, Math.sin(a), Math.cos(a), 0.5, 1.0);
           A.hopIn = 0.42;
+          A.crabHops++;
+          if (A.crabHops % 3 === 0) A.crabSide = -A.crabSide;
         }
         if (play.t > play.dur) setMode("stalk", 0.8);
         break;
