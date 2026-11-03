@@ -61,8 +61,17 @@ function getCatParts(options: { draw: DrawContext } & CatToDraw) {
     capsule({ a: point, b: point, color, h });
 
   const head = cat.head;
+  const neck = cat.spine.at(-1) ?? head;
   const body = sampleCurve({
-    points: [...cat.spine, [head[0], head[1], head[2] * 0.55, cat.poseHeadH]],
+    points: [
+      ...cat.spine,
+      [
+        lerp(neck[0], head[0], 0.4),
+        lerp(neck[1], head[1], 0.4),
+        head[2] * 0.55,
+        lerp(neck[3], cat.poseHeadH, 0.4),
+      ],
+    ],
     perSegment: 4,
   });
   const colorAt = (i: number) => {
@@ -299,7 +308,7 @@ function getCatParts(options: { draw: DrawContext } & CatToDraw) {
       onHead(-12 - 25 * earSize, side * (18 + 40 * earSize), 1.5, earH),
     ];
     parts.push({
-      h: earH,
+      h: cat.poseHeadH + 2 + 5 * (1 - cat.sleepWeight),
       draw: () =>
         softOutline({
           draw,
@@ -309,13 +318,19 @@ function getCatParts(options: { draw: DrawContext } & CatToDraw) {
         }),
     });
   }
-  const faceStart = parts.length;
+  const skullStart = parts.length;
   disc(onHead(-4, 0, 30, head[3]), palette.head);
-  disc(onHead(0, -17, 21, nearHead(1)), palette.cheeks[0]);
-  disc(onHead(0, 17, 21, nearHead(1)), palette.cheeks[1]);
-  for (const side of [-1, 1])
-    disc(onHead(19, side * 6.5, 8.5, nearHead(2)), palette.muzzle);
-  disc(onHead(11, 0, 9, nearHead(3)), palette.muzzle);
+  disc(onHead(0, -17, 21, head[3]), palette.head);
+  disc(onHead(0, 17, 21, head[3]), palette.head);
+  disc(onHead(14, 0, 15, head[3]), palette.head);
+  const skull = parts.splice(skullStart);
+  parts.push({
+    h: cat.poseHeadH,
+    draw: () => {
+      for (const part of skull) part.draw();
+    },
+  });
+  const snoutStart = parts.length;
   const mouthH = nearHead(3.5);
   parts.push({
     h: mouthH,
@@ -345,17 +360,9 @@ function getCatParts(options: { draw: DrawContext } & CatToDraw) {
         alpha: 1,
       }),
   });
-  const face = parts.splice(faceStart).toSorted((a, b) => b.h - a.h);
-  const snout = face.slice(3);
-  const skull = face.slice(0, 3);
+  const snout = parts.splice(snoutStart).toSorted((a, b) => b.h - a.h);
   parts.push({
-    h: head[3],
-    draw: () => {
-      for (const part of skull) part.draw();
-    },
-  });
-  parts.push({
-    h: Math.min(...snout.map((part) => part.h)),
+    h: Math.max(0, cat.poseHeadH - 4) - 0.2,
     draw: () => {
       for (const part of snout) part.draw();
     },
