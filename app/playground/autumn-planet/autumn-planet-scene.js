@@ -3,15 +3,14 @@ import * as THREE from "three";
 /**
  * Mount the autumn planet scene into `container` and return a function that stops it and frees its GPU resources.
  * With `options.mode === "gait"` it shows one cat walking side-on at `options.control.speed`, read every frame.
+ * With `options.view`, the scene leaves vertical swipes and the wheel to the page until `options.view.active` is true.
  */
 export function createAutumnPlanet(container, options = {}) {
   const R = 6;
-  // gait mode: one cat walking straight, filmed from the side, with nothing else on the planet
   const GAIT_MODE = options.mode === "gait";
   const gaitControl = options.control ?? { speed: 0.3 };
-  // a screen rect {x, y, w, h, active} the camera should frame exactly as it did inline, so a full-screen
-  // reveal shows more of the world around an unchanged picture
-  const screenView = options.view;
+  const view = options.view;
+  const takesAllInput = () => !view || view.active;
   const UP = new THREE.Vector3(0, 1, 0);
   const ZAXIS = new THREE.Vector3(0, 0, 1);
   const lerp = (a, b, k) => a + (b - a) * k;
@@ -215,8 +214,6 @@ export function createAutumnPlanet(container, options = {}) {
   }
 
   const ROW_DIR = new THREE.Vector3(1, 0, 0.15).normalize();
-  // cleared patches come from low-frequency noise (with one forced near the starting view); dirt paths
-  // follow a noise contour, so they wind around the planet and cross the patches
   function patchField(n) {
     return (
       fbm3(n.x * 1.7 + 11, n.y * 1.7 + 3, n.z * 1.7 - 5) +
@@ -289,7 +286,7 @@ export function createAutumnPlanet(container, options = {}) {
   }
 
   const keepOut = [];
-  // solid props the cats walk around: planet-local base point and footprint radius
+  // obstacles: `{ p, r }`, the planet-local base point and footprint radius of each solid prop
   const obstacles = [];
   function reserve(n, radiusWorld) {
     keepOut.push({ n: n.clone(), cos: Math.cos(radiusWorld / R) });
@@ -583,7 +580,7 @@ export function createAutumnPlanet(container, options = {}) {
     g.scale.setScalar(s);
     return shadowAll(g);
   }
-  // a random spot on a cleared patch within `maxAngle` of `near`, at least 0.6 from earlier spots
+  /** Return a random point on a cleared patch within `maxAngle` of `near`, at least 0.6 from earlier spots. */
   const propSpots = [];
   function patchSpot(near, maxAngle) {
     const n = new THREE.Vector3();
@@ -890,9 +887,6 @@ export function createAutumnPlanet(container, options = {}) {
     }
   }
 
-  // Each cat is three physics chunks (rump, chest, head) joined by soft distance limits and moved
-  // by forces from the play logic. Everything is drawn unlit in one flat colour so the parts read
-  // as a single silhouette.
   const K = 1.3;
   const S = {
     rumpR: 0.066 * K,
@@ -993,7 +987,7 @@ export function createAutumnPlanet(container, options = {}) {
     return mesh;
   }
 
-  // Fill a leg tube along a curve from hip to foot that bends through the IK knee, tapering to the paw.
+  /** Fill `mesh` with a tube along a curve from `hip` through `knee` to `foot`, tapering from `r0` to `r1`. */
   const _lp = new THREE.Vector3(),
     _lt = new THREE.Vector3(),
     _ln = new THREE.Vector3(),
@@ -1074,8 +1068,8 @@ export function createAutumnPlanet(container, options = {}) {
       .addScaledVector(F.up, p.y)
       .addScaledVector(F.ez, p.z);
   }
-  // Move the frame origin under the cat (parallel-transporting its axes), re-expressing every stored
-  // point so world positions are unchanged; headings stay valid because the axes move with the cat.
+  /** Move the cat's local frame under it and re-express every stored point, without moving anything in the world. */
+  // the axes are carried along the sphere rather than rebuilt, so headings stay valid across the move
   function recenter(c) {
     const F = c.frame;
     if (c.pos.x * c.pos.x + c.pos.z * c.pos.z < 1e-10) return;
@@ -1315,9 +1309,7 @@ export function createAutumnPlanet(container, options = {}) {
     g.fill();
     return new THREE.CanvasTexture(cv);
   }
-  // Draw the cat's simulated skeleton (spine, legs, tail) as lines and dots on top of the body.
   function addSkeleton(c) {
-    // draw the body as a wireframe so the bones show through it
     const wire = new THREE.MeshBasicMaterial({
       color: "#3a332d",
       wireframe: true,
@@ -1461,8 +1453,7 @@ export function createAutumnPlanet(container, options = {}) {
   const CAT_RADIUS = 0.13,
     LOOK_AHEAD = 0.7;
   const _ob = new THREE.Vector3();
-  // Turn away from props ahead on the wanted path: nearer ones push harder, and one dead ahead
-  // is passed on the side the cat already leans toward.
+  /** Return the turn, in radians, that steers `c` around props within `LOOK_AHEAD` of its wanted path. */
   function avoidTurn(c) {
     if (c.wantSpeed < 0.05) return 0;
     let turn = 0;
@@ -1483,7 +1474,7 @@ export function createAutumnPlanet(container, options = {}) {
     }
     return clamp(turn, -1.5, 1.5);
   }
-  // Cancel the part of this step's movement that goes into a prop, so the cat slides along its edge.
+  /** Push `c` out of any prop it overlaps, cancelling only the inward part of this step so it slides along the edge. */
   function pushOutOfObstacles(c, h) {
     const mx = Math.sin(c.bodyYaw) * c.speed * h,
       mz = Math.cos(c.bodyYaw) * c.speed * h;
@@ -1511,8 +1502,7 @@ export function createAutumnPlanet(container, options = {}) {
     ch.v.z += (k * (z - ch.p.z) + d * (vz - ch.v.z)) * h;
   }
 
-  // The cat steers a heading and speed with limited turn rate and acceleration; the chunks
-  // follow that with critically damped springs, so the rump lags on turns without wobbling.
+  // critically damped springs let the rump lag on turns without wobbling
   function stepCat(c, h, t, T) {
     const { rump, chest, head } = c,
       P = c.pose;
@@ -1662,7 +1652,6 @@ export function createAutumnPlanet(container, options = {}) {
         _a.copy(f.anchor);
         _a.y = 0;
         if (P.flop > 0.05) {
-          // lying on the side: legs reach out from the belly and paddle a little
           _b.copy(f.anchor).addScaledVector(
             _fwd,
             (f.front ? 0.035 : -0.035) * K +
@@ -1759,8 +1748,6 @@ export function createAutumnPlanet(container, options = {}) {
     });
   }
 
-  // The tail is a chain of segment angles, each sprung toward its parent plus a pose-driven bend,
-  // stiffer at the base: it holds a shape like a muscle and lags behind turns at the tip.
   const TAIL_SEGS = TAIL_N - 1;
   const _relP = new Float32Array(TAIL_SEGS),
     _relY = new Float32Array(TAIL_SEGS);
@@ -1789,7 +1776,6 @@ export function createAutumnPlanet(container, options = {}) {
       _relY[i] =
         curl + amp * Math.sin(t * freq - i * 0.55) * (i === 0 ? 0.5 : 1);
       if (s > 0.7) _relY[i] += Math.sin(t * 13 + c.seed) * 0.35 * P.wiggle;
-      // the tail bounces with the steps: twice per stride at a walk, once at a gallop
       _relP[i] +=
         Math.sin(c.gait * Math.PI * 2 * (run > 0.5 ? 1 : 2) - i * 0.5) *
         lerp(0.04, 0.1, run) *
@@ -1808,7 +1794,6 @@ export function createAutumnPlanet(container, options = {}) {
     );
     windVec(c.frame.o, t, _r2);
     _wind.set(_r2.dot(c.frame.ex), _r2.dot(c.frame.up), _r2.dot(c.frame.ez));
-    // the body's own bounce and speed changes swing the tail through its inertia
     const lift = (c.rump.v.y - (c.tailLastVy ?? c.rump.v.y)) / dt;
     const surge = (c.speed - (c.tailLastSpeed ?? c.speed)) / dt;
     c.tailLastVy = c.rump.v.y;
@@ -2131,10 +2116,6 @@ export function createAutumnPlanet(container, options = {}) {
     c.speed = 0;
   }
 
-  // play logic. A session of play strings these together:
-  // greet (sniff noses) -> rub (walk past brushing sides) -> an invitation (play bow, flop on the side,
-  // or the arched sideways crab hop) -> chase (tag in bursts) -> stalk or ambush -> pounce -> wrestle
-  // (both rear up and box) -> tumble / chase / rest (loaf, groom each other, groom self) -> stretch.
   const play = {
     mode: "greet",
     t: 0,
@@ -2217,7 +2198,6 @@ export function createAutumnPlanet(container, options = {}) {
         break;
       }
       case "rub": {
-        // A stands still; B walks along A's side from head to tail, brushing past it
         if (first) {
           const F = A.frame;
           _rubF
@@ -2330,7 +2310,6 @@ export function createAutumnPlanet(container, options = {}) {
         B.wantSpeed = waiting ? 0 : clamp((dist - 0.45) * 2.2, 0, 1.3);
         B.target.tailUp = 0.5;
         if (waiting) B.target.crouch = 0.5;
-        // tag: the chaser catches the runner mid-sprint and the roles swap
         if (dist < 0.5 && A.burst > 0.5 && play.t - (play.tagAt ?? 0) > 1.5) {
           play.tagAt = play.t;
           play.runner = 1 - play.runner;
@@ -2644,7 +2623,6 @@ export function createAutumnPlanet(container, options = {}) {
       .premultiply(_qa.setFromAxisAngle(_camRight, ay))
       .normalize();
   }
-  // one finger or the mouse spins the planet; two fingers pinch to zoom
   const pointers = new Map();
   const pinch = { startDist: 0, startZoom: 1 };
   const pointerSpread = () => {
@@ -2671,8 +2649,7 @@ export function createAutumnPlanet(container, options = {}) {
     if (!pointers.has(e.pointerId)) return;
     pointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
     if (pointers.size >= 2) {
-      const isTakingInput = screenView === undefined || screenView.active;
-      if (isTakingInput && pinch.startDist > 0) {
+      if (takesAllInput() && pinch.startDist > 0) {
         zoomTarget = clamp(
           (pinch.startZoom * pinch.startDist) / Math.max(pointerSpread(), 1),
           0.9,
@@ -2726,20 +2703,6 @@ export function createAutumnPlanet(container, options = {}) {
   });
   const _ray = new THREE.Vector3(),
     FOCUS = new THREE.Vector3();
-  // Widen the view around a screen rect so that rect shows exactly the picture the inline canvas had.
-  function frameScreenView(v) {
-    const W = canvas.clientWidth,
-      H = canvas.clientHeight;
-    const cx = v.x + v.w / 2,
-      cy = v.y + v.h / 2;
-    const fullW = 2 * Math.max(cx, W - cx),
-      fullH = 2 * Math.max(cy, H - cy);
-    camera.fov = THREE.MathUtils.radToDeg(
-      2 * Math.atan((Math.tan(THREE.MathUtils.degToRad(16)) * fullH) / v.h)
-    );
-    camera.aspect = fullW / fullH;
-    camera.setViewOffset(fullW, fullH, fullW / 2 - cx, fullH / 2 - cy, W, H);
-  }
   const _gf = new THREE.Vector3(),
     _gs = new THREE.Vector3(),
     _gu = new THREE.Vector3(),
@@ -2755,7 +2718,6 @@ export function createAutumnPlanet(container, options = {}) {
     c.wantSpeed = gaitControl.speed;
     poseCat(c, dt, t);
   }
-  // keep the cat on top of the planet and film it side-on, so the light and framing never change
   function placeGaitCamera(dt) {
     const c = cats[1];
     groundUnder(c, _fm);
@@ -2780,7 +2742,7 @@ export function createAutumnPlanet(container, options = {}) {
     camera.up.copy(_gu);
     camera.lookAt(_gc.addScaledVector(_gu, 0.03));
   }
-  // the planet point under the middle of the screen: where the view ray meets the sphere
+  /** Return the unit direction of the planet point under the middle of the screen. */
   function screenCenterOnPlanet(out) {
     camera.getWorldDirection(_ray);
     const b = camera.position.dot(_ray),
@@ -2796,7 +2758,7 @@ export function createAutumnPlanet(container, options = {}) {
     _fq = new THREE.Quaternion(),
     _fI = new THREE.Quaternion(),
     followDir = new THREE.Vector3();
-  // the ground point under a cat, so jumps don't move the camera
+  /** Return the ground point under `c`, ignoring jumps so the camera does not bounce with them. */
   function groundUnder(c, out) {
     _a.addVectors(c.rump.p, c.chest.p).multiplyScalar(0.5);
     return out
@@ -2809,7 +2771,7 @@ export function createAutumnPlanet(container, options = {}) {
   canvas.addEventListener(
     "wheel",
     (e) => {
-      if (GAIT_MODE || (screenView && !screenView.active)) return;
+      if (GAIT_MODE || !takesAllInput()) return;
       e.preventDefault();
       zoomTarget = clamp(zoomTarget * Math.exp(e.deltaY * 0.0012), 0.9, 3.6);
     },
@@ -2846,7 +2808,6 @@ export function createAutumnPlanet(container, options = {}) {
     if (!GAIT_MODE) updateProps(dt, t);
     if (!GAIT_MODE) updateLeaves(dt, t);
 
-    // keep turning the planet so the cats sit in the middle of the screen; only a drag or a held key pauses it
     if (GAIT_MODE) placeGaitCamera(dt);
     else if (!spin.dragging && !kx && !ky) {
       groundUnder(cats[0], _fm);
@@ -2865,18 +2826,9 @@ export function createAutumnPlanet(container, options = {}) {
     rafId = requestAnimationFrame(frame);
   }
   function drawFrame() {
-    // inline on a page, vertical swipes scroll the page and wheel scrolls it; full screen takes all input
-    const isTakingInput = screenView === undefined || screenView.active;
-    const touch = isTakingInput ? "none" : "pan-y";
+    const touch = takesAllInput() ? "none" : "pan-y";
     if (!GAIT_MODE && canvas.style.touchAction !== touch)
       canvas.style.touchAction = touch;
-    if (screenView?.active && screenView.w) frameScreenView(screenView);
-    else if (camera.view) {
-      camera.clearViewOffset();
-      camera.fov = 32;
-      camera.aspect = canvas.clientWidth / canvas.clientHeight;
-      camera.updateProjectionMatrix();
-    }
     renderer.setRenderTarget(rt);
     renderer.clear();
     renderer.render(scene, camera);
@@ -2885,7 +2837,6 @@ export function createAutumnPlanet(container, options = {}) {
     hasDrawn = true;
   }
   let rafId = requestAnimationFrame(frame);
-  // pause the whole loop while the scene is off screen
   const visibilityObserver = new IntersectionObserver((entries) => {
     const isVisible = entries.some((entry) => entry.isIntersecting);
     cancelAnimationFrame(rafId);
