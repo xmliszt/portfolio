@@ -2593,7 +2593,21 @@ export function createAutumnPlanet(container, options = {}) {
   const camOffset = new THREE.Vector3(0, 8.0, 9.6).sub(camTarget);
   let zoom = 1.2,
     zoomTarget = 1.2;
-  const _camT = new THREE.Vector3();
+  const _camT = new THREE.Vector3(),
+    _catA = new THREE.Vector3(),
+    _catB = new THREE.Vector3();
+  const FIT_MARGIN = 0.7;
+  /** Return the zoom at which both cats, plus `FIT_MARGIN` around them, fit in the narrower side of the view. */
+  function zoomToFitCats() {
+    const spread = centerWorld(cats[0], _catA).distanceTo(
+      centerWorld(cats[1], _catB)
+    );
+    const halfView =
+      camOffset.length() *
+      Math.tan(THREE.MathUtils.degToRad(camera.fov / 2)) *
+      Math.min(1, camera.aspect);
+    return clamp((spread / 2 + FIT_MARGIN) / halfView, 0.9, 3.6);
+  }
   function placeCamera() {
     const f = smoothstep(1.3, 3.2, zoom);
     const target = _camT.copy(camTarget).multiplyScalar(1 - f);
@@ -2789,7 +2803,14 @@ export function createAutumnPlanet(container, options = {}) {
     windUniforms.uTime.value = t;
     windUniforms.uStrength.value = windStrength;
 
-    zoom = lerp(zoom, zoomTarget, 1 - Math.exp(-dt * 6));
+    const wantZoom = GAIT_MODE
+      ? zoomTarget
+      : Math.max(zoomTarget, zoomToFitCats());
+    zoom = lerp(
+      zoom,
+      wantZoom,
+      1 - Math.exp(-dt * (wantZoom > zoomTarget ? 2 : 6))
+    );
     if (!GAIT_MODE) placeCamera();
     camera.updateMatrixWorld();
     const kx =
