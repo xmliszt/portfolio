@@ -186,32 +186,32 @@ export function AssetsEditor(props: AssetsEditorProps) {
                     })
                   }
                 />
-              </div>
-              <div className="flex flex-wrap gap-x-2 gap-y-2">
-                {assetUrls !== undefined && (
-                  <a
-                    href={assetUrls.download}
-                    className="border-border text-cc-text-2 hover:border-primary hover:text-foreground inline-flex h-6 items-center border px-2 text-[10.5px] font-semibold tracking-[0.04em]"
+                <div className="flex flex-wrap gap-x-2 gap-y-2">
+                  {assetUrls !== undefined && (
+                    <a
+                      href={assetUrls.download}
+                      className="border-border text-cc-text-2 hover:border-primary hover:text-foreground inline-flex h-6 items-center border px-2 text-[10.5px] font-semibold tracking-[0.04em]"
+                    >
+                      DOWNLOAD
+                    </a>
+                  )}
+                  <CcButton
+                    type="button"
+                    size="sm"
+                    disabled={asset.alt.trim() === ""}
+                    onClick={() => copyAlt(index)}
                   >
-                    DOWNLOAD
-                  </a>
-                )}
-                <CcButton
-                  type="button"
-                  size="sm"
-                  disabled={asset.alt.trim() === ""}
-                  onClick={() => copyAlt(index)}
-                >
-                  {copiedIndex === index ? "COPIED ✓" : "COPY ALT"}
-                </CcButton>
-                <CcButton
-                  type="button"
-                  size="sm"
-                  aria-label={`Remove ${asset.file || `asset ${index + 1}`}`}
-                  onClick={() => removeAsset(index)}
-                >
-                  REMOVE
-                </CcButton>
+                    {copiedIndex === index ? "COPIED ✓" : "COPY ALT"}
+                  </CcButton>
+                  <CcButton
+                    type="button"
+                    size="sm"
+                    aria-label={`Remove ${asset.file || `asset ${index + 1}`}`}
+                    onClick={() => removeAsset(index)}
+                  >
+                    REMOVE
+                  </CcButton>
+                </div>
               </div>
             </li>
           );

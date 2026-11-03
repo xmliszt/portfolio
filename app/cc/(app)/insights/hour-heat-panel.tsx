@@ -17,7 +17,6 @@ export function HourHeatPanel(props: HourHeatPanelProps) {
     <Panel
       title="Your views by posting hour"
       aside="SGT · mean +24 h views"
-      className="flex-[1_1_420px]"
       footer={`Shown per platform after ${props.minPosts} posted items with +24 h views. Until then the calendar uses the researched windows.`}
       bodyClassName="flex flex-col gap-y-3 px-3 py-2.5"
     >

@@ -27,7 +27,6 @@ export function HashtagLiftPanel(props: HashtagLiftPanelProps) {
     <Panel
       title="Hashtags · your posts only"
       aside="vs posts without it, same platform"
-      className="flex-[1_1_420px]"
       footer="A tag gets a score once 3 posts on one platform use it and have +24 h views. Trending tags would need a paid tool; not in V1."
     >
       {props.lifts.length === 0 ? (

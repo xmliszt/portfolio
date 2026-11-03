@@ -91,7 +91,7 @@ export function ChildDraft(props: ChildDraftProps) {
           onToggle={(event) => setIsMediaOpen(event.currentTarget.open)}
           className="group"
         >
-          <summary className="text-muted-foreground hover:text-foreground w-fit cursor-pointer list-none text-[10.5px] tracking-[0.04em] uppercase [&::-webkit-details-marker]:hidden">
+          <summary className="text-muted-foreground hover:text-foreground w-fit list-none text-[10.5px] tracking-[0.04em] uppercase [&::-webkit-details-marker]:hidden">
             {props.assets.length === 0
               ? "+ Media"
               : `Media (${props.assets.length})`}

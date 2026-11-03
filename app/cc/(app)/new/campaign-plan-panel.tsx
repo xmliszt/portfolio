@@ -4,15 +4,15 @@ import { useState, useTransition } from "react";
 
 import { CcButton } from "@/app/cc/_ui/cc-button";
 import { CcField } from "@/app/cc/_ui/cc-field";
+import { CcSelect } from "@/app/cc/_ui/cc-select";
 import { Panel } from "@/app/cc/_ui/panel";
 import { applyCampaignPlan } from "@/app/cc/(app)/_actions/apply-campaign-plan";
 import { previewCampaignPlan } from "@/app/cc/(app)/_actions/preview-campaign-plan";
 import { saveCampaignPlan } from "@/app/cc/(app)/_actions/save-campaign-plan";
+import type { PlanPreviewRow } from "@/app/cc/(app)/new/plan-preview-row";
+import { PlanPreviewTable } from "@/app/cc/(app)/new/plan-preview-table";
 import type { CampaignPlan, DayAvailability } from "@/lib/cc/campaign-plan";
 import { cn } from "@/lib/utils";
-
-import type { PlanPreviewRow } from "./plan-preview-row";
-import { PlanPreviewTable } from "./plan-preview-table";
 
 type CampaignPlanPanelProps = {
   campaignId: string;
@@ -121,7 +121,6 @@ export function CampaignPlanPanel(props: CampaignPlanPanelProps) {
     <Panel
       title="Schedule planner"
       aside="SGT · posting stays manual"
-      className="flex-[1_1_100%]"
       bodyClassName="flex flex-col gap-y-3 px-3 py-2.5"
     >
       <div className="grid grid-cols-2 gap-x-3 gap-y-3 sm:grid-cols-4 lg:grid-cols-7">
@@ -131,42 +130,28 @@ export function CampaignPlanPanel(props: CampaignPlanPanelProps) {
               {WEEKDAYS[weekday]}
               {day.fromHour >= day.toHour && " · OFF"}
             </legend>
-            <select
+            <CcSelect
               aria-label={`${WEEKDAYS[weekday]} from`}
-              className="cc-input"
-              value={day.fromHour}
-              onChange={(event) =>
-                changeHour({
-                  weekday,
-                  field: "fromHour",
-                  value: event.target.value,
-                })
+              value={String(day.fromHour)}
+              onChange={(value) =>
+                changeHour({ weekday, field: "fromHour", value })
               }
-            >
-              {HOURS.slice(0, 24).map((hour) => (
-                <option key={hour} value={hour}>
-                  {formatHour(hour)}
-                </option>
-              ))}
-            </select>
-            <select
+              options={HOURS.slice(0, 24).map((hour) => ({
+                value: String(hour),
+                label: formatHour(hour),
+              }))}
+            />
+            <CcSelect
               aria-label={`${WEEKDAYS[weekday]} to`}
-              className="cc-input"
-              value={day.toHour}
-              onChange={(event) =>
-                changeHour({
-                  weekday,
-                  field: "toHour",
-                  value: event.target.value,
-                })
+              value={String(day.toHour)}
+              onChange={(value) =>
+                changeHour({ weekday, field: "toHour", value })
               }
-            >
-              {HOURS.map((hour) => (
-                <option key={hour} value={hour}>
-                  {formatHour(hour)}
-                </option>
-              ))}
-            </select>
+              options={HOURS.map((hour) => ({
+                value: String(hour),
+                label: formatHour(hour),
+              }))}
+            />
           </fieldset>
         ))}
       </div>

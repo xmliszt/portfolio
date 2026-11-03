@@ -24,7 +24,6 @@ export function PlatformTable(props: PlatformTableProps) {
     <Panel
       title="By platform"
       aside="your posts only"
-      className="flex-[2_1_420px]"
       footer="Median: +24 h views. Engagement: (likes + comments + shares + saves) ÷ views, at each post's latest entry. “—” until there are numbers."
     >
       {props.rows.length === 0 ? (

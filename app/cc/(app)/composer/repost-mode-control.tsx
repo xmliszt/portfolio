@@ -3,12 +3,15 @@
 import { useState, useTransition } from "react";
 
 import { CcField } from "@/app/cc/_ui/cc-field";
+import { CcSelect } from "@/app/cc/_ui/cc-select";
 import { setRepostMode } from "@/app/cc/(app)/_actions/set-repost-mode";
 import type { AutoPublishPlatformId } from "@/lib/cc/auto-publish-platforms";
 import type { PostRow } from "@/lib/cc/data/cc-rows";
 import { getRepostMode } from "@/lib/cc/get-repost-mode";
-import { isRepostPublishMode } from "@/lib/cc/is-repost-publish-mode";
-import type { RepostPublishMode } from "@/lib/cc/repost-publish-modes";
+import {
+  REPOST_PUBLISH_MODES,
+  type RepostPublishMode,
+} from "@/lib/cc/repost-publish-modes";
 
 type RepostModeControlProps = {
   post: PostRow;
@@ -46,9 +49,7 @@ export function RepostModeControl(props: RepostModeControlProps) {
   const [isPending, startTransition] = useTransition();
   const mode = getRepostMode(props.post);
 
-  function handleChange(event: React.ChangeEvent<HTMLSelectElement>) {
-    const next = event.target.value;
-    if (!isRepostPublishMode(next)) return;
+  function handleChange(next: RepostPublishMode) {
     setError(undefined);
     startTransition(async () => {
       try {
@@ -66,19 +67,16 @@ export function RepostModeControl(props: RepostModeControlProps) {
   return (
     <div className="flex flex-wrap items-end gap-x-3 gap-y-1.5">
       <CcField label="PUBLISH AS" htmlFor={`repost-mode-${props.post.id}`}>
-        <select
+        <CcSelect
           id={`repost-mode-${props.post.id}`}
-          className="cc-input"
           value={mode}
           onChange={handleChange}
           disabled={isPending || props.post.publish_claimed_at !== null}
-        >
-          {Object.entries(MODE_LABELS).map(([value, label]) => (
-            <option key={value} value={value}>
-              {label}
-            </option>
-          ))}
-        </select>
+          options={REPOST_PUBLISH_MODES.map((value) => ({
+            value,
+            label: MODE_LABELS[value],
+          }))}
+        />
       </CcField>
       <p className="text-muted-foreground max-w-[60ch] pb-2 text-[12px]">
         {describeMode({ mode, platformId: props.platformId })}

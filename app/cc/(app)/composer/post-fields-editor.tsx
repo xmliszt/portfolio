@@ -1,6 +1,7 @@
 "use client";
 
 import { CcField } from "@/app/cc/_ui/cc-field";
+import { CcSelect } from "@/app/cc/_ui/cc-select";
 import { countPostCharacters } from "@/lib/cc/count-post-characters";
 import { getDefaultWave } from "@/lib/cc/get-default-wave";
 import { type Platform, type PlatformId, PLATFORMS } from "@/lib/cc/platforms";
@@ -122,22 +123,22 @@ export function PostFieldsEditor(props: PostFieldsEditorProps) {
           )}
           {hasWave && (
             <CcField label="PLANNER WAVE" htmlFor={`wave-${props.postId}`}>
-              <select
+              <CcSelect
                 id={`wave-${props.postId}`}
-                className="cc-input"
+                className="w-[160px]"
                 value={draft.wave}
-                onChange={(event) => update({ wave: event.target.value })}
-              >
-                <option value="">
-                  Auto ·{" "}
-                  {defaultWave === undefined ? "last" : `wave ${defaultWave}`}
-                </option>
-                {WAVES.map((wave) => (
-                  <option key={wave} value={String(wave)}>
-                    Wave {wave}
-                  </option>
-                ))}
-              </select>
+                onChange={(wave) => update({ wave })}
+                options={[
+                  {
+                    value: "",
+                    label: `Auto · ${defaultWave === undefined ? "last" : `wave ${defaultWave}`}`,
+                  },
+                  ...WAVES.map((wave) => ({
+                    value: String(wave),
+                    label: `Wave ${wave}`,
+                  })),
+                ]}
+              />
             </CcField>
           )}
         </div>

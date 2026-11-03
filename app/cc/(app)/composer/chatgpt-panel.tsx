@@ -90,7 +90,7 @@ export function ChatgptPanel(props: ChatgptPanelProps) {
           </p>
         )}
         <details className="group border">
-          <summary className="text-muted-foreground flex min-h-7 cursor-pointer items-center justify-between gap-x-2 px-3 text-[10.5px] tracking-[0.04em] uppercase">
+          <summary className="text-muted-foreground flex min-h-7 items-center justify-between gap-x-2 px-3 text-[10.5px] tracking-[0.04em] uppercase">
             <span>PROMPT · BUILT FROM YOUR NOTE AND THIS DRAFT</span>
             <span aria-hidden className="group-open:rotate-90">
               ▸

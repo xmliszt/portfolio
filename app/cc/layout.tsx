@@ -1,9 +1,15 @@
 import { GeistMono } from "geist/font/mono";
 import { GeistSans } from "geist/font/sans";
 import { Metadata, Viewport } from "next";
+import { cookies } from "next/headers";
 
 import { CC_ORIGIN } from "@/lib/cc/cc-hosts";
+import { CC_THEME_COOKIE } from "@/lib/cc/theme/cc-theme";
+import { parseThemePreference } from "@/lib/cc/theme/parse-theme-preference";
+import { resolveTheme } from "@/lib/cc/theme/resolve-theme";
 import { cn } from "@/lib/utils";
+
+import { CcThemeRoot } from "./_ui/cc-theme-root";
 
 import "./cc-theme.css";
 
@@ -49,18 +55,31 @@ export const metadata: Metadata = {
   },
 };
 
-export const viewport: Viewport = {
-  themeColor: "#06080c",
-  colorScheme: "dark",
-};
+export async function generateViewport(): Promise<Viewport> {
+  const theme = resolveTheme({
+    preference: parseThemePreference(
+      (await cookies()).get(CC_THEME_COOKIE)?.value
+    ),
+    now: new Date(),
+  });
+  return {
+    themeColor: theme === "light" ? "#f0f2f5" : "#06080c",
+    colorScheme: "light dark",
+  };
+}
 
 type CcLayoutProps = {
   children: React.ReactNode;
 };
 
-export default function CcLayout(props: CcLayoutProps) {
+export default async function CcLayout(props: CcLayoutProps) {
+  const preference = parseThemePreference(
+    (await cookies()).get(CC_THEME_COOKIE)?.value
+  );
   return (
-    <div
+    <CcThemeRoot
+      preference={preference}
+      theme={resolveTheme({ preference, now: new Date() })}
       className={cn(
         "cc-theme fixed inset-0 z-[100] overflow-auto antialiased",
         "font-[family-name:var(--font-geist-mono)] text-[12px] leading-[18px]",
@@ -70,6 +89,6 @@ export default function CcLayout(props: CcLayoutProps) {
       )}
     >
       {props.children}
-    </div>
+    </CcThemeRoot>
   );
 }

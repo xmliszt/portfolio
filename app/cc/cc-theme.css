@@ -26,9 +26,59 @@
   --cc-ok: 150 60% 52%;
   --cc-danger: 4 72% 58%;
   --cc-chatgpt: 334 70% 62%;
+  --cc-shadow: 0 0% 0% / 0.45;
+  --cc-scrollbar: 214 14% 22%;
+  --cc-scrollbar-hover: 214 12% 32%;
   color-scheme: dark;
   background-color: hsl(var(--background));
   color: hsl(var(--foreground));
+  scrollbar-width: thin;
+  scrollbar-color: hsl(var(--cc-scrollbar)) transparent;
+}
+
+.cc-theme[data-theme="light"] {
+  --background: 220 16% 95%;
+  --foreground: 220 24% 12%;
+  --card: 0 0% 100%;
+  --card-foreground: 220 24% 12%;
+  --popover: 0 0% 100%;
+  --popover-foreground: 220 24% 12%;
+  --primary: 192 90% 32%;
+  --primary-foreground: 0 0% 100%;
+  --secondary: 216 20% 93%;
+  --secondary-foreground: 220 24% 12%;
+  --muted: 216 20% 93%;
+  --muted-foreground: 215 12% 42%;
+  --accent: 192 90% 32%;
+  --accent-foreground: 0 0% 100%;
+  --destructive: 4 70% 46%;
+  --destructive-foreground: 0 0% 100%;
+  --border: 214 16% 85%;
+  --input: 214 16% 85%;
+  --ring: 192 90% 32%;
+  --cc-panel-2: 216 24% 96%;
+  --cc-line-soft: 214 18% 91%;
+  --cc-text-2: 216 16% 28%;
+  --cc-warn: 30 92% 36%;
+  --cc-ok: 152 64% 28%;
+  --cc-danger: 4 70% 46%;
+  --cc-chatgpt: 334 62% 44%;
+  --cc-shadow: 220 30% 20% / 0.12;
+  --cc-scrollbar: 214 14% 78%;
+  --cc-scrollbar-hover: 214 12% 64%;
+  --cc-platform-producthunt: 12 72% 46%;
+  --cc-platform-xiaohongshu: 340 70% 46%;
+  --cc-platform-wechat: 100 50% 32%;
+  --cc-platform-wechat-moments: 128 46% 32%;
+  --cc-platform-x: 220 20% 14%;
+  --cc-platform-threads: 220 10% 36%;
+  --cc-platform-instagram: 300 50% 42%;
+  --cc-platform-tiktok: 176 70% 28%;
+  --cc-platform-reddit: 22 90% 44%;
+  --cc-platform-youtube: 356 72% 46%;
+  --cc-platform-linkedin: 214 70% 40%;
+  --cc-platform-bluesky: 208 85% 42%;
+  color-scheme: light;
 }
 
 @layer base {
@@ -43,8 +93,38 @@
     user-select: text;
   }
 
-  :where(.cc-theme) :is(button, a) {
+  :where(.cc-theme) :is(button, a, summary, label, select) {
+    cursor: default;
+  }
+
+  :where(.cc-theme) a[target="_blank"] {
     cursor: pointer;
+  }
+
+  :where(.cc-theme) * {
+    scrollbar-width: thin;
+  }
+
+  .cc-theme ::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+
+  .cc-theme ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .cc-theme ::-webkit-scrollbar-thumb {
+    border: 3px solid transparent;
+    background: hsl(var(--cc-scrollbar)) padding-box;
+  }
+
+  .cc-theme ::-webkit-scrollbar-thumb:hover {
+    background: hsl(var(--cc-scrollbar-hover)) padding-box;
+  }
+
+  .cc-theme ::-webkit-scrollbar-corner {
+    background: transparent;
   }
 }
 
@@ -79,10 +159,6 @@
     padding: 6px 8px;
     line-height: 1.6;
     font-size: 13px;
-  }
-
-  .cc-theme select.cc-input {
-    padding-right: 4px;
   }
 
   .cc-theme .cc-input:focus-visible {

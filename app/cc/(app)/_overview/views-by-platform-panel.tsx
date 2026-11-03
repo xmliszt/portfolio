@@ -11,7 +11,6 @@ export function ViewsByPlatformPanel(props: ViewsByPlatformPanelProps) {
   return (
     <Panel
       title="VIEWS BY PLATFORM · 24H"
-      className="flex-[2_1_420px]"
       bodyClassName="flex flex-col gap-y-3.5 px-3 py-2.5"
     >
       {props.rows.length === 0 ? (

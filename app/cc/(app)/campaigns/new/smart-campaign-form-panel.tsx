@@ -1,4 +1,5 @@
 import { CcField } from "@/app/cc/_ui/cc-field";
+import { CcSelect } from "@/app/cc/_ui/cc-select";
 import { Panel } from "@/app/cc/_ui/panel";
 import type { SmartCampaignLanguage } from "@/lib/cc/build-smart-campaign-plan";
 import {
@@ -60,24 +61,16 @@ export function SmartCampaignFormPanel(props: SmartCampaignFormPanelProps) {
     >
       <div className="flex flex-wrap items-end gap-x-3 gap-y-2">
         <CcField label="KIND" htmlFor="smart-kind">
-          <select
+          <CcSelect
             id="smart-kind"
-            className="cc-input w-auto"
+            className="w-[200px]"
             value={form.kind}
-            onChange={(event) =>
-              update({
-                kind:
-                  CAMPAIGN_KINDS.find((kind) => kind === event.target.value) ??
-                  form.kind,
-              })
-            }
-          >
-            {CAMPAIGN_KINDS.map((kind) => (
-              <option key={kind} value={kind}>
-                {CAMPAIGN_KIND_LABEL[kind]}
-              </option>
-            ))}
-          </select>
+            onChange={(kind) => update({ kind })}
+            options={CAMPAIGN_KINDS.map((kind) => ({
+              value: kind,
+              label: CAMPAIGN_KIND_LABEL[kind],
+            }))}
+          />
         </CcField>
         <span className="text-muted-foreground min-h-7 py-3 text-[12px]">
           {KIND_HINT[form.kind]}
@@ -179,20 +172,18 @@ export function SmartCampaignFormPanel(props: SmartCampaignFormPanelProps) {
                   {PLATFORMS[platformId].label}
                 </label>
                 {isSelected && (
-                  <select
+                  <CcSelect
                     aria-label={`${PLATFORMS[platformId].label} language`}
-                    className="cc-input w-auto py-1"
+                    className="w-[96px]"
                     value={form.languages[platformId]}
-                    onChange={(event) =>
-                      changeLanguage(
-                        platformId,
-                        event.target.value === "zh" ? "zh" : "en"
-                      )
+                    onChange={(language) =>
+                      changeLanguage(platformId, language)
                     }
-                  >
-                    <option value="en">English</option>
-                    <option value="zh">中文</option>
-                  </select>
+                    options={[
+                      { value: "en", label: "English" },
+                      { value: "zh", label: "中文" },
+                    ]}
+                  />
                 )}
               </div>
             );

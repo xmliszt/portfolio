@@ -1,9 +1,7 @@
 import uniq from "lodash/uniq.js";
 
-import { CollapsibleSection } from "@/app/cc/_ui/collapsible-section";
 import { PageHeader } from "@/app/cc/_ui/page-header";
 import { requireCcOwner } from "@/lib/cc/auth/require-cc-owner";
-import { getBlueskyCredentials } from "@/lib/cc/bluesky/get-bluesky-credentials";
 import { checkVoice } from "@/lib/cc/check-voice";
 import { getCurrentCampaign } from "@/lib/cc/data/get-current-campaign";
 import { listCampaignPosts } from "@/lib/cc/data/list-campaign-posts";
@@ -17,40 +15,27 @@ import { getPostCopyText } from "@/lib/cc/get-post-copy-text";
 import { getPostName } from "@/lib/cc/get-post-name";
 import { getRepostSuggestions } from "@/lib/cc/get-repost-suggestions";
 import { isPlatformId } from "@/lib/cc/is-platform-id";
-import { parseCampaignPlan } from "@/lib/cc/parse-campaign-plan";
 import { PLATFORMS } from "@/lib/cc/platforms";
-import { getXUserCredentials } from "@/lib/cc/x/get-x-user-credentials";
 
 import { buildDueItems } from "./_overview/build-due-items";
 import { buildRunSheet } from "./_overview/build-run-sheet";
 import { CampaignClock } from "./_overview/campaign-clock";
-import { CampaignPanel } from "./_overview/campaign-panel";
-import { CampaignPlanPanel } from "./_overview/campaign-plan-panel";
 import { DueNowPanel } from "./_overview/due-now-panel";
-import { getThreadsStatus } from "./_overview/get-threads-status";
-import { IntegrationsPanel } from "./_overview/integrations-panel";
 import { RunSheetPanel } from "./_overview/run-sheet-panel";
 import { TopHashtagsPanel } from "./_overview/top-hashtags-panel";
 import { TotalsStrip } from "./_overview/totals-strip";
 import { ViewsByPlatformPanel } from "./_overview/views-by-platform-panel";
 import { VoiceCheckPanel } from "./_overview/voice-check-panel";
+import { CampaignPanel } from "./new/campaign-panel";
 
 export default async function OverviewPage() {
   await requireCcOwner();
-  const [campaign, threadsStatus] = await Promise.all([
-    getCurrentCampaign(),
-    getThreadsStatus(),
-  ]);
+  const campaign = await getCurrentCampaign();
   if (campaign === undefined) {
     return (
       <>
         <PageHeader eyebrow="CAMPAIGN // NONE YET" title="Mission control" />
         <CampaignPanel campaign={undefined} />
-        <IntegrationsPanel
-          threads={threadsStatus}
-          xPosting={getXUserCredentials() !== undefined}
-          blueskyPosting={getBlueskyCredentials() !== undefined}
-        />
       </>
     );
   }
@@ -128,11 +113,11 @@ export default async function OverviewPage() {
         plannedCount={mainPosts.length}
         totals={totals}
       />
-      <div className="grid grid-cols-1 items-start gap-x-3 gap-y-3 xl:grid-cols-[minmax(0,1fr)_400px]">
+      <div className="grid grid-cols-1 gap-x-3 gap-y-3 xl:grid-cols-[minmax(0,1fr)_400px]">
         <RunSheetPanel dayLabel={runSheet.dayLabel} items={runSheet.items} />
         <DueNowPanel items={dueItems} />
       </div>
-      <div className="flex flex-wrap items-start gap-x-3 gap-y-3">
+      <div className="grid grid-cols-1 gap-x-3 gap-y-3 lg:grid-cols-2 xl:grid-cols-[minmax(0,1fr)_minmax(0,1fr)_400px]">
         <ViewsByPlatformPanel rows={totals.viewsByPlatform} />
         <TopHashtagsPanel lifts={getHashtagLift(stats)} />
         <VoiceCheckPanel
@@ -140,25 +125,6 @@ export default async function OverviewPage() {
           flagged={flagged}
         />
       </div>
-      <CollapsibleSection
-        title="Setup"
-        summary="campaign details, schedule planner, integrations"
-        defaultOpen={
-          threadsStatus.kind === "expired" ||
-          threadsStatus.kind === "not-connected"
-        }
-      >
-        <CampaignPanel campaign={campaign} />
-        <CampaignPlanPanel
-          campaignId={campaign.id}
-          plan={parseCampaignPlan(campaign.plan)}
-        />
-        <IntegrationsPanel
-          threads={threadsStatus}
-          xPosting={getXUserCredentials() !== undefined}
-          blueskyPosting={getBlueskyCredentials() !== undefined}
-        />
-      </CollapsibleSection>
     </>
   );
 }

@@ -14,15 +14,19 @@ All times in CC are Singapore time (SGT, UTC+8) unless a label says ET or PT.
 
 ## Navigation
 
-The left rail has five sections:
+The left rail has seven sections:
 
-| Section | Path | Use it to |
-|---|---|---|
-| OVERVIEW | `/` | See what is due now, the run sheet, the campaign and its plan, integrations |
-| CALENDAR | `/calendar` | See the week, add posts, move or skip a slot |
-| COMPOSER | `/composer` | Write and check a post, attach media, fork, schedule, auto-post, delete |
-| LOG NUMBERS | `/log` | Type in each post's numbers at +1 h, +24 h and +7 d |
-| INSIGHTS | `/insights` | Compare platforms, targets, hashtags, posting hours, keywords |
+| Section     | Path        | Use it to                                                                            |
+| ----------- | ----------- | ------------------------------------------------------------------------------------ |
+| OVERVIEW    | `/`         | See what is due now, the run sheet and the campaign's numbers                        |
+| CALENDAR    | `/calendar` | See the week, move or skip a slot                                                    |
+| COMPOSER    | `/composer` | Write and check a post, attach media, fork, schedule, auto-post, delete              |
+| LOG NUMBERS | `/log`      | Type in each post's numbers at +1 h, +24 h and +7 d                                  |
+| INSIGHTS    | `/insights` | Compare platforms, targets, hashtags, posting hours, keywords                        |
+| NEW         | `/new`      | Schedule a post, create a campaign, start a smart campaign, run the schedule planner |
+| SETTINGS    | `/settings` | Theme, integrations, edit the current campaign                                       |
+
+The rail footer has the theme switch: **AUTO** (light 07:00–19:00 SGT, dark otherwise), **LIGHT** or **DARK**. An orange ● on SETTINGS means Threads needs connecting.
 
 CC always shows the **current campaign**: the one with the newest start date.
 
@@ -48,20 +52,20 @@ CC always shows the **current campaign**: the one with the newest start date.
 
 ## Platforms
 
-| Platform | Auto-post | Text limit | Logged numbers |
-|---|---|---|---|
-| X | Yes | 280 (links count 23, emoji 2) | views, likes, replies, shares, bookmarks, link clicks, reposts, quotes, profile visits, new follows |
-| Threads | Yes | 500 | views, likes, replies, shares, reposts, quotes (synced daily) |
-| Bluesky | Yes | 300 | likes, replies, reposts, quotes |
-| Instagram | No, from phone | 2200 | views, likes, comments, shares, saves, viewers, follows |
-| TikTok | No, from phone | 2200 | views, likes, comments, shares, favorites, viewers, new followers |
-| Reddit | No | title 300 | views, upvotes, comments, shares |
-| 小红书 | No, from phone | title 20, text 1000 | 观看, 点赞, 收藏, 评论, 分享, 涨粉 |
-| 视频号 | No, from phone | 1000 | 播放, 点赞, 评论, 转发, 收藏 |
-| 朋友圈 | No, from phone | — | 点赞, 评论 |
-| YouTube | No | title 100 | views, likes, comments, shares, subscribers |
-| LinkedIn | No | 3000 | impressions, likes as reactions, comments, shares as sends, saves, members reached, reposts |
-| Product Hunt | No | tagline 60, text 260 | upvotes, comments, rank, clicks |
+| Platform     | Auto-post      | Text limit                    | Logged numbers                                                                                      |
+| ------------ | -------------- | ----------------------------- | --------------------------------------------------------------------------------------------------- |
+| X            | Yes            | 280 (links count 23, emoji 2) | views, likes, replies, shares, bookmarks, link clicks, reposts, quotes, profile visits, new follows |
+| Threads      | Yes            | 500                           | views, likes, replies, shares, reposts, quotes (synced daily)                                       |
+| Bluesky      | Yes            | 300                           | likes, replies, reposts, quotes                                                                     |
+| Instagram    | No, from phone | 2200                          | views, likes, comments, shares, saves, viewers, follows                                             |
+| TikTok       | No, from phone | 2200                          | views, likes, comments, shares, favorites, viewers, new followers                                   |
+| Reddit       | No             | title 300                     | views, upvotes, comments, shares                                                                    |
+| 小红书       | No, from phone | title 20, text 1000           | 观看, 点赞, 收藏, 评论, 分享, 涨粉                                                                  |
+| 视频号       | No, from phone | 1000                          | 播放, 点赞, 评论, 转发, 收藏                                                                        |
+| 朋友圈       | No, from phone | —                             | 点赞, 评论                                                                                          |
+| YouTube      | No             | title 100                     | views, likes, comments, shares, subscribers                                                         |
+| LinkedIn     | No             | 3000                          | impressions, likes as reactions, comments, shares as sends, saves, members reached, reposts         |
+| Product Hunt | No             | tagline 60, text 260          | upvotes, comments, rank, clicks                                                                     |
 
 For platforms without auto-post, the owner posts by hand: CC copies the text and opens the platform's composer. Then the post is marked posted with its live link.
 
@@ -69,26 +73,35 @@ For platforms without auto-post, the owner posts by hand: CC copies the text and
 
 - **DUE NOW:** reminders that are due, the same ones Telegram sends. These are posts to publish, replies to answer and numbers to log.
 - **Run sheet:** today's posts, one row each: time, platform, name (click it to open the Composer), status, **COPY**, **OPEN ↗** and **MARK POSTED**. The open posts' buttons are highlighted.
-- **Setup** (collapsed at the bottom; open it with a click): the campaign details, the schedule planner and the integrations. It opens by itself when Threads needs reconnecting.
-- **Campaign** (in Setup): edit the name, link, start date (SGT) and notes, or create a new campaign.
-- **Schedule planner** (in Setup): set MAX POSTS PER DAY and MIN GAP (MINUTES), then press **PLAN SCHEDULE**. It previews CURRENT → PROPOSED times; press **APPLY** to move the posts. Pinned platforms (Product Hunt, YouTube) never move.
 - **VOICE CHECK · QUEUE:** flags text that breaks the owner's voice rules.
-- **Integrations** (in Setup): shows what is connected.
-  - Threads: the token, plus RECONNECT and DISCONNECT.
-  - X posting: on or off.
-  - Bluesky posting: on or off.
-  If a platform shows off, the owner has to add keys in Vercel. An agent cannot fix this.
 
 ## CALENDAR
 
 - The week grid shows each post as `HH:MM PLATFORM` plus its name. Skipped posts are struck through.
-- **SCHEDULE POST** (form): PLATFORM, SAVE AS (`Scheduled (reminders on)` or `Draft (no reminders)`), the target field if the platform has one, TITLE, DATE, TIME. **SUGGEST** fills the best open slot. A clash warning appears when the time is too close to another post. Then press **+ SCHEDULE POST** and follow "Write the text in the composer →".
+- **+ SCHEDULE POST** (top right) opens the schedule form on NEW, set to the week and heat platform on screen.
 - Click a post to open **EDIT SLOT**:
   - DATE (SGT) and TIME (SGT), then **RESCHEDULE**. Its replies move by the same amount.
   - **SKIP:** drops the post and its unposted replies.
   - **DELETE POST:** see "Deleting".
   - "Edit text in composer →".
 - **HEAT OVERLAY** (a dropdown above the grid) shades the hours that worked best for one platform.
+
+## NEW
+
+- **SCHEDULE POST** (form): PLATFORM, SAVE AS (`Scheduled (reminders on)` or `Draft (no reminders)`), the target field if the platform has one, TITLE, DATE, TIME. **SUGGEST** fills the best open slot. A clash warning appears when the time is too close to another post. Then press **+ SCHEDULE POST** and follow "Write the text in the composer →".
+- **New campaign:** NAME, LINK, STARTS (SGT) and the maker's note, then **CREATE CAMPAIGN**. The new campaign becomes the current one.
+- **Smart campaign:** **START SMART CAMPAIGN →** opens `/campaigns/new` (see "Smart campaign").
+- **Schedule planner:** set MAX POSTS PER DAY and MIN GAP (MINUTES), then press **PLAN SCHEDULE**. It previews CURRENT → PROPOSED times; press **APPLY** to move the posts. Pinned platforms (Product Hunt, YouTube) never move.
+
+## SETTINGS
+
+- **Appearance:** AUTO, LIGHT or DARK, the same switch as the rail footer.
+- **Integrations:** shows what is connected.
+  - Threads: the token, plus RECONNECT and DISCONNECT.
+  - X posting: on or off.
+  - Bluesky posting: on or off.
+    If a platform shows off, the owner has to add keys in Vercel. An agent cannot fix this.
+- **Current campaign:** edit the name, link, start date (SGT) and notes, then **SAVE CAMPAIGN**.
 
 ## COMPOSER
 
@@ -101,6 +114,7 @@ The page has three columns:
 3. **Checks** (right): tabs for **PRE-FLIGHT**, **VOICE**, **CHATGPT** and, on X and Threads, **TAGS**. The PRE-FLIGHT tab shows how many checks need fixing.
 
 **The action bar** (bottom of the middle column) shows SAVED ✓ / ● UNSAVED and the scheduled time, then the actions:
+
 - **SAVE ⌘S**
 - **SCHEDULE ▾**: date and time
 - **COPY TEXT**
@@ -141,6 +155,7 @@ Any post that is not posted has **SCHEDULE ▾** in the action bar. It opens **D
 ### Auto-posting (X, Threads, Bluesky)
 
 **Main posts and reposts:**
+
 - **AUTO-POST AT SCHEDULED TIME** is enabled only when the post is saved, scheduled, and at least 1 minute in the future.
 - Turning it on checks the platform setup, the text length, the media, and Bluesky image sizes. If the post would fail, it refuses with the reason.
 - While it is on, the label reads `AUTO-POSTS <time> SGT ✓`, with **TURN OFF** next to it.
@@ -152,18 +167,20 @@ Any post that is not posted has **SCHEDULE ▾** in the action bar. It opens **D
 
 **States:**
 
-| Label | Meaning | What to do |
-|---|---|---|
-| `AUTO-POSTING ON <PLATFORM>…` | CC is posting it now | Wait; all changes are refused meanwhile |
-| `AUTO-POST FAILED` plus the reason | It did not post | Read the reason. If it says "may or may not be live", check the platform before posting again. Then **POST NOW VIA API**, **TURN OFF**, or reschedule. |
+| Label                              | Meaning              | What to do                                                                                                                                             |
+| ---------------------------------- | -------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `AUTO-POSTING ON <PLATFORM>…`      | CC is posting it now | Wait; all changes are refused meanwhile                                                                                                                |
+| `AUTO-POST FAILED` plus the reason | It did not post      | Read the reason. If it says "may or may not be live", check the platform before posting again. Then **POST NOW VIA API**, **TURN OFF**, or reschedule. |
 
 Rescheduling a failed post clears the failure and turns auto-post off, so it has to be turned on again.
 
 **Limits:**
+
 - CC skips a post more than 30 minutes late (for example, if the server was down) and marks it failed instead of posting it late.
 - A post on X with a link costs about $0.20 on the owner's X credits; without a link, about $0.015. Threads and Bluesky are free.
 
 **Replies and comments** (X, Threads, Bluesky): each reply has its own auto-post control.
+
 - **AUTO-POST AFTER PARENT** needs the parent post to have auto-post on, or to be live already with the reply at most 30 minutes past its time. If the parent's auto-post fails, its replies are marked failed, then re-armed automatically once the parent goes live through CC.
 - A reply goes out at the parent's actual posting time plus the planned gap.
 - Each reply answers the latest earlier reply that is live, so replies read as a thread.
@@ -174,6 +191,7 @@ Rescheduling a failed post clears the failure and turns auto-post off, so it has
 ### Forking (reuse a post)
 
 **MORE ▾** in the action bar opens the fork form: PLATFORM, DATE (SGT) and TIME (SGT). Leave both date and time empty to save a draft. Then press **CREATE FORK**.
+
 - The fork copies the saved text, hashtags, link, title and uploaded media, then opens the new post.
 - **Fork a posted post on the same platform:** the fork is saved as its **repost**.
 - **Fork onto another platform, or from an unposted post:** the fork is saved as a **new post**.
@@ -186,23 +204,25 @@ Rescheduling a failed post clears the failure and turns auto-post off, so it has
 ### Deleting
 
 **DELETE POST** is in the Composer (**MORE ▾**) and in EDIT SLOT, and asks for confirmation.
+
 - It removes the post from CC along with its ChatGPT version, replies, unposted reposts, reminders and logged numbers.
 - A live post stays up on the platform; delete it there separately.
 - It is refused while CC is auto-posting the post or one of its replies, and when a repost of it is live.
 
 ## Reposting (posting an idea again)
 
-| Platform | How | Wait at least |
-|---|---|---|
-| X | Quote your own post with a new first line, or a new post on the same idea. Never identical text. | 7 days |
-| Threads | A new post with a new first line and, ideally, a different image or clip | 14 days |
-| Bluesky | Quote your own post with a new first line, or a new post | 7 days |
-| Instagram | Re-cut: new cover, new first line, or another clip | 30 days |
-| TikTok | A new edit with a new hook in the first second | 14 days |
-| LinkedIn | Same idea with a new opening line | 60–90 days |
-| Reddit, Product Hunt, 朋友圈, YouTube | Never repost | — |
+| Platform                              | How                                                                                              | Wait at least |
+| ------------------------------------- | ------------------------------------------------------------------------------------------------ | ------------- |
+| X                                     | Quote your own post with a new first line, or a new post on the same idea. Never identical text. | 7 days        |
+| Threads                               | A new post with a new first line and, ideally, a different image or clip                         | 14 days       |
+| Bluesky                               | Quote your own post with a new first line, or a new post                                         | 7 days        |
+| Instagram                             | Re-cut: new cover, new first line, or another clip                                               | 30 days       |
+| TikTok                                | A new edit with a new hook in the first second                                                   | 14 days       |
+| LinkedIn                              | Same idea with a new opening line                                                                | 60–90 days    |
+| Reddit, Product Hunt, 朋友圈, YouTube | Never repost                                                                                     | —             |
 
 **PUBLISH AS** (Composer, on an unposted repost on X, Threads or Bluesky) sets how the repost goes out:
+
 - **New post:** its own text, as a new post.
 - **Quote the original:** its text with the original embedded. On X the API quotes only on Enterprise, so CC adds the original's link to the text; X shows a quote card, and the link makes the post cost about $0.20.
 - **Plain repost:** reposts the original as it is. The text and media are not used, and no numbers are logged.
@@ -222,6 +242,7 @@ Follow-ups never introduce the product again. A daily rules job suggests reposts
 ## INSIGHTS
 
 These panels read the logged numbers:
+
 - By platform.
 - By subreddit, topic or community.
 - Hashtags (your posts only).
@@ -243,6 +264,7 @@ Path: `/campaigns/new`.
 ## Telegram
 
 The owner's bot sends:
+
 - `⏰ Post now`, 10 minutes before each manual post.
 - `💬 Reply to comments`, 30 minutes after posting.
 - `📊 Log numbers`, at +1 h, +24 h and +7 d.
@@ -254,27 +276,33 @@ Buttons open the Composer or the platform. **Skip** on a suggestion skips that p
 ## Typical tasks
 
 **Schedule a new X post for Thursday 21:00 with auto-post:**
-1. Calendar → SCHEDULE POST: PLATFORM X, SAVE AS Scheduled, TITLE, DATE, TIME 21:00 → + SCHEDULE POST.
+
+1. NEW → SCHEDULE POST: PLATFORM X, SAVE AS Scheduled, TITLE, DATE, TIME 21:00 → + SCHEDULE POST.
 2. Open it in the Composer, write the text, upload media with alt text, then SAVE.
 3. Check PRE-FLIGHT.
 4. Press AUTO-POST AT SCHEDULED TIME and confirm the label reads `AUTO-POSTS … ✓`.
 
 **Repost last week's Threads post with a new first line and the same video:**
+
 1. Open the original in the Composer → **MORE ▾** (fork).
 2. Keep PLATFORM Threads, set DATE and TIME → CREATE FORK.
 3. Change the first line, SAVE, then turn on auto-post.
 
 **Reuse an X video on Bluesky:**
+
 1. Open the X post → **MORE ▾** (fork).
 2. PLATFORM Bluesky, set DATE and TIME → CREATE FORK.
 3. Trim the text to 300 characters. Make sure the video is an MP4. SAVE, then auto-post.
 
 **A subreddit removed a post:**
+
 1. Ask the owner.
 2. Then Composer or EDIT SLOT → DELETE POST.
 
 **A post went out by hand:**
+
 - MARK POSTED with the live link.
 
 **A post moved to another time:**
+
 - Composer → DATE/TIME → RESCHEDULE, or Calendar → EDIT SLOT → RESCHEDULE.

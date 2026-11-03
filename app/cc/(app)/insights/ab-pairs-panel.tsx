@@ -33,11 +33,7 @@ function describeResult(options: {
 
 export function AbPairsPanel(props: AbPairsPanelProps) {
   return (
-    <Panel
-      title="My draft vs ChatGPT edit"
-      aside="+24 h views"
-      className="flex-[3_1_560px]"
-    >
+    <Panel title="My draft vs ChatGPT edit" aside="+24 h views">
       {props.pairs.length === 0 ? (
         <p className="text-cc-text-2 px-3 py-3 text-[11px] leading-relaxed">
           No A/B pairs yet. In the composer, “Keep both” saves your draft and

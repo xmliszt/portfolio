@@ -19,12 +19,11 @@ import { PLATFORM_IDS, type PlatformId, PLATFORMS } from "@/lib/cc/platforms";
 import { RESEARCHED_WINDOWS } from "@/lib/cc/researched-windows";
 import { sgtToUtc } from "@/lib/cc/sgt-to-utc";
 
+import { buildScheduleContext } from "./build-schedule-context";
 import { FollowUpsPanel } from "./follow-ups-panel";
 import { HeatLegendPanel } from "./heat-legend-panel";
 import { HeatPicker } from "./heat-picker";
 import { PostEditor } from "./post-editor";
-import type { ScheduleContext } from "./schedule-clash-warning";
-import { SchedulePostForm } from "./schedule-post-form";
 import { type GridPost, WeekGrid } from "./week-grid";
 
 type CalendarPageProps = {
@@ -184,23 +183,10 @@ export default async function CalendarPage(props: CalendarPageProps) {
       gridPosts.some((post) => post.hour === hour)
   );
 
-  const plan = parseCampaignPlan(campaign.plan);
-  const schedule: ScheduleContext = {
-    posts: posts.flatMap((post) =>
-      post.scheduled_at === null
-        ? []
-        : [
-            {
-              id: post.id,
-              at: post.scheduled_at,
-              kind: post.kind,
-              status: post.status,
-            },
-          ]
-    ),
-    minGapMinutes: plan.minGapMinutes,
-    maxPerDay: plan.maxPerDay,
-  };
+  const schedule = buildScheduleContext({
+    posts,
+    plan: parseCampaignPlan(campaign.plan),
+  });
 
   const editPost = posts.find((post) => post.id === editId);
   const isHeatEmpty = heat.cells.flat().every((value) => !value);
@@ -239,12 +225,12 @@ export default async function CalendarPage(props: CalendarPageProps) {
             >
               NEXT →
             </Link>
-            <a
-              href="#schedule"
+            <Link
+              href={`/new?${new URLSearchParams({ date: week.days.includes(today) ? today : weekStart, platform: heatPlatformId }).toString()}#schedule`}
               className="border-primary bg-primary text-primary-foreground hover:bg-primary/85 flex min-h-7 items-center border px-3 text-[12px] font-bold tracking-[0.04em]"
             >
               + SCHEDULE POST
-            </a>
+            </Link>
           </nav>
         }
       />
@@ -307,15 +293,8 @@ export default async function CalendarPage(props: CalendarPageProps) {
           isEmpty={isHeatEmpty}
           weekOf={weekMidday}
         />
-        <SchedulePostForm
-          campaignId={campaign.id}
-          campaignLink={campaign.link ?? undefined}
-          defaultDate={week.days.includes(today) ? today : weekStart}
-          defaultPlatformId={heatPlatformId}
-          schedule={schedule}
-        />
+        <FollowUpsPanel />
       </div>
-      <FollowUpsPanel />
     </>
   );
 }
