@@ -46,6 +46,7 @@ export function liftCatOverBox(options: {
     spine: cat.spine.map(raise),
     head: raise(cat.head),
     headH: liftAt(cat.head[0], cat.head[1], cat.headH),
+    poseHeadH: liftAt(cat.head[0], cat.head[1], cat.poseHeadH),
     thighs: [raise(cat.thighs[0]), raise(cat.thighs[1])],
     legs: [raiseLeg(a), raiseLeg(b), raiseLeg(c), raiseLeg(d)],
     tailHeights: {

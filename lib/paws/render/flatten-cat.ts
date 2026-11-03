@@ -25,6 +25,7 @@ export function flattenCat(options: {
     spine: cat.spine.map(lower),
     head: lower(cat.head),
     headH: cat.headH * factor,
+    poseHeadH: cat.poseHeadH * factor,
     thighs: [lower(cat.thighs[0]), lower(cat.thighs[1])],
     legs: [lowerLeg(a), lowerLeg(b), lowerLeg(c), lowerLeg(d)],
     tailHeights: {

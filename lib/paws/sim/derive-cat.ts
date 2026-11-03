@@ -49,6 +49,8 @@ export type DerivedCat = {
   head: Vec4;
   headDir: number;
   headH: number;
+  /** Height of the head in the blended pose, before `snapshot.sniff` lowers it. */
+  poseHeadH: number;
   nose: { x: number; y: number };
   thighs: [Vec4, Vec4];
   legs: [DerivedLeg, DerivedLeg, DerivedLeg, DerivedLeg];
@@ -200,6 +202,7 @@ export function deriveCat(options: {
     head,
     headDir,
     headH,
+    poseHeadH: pose.head[3],
     nose: {
       x: head[0] + Math.cos(headDir) * 30 * k,
       y: head[1] + Math.sin(headDir) * 30 * k,
