@@ -45,7 +45,6 @@ export function IntegrationsPanel(props: IntegrationsPanelProps) {
     <Panel
       title="Integrations"
       aside="Threads sync 10:20 SGT · X, Threads, Bluesky auto-post"
-      className="flex-[1_1_100%]"
       bodyClassName="flex flex-col gap-y-3 px-3 py-2.5"
     >
       {(() => {

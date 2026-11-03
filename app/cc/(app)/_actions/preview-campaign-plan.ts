@@ -2,7 +2,7 @@
 
 import keyBy from "lodash/keyBy.js";
 
-import type { PlanPreviewRow } from "@/app/cc/(app)/_overview/plan-preview-row";
+import type { PlanPreviewRow } from "@/app/cc/(app)/new/plan-preview-row";
 import { requireCcOwner } from "@/lib/cc/auth/require-cc-owner";
 import { loadPlannerInput } from "@/lib/cc/data/load-planner-input";
 import { formatSgt } from "@/lib/cc/format-sgt";

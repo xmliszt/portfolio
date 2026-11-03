@@ -25,7 +25,7 @@ export function CcButton(props: CcButtonProps) {
     <button
       {...buttonProps}
       className={cn(
-        "inline-flex items-center justify-center gap-x-1.5 border font-semibold tracking-[0.04em] whitespace-nowrap transition-colors disabled:cursor-not-allowed disabled:opacity-50",
+        "inline-flex items-center justify-center gap-x-1.5 border font-semibold tracking-[0.04em] whitespace-nowrap transition-colors disabled:opacity-50",
         "focus-visible:outline-primary focus-visible:outline focus-visible:outline-1 focus-visible:outline-offset-1",
         size === "md" ? "h-7 px-2.5 text-[11px]" : "h-6 px-2 text-[10.5px]",
         VARIANT_CLASS[variant],

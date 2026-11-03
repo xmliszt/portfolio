@@ -37,7 +37,9 @@ const STATUS_CLASS = {
   draft: "text-muted-foreground",
 } as const;
 
-const NOTE_CLASS = "text-muted-foreground w-[88px] text-[11px] leading-tight";
+const NOTE_CLASS = "text-muted-foreground px-2 text-[11px] leading-tight";
+
+const QUIET_CLASS = "w-full border-transparent";
 
 export function RunSheetRow(props: RunSheetRowProps) {
   const item = props.item;
@@ -89,7 +91,9 @@ export function RunSheetRow(props: RunSheetRowProps) {
         >
           {item.timeLabel}
         </span>
-        <PlatformChip platformId={item.platformId} />
+        <span className="flex w-[60px] shrink-0">
+          <PlatformChip platformId={item.platformId} />
+        </span>
         <Link
           href={`/composer?post=${item.id}`}
           title="Open in composer"
@@ -110,8 +114,8 @@ export function RunSheetRow(props: RunSheetRowProps) {
         >
           {item.status.toUpperCase()}
         </span>
-        <div className="flex w-[300px] shrink-0 items-center justify-end gap-x-1.5">
-          <CcButton size="sm" onClick={copyText}>
+        <div className="grid shrink-0 grid-cols-[76px_108px_92px] items-center gap-x-1">
+          <CcButton size="sm" className={QUIET_CLASS} onClick={copyText}>
             {isCopied ? "COPIED ✓" : "COPY"}
           </CcButton>
           {(() => {
@@ -124,10 +128,10 @@ export function RunSheetRow(props: RunSheetRowProps) {
                     target="_blank"
                     rel="noopener noreferrer"
                     className={cn(
-                      "inline-flex h-6 items-center border px-2 text-[10.5px] font-semibold tracking-[0.04em]",
+                      "inline-flex h-6 w-full items-center justify-center border px-2 text-[10.5px] font-semibold tracking-[0.04em]",
                       isOpen
                         ? "border-primary bg-primary text-primary-foreground hover:bg-primary/85"
-                        : "text-cc-text-2 hover:border-primary hover:text-foreground"
+                        : "text-cc-text-2 hover:border-primary hover:text-foreground border-transparent"
                     )}
                   >
                     OPEN ↗
@@ -138,6 +142,10 @@ export function RunSheetRow(props: RunSheetRowProps) {
                   <CcButton
                     size="sm"
                     variant={isOpen ? "primary" : "ghost"}
+                    className={cn(
+                      "cursor-pointer",
+                      isOpen ? "w-full" : QUIET_CLASS
+                    )}
                     onClick={() => copyThenOpen(open.url)}
                   >
                     COPY + OPEN ↗
@@ -153,15 +161,18 @@ export function RunSheetRow(props: RunSheetRowProps) {
               }
             }
           })()}
-          {isOpen && (
+          {isOpen ? (
             <CcButton
               size="sm"
               variant="ok"
+              className={QUIET_CLASS}
               aria-expanded={isMarking}
               onClick={() => setIsMarking(!isMarking)}
             >
               MARK POSTED
             </CcButton>
+          ) : (
+            <span />
           )}
         </div>
       </div>

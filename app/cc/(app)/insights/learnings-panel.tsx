@@ -46,7 +46,7 @@ export function LearningsPanel(props: LearningsPanelProps) {
   return (
     <Panel
       title="Learnings"
-      className="border-cc-ok flex-[2_1_360px]"
+      className="border-cc-ok"
       bodyClassName="flex flex-col gap-y-3 px-3 py-2.5"
     >
       {props.notes.length === 0 ? (

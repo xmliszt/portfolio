@@ -1,5 +1,7 @@
 import "server-only";
 
+import { cache } from "react";
+
 import { getIntegration } from "@/lib/cc/data/get-integration";
 import { formatSgt } from "@/lib/cc/format-sgt";
 import { getThreadsApp } from "@/lib/cc/threads/get-threads-app";
@@ -15,7 +17,7 @@ export type ThreadsStatus =
     };
 
 /** Return whether Threads is set up, connected, or connected with a token past `expires_at`, with the account's username and token expiry in SGT. */
-export async function getThreadsStatus(): Promise<ThreadsStatus> {
+export const getThreadsStatus = cache(async (): Promise<ThreadsStatus> => {
   if (getThreadsApp() === undefined) return { kind: "not-set-up" };
   const integration = await getIntegration({ provider: "threads" });
   if (integration === undefined) return { kind: "not-connected" };
@@ -36,4 +38,4 @@ export async function getThreadsStatus(): Promise<ThreadsStatus> {
             pattern: "EEE dd MMM HH:mm",
           }),
   };
-}
+});

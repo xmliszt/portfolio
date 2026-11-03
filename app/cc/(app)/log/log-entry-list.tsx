@@ -3,6 +3,7 @@
 import { useState, useTransition } from "react";
 
 import { CcButton } from "@/app/cc/_ui/cc-button";
+import { CcSelect } from "@/app/cc/_ui/cc-select";
 import { undoMetricEntry } from "@/app/cc/(app)/_actions/undo-metric-entry";
 import { PLATFORMS } from "@/lib/cc/platforms";
 import { cn } from "@/lib/utils";
@@ -154,19 +155,17 @@ export function LogEntryList(props: LogEntryListProps) {
           </span>
         ) : (
           <>
-            <select
+            <CcSelect
               id="log-extra-post"
+              className="flex-[1_1_240px]"
               value={extraPostId}
-              onChange={(event) => setExtraPostId(event.target.value)}
-              className="cc-input min-w-0 flex-[1_1_240px]"
-            >
-              <option value="">Pick a posted post…</option>
-              {props.postedPosts.map((post) => (
-                <option key={post.postId} value={post.postId}>
-                  {PLATFORMS[post.platformId].label} · {post.label}
-                </option>
-              ))}
-            </select>
+              onChange={setExtraPostId}
+              placeholder="Pick a posted post…"
+              options={props.postedPosts.map((post) => ({
+                value: post.postId,
+                label: `${PLATFORMS[post.platformId].label} · ${post.label}`,
+              }))}
+            />
             <CcButton type="submit" disabled={extraPostId === ""}>
               + ADD ROW
             </CcButton>

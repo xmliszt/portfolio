@@ -3,6 +3,7 @@ import { Suspense } from "react";
 import { requireCcOwner } from "@/lib/cc/auth/require-cc-owner";
 import { listDueReminders } from "@/lib/cc/data/list-due-reminders";
 
+import { getThreadsStatus } from "./settings/get-threads-status";
 import { NavigationProgress } from "./navigation-progress";
 import { SectionRail } from "./section-rail";
 
@@ -12,7 +13,10 @@ type CcAppLayoutProps = {
 
 export default async function CcAppLayout(props: CcAppLayoutProps) {
   await requireCcOwner();
-  const dueReminders = await listDueReminders({ now: new Date() });
+  const [dueReminders, threadsStatus] = await Promise.all([
+    listDueReminders({ now: new Date() }),
+    getThreadsStatus(),
+  ]);
   const dueLogCount = dueReminders.filter(
     (reminder) => reminder.kind === "log"
   ).length;
@@ -28,6 +32,10 @@ export default async function CcAppLayout(props: CcAppLayoutProps) {
       <SectionRail
         dueLogCount={dueLogCount}
         telegramLinked={isTelegramLinked}
+        settingsNeedAttention={
+          threadsStatus.kind === "expired" ||
+          threadsStatus.kind === "not-connected"
+        }
       />
       <main className="flex min-w-0 flex-[999_1_560px] flex-col gap-y-3 px-3 pt-3 pb-8">
         {props.children}

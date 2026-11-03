@@ -5,9 +5,14 @@ import Link from "next/link";
 
 import { CcButton } from "@/app/cc/_ui/cc-button";
 import { CcField } from "@/app/cc/_ui/cc-field";
+import { CcSelect } from "@/app/cc/_ui/cc-select";
 import { Panel } from "@/app/cc/_ui/panel";
 import { savePost } from "@/app/cc/(app)/_actions/save-post";
-import { isPlatformId } from "@/lib/cc/is-platform-id";
+import {
+  ScheduleClashWarning,
+  type ScheduleContext,
+} from "@/app/cc/(app)/calendar/schedule-clash-warning";
+import { SuggestSlotButton } from "@/app/cc/(app)/calendar/suggest-slot-button";
 import {
   type Platform,
   PLATFORM_IDS,
@@ -15,12 +20,6 @@ import {
   PLATFORMS,
 } from "@/lib/cc/platforms";
 import { sgtToUtc } from "@/lib/cc/sgt-to-utc";
-
-import {
-  ScheduleClashWarning,
-  type ScheduleContext,
-} from "./schedule-clash-warning";
-import { SuggestSlotButton } from "./suggest-slot-button";
 
 type SchedulePostFormProps = {
   campaignId: string;
@@ -48,14 +47,6 @@ export function SchedulePostForm(props: SchedulePostFormProps) {
   const [isPending, startTransition] = useTransition();
 
   const targetField: Platform["target"] = PLATFORMS[platformId].target;
-
-  function changePlatform(event: React.ChangeEvent<HTMLSelectElement>) {
-    if (isPlatformId(event.target.value)) setPlatformId(event.target.value);
-  }
-
-  function changeStatus(event: React.ChangeEvent<HTMLSelectElement>) {
-    setStatus(event.target.value === "draft" ? "draft" : "scheduled");
-  }
 
   function create(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -86,35 +77,31 @@ export function SchedulePostForm(props: SchedulePostFormProps) {
     <Panel
       title="SCHEDULE POST"
       aside="TIMES IN SGT"
-      className="flex-[1_1_360px]"
       bodyClassName="px-3 py-2.5"
     >
       <form id="schedule" onSubmit={create} className="flex flex-col gap-y-3.5">
         <div className="grid grid-cols-1 gap-x-3 gap-y-3.5 sm:grid-cols-2">
           <CcField label="PLATFORM" htmlFor="schedule-platform">
-            <select
+            <CcSelect
               id="schedule-platform"
-              className="cc-input"
               value={platformId}
-              onChange={changePlatform}
-            >
-              {PLATFORM_IDS.map((id) => (
-                <option key={id} value={id}>
-                  {PLATFORMS[id].label}
-                </option>
-              ))}
-            </select>
+              onChange={setPlatformId}
+              options={PLATFORM_IDS.map((id) => ({
+                value: id,
+                label: PLATFORMS[id].label,
+              }))}
+            />
           </CcField>
           <CcField label="SAVE AS" htmlFor="schedule-status">
-            <select
+            <CcSelect
               id="schedule-status"
-              className="cc-input"
               value={status}
-              onChange={changeStatus}
-            >
-              <option value="scheduled">Scheduled (reminders on)</option>
-              <option value="draft">Draft (no reminders)</option>
-            </select>
+              onChange={setStatus}
+              options={[
+                { value: "scheduled", label: "Scheduled (reminders on)" },
+                { value: "draft", label: "Draft (no reminders)" },
+              ]}
+            />
           </CcField>
         </div>
         {targetField !== undefined && (

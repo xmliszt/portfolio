@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
+import { ThemeControl } from "@/app/cc/_ui/theme-control";
 import { cn } from "@/lib/utils";
 
 import { signOut } from "./sign-out";
@@ -10,6 +11,7 @@ import { signOut } from "./sign-out";
 type SectionRailProps = {
   dueLogCount: number;
   telegramLinked: boolean;
+  settingsNeedAttention: boolean;
 };
 
 const SECTIONS = [
@@ -18,6 +20,8 @@ const SECTIONS = [
   { href: "/composer", label: "COMPOSER" },
   { href: "/log", label: "LOG NUMBERS" },
   { href: "/insights", label: "INSIGHTS" },
+  { href: "/new", label: "NEW" },
+  { href: "/settings", label: "SETTINGS" },
 ] as const;
 
 export function SectionRail(props: SectionRailProps) {
@@ -58,11 +62,18 @@ export function SectionRail(props: SectionRailProps) {
                   {props.dueLogCount}
                 </span>
               )}
+              {section.href === "/settings" && props.settingsNeedAttention && (
+                <span className="text-cc-warn ml-auto text-[10.5px]">
+                  <span aria-hidden>●</span>
+                  <span className="sr-only">Threads needs connecting</span>
+                </span>
+              )}
             </Link>
           );
         })}
       </div>
       <div className="text-muted-foreground flex flex-col gap-y-1 border-t px-2 pt-2 text-[10.5px] md:mt-auto">
+        <ThemeControl />
         <span>TZ ASIA/SINGAPORE</span>
         <span className="whitespace-nowrap">
           TELEGRAM{" "}

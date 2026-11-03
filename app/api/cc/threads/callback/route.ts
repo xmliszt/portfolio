@@ -59,7 +59,7 @@ export async function GET(request: NextRequest) {
     });
   if (error) throw error;
 
-  const response = NextResponse.redirect(`${CC_ORIGIN}/`);
+  const response = NextResponse.redirect(`${CC_ORIGIN}/settings`);
   response.cookies.delete({
     name: THREADS_STATE_COOKIE,
     path: "/api/cc/threads",

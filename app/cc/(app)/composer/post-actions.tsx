@@ -66,7 +66,7 @@ export function PostActions(props: PostActionsProps) {
       : `${formatSgt({ date: new Date(props.post.scheduled_at), pattern: "EEE dd MMM HH:mm" })} SGT`;
 
   return (
-    <div className="bg-card sticky bottom-0 z-20 flex flex-col gap-y-2 border-t px-3 py-2 shadow-[0_-8px_16px_rgb(0_0_0/0.35)]">
+    <div className="bg-card sticky bottom-0 z-20 flex flex-col gap-y-2 border-t px-3 py-2 shadow-[0_-8px_16px_hsl(var(--cc-shadow))]">
       <div className="flex flex-col gap-y-1.5">
         <div className="flex min-w-0 flex-wrap items-center gap-x-2 gap-y-1 text-[11px]">
           <span

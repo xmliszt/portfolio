@@ -6,9 +6,9 @@ import { useRouter } from "next/navigation";
 
 import { CcButton } from "@/app/cc/_ui/cc-button";
 import { CcField } from "@/app/cc/_ui/cc-field";
+import { CcSelect } from "@/app/cc/_ui/cc-select";
 import { forkPost } from "@/app/cc/(app)/_actions/fork-post";
 import type { PostRow } from "@/lib/cc/data/cc-rows";
-import { isPlatformId } from "@/lib/cc/is-platform-id";
 import { PLATFORM_IDS, type PlatformId, PLATFORMS } from "@/lib/cc/platforms";
 import { sgtToUtc } from "@/lib/cc/sgt-to-utc";
 
@@ -35,10 +35,6 @@ export function ForkPostControl(props: ForkPostControlProps) {
     props.post.kind === "repost" &&
     props.post.status !== "posted";
   const isRepost = isSamePlatform && props.post.status === "posted";
-
-  function changePlatform(event: React.ChangeEvent<HTMLSelectElement>) {
-    if (isPlatformId(event.target.value)) setPlatformId(event.target.value);
-  }
 
   function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -98,18 +94,15 @@ export function ForkPostControl(props: ForkPostControlProps) {
       </p>
       <div className="grid grid-cols-1 gap-x-2 gap-y-2">
         <CcField label="PLATFORM" htmlFor={`fork-platform-${props.post.id}`}>
-          <select
+          <CcSelect
             id={`fork-platform-${props.post.id}`}
-            className="cc-input"
             value={platformId}
-            onChange={changePlatform}
-          >
-            {PLATFORM_IDS.map((id) => (
-              <option key={id} value={id}>
-                {PLATFORMS[id].label}
-              </option>
-            ))}
-          </select>
+            onChange={setPlatformId}
+            options={PLATFORM_IDS.map((id) => ({
+              value: id,
+              label: PLATFORMS[id].label,
+            }))}
+          />
         </CcField>
         <CcField label="DATE (SGT)" htmlFor={`fork-date-${props.post.id}`}>
           <input

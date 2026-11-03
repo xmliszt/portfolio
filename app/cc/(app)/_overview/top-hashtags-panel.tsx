@@ -11,7 +11,6 @@ export function TopHashtagsPanel(props: TopHashtagsPanelProps) {
   return (
     <Panel
       title="TOP TAGS · VIEWS/POST"
-      className="flex-[1_1_280px]"
       bodyClassName="flex flex-col px-3 py-3"
     >
       {props.lifts.length === 0 ? (

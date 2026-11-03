@@ -1,7 +1,9 @@
 "use client";
 
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 
+import { CcSelect } from "@/app/cc/_ui/cc-select";
 import { type PlatformId, PLATFORMS } from "@/lib/cc/platforms";
 
 type HeatPickerProps = {
@@ -11,10 +13,17 @@ type HeatPickerProps = {
 
 export function HeatPicker(props: HeatPickerProps) {
   const router = useRouter();
+  const [value, setValue] = useState(props.selected);
+  const [lastSelected, setLastSelected] = useState(props.selected);
+  if (props.selected !== lastSelected) {
+    setLastSelected(props.selected);
+    setValue(props.selected);
+  }
 
-  function handleChange(event: React.ChangeEvent<HTMLSelectElement>) {
+  function handleChange(platformId: PlatformId) {
+    setValue(platformId);
     const href = props.hrefs.find(
-      (item) => item.platformId === event.target.value
+      (item) => item.platformId === platformId
     )?.href;
     if (href !== undefined) router.push(href);
   }
@@ -27,20 +36,17 @@ export function HeatPicker(props: HeatPickerProps) {
       >
         Heat overlay
       </label>
-      <select
+      <CcSelect
         id="heat-platform"
-        className="cc-input w-auto"
-        key={props.selected}
-        defaultValue={props.selected}
+        className="w-[160px]"
+        value={value}
         onChange={handleChange}
-        style={{ color: `hsl(var(${PLATFORMS[props.selected].colorVar}))` }}
-      >
-        {props.hrefs.map((item) => (
-          <option key={item.platformId} value={item.platformId}>
-            {PLATFORMS[item.platformId].label}
-          </option>
-        ))}
-      </select>
+        style={{ color: `hsl(var(${PLATFORMS[value].colorVar}))` }}
+        options={props.hrefs.map((item) => ({
+          value: item.platformId,
+          label: PLATFORMS[item.platformId].label,
+        }))}
+      />
     </div>
   );
 }

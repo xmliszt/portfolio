@@ -172,11 +172,10 @@ export default async function InsightsPage() {
         eyebrow={campaign.name.toUpperCase()}
         title={`Insights · ${postedCount} of ${posts.length} posted`}
       />
-      <div className="flex flex-wrap items-start gap-x-3 gap-y-3">
+      <div className="grid grid-cols-1 gap-x-3 gap-y-3 xl:grid-cols-[minmax(0,3fr)_minmax(0,2fr)]">
         <Panel
           title="Cumulative views"
           aside="by platform · SGT days"
-          className="flex-[3_1_620px]"
           bodyClassName="px-3 py-2.5"
         >
           {cumulative.dayEnds.length === 0 ? (
@@ -199,8 +198,6 @@ export default async function InsightsPage() {
           )}
         </Panel>
         <PlatformTable rows={tableRows} />
-      </div>
-      <div className="flex flex-wrap items-start gap-x-3 gap-y-3">
         <HashtagLiftPanel
           lifts={getHashtagLift({ posts, metrics })}
           plannedTags={plannedTags}
@@ -210,18 +207,16 @@ export default async function InsightsPage() {
           progress={heatProgress}
           minPosts={MIN_OWN_POSTS}
         />
-      </div>
-      <TargetTable
-        rows={getTargetStats({
-          posts: posts.map((post) => ({
-            ...post,
-            target:
-              postRows.find((row) => row.id === post.id)?.target ?? undefined,
-          })),
-          metrics,
-        })}
-      />
-      <div className="flex flex-wrap items-start gap-x-3 gap-y-3">
+        <TargetTable
+          rows={getTargetStats({
+            posts: posts.map((post) => ({
+              ...post,
+              target:
+                postRows.find((row) => row.id === post.id)?.target ?? undefined,
+            })),
+            metrics,
+          })}
+        />
         <AbPairsPanel pairs={pairs} />
         <LearningsPanel
           campaignId={campaign.id}

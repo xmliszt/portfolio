@@ -19,7 +19,6 @@ export function VoiceCheckPanel(props: VoiceCheckPanelProps) {
   return (
     <Panel
       title="VOICE CHECK · QUEUE"
-      className="flex-[1_1_280px]"
       bodyClassName="flex flex-col gap-y-2.5 px-3 py-2.5"
     >
       <div className="flex flex-wrap items-baseline gap-x-2.5">

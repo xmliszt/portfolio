@@ -44,7 +44,7 @@ export function PopoverMenu(props: PopoverMenuProps) {
     <details ref={detailsRef} className="group relative">
       <summary
         className={cn(
-          "inline-flex h-7 cursor-pointer list-none items-center gap-x-1.5 border px-2.5 text-[11px] font-semibold tracking-[0.04em] whitespace-nowrap select-none [&::-webkit-details-marker]:hidden",
+          "inline-flex h-7 list-none items-center gap-x-1.5 border px-2.5 text-[11px] font-semibold tracking-[0.04em] whitespace-nowrap select-none [&::-webkit-details-marker]:hidden",
           "focus-visible:outline-primary focus-visible:outline focus-visible:outline-1 focus-visible:outline-offset-1",
           "text-cc-text-2 hover:border-primary hover:text-foreground group-open:border-primary group-open:text-foreground"
         )}
@@ -56,7 +56,7 @@ export function PopoverMenu(props: PopoverMenuProps) {
       </summary>
       <div
         className={cn(
-          "bg-popover absolute bottom-[calc(100%+4px)] z-30 flex flex-col gap-y-2 border p-3 shadow-[0_8px_24px_rgb(0_0_0/0.5)]",
+          "bg-popover absolute bottom-[calc(100%+4px)] z-30 flex flex-col gap-y-2 border p-3 shadow-[0_8px_24px_hsl(var(--cc-shadow))]",
           props.align === "end" ? "right-0" : "left-0",
           props.widthClassName ?? "w-[300px]"
         )}

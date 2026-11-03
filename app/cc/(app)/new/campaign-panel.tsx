@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useTransition } from "react";
-import Link from "next/link";
 
 import { CcButton } from "@/app/cc/_ui/cc-button";
 import { CcField } from "@/app/cc/_ui/cc-field";
@@ -16,26 +15,18 @@ type CampaignPanelProps = {
   campaign: CampaignRow | undefined;
 };
 
-type Mode = "edit" | "new";
-
 export function CampaignPanel(props: CampaignPanelProps) {
-  const [mode, setMode] = useState<Mode>(
-    props.campaign === undefined ? "new" : "edit"
-  );
+  const [formKey, setFormKey] = useState(0);
   const [status, setStatus] = useState<
     { kind: "saved" | "error"; text: string } | undefined
   >(undefined);
   const [isPending, startTransition] = useTransition();
-  const campaign = mode === "edit" ? props.campaign : undefined;
+  const campaign = props.campaign;
+  const isNew = campaign === undefined;
   const startsAt =
     campaign?.starts_at === null || campaign?.starts_at === undefined
       ? undefined
       : new Date(campaign.starts_at);
-
-  function toggleMode() {
-    setStatus(undefined);
-    setMode(mode === "new" ? "edit" : "new");
-  }
 
   function submit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -58,8 +49,11 @@ export function CampaignPanel(props: CampaignPanelProps) {
                 : sgtToUtc({ date, time: "00:00" }).toISOString(),
           },
         });
-        setMode("edit");
-        setStatus({ kind: "saved", text: "Saved ✓" });
+        if (isNew) setFormKey(formKey + 1);
+        setStatus({
+          kind: "saved",
+          text: isNew ? "Created ✓ · now the current campaign" : "Saved ✓",
+        });
       } catch {
         setStatus({ kind: "error", text: "Could not save. Try again." });
       }
@@ -68,13 +62,12 @@ export function CampaignPanel(props: CampaignPanelProps) {
 
   return (
     <Panel
-      title={mode === "new" ? "New campaign" : "Campaign"}
+      title={isNew ? "New campaign" : "Current campaign"}
       aside="The newest start date is the one every screen shows"
-      className="flex-[1_1_100%]"
       bodyClassName="px-3 py-2.5"
     >
       <form
-        key={`${mode}-${campaign?.id ?? "new"}`}
+        key={`${campaign?.id ?? "new"}-${formKey}`}
         onSubmit={submit}
         className="flex flex-col gap-y-3"
       >
@@ -107,7 +100,7 @@ export function CampaignPanel(props: CampaignPanelProps) {
                 id="campaign-date"
                 name="date"
                 type="date"
-                required={mode === "new"}
+                required={isNew}
                 defaultValue={
                   startsAt === undefined
                     ? ""
@@ -132,19 +125,8 @@ export function CampaignPanel(props: CampaignPanelProps) {
         </CcField>
         <div className="flex flex-wrap items-center gap-x-3 gap-y-2">
           <CcButton type="submit" variant="primary" disabled={isPending}>
-            {mode === "new" ? "CREATE CAMPAIGN" : "SAVE CAMPAIGN"}
+            {isNew ? "CREATE CAMPAIGN" : "SAVE CAMPAIGN"}
           </CcButton>
-          {props.campaign !== undefined && (
-            <CcButton type="button" onClick={toggleMode}>
-              {mode === "new" ? "CANCEL" : "+ NEW CAMPAIGN"}
-            </CcButton>
-          )}
-          <Link
-            href="/campaigns/new"
-            className="hover:border-primary hover:text-primary flex min-h-7 items-center border px-3 text-[12px] font-bold tracking-[0.04em]"
-          >
-            SMART CAMPAIGN
-          </Link>
           {status !== undefined && (
             <span
               role="status"

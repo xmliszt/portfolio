@@ -80,7 +80,7 @@ export function PreflightPanel(props: PreflightPanelProps) {
               const isTicked = tickedIds.includes(check.id);
               return (
                 <li key={check.id} className="border-cc-line-soft border-b">
-                  <label className="grid min-h-7 cursor-pointer grid-cols-[22px_minmax(0,1fr)] gap-x-2.5 px-3 py-2.5">
+                  <label className="grid min-h-7 grid-cols-[22px_minmax(0,1fr)] gap-x-2.5 px-3 py-2.5">
                     <input
                       type="checkbox"
                       checked={isTicked}

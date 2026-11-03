@@ -21,9 +21,9 @@ export function RunSheetPanel(props: RunSheetPanelProps) {
     >
       {props.items.length === 0 ? (
         <p className="text-muted-foreground px-3 py-3 text-[11px]">
-          Nothing scheduled. Add a post in the{" "}
-          <Link href="/calendar" className="text-primary">
-            calendar
+          Nothing scheduled. Add a post in{" "}
+          <Link href="/new#schedule" className="text-primary">
+            New
           </Link>
           .
         </p>

@@ -12,7 +12,7 @@ export function TargetTable(props: TargetTableProps) {
     <Panel
       title="By subreddit, topic or community"
       aside="posted only"
-      className="flex-[2_1_420px]"
+      className="xl:col-span-2"
       footer="Set the subreddit, Threads topic or community in the Composer. Median and best: +24 h views."
     >
       {props.rows.length === 0 ? (
