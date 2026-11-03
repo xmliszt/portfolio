@@ -2146,17 +2146,20 @@ export function createAutumnPlanet(container, options = {}) {
     restKind: "loaf",
   };
   const INVITE_DUR = { bow: 1.3, flop: 2.8, crab: 2.4 };
+  const _rubF = new THREE.Vector3(),
+    _rubS = new THREE.Vector3();
   function setMode(mode, dur) {
     play.mode = mode;
     play.t = 0;
     play.dur = dur;
+    play.tagAt = 0;
   }
   function startChase(runner) {
     play.runner = cats.indexOf(runner);
     runner.burst = rand(1.05, 1.3);
     runner.burstT = rand(1.2, 2);
     runner.wanderH = runner.gazeAngle + Math.PI;
-    setMode("chase", rand(6, 10));
+    setMode("chase", rand(9, 15));
   }
   function startPounce(att, def, dist) {
     const flight = 0.45;
@@ -2204,19 +2207,50 @@ export function createAutumnPlanet(container, options = {}) {
           }
         A.target.tilt = 0.2;
         if (dist > 0.66) play.t = Math.min(play.t, 0.01);
-        if (play.t > play.dur) setMode("rub", 1.8);
+        if (play.t > play.dur) {
+          if (Math.random() < 0.35) setMode("rub", 4);
+          else {
+            const next = pick(["bow", "bow", "crab", "flop"]);
+            setMode(next, INVITE_DUR[next]);
+          }
+        }
         break;
       }
       case "rub": {
-        for (const c of [A, B]) {
-          c.wantHeading = c.gazeAngle + 0.6;
-          c.wantSpeed = 0.16;
-          c.target.tailUp = 1;
-          c.target.happy = 1;
-          c.target.tilt = 0.3;
-          c.target.headYaw = clamp(wrap(c.gazeAngle - c.heading), -1.3, 1.3);
+        // A stands still; B walks along A's side from head to tail, brushing past it
+        if (first) {
+          const F = A.frame;
+          _rubF
+            .set(0, 0, 0)
+            .addScaledVector(F.ex, Math.sin(A.bodyYaw))
+            .addScaledVector(F.ez, Math.cos(A.bodyYaw));
+          _rubS.crossVectors(F.up, _rubF);
+          if (_rubS.dot(_b.subVectors(_wb, _wa)) < 0) _rubS.negate();
+          play.rubPath = [
+            _wa
+              .clone()
+              .addScaledVector(_rubS, 0.19)
+              .addScaledVector(_rubF, 0.22),
+            _wa
+              .clone()
+              .addScaledVector(_rubS, 0.17)
+              .addScaledVector(_rubF, -0.55),
+          ];
         }
-        if (play.t > play.dur) {
+        let toEnd = centerWorld(B, _wd).distanceTo(play.rubPath[0]);
+        if (toEnd < 0.1 && play.rubPath.length > 1) {
+          play.rubPath.shift();
+          toEnd = _wd.distanceTo(play.rubPath[0]);
+        }
+        B.wantHeading = angleTo(B, play.rubPath[0]);
+        B.wantSpeed = toEnd > 0.08 ? 0.18 : 0;
+        B.target.tailUp = 1;
+        B.target.happy = 1;
+        B.target.headYaw = 0;
+        A.target.tailUp = 1;
+        A.target.happy = 1;
+        A.target.tilt = 0.25;
+        if ((play.rubPath.length === 1 && toEnd <= 0.08) || play.t > play.dur) {
           const next = pick(["bow", "flop", "crab"]);
           setMode(next, INVITE_DUR[next]);
         }
@@ -2273,12 +2307,12 @@ export function createAutumnPlanet(container, options = {}) {
         A.burstT -= dt;
         if (A.burstT <= 0) {
           const r = Math.random();
-          if (r < 0.6) {
+          if (r < 0.75) {
             A.burst = rand(1.0, 1.35);
-            A.burstT = rand(1.0, 2.2);
-          } else if (r < 0.85) {
+            A.burstT = rand(1.2, 2.6);
+          } else if (r < 0.92) {
             A.burst = 0.35;
-            A.burstT = rand(0.5, 1.0);
+            A.burstT = rand(0.4, 0.8);
           } else {
             A.burst = 0;
             A.burstT = rand(0.4, 0.7);
@@ -2297,10 +2331,9 @@ export function createAutumnPlanet(container, options = {}) {
         B.target.tailUp = 0.5;
         if (waiting) B.target.crouch = 0.5;
         // tag: the chaser catches the runner mid-sprint and the roles swap
-        if (dist < 0.5 && A.burst > 0.5 && play.t > 1.5) {
+        if (dist < 0.5 && A.burst > 0.5 && play.t - (play.tagAt ?? 0) > 1.5) {
+          play.tagAt = play.t;
           play.runner = 1 - play.runner;
-          play.t = 0;
-          play.dur = rand(3, 5);
           B.burst = rand(1.05, 1.3);
           B.burstT = rand(1, 1.8);
           B.wanderH = B.gazeAngle + Math.PI;
@@ -2364,11 +2397,11 @@ export function createAutumnPlanet(container, options = {}) {
         }
         if (play.t > play.dur) {
           const r = Math.random();
-          if (r < 0.45) {
+          if (r < 0.25) {
             play.loser = pick([A, B]);
             setMode("tumble", 1.6);
-          } else if (r < 0.75) startChase(pick([A, B]));
-          else setMode("rest", rand(6, 9));
+          } else if (r < 0.85) startChase(pick([A, B]));
+          else setMode("rest", rand(4, 6));
         }
         break;
       }

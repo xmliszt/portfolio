@@ -61,9 +61,9 @@ export default function Page() {
       <GaitDemo />
       <p className="w-full text-left">
         <strong>Tail.</strong> Twelve springy joints form the tail, firmer at
-        the base. The cat’s mood sets the shape it holds: a question mark
-        when happy, low and twitching while stalking, or wrapped around the body
-        when resting. Turns send ripples to the tip, and the wind moves it too.
+        the base. The cat’s mood sets the shape it holds: a question mark when
+        happy, low and twitching while stalking, or wrapped around the body when
+        resting. Turns send ripples to the tip, and the wind moves it too.
       </p>
       <p className="w-full text-left">
         <strong>Face.</strong> Each eye is one rounded shape that changes
