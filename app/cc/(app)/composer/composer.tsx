@@ -175,6 +175,7 @@ export function Composer(props: ComposerProps) {
           planned={
             props.post.variant !== "chatgpt" && props.post.kind === "post"
           }
+          scheduledAt={props.post.scheduled_at ?? undefined}
           draft={draft}
           copyText={copyText}
           onChange={(next) =>
