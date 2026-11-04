@@ -49,8 +49,7 @@ const POST_TYPE_LABELS: { [type in PostType]: string } = {
 
 const ORIGINAL_HINTS: { [platform in AutoPublishPlatformId]: string } = {
   x: "The post's x.com link.",
-  threads:
-    "A link to one of your last 50 threads, or the Threads media id of any post.",
+  threads: "A link to one of your last 50 threads.",
   bluesky: "The post's bsky.app link.",
 };
 
