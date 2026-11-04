@@ -70,11 +70,12 @@ export default function Page() {
         length, width and angle to blink, squint, focus or look surprised.
       </p>
       <p className="w-full text-left">
-        <strong>Behavior.</strong> The cats cycle through thirteen behaviors:
-        sniffing noses, rubbing past each other, bowing to play, flopping over,
-        hopping sideways, playing tag, stalking, ambushing, pouncing, boxing on
-        their hind legs, grooming, napping and stretching. Trees, hay bales and
-        the barn are solid, so the cats steer around them.
+        <strong>Behavior.</strong> The cats cycle through twelve behaviors:
+        sniffing noses, bowing to play, flopping over, hopping sideways, playing
+        tag, stalking, ambushing, pouncing, boxing on their hind legs, grooming,
+        napping and stretching. They walk back together before most of them, and
+        only pounce from close by. Trees, hay bales and the barn are solid, so
+        the cats steer around them.
       </p>
 
       <Ratings id="autumn-planet" />
