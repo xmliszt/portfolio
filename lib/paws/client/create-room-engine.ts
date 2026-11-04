@@ -155,7 +155,8 @@ export function createRoomEngine(options: { random: () => number }) {
     hasSyncedPresence: boolean;
     enteredAtMs: number | undefined;
     guestHost: { connectionId: string; heardAtMs: number } | undefined;
-    heardPlayerHostId: string | undefined;
+    heardPlayerHost: { connectionId: string; heardAtMs: number } | undefined;
+    candidateSinceMs: number | undefined;
     time: number;
   } = {
     players: [],
@@ -189,7 +190,8 @@ export function createRoomEngine(options: { random: () => number }) {
     hasSyncedPresence: false,
     enteredAtMs: undefined,
     guestHost: undefined,
-    heardPlayerHostId: undefined,
+    heardPlayerHost: undefined,
+    candidateSinceMs: undefined,
     time: 0,
   };
   const legPlayer = createLegPlayer({ random: options.random });
@@ -230,6 +232,18 @@ export function createRoomEngine(options: { random: () => number }) {
             }),
       trails,
     });
+  }
+
+  function isHeard(options: {
+    host: { connectionId: string; heardAtMs: number } | undefined;
+    connectionId: string | undefined;
+    nowMs: number;
+  }) {
+    return (
+      options.connectionId !== undefined &&
+      options.host?.connectionId === options.connectionId &&
+      options.nowMs - options.host.heardAtMs <= SILENT_HOST_MS
+    );
   }
 
   function addPrint(event: RoomEvent) {
@@ -371,7 +385,8 @@ export function createRoomEngine(options: { random: () => number }) {
       ) {
         state.enteredAtMs = undefined;
         state.guestHost = undefined;
-        state.heardPlayerHostId = undefined;
+        state.heardPlayerHost = undefined;
+        state.candidateSinceMs = undefined;
       }
       state.selfId = self.userId;
       state.selfConnectionId = self.connectionId;
@@ -441,12 +456,17 @@ export function createRoomEngine(options: { random: () => number }) {
       if (hostId === self) return;
       if (state.players.some((player) => player.connectionId === hostId)) {
         if (hostId !== playerHostId) return;
-        state.heardPlayerHostId = hostId;
+        state.heardPlayerHost = {
+          connectionId: hostId,
+          heardAtMs: options.receivedAtMs,
+        };
       } else {
         const guestHost = state.guestHost;
-        const isPlayerHostHeard =
-          playerHostId !== undefined &&
-          state.heardPlayerHostId === playerHostId;
+        const isPlayerHostHeard = isHeard({
+          host: state.heardPlayerHost,
+          connectionId: playerHostId,
+          nowMs: options.receivedAtMs,
+        });
         const outranksSender =
           state.world !== undefined &&
           (state.role === "player" || (self !== undefined && self < hostId));
@@ -491,25 +511,35 @@ export function createRoomEngine(options: { random: () => number }) {
       const playerHostId = chooseHost(state.players);
       if (state.hasSyncedPresence) state.enteredAtMs ??= nowMs;
       const hasFreshCats = nowMs - state.lastCatsReceivedAtMs <= SILENT_HOST_MS;
-      const canStart =
-        state.world !== undefined ||
-        hasFreshCats ||
-        (state.enteredAtMs !== undefined &&
-          nowMs - state.enteredAtMs >= LISTEN_MS);
       const guestHostId =
         state.guestHost !== undefined &&
         nowMs - state.guestHost.heardAtMs <= SILENT_HOST_MS
           ? state.guestHost.connectionId
           : undefined;
-      const isPlayerHostHeard =
-        playerHostId !== undefined && state.heardPlayerHostId === playerHostId;
-      const isHost =
+      const isPlayerHostHeard = isHeard({
+        host: state.heardPlayerHost,
+        connectionId: playerHostId,
+        nowMs,
+      });
+      const isCandidate =
         self !== undefined &&
-        canStart &&
         (state.role === "player"
           ? playerHostId === self
           : !isPlayerHostHeard &&
             (guestHostId === undefined || self < guestHostId));
+      state.candidateSinceMs = isCandidate
+        ? (state.candidateSinceMs ?? nowMs)
+        : undefined;
+      const listenedSinceMs =
+        state.enteredAtMs === undefined || state.candidateSinceMs === undefined
+          ? undefined
+          : Math.max(state.enteredAtMs, state.candidateSinceMs);
+      const isHost =
+        isCandidate &&
+        (state.world !== undefined ||
+          hasFreshCats ||
+          (listenedSinceMs !== undefined &&
+            nowMs - listenedSinceMs >= LISTEN_MS));
       const hostId = isHost
         ? self
         : isPlayerHostHeard
