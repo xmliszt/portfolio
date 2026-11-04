@@ -275,6 +275,16 @@ export const es = {
     privacy: "Privacidad",
     terms: "Términos",
   },
+  deleteData: {
+    open: "Borrar mis datos",
+    title: "Borrar mis datos",
+    body: "Esto borra tu cuenta, tu correo y tu gato de Paws. Seguirás en la sala como invitado. No se puede deshacer.",
+    keep: "Conservar mis datos",
+    confirm: "Borrar todo",
+    deleting: "Borrando…",
+    failed: "No se pudieron borrar tus datos. Inténtalo de nuevo.",
+    done: "Tus datos se han borrado. Ahora eres invitado.",
+  },
   note: {
     open: "Unas palabras de quien creó Paws",
     title: "Unas palabras de quien creó Paws",

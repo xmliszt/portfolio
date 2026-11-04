@@ -278,6 +278,16 @@ export const tr = {
     privacy: "Gizlilik",
     terms: "Koşullar",
   },
+  deleteData: {
+    open: "Verilerimi sil",
+    title: "Verilerimi sil",
+    body: "Bu, hesabını, e-posta adresini ve kedini Paws'tan siler. Odada misafir olarak kalırsın. Bu geri alınamaz.",
+    keep: "Verilerimi tut",
+    confirm: "Hepsini sil",
+    deleting: "Siliniyor…",
+    failed: "Verilerin silinemedi. Tekrar dene.",
+    done: "Verilerin silindi. Artık misafirsin.",
+  },
   note: {
     open: "Yaratıcısından birkaç söz",
     title: "Yaratıcısından birkaç söz",

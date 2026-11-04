@@ -279,6 +279,16 @@ export const id = {
     privacy: "Privasi",
     terms: "Ketentuan",
   },
+  deleteData: {
+    open: "Hapus dataku",
+    title: "Hapus dataku",
+    body: "Ini menghapus akunmu, alamat emailmu, dan kucingmu dari Paws. Kamu tetap di ruangan sebagai tamu. Ini tidak bisa dibatalkan.",
+    keep: "Simpan dataku",
+    confirm: "Hapus semua",
+    deleting: "Menghapus…",
+    failed: "Datamu tidak bisa dihapus. Coba lagi.",
+    done: "Datamu sudah dihapus. Sekarang kamu tamu.",
+  },
   note: {
     open: "Sepatah kata dari pembuatnya",
     title: "Sepatah kata dari pembuatnya",

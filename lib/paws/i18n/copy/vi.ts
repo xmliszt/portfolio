@@ -273,6 +273,16 @@ export const vi = {
     privacy: "Quyền riêng tư",
     terms: "Điều khoản",
   },
+  deleteData: {
+    open: "Xóa dữ liệu của tôi",
+    title: "Xóa dữ liệu của tôi",
+    body: "Thao tác này xóa tài khoản, địa chỉ email và chú mèo của bạn khỏi Paws. Bạn vẫn ở trong phòng với tư cách khách. Không thể hoàn tác.",
+    keep: "Giữ dữ liệu",
+    confirm: "Xóa tất cả",
+    deleting: "Đang xóa…",
+    failed: "Không xóa được dữ liệu. Hãy thử lại.",
+    done: "Dữ liệu của bạn đã được xóa. Giờ bạn là khách.",
+  },
   note: {
     open: "Đôi lời từ người làm ra Paws",
     title: "Đôi lời từ người làm ra Paws",

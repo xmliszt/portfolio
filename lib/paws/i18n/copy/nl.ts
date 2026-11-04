@@ -276,6 +276,16 @@ export const nl = {
     privacy: "Privacy",
     terms: "Voorwaarden",
   },
+  deleteData: {
+    open: "Mijn gegevens verwijderen",
+    title: "Mijn gegevens verwijderen",
+    body: "Hiermee worden je account, je e-mailadres en je kat uit Paws verwijderd. Je blijft als gast in de kamer. Dit kan niet ongedaan worden gemaakt.",
+    keep: "Gegevens houden",
+    confirm: "Alles verwijderen",
+    deleting: "Verwijderen…",
+    failed: "Je gegevens konden niet worden verwijderd. Probeer het opnieuw.",
+    done: "Je gegevens zijn verwijderd. Je bent nu gast.",
+  },
   note: {
     open: "Een woordje van de maker",
     title: "Een woordje van de maker",

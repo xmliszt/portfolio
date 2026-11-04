@@ -277,6 +277,16 @@ export const it = {
     privacy: "Privacy",
     terms: "Termini",
   },
+  deleteData: {
+    open: "Elimina i miei dati",
+    title: "Elimina i miei dati",
+    body: "Questo elimina il tuo account, il tuo indirizzo email e il tuo gatto da Paws. Resterai nella stanza come ospite. Non si può annullare.",
+    keep: "Tieni i miei dati",
+    confirm: "Elimina tutto",
+    deleting: "Eliminazione…",
+    failed: "Non è stato possibile eliminare i tuoi dati. Riprova.",
+    done: "I tuoi dati sono stati eliminati. Ora sei un ospite.",
+  },
   note: {
     open: "Due parole da parte mia",
     title: "Due parole da parte mia",

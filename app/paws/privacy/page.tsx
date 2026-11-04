@@ -171,12 +171,19 @@ export default function PawsPrivacyPage() {
 
       <PawsLegalSection heading="keeping and deleting">
         <p>
-          Your account and your cat are kept until you ask me to delete them.
-          Email{" "}
+          Your account and your cat are kept until you delete them. When you are
+          signed in, open the menu and pick <strong>Delete my data</strong>.
+          This deletes your account, your email address, your cat and your room
+          records right away, and you stay in the room as a guest. It cannot be
+          undone.
+        </p>
+        <p>
+          You can also email{" "}
           <a href={`mailto:${LEGAL_CONTACT_EMAIL}`}>{LEGAL_CONTACT_EMAIL}</a>{" "}
           from the address you sign in with to ask what is stored about you, or
-          to have your account deleted. Deleting your account also deletes your
-          cat and your room records.
+          to have your account deleted. Supabase&apos;s sign-in logs, which
+          include IP addresses, are kept by Supabase for a short time and are
+          not deleted with your account.
         </p>
       </PawsLegalSection>
 

@@ -281,6 +281,17 @@ export const de = {
     privacy: "Datenschutz",
     terms: "Nutzungsbedingungen",
   },
+  deleteData: {
+    open: "Meine Daten löschen",
+    title: "Meine Daten löschen",
+    body: "Damit werden dein Konto, deine E-Mail-Adresse und deine Katze aus Paws gelöscht. Du bleibst als Gast im Raum. Das lässt sich nicht rückgängig machen.",
+    keep: "Daten behalten",
+    confirm: "Alles löschen",
+    deleting: "Wird gelöscht…",
+    failed:
+      "Deine Daten konnten nicht gelöscht werden. Versuch es noch einmal.",
+    done: "Deine Daten sind gelöscht. Du bist jetzt Gast.",
+  },
   note: {
     open: "Ein paar Worte von mir",
     title: "Ein paar Worte von mir",

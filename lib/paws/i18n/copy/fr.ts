@@ -277,6 +277,16 @@ export const fr = {
     privacy: "Confidentialité",
     terms: "Conditions",
   },
+  deleteData: {
+    open: "Supprimer mes données",
+    title: "Supprimer mes données",
+    body: "Cela supprime ton compte, ton adresse e-mail et ton chat de Paws. Tu restes dans la pièce en tant qu'invité. C'est définitif.",
+    keep: "Garder mes données",
+    confirm: "Tout supprimer",
+    deleting: "Suppression…",
+    failed: "Impossible de supprimer tes données. Réessaie.",
+    done: "Tes données sont supprimées. Tu es maintenant invité.",
+  },
   note: {
     open: "Un petit mot de ma part",
     title: "Un petit mot de ma part",
