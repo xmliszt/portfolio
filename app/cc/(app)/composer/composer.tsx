@@ -68,6 +68,9 @@ export function Composer(props: ComposerProps) {
   );
   const hasTitle =
     platform.titleLimit !== undefined && draft.title.trim() !== "";
+  const hasOriginal =
+    props.post.campaign_id === null &&
+    (props.post.kind === "reply" || props.post.kind === "repost");
   const voiceText = hasTitle
     ? `${draft.title.trim()}\n\n${copyText}`
     : copyText;
@@ -79,6 +82,10 @@ export function Composer(props: ComposerProps) {
   function save() {
     if (!isDirty || isSaving) return;
     const snapshot = drafts;
+    if (hasOriginal && draft.originalRef.trim() === "") {
+      setSaveError("Paste the original post's link or id first.");
+      return;
+    }
     setSaveError(undefined);
     startSaving(async () => {
       try {
@@ -177,6 +184,7 @@ export function Composer(props: ComposerProps) {
             props.post.kind === "post" &&
             props.post.campaign_id !== null
           }
+          hasOriginal={hasOriginal}
           scheduledAt={props.post.scheduled_at ?? undefined}
           draft={draft}
           copyText={copyText}
@@ -228,6 +236,7 @@ export function Composer(props: ComposerProps) {
           copyText={copyText}
           link={draft.link}
           target={draft.target}
+          originalRef={draft.originalRef}
           assets={draft.assets}
           dirty={isDirty}
           saving={isSaving}

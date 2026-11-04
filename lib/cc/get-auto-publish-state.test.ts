@@ -7,6 +7,7 @@ const now = new Date("2026-11-03T14:00:00.000Z");
 
 function buildPost(options: {
   kind?: string;
+  originalRef?: string;
   status?: string;
   scheduledAt: string | null;
   postedAt?: string;
@@ -15,6 +16,7 @@ function buildPost(options: {
 }) {
   return {
     kind: options.kind ?? "post",
+    original_ref: options.originalRef ?? null,
     status: options.status ?? "scheduled",
     scheduled_at: options.scheduledAt,
     posted_at: options.postedAt ?? null,
@@ -113,6 +115,39 @@ test("a reply under a parent whose auto-post failed or was turned off is missed"
         scheduledAt: "2026-11-03T13:50:00.000Z",
         autoPublish: false,
       }),
+      now,
+    }).kind,
+    "missed"
+  );
+});
+
+test("a reply to an outside post is timed like a post, with no parent", () => {
+  const reply = (scheduledAt: string) =>
+    buildPost({
+      kind: "reply",
+      originalRef: "https://x.com/someone/status/1",
+      scheduledAt,
+    });
+  assert.equal(
+    getAutoPublishState({
+      candidate: reply("2026-11-03T13:50:00.000Z"),
+      parent: undefined,
+      now,
+    }).kind,
+    "due"
+  );
+  assert.equal(
+    getAutoPublishState({
+      candidate: reply("2026-11-03T14:10:00.000Z"),
+      parent: undefined,
+      now,
+    }).kind,
+    "wait"
+  );
+  assert.equal(
+    getAutoPublishState({
+      candidate: reply("2026-11-03T13:00:00.000Z"),
+      parent: undefined,
       now,
     }).kind,
     "missed"

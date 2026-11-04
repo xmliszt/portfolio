@@ -21,7 +21,9 @@ export function AutoPublishControl(props: AutoPublishControlProps) {
   const [isPending, startTransition] = useTransition();
   const label = PLATFORMS[props.platformId].label;
   const post = props.post;
-  const isReply = post.kind === "reply" || post.kind === "comment";
+  const isReply =
+    (post.kind === "reply" || post.kind === "comment") &&
+    post.original_ref === null;
 
   function handleToggle(isOn: boolean) {
     setMessage(undefined);

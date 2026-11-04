@@ -8,6 +8,7 @@ export function buildPostRow(options: Partial<PostRow>): PostRow {
     platform: "x",
     kind: "post",
     parent_post_id: null,
+    original_ref: null,
     target: null,
     scheduled_at: "2026-11-02T13:00:00.000Z",
     scheduled_by: "user",

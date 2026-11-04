@@ -82,3 +82,14 @@ test("opens the platform's composer for the rest", () => {
     url: "https://www.producthunt.com/posts/new",
   });
 });
+
+test("opens the original post to answer when there is one", () => {
+  assert.deepEqual(
+    buildComposeUrl({
+      platformId: "x",
+      body: "a b",
+      originalUrl: "https://x.com/someone/status/1",
+    }),
+    { kind: "copy-then-open", url: "https://x.com/someone/status/1" }
+  );
+});

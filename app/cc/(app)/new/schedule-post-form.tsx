@@ -13,13 +13,17 @@ import {
   type ScheduleContext,
 } from "@/app/cc/(app)/calendar/schedule-clash-warning";
 import { SuggestSlotButton } from "@/app/cc/(app)/calendar/suggest-slot-button";
+import type { AutoPublishPlatformId } from "@/lib/cc/auto-publish-platforms";
+import { isAutoPublishPlatform } from "@/lib/cc/is-auto-publish-platform";
 import {
   type Platform,
   PLATFORM_IDS,
   type PlatformId,
   PLATFORMS,
 } from "@/lib/cc/platforms";
+import { POST_TYPES, type PostType } from "@/lib/cc/post-types";
 import { sgtToUtc } from "@/lib/cc/sgt-to-utc";
+import { toPostKind } from "@/lib/cc/to-post-kind";
 import { cn } from "@/lib/utils";
 
 type SchedulePostFormProps = {
@@ -36,6 +40,19 @@ type Result =
 
 type Owner = "campaign" | "custom";
 
+const POST_TYPE_LABELS: { [type in PostType]: string } = {
+  post: "New post",
+  reply: "Reply to a post",
+  quote: "Quote a post",
+  repost: "Repost (no text)",
+};
+
+const ORIGINAL_HINTS: { [platform in AutoPublishPlatformId]: string } = {
+  x: "The post's x.com link.",
+  threads: "A link to one of your last 50 threads.",
+  bluesky: "The post's bsky.app link.",
+};
+
 export function SchedulePostForm(props: SchedulePostFormProps) {
   const [owner, setOwner] = useState<Owner>(
     props.campaign === undefined ? "custom" : "campaign"
@@ -46,6 +63,8 @@ export function SchedulePostForm(props: SchedulePostFormProps) {
     props.defaultPlatformId
   );
   const [target, setTarget] = useState("");
+  const [postType, setPostType] = useState<PostType>("post");
+  const [originalRef, setOriginalRef] = useState("");
   const [title, setTitle] = useState("");
   const [date, setDate] = useState(props.defaultDate);
   const [time, setTime] = useState("21:00");
@@ -53,7 +72,15 @@ export function SchedulePostForm(props: SchedulePostFormProps) {
   const [result, setResult] = useState<Result>({ kind: "idle" });
   const [isPending, startTransition] = useTransition();
 
-  const targetField: Platform["target"] = PLATFORMS[platformId].target;
+  const autoPlatformId = isAutoPublishPlatform(platformId)
+    ? platformId
+    : undefined;
+  const type =
+    owner === "custom" && autoPlatformId !== undefined ? postType : "post";
+  const targetField: Platform["target"] =
+    type === "reply" || type === "repost"
+      ? undefined
+      : PLATFORMS[platformId].target;
 
   function create(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -65,11 +92,19 @@ export function SchedulePostForm(props: SchedulePostFormProps) {
           setResult({ kind: "failed", message: "Name the project first." });
           return;
         }
+        if (type !== "post" && originalRef.trim() === "") {
+          setResult({
+            kind: "failed",
+            message: "Paste the original post's link first.",
+          });
+          return;
+        }
         const post = await savePost({
           campaignId: isCustom ? undefined : props.campaign?.id,
           fields: {
             platform: platformId,
-            kind: "post",
+            ...toPostKind(type),
+            original_ref: type === "post" ? null : originalRef.trim(),
             target: targetField === undefined ? null : target.trim() || null,
             title: title.trim() || null,
             scheduled_at: sgtToUtc({ date, time }).toISOString(),
@@ -82,6 +117,7 @@ export function SchedulePostForm(props: SchedulePostFormProps) {
         });
         setResult({ kind: "created", postId: post.id, status });
         setTitle("");
+        setOriginalRef("");
       } catch {
         setResult({ kind: "failed", message: "Could not save. Try again." });
       }
@@ -113,7 +149,10 @@ export function SchedulePostForm(props: SchedulePostFormProps) {
                 type="button"
                 aria-pressed={owner === option}
                 disabled={option === "campaign" && props.campaign === undefined}
-                onClick={() => setOwner(option)}
+                onClick={() => {
+                  setOwner(option);
+                  setResult({ kind: "idle" });
+                }}
                 className={cn(
                   "flex h-7 min-w-0 items-center justify-center gap-x-1.5 px-2 text-[11px] font-semibold tracking-[0.04em] not-first:border-l disabled:opacity-50",
                   owner === option
@@ -171,7 +210,10 @@ export function SchedulePostForm(props: SchedulePostFormProps) {
             <CcSelect
               id="schedule-platform"
               value={platformId}
-              onChange={setPlatformId}
+              onChange={(next) => {
+                setPlatformId(next);
+                setResult({ kind: "idle" });
+              }}
               options={PLATFORM_IDS.map((id) => ({
                 value: id,
                 label: PLATFORMS[id].label,
@@ -199,6 +241,39 @@ export function SchedulePostForm(props: SchedulePostFormProps) {
             />
           </CcField>
         </div>
+        {owner === "custom" && autoPlatformId !== undefined && (
+          <div className="grid grid-cols-1 gap-x-3 gap-y-3.5 sm:grid-cols-2">
+            <CcField label="TYPE" htmlFor="schedule-type">
+              <CcSelect
+                id="schedule-type"
+                value={postType}
+                onChange={(next) => {
+                  setPostType(next);
+                  setResult({ kind: "idle" });
+                }}
+                options={POST_TYPES.map((value) => ({
+                  value,
+                  label: POST_TYPE_LABELS[value],
+                }))}
+              />
+            </CcField>
+            {type !== "post" && (
+              <CcField label="ORIGINAL POST" htmlFor="schedule-original">
+                <input
+                  id="schedule-original"
+                  required
+                  className="cc-input"
+                  placeholder="https://… or post id"
+                  value={originalRef}
+                  onChange={(event) => setOriginalRef(event.target.value)}
+                />
+                <span className="text-muted-foreground text-[11px]">
+                  {ORIGINAL_HINTS[autoPlatformId]}
+                </span>
+              </CcField>
+            )}
+          </div>
+        )}
         {targetField !== undefined && (
           <CcField label={targetField.label} htmlFor="schedule-target">
             <input
@@ -217,7 +292,10 @@ export function SchedulePostForm(props: SchedulePostFormProps) {
             className="cc-input"
             placeholder="What this post is"
             value={title}
-            onChange={(event) => setTitle(event.target.value)}
+            onChange={(event) => {
+              setTitle(event.target.value);
+              setResult({ kind: "idle" });
+            }}
           />
         </CcField>
         <div className="grid grid-cols-1 gap-x-3 gap-y-3.5 sm:grid-cols-2">

@@ -16,6 +16,7 @@ type PostFieldsEditorProps = {
   postId: string;
   platformId: PlatformId;
   planned: boolean;
+  hasOriginal: boolean;
   scheduledAt: string | undefined;
   draft: DraftFields;
   copyText: string;
@@ -115,6 +116,20 @@ export function PostFieldsEditor(props: PostFieldsEditorProps) {
           </CcField>
         </div>
       </div>
+      {props.hasOriginal && (
+        <CcField
+          label="ORIGINAL POST · LINK OR ID"
+          htmlFor={`original-${props.postId}`}
+        >
+          <input
+            id={`original-${props.postId}`}
+            className="cc-input"
+            placeholder="https://x.com/someone/status/123…"
+            value={draft.originalRef}
+            onChange={(event) => update({ originalRef: event.target.value })}
+          />
+        </CcField>
+      )}
       {(targetField !== undefined || hasWave) && (
         <div className="flex flex-wrap gap-x-3 gap-y-3">
           {targetField !== undefined && (

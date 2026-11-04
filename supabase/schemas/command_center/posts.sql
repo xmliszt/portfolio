@@ -19,9 +19,11 @@ create table "command_center"."posts" (
   "variant_group" uuid,
   "wave" smallint,
   "project" text,
+  "original_ref" text,
   "created_at" timestamptz not null default now(),
   "updated_at" timestamptz not null default now(),
-  constraint "posts_custom_post_has_project" check ("campaign_id" is not null or btrim(coalesce("project", '')) <> '')
+  constraint "posts_custom_post_has_project" check ("campaign_id" is not null or btrim(coalesce("project", '')) <> ''),
+  constraint "posts_original_ref_custom_only" check ("original_ref" is null or ("campaign_id" is null and "parent_post_id" is null))
 );
 
 create index "posts_campaign_id_scheduled_at_idx" on "command_center"."posts" ("campaign_id", "scheduled_at");

@@ -10,14 +10,18 @@ function buildQuery(params: { [name: string]: string }) {
     .join("&");
 }
 
-/** Return the URL that opens `platformId`'s composer, prefilled with the post when the platform supports it. */
+/** Return the URL that opens `platformId`'s composer, prefilled with the post when the platform supports it, or the `originalUrl` post to reply to, quote or repost by hand. */
 export function buildComposeUrl(options: {
   platformId: PlatformId;
   body: string;
   title?: string;
   link?: string;
   target?: string;
+  originalUrl?: string;
 }): ComposeUrl {
+  if (options.originalUrl !== undefined) {
+    return { kind: "copy-then-open", url: options.originalUrl };
+  }
   switch (options.platformId) {
     case "x":
       return {

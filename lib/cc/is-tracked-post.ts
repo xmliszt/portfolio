@@ -1,4 +1,4 @@
-/** `true` if `kind` is "post" or "repost" and `status` is "scheduled" or "posted", except a posted plain repost (`repostAs` "repost") and a custom post (`campaignId` null) once `postedAt` is set; `false` otherwise. */
+/** `true` if `kind` is "post" or "repost", or "reply" on a custom post (`campaignId` null), and `status` is "scheduled" or "posted", except a posted plain repost (`repostAs` "repost") and a custom post (`campaignId` null) once `postedAt` is set; `false` otherwise. */
 export function isTrackedPost(options: {
   kind: string;
   status: string;
@@ -12,8 +12,9 @@ export function isTrackedPost(options: {
     options.status === "posted";
   const isPostedCustomPost =
     options.campaignId === null && options.postedAt !== null;
+  const isCustomReply = options.kind === "reply" && options.campaignId === null;
   return (
-    (options.kind === "post" || options.kind === "repost") &&
+    (options.kind === "post" || options.kind === "repost" || isCustomReply) &&
     !isLivePlainRepost &&
     !isPostedCustomPost &&
     (options.status === "scheduled" || options.status === "posted")

@@ -1,6 +1,7 @@
 import { buildComposeUrl } from "@/lib/cc/build-compose-url";
 import type { PostRow } from "@/lib/cc/data/cc-rows";
 import { formatSgt } from "@/lib/cc/format-sgt";
+import { getOriginalUrl } from "@/lib/cc/get-original-url";
 import { getPostCopyText } from "@/lib/cc/get-post-copy-text";
 import { getPostName } from "@/lib/cc/get-post-name";
 import { isPlatformId } from "@/lib/cc/is-platform-id";
@@ -17,7 +18,14 @@ function getOpen(options: {
   parent: PostRow | undefined;
   copyText: string;
 }): RunSheetItem["open"] {
-  if (options.post.kind === "reply" || options.post.kind === "comment") {
+  const originalUrl = getOriginalUrl(options.post);
+  if (originalUrl !== undefined) {
+    return { kind: "copy-then-open", url: originalUrl };
+  }
+  if (
+    (options.post.kind === "reply" || options.post.kind === "comment") &&
+    options.post.parent_post_id !== null
+  ) {
     return options.parent?.url
       ? { kind: "copy-then-open", url: options.parent.url }
       : { kind: "after-parent" };

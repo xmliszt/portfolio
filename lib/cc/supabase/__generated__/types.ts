@@ -232,6 +232,7 @@ export type Database = {
           id: string
           kind: string
           link: string | null
+          original_ref: string | null
           parent_post_id: string | null
           platform: string
           platform_post_id: string | null
@@ -261,6 +262,7 @@ export type Database = {
           id?: string
           kind?: string
           link?: string | null
+          original_ref?: string | null
           parent_post_id?: string | null
           platform: string
           platform_post_id?: string | null
@@ -290,6 +292,7 @@ export type Database = {
           id?: string
           kind?: string
           link?: string | null
+          original_ref?: string | null
           parent_post_id?: string | null
           platform?: string
           platform_post_id?: string | null
@@ -403,6 +406,7 @@ export type Database = {
           id: string
           kind: string
           link: string | null
+          original_ref: string | null
           parent_post_id: string | null
           platform: string
           platform_post_id: string | null

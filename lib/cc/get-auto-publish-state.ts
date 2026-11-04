@@ -2,12 +2,13 @@ import { getReplyDueAt } from "./get-reply-due-at";
 
 type StatePost = {
   kind: string;
+  original_ref: string | null;
   status: string;
   scheduled_at: string | null;
   posted_at: string | null;
 };
 
-type StateParent = StatePost & {
+type StateParent = Omit<StatePost, "original_ref"> & {
   auto_publish: boolean;
   publish_error: string | null;
 };
@@ -22,14 +23,16 @@ export const MISSED_AFTER_MS = 30 * 60_000;
 export const PARENT_NOT_AUTO_POSTED =
   "Its parent's auto-post failed or was turned off.";
 
-/** Return whether an auto-post `candidate` is due now, still waiting (before its time, or a reply whose `parent` is not posted yet), or missed (over 30 minutes late, or a reply whose parent was skipped, is gone, or will not be auto-posted). */
+/** Return whether an auto-post `candidate` is due now, still waiting (before its time, or a reply to a CC `parent` that is not posted yet), or missed (over 30 minutes late, or a reply whose parent was skipped, is gone, or will not be auto-posted); a reply with an `original_ref` is timed like a post. */
 export function getAutoPublishState(options: {
   candidate: StatePost;
   parent: StateParent | undefined;
   now: Date;
 }): AutoPublishState {
   const isReply =
-    options.candidate.kind === "reply" || options.candidate.kind === "comment";
+    (options.candidate.kind === "reply" ||
+      options.candidate.kind === "comment") &&
+    options.candidate.original_ref === null;
   const dueAt = (() => {
     if (!isReply) {
       return options.candidate.scheduled_at === null

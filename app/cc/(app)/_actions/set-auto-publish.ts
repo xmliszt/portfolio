@@ -58,7 +58,7 @@ async function getSetupError(platform: AutoPublishPlatformId) {
   }
 }
 
-/** Turn CC's auto-posting of a scheduled X, Threads or Bluesky post on or off, clearing an earlier failure either way and, when off, reopening its unsent "post" reminder; refuse to turn it on for a post that is not scheduled in the future (for a reply or comment, one `getReplyAutoPublishError` refuses), an X post whose `target` is not a community, a platform that is not set up or may not post, or a post the platform would reject, and refuse either change while CC is posting it or after the platform took it. */
+/** Turn CC's auto-posting of a scheduled X, Threads or Bluesky post on or off, clearing an earlier failure either way and, when off, reopening its unsent "post" reminder; refuse to turn it on for a post that is not scheduled in the future (for a reply or comment to a CC post, one `getReplyAutoPublishError` refuses), an X post whose `target` is not a community, a platform that is not set up or may not post, or a post the platform would reject, and refuse either change while CC is posting it or after the platform took it. */
 export async function setAutoPublish(options: {
   postId: string;
   isOn: boolean;
@@ -91,7 +91,10 @@ export async function setAutoPublish(options: {
       };
     }
     const timingError = await (async () => {
-      if (post.kind === "reply" || post.kind === "comment") {
+      if (
+        (post.kind === "reply" || post.kind === "comment") &&
+        post.original_ref === null
+      ) {
         const { data: parent, error: parentError } =
           post.parent_post_id === null
             ? { data: null, error: null }

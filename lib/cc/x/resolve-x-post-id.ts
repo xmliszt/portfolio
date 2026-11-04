@@ -1,13 +1,16 @@
 import { parseXStatusId } from "./parse-x-status-id";
 
-/** Return the X post id of a CC post from its `platform_post_id`, else from the status id in its `url`, or why neither holds one. */
+/** Return the X post id of a CC post from its `platform_post_id` when that is numeric, else from the status id in its `url`, or why neither holds one. */
 export function resolveXPostId(post: {
   platform_post_id: string | null;
   url: string | null;
 }): { kind: "ok"; value: string } | { kind: "error"; message: string } {
   const id =
-    post.platform_post_id ??
-    (post.url === null ? undefined : parseXStatusId(post.url));
+    post.platform_post_id !== null && /^\d{1,19}$/.test(post.platform_post_id)
+      ? post.platform_post_id
+      : post.url === null
+        ? undefined
+        : parseXStatusId(post.url);
   return id === undefined
     ? {
         kind: "error",
