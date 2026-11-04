@@ -168,6 +168,12 @@ export function useRoomConnection(options: {
         onEvent: (event) =>
           engine.receiveEvent({ event, receivedAtMs: performance.now() }),
         onChat: (message) => onChatRef.current(message),
+        onClosed: () => {
+          if (run.isCancelled || run.retry !== undefined) return;
+          playersRef.current = [];
+          engine.setPlayers([]);
+          scheduleRejoin(REJOIN_DELAY_MS);
+        },
       });
       if (useFakeRoom || client === undefined) return;
       run.heartbeat = window.setInterval(async () => {

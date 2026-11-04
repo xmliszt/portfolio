@@ -28,6 +28,7 @@ export type RoomSource = {
     onCats: (cats: CatsMessage) => void;
     onEvent: (event: RoomEvent) => void;
     onChat: (message: ChatMessage) => void;
+    onClosed: () => void;
   }) => RoomConnection;
   dispose: () => void;
 };

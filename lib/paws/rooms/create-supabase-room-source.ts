@@ -43,6 +43,7 @@ export function createSupabaseRoomSource(options: {
       onCats,
       onEvent,
       onChat,
+      onClosed,
     }) {
       const state: {
         channel?: RealtimeChannel;
@@ -184,6 +185,7 @@ export function createSupabaseRoomSource(options: {
             state.isSubscribed = status === "SUBSCRIBED";
             if (state.isSubscribed && presence !== undefined)
               void channel.track(presence);
+            if (status !== "SUBSCRIBED" && !state.hasLeft) onClosed();
           });
       }
 
