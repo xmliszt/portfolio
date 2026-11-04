@@ -98,6 +98,7 @@ async function applyRuleAction(options: {
         status: repost.status,
         kind: repost.kind,
         repostAs: repost.repost_as,
+        parentPostId: repost.parent_post_id,
         campaignId: repost.campaign_id,
         scheduledAt: repost.scheduled_at,
         postedAt: repost.posted_at,
