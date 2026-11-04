@@ -173,7 +173,9 @@ export function Composer(props: ComposerProps) {
           postId={props.post.id}
           platformId={props.platformId}
           planned={
-            props.post.variant !== "chatgpt" && props.post.kind === "post"
+            props.post.variant !== "chatgpt" &&
+            props.post.kind === "post" &&
+            props.post.campaign_id !== null
           }
           scheduledAt={props.post.scheduled_at ?? undefined}
           draft={draft}

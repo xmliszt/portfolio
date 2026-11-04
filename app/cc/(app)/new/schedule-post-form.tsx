@@ -228,7 +228,10 @@ export function SchedulePostForm(props: SchedulePostFormProps) {
               required
               className="cc-input"
               value={date}
-              onChange={(event) => setDate(event.target.value)}
+              onChange={(event) => {
+                setDate(event.target.value);
+                setResult({ kind: "idle" });
+              }}
             />
           </CcField>
           <CcField label="TIME" htmlFor="schedule-time">
@@ -238,13 +241,16 @@ export function SchedulePostForm(props: SchedulePostFormProps) {
               required
               className="cc-input"
               value={time}
-              onChange={(event) => setTime(event.target.value)}
+              onChange={(event) => {
+                setTime(event.target.value);
+                setResult({ kind: "idle" });
+              }}
             />
           </CcField>
         </div>
         <ScheduleClashWarning
           at={sgtToUtc({ date, time })}
-          postId={undefined}
+          postId={result.kind === "created" ? result.postId : undefined}
           schedule={props.schedule}
         />
         {props.campaign !== undefined && (
@@ -255,6 +261,7 @@ export function SchedulePostForm(props: SchedulePostFormProps) {
             onSuggest={(slot) => {
               setDate(slot.date);
               setTime(slot.time);
+              setResult({ kind: "idle" });
             }}
           />
         )}

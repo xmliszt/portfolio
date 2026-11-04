@@ -38,7 +38,17 @@ export function PostFieldsEditor(props: PostFieldsEditorProps) {
 
   return (
     <div className="flex flex-col gap-y-3 px-3 py-2.5">
-      {titleLimit !== undefined && (
+      {titleLimit === undefined ? (
+        <CcField label="NAME · ONLY IN CC" htmlFor={`title-${props.postId}`}>
+          <input
+            id={`title-${props.postId}`}
+            className="cc-input"
+            placeholder="What this post is"
+            value={draft.title}
+            onChange={(event) => update({ title: event.target.value })}
+          />
+        </CcField>
+      ) : (
         <CcField label="TITLE" htmlFor={`title-${props.postId}`}>
           <div className="flex flex-col gap-y-1">
             <input
@@ -126,8 +136,7 @@ export function PostFieldsEditor(props: PostFieldsEditorProps) {
           {hasWave && (
             <div className="flex min-w-0 flex-col gap-y-1">
               <span className="text-muted-foreground text-[10.5px] tracking-[0.04em] uppercase">
-                PLANNER WAVE ·{" "}
-                {draft.wave === "" ? "FROM MEDIA" : "SET"}
+                PLANNER WAVE · {draft.wave === "" ? "FROM MEDIA" : "SET"}
               </span>
               {(() => {
                 const waveLabel =
