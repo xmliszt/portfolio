@@ -17,7 +17,7 @@ const BATCH_SIZE = 10;
 const STALE_CLAIM_MS = 5 * 60_000;
 const MEDIA_LINK_EXPIRES_IN_S = 24 * 60 * 60;
 
-/** Claim up to `BATCH_SIZE` due reminders that are unsent, or were claimed over 5 minutes ago without a `telegram_message_id`, by stamping `sent_at`; send each one, store its `telegram_message_id`, close one of a kind it has no message for or a "post" reminder of a post CC posts by itself, release a reminder whose send failed for a passing reason so the next run retries it, and close one Telegram rejected; return how many were sent. */
+/** Claim up to `BATCH_SIZE` due reminders that are unsent, or were claimed over 5 minutes ago without a `telegram_message_id`, by stamping `sent_at`; send each one, store its `telegram_message_id`, close one of a kind it has no message for or a "post" reminder of a post CC posts by itself or that is already posted, release a reminder whose send failed for a passing reason so the next run retries it, and close one Telegram rejected; return how many were sent. */
 export async function sendDueReminders(options: { now: Date }) {
   const supabase = createCcServiceClient();
   const staleBefore = new Date(
@@ -54,11 +54,13 @@ export async function sendDueReminders(options: { now: Date }) {
   const results = await Promise.all(
     claimed.flat().map(async (reminder) => {
       const post = reminder.post;
-      const isAutoPosted = reminder.kind === "post" && post.auto_publish;
+      const isPostHandled =
+        reminder.kind === "post" &&
+        (post.auto_publish || post.status === "posted");
       if (
         !isPlatformId(post.platform) ||
         post.status === "skipped" ||
-        isAutoPosted
+        isPostHandled
       ) {
         const { error: closeError } = await supabase
           .from("reminders")
