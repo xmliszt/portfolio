@@ -1058,3 +1058,41 @@ test("guests keep a leaving player's toys and one of them sends them on", () => 
   assert.equal(alone.isHost, true);
   assert.ok(alone.outgoing.cats?.toys.some((toy) => toy.id === "yarn-2"));
 });
+
+test("a host that rejoins its room alone carries on the world it was running", () => {
+  const engine = buildHost();
+  engine.frame({ nowMs: 0, dtSeconds: DT_SECONDS });
+  engine.placeToy({ itemId: "yarn-2", x: 600, y: 500, nowMs: 10 });
+  const hosting = engine.frame({ nowMs: 1000, dtSeconds: DT_SECONDS });
+  assert.equal(hosting.isHost, true);
+  assert.ok(hosting.toys.some((toy) => toy.id === "yarn-2"));
+  engine.setPlayers([]);
+  engine.setSelf({
+    userId: undefined,
+    connectionId: undefined,
+    role: "watcher",
+    roomId: undefined,
+  });
+  const between = engine.frame({ nowMs: 1016, dtSeconds: DT_SECONDS });
+  assert.ok(between.toys.some((toy) => toy.id === "yarn-2"));
+  engine.setSelf({
+    userId: "me",
+    connectionId: "me-tab-2",
+    role: "player",
+    roomId: "room-1",
+  });
+  engine.setPlayers([
+    { ...buildPlayer({ userId: "me", joinedAt: 2 }), connectionId: "me-tab-2" },
+  ]);
+  const rooms = Array.from({ length: 80 }, (_, frame) =>
+    engine.frame({ nowMs: 1032 + frame * 16, dtSeconds: DT_SECONDS })
+  );
+  assert.ok(
+    rooms.every((room) => room.toys.some((toy) => toy.id === "yarn-2"))
+  );
+  assert.equal(rooms.at(-1)?.isHost, true);
+  assert.ok(
+    rooms.at(-1)?.outgoing.cats === undefined ||
+      rooms.at(-1)?.outgoing.cats?.toys.some((toy) => toy.id === "yarn-2")
+  );
+});
