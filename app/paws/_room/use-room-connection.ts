@@ -18,7 +18,7 @@ import { postRoomApi } from "./post-room-api";
 const FAKE_REMOTE_PLAYERS = 4;
 const REJOIN_DELAY_MS = 4000;
 
-/** Join a room for the current visitor (a player when `self` is set, otherwise a watcher), asking for the `?room=` room or the one passed to `switchRoom` when there is one, and otherwise for the room it was last in, feed everything it receives into `engine`, keep the membership alive, and return the open connection, the latest players, the room id, and `switchRoom`. */
+/** Join a room for the current visitor (a player when `self` is set, otherwise a watcher), asking for the `?room=` room or the one passed to `switchRoom` when there is one, and otherwise for the room it was last in, feed everything it receives into `engine`, keep the membership alive, join again after `REJOIN_DELAY_MS` when the room channel closes, and return the open connection, the latest players, the room id, and `switchRoom`. */
 export function useRoomConnection(options: {
   session: PawsSession;
   client: ReturnType<typeof createPawsBrowserClient> | undefined;
@@ -109,7 +109,8 @@ export function useRoomConnection(options: {
           };
         }
         await pendingLeaveRef.current;
-        const token = tokenRef.current;
+        const { data } = await client.auth.getSession();
+        const token = data.session?.access_token ?? tokenRef.current;
         if (token === undefined || run.isCancelled) return undefined;
         const preferredRoomId = chosenRoomId ?? lastRoomIdRef.current;
         const answer = parseJoinRoomResponse(
@@ -168,6 +169,12 @@ export function useRoomConnection(options: {
         onEvent: (event) =>
           engine.receiveEvent({ event, receivedAtMs: performance.now() }),
         onChat: (message) => onChatRef.current(message),
+        onClosed: () => {
+          if (run.isCancelled || run.retry !== undefined) return;
+          playersRef.current = [];
+          engine.setPlayers([]);
+          scheduleRejoin(REJOIN_DELAY_MS);
+        },
       });
       if (useFakeRoom || client === undefined) return;
       run.heartbeat = window.setInterval(async () => {
