@@ -9,7 +9,6 @@ export const zhHant = {
     signInToBring: "登入後帶上你的貓",
     bringYourCat: "帶上你的貓",
     yourCat: "你的貓",
-    roomFull: "現在每個房間都滿了。你可以先看看房間裡的貓。",
   },
   signIn: {
     title: "登入",

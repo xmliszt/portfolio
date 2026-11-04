@@ -12,7 +12,6 @@ export const vi = {
     signInToBring: "Đăng nhập để mang mèo đến",
     bringYourCat: "Mang mèo đến",
     yourCat: "Mèo của bạn",
-    roomFull: "Tất cả các phòng hiện đã đầy. Bạn có thể ngắm căn phòng.",
   },
   signIn: {
     title: "Đăng nhập",

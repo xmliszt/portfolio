@@ -64,7 +64,6 @@ export async function POST(request: Request) {
     createRoomId: () => crypto.randomUUID(),
     preferredRoomId,
   });
-  if (picked.kind === "full") return respond({ kind: "full" }, 200);
   const recorded = await client
     .from("room_joins")
     .insert({ user_id: user.userId });

@@ -12,7 +12,6 @@ export const ko = {
     signInToBring: "로그인하고 고양이를 데려와",
     bringYourCat: "고양이 데려오기",
     yourCat: "네 고양이",
-    roomFull: "지금은 모든 방이 가득 찼어. 방 안을 구경해 봐.",
   },
   signIn: {
     title: "로그인",

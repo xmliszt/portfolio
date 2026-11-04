@@ -13,7 +13,6 @@ export const uk = {
     signInToBring: "Увійди, щоб привести кота",
     bringYourCat: "Привести кота",
     yourCat: "Твій кіт",
-    roomFull: "Усі кімнати зараз повні. Ти можеш спостерігати за кімнатою.",
   },
   signIn: {
     title: "Увійти",

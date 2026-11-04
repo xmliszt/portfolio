@@ -16,7 +16,6 @@ export const en = {
     signInToBring: "Sign in to bring your cat",
     bringYourCat: "Bring your cat",
     yourCat: "Your cat",
-    roomFull: "Every room is full right now. You're watching from the window.",
   },
   signIn: {
     title: "Sign in",

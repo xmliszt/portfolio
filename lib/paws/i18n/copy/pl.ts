@@ -12,7 +12,6 @@ export const pl = {
     signInToBring: "Zaloguj się, by przyprowadzić kota",
     bringYourCat: "Przyprowadź kota",
     yourCat: "Twój kot",
-    roomFull: "Wszystkie pokoje są teraz pełne. Możesz oglądać pokój.",
   },
   signIn: {
     title: "Zaloguj się",

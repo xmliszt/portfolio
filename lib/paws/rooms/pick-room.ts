@@ -9,10 +9,9 @@ export type RoomMember = {
 
 export type PickedRoom =
   | { kind: "existing"; roomId: string }
-  | { kind: "new"; roomId: string }
-  | { kind: "full" };
+  | { kind: "new"; roomId: string };
 
-/** Return the room `userId` should join as `role`: `preferredRoomId` when it has a slot for that role (opening it when nobody is in it), else the room with the most other players that still has a slot for that role, preferring the room they are already in on a tie, else a new room from `createRoomId` for a player or when there are no rooms, and `full` for a watcher otherwise; members not seen within `freshMs` of `now` do not count. */
+/** Return the room `userId` should join as `role`: `preferredRoomId` when it has a slot for that role (opening it when nobody is in it), else the room with the most other players that still has a slot for that role, preferring the room they are already in on a tie, else a new room from `createRoomId`; members not seen within `freshMs` of `now` do not count. */
 export function pickRoom(options: {
   members: RoomMember[];
   userId: string;
@@ -62,7 +61,5 @@ export function pickRoom(options: {
     )
     .at(0);
   if (best !== undefined) return { kind: "existing", roomId: best.roomId };
-  if (options.role === "player" || rooms.length === 0)
-    return { kind: "new", roomId: options.createRoomId() };
-  return { kind: "full" };
+  return { kind: "new", roomId: options.createRoomId() };
 }

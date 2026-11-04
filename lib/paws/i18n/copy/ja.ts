@@ -12,7 +12,6 @@ export const ja = {
     signInToBring: "ログインして猫を連れてこよう",
     bringYourCat: "猫を連れてくる",
     yourCat: "あなたの猫",
-    roomFull: "今はどの部屋も満員。部屋の様子を見ていてね。",
   },
   signIn: {
     title: "ログイン",

@@ -24,7 +24,6 @@ export function parseJoinRoomResponse(
         topic: value.topic,
         role: value.role,
       };
-    case "full":
     case "tooManyJoins":
     case "forbidden":
     case "failed":

@@ -245,7 +245,7 @@ export function PawsRoom(props: PawsRoomProps) {
     ownCatIdRef.current = self === undefined ? undefined : self.userId;
   }, [self]);
 
-  const { connectionRef, playersRef, roomIdRef, roomId, isFull, switchRoom } =
+  const { connectionRef, playersRef, roomIdRef, roomId, switchRoom } =
     useRoomConnection({
       session,
       client,
@@ -908,8 +908,7 @@ export function PawsRoom(props: PawsRoomProps) {
                 isChecked &&
                 !useFakeRoom &&
                 "accessToken" in session &&
-                roomId === undefined &&
-                !isFull
+                roomId === undefined
                   ? copy.room.findingRoom
                   : undefined
               }
@@ -1044,20 +1043,18 @@ export function PawsRoom(props: PawsRoomProps) {
             )}
             <RoomBanner
               text={
-                isFull
-                  ? copy.watch.roomFull
-                  : banner === undefined
-                    ? undefined
-                    : (banner.isMove
-                        ? copy.room.roomMoved
-                        : copy.room.roomEntered
-                      ).replace(
-                        "{room}",
-                        copy.room.roomName.replace(
-                          "{number}",
-                          String(getRoomNumber(banner.roomId))
-                        )
+                banner === undefined
+                  ? undefined
+                  : (banner.isMove
+                      ? copy.room.roomMoved
+                      : copy.room.roomEntered
+                    ).replace(
+                      "{room}",
+                      copy.room.roomName.replace(
+                        "{number}",
+                        String(getRoomNumber(banner.roomId))
                       )
+                    )
               }
             />
             <ChatLayer

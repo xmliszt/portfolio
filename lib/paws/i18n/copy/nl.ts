@@ -12,7 +12,6 @@ export const nl = {
     signInToBring: "Log in om je kat mee te nemen",
     bringYourCat: "Neem je kat mee",
     yourCat: "Je kat",
-    roomFull: "Alle kamers zijn nu vol. Je kijkt mee in de kamer.",
   },
   signIn: {
     title: "Inloggen",

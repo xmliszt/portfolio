@@ -12,7 +12,6 @@ export const hi = {
     signInToBring: "अपनी बिल्ली लाने के लिए साइन इन करो",
     bringYourCat: "अपनी बिल्ली लाओ",
     yourCat: "तुम्हारी बिल्ली",
-    roomFull: "अभी सारे कमरे भरे हैं। तुम कमरे को देख सकते हो।",
   },
   signIn: {
     title: "साइन इन करो",
