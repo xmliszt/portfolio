@@ -185,7 +185,7 @@ export function createSupabaseRoomSource(options: {
             state.isSubscribed = status === "SUBSCRIBED";
             if (state.isSubscribed && presence !== undefined)
               void channel.track(presence);
-            if (status !== "SUBSCRIBED" && !state.hasLeft) onClosed();
+            if (status === "CLOSED" && !state.hasLeft) onClosed();
           });
       }
 
