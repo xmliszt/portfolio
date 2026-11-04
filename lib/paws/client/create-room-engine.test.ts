@@ -1096,3 +1096,70 @@ test("a host that rejoins its room alone carries on the world it was running", (
       rooms.at(-1)?.outgoing.cats?.toys.some((toy) => toy.id === "yarn-2")
   );
 });
+
+function stepRoom(options: {
+  screens: ReturnType<typeof createRoomEngine>[];
+  fromMs: number;
+  frames: number;
+}) {
+  return Array.from({ length: options.frames }, (_, frame) => {
+    const nowMs = options.fromMs + frame * 16;
+    const rooms = options.screens.map((screen) =>
+      screen.frame({ nowMs, dtSeconds: DT_SECONDS })
+    );
+    rooms.forEach((room, from) => {
+      const cats = room.outgoing.cats;
+      if (cats === undefined) return;
+      options.screens.forEach((screen, to) => {
+        if (to !== from)
+          screen.receiveCats({ message: cats, receivedAtMs: nowMs });
+      });
+    });
+    return rooms;
+  }).at(-1);
+}
+
+test("a player who refreshes while the old tab lingers keeps the toys the guests hold", () => {
+  const oldTab = buildPlayer({ userId: "me", joinedAt: 1 });
+  const newTab = {
+    ...buildPlayer({ userId: "me", joinedAt: 9 }),
+    connectionId: "me-tab-2",
+  };
+  const host = buildHost();
+  const guests = ["g1-tab", "g2-tab", "g3-tab"].map((connectionId, index) => {
+    const guest = buildGuest({ connectionId, seed: 10 + index });
+    guest.setPlayers([oldTab]);
+    return guest;
+  });
+  host.frame({ nowMs: 0, dtSeconds: DT_SECONDS });
+  host.placeToy({ itemId: "yarn-2", x: 600, y: 500, nowMs: 10 });
+  stepRoom({ screens: [host, ...guests], fromMs: 1000, frames: 120 });
+
+  const refreshed = createRoomEngine({
+    random: createSeededRandom({ seed: 20 }),
+  });
+  refreshed.setSelf({
+    userId: "me",
+    connectionId: "me-tab-2",
+    role: "player",
+    roomId: "room-1",
+  });
+  for (const screen of [refreshed, ...guests])
+    screen.setPlayers([oldTab, newTab]);
+  stepRoom({ screens: [refreshed, ...guests], fromMs: 3000, frames: 300 });
+  for (const screen of [refreshed, ...guests]) screen.setPlayers([newTab]);
+  const rooms = stepRoom({
+    screens: [refreshed, ...guests],
+    fromMs: 7800,
+    frames: 200,
+  });
+
+  assert.ok(rooms);
+  assert.equal(rooms[0]?.isHost, true, "the refreshed tab hosts again");
+  rooms.forEach((room, index) =>
+    assert.ok(
+      room.toys.some((toy) => toy.id === "yarn-2"),
+      `screen ${index} still has the yarn ball`
+    )
+  );
+});
