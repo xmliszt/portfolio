@@ -62,6 +62,8 @@ const MIN_FINGER_MOVE = 0.5;
 const MIN_FINGERPRINT_PRESS = 0.2;
 const LOCAL_VISITOR_ID = "visitor";
 const SILENT_HOST_MS = 3000;
+/** How long a screen that enters a room listens for a host already running it before it starts the room itself. */
+const LISTEN_MS = 1000;
 const MAX_QUEUED_PRINTS = 160;
 const MAX_QUEUED_EVENTS = 200;
 const TRAILS_SEND_MS = 1000;
@@ -148,6 +150,9 @@ export function createRoomEngine(options: { random: () => number }) {
     placements: { itemId: ToyItemId; x: number; y: number }[];
     pending: { itemId: ToyItemId; untilMs: number }[];
     followed: { hostId: string | undefined; sinceMs: number };
+    enteredAtMs: number | undefined;
+    guestHost: { connectionId: string; heardAtMs: number } | undefined;
+    heardPlayerHostId: string | undefined;
     time: number;
   } = {
     players: [],
@@ -177,6 +182,9 @@ export function createRoomEngine(options: { random: () => number }) {
     placements: [],
     pending: [],
     followed: { hostId: undefined, sinceMs: 0 },
+    enteredAtMs: undefined,
+    guestHost: undefined,
+    heardPlayerHostId: undefined,
     time: 0,
   };
   const legPlayer = createLegPlayer({ random: options.random });
@@ -347,6 +355,9 @@ export function createRoomEngine(options: { random: () => number }) {
         toyMarks.reset();
         state.placements = [];
         state.pending = [];
+        state.enteredAtMs = undefined;
+        state.guestHost = undefined;
+        state.heardPlayerHostId = undefined;
       }
       state.selfId = self.userId;
       state.selfConnectionId = self.connectionId;
@@ -410,12 +421,33 @@ export function createRoomEngine(options: { random: () => number }) {
       };
     },
     receiveCats: (options: { message: CatsMessage; receivedAtMs: number }) => {
-      const hostId = chooseHost(state.players);
-      if (
-        options.message.hostId === state.selfConnectionId ||
-        options.message.hostId !== hostId
-      )
-        return;
+      const { hostId } = options.message;
+      const playerHostId = chooseHost(state.players);
+      const self = state.selfConnectionId;
+      if (hostId === self) return;
+      if (state.players.some((player) => player.connectionId === hostId)) {
+        if (hostId !== playerHostId) return;
+        state.heardPlayerHostId = hostId;
+      } else {
+        const guestHost = state.guestHost;
+        if (
+          (playerHostId !== undefined &&
+            state.heardPlayerHostId === playerHostId) ||
+          (state.world !== undefined &&
+            (state.role === "player" || (self !== undefined && self < hostId)))
+        )
+          return;
+        if (
+          guestHost !== undefined &&
+          options.receivedAtMs - guestHost.heardAtMs <= SILENT_HOST_MS &&
+          guestHost.connectionId < hostId
+        )
+          return;
+        state.guestHost = {
+          connectionId: hostId,
+          heardAtMs: options.receivedAtMs,
+        };
+      }
       state.buffer.push(options);
       state.lastCatsReceivedAtMs = options.receivedAtMs;
       state.incomingPrints = [
@@ -442,11 +474,33 @@ export function createRoomEngine(options: { random: () => number }) {
     frame: (frameOptions: { nowMs: number; dtSeconds: number }): RoomFrame => {
       const { nowMs, dtSeconds } = frameOptions;
       state.time += dtSeconds;
-      const hostId = chooseHost(state.players);
+      const self = state.selfConnectionId;
+      const playerHostId = chooseHost(state.players);
+      state.enteredAtMs ??= nowMs;
+      const hasFreshCats = nowMs - state.lastCatsReceivedAtMs <= SILENT_HOST_MS;
+      const canStart =
+        state.world !== undefined ||
+        hasFreshCats ||
+        nowMs - state.enteredAtMs >= LISTEN_MS;
+      const guestHostId =
+        state.guestHost !== undefined &&
+        nowMs - state.guestHost.heardAtMs <= SILENT_HOST_MS
+          ? state.guestHost.connectionId
+          : undefined;
+      const isPlayerHostHeard =
+        playerHostId !== undefined && state.heardPlayerHostId === playerHostId;
       const isHost =
-        state.role === "player" &&
-        state.selfConnectionId !== undefined &&
-        hostId === state.selfConnectionId;
+        self !== undefined &&
+        canStart &&
+        (state.role === "player"
+          ? playerHostId === self
+          : !isPlayerHostHeard &&
+            (guestHostId === undefined || self < guestHostId));
+      const hostId = isHost
+        ? self
+        : isPlayerHostHeard
+          ? playerHostId
+          : (guestHostId ?? (playerHostId === self ? undefined : playerHostId));
 
       if (hostId !== state.followed.hostId)
         state.followed = { hostId, sinceMs: nowMs };
@@ -455,14 +509,12 @@ export function createRoomEngine(options: { random: () => number }) {
         !isHost &&
         nowMs - Math.max(state.lastCatsReceivedAtMs, state.followed.sinceMs) >
           SILENT_HOST_MS;
-      const runsLocally = hostId === undefined || isHostSilent;
-      const localPlayers = isHostSilent
-        ? [...state.players, ...state.residents]
-        : state.residents;
+      const runsLocally = !isHost && (hostId === undefined || isHostSilent);
+      const localPlayers = [...state.players, ...state.residents];
 
       if (isHost && state.world === undefined) {
         state.world =
-          state.residentWorld ??
+          (hasFreshCats ? undefined : state.residentWorld) ??
           carryOnWorld({
             known: [...state.players, ...state.residents],
             fresh: state.residents,

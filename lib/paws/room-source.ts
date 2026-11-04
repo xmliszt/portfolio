@@ -15,11 +15,12 @@ export type RoomConnection = {
   leave: () => void;
 };
 
-/** A room on a Realtime channel; players and watchers both send fingertips and events, and only a player's cats are taken. */
+/** A room on a Realtime channel; players and watchers both send fingertips, events and cats, and cats are taken only from a connection present in the room. */
 export type RoomSource = {
   join: (options: {
     roomId: string;
     userId: string;
+    connectionId: string;
     role: RoomRole;
     self: PlayerPresence | undefined;
     onPlayers: (players: PlayerPresence[]) => void;

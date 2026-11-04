@@ -432,7 +432,9 @@ test("the host runs the room's resident cats alongside the players' cats and sen
     role: "player",
     roomId: "room-1",
   });
-  const room = engine.frame({ nowMs: 0, dtSeconds: DT_SECONDS });
+  const listening = engine.frame({ nowMs: 0, dtSeconds: DT_SECONDS });
+  assert.equal(listening.isHost, false, "listens for a running host first");
+  const room = engine.frame({ nowMs: 1000, dtSeconds: DT_SECONDS });
   assert.equal(room.isHost, true);
   assert.deepEqual(
     room.outgoing.cats?.cats.map((cat) => cat.userId).toSorted(),
@@ -751,8 +753,9 @@ test("the host puts a placed toy straight into the room and sends it with its tr
 
 test("the host sends trails about once a second, and at once when a toy comes or goes", () => {
   const engine = buildHost();
+  engine.frame({ nowMs: 0, dtSeconds: DT_SECONDS });
   const sentAt = Array.from({ length: 240 }, (_, frame) => {
-    const nowMs = frame * (1000 / 60);
+    const nowMs = 1000 + frame * (1000 / 60);
     if (frame === 150)
       engine.placeToy({ itemId: "roll-1", x: 400, y: 400, nowMs });
     const cats = engine.frame({ nowMs, dtSeconds: DT_SECONDS }).outgoing.cats;
@@ -764,7 +767,7 @@ test("the host sends trails about once a second, and at once when a toy comes or
     `trails sent at ${sentAt.join(", ")}`
   );
   assert.ok(
-    sentAt.some((at) => at > 2500 && at < 2700),
+    sentAt.some((at) => at >= 3500 && at < 3700),
     `no trails right after the toy came in: ${sentAt.join(", ")}`
   );
 });
@@ -879,4 +882,108 @@ test("a new host keeps a half-used yarn ball and its trail when no cat is in sig
     [300, 500],
     [500, 500],
   ]);
+});
+
+function buildGuest(options: { connectionId: string; seed: number }) {
+  const engine = createRoomEngine({
+    random: createSeededRandom({ seed: options.seed }),
+  });
+  engine.setSelf({
+    userId: options.connectionId.replace("-tab", ""),
+    connectionId: options.connectionId,
+    role: "watcher",
+    roomId: "room-1",
+  });
+  return engine;
+}
+
+function runGuestHost(options: { connectionId: string; frames: number }) {
+  const engine = buildGuest({ connectionId: options.connectionId, seed: 5 });
+  const messages = Array.from({ length: options.frames }, (_, frame) => {
+    const nowMs = frame * 16;
+    if (frame === 100)
+      engine.placeToy({ itemId: "yarn-2", x: 600, y: 500, nowMs });
+    return engine.frame({ nowMs, dtSeconds: DT_SECONDS }).outgoing.cats;
+  }).flatMap((cats) => (cats === undefined ? [] : [cats]));
+  return { engine, messages };
+}
+
+test("a guest alone in the room starts sending the room once it has listened", () => {
+  const engine = buildGuest({ connectionId: "g-tab", seed: 5 });
+  const listening = engine.frame({ nowMs: 0, dtSeconds: DT_SECONDS });
+  assert.equal(listening.isHost, false);
+  assert.equal(listening.outgoing.cats, undefined);
+  const room = engine.frame({ nowMs: 1000, dtSeconds: DT_SECONDS });
+  assert.equal(room.isHost, true);
+  assert.ok(room.outgoing.cats?.toys.length);
+});
+
+test("a player who enters a room a guest is running carries on its toys", () => {
+  const { messages } = runGuestHost({ connectionId: "g-tab", frames: 300 });
+  const last = messages.at(-1);
+  assert.ok(last && last.toys.some((toy) => toy.id === "yarn-2"));
+  const engine = createRoomEngine({ random: createSeededRandom({ seed: 9 }) });
+  engine.setPlayers([buildPlayer({ userId: "p", joinedAt: 1 })]);
+  engine.setSelf({
+    userId: "p",
+    connectionId: "p-tab",
+    role: "player",
+    roomId: "room-1",
+  });
+  engine.receiveCats({ message: last, receivedAtMs: 0 });
+  const room = engine.frame({ nowMs: 16, dtSeconds: DT_SECONDS });
+  assert.equal(room.isHost, true);
+  assert.deepEqual(
+    room.toys.map((toy) => toy.id).toSorted(),
+    last.toys.map((toy) => toy.id).toSorted()
+  );
+  const yarn = room.toys.find((toy) => toy.id === "yarn-2");
+  const sentYarn = last.toys.find((toy) => toy.id === "yarn-2");
+  assert.ok(yarn && sentYarn);
+  assert.ok(Math.hypot(yarn.x - sentYarn.x, yarn.y - sentYarn.y) < 5);
+});
+
+test("a guest running the room keeps it until the arriving player's cats come in", () => {
+  const { engine } = runGuestHost({ connectionId: "g-tab", frames: 100 });
+  engine.setPlayers([buildPlayer({ userId: "p", joinedAt: 1 })]);
+  const waiting = engine.frame({ nowMs: 1700, dtSeconds: DT_SECONDS });
+  assert.equal(waiting.isHost, true);
+  engine.receiveCats({
+    message: { hostId: "p-tab", sentAt: 0, cats: [], prints: [], toys: [] },
+    receivedAtMs: 1710,
+  });
+  const following = engine.frame({ nowMs: 1720, dtSeconds: DT_SECONDS });
+  assert.equal(following.isHost, false);
+});
+
+test("of two guests running a room, the larger connection id gives way", () => {
+  const smaller = runGuestHost({ connectionId: "a-tab", frames: 100 });
+  const larger = runGuestHost({ connectionId: "b-tab", frames: 100 });
+  const fromSmaller = smaller.messages.at(-1);
+  const fromLarger = larger.messages.at(-1);
+  assert.ok(fromSmaller && fromLarger);
+  smaller.engine.receiveCats({ message: fromLarger, receivedAtMs: 1600 });
+  larger.engine.receiveCats({ message: fromSmaller, receivedAtMs: 1600 });
+  assert.equal(
+    smaller.engine.frame({ nowMs: 1616, dtSeconds: DT_SECONDS }).isHost,
+    true
+  );
+  assert.equal(
+    larger.engine.frame({ nowMs: 1616, dtSeconds: DT_SECONDS }).isHost,
+    false
+  );
+});
+
+test("a guest who enters a room another guest is running follows it", () => {
+  const { messages } = runGuestHost({ connectionId: "g-tab", frames: 300 });
+  const engine = buildGuest({ connectionId: "z-tab", seed: 6 });
+  const rooms = Array.from({ length: 90 }, (_, frame) => {
+    const nowMs = frame * 16;
+    const message = messages.at(frame / 15 - 6);
+    if (frame % 15 === 0 && message !== undefined)
+      engine.receiveCats({ message, receivedAtMs: nowMs });
+    return engine.frame({ nowMs, dtSeconds: DT_SECONDS });
+  });
+  assert.ok(rooms.every((room) => !room.isHost));
+  assert.ok(rooms.at(-1)?.toys.some((toy) => toy.id === "yarn-2"));
 });
