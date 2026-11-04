@@ -150,6 +150,7 @@ export function createRoomEngine(options: { random: () => number }) {
     placements: { itemId: ToyItemId; x: number; y: number }[];
     pending: { itemId: ToyItemId; untilMs: number }[];
     followed: { hostId: string | undefined; sinceMs: number };
+    hasSyncedPresence: boolean;
     enteredAtMs: number | undefined;
     guestHost: { connectionId: string; heardAtMs: number } | undefined;
     heardPlayerHostId: string | undefined;
@@ -182,6 +183,7 @@ export function createRoomEngine(options: { random: () => number }) {
     placements: [],
     pending: [],
     followed: { hostId: undefined, sinceMs: 0 },
+    hasSyncedPresence: false,
     enteredAtMs: undefined,
     guestHost: undefined,
     heardPlayerHostId: undefined,
@@ -338,6 +340,7 @@ export function createRoomEngine(options: { random: () => number }) {
   return {
     setPlayers: (players: PlayerPresence[]) => {
       state.players = players;
+      state.hasSyncedPresence = true;
     },
     setSelf: (self: {
       userId: string | undefined;
@@ -355,6 +358,13 @@ export function createRoomEngine(options: { random: () => number }) {
         toyMarks.reset();
         state.placements = [];
         state.pending = [];
+      }
+      if (self.roomId === undefined) state.hasSyncedPresence = false;
+      if (
+        self.roomId === undefined ||
+        self.roomId !== state.roomId ||
+        self.connectionId !== state.selfConnectionId
+      ) {
         state.enteredAtMs = undefined;
         state.guestHost = undefined;
         state.heardPlayerHostId = undefined;
@@ -430,18 +440,17 @@ export function createRoomEngine(options: { random: () => number }) {
         state.heardPlayerHostId = hostId;
       } else {
         const guestHost = state.guestHost;
-        if (
-          (playerHostId !== undefined &&
-            state.heardPlayerHostId === playerHostId) ||
-          (state.world !== undefined &&
-            (state.role === "player" || (self !== undefined && self < hostId)))
-        )
-          return;
-        if (
+        const isPlayerHostHeard =
+          playerHostId !== undefined &&
+          state.heardPlayerHostId === playerHostId;
+        const outranksSender =
+          state.world !== undefined &&
+          (state.role === "player" || (self !== undefined && self < hostId));
+        const isOutrankedByGuestHost =
           guestHost !== undefined &&
           options.receivedAtMs - guestHost.heardAtMs <= SILENT_HOST_MS &&
-          guestHost.connectionId < hostId
-        )
+          guestHost.connectionId < hostId;
+        if (isPlayerHostHeard || outranksSender || isOutrankedByGuestHost)
           return;
         state.guestHost = {
           connectionId: hostId,
@@ -476,12 +485,13 @@ export function createRoomEngine(options: { random: () => number }) {
       state.time += dtSeconds;
       const self = state.selfConnectionId;
       const playerHostId = chooseHost(state.players);
-      state.enteredAtMs ??= nowMs;
+      if (state.hasSyncedPresence) state.enteredAtMs ??= nowMs;
       const hasFreshCats = nowMs - state.lastCatsReceivedAtMs <= SILENT_HOST_MS;
       const canStart =
         state.world !== undefined ||
         hasFreshCats ||
-        nowMs - state.enteredAtMs >= LISTEN_MS;
+        (state.enteredAtMs !== undefined &&
+          nowMs - state.enteredAtMs >= LISTEN_MS);
       const guestHostId =
         state.guestHost !== undefined &&
         nowMs - state.guestHost.heardAtMs <= SILENT_HOST_MS

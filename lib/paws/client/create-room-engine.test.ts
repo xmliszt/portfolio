@@ -894,6 +894,7 @@ function buildGuest(options: { connectionId: string; seed: number }) {
     role: "watcher",
     roomId: "room-1",
   });
+  engine.setPlayers([]);
   return engine;
 }
 
@@ -977,13 +978,83 @@ test("of two guests running a room, the larger connection id gives way", () => {
 test("a guest who enters a room another guest is running follows it", () => {
   const { messages } = runGuestHost({ connectionId: "g-tab", frames: 300 });
   const engine = buildGuest({ connectionId: "z-tab", seed: 6 });
+  const tail = messages.slice(-6);
   const rooms = Array.from({ length: 90 }, (_, frame) => {
     const nowMs = frame * 16;
-    const message = messages.at(frame / 15 - 6);
+    const message = tail[frame / 15];
     if (frame % 15 === 0 && message !== undefined)
       engine.receiveCats({ message, receivedAtMs: nowMs });
     return engine.frame({ nowMs, dtSeconds: DT_SECONDS });
   });
   assert.ok(rooms.every((room) => !room.isHost));
   assert.ok(rooms.at(-1)?.toys.some((toy) => toy.id === "yarn-2"));
+});
+
+test("a screen starts listening only once the room's presence has synced", () => {
+  const engine = createRoomEngine({ random: createSeededRandom({ seed: 9 }) });
+  engine.setSelf({
+    userId: "p",
+    connectionId: "p-tab",
+    role: "player",
+    roomId: "room-1",
+  });
+  const beforeSync = engine.frame({ nowMs: 0, dtSeconds: DT_SECONDS });
+  assert.equal(beforeSync.isHost, false);
+  engine.setPlayers([buildPlayer({ userId: "p", joinedAt: 1 })]);
+  const synced = engine.frame({ nowMs: 1500, dtSeconds: DT_SECONDS });
+  assert.equal(
+    synced.isHost,
+    false,
+    "1 s after setSelf is not 1 s of listening"
+  );
+  const listened = engine.frame({ nowMs: 2500, dtSeconds: DT_SECONDS });
+  assert.equal(listened.isHost, true);
+});
+
+test("a guest that rejoins the same room listens again before running it", () => {
+  const { engine } = runGuestHost({ connectionId: "g-tab", frames: 100 });
+  engine.setSelf({
+    userId: "g",
+    connectionId: undefined,
+    role: "watcher",
+    roomId: undefined,
+  });
+  engine.frame({ nowMs: 1600, dtSeconds: DT_SECONDS });
+  engine.setSelf({
+    userId: "g",
+    connectionId: "g2-tab",
+    role: "watcher",
+    roomId: "room-1",
+  });
+  engine.setPlayers([]);
+  const rejoined = engine.frame({ nowMs: 1616, dtSeconds: DT_SECONDS });
+  assert.equal(rejoined.isHost, false);
+});
+
+test("guests keep a leaving player's toys and one of them sends them on", () => {
+  const host = buildHost();
+  host.frame({ nowMs: 0, dtSeconds: DT_SECONDS });
+  host.placeToy({ itemId: "yarn-2", x: 600, y: 500, nowMs: 10 });
+  const fromPlayer = Array.from({ length: 120 }, (_, frame) =>
+    host.frame({ nowMs: 1000 + frame * 16, dtSeconds: DT_SECONDS })
+  )
+    .flatMap((room) =>
+      room.outgoing.cats === undefined ? [] : [room.outgoing.cats]
+    )
+    .at(-1);
+  assert.ok(fromPlayer && fromPlayer.toys.some((toy) => toy.id === "yarn-2"));
+  const guest = createRoomEngine({ random: createSeededRandom({ seed: 3 }) });
+  guest.setSelf({
+    userId: "g",
+    connectionId: "g-tab",
+    role: "watcher",
+    roomId: "room-1",
+  });
+  guest.setPlayers([buildPlayer({ userId: "me", joinedAt: 1 })]);
+  guest.receiveCats({ message: fromPlayer, receivedAtMs: 0 });
+  guest.frame({ nowMs: 0, dtSeconds: DT_SECONDS });
+  guest.setPlayers([]);
+  const alone = guest.frame({ nowMs: 400, dtSeconds: DT_SECONDS });
+  assert.equal(alone.isHost, true);
+  assert.ok(alone.outgoing.cats?.toys.some((toy) => toy.id === "yarn-2"));
 });
