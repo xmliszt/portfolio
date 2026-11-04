@@ -1,31 +1,40 @@
 "use server";
 
-import { randomUUID } from "node:crypto";
-
 import { requireCcOwner } from "@/lib/cc/auth/require-cc-owner";
+import { buildMediaPath } from "@/lib/cc/build-media-path";
 import { CC_ASSETS_BUCKET } from "@/lib/cc/post-asset";
 import { createCcServiceClient } from "@/lib/cc/supabase/create-cc-service-client";
 
-/** Reserve an object path for `fileName` under the folder of `postId`'s campaign (`custom` for a custom post) and return it with a one-time token the browser uploads the file with. */
+type AssetUploadTarget =
+  | { kind: "existing"; path: string }
+  | {
+      kind: "upload";
+      path: string;
+      token: string;
+      supabaseUrl: string;
+      anonKey: string;
+    };
+
+/** Return the path of the stored file whose content hash is `sha256` when one exists; otherwise reserve `media/<sha256>/<fileName>` and return it with a one-time token the browser uploads the file with. */
 export async function createAssetUpload(options: {
-  postId: string;
   fileName: string;
-}) {
+  sha256: string;
+}): Promise<AssetUploadTarget> {
   await requireCcOwner();
-  const supabase = createCcServiceClient();
-  const { data: post, error: postError } = await supabase
-    .from("posts")
-    .select("campaign_id")
-    .eq("id", options.postId)
-    .single();
-  if (postError) throw postError;
-  const safeName = options.fileName.replace(/[^\w.\-]+/g, "-");
-  const path = `${post.campaign_id ?? "custom"}/uploads/${randomUUID()}/${safeName}`;
-  const { data, error } = await supabase.storage
-    .from(CC_ASSETS_BUCKET)
-    .createSignedUploadUrl(path);
+  const { folder, path } = buildMediaPath(options);
+  const storage = createCcServiceClient().storage.from(CC_ASSETS_BUCKET);
+  const { data: existing, error: listError } = await storage.list(folder, {
+    limit: 1,
+  });
+  if (listError) throw listError;
+  const existingName = existing.at(0)?.name;
+  if (existingName !== undefined) {
+    return { kind: "existing", path: `${folder}/${existingName}` };
+  }
+  const { data, error } = await storage.createSignedUploadUrl(path);
   if (error) throw error;
   return {
+    kind: "upload",
     path: data.path,
     token: data.token,
     supabaseUrl: process.env.SUPABASE_DB_URL!,
