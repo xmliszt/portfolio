@@ -12,7 +12,6 @@ export const id = {
     signInToBring: "Masuk untuk membawa kucingmu",
     bringYourCat: "Bawa kucingmu",
     yourCat: "Kucingmu",
-    roomFull: "Semua ruangan sedang penuh. Kamu bisa melihat suasana ruangan.",
   },
   signIn: {
     title: "Masuk",

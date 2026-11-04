@@ -12,8 +12,6 @@ export const fr = {
     signInToBring: "Connecte-toi pour amener ton chat",
     bringYourCat: "Amène ton chat",
     yourCat: "Ton chat",
-    roomFull:
-      "Toutes les pièces sont pleines pour le moment. Tu peux regarder la pièce.",
   },
   signIn: {
     title: "Connexion",

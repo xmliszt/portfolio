@@ -83,12 +83,15 @@ test("opens a new room for a player when every room's player slots are full", ()
   });
 });
 
-test("tells a watcher every room is full when every watcher slot is taken", () => {
+test("opens a new room for a watcher when every room's watcher slots are full", () => {
   const members = [
     buildMember({ roomId: "a", userId: "p1", role: "player" }),
     buildMember({ roomId: "a", userId: "w1", role: "watcher" }),
   ];
-  assert.deepEqual(pick({ members, role: "watcher" }), { kind: "full" });
+  assert.deepEqual(pick({ members, role: "watcher" }), {
+    kind: "new",
+    roomId: "new-room",
+  });
 });
 
 test("keeps a member in their own room when another room has as many players", () => {

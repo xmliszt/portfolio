@@ -12,7 +12,6 @@ export const it = {
     signInToBring: "Accedi per portare il tuo gatto",
     bringYourCat: "Porta il tuo gatto",
     yourCat: "Il tuo gatto",
-    roomFull: "Tutte le stanze sono piene al momento. Puoi guardare la stanza.",
   },
   signIn: {
     title: "Accedi",

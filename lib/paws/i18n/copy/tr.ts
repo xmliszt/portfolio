@@ -12,7 +12,6 @@ export const tr = {
     signInToBring: "Kedini getirmek için giriş yap",
     bringYourCat: "Kedini getir",
     yourCat: "Kedin",
-    roomFull: "Şu an bütün odalar dolu. Odayı izleyebilirsin.",
   },
   signIn: {
     title: "Giriş yap",

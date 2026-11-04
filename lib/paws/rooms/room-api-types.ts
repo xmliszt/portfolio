@@ -11,7 +11,6 @@ export type ListRoomsResponse =
 
 export type JoinRoomResponse =
   | { kind: "joined"; roomId: string; topic: string; role: RoomRole }
-  | { kind: "full" }
   | { kind: "tooManyJoins" }
   | { kind: "forbidden" }
   | { kind: "failed" };

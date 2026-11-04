@@ -12,8 +12,6 @@ export const es = {
     signInToBring: "Inicia sesión para traer a tu gato",
     bringYourCat: "Trae a tu gato",
     yourCat: "Tu gato",
-    roomFull:
-      "Todas las salas están llenas ahora. Puedes seguir viendo la sala.",
   },
   signIn: {
     title: "Iniciar sesión",
