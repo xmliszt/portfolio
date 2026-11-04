@@ -51,10 +51,10 @@ export const RESEARCHED_WINDOWS: { [id in PlatformId]: PlatformResearch } = {
     ...US_EASTERN,
   },
   threads: {
-    dayWeights: [0.6, 0.9, 1, 1, 0.6, 0.3, 0.3],
+    dayWeights: [0.6, 0.9, 1, 0.95, 0.6, 0.3, 0.3],
     hours: [
-      { startHour: 9, endHour: 11, strength: 1, label: "9–11 am ET" },
-      { startHour: 11, endHour: 12, strength: 0.6, label: "11 am ET" },
+      { startHour: 8, endHour: 11, strength: 1, label: "8–11 am ET" },
+      { startHour: 11, endHour: 13, strength: 0.7, label: "11 am–1 pm ET" },
     ],
     ...US_EASTERN,
   },

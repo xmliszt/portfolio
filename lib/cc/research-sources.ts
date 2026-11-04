@@ -9,6 +9,7 @@ export type ResearchSource = {
 
 const CHECKED_ON = "2026-11-01";
 const BLUESKY_CHECKED_ON = "2026-11-03";
+const THREADS_CHECKED_ON = "2026-11-04";
 
 /** The studies behind `RESEARCHED_WINDOWS`, one row per claim used. */
 export const RESEARCH_SOURCES: readonly ResearchSource[] = [
@@ -41,9 +42,17 @@ export const RESEARCH_SOURCES: readonly ResearchSource[] = [
   },
   {
     platform: "threads",
-    claim: "Wednesday, Thursday and Tuesday mornings ET do best.",
-    url: "https://iqfluence.io/public/blog/best-times-to-post-on-social-media",
-    checkedOn: CHECKED_ON,
+    claim:
+      "Weekday slots cluster 8 am–1 pm ET, Wednesday on top (50,000+ accounts).",
+    url: "https://www.socialpilot.co/insights/best-time-to-post-on-threads",
+    checkedOn: THREADS_CHECKED_ON,
+  },
+  {
+    platform: "threads",
+    claim:
+      "Wednesday is strongest, then Thursday and Tuesday; Mondays and weekends lowest; Thursday 9 am is Buffer's top slot.",
+    url: "https://www.eclincher.com/articles/best-time-to-post-on-threads-in-2026",
+    checkedOn: THREADS_CHECKED_ON,
   },
   {
     platform: "tiktok",
