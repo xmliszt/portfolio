@@ -154,6 +154,7 @@ export function useRoomConnection(options: {
       connectionRef.current = roomSource.join({
         roomId: joined.roomId,
         userId: visitorId,
+        connectionId,
         role: joined.role,
         self: joined.role === "player" ? presence : undefined,
         onPlayers: (players) => {

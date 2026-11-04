@@ -35,6 +35,7 @@ export function createSupabaseRoomSource(options: {
     join({
       roomId,
       userId,
+      connectionId,
       role,
       self,
       onPlayers,
@@ -50,12 +51,14 @@ export function createSupabaseRoomSource(options: {
         hasLeft: boolean;
         players: PlayerPresence[];
         watcherIds: string[];
+        watcherConnectionIds: string[];
         pressedByUserId: { [userId: string]: boolean };
       } = {
         isSubscribed: false,
         hasLeft: false,
         players: [],
         watcherIds: [],
+        watcherConnectionIds: [],
         pressedByUserId: {},
       };
       const now = () => performance.now();
@@ -75,12 +78,14 @@ export function createSupabaseRoomSource(options: {
         maxPerSecond: RECEIVE_LIMITS.eventsPerSecond,
         now,
       });
-      const presence = role === "player" ? self : { role: "watcher" };
+      const presence =
+        role === "player" ? self : { role: "watcher", connectionId };
       const isPresent = (visitorId: string) =>
         state.players.some((player) => player.userId === visitorId) ||
         state.watcherIds.includes(visitorId);
-      const isConnected = (connectionId: string) =>
-        state.players.some((player) => player.connectionId === connectionId);
+      const isConnected = (senderId: string) =>
+        state.players.some((player) => player.connectionId === senderId) ||
+        state.watcherConnectionIds.includes(senderId);
 
       function broadcast(event: "finger" | "cats" | "event", payload: object) {
         if (!state.isSubscribed || state.channel === undefined) return;
@@ -131,6 +136,16 @@ export function createSupabaseRoomSource(options: {
                   )
               )
               .map(([key]) => key);
+            state.watcherConnectionIds = Object.values(channel.presenceState())
+              .flat()
+              .flatMap((meta) =>
+                "role" in meta &&
+                meta.role === "watcher" &&
+                "connectionId" in meta &&
+                typeof meta.connectionId === "string"
+                  ? [meta.connectionId]
+                  : []
+              );
             onPlayers(state.players);
           })
           .on("broadcast", { event: "finger" }, ({ payload }) => {
