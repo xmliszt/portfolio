@@ -2000,8 +2000,8 @@ export function createAutumnPlanet(container, options = {}) {
     thick = lerp(thick, 0.55, sleepy);
     rot = lerp(rot, Math.PI / 2, sleepy);
     dy = lerp(dy, -0.004, sleepy);
-    len = lerp(len, 1.25, P.surprise);
-    thick = lerp(thick, 1.35, P.surprise);
+    len = lerp(len, 1.3, P.surprise);
+    thick = lerp(thick, 2.1, P.surprise);
     rot = lerp(rot, 0, P.surprise);
     dy = lerp(dy, 0.002, P.surprise);
     const blink = c.blink > 0 ? Math.sin((c.blink / 0.18) * Math.PI) : 0;
@@ -2127,12 +2127,25 @@ export function createAutumnPlanet(container, options = {}) {
     loser: undefined,
     restKind: "loaf",
   };
-  const INVITE_DUR = { bow: 1.3, flop: 2.8, crab: 2.4, rub: 4, rest: 4 };
-  const _rubF = new THREE.Vector3(),
-    _rubS = new THREE.Vector3();
+  const INVITE_DUR = { bow: 1.3, flop: 2.8, crab: 2.4, rest: 4 };
+  const GATHER_DIST = {
+    bow: 0.9,
+    flop: 0.9,
+    crab: 0.9,
+    wrestle: 0.9,
+    tumble: 0.9,
+    rest: 0.9,
+    stretch: 1,
+    stalk: 1.1,
+    ambush: 1.4,
+  };
+  const CHASE_LEASH = 1.6;
+  const POUNCE_REACH = 0.9;
+  const TAG_COOLDOWN = 3;
+  const GATHER_GIVE_UP = 6,
+    CREEP_GIVE_UP = 3;
   const STILL_MODES = new Set([
     "greet",
-    "rub",
     "bow",
     "flop",
     "crab",
@@ -2155,6 +2168,8 @@ export function createAutumnPlanet(container, options = {}) {
     play.t = 0;
     play.dur = dur;
     play.tagAt = 0;
+    play.gatherTo = GATHER_DIST[mode];
+    play.gatherT = 0;
   }
   function startChase(runner) {
     play.runner = cats.indexOf(runner);
@@ -2180,8 +2195,6 @@ export function createAutumnPlanet(container, options = {}) {
     setMode("pounce", 1.5);
   }
   function direct(dt, t) {
-    play.t += dt;
-    const first = play.t <= dt + 1e-9;
     const A = cats[play.runner],
       B = cats[1 - play.runner];
     centerWorld(A, _wa);
@@ -2197,6 +2210,27 @@ export function createAutumnPlanet(container, options = {}) {
     const face = (c) => {
       c.wantHeading = c.gazeAngle;
     };
+    if (play.gatherTo !== undefined) {
+      play.gatherT += dt;
+      // a prop between the cats can stop them meeting, so give up and run
+      if (play.gatherT > GATHER_GIVE_UP) {
+        startChase(pick(cats));
+        return;
+      }
+      const isFar = dist > play.gatherTo;
+      if (isFar || Math.max(A.speed, B.speed) > 0.35) {
+        for (const c of [A, B]) {
+          face(c);
+          c.wantSpeed = !isFar ? 0 : dist > 1.6 ? 0.6 : 0.3;
+          c.target.tailUp = 0.8;
+        }
+        catContacts();
+        return;
+      }
+      play.gatherTo = undefined;
+    }
+    play.t += dt;
+    const first = play.t <= dt + 1e-9;
     switch (play.mode) {
       case "greet": {
         face(A);
@@ -2211,49 +2245,7 @@ export function createAutumnPlanet(container, options = {}) {
         A.target.tilt = 0.2;
         if (dist > 0.66) play.t = Math.min(play.t, 0.01);
         if (play.t > play.dur) {
-          if (Math.random() < 0.35) setMode("rub", 4);
-          else {
-            const next = pick(["bow", "bow", "crab", "flop"]);
-            setMode(next, INVITE_DUR[next]);
-          }
-        }
-        break;
-      }
-      case "rub": {
-        if (first) {
-          const F = A.frame;
-          _rubF
-            .set(0, 0, 0)
-            .addScaledVector(F.ex, Math.sin(A.bodyYaw))
-            .addScaledVector(F.ez, Math.cos(A.bodyYaw));
-          _rubS.crossVectors(F.up, _rubF);
-          if (_rubS.dot(_b.subVectors(_wb, _wa)) < 0) _rubS.negate();
-          play.rubPath = [
-            _wa
-              .clone()
-              .addScaledVector(_rubS, 0.19)
-              .addScaledVector(_rubF, 0.22),
-            _wa
-              .clone()
-              .addScaledVector(_rubS, 0.17)
-              .addScaledVector(_rubF, -0.55),
-          ];
-        }
-        let toEnd = centerWorld(B, _wd).distanceTo(play.rubPath[0]);
-        if (toEnd < 0.1 && play.rubPath.length > 1) {
-          play.rubPath.shift();
-          toEnd = _wd.distanceTo(play.rubPath[0]);
-        }
-        B.wantHeading = angleTo(B, play.rubPath[0]);
-        B.wantSpeed = toEnd > 0.08 ? 0.18 : 0;
-        B.target.tailUp = 1;
-        B.target.happy = 1;
-        B.target.headYaw = 0;
-        A.target.tailUp = 1;
-        A.target.happy = 1;
-        A.target.tilt = 0.25;
-        if ((play.rubPath.length === 1 && toEnd <= 0.08) || play.t > play.dur) {
-          const next = pick(["bow", "flop", "crab"]);
+          const next = pick(["bow", "bow", "crab", "flop"]);
           setMode(next, INVITE_DUR[next]);
         }
         break;
@@ -2330,8 +2322,10 @@ export function createAutumnPlanet(container, options = {}) {
         A.wanderH += Math.sin(t * 0.8 + A.seed) * 1.3 * dt;
         if (dist < 0.9)
           A.wanderH = turnToward(A.wanderH, A.gazeAngle + Math.PI, dt * 3);
+        else if (dist > CHASE_LEASH)
+          A.wanderH = turnToward(A.wanderH, A.gazeAngle, dt * 2.5);
         A.wantHeading = A.burst === 0 ? A.gazeAngle : A.wanderH;
-        A.wantSpeed = A.burst;
+        A.wantSpeed = dist > CHASE_LEASH ? Math.min(A.burst, 0.6) : A.burst;
         A.target.tailUp = A.burst > 0.5 ? 0.45 : 0.6;
         A.target.happy = 0.7;
         const waiting = A.burst === 0 && dist < 1.1;
@@ -2339,12 +2333,18 @@ export function createAutumnPlanet(container, options = {}) {
         B.wantSpeed = waiting ? 0 : clamp((dist - 0.45) * 2.2, 0, 1.3);
         B.target.tailUp = 0.5;
         if (waiting) B.target.crouch = 0.5;
-        if (dist < 0.5 && A.burst > 0.5 && play.t - (play.tagAt ?? 0) > 1.5) {
+        if (
+          dist < 0.5 &&
+          A.burst > 0.5 &&
+          play.t - (play.tagAt ?? 0) > TAG_COOLDOWN
+        ) {
           play.tagAt = play.t;
           play.runner = 1 - play.runner;
           B.burst = rand(1.05, 1.3);
           B.burstT = rand(1, 1.8);
-          B.wanderH = B.gazeAngle + Math.PI;
+          B.wanderH =
+            B.gazeAngle +
+            Math.sign(wrap(B.bodyYaw - B.gazeAngle) || 1) * Math.PI * 0.5;
           break;
         }
         if ((play.t > play.dur && waiting) || play.t > play.dur + 6) {
@@ -2352,7 +2352,7 @@ export function createAutumnPlanet(container, options = {}) {
           if (r < 0.2) setMode("ambush", 4);
           else if (r < 0.55) setMode("stalk", 1.6);
           else {
-            const next = pick(["bow", "flop", "crab", "rub", "rest"]);
+            const next = pick(["bow", "flop", "crab", "rest"]);
             setMode(next, INVITE_DUR[next]);
           }
         }
@@ -2368,12 +2368,15 @@ export function createAutumnPlanet(container, options = {}) {
         B.wantSpeed = 0.22;
         B.target.headYaw = Math.sin(t * 1.7) * 0.9;
         B.target.tailUp = 0.6;
-        if (dist < 0.65 || play.t > play.dur) startPounce(A, B, dist);
+        if (play.t > play.dur) A.wantSpeed = 0.15;
+        if (dist < 0.65 || (play.t > play.dur && dist < POUNCE_REACH))
+          startPounce(A, B, dist);
+        else if (play.t > play.dur + CREEP_GIVE_UP) startChase(B);
         break;
       }
       case "stalk": {
         face(B);
-        B.wantSpeed = dist > 0.85 ? 0.12 : 0;
+        B.wantSpeed = dist > 0.85 ? 0.2 : 0;
         face(A);
         B.target.crouch = 1;
         B.target.wiggle = play.t > 0.8 ? 1 : 0;
@@ -2381,7 +2384,8 @@ export function createAutumnPlanet(container, options = {}) {
         B.target.earsBack = 0.2;
         A.target.crouch = 0.3;
         A.target.tilt = 0.25;
-        if (play.t > play.dur) startPounce(B, A, dist);
+        if (play.t > play.dur && dist < POUNCE_REACH) startPounce(B, A, dist);
+        else if (play.t > play.dur + CREEP_GIVE_UP) startChase(A);
         break;
       }
       case "pounce": {
