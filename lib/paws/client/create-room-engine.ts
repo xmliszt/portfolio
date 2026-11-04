@@ -126,6 +126,8 @@ export function createRoomEngine(options: { random: () => number }) {
     selfConnectionId: string | undefined;
     role: RoomRole;
     world: World | undefined;
+    /** The world this screen last hosted in this room, and when it stopped hosting it. */
+    hostedWorld: { world: World; stoppedAtMs: number } | undefined;
     roomId: string | undefined;
     residents: Resident[];
     residentWorld: World | undefined;
@@ -161,6 +163,7 @@ export function createRoomEngine(options: { random: () => number }) {
     selfConnectionId: undefined,
     role: "watcher",
     world: undefined,
+    hostedWorld: undefined,
     roomId: undefined,
     residents: getResidentCats({ roomId: LOCAL_ROOM_ID }),
     residentWorld: undefined,
@@ -352,6 +355,7 @@ export function createRoomEngine(options: { random: () => number }) {
         state.roomId = self.roomId;
         state.residents = getResidentCats({ roomId: self.roomId });
         state.residentWorld = undefined;
+        state.hostedWorld = undefined;
         state.buffer = createSnapshotBuffer();
         state.lastCatsReceivedAtMs = -Infinity;
         legPlayer.reset();
@@ -531,6 +535,8 @@ export function createRoomEngine(options: { random: () => number }) {
           });
       }
       if (!isHost) {
+        if (state.world !== undefined)
+          state.hostedWorld = { world: state.world, stoppedAtMs: nowMs };
         state.world = undefined;
         state.unsentPrints = [];
       }
@@ -540,10 +546,13 @@ export function createRoomEngine(options: { random: () => number }) {
       }
       if (!runsLocally) state.residentWorld = undefined;
       if (runsLocally && state.residentWorld === undefined) {
-        state.residentWorld = carryOnWorld({
-          known: localPlayers,
-          fresh: localPlayers,
-        });
+        const hostedWorld = state.hostedWorld;
+        state.residentWorld =
+          hostedWorld !== undefined &&
+          state.lastCatsReceivedAtMs < hostedWorld.stoppedAtMs
+            ? hostedWorld.world
+            : carryOnWorld({ known: localPlayers, fresh: localPlayers });
+        state.hostedWorld = undefined;
       }
 
       const events: RoomEvent[] = state.received
