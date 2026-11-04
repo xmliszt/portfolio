@@ -25,7 +25,7 @@ export function DeleteDataSheet(props: DeleteDataSheetProps) {
     if (props.accessToken === undefined) return;
     setStep("deleting");
     const result = await deleteAccount({ accessToken: props.accessToken });
-    if (result.kind !== "deleted") {
+    if (result.kind === "failed" || result.kind === "unreachable") {
       setStep("failed");
       return;
     }
@@ -51,7 +51,11 @@ export function DeleteDataSheet(props: DeleteDataSheetProps) {
             </p>
           )}
           <div className="flex flex-wrap justify-end gap-x-2 gap-y-2">
-            <RisoButton variant="quiet" onClick={props.onClose}>
+            <RisoButton
+              variant="quiet"
+              disabled={step === "deleting"}
+              onClick={props.onClose}
+            >
               {copy.deleteData.keep}
             </RisoButton>
             <RisoButton

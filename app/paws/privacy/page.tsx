@@ -183,7 +183,12 @@ export default function PawsPrivacyPage() {
           from the address you sign in with to ask what is stored about you, or
           to have your account deleted. Supabase&apos;s sign-in logs, which
           include IP addresses, are kept by Supabase for a short time and are
-          not deleted with your account.
+          not deleted with your account. Resend&apos;s delivery logs keep the
+          address a sign-in code was sent to for a short time.
+        </p>
+        <p>
+          An invite link you already shared still shows your cat&apos;s look,
+          because the look is stored in the link itself.
         </p>
       </PawsLegalSection>
 
