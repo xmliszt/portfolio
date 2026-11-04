@@ -18,7 +18,7 @@ const SECTIONS = [
   { href: "/", label: "OVERVIEW" },
   { href: "/calendar", label: "CALENDAR" },
   { href: "/composer", label: "COMPOSER" },
-  { href: "/log", label: "LOG NUMBERS" },
+  { href: "/log", label: "LOG" },
   { href: "/insights", label: "INSIGHTS" },
   { href: "/new", label: "NEW" },
   { href: "/settings", label: "SETTINGS" },

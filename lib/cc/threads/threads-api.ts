@@ -9,6 +9,7 @@ export const THREADS_SCOPES = [
   "threads_manage_insights",
   "threads_keyword_search",
   "threads_content_publish",
+  "threads_manage_replies",
 ];
 
 export const THREADS_REDIRECT_URI = `${CC_ORIGIN}/api/cc/threads/callback`;
