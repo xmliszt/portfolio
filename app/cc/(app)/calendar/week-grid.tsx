@@ -12,6 +12,7 @@ export type GridPost = {
   timeLabel: string;
   label: string;
   status: string;
+  project: string | undefined;
   childNote: string | undefined;
   href: string;
   isSelected: boolean;
@@ -108,8 +109,15 @@ export function WeekGrid(props: WeekGridProps) {
                           className="flex justify-between gap-x-1 text-[10px] tracking-[0.04em]"
                           style={{ color: `hsl(var(${platform.colorVar}))` }}
                         >
-                          <span className="truncate">
-                            {post.timeLabel} {platform.shortLabel}
+                          <span className="flex min-w-0 items-center gap-x-1">
+                            <span className="truncate">
+                              {post.timeLabel} {platform.shortLabel}
+                            </span>
+                            {post.project !== undefined && (
+                              <span className="border-cc-text-2 text-cc-text-2 shrink-0 border px-0.5 text-[9px] leading-[12px] font-semibold">
+                                CUSTOM
+                              </span>
+                            )}
                           </span>
                           {post.status !== "scheduled" && (
                             <span
@@ -131,6 +139,11 @@ export function WeekGrid(props: WeekGridProps) {
                             post.status === "skipped" && "line-through"
                           )}
                         >
+                          {post.project !== undefined && (
+                            <span className="text-foreground font-semibold">
+                              {post.project} ·{" "}
+                            </span>
+                          )}
                           {post.label}
                           {post.childNote !== undefined && (
                             <span className="text-muted-foreground">

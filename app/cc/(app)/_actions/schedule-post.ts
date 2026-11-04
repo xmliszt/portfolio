@@ -37,6 +37,7 @@ export async function schedulePost(options: {
         status: row.status,
         kind: row.kind,
         repostAs: row.repost_as,
+        campaignId: row.campaign_id,
         scheduledAt: row.scheduled_at,
         postedAt: row.posted_at,
       })

@@ -6,6 +6,7 @@ import { buildScheduleContext } from "@/app/cc/(app)/calendar/build-schedule-con
 import { requireCcOwner } from "@/lib/cc/auth/require-cc-owner";
 import { getCurrentCampaign } from "@/lib/cc/data/get-current-campaign";
 import { listCampaignPosts } from "@/lib/cc/data/list-campaign-posts";
+import { listCustomPosts } from "@/lib/cc/data/list-custom-posts";
 import { formatSgt } from "@/lib/cc/format-sgt";
 import { isPlatformId } from "@/lib/cc/is-platform-id";
 import { parseCampaignPlan } from "@/lib/cc/parse-campaign-plan";
@@ -29,10 +30,12 @@ export default async function NewPage(props: NewPageProps) {
   const dateParam = searchParams.date;
   const platformParam = searchParams.platform;
   const campaign = await getCurrentCampaign();
-  const posts =
+  const [campaignPosts, customPosts] = await Promise.all([
     campaign === undefined
       ? []
-      : await listCampaignPosts({ campaignId: campaign.id, variant: "mine" });
+      : listCampaignPosts({ campaignId: campaign.id, variant: "mine" }),
+    listCustomPosts({ variant: "mine" }),
+  ]);
   const plan = parseCampaignPlan(campaign?.plan ?? null);
 
   return (
@@ -46,30 +49,32 @@ export default async function NewPage(props: NewPageProps) {
         title="New"
       />
       <div className="grid grid-cols-1 gap-x-3 gap-y-3 xl:grid-cols-2">
-        {campaign === undefined ? (
-          <Panel title="Schedule post" bodyClassName="px-3 py-2.5">
-            <p className="text-muted-foreground text-[11px]">
-              Create a campaign first; posts belong to the current campaign.
-            </p>
-          </Panel>
-        ) : (
-          <SchedulePostForm
-            campaignId={campaign.id}
-            campaignLink={campaign.link ?? undefined}
-            defaultDate={
-              typeof dateParam === "string" &&
-              /^\d{4}-\d{2}-\d{2}$/.test(dateParam)
-                ? dateParam
-                : formatSgt({ date: new Date(), pattern: "yyyy-MM-dd" })
-            }
-            defaultPlatformId={
-              typeof platformParam === "string" && isPlatformId(platformParam)
-                ? platformParam
-                : "xiaohongshu"
-            }
-            schedule={buildScheduleContext({ posts, plan })}
-          />
-        )}
+        <SchedulePostForm
+          campaign={
+            campaign === undefined
+              ? undefined
+              : {
+                  id: campaign.id,
+                  name: campaign.name,
+                  link: campaign.link ?? undefined,
+                }
+          }
+          defaultDate={
+            typeof dateParam === "string" &&
+            /^\d{4}-\d{2}-\d{2}$/.test(dateParam)
+              ? dateParam
+              : formatSgt({ date: new Date(), pattern: "yyyy-MM-dd" })
+          }
+          defaultPlatformId={
+            typeof platformParam === "string" && isPlatformId(platformParam)
+              ? platformParam
+              : "xiaohongshu"
+          }
+          schedule={buildScheduleContext({
+            posts: [...campaignPosts, ...customPosts],
+            plan,
+          })}
+        />
         <CampaignPanel campaign={undefined} />
         <Panel
           title="Smart campaign"

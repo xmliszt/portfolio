@@ -43,6 +43,7 @@ export async function saveChatgptVariant(options: {
     existing === null
       ? supabase.from("posts").insert({
           campaign_id: original.campaign_id,
+          project: original.project,
           platform: original.platform,
           kind: original.kind,
           parent_post_id: original.parent_post_id,

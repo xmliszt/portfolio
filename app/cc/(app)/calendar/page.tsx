@@ -1,11 +1,13 @@
 import countBy from "lodash/countBy.js";
 import maxBy from "lodash/maxBy.js";
+import sortBy from "lodash/sortBy.js";
 import Link from "next/link";
 
 import { PageHeader } from "@/app/cc/_ui/page-header";
 import { requireCcOwner } from "@/lib/cc/auth/require-cc-owner";
 import { getCurrentCampaign } from "@/lib/cc/data/get-current-campaign";
 import { listCampaignPosts } from "@/lib/cc/data/list-campaign-posts";
+import { listCustomPosts } from "@/lib/cc/data/list-custom-posts";
 import { listPostMetrics } from "@/lib/cc/data/list-post-metrics";
 import { toStatRows } from "@/lib/cc/data/to-stat-rows";
 import { formatSgt } from "@/lib/cc/format-sgt";
@@ -51,19 +53,26 @@ export default async function CalendarPage(props: CalendarPageProps) {
   await requireCcOwner();
   const searchParams = await props.searchParams;
   const campaign = await getCurrentCampaign();
-  if (campaign === undefined) {
+  const [campaignPosts, customPosts] = await Promise.all([
+    campaign === undefined
+      ? []
+      : listCampaignPosts({ campaignId: campaign.id, variant: "mine" }),
+    listCustomPosts({ variant: "mine" }),
+  ]);
+  if (campaign === undefined && customPosts.length === 0) {
     return <PageHeader eyebrow="CALENDAR" title="No campaign yet" />;
   }
 
   const now = new Date();
-  const posts = await listCampaignPosts({
-    campaignId: campaign.id,
-    variant: "mine",
-  });
+  const posts = sortBy(
+    [...campaignPosts, ...customPosts],
+    (post) => post.scheduled_at === null,
+    (post) => post.scheduled_at
+  );
   const metrics = await listPostMetrics({
-    postIds: posts.map((post) => post.id),
+    postIds: campaignPosts.map((post) => post.id),
   });
-  const stats = toStatRows({ posts, metrics });
+  const stats = toStatRows({ posts: campaignPosts, metrics });
 
   const nextPost = posts.find(
     (post) =>
@@ -163,6 +172,7 @@ export default async function CalendarPage(props: CalendarPageProps) {
           post.target ??
           (getPostName(post) || PLATFORMS[entry.platformId].label),
         status: post.status,
+        project: post.campaign_id === null ? (post.project ?? "") : undefined,
         childNote:
           childCount === 0 ? undefined : `+ ${childCount} ${childWord}`,
         href: buildHref({ edit: post.id }),
@@ -185,7 +195,7 @@ export default async function CalendarPage(props: CalendarPageProps) {
 
   const schedule = buildScheduleContext({
     posts,
-    plan: parseCampaignPlan(campaign.plan),
+    plan: parseCampaignPlan(campaign?.plan ?? null),
   });
 
   const editPost = posts.find((post) => post.id === editId);
@@ -198,7 +208,7 @@ export default async function CalendarPage(props: CalendarPageProps) {
   return (
     <>
       <PageHeader
-        eyebrow={`CALENDAR // ${campaign.name.toUpperCase()} · ALL TIMES SGT`}
+        eyebrow={`CALENDAR // ${campaign === undefined ? "CUSTOM POSTS" : `${campaign.name.toUpperCase()} + CUSTOM`} · ALL TIMES SGT`}
         title={`Week of ${weekLabel}`}
         aside={
           <nav
@@ -246,7 +256,7 @@ export default async function CalendarPage(props: CalendarPageProps) {
         isPlatformId(editPost.platform) && (
           <PostEditor
             key={`${editPost.id}-${editPost.scheduled_at}-${editPost.status}`}
-            campaignId={campaign.id}
+            campaignId={campaign?.id}
             post={{
               id: editPost.id,
               platformId: editPost.platform,

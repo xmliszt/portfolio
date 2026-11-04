@@ -27,13 +27,14 @@ type EditablePostFields = Partial<
     | "variant"
     | "variant_group"
     | "wave"
+    | "project"
   >
 >;
 
-/** Create a post in `campaignId` (when `postId` is unset) or update the given fields of `postId`, with an X community link stored as its id, then resync its reminders; return the saved post. */
+/** Create a post (when `postId` is unset) or update the given fields of `postId`, in `campaignId` or as a custom post when `campaignId` is unset, with an X community link stored as its id, then resync its reminders; return the saved post. */
 export async function savePost(options: {
   postId?: string;
-  campaignId: string;
+  campaignId: string | undefined;
   fields: EditablePostFields;
 }) {
   await requireCcOwner();
@@ -43,24 +44,35 @@ export async function savePost(options: {
   ) {
     throw new Error(`Unknown platform ${options.fields.platform}`);
   }
+  if (
+    options.postId === undefined &&
+    options.campaignId === undefined &&
+    (options.fields.project ?? "").trim() === ""
+  ) {
+    throw new Error("A custom post needs a project");
+  }
   const target = options.fields.target;
   const fields =
     typeof target === "string" && target.includes("/i/communities/")
       ? { ...options.fields, target: parseXCommunityId(target) ?? target }
       : options.fields;
   const supabase = createCcServiceClient();
-  const query =
-    options.postId === undefined
-      ? supabase.from("posts").insert({
-          campaign_id: options.campaignId,
-          platform: fields.platform ?? "x",
-          ...fields,
-        })
-      : supabase
-          .from("posts")
-          .update({ ...fields, updated_at: new Date().toISOString() })
-          .eq("id", options.postId)
-          .eq("campaign_id", options.campaignId);
+  const query = (() => {
+    if (options.postId === undefined) {
+      return supabase.from("posts").insert({
+        campaign_id: options.campaignId ?? null,
+        platform: fields.platform ?? "x",
+        ...fields,
+      });
+    }
+    const update = supabase
+      .from("posts")
+      .update({ ...fields, updated_at: new Date().toISOString() })
+      .eq("id", options.postId);
+    return options.campaignId === undefined
+      ? update.is("campaign_id", null)
+      : update.eq("campaign_id", options.campaignId);
+  })();
   const { data: post, error } = await query.select("*").single();
   if (error) throw error;
 
@@ -69,6 +81,7 @@ export async function savePost(options: {
     status: post.status,
     kind: post.kind,
     repostAs: post.repost_as,
+    campaignId: post.campaign_id,
     scheduledAt: post.scheduled_at,
     postedAt: post.posted_at,
   });

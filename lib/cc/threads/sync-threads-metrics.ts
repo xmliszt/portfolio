@@ -16,7 +16,7 @@ import { refreshThreadsToken } from "./refresh-threads-token";
 const DAY_MS = 86_400_000;
 const CHECKPOINTS: readonly MetricCheckpoint[] = ["1h", "24h", "7d", "extra"];
 
-/** Refresh the stored Threads token when under 10 days are left, then save one `post_metrics` row from Threads insights for each posted Threads post with a stored media id or a link to one of the account's recent threads and is due a checkpoint; return the saved checkpoints, and why nothing ran when it could not. A token Threads rejects gets `expires_at` set to `now`. */
+/** Refresh the stored Threads token when under 10 days are left, then save one `post_metrics` row from Threads insights for each posted campaign Threads post with a stored media id or a link to one of the account's recent threads and is due a checkpoint; return the saved checkpoints, and why nothing ran when it could not. A token Threads rejects gets `expires_at` set to `now`. */
 export async function syncThreadsMetrics(options: { now: Date }) {
   const supabase = createCcServiceClient();
   const { data: integration, error } = await supabase
@@ -78,6 +78,7 @@ export async function syncThreadsMetrics(options: { now: Date }) {
       "id, url, platform_post_id, posted_at, post_metrics(checkpoint, captured_at)"
     )
     .eq("platform", "threads")
+    .not("campaign_id", "is", null)
     .in("kind", ["post", "repost"])
     .neq("repost_as", "repost")
     .eq("status", "posted")

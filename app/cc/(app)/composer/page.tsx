@@ -5,6 +5,7 @@ import { Panel } from "@/app/cc/_ui/panel";
 import { requireCcOwner } from "@/lib/cc/auth/require-cc-owner";
 import { getCurrentCampaign } from "@/lib/cc/data/get-current-campaign";
 import { listCampaignPosts } from "@/lib/cc/data/list-campaign-posts";
+import { listCustomPosts } from "@/lib/cc/data/list-custom-posts";
 import { formatSgt } from "@/lib/cc/format-sgt";
 import { isPlatformId } from "@/lib/cc/is-platform-id";
 
@@ -44,10 +45,13 @@ export default async function ComposerPage(props: ComposerPageProps) {
   );
 
   const campaign = await getCurrentCampaign();
-  const posts =
+  const [campaignPosts, customPosts] = await Promise.all([
     campaign === undefined
       ? []
-      : await listCampaignPosts({ campaignId: campaign.id });
+      : listCampaignPosts({ campaignId: campaign.id }),
+    listCustomPosts({}),
+  ]);
+  const posts = [...campaignPosts, ...customPosts];
   const selected = getSelectedPost({
     posts,
     postId: postParam,
@@ -55,18 +59,14 @@ export default async function ComposerPage(props: ComposerPageProps) {
   });
   const post = selected.post;
 
-  if (
-    campaign === undefined ||
-    post === undefined ||
-    !isPlatformId(post.platform)
-  ) {
+  if (post === undefined || !isPlatformId(post.platform)) {
     return (
       <>
         {header}
         <Panel title="No drafts">
           <p className="text-muted-foreground px-3 py-2.5">
             {campaign === undefined
-              ? "There is no campaign yet."
+              ? "There are no posts yet. Schedule one from New."
               : "This campaign has no posts yet. Schedule one from New."}
           </p>
         </Panel>
@@ -110,11 +110,11 @@ export default async function ComposerPage(props: ComposerPageProps) {
       {header}
       <Composer
         key={post.id}
-        campaign={{
-          id: campaign.id,
-          name: campaign.name,
-          notes: campaign.notes,
-        }}
+        campaign={
+          post.campaign_id === null || campaign === undefined
+            ? { id: undefined, name: post.project ?? "", notes: null }
+            : { id: campaign.id, name: campaign.name, notes: campaign.notes }
+        }
         post={post}
         platformId={post.platform}
         childPosts={childPosts}

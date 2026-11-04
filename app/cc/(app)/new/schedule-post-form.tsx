@@ -20,10 +20,10 @@ import {
   PLATFORMS,
 } from "@/lib/cc/platforms";
 import { sgtToUtc } from "@/lib/cc/sgt-to-utc";
+import { cn } from "@/lib/utils";
 
 type SchedulePostFormProps = {
-  campaignId: string;
-  campaignLink: string | undefined;
+  campaign: { id: string; name: string; link: string | undefined } | undefined;
   defaultDate: string;
   defaultPlatformId: PlatformId;
   schedule: ScheduleContext;
@@ -32,9 +32,16 @@ type SchedulePostFormProps = {
 type Result =
   | { kind: "idle" }
   | { kind: "created"; postId: string; status: "draft" | "scheduled" }
-  | { kind: "failed" };
+  | { kind: "failed"; message: string };
+
+type Owner = "campaign" | "custom";
 
 export function SchedulePostForm(props: SchedulePostFormProps) {
+  const [owner, setOwner] = useState<Owner>(
+    props.campaign === undefined ? "custom" : "campaign"
+  );
+  const [project, setProject] = useState("");
+  const [link, setLink] = useState("");
   const [platformId, setPlatformId] = useState<PlatformId>(
     props.defaultPlatformId
   );
@@ -53,8 +60,13 @@ export function SchedulePostForm(props: SchedulePostFormProps) {
     setResult({ kind: "idle" });
     startTransition(async () => {
       try {
+        const isCustom = owner === "custom";
+        if (isCustom && project.trim() === "") {
+          setResult({ kind: "failed", message: "Name the project first." });
+          return;
+        }
         const post = await savePost({
-          campaignId: props.campaignId,
+          campaignId: isCustom ? undefined : props.campaign?.id,
           fields: {
             platform: platformId,
             kind: "post",
@@ -62,13 +74,16 @@ export function SchedulePostForm(props: SchedulePostFormProps) {
             title: title.trim() || null,
             scheduled_at: sgtToUtc({ date, time }).toISOString(),
             status,
-            link: props.campaignLink ?? null,
+            link: isCustom
+              ? link.trim() || null
+              : (props.campaign?.link ?? null),
+            project: isCustom ? project.trim() : null,
           },
         });
         setResult({ kind: "created", postId: post.id, status });
         setTitle("");
       } catch {
-        setResult({ kind: "failed" });
+        setResult({ kind: "failed", message: "Could not save. Try again." });
       }
     });
   }
@@ -80,6 +95,77 @@ export function SchedulePostForm(props: SchedulePostFormProps) {
       bodyClassName="px-3 py-2.5"
     >
       <form id="schedule" onSubmit={create} className="flex flex-col gap-y-3.5">
+        <div className="flex min-w-0 flex-col gap-y-1">
+          <span
+            id="schedule-owner-label"
+            className="text-muted-foreground text-[10.5px] tracking-[0.04em] uppercase"
+          >
+            FOR
+          </span>
+          <div
+            role="group"
+            aria-labelledby="schedule-owner-label"
+            className="grid grid-cols-2 border"
+          >
+            {(["campaign", "custom"] as const).map((option) => (
+              <button
+                key={option}
+                type="button"
+                aria-pressed={owner === option}
+                disabled={option === "campaign" && props.campaign === undefined}
+                onClick={() => setOwner(option)}
+                className={cn(
+                  "flex h-7 min-w-0 items-center justify-center gap-x-1.5 px-2 text-[11px] font-semibold tracking-[0.04em] not-first:border-l disabled:opacity-50",
+                  owner === option
+                    ? "bg-primary text-primary-foreground"
+                    : "text-muted-foreground hover:text-foreground"
+                )}
+              >
+                {option === "custom" ? (
+                  "CUSTOM POST"
+                ) : (
+                  <>
+                    <span className="shrink-0">CAMPAIGN</span>
+                    <span className="truncate font-normal">
+                      {props.campaign === undefined
+                        ? "· none yet"
+                        : `· ${props.campaign.name}`}
+                    </span>
+                  </>
+                )}
+              </button>
+            ))}
+          </div>
+          <p className="text-muted-foreground text-[11px]">
+            {owner === "campaign"
+              ? "Part of the campaign: planner, reminders and insights."
+              : "A one-off post for another project. It shows on the calendar with a CUSTOM badge and gets a Telegram reminder to post; no follow-up reminders or insights."}
+          </p>
+        </div>
+        {owner === "custom" && (
+          <div className="grid grid-cols-1 gap-x-3 gap-y-3.5 sm:grid-cols-2">
+            <CcField label="PROJECT" htmlFor="schedule-project">
+              <input
+                id="schedule-project"
+                required
+                className="cc-input"
+                placeholder="e.g. Joodle"
+                value={project}
+                onChange={(event) => setProject(event.target.value)}
+              />
+            </CcField>
+            <CcField label="LINK" htmlFor="schedule-link">
+              <input
+                id="schedule-link"
+                type="url"
+                className="cc-input"
+                placeholder="https://… (optional)"
+                value={link}
+                onChange={(event) => setLink(event.target.value)}
+              />
+            </CcField>
+          </div>
+        )}
         <div className="grid grid-cols-1 gap-x-3 gap-y-3.5 sm:grid-cols-2">
           <CcField label="PLATFORM" htmlFor="schedule-platform">
             <CcSelect
@@ -98,8 +184,17 @@ export function SchedulePostForm(props: SchedulePostFormProps) {
               value={status}
               onChange={setStatus}
               options={[
-                { value: "scheduled", label: "Scheduled (reminders on)" },
-                { value: "draft", label: "Draft (no reminders)" },
+                {
+                  value: "scheduled",
+                  label:
+                    owner === "campaign"
+                      ? "Scheduled (reminders on)"
+                      : "Scheduled (post reminder)",
+                },
+                {
+                  value: "draft",
+                  label: "Draft (no reminders)",
+                },
               ]}
             />
           </CcField>
@@ -152,15 +247,17 @@ export function SchedulePostForm(props: SchedulePostFormProps) {
           postId={undefined}
           schedule={props.schedule}
         />
-        <SuggestSlotButton
-          key={platformId}
-          campaignId={props.campaignId}
-          platformId={platformId}
-          onSuggest={(slot) => {
-            setDate(slot.date);
-            setTime(slot.time);
-          }}
-        />
+        {props.campaign !== undefined && (
+          <SuggestSlotButton
+            key={platformId}
+            campaignId={props.campaign.id}
+            platformId={platformId}
+            onSuggest={(slot) => {
+              setDate(slot.date);
+              setTime(slot.time);
+            }}
+          />
+        )}
         <div className="flex flex-wrap items-center gap-x-3 gap-y-2">
           <CcButton type="submit" variant="primary" disabled={isPending}>
             {isPending ? "SAVING…" : "+ SCHEDULE POST"}
@@ -178,7 +275,7 @@ export function SchedulePostForm(props: SchedulePostFormProps) {
           )}
           {result.kind === "failed" && (
             <span role="alert" className="text-cc-warn text-[12px]">
-              Could not save. Try again.
+              {result.message}
             </span>
           )}
         </div>

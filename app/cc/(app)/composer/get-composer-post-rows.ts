@@ -17,7 +17,7 @@ function getTone(post: PostRow): { tone: PostStatusTone; label: string } {
   return { tone: "scheduled", label: "manual" };
 }
 
-/** Return one list row per post `isComposerTopLevel` accepts, in time order (unscheduled last), with its SGT day and time, name, and a status tone and word. */
+/** Return one list row per post `isComposerTopLevel` accepts, in time order (unscheduled last), with its SGT day and time, name, `project` for a custom post, and a status tone and word. */
 export function getComposerPostRows(posts: readonly PostRow[]) {
   return posts
     .filter(isComposerTopLevel)
@@ -45,6 +45,7 @@ export function getComposerPostRows(posts: readonly PostRow[]) {
             at === undefined
               ? "--:--"
               : formatSgt({ date: at, pattern: "HH:mm" }),
+          project: post.campaign_id === null ? (post.project ?? "") : undefined,
           tone: status.tone,
           statusLabel: status.label,
         },

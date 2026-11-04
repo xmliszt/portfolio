@@ -6,7 +6,7 @@ import { requireCcOwner } from "@/lib/cc/auth/require-cc-owner";
 import { CC_ASSETS_BUCKET } from "@/lib/cc/post-asset";
 import { createCcServiceClient } from "@/lib/cc/supabase/create-cc-service-client";
 
-/** Reserve an object path for `fileName` under the folder of `postId`'s campaign and return it with a one-time token the browser uploads the file with. */
+/** Reserve an object path for `fileName` under the folder of `postId`'s campaign (`custom` for a custom post) and return it with a one-time token the browser uploads the file with. */
 export async function createAssetUpload(options: {
   postId: string;
   fileName: string;
@@ -20,7 +20,7 @@ export async function createAssetUpload(options: {
     .single();
   if (postError) throw postError;
   const safeName = options.fileName.replace(/[^\w.\-]+/g, "-");
-  const path = `${post.campaign_id}/uploads/${randomUUID()}/${safeName}`;
+  const path = `${post.campaign_id ?? "custom"}/uploads/${randomUUID()}/${safeName}`;
   const { data, error } = await supabase.storage
     .from(CC_ASSETS_BUCKET)
     .createSignedUploadUrl(path);

@@ -4,6 +4,7 @@ import type { PlatformId } from "./platforms";
 type ForkFields = Pick<
   PostRow,
   | "campaign_id"
+  | "project"
   | "platform"
   | "kind"
   | "parent_post_id"
@@ -50,6 +51,7 @@ export function buildForkPost(options: {
   const isRepost = isSamePlatform && source.status === "posted";
   const fields: ForkFields = {
     campaign_id: source.campaign_id,
+    project: source.project,
     platform: options.platformId,
     kind: isRepost ? "repost" : "post",
     parent_post_id: isRepost ? source.id : null,

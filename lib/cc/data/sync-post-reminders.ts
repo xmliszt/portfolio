@@ -12,6 +12,7 @@ export async function syncPostReminders(options: {
   status: string;
   kind: string;
   repostAs: string;
+  campaignId: string | null;
   scheduledAt: string | null;
   postedAt: string | null;
 }) {

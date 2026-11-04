@@ -55,7 +55,7 @@ function isHoldingSlot(post: RulePost) {
   );
 }
 
-/** Return what `rules` ask for each posted `kind = 'post'` post, using the first rule its +24 h views match. A post with no repost yet gets a repost slot at the next good time after both `now` plus `minDaysLater` days and its `postedAt` plus the platform's `REPOST_STRATEGY` gap, away from days that already hold a repost on that platform, or a repost suggestion when the strategy is "never"; other rules give a re-cut suggestion to a post with no repost. Posts in `suggestedPostIds` get no suggestion, and the strongest posts get slots first. */
+/** Return what `rules` ask for each posted `kind = 'post'` post, using the first rule its +24 h views match. A post with no repost yet gets a repost slot at the next good time after both `now` plus `minDaysLater` days and its `postedAt` plus the platform's `REPOST_STRATEGY` gap, away from days that already hold a repost on that platform and from the `occupied` times, or a repost suggestion when the strategy is "never"; other rules give a re-cut suggestion to a post with no repost. Posts in `suggestedPostIds` get no suggestion, and the strongest posts get slots first. */
 export function evaluateCampaignRules(options: {
   rules: readonly CampaignRule[];
   posts: readonly RulePost[];
@@ -64,6 +64,7 @@ export function evaluateCampaignRules(options: {
   now: Date;
   plan: CampaignPlan;
   heat: { [id in PlatformId]: SlotScores };
+  occupied: readonly { at: Date; platformId: PlatformId }[];
 }): RuleAction[] {
   const repostedIds = new Set(
     options.posts.flatMap((post) =>
@@ -196,17 +197,24 @@ export function evaluateCampaignRules(options: {
       }
     },
     {
-      taken: options.posts.flatMap((post) =>
-        isHoldingSlot(post) && post.at !== undefined
-          ? [
-              {
-                at: post.at,
-                platformId: post.platform,
-                isRepost: post.kind === "repost",
-              },
-            ]
-          : []
-      ),
+      taken: [
+        ...options.posts.flatMap((post) =>
+          isHoldingSlot(post) && post.at !== undefined
+            ? [
+                {
+                  at: post.at,
+                  platformId: post.platform,
+                  isRepost: post.kind === "repost",
+                },
+              ]
+            : []
+        ),
+        ...options.occupied.map((entry) => ({
+          at: entry.at,
+          platformId: entry.platformId,
+          isRepost: false,
+        })),
+      ],
       actions: [],
     }
   );

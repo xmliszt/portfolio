@@ -104,3 +104,15 @@ test("refuses to fork an unposted repost on its own platform", () => {
   if (skipped.kind !== "error") return;
   assert.equal(skipped.openPostId, "p0");
 });
+
+test("a fork of a custom post stays custom with its project", () => {
+  const fork = buildForkPost({
+    source: buildPostRow({ campaign_id: null, project: "Joodle" }),
+    platformId: "threads",
+    existingRepost: undefined,
+  });
+  assert.equal(fork.kind, "insert");
+  if (fork.kind !== "insert") return;
+  assert.equal(fork.fields.campaign_id, null);
+  assert.equal(fork.fields.project, "Joodle");
+});

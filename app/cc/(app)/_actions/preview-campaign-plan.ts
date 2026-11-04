@@ -30,7 +30,7 @@ export async function previewCampaignPlan(options: {
     heat: input.heat,
     now: plannedAt,
     includeUserPlaced: options.includeUserPlaced,
-    reposts: input.reposts,
+    occupied: input.occupied,
   });
   const postsById = keyBy(input.posts, (post) => post.id);
   return {

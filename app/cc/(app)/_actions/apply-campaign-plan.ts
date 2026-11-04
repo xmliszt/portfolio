@@ -27,7 +27,7 @@ export async function applyCampaignPlan(options: {
     heat: input.heat,
     now: ageMs >= 0 && ageMs < MAX_PLAN_AGE_MS ? plannedAt : now,
     includeUserPlaced: options.includeUserPlaced,
-    reposts: input.reposts,
+    occupied: input.occupied,
   }).flatMap((row) =>
     row.kind === "moved" && row.proposed.getTime() > now.getTime()
       ? [{ postId: row.postId, at: row.proposed }]
@@ -49,6 +49,7 @@ export async function applyCampaignPlan(options: {
           status: row.status,
           kind: row.kind,
           repostAs: row.repost_as,
+          campaignId: row.campaign_id,
           scheduledAt: row.scheduled_at,
           postedAt: row.posted_at,
         })
