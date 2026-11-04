@@ -2141,6 +2141,7 @@ export function createAutumnPlanet(container, options = {}) {
   };
   const CHASE_LEASH = 1.6;
   const POUNCE_REACH = 0.9;
+  const TAG_COOLDOWN = 3;
   const GATHER_GIVE_UP = 6,
     CREEP_GIVE_UP = 3;
   const STILL_MODES = new Set([
@@ -2332,12 +2333,18 @@ export function createAutumnPlanet(container, options = {}) {
         B.wantSpeed = waiting ? 0 : clamp((dist - 0.45) * 2.2, 0, 1.3);
         B.target.tailUp = 0.5;
         if (waiting) B.target.crouch = 0.5;
-        if (dist < 0.5 && A.burst > 0.5 && play.t - (play.tagAt ?? 0) > 1.5) {
+        if (
+          dist < 0.5 &&
+          A.burst > 0.5 &&
+          play.t - (play.tagAt ?? 0) > TAG_COOLDOWN
+        ) {
           play.tagAt = play.t;
           play.runner = 1 - play.runner;
           B.burst = rand(1.05, 1.3);
           B.burstT = rand(1, 1.8);
-          B.wanderH = B.gazeAngle + Math.PI;
+          B.wanderH =
+            B.gazeAngle +
+            Math.sign(wrap(B.bodyYaw - B.gazeAngle) || 1) * Math.PI * 0.5;
           break;
         }
         if ((play.t > play.dur && waiting) || play.t > play.dur + 6) {
