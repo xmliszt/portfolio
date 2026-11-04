@@ -54,6 +54,7 @@ export default async function LogPage() {
           platformId: post.platform,
           label: getPostLabel(post),
           target: post.target ?? undefined,
+          url: post.url ?? undefined,
           lastValues: Object.fromEntries(
             METRIC_FIELDS.map((field) => [field, latest?.[field]])
           ),

@@ -40,3 +40,30 @@ test("keeps the post-now message for other platforms", () => {
   });
   assert.match(message.text, /^⏰ Post now · X · 22:00/);
 });
+
+test("links the live post from the log message so the counts are one tap away", () => {
+  const message = buildReminderMessage({
+    kind: "log",
+    post: { ...post("x"), url: "https://x.com/me/status/1" },
+    checkpoint: "1h",
+    lastValues: {},
+  });
+  assert.deepEqual(message.buttons.at(0), {
+    kind: "url",
+    text: "Open the post",
+    url: "https://x.com/me/status/1",
+  });
+});
+
+test("keeps only the CC button on the log message when the post has no link", () => {
+  const message = buildReminderMessage({
+    kind: "log",
+    post: post("x"),
+    checkpoint: "1h",
+    lastValues: {},
+  });
+  assert.deepEqual(
+    message.buttons.map((button) => button.text),
+    ["Log in CC"]
+  );
+});
