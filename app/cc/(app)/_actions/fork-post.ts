@@ -77,6 +77,7 @@ export async function forkPost(options: {
     status: saved.status,
     kind: saved.kind,
     repostAs: saved.repost_as,
+    parentPostId: saved.parent_post_id,
     campaignId: saved.campaign_id,
     scheduledAt: saved.scheduled_at,
     postedAt: saved.posted_at,

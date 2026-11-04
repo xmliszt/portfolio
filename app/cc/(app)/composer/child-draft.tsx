@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 
+import { DeletePostButton } from "@/app/cc/_ui/delete-post-button";
 import { countPostCharacters } from "@/lib/cc/count-post-characters";
 import type { PostRow } from "@/lib/cc/data/cc-rows";
 import { isAutoPublishPlatform } from "@/lib/cc/is-auto-publish-platform";
@@ -74,6 +75,12 @@ export function ChildDraft(props: ChildDraftProps) {
             status={props.post.status}
             postedAt={props.post.posted_at}
             url={props.post.url}
+            size="sm"
+          />
+          <DeletePostButton
+            postId={props.post.id}
+            name={props.label}
+            afterHref={`/composer?post=${props.post.parent_post_id ?? props.post.id}`}
             size="sm"
           />
         </div>

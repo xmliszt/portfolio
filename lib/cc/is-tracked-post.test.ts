@@ -3,7 +3,11 @@ import { test } from "node:test";
 
 import { isTrackedPost } from "./is-tracked-post";
 
-const CAMPAIGN_FIELDS = { campaignId: "campaign-1", postedAt: null };
+const CAMPAIGN_FIELDS = {
+  campaignId: "campaign-1",
+  parentPostId: null,
+  postedAt: null,
+};
 
 test("tracks scheduled and posted posts and reposts", () => {
   assert.equal(
@@ -119,6 +123,7 @@ test("tracks a custom post until it is posted", () => {
       kind: "post",
       status: "scheduled",
       repostAs: "post",
+      parentPostId: null,
       campaignId: null,
       postedAt: null,
     }),
@@ -129,6 +134,7 @@ test("tracks a custom post until it is posted", () => {
       kind: "post",
       status: "posted",
       repostAs: "post",
+      parentPostId: null,
       campaignId: null,
       postedAt: "2026-11-04T13:00:00.000Z",
     }),
@@ -142,6 +148,7 @@ test("tracks a custom reply until it is posted", () => {
       kind: "reply",
       status: "scheduled",
       repostAs: "post",
+      parentPostId: null,
       campaignId: null,
       postedAt: null,
     }),
@@ -152,8 +159,23 @@ test("tracks a custom reply until it is posted", () => {
       kind: "reply",
       status: "posted",
       repostAs: "post",
+      parentPostId: null,
       campaignId: null,
       postedAt: "2026-11-02T13:00:00.000Z",
+    }),
+    false
+  );
+});
+
+test("leaves out a reply under a custom post", () => {
+  assert.equal(
+    isTrackedPost({
+      kind: "reply",
+      status: "scheduled",
+      repostAs: "post",
+      parentPostId: "post-1",
+      campaignId: null,
+      postedAt: null,
     }),
     false
   );

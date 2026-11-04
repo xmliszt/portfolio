@@ -6,10 +6,12 @@ import isEqual from "lodash/isEqual.js";
 import { Panel } from "@/app/cc/_ui/panel";
 import { savePost } from "@/app/cc/(app)/_actions/save-post";
 import { isInternalNavigation } from "@/app/cc/(app)/is-internal-navigation";
+import { canTakeReplies } from "@/lib/cc/can-take-replies";
 import type { PostRow } from "@/lib/cc/data/cc-rows";
 import { getPostCopyText } from "@/lib/cc/get-post-copy-text";
 import { type PlatformId, PLATFORMS } from "@/lib/cc/platforms";
 
+import { AddReplyButton } from "./add-reply-button";
 import { ChatgptPanel } from "./chatgpt-panel";
 import { CheckTagsPanel } from "./check-tags-panel";
 import { ChecksColumn } from "./checks-column";
@@ -55,9 +57,9 @@ export function Composer(props: ComposerProps) {
 
   const platform = PLATFORMS[props.platformId];
   const draft = drafts[props.post.id] ?? toDraftFields(props.post);
-  const dirtyIds = Object.keys(drafts).filter(
-    (id) => !isEqual(drafts[id], savedDrafts[id])
-  );
+  const dirtyIds = [props.post, ...props.childPosts]
+    .map((post) => post.id)
+    .filter((id) => !isEqual(drafts[id], savedDrafts[id]));
   const isDirty = dirtyIds.length > 0;
   const copyText = getPostCopyText({
     body: draft.body,
@@ -228,6 +230,9 @@ export function Composer(props: ComposerProps) {
               );
             })}
           </ol>
+        )}
+        {canTakeReplies(props.post) && (
+          <AddReplyButton postId={props.post.id} />
         )}
         <PostActions
           post={props.post}
