@@ -63,7 +63,8 @@ export function IntegrationsPanel(props: IntegrationsPanelProps) {
                   </li>
                   <li>
                     Give it threads_basic, threads_manage_insights,
-                    threads_keyword_search and threads_content_publish.
+                    threads_keyword_search, threads_content_publish and
+                    threads_manage_replies.
                   </li>
                   <li>
                     Set <code>CC_THREADS_APP_ID</code> and{" "}
@@ -118,8 +119,9 @@ export function IntegrationsPanel(props: IntegrationsPanelProps) {
                       : `Token expires ${props.threads.expiresLabel} SGT · refreshed when under 10 days are left`}
                   </span>
                   <span className="text-muted-foreground text-[11px]">
-                    Auto-posting needs the threads_content_publish permission.
-                    Reconnect once if Threads refuses a post.
+                    Auto-posting needs threads_content_publish, and replies also
+                    need threads_manage_replies. Reconnect once if Threads
+                    refuses a post.
                   </span>
                 </span>
                 {renderConnectForm("RECONNECT")}
