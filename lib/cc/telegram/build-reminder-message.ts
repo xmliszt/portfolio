@@ -130,7 +130,18 @@ export function buildReminderMessage(input: ReminderMessageInput): {
           `Last: ${last.join(" · ")}`,
           "Use - to skip a number. Send undo to revert the last entry.",
         ].join("\n"),
-        buttons: [{ kind: "url", text: "Log in CC", url: `${CC_ORIGIN}/log` }],
+        buttons: [
+          ...(input.post.url === null
+            ? []
+            : [
+                {
+                  kind: "url",
+                  text: "Open the post",
+                  url: input.post.url,
+                } satisfies TelegramButton,
+              ]),
+          { kind: "url", text: "Log in CC", url: `${CC_ORIGIN}/log` },
+        ],
       };
     }
     default: {

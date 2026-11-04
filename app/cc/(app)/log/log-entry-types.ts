@@ -6,6 +6,7 @@ export type LogEntryPost = {
   platformId: PlatformId;
   label: string;
   target: string | undefined;
+  url: string | undefined;
   lastValues: { [field in MetricField]?: number | undefined };
 };
 

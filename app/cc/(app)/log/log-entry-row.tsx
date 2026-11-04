@@ -140,6 +140,16 @@ export function LogEntryRow(props: LogEntryRowProps) {
             <span className="text-primary text-[11px] font-semibold">
               {formatCheckpoint(props.row.checkpoint)}
             </span>
+            {props.row.url !== undefined && (
+              <a
+                href={props.row.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-primary text-[11px] underline underline-offset-2"
+              >
+                OPEN POST ↗
+              </a>
+            )}
           </div>
           <span className="text-cc-text-2 truncate" title={props.row.label}>
             {props.row.target !== undefined && (
