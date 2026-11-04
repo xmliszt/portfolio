@@ -22,6 +22,7 @@ export function buildPostRow(options: Partial<PostRow>): PostRow {
     variant: "mine",
     variant_group: null,
     wave: 1,
+    project: null,
     auto_publish: false,
     publish_claimed_at: null,
     publish_error: null,

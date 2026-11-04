@@ -21,7 +21,7 @@ import {
 import { SuggestSlotButton } from "./suggest-slot-button";
 
 type PostEditorProps = {
-  campaignId: string;
+  campaignId: string | undefined;
   post: {
     id: string;
     platformId: PlatformId;
@@ -159,7 +159,7 @@ export function PostEditor(props: PostEditorProps) {
           schedule={props.schedule}
         />
       )}
-      {!isPosted && (
+      {!isPosted && props.campaignId !== undefined && (
         <SuggestSlotButton
           campaignId={props.campaignId}
           platformId={post.platformId}

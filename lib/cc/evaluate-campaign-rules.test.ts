@@ -60,6 +60,7 @@ function evaluate(options: {
   posts: RulePost[];
   views: { [postId: string]: number };
   suggestedPostIds?: string[];
+  occupied?: { at: Date; platformId: PlatformId }[];
 }) {
   return evaluateCampaignRules({
     rules: CAMPAIGN_RULES,
@@ -71,6 +72,7 @@ function evaluate(options: {
     now: NOW,
     plan: DEFAULT_CAMPAIGN_PLAN,
     heat: HEAT,
+    occupied: options.occupied ?? [],
   });
 }
 
@@ -90,6 +92,19 @@ test("schedules a quote-post of a strong X post at the first evening slot three 
     ]),
     [["schedule-repost", "a", 1.6, "quote", "2026-11-05T12:00:00.000Z"]]
   );
+});
+
+test("keeps a new repost off a time a custom post holds", () => {
+  const actions = evaluate({
+    posts: [buildPost({ id: "a" }), buildPost({ id: "b" })],
+    views: { a: 400, b: 100 },
+    occupied: [
+      { at: new Date("2026-11-05T12:00:00.000Z"), platformId: "threads" },
+    ],
+  });
+  const repost = actions.find((action) => action.kind === "schedule-repost");
+  assert.ok(repost?.kind === "schedule-repost", "a repost is scheduled");
+  assert.notEqual(repost.at.toISOString(), "2026-11-05T12:00:00.000Z");
 });
 
 test("suggests a re-cut for a weak post only once the platform has three measured posts", () => {

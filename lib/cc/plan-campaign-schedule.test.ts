@@ -51,7 +51,7 @@ function buildPosts(options: { scheduledBy: "user" | "planner" }) {
 function plan(options: {
   posts: readonly PlannerPost[];
   includeUserPlaced: boolean;
-  reposts?: readonly { at: Date; platformId: PlatformId }[];
+  occupied?: readonly { at: Date; platformId: PlatformId }[];
 }) {
   return planCampaignSchedule({
     posts: options.posts,
@@ -59,7 +59,7 @@ function plan(options: {
     heat: HEAT,
     now: NOW,
     includeUserPlaced: options.includeUserPlaced,
-    reposts: options.reposts ?? [],
+    occupied: options.occupied ?? [],
   });
 }
 
@@ -261,7 +261,7 @@ test("places an event's reminders on the day before and its posts on the day, or
     heat: HEAT,
     now: NOW,
     includeUserPlaced: false,
-    reposts: [],
+    occupied: [],
   });
   const days = Object.fromEntries(
     rows.map((row) => {
@@ -294,7 +294,7 @@ test("keeps planned posts clear of reposts", () => {
   const rows = plan({
     posts: buildPosts({ scheduledBy: "planner" }),
     includeUserPlaced: false,
-    reposts: [{ at: first.proposed, platformId: "x" }],
+    occupied: [{ at: first.proposed, platformId: "x" }],
   });
   assert.ok(
     rows.every(

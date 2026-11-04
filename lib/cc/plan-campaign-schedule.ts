@@ -59,14 +59,14 @@ function toDay(date: Date) {
   return formatSgt({ date, pattern: "yyyy-MM-dd" });
 }
 
-/** Return a proposed time and reason for each unposted, unskipped post the planner may move, placing wave 1 before wave 2 and so on with unwaved posts last and no post before its own `notBefore` or after its own `notAfter`; a post with its own `notBefore` holds no later wave back; posted posts, Product Hunt, YouTube and (unless `includeUserPlaced`) timed posts with `scheduledBy` "user" stay where they are, count as occupied like `reposts`, and hold later waves behind their own. */
+/** Return a proposed time and reason for each unposted, unskipped post the planner may move, placing wave 1 before wave 2 and so on with unwaved posts last and no post before its own `notBefore` or after its own `notAfter`; a post with its own `notBefore` holds no later wave back; posted posts, Product Hunt, YouTube and (unless `includeUserPlaced`) timed posts with `scheduledBy` "user" stay where they are, count as `occupied` like the fixed times passed in, and hold later waves behind their own. */
 export function planCampaignSchedule(options: {
   posts: readonly PlannerPost[];
   plan: CampaignPlan;
   heat: { [id in PlatformId]: SlotScores };
   now: Date;
   includeUserPlaced: boolean;
-  reposts: readonly Occupied[];
+  occupied: readonly Occupied[];
 }): PlanRow[] {
   const live = options.posts.filter((post) => post.status !== "skipped");
   const pinned = live.flatMap((post) => {
@@ -169,7 +169,7 @@ export function planCampaignSchedule(options: {
     },
     {
       occupied: [
-        ...options.reposts,
+        ...options.occupied,
         ...pinned.flatMap((entry) =>
           entry.post.scheduledAt === undefined
             ? []

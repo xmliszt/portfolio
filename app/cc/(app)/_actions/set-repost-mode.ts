@@ -48,6 +48,7 @@ export async function setRepostMode(options: {
     status: post.status,
     kind: post.kind,
     repostAs: post.repost_as,
+    campaignId: post.campaign_id,
     scheduledAt: post.scheduled_at,
     postedAt: post.posted_at,
   });

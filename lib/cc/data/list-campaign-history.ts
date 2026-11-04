@@ -45,7 +45,8 @@ export async function listCampaignHistory() {
     getPlatformMedian({ ...stats, platformId: platform.id })
   );
   return posts.flatMap((post): CampaignHistoryPost[] => {
-    const host = hosts[post.campaign_id];
+    const host =
+      post.campaign_id === null ? undefined : hosts[post.campaign_id];
     const at = post.posted_at ?? post.scheduled_at;
     if (!isPlatformId(post.platform) || host === undefined || at === null) {
       return [];

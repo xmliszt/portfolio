@@ -45,7 +45,11 @@ export async function saveMetricEntry(options: {
     .single();
   if (postError) throw postError;
   const views = options.values.views;
-  if (!isPlatformId(post.platform) || views === undefined) {
+  if (
+    !isPlatformId(post.platform) ||
+    views === undefined ||
+    post.campaign_id === null
+  ) {
     return { metric, ratio: undefined, platformId: undefined };
   }
 

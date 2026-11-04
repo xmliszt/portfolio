@@ -226,7 +226,7 @@ export type Database = {
           assets: Json
           auto_publish: boolean
           body: string
-          campaign_id: string
+          campaign_id: string | null
           created_at: string
           hashtags: string[]
           id: string
@@ -236,6 +236,7 @@ export type Database = {
           platform: string
           platform_post_id: string | null
           posted_at: string | null
+          project: string | null
           publish_claimed_at: string | null
           publish_error: string | null
           repost_as: string
@@ -254,7 +255,7 @@ export type Database = {
           assets?: Json
           auto_publish?: boolean
           body?: string
-          campaign_id: string
+          campaign_id?: string | null
           created_at?: string
           hashtags?: string[]
           id?: string
@@ -264,6 +265,7 @@ export type Database = {
           platform: string
           platform_post_id?: string | null
           posted_at?: string | null
+          project?: string | null
           publish_claimed_at?: string | null
           publish_error?: string | null
           repost_as?: string
@@ -282,7 +284,7 @@ export type Database = {
           assets?: Json
           auto_publish?: boolean
           body?: string
-          campaign_id?: string
+          campaign_id?: string | null
           created_at?: string
           hashtags?: string[]
           id?: string
@@ -292,6 +294,7 @@ export type Database = {
           platform?: string
           platform_post_id?: string | null
           posted_at?: string | null
+          project?: string | null
           publish_claimed_at?: string | null
           publish_error?: string | null
           repost_as?: string
@@ -394,7 +397,7 @@ export type Database = {
           assets: Json
           auto_publish: boolean
           body: string
-          campaign_id: string
+          campaign_id: string | null
           created_at: string
           hashtags: string[]
           id: string
@@ -404,6 +407,7 @@ export type Database = {
           platform: string
           platform_post_id: string | null
           posted_at: string | null
+          project: string | null
           publish_claimed_at: string | null
           publish_error: string | null
           repost_as: string

@@ -29,7 +29,7 @@ import { VoiceCheckPanel } from "./voice-check-panel";
 import { XTagCheckPanel } from "./x-tag-check-panel";
 
 type ComposerProps = {
-  campaign: { id: string; name: string; notes: string | null };
+  campaign: { id: string | undefined; name: string; notes: string | null };
   post: PostRow;
   platformId: PlatformId;
   childPosts: readonly PostRow[];

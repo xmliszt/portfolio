@@ -30,7 +30,7 @@ export function ComposerPostList(props: ComposerPostListProps) {
   return (
     <nav
       ref={navRef}
-      aria-label="Posts in this campaign"
+      aria-label="Posts"
       className="bg-card relative flex max-h-[calc(100dvh-88px)] min-w-0 flex-col overflow-y-auto border lg:sticky lg:top-3"
     >
       <div className="text-muted-foreground bg-card sticky top-0 z-20 flex h-8 shrink-0 items-center justify-between border-b px-3 text-[10.5px] font-semibold tracking-[0.06em] uppercase">
@@ -68,11 +68,23 @@ export function ComposerPostList(props: ComposerPostListProps) {
                 </span>
                 <span
                   className={cn(
-                    "truncate text-[11px]",
+                    "flex min-w-0 items-center gap-x-1 text-[11px]",
                     isSelected ? "text-foreground" : "text-cc-text-2"
                   )}
                 >
-                  {tab.name}
+                  {tab.project !== undefined && (
+                    <span className="text-cc-text-2 shrink-0 border px-0.5 text-[9px] font-semibold">
+                      CUSTOM
+                    </span>
+                  )}
+                  <span className="truncate">
+                    {tab.project !== undefined && (
+                      <span className="text-foreground font-semibold">
+                        {tab.project} ·{" "}
+                      </span>
+                    )}
+                    {tab.name}
+                  </span>
                 </span>
               </Link>
             );

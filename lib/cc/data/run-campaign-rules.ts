@@ -98,6 +98,7 @@ async function applyRuleAction(options: {
         status: repost.status,
         kind: repost.kind,
         repostAs: repost.repost_as,
+        campaignId: repost.campaign_id,
         scheduledAt: repost.scheduled_at,
         postedAt: repost.posted_at,
       });
@@ -189,6 +190,7 @@ export async function runCampaignRules(options: { now: Date }) {
     now: options.now,
     plan: input.plan,
     heat: input.heat,
+    occupied: input.occupied,
   });
   const postsById = keyBy(input.posts, (post) => post.id);
   const results = [];
