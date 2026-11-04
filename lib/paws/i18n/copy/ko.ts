@@ -265,6 +265,16 @@ export const ko = {
     privacy: "개인정보 처리방침",
     terms: "이용약관",
   },
+  deleteData: {
+    open: "내 데이터 삭제",
+    title: "내 데이터 삭제",
+    body: "Paws에서 계정, 이메일 주소, 고양이가 삭제돼. 방에는 게스트로 남아. 되돌릴 수 없어.",
+    keep: "데이터 유지",
+    confirm: "모두 삭제",
+    deleting: "삭제 중…",
+    failed: "데이터를 삭제하지 못했어. 다시 시도해 줘.",
+    done: "데이터가 삭제됐어. 이제 게스트야.",
+  },
   note: {
     open: "만든 이의 말",
     title: "만든 이의 말",

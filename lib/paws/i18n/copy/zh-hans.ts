@@ -261,6 +261,16 @@ export const zhHans = {
     privacy: "隐私",
     terms: "条款",
   },
+  deleteData: {
+    open: "删除我的数据",
+    title: "删除我的数据",
+    body: "这会从 Paws 删除你的账号、邮箱地址和你的猫。你会以访客身份留在房间里。删除后无法恢复。",
+    keep: "保留数据",
+    confirm: "全部删除",
+    deleting: "正在删除…",
+    failed: "没能删除你的数据，请再试一次。",
+    done: "你的数据已删除，现在你是访客。",
+  },
   note: {
     open: "创作者的话",
     title: "创作者的话",

@@ -29,6 +29,10 @@ export default function PawsTermsPage() {
           Sign in only with an email address that is yours. Keep your sign-in
           codes private. Signing in is for people aged 13 or older.
         </p>
+        <p>
+          You can delete your account and your cat at any time with{" "}
+          <strong>Delete my data</strong> in the menu.
+        </p>
       </PawsLegalSection>
 
       <PawsLegalSection heading="the chat">

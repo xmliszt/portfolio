@@ -277,6 +277,16 @@ export const pl = {
     privacy: "Prywatność",
     terms: "Regulamin",
   },
+  deleteData: {
+    open: "Usuń moje dane",
+    title: "Usuń moje dane",
+    body: "To usunie z Paws twoje konto, adres e-mail i kota. Zostaniesz w pokoju jako gość. Tego nie da się cofnąć.",
+    keep: "Zachowaj dane",
+    confirm: "Usuń wszystko",
+    deleting: "Usuwanie…",
+    failed: "Nie udało się usunąć danych. Spróbuj ponownie.",
+    done: "Twoje dane zostały usunięte. Jesteś teraz gościem.",
+  },
   note: {
     open: "Kilka słów ode mnie",
     title: "Kilka słów ode mnie",

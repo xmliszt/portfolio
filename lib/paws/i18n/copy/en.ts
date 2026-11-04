@@ -270,6 +270,16 @@ export const en = {
     privacy: "Privacy",
     terms: "Terms",
   },
+  deleteData: {
+    open: "Delete my data",
+    title: "Delete my data",
+    body: "This deletes your account, your email address and your cat from Paws. You'll stay in the room as a guest. This can't be undone.",
+    keep: "Keep my data",
+    confirm: "Delete everything",
+    deleting: "Deleting…",
+    failed: "Couldn't delete your data. Try again.",
+    done: "Your data is deleted. You're a guest now.",
+  },
   note: {
     open: "A Note from the Maker",
     title: "A Note from the Maker",

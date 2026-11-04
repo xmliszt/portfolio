@@ -2,7 +2,7 @@ import { FOCUS_RING_CLASS } from "@/app/paws/_ui/focus-ring-class";
 import { cn } from "@/lib/utils";
 
 type SheetButtonProps = {
-  icon: "guide" | "note" | "apps";
+  icon: "guide" | "note" | "apps" | "delete";
   label: string;
   onOpen: () => void;
 };
@@ -67,6 +67,24 @@ function SheetIcon(props: { icon: SheetButtonProps["icon"] }) {
             width="4.5"
             height="4.5"
             className="transition-colors group-hover:fill-[var(--pw-blue)] group-focus-visible:fill-[var(--pw-blue)]"
+          />
+        </svg>
+      );
+    case "delete":
+      return (
+        <svg
+          aria-hidden
+          viewBox="0 0 14 14"
+          className="size-3.5 shrink-0"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="1.2"
+          strokeLinejoin="round"
+        >
+          <path d="M1.5 3.5h11M5 3.5V1.5h4v2" />
+          <path
+            d="M2.5 3.5l1 9h7l1-9"
+            className="transition-colors group-hover:fill-[var(--pw-pink)] group-focus-visible:fill-[var(--pw-pink)]"
           />
         </svg>
       );

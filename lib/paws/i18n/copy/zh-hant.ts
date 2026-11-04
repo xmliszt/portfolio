@@ -249,6 +249,16 @@ export const zhHant = {
     privacy: "隱私",
     terms: "條款",
   },
+  deleteData: {
+    open: "刪除我的資料",
+    title: "刪除我的資料",
+    body: "這會從 Paws 刪除你的帳號、電子郵件地址和你的貓。你會以訪客身分留在房間裡。刪除後無法復原。",
+    keep: "保留資料",
+    confirm: "全部刪除",
+    deleting: "正在刪除…",
+    failed: "沒能刪除你的資料，請再試一次。",
+    done: "你的資料已刪除，現在你是訪客。",
+  },
   note: {
     open: "創作者的話",
     title: "創作者的話",

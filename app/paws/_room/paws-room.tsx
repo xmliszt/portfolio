@@ -51,6 +51,7 @@ import type { ChatBubble } from "./chat-bubble";
 import { ChatLayer } from "./chat-layer";
 import { COMPOSE_ANCHOR_PREFIX } from "./compose-anchor-prefix";
 import { CreatorNote } from "./creator-note";
+import { DeleteDataSheet } from "./delete-data-sheet";
 import { InviteButton } from "./invite-button";
 import { LegalMenuLink } from "./legal-menu-link";
 import { OtherAppsSheet } from "./other-apps-sheet";
@@ -143,7 +144,7 @@ export function PawsRoom(props: PawsRoomProps) {
   const [bubbles, setBubbles] = useState<ChatBubble[]>([]);
   const [isComposing, setIsComposing] = useState(false);
   const [openSheet, setOpenSheet] = useState<
-    "guide" | "note" | "apps" | undefined
+    "guide" | "note" | "apps" | "deleteData" | undefined
   >(undefined);
   const [hasOwnCatInRoom, setHasOwnCatInRoom] = useState(false);
   const [heldToyId, setHeldToyId] = useState<ToyItemId | undefined>(undefined);
@@ -799,7 +800,7 @@ export function PawsRoom(props: PawsRoomProps) {
 
   function handleOpenSheet(options: {
     menu: { close: () => void };
-    sheet: "guide" | "note" | "apps";
+    sheet: "guide" | "note" | "apps" | "deleteData";
   }) {
     options.menu.close();
     sound.playUi("stepNext");
@@ -1006,6 +1007,16 @@ export function PawsRoom(props: PawsRoomProps) {
                   />,
                   <LegalMenuLink key="privacy" page="privacy" />,
                   <LegalMenuLink key="terms" page="terms" />,
+                  session.kind === "member" && (
+                    <SheetButton
+                      key="deleteData"
+                      icon="delete"
+                      label={copy.deleteData.open}
+                      onOpen={() =>
+                        handleOpenSheet({ menu, sheet: "deleteData" })
+                      }
+                    />
+                  ),
                 ]}
               </RoomMenu>
             </div>
@@ -1089,6 +1100,15 @@ export function PawsRoom(props: PawsRoomProps) {
           {openSheet === "note" && <CreatorNote onClose={handleCloseSheet} />}
           {openSheet === "apps" && (
             <OtherAppsSheet onClose={handleCloseSheet} />
+          )}
+          {openSheet === "deleteData" && (
+            <DeleteDataSheet
+              accessToken={
+                session.kind === "member" ? session.accessToken : undefined
+              }
+              onDeleted={actions.signOut}
+              onClose={handleCloseSheet}
+            />
           )}
           <PawsOnboarding
             session={session}

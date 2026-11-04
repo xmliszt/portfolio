@@ -275,6 +275,16 @@ export const ptBR = {
     privacy: "Privacidade",
     terms: "Termos",
   },
+  deleteData: {
+    open: "Apagar meus dados",
+    title: "Apagar meus dados",
+    body: "Isso apaga sua conta, seu e-mail e seu gato do Paws. Você continua na sala como visitante. Não dá para desfazer.",
+    keep: "Manter meus dados",
+    confirm: "Apagar tudo",
+    deleting: "Apagando…",
+    failed: "Não foi possível apagar seus dados. Tente de novo.",
+    done: "Seus dados foram apagados. Agora você é visitante.",
+  },
   note: {
     open: "Um recado de quem criou o Paws",
     title: "Um recado de quem criou o Paws",
