@@ -31,7 +31,7 @@ type Resolved<T> =
   | { kind: "error"; message: string };
 
 async function resolveThreadsMediaId(options: {
-  post: PostRow;
+  post: Pick<PostRow, "platform_post_id" | "url">;
   accessToken: string;
 }): Promise<Resolved<string>> {
   if (options.post.platform_post_id !== null) {

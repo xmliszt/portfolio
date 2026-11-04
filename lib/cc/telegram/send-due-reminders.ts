@@ -3,6 +3,7 @@ import "server-only";
 import { buildComposeUrl } from "@/lib/cc/build-compose-url";
 import { signAssetUrls } from "@/lib/cc/data/sign-asset-urls";
 import { formatSgt } from "@/lib/cc/format-sgt";
+import { getOriginalUrl } from "@/lib/cc/get-original-url";
 import { getPostCopyText } from "@/lib/cc/get-post-copy-text";
 import { isPlatformId } from "@/lib/cc/is-platform-id";
 import { parsePostAssets } from "@/lib/cc/parse-post-assets";
@@ -132,6 +133,7 @@ export async function sendDueReminders(options: { now: Date }) {
                 title: post.title ?? undefined,
                 link: post.link ?? undefined,
                 target: post.target ?? undefined,
+                originalUrl: getOriginalUrl(post),
               }).url,
             });
           }

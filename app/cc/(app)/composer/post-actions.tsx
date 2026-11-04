@@ -8,6 +8,7 @@ import { PopoverMenu } from "@/app/cc/_ui/popover-menu";
 import { buildComposeUrl } from "@/lib/cc/build-compose-url";
 import type { PostRow } from "@/lib/cc/data/cc-rows";
 import { formatSgt } from "@/lib/cc/format-sgt";
+import { getOriginalUrl } from "@/lib/cc/get-original-url";
 import { getPostName } from "@/lib/cc/get-post-name";
 import { isAutoPublishPlatform } from "@/lib/cc/is-auto-publish-platform";
 import { type PlatformId, PLATFORMS } from "@/lib/cc/platforms";
@@ -29,6 +30,7 @@ type PostActionsProps = {
   copyText: string;
   link: string;
   target: string;
+  originalRef: string;
   assets: readonly PostAsset[];
   dirty: boolean;
   saving: boolean;
@@ -48,6 +50,10 @@ export function PostActions(props: PostActionsProps) {
     title: props.title.trim() || undefined,
     link: props.link.trim() || undefined,
     target: props.target.trim() || undefined,
+    originalUrl: getOriginalUrl({
+      platform: props.platformId,
+      original_ref: props.originalRef.trim() || null,
+    }),
   });
 
   async function handleCopyThenOpen() {
@@ -167,7 +173,9 @@ export function PostActions(props: PostActionsProps) {
       </div>
       {isAutoPublishPlatform(props.platformId) &&
         isUnposted &&
-        (props.post.kind === "post" || props.post.kind === "repost") && (
+        (props.post.kind === "post" ||
+          props.post.kind === "repost" ||
+          props.post.original_ref !== null) && (
           <div className="border-cc-line-soft flex flex-wrap items-start gap-x-4 gap-y-2 border-t pt-2">
             {props.post.kind === "repost" && (
               <RepostModeControl

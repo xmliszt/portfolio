@@ -6,6 +6,7 @@ export type DraftFields = {
   hashtagsText: string;
   target: string;
   link: string;
+  originalRef: string;
   assets: readonly PostAsset[];
   /** The planner wave as select text, empty for the wave the assets suggest. */
   wave: string;

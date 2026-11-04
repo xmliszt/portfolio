@@ -11,6 +11,7 @@ export function toDraftFields(post: PostRow): DraftFields {
     hashtagsText: post.hashtags.join(" "),
     target: post.target ?? "",
     link: post.link ?? "",
+    originalRef: post.original_ref ?? "",
     assets: parsePostAssets(post.assets),
     wave: post.wave === null ? "" : String(post.wave),
   };

@@ -135,3 +135,26 @@ test("tracks a custom post until it is posted", () => {
     false
   );
 });
+
+test("tracks a custom reply until it is posted", () => {
+  assert.equal(
+    isTrackedPost({
+      kind: "reply",
+      status: "scheduled",
+      repostAs: "post",
+      campaignId: null,
+      postedAt: null,
+    }),
+    true
+  );
+  assert.equal(
+    isTrackedPost({
+      kind: "reply",
+      status: "posted",
+      repostAs: "post",
+      campaignId: null,
+      postedAt: "2026-11-02T13:00:00.000Z",
+    }),
+    false
+  );
+});

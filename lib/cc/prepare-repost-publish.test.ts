@@ -56,3 +56,14 @@ test("a Threads quote keeps its own text", () => {
   });
   assert.equal(result.kind === "ok" && result.prepared.text, "New first line");
 });
+
+test("an X quote refuses an original id that is not an X post id", () => {
+  assert.equal(
+    prepareRepostPublish({
+      post: { ...base, kind: "repost", repost_as: "quote" },
+      platformId: "x",
+      original: { platform_post_id: "someone/status/1", url: null },
+    }).kind,
+    "error"
+  );
+});

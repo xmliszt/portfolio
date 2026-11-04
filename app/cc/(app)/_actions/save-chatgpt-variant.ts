@@ -47,6 +47,7 @@ export async function saveChatgptVariant(options: {
           platform: original.platform,
           kind: original.kind,
           parent_post_id: original.parent_post_id,
+          original_ref: original.original_ref,
           target: original.target,
           scheduled_at: original.scheduled_at,
           status: "draft",

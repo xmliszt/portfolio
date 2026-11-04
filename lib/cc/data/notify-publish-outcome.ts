@@ -2,6 +2,7 @@ import "server-only";
 
 import { buildComposeUrl } from "@/lib/cc/build-compose-url";
 import { formatSgt } from "@/lib/cc/format-sgt";
+import { getOriginalUrl } from "@/lib/cc/get-original-url";
 import { getPostCopyText } from "@/lib/cc/get-post-copy-text";
 import { getPostName } from "@/lib/cc/get-post-name";
 import { isAutoPublishPlatform } from "@/lib/cc/is-auto-publish-platform";
@@ -45,6 +46,7 @@ export async function notifyPublishOutcome(options: {
           composeUrl: buildComposeUrl({
             platformId: options.post.platform,
             body: getPostCopyText(options.post),
+            originalUrl: getOriginalUrl(options.post),
           }).url,
         });
   await sendTelegramMessage(message).catch((error: unknown) =>

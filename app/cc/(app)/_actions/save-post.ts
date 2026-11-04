@@ -22,6 +22,8 @@ type EditablePostFields = Partial<
     | "body"
     | "hashtags"
     | "link"
+    | "original_ref"
+    | "repost_as"
     | "assets"
     | "url"
     | "variant"
@@ -31,7 +33,7 @@ type EditablePostFields = Partial<
   >
 >;
 
-/** Create a post (when `postId` is unset) or update the given fields of `postId`, in `campaignId` or as a custom post when `campaignId` is unset, with an X community link stored as its id, then resync its reminders; return the saved post. */
+/** Create a post (when `postId` is unset) or update the given fields of `postId`, in `campaignId` or as a custom post when `campaignId` is unset, with an X community link stored as its id and auto-post turned off and its unsent "post" reminder reopened when `original_ref` changes, then resync its reminders; return the saved post. */
 export async function savePost(options: {
   postId?: string;
   campaignId: string | undefined;
@@ -57,6 +59,19 @@ export async function savePost(options: {
       ? { ...options.fields, target: parseXCommunityId(target) ?? target }
       : options.fields;
   const supabase = createCcServiceClient();
+  const { data: current, error: currentError } =
+    options.postId === undefined ||
+    fields.original_ref === undefined ||
+    fields.original_ref === null
+      ? { data: null, error: null }
+      : await supabase
+          .from("posts")
+          .select("original_ref, auto_publish")
+          .eq("id", options.postId)
+          .maybeSingle();
+  if (currentError) throw currentError;
+  const isOriginalChanged =
+    current !== null && current.original_ref !== fields.original_ref;
   const query = (() => {
     if (options.postId === undefined) {
       return supabase.from("posts").insert({
@@ -67,7 +82,11 @@ export async function savePost(options: {
     }
     const update = supabase
       .from("posts")
-      .update({ ...fields, updated_at: new Date().toISOString() })
+      .update({
+        ...fields,
+        ...(isOriginalChanged ? { auto_publish: false } : {}),
+        updated_at: new Date().toISOString(),
+      })
       .eq("id", options.postId);
     return options.campaignId === undefined
       ? update.is("campaign_id", null)
@@ -75,6 +94,15 @@ export async function savePost(options: {
   })();
   const { data: post, error } = await query.select("*").single();
   if (error) throw error;
+  if (isOriginalChanged && current.auto_publish) {
+    const { error: reopenError } = await supabase
+      .from("reminders")
+      .update({ sent_at: null, done_at: null })
+      .eq("post_id", post.id)
+      .eq("kind", "post")
+      .is("telegram_message_id", null);
+    if (reopenError) throw reopenError;
+  }
 
   await syncPostReminders({
     postId: post.id,

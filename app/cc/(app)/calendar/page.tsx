@@ -149,7 +149,12 @@ export default async function CalendarPage(props: CalendarPageProps) {
   );
   const gridPosts = weekPosts.flatMap((entry): GridPost[] => {
     const post = entry.post;
-    if (post.kind === "reply" || post.kind === "comment") return [];
+    if (
+      (post.kind === "reply" || post.kind === "comment") &&
+      post.parent_post_id !== null
+    ) {
+      return [];
+    }
     const childCount = childrenByParent[post.id] ?? 0;
     const isComment =
       posts.find((child) => child.parent_post_id === post.id)?.kind ===

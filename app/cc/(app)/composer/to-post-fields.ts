@@ -14,6 +14,7 @@ export function toPostFields(draft: DraftFields) {
     hashtags: parseHashtags(draft.hashtagsText),
     target: toNullable(draft.target),
     link: toNullable(draft.link),
+    original_ref: toNullable(draft.originalRef),
     assets: draft.assets
       .filter((asset) => asset.file.trim() !== "")
       .map((asset) => ({
