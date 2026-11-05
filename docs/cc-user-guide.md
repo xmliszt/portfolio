@@ -54,7 +54,7 @@ CC always shows the **current campaign**: the one with the newest start date.
 
 | Platform     | Auto-post      | Text limit                    | Logged numbers                                                                                      |
 | ------------ | -------------- | ----------------------------- | --------------------------------------------------------------------------------------------------- |
-| X            | Yes            | 280 (links count 23, emoji 2) | views, likes, replies, shares, bookmarks, link clicks, reposts, quotes, profile visits, new follows |
+| X            | Yes            | 280 (links count 23, emoji 2) | impressions, likes, replies, reposts, profile visits                                                |
 | Threads      | Yes            | 500                           | views, likes, replies, shares, reposts, quotes (synced daily)                                       |
 | Bluesky      | Yes            | 300                           | likes, replies, reposts, quotes                                                                     |
 | Instagram    | No, from phone | 2200                          | views, likes, comments, shares, saves, viewers, follows                                             |

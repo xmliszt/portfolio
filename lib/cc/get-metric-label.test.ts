@@ -5,8 +5,8 @@ import { getMetricLabel } from "./get-metric-label";
 
 test("uses the platform's own name for a metric", () => {
   assert.equal(
-    getMetricLabel({ platformId: "x", field: "saves" }),
-    "bookmarks"
+    getMetricLabel({ platformId: "x", field: "comments" }),
+    "replies"
   );
   assert.equal(
     getMetricLabel({ platformId: "linkedin", field: "views" }),
