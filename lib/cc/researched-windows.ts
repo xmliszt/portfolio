@@ -68,12 +68,13 @@ export const RESEARCHED_WINDOWS: { [id in PlatformId]: PlatformResearch } = {
     ...US_EASTERN,
   },
   tiktok: {
-    dayWeights: [0.7, 0.8, 0.7, 0.8, 0.7, 1, 0.7],
+    dayWeights: [0.6, 0.8, 0.7, 0.7, 0.85, 1, 0.95],
     hours: [
-      { startHour: 9, endHour: 10, strength: 1, label: "9 am ET" },
-      { startHour: 8, endHour: 12, strength: 0.7, label: "8 am–noon ET" },
+      { startHour: 20, endHour: 23, strength: 1, label: "8–11 pm" },
+      { startHour: 19, endHour: 24, strength: 0.7, label: "7 pm–midnight" },
+      { startHour: 12, endHour: 14, strength: 0.5, label: "lunch, 12–2 pm" },
     ],
-    ...US_EASTERN,
+    ...SINGAPORE,
   },
   reddit: {
     dayWeights: [0.85, 1, 1, 0.85, 0.85, 0.4, 0.4],

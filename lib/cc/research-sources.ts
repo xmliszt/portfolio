@@ -10,6 +10,7 @@ export type ResearchSource = {
 const CHECKED_ON = "2026-11-01";
 const BLUESKY_CHECKED_ON = "2026-11-03";
 const THREADS_CHECKED_ON = "2026-11-04";
+const TIKTOK_CHECKED_ON = "2026-11-05";
 
 /** The studies behind `RESEARCHED_WINDOWS`, one row per claim used. */
 export const RESEARCH_SOURCES: readonly ResearchSource[] = [
@@ -57,9 +58,16 @@ export const RESEARCH_SOURCES: readonly ResearchSource[] = [
   {
     platform: "tiktok",
     claim:
-      "Sources disagree (Saturday; Tue/Thu; Mon–Thu evenings); Sunday 9 am ET is noted by Buffer.",
-    url: "https://postplanify.com/blog/best-time-to-post-on-social-media",
-    checkedOn: CHECKED_ON,
+      "For a Singapore audience, 8–11 pm and 12–2 pm SGT are strongest; Sunday evenings stay high; Singapore and Philippines activity peaks 7 pm–midnight (SellerPic).",
+    url: "https://creativeformore.com/best-time-to-post-on-social-media-singapore-southeast-asia/",
+    checkedOn: TIKTOK_CHECKED_ON,
+  },
+  {
+    platform: "tiktok",
+    claim:
+      "In Malaysia (UTC+8) TikTok peaks 9–11 pm every day, Saturday strongest.",
+    url: "https://zenweb.my/blog/best-time-to-post-malaysia/",
+    checkedOn: TIKTOK_CHECKED_ON,
   },
   {
     platform: "producthunt",
