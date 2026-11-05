@@ -65,7 +65,7 @@ CC always shows the **current campaign**: the one with the newest start date.
 | 朋友圈       | No, from phone | —                             | 点赞, 评论                                                                                          |
 | YouTube      | No             | title 100                     | views, likes, comments, shares, subscribers                                                         |
 | LinkedIn     | No             | 3000                          | impressions, likes as reactions, comments, shares as sends, saves, members reached, reposts         |
-| Product Hunt | No             | tagline 60, text 260          | upvotes, comments, rank, clicks                                                                     |
+| Product Hunt | No             | tagline 60, text 260          | upvotes, comments, rank                                                                             |
 
 For platforms without auto-post, the owner posts by hand: CC copies the text and opens the platform's composer. Then the post is marked posted with its live link.
 
