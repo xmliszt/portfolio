@@ -64,7 +64,7 @@ export const PLATFORMS = {
     bodyLimit: 260,
     titleLimit: 60,
     maxHashtags: 0,
-    metrics: ["upvotes", "comments", "rank", "clicks"],
+    metrics: ["upvotes", "comments", "rank"],
     metricLabels: {},
     composeUrl: "https://www.producthunt.com/posts/new",
     postsFromPhone: false,
