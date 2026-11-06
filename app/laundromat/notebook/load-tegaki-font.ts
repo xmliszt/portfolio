@@ -14,7 +14,7 @@ export async function loadTegakiFont(
     case "japanese":
       return (await import("./tegaki-fonts/zen-kurenaido/bundle")).default;
     case "chinese":
-      return (await import("tegaki/fonts/lxgw-wenkai")).default;
+      return (await import("./tegaki-fonts/zhibi/bundle")).default;
     case "arabic":
       return (await import("tegaki/fonts/amiri")).default;
     case "hebrew":

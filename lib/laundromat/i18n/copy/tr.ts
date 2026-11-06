@@ -614,6 +614,7 @@ export const tr = {
     report: "bildir",
     reported: "bildirildi",
     beKind: "Lütfen birbirinize nazik olun.",
+    chineseFont: "Çince yazı tipi",
     reportRule: (o: { count: number }) =>
       `${o.count} kişi tarafından bildirilen not kalıcı olarak kaldırılır.`,
     reportDialog: {

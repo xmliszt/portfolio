@@ -653,6 +653,7 @@ export const hi = {
     report: "रिपोर्ट करो",
     reported: "रिपोर्ट हो गया",
     beKind: "कृपया एक-दूसरे के साथ प्यार से पेश आओ।",
+    chineseFont: "चीनी फ़ॉन्ट",
     reportRule: (o: { count: number }) =>
       `जिस नोट को ${o.count} लोग रिपोर्ट करें, वह हमेशा के लिए हटा दिया जाता है।`,
     reportDialog: {

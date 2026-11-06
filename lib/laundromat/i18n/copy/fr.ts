@@ -664,6 +664,7 @@ export const fr = {
     report: "signaler",
     reported: "signalé",
     beKind: "Soyez gentils les uns avec les autres.",
+    chineseFont: "police chinoise",
     reportRule: (o: { count: number }) =>
       `Une note signalée par ${o.count} personnes est retirée pour de bon.`,
     reportDialog: {

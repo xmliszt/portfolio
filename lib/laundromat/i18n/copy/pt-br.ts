@@ -654,6 +654,7 @@ export const ptBR = {
     report: "denunciar",
     reported: "denunciado",
     beKind: "Por favor, sejam gentis uns com os outros.",
+    chineseFont: "fonte chinesa",
     reportRule: (o: { count: number }) =>
       `Uma nota denunciada por ${o.count} pessoas é removida para sempre.`,
     reportDialog: {

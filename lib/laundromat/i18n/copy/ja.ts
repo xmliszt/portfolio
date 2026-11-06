@@ -638,6 +638,7 @@ export const ja = {
     report: "報告",
     reported: "報告済み",
     beKind: "おたがいにやさしくね。",
+    chineseFont: "中国語フォント",
     reportRule: (o: { count: number }) =>
       `${o.count}人に報告されたメモは完全に削除されます。`,
     reportDialog: {

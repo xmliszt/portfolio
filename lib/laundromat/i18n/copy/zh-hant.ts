@@ -609,6 +609,7 @@ export const zhHant = {
     report: "檢舉",
     reported: "已檢舉",
     beKind: "請彼此友善。",
+    chineseFont: "中文字體",
     reportRule: (o: { count: number }) =>
       `被 ${o.count} 個人檢舉的留言會被永久移除。`,
     reportDialog: {

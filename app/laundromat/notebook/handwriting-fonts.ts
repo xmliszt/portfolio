@@ -2,12 +2,12 @@ import {
   Amiri,
   Atma,
   Caveat,
-  LXGW_WenKai_TC,
   Nanum_Pen_Script,
   Suez_One,
   Tillana,
   Zen_Kurenaido,
 } from "next/font/google";
+import localFont from "next/font/local";
 
 import type { NotebookScript } from "@/lib/laundromat/supabase/notebook-types";
 
@@ -24,9 +24,9 @@ const zenKurenaido = Zen_Kurenaido({
   preload: false,
   display: "block",
 });
-// CJK faces load one unicode-range slice per new character, so `block` hides a just-typed glyph for its download instead of flashing it in a system font.
-const lxgwWenKai = LXGW_WenKai_TC({
-  subsets: ["latin"],
+// The whole 4.6 MB face downloads with the first Chinese note, so `block` hides it for the download instead of flashing it in a system font.
+const zhibi = localFont({
+  src: "./zhibi.woff2",
   weight: "400",
   preload: false,
   display: "block",
@@ -48,7 +48,7 @@ export const HANDWRITING_FONT_FAMILIES = {
   latin: caveat.style.fontFamily,
   korean: nanumPenScript.style.fontFamily,
   japanese: zenKurenaido.style.fontFamily,
-  chinese: lxgwWenKai.style.fontFamily,
+  chinese: zhibi.style.fontFamily,
   arabic: amiri.style.fontFamily,
   hebrew: suezOne.style.fontFamily,
   devanagari: tillana.style.fontFamily,

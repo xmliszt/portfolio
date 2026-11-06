@@ -633,6 +633,7 @@ export const pl = {
     report: "zgłoś",
     reported: "zgłoszono",
     beKind: "Bądźcie dla siebie mili.",
+    chineseFont: "chińska czcionka",
     reportRule: (o: { count: number }) =>
       `Notatka zgłoszona przez ${o.count} ${pluralize({ count: o.count, one: "osobę", few: "osoby", many: "osób" })} znika na zawsze.`,
     reportDialog: {

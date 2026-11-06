@@ -619,6 +619,7 @@ export const nl = {
     report: "melden",
     reported: "gemeld",
     beKind: "Wees alsjeblieft aardig voor elkaar.",
+    chineseFont: "Chinees lettertype",
     reportRule: (o: { count: number }) =>
       `Een notitie die door ${o.count} mensen is gemeld, wordt voorgoed verwijderd.`,
     reportDialog: {

@@ -635,6 +635,7 @@ export const ko = {
     report: "신고",
     reported: "신고됨",
     beKind: "서로 다정하게 대해 주세요.",
+    chineseFont: "중국어 글꼴",
     reportRule: (o: { count: number }) =>
       `${o.count}명에게 신고된 메모는 영구히 삭제돼요.`,
     reportDialog: {
