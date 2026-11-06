@@ -30,6 +30,11 @@ type NotebookPhoneBarProps = {
   close: { label: string; onPress: () => void };
 };
 
+const PEN_MODE_ICONS = {
+  write: "M4.5 15.5l1-3.5 8-8 2.5 2.5-8 8-3.5 1zM12 5.5l2.5 2.5",
+  draw: "M3.5 12.5c1.5-3 3-3.5 4-1.5s2.5 2.5 4 0 3-3 5-1",
+} satisfies { [mode in PenMode]: string };
+
 const ROUND_BUTTON_CLASS =
   "flex size-12 shrink-0 cursor-pointer items-center justify-center rounded-full border border-[var(--lm-edge)] bg-[var(--lm-panel)] text-[var(--lm-ink-hi)] outline-none transition-opacity focus-visible:border-[var(--lm-accent)] disabled:cursor-default disabled:opacity-40";
 
@@ -102,23 +107,25 @@ export function NotebookPhoneBar(props: NotebookPhoneBarProps) {
           <div
             role="group"
             aria-label={props.pen.label}
-            className="flex h-12 items-center rounded-full border border-[var(--lm-edge)] bg-[var(--lm-panel)] p-1"
+            className="flex h-12 shrink-0 items-center rounded-full border border-[var(--lm-edge)] bg-[var(--lm-panel)] p-1"
           >
             {(["write", "draw"] satisfies PenMode[]).map((mode) => (
               <button
                 key={mode}
                 type="button"
                 aria-pressed={props.pen?.mode === mode}
+                aria-label={props.pen?.modeLabels[mode]}
+                title={props.pen?.modeLabels[mode]}
                 disabled={props.pen?.disabled}
                 onClick={() => props.pen?.onModeChange(mode)}
                 className={cn(
-                  "h-full cursor-pointer rounded-full px-5 text-[13px] lowercase outline-none focus-visible:text-[var(--lm-ink-hi)] disabled:cursor-default disabled:opacity-60",
+                  "flex size-10 cursor-pointer items-center justify-center rounded-full outline-none focus-visible:text-[var(--lm-ink-hi)] disabled:cursor-default disabled:opacity-60",
                   props.pen?.mode === mode
                     ? "bg-[var(--lm-edge)] text-[var(--lm-ink-hi)]"
                     : "text-[var(--lm-ink)]"
                 )}
               >
-                {props.pen?.modeLabels[mode]}
+                <LineIcon d={PEN_MODE_ICONS[mode]} />
               </button>
             ))}
           </div>
