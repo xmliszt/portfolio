@@ -631,6 +631,7 @@ export const uk = {
     report: "поскаржитися",
     reported: "скаргу надіслано",
     beKind: "Будь ласка, будьте добрі одне до одного.",
+    chineseFont: "китайський шрифт",
     reportRule: (o: { count: number }) =>
       `Запис, на який поскаржилися ${o.count} ${pluralize({ count: o.count, one: "людина", few: "людини", many: "людей" })}, видаляється назавжди.`,
     reportDialog: {

@@ -610,6 +610,7 @@ export const zhHans = {
     report: "举报",
     reported: "已举报",
     beKind: "请彼此友善。",
+    chineseFont: "中文字体",
     reportRule: (o: { count: number }) =>
       `被 ${o.count} 个人举报的留言会被永久移除。`,
     reportDialog: {

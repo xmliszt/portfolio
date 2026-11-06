@@ -655,6 +655,7 @@ export const id = {
     report: "laporkan",
     reported: "dilaporkan",
     beKind: "Tolong saling bersikap baik, ya.",
+    chineseFont: "font Mandarin",
     reportRule: (o: { count: number }) =>
       `Catatan yang dilaporkan ${o.count} orang akan dihapus selamanya.`,
     reportDialog: {

@@ -662,6 +662,7 @@ export const it = {
     report: "segnala",
     reported: "segnalato",
     beKind: "Siate gentili gli uni con gli altri.",
+    chineseFont: "font cinese",
     reportRule: (o: { count: number }) =>
       `Una nota segnalata da ${o.count} persone viene rimossa per sempre.`,
     reportDialog: {

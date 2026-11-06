@@ -656,6 +656,7 @@ export const es = {
     report: "denunciar",
     reported: "denunciada",
     beKind: "Por favor, sé amable con los demás.",
+    chineseFont: "fuente china",
     reportRule: (o: { count: number }) =>
       `Una nota denunciada por ${o.count} personas se elimina para siempre.`,
     reportDialog: {

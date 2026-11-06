@@ -660,6 +660,7 @@ export const en = {
     report: "report",
     reported: "reported",
     beKind: "Please be kind to each other.",
+    chineseFont: "Chinese font",
     reportRule: (o: { count: number }) =>
       `A note reported by ${o.count} people is removed for good.`,
     reportDialog: {

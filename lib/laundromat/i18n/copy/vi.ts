@@ -641,6 +641,7 @@ export const vi = {
     report: "báo cáo",
     reported: "đã báo cáo",
     beKind: "Hãy tử tế với nhau nhé.",
+    chineseFont: "phông chữ tiếng Trung",
     reportRule: (o: { count: number }) =>
       `Ghi chú bị ${o.count} người báo cáo sẽ bị xóa vĩnh viễn.`,
     reportDialog: {

@@ -661,6 +661,7 @@ export const de = {
     report: "melden",
     reported: "gemeldet",
     beKind: "Bitte seid freundlich zueinander.",
+    chineseFont: "Chinesische Schrift",
     reportRule: (o: { count: number }) =>
       `Eine Notiz, die ${o.count} Leute melden, wird endgültig entfernt.`,
     reportDialog: {

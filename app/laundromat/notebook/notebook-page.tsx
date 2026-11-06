@@ -5,6 +5,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { groupBy } from "lodash";
 
 import { useLaundromatCopy } from "@/app/laundromat/i18n/use-laundromat-copy";
+import { CHINESE_FONT_CREDIT } from "@/lib/laundromat/notebook/chinese-font-credit";
 import type { DoodleStroke } from "@/lib/laundromat/notebook/doodle-stroke";
 import type { PageRow } from "@/lib/laundromat/notebook/layout-page-rows";
 import { REPORT_HIDE_THRESHOLD } from "@/lib/laundromat/notebook/report-hide-threshold";
@@ -164,6 +165,18 @@ export function NotebookPage(props: NotebookPageProps) {
           {copy.notebook.beKind}
           <br />
           {copy.notebook.reportRule({ count: REPORT_HIDE_THRESHOLD })}
+        </p>
+        <p className="absolute inset-x-0 bottom-5 text-center text-[10px] opacity-40">
+          {copy.notebook.chineseFont} ·{" "}
+          <a
+            href={CHINESE_FONT_CREDIT.authorXUrl}
+            target="_blank"
+            rel="noopener"
+            className="underline-offset-2 hover:underline"
+          >
+            {CHINESE_FONT_CREDIT.fontName} · @
+            {CHINESE_FONT_CREDIT.authorXHandle}
+          </a>
         </p>
       </div>
     );
