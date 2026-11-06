@@ -2,11 +2,11 @@ import {
   Amiri,
   Atma,
   Caveat,
-  Klee_One,
   LXGW_WenKai_TC,
   Nanum_Pen_Script,
   Suez_One,
   Tillana,
+  Zen_Kurenaido,
 } from "next/font/google";
 
 import type { NotebookScript } from "@/lib/laundromat/supabase/notebook-types";
@@ -18,7 +18,7 @@ const nanumPenScript = Nanum_Pen_Script({
   preload: false,
   display: "block",
 });
-const kleeOne = Klee_One({
+const zenKurenaido = Zen_Kurenaido({
   subsets: ["latin"],
   weight: "400",
   preload: false,
@@ -47,7 +47,7 @@ const atma = Atma({ subsets: ["bengali"], weight: "400", preload: false });
 export const HANDWRITING_FONT_FAMILIES = {
   latin: caveat.style.fontFamily,
   korean: nanumPenScript.style.fontFamily,
-  japanese: kleeOne.style.fontFamily,
+  japanese: zenKurenaido.style.fontFamily,
   chinese: lxgwWenKai.style.fontFamily,
   arabic: amiri.style.fontFamily,
   hebrew: suezOne.style.fontFamily,

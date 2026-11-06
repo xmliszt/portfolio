@@ -12,7 +12,7 @@ export async function loadTegakiFont(
     case "korean":
       return (await import("tegaki/fonts/nanum-pen-script")).default;
     case "japanese":
-      return (await import("tegaki/fonts/klee-one")).default;
+      return (await import("./tegaki-fonts/zen-kurenaido/bundle")).default;
     case "chinese":
       return (await import("tegaki/fonts/lxgw-wenkai")).default;
     case "arabic":
