@@ -428,7 +428,7 @@ export const de = {
     updates: {
       "notebook-translation": {
         title: "Notizen in deiner Sprache lesen",
-        body: "Notizen im Notizbuch erscheinen jetzt in deiner Sprache. Tippe auf den Pfeil zurück an einer Notiz, um sie im Original zu sehen, oder schalte die Übersetzung in den Einstellungen aus.",
+        body: "Tippe bei einer Notiz auf „übersetzen“, um sie in deiner Sprache zu lesen, oder schalte in den Einstellungen die automatische Übersetzung ein.",
       },
       "dreamcore-station": {
         title: "ein dreamcore-sender im fernseher",

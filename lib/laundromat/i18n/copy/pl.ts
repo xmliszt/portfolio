@@ -404,7 +404,7 @@ export const pl = {
     updates: {
       "notebook-translation": {
         title: "czytaj liściki w swoim języku",
-        body: "Liściki w notesie wyświetlają się teraz w twoim języku. Stuknij strzałkę wstecz przy liściku, żeby zobaczyć oryginał, albo wyłącz tłumaczenie w ustawieniach.",
+        body: "Stuknij „przetłumacz” przy liściku, żeby przeczytać go w swoim języku, albo włącz automatyczne tłumaczenie w ustawieniach.",
       },
       "dreamcore-station": {
         title: "stacja dreamcore w telewizorze",

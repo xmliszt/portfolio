@@ -382,7 +382,7 @@ export const zhHant = {
     updates: {
       "notebook-translation": {
         title: "用你的語言讀留言",
-        body: "筆記本裡的留言現在會顯示成你的語言。點留言上的返回箭頭可以看原文，也可以在設定裡關閉翻譯。",
+        body: "點留言上的「翻譯」就能用你的語言讀，也可以在設定裡打開自動翻譯，翻開的每則留言都會被翻譯。",
       },
       "dreamcore-station": {
         title: "電視有了夢核頻道",

@@ -16,7 +16,7 @@ export type NotebookTranslationSetting = {
 export const NotebookTranslationContext =
   createContext<NotebookTranslationSetting>({
     target: "auto",
-    isAuto: true,
+    isAuto: false,
     setTarget: () => {},
     setAuto: () => {},
   });

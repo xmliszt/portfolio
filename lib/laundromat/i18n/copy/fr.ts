@@ -430,7 +430,7 @@ export const fr = {
     updates: {
       "notebook-translation": {
         title: "lire les mots dans ta langue",
-        body: "Les mots du carnet s'affichent maintenant dans ta langue. Touche la flèche retour d'un mot pour le voir tel qu'il a été écrit, ou désactive la traduction dans les réglages.",
+        body: "Touche « traduire » sur un mot pour le lire dans ta langue, ou active la traduction auto dans les réglages pour traduire chaque mot que tu ouvres.",
       },
       "dreamcore-station": {
         title: "une chaîne dreamcore à la télé",

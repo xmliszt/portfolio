@@ -156,7 +156,11 @@ export function useEntryTranslations(options: {
         return { kind: "original", canTranslate: false };
       }
       if (!isWanted) return { kind: "original", canTranslate: true };
-      if (translation?.kind === "pending") return { kind: "pending" };
+      if (translation?.kind === "pending") {
+        return choices[entryId] === "translated"
+          ? { kind: "pending" }
+          : { kind: "original", canTranslate: false };
+      }
       if (translation?.kind === "done" && translation.body !== undefined) {
         return {
           kind: "translated",

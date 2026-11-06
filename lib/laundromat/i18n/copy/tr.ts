@@ -390,7 +390,7 @@ export const tr = {
     updates: {
       "notebook-translation": {
         title: "notları kendi dilinde oku",
-        body: "Defterdeki notlar artık senin dilinde görünüyor. Bir notun geri okuna dokunarak yazıldığı hâlini görebilir ya da çeviriyi ayarlardan kapatabilirsin.",
+        body: "Bir notu kendi dilinde okumak için “çevir”e dokun ya da açtığın her notun çevrilmesi için ayarlardan otomatik çeviriyi aç.",
       },
       "dreamcore-station": {
         title: "televizyonda dreamcore kanalı",

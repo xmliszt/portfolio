@@ -392,7 +392,7 @@ export const nl = {
     updates: {
       "notebook-translation": {
         title: "lees berichtjes in je eigen taal",
-        body: "Berichtjes in het notitieboek verschijnen nu in jouw taal. Tik op de terugpijl bij een berichtje om het origineel te zien, of zet vertalen uit in de instellingen.",
+        body: "Tik bij een berichtje op ‘vertalen’ om het in je eigen taal te lezen, of zet automatisch vertalen aan in de instellingen.",
       },
       "dreamcore-station": {
         title: "een dreamcore-zender op de tv",

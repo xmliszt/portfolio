@@ -429,7 +429,7 @@ export const en = {
     updates: {
       "notebook-translation": {
         title: "read notes in your language",
-        body: "Notes in the notebook now appear in your language. Tap the back arrow on a note to see it as written, or turn translation off in settings.",
+        body: "Tap translate on a note to read it in your language, or turn on auto-translate in settings to translate every note you open.",
       },
       "dreamcore-station": {
         title: "a dreamcore station on the tv",

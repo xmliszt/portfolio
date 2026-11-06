@@ -422,7 +422,7 @@ export const ptBR = {
     updates: {
       "notebook-translation": {
         title: "leia os recados no seu idioma",
-        body: "Os recados do caderno agora aparecem no seu idioma. Toque na seta de voltar em um recado para ver como foi escrito, ou desligue a tradução nas configurações.",
+        body: "Toque em “traduzir” em um recado para lê-lo no seu idioma, ou ative a tradução automática nas configurações para traduzir cada recado que abrir.",
       },
       "dreamcore-station": {
         title: "um canal dreamcore na tv",

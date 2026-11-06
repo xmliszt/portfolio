@@ -412,7 +412,7 @@ export const vi = {
     updates: {
       "notebook-translation": {
         title: "đọc lời nhắn bằng ngôn ngữ của bạn",
-        body: "Lời nhắn trong sổ giờ hiện bằng ngôn ngữ của bạn. Chạm mũi tên quay lại trên một lời nhắn để xem bản gốc, hoặc tắt dịch trong phần cài đặt.",
+        body: "Chạm “dịch” trên một lời nhắn để đọc bằng ngôn ngữ của bạn, hoặc bật tự động dịch trong cài đặt để dịch mọi lời nhắn bạn mở.",
       },
       "dreamcore-station": {
         title: "kênh dreamcore trên tv",

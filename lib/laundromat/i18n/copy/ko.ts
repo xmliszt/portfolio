@@ -407,7 +407,7 @@ export const ko = {
     updates: {
       "notebook-translation": {
         title: "내 언어로 메모 읽기",
-        body: "노트의 메모가 이제 네 언어로 보여. 메모의 되돌리기 화살표를 누르면 원문을 볼 수 있고, 번역은 설정에서 끌 수 있어.",
+        body: "메모의 '번역'을 누르면 네 언어로 읽을 수 있어. 설정에서 자동 번역을 켜면 펼친 메모가 모두 번역돼.",
       },
       "dreamcore-station": {
         title: "tv에 드림코어 채널",

@@ -430,7 +430,7 @@ export const it = {
     updates: {
       "notebook-translation": {
         title: "leggi i biglietti nella tua lingua",
-        body: "I biglietti del quaderno ora appaiono nella tua lingua. Tocca la freccia indietro su un biglietto per vederlo come è stato scritto, o disattiva la traduzione nelle impostazioni.",
+        body: "Tocca «traduci» su un biglietto per leggerlo nella tua lingua, o attiva la traduzione automatica nelle impostazioni per tradurre ogni biglietto che apri.",
       },
       "dreamcore-station": {
         title: "un canale dreamcore in tv",

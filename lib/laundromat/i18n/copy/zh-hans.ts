@@ -383,7 +383,7 @@ export const zhHans = {
     updates: {
       "notebook-translation": {
         title: "用你的语言读留言",
-        body: "笔记本里的留言现在会显示成你的语言。点留言上的返回箭头可以看原文，也可以在设置里关闭翻译。",
+        body: "点留言上的“翻译”就能用你的语言读，也可以在设置里打开自动翻译，翻开的每条留言都会被翻译。",
       },
       "dreamcore-station": {
         title: "电视有了梦核频道",

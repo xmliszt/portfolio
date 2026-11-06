@@ -424,7 +424,7 @@ export const id = {
     updates: {
       "notebook-translation": {
         title: "baca catatan dalam bahasamu",
-        body: "Catatan di buku catatan kini tampil dalam bahasamu. Ketuk panah kembali di sebuah catatan untuk melihat aslinya, atau matikan terjemahan di pengaturan.",
+        body: "Ketuk “terjemahkan” di sebuah catatan untuk membacanya dalam bahasamu, atau nyalakan terjemahan otomatis di pengaturan untuk menerjemahkan setiap catatan yang kamu buka.",
       },
       "dreamcore-station": {
         title: "saluran dreamcore di tv",

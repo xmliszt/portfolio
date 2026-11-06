@@ -421,7 +421,7 @@ export const es = {
     updates: {
       "notebook-translation": {
         title: "lee las notas en tu idioma",
-        body: "Las notas del cuaderno ahora aparecen en tu idioma. Toca la flecha de volver en una nota para verla tal como se escribió, o desactiva la traducción en los ajustes.",
+        body: "Toca «traducir» en una nota para leerla en tu idioma, o activa la traducción automática en los ajustes para traducir cada nota que abras.",
       },
       "dreamcore-station": {
         title: "una emisora dreamcore en la tele",

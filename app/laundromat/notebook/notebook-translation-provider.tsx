@@ -25,9 +25,9 @@ function readStoredTarget(): NotebookTranslationTarget {
 
 function readStoredAuto() {
   try {
-    return window.localStorage.getItem(AUTO_STORAGE_KEY) !== "off";
+    return window.localStorage.getItem(AUTO_STORAGE_KEY) === "on";
   } catch {
-    return true;
+    return false;
   }
 }
 
@@ -39,12 +39,12 @@ function writeStored(options: { key: string; value: string }) {
   }
 }
 
-/** Provide the visitor's remembered notebook translation settings: the language notes are translated into, `auto` for the laundromat's own language, and whether notes are translated without asking; `auto` and on until mounted. */
+/** Provide the visitor's remembered notebook translation settings: the language notes are translated into, `auto` for the laundromat's own language, and whether notes are translated without asking; `auto` and off until mounted. */
 export function NotebookTranslationProvider(
   props: NotebookTranslationProviderProps
 ) {
   const [target, setTargetState] = useState<NotebookTranslationTarget>("auto");
-  const [isAuto, setAutoState] = useState(true);
+  const [isAuto, setAutoState] = useState(false);
 
   useLayoutEffect(() => {
     setTargetState(readStoredTarget());
