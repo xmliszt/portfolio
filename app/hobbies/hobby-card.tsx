@@ -20,7 +20,11 @@ export function HobbyCard(props: HobbyCardProps) {
       <div className="group relative justify-center overflow-hidden rounded-lg">
         <AspectRatio ratio={3 / 2}>
           <img
-            className="m-0 h-full"
+            className={cn(
+              "m-0 size-full object-cover",
+              "transition-transform [transition-duration:400ms] ease-in-out",
+              "group-hover:scale-105"
+            )}
             src={props.coverImageUrl}
             alt={props.coverImageAlt}
           />
