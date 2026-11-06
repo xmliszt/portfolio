@@ -71,6 +71,11 @@ export const ko = {
     qualityLiteHint: "메모리와 배터리에 가벼움",
     close: "닫기",
     closeHint: "esc로 닫기",
+    notebook: "노트",
+    translateTo: "번역 언어",
+    translateAuto: (o: { language: string }) => `자동 · ${o.language}`,
+    autoTranslate: "자동 번역",
+    autoTranslateStates: { on: "켜기", off: "끄기" },
     temperature: "온도",
     weather: "날씨",
     placeLabel: "날씨 위치",
@@ -400,6 +405,10 @@ export const ko = {
       board: "게시판",
     },
     updates: {
+      "notebook-translation": {
+        title: "내 언어로 메모 읽기",
+        body: "노트의 메모가 이제 네 언어로 보여. 메모의 되돌리기 화살표를 누르면 원문을 볼 수 있고, 번역은 설정에서 끌 수 있어.",
+      },
       "dreamcore-station": {
         title: "tv에 드림코어 채널",
         body: "깊은 우주 다음으로 다이얼을 돌리면 잔잔하게 울려 퍼지는 앰비언트 드림코어 라디오를 들을 수 있어요.",
@@ -661,6 +670,19 @@ export const ko = {
     doodleBookFull: "이 노트엔 그림 그릴 자리가 없어 · 대신 메모를 써 줘",
     inkFull: "잉크 자리가 더 없어 · 저장하거나 되돌려 줘",
     someoneDrawingInNotebook: "누가 노트에 그리는 중 · 차례를 기다려 줘",
+    translate: "번역",
+    translating: "번역 중…",
+    showOriginal: "원문 보기",
+    readAll: "전체 보기",
+    closeTranslation: "닫기",
+    translateFailed: "지금은 번역할 수 없어 · 조금 뒤에 다시 해 봐",
+    translateToggle: (o: { language: string }) =>
+      `메모를 ${o.language}(으)로 번역`,
+    showingTranslated: (o: { language: string }) =>
+      `메모를 ${o.language}(으)로 보는 중`,
+    showingOriginal: "메모를 원문으로 보는 중",
+    translatingNotes: (o: { language: string }) =>
+      `메모를 ${o.language}(으)로 번역하는 중…`,
     padLabel: "노트의 그림 공간",
     drawingNow: "그리는 중…",
     someoneDrawingNow: "누가 그리는 중…",

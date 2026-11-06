@@ -73,6 +73,11 @@ export const de = {
     qualityLiteHint: "schont Speicher und Akku",
     close: "schließen",
     closeHint: "esc zum Schließen",
+    notebook: "Notizbuch",
+    translateTo: "übersetzen in",
+    translateAuto: (o: { language: string }) => `auto · ${o.language}`,
+    autoTranslate: "automatisch übersetzen",
+    autoTranslateStates: { on: "an", off: "aus" },
     temperature: "temperatur",
     weather: "Wetter",
     placeLabel: "Wetterort",
@@ -421,6 +426,10 @@ export const de = {
       board: "aushang",
     },
     updates: {
+      "notebook-translation": {
+        title: "Notizen in deiner Sprache lesen",
+        body: "Notizen im Notizbuch erscheinen jetzt in deiner Sprache. Tippe auf den Pfeil zurück an einer Notiz, um sie im Original zu sehen, oder schalte die Übersetzung in den Einstellungen aus.",
+      },
       "dreamcore-station": {
         title: "ein dreamcore-sender im fernseher",
         body: "Dreh die Senderskala über den tiefen Weltraum hinaus zu einem Dreamcore-Radio mit sanfter, hallender Ambient-Musik.",
@@ -691,6 +700,19 @@ export const de = {
     inkFull: "kein Platz mehr für Tinte · speichere oder mach etwas rückgängig",
     someoneDrawingInNotebook:
       "jemand zeichnet gerade ins Notizbuch · warte, bis du dran bist",
+    translate: "übersetzen",
+    translating: "wird übersetzt…",
+    showOriginal: "Original zeigen",
+    readAll: "ganz lesen",
+    closeTranslation: "schließen",
+    translateFailed:
+      "gerade keine Übersetzung möglich · versuch es gleich noch mal",
+    translateToggle: (o: { language: string }) =>
+      `Notizen in ${o.language} übersetzen`,
+    showingTranslated: (o: { language: string }) => `Notizen auf ${o.language}`,
+    showingOriginal: "Notizen im Original",
+    translatingNotes: (o: { language: string }) =>
+      `Notizen werden in ${o.language} übersetzt…`,
     padLabel: "Zeichenfläche im Notizbuch",
     drawingNow: "du zeichnest…",
     someoneDrawingNow: "jemand zeichnet gerade…",

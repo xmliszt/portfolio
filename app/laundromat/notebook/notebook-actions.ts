@@ -1,24 +1,31 @@
 "use server";
 
+import { uniq } from "lodash";
 import { cookies } from "next/headers";
 
 import { readOrCreateVisitorCookieId } from "@/app/laundromat/read-or-create-visitor-cookie-id";
+import { parseLaundromatLocale } from "@/lib/laundromat/i18n/parse-laundromat-locale";
 import { decodeDoodle } from "@/lib/laundromat/notebook/decode-doodle";
 import type { DoodleDrawing } from "@/lib/laundromat/notebook/doodle-stroke";
 import { getDoodleArea } from "@/lib/laundromat/notebook/get-doodle-area";
 import { getDoodleLineCount } from "@/lib/laundromat/notebook/get-doodle-line-count";
 import { maskProfanity } from "@/lib/laundromat/notebook/mask-profanity";
+import { MAX_TRANSLATED_ENTRIES } from "@/lib/laundromat/notebook/max-translated-entries";
+import { mergeEntryTranslations } from "@/lib/laundromat/notebook/merge-entry-translations";
 import { parseDoodleDrawing } from "@/lib/laundromat/notebook/parse-doodle-drawing";
 import { REPORT_REASON_MAX_CHARS } from "@/lib/laundromat/notebook/report-reason-max-chars";
+import { translateNotes } from "@/lib/laundromat/notebook/translate-notes";
 import { sceneConfig } from "@/lib/laundromat/scene-config";
 import { appendDoodle } from "@/lib/laundromat/supabase/append-doodle";
 import { appendEntry } from "@/lib/laundromat/supabase/append-entry";
 import { countNotebookEntries } from "@/lib/laundromat/supabase/count-notebook-entries";
 import { createLaundromatServiceClient } from "@/lib/laundromat/supabase/create-laundromat-service-client";
 import { getCurrentNotebook } from "@/lib/laundromat/supabase/get-current-notebook";
+import { getEntryTranslations } from "@/lib/laundromat/supabase/get-entry-translations";
 import { getFilledNotebooks } from "@/lib/laundromat/supabase/get-filled-notebooks";
 import { getNotebookByNumber } from "@/lib/laundromat/supabase/get-notebook-by-number";
 import { getNotebookEntries } from "@/lib/laundromat/supabase/get-notebook-entries";
+import { getVisibleTextEntries } from "@/lib/laundromat/supabase/get-visible-text-entries";
 import type {
   AppendEntryRejection,
   Notebook,
@@ -26,11 +33,13 @@ import type {
   NotebookScript,
 } from "@/lib/laundromat/supabase/notebook-types";
 import { reportEntry } from "@/lib/laundromat/supabase/report-entry";
+import { saveEntryTranslations } from "@/lib/laundromat/supabase/save-entry-translations";
 import { toNotebookScript } from "@/lib/laundromat/supabase/to-notebook-script";
 
 import { createFakeNotebookStore } from "./create-fake-notebook-store";
 
 const FAKE_NOTEBOOKS_COOKIE = "laundromat_fake_notebooks";
+const TRANSLATION_MODEL = "openai/gpt-4.1-mini";
 
 const devFakeNotebookStore =
   process.env.NODE_ENV === "development"
@@ -87,6 +96,16 @@ export type LeaveEntryResult =
   | { kind: "offline" };
 
 export type ReportEntryResult = { kind: "reported" } | { kind: "offline" };
+
+export type EntryTranslation = {
+  entryId: number;
+  body: string | undefined;
+  sourceLanguage: string;
+};
+
+export type TranslateEntriesResult =
+  | { kind: "translated"; translations: EntryTranslation[] }
+  | { kind: "offline" };
 
 function toEntryView(entry: NotebookEntry): NotebookEntryView {
   const isHidden = entry.hidden_at !== null;
@@ -297,4 +316,65 @@ export async function reportNotebookEntry(options: {
   } catch {
     return { kind: "offline" };
   }
+}
+
+/** Translate the visible text entries in `entryIds` into `locale`, reusing saved translations and saving new ones; `body` is `undefined` for an entry already written in `locale`, and entries that are hidden, doodles, or could not be translated are left out. */
+export async function translateNotebookEntries(options: {
+  entryIds: number[];
+  locale: string;
+}): Promise<TranslateEntriesResult> {
+  const locale = parseLaundromatLocale(options.locale);
+  const entryIds = uniq(
+    options.entryIds.filter((id) => Number.isSafeInteger(id) && id > 0)
+  ).slice(0, MAX_TRANSLATED_ENTRIES);
+  if (locale === undefined || entryIds.length === 0) {
+    return { kind: "translated", translations: [] };
+  }
+  try {
+    const fake = await readFakeNotebooks();
+    if (fake !== undefined) {
+      const translations = await translateNotes({
+        model: TRANSLATION_MODEL,
+        notes: fake.findTextEntries(entryIds),
+        locale,
+      });
+      return { kind: "translated", translations: translations.map(mask) };
+    }
+    const client = createLaundromatServiceClient();
+    if (client === undefined) return { kind: "offline" };
+    const visible = await getVisibleTextEntries({ client, entryIds });
+    const saved = await getEntryTranslations({
+      client,
+      entryIds: visible.map((entry) => entry.id),
+      locale,
+    });
+    const savedIds = saved.map((row) => row.entry_id);
+    const missing = visible.filter((entry) => !savedIds.includes(entry.id));
+    const fresh = await translateNotes({
+      model: TRANSLATION_MODEL,
+      notes: missing,
+      locale,
+    });
+    await saveEntryTranslations({ client, locale, translations: fresh });
+    return {
+      kind: "translated",
+      translations: mergeEntryTranslations({
+        visibleIds: visible.map((entry) => entry.id),
+        saved,
+        fresh,
+      }).map(mask),
+    };
+  } catch {
+    return { kind: "offline" };
+  }
+}
+
+function mask(translation: EntryTranslation): EntryTranslation {
+  return {
+    ...translation,
+    body:
+      translation.body === undefined
+        ? undefined
+        : maskProfanity(translation.body),
+  };
 }

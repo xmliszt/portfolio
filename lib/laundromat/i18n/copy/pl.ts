@@ -88,6 +88,11 @@ export const pl = {
     qualityLiteHint: "lżejszy dla pamięci i baterii",
     close: "zamknij",
     closeHint: "esc, aby zamknąć",
+    notebook: "notes",
+    translateTo: "tłumacz na",
+    translateAuto: (o: { language: string }) => `auto · ${o.language}`,
+    autoTranslate: "automatyczne tłumaczenie",
+    autoTranslateStates: { on: "wł.", off: "wył." },
     temperature: "temperatura",
     weather: "pogoda",
     placeLabel: "miejsce pogody",
@@ -397,6 +402,10 @@ export const pl = {
       board: "tablica",
     },
     updates: {
+      "notebook-translation": {
+        title: "czytaj liściki w swoim języku",
+        body: "Liściki w notesie wyświetlają się teraz w twoim języku. Stuknij strzałkę wstecz przy liściku, żeby zobaczyć oryginał, albo wyłącz tłumaczenie w ustawieniach.",
+      },
       "dreamcore-station": {
         title: "stacja dreamcore w telewizorze",
         body: "Przekręć pokrętło za głęboki kosmos, aby posłuchać radia dreamcore z miękką, rozbrzmiewającą muzyką ambient.",
@@ -658,6 +667,18 @@ export const pl = {
       "w tym notesie nie ma miejsca na rysunek · napisz lepiej liścik",
     inkFull: "brak miejsca na atrament · zapisz albo cofnij",
     someoneDrawingInNotebook: "ktoś rysuje w notesie · poczekaj na swoją kolej",
+    translate: "przetłumacz",
+    translating: "tłumaczenie…",
+    showOriginal: "pokaż oryginał",
+    readAll: "czytaj całość",
+    closeTranslation: "zamknij",
+    translateFailed: "nie da się teraz przetłumaczyć · spróbuj za chwilę",
+    translateToggle: (o: { language: string }) =>
+      `tłumacz liściki: ${o.language}`,
+    showingTranslated: (o: { language: string }) => `liściki: ${o.language}`,
+    showingOriginal: "liściki w oryginale",
+    translatingNotes: (o: { language: string }) =>
+      `tłumaczenie liścików: ${o.language}…`,
     padLabel: "Miejsce do rysowania w notesie",
     drawingNow: "rysujesz…",
     someoneDrawingNow: "ktoś rysuje…",

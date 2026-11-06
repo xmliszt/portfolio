@@ -71,6 +71,11 @@ export const ja = {
     qualityLiteHint: "メモリとバッテリーにやさしい",
     close: "閉じる",
     closeHint: "esc で閉じる",
+    notebook: "ノート",
+    translateTo: "翻訳先",
+    translateAuto: (o: { language: string }) => `自動 · ${o.language}`,
+    autoTranslate: "自動翻訳",
+    autoTranslateStates: { on: "オン", off: "オフ" },
     temperature: "温度",
     weather: "天気",
     placeLabel: "天気の場所",
@@ -401,6 +406,10 @@ export const ja = {
       board: "掲示板",
     },
     updates: {
+      "notebook-translation": {
+        title: "自分の言葉でメモを読む",
+        body: "ノートのメモがあなたの言語で表示されるようになった。メモの戻る矢印で原文を見られる。翻訳は設定でオフにできる。",
+      },
       "dreamcore-station": {
         title: "テレビにドリームコアのチャンネル",
         body: "深宇宙の先までダイヤルを回すと、やわらかく響くアンビエントのドリームコアラジオが流れます。",
@@ -664,6 +673,18 @@ export const ja = {
     doodleBookFull: "このノートには絵を描く余白がない · 代わりにメモを書いて",
     inkFull: "もうインクの余白がない · 保存するか元に戻して",
     someoneDrawingInNotebook: "誰かがノートに描いている · 順番を待って",
+    translate: "翻訳",
+    translating: "翻訳中…",
+    showOriginal: "原文を表示",
+    readAll: "全文を読む",
+    closeTranslation: "閉じる",
+    translateFailed: "いまは翻訳できない · 少し待ってもう一度",
+    translateToggle: (o: { language: string }) => `メモを${o.language}に翻訳`,
+    showingTranslated: (o: { language: string }) =>
+      `メモを${o.language}で表示中`,
+    showingOriginal: "メモを原文で表示中",
+    translatingNotes: (o: { language: string }) =>
+      `メモを${o.language}に翻訳中…`,
     padLabel: "ノートの絵を描くスペース",
     drawingNow: "描いている…",
     someoneDrawingNow: "誰かが描いている…",

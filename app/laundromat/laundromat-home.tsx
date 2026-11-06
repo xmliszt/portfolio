@@ -5,6 +5,7 @@ import type { LaundromatLocale } from "@/lib/laundromat/i18n/laundromat-locales"
 
 import { LaundromatCopyProvider } from "./i18n/laundromat-copy-provider";
 import { LocalWeatherProvider } from "./local-weather/local-weather-provider";
+import { NotebookTranslationProvider } from "./notebook/notebook-translation-provider";
 import { SupabaseRoomProvider } from "./realtime/supabase-room-provider";
 import { RenderQualityProvider } from "./settings/render-quality-provider";
 import { SoundBoardProvider } from "./sound/sound-board-provider";
@@ -31,13 +32,15 @@ export function LaundromatHome(props: LaundromatHomeProps) {
         <Suspense>
           <SoundBoardProvider>
             <RenderQualityProvider>
-              <SupabaseRoomProvider>
-                <LaundromatUpdateProvider>
-                  <LocalWeatherProvider>
-                    <ThemedLaundromat />
-                  </LocalWeatherProvider>
-                </LaundromatUpdateProvider>
-              </SupabaseRoomProvider>
+              <NotebookTranslationProvider>
+                <SupabaseRoomProvider>
+                  <LaundromatUpdateProvider>
+                    <LocalWeatherProvider>
+                      <ThemedLaundromat />
+                    </LocalWeatherProvider>
+                  </LaundromatUpdateProvider>
+                </SupabaseRoomProvider>
+              </NotebookTranslationProvider>
             </RenderQualityProvider>
           </SoundBoardProvider>
         </Suspense>

@@ -73,6 +73,11 @@ export const fr = {
     qualityLiteHint: "plus léger pour la mémoire et la batterie",
     close: "fermer",
     closeHint: "échap pour fermer",
+    notebook: "carnet",
+    translateTo: "traduire en",
+    translateAuto: (o: { language: string }) => `auto · ${o.language}`,
+    autoTranslate: "traduction auto",
+    autoTranslateStates: { on: "oui", off: "non" },
     temperature: "température",
     weather: "météo",
     placeLabel: "lieu de la météo",
@@ -423,6 +428,10 @@ export const fr = {
       board: "panneau",
     },
     updates: {
+      "notebook-translation": {
+        title: "lire les mots dans ta langue",
+        body: "Les mots du carnet s'affichent maintenant dans ta langue. Touche la flèche retour d'un mot pour le voir tel qu'il a été écrit, ou désactive la traduction dans les réglages.",
+      },
       "dreamcore-station": {
         title: "une chaîne dreamcore à la télé",
         body: "Tournez le cadran au-delà de l'espace lointain pour une radio dreamcore de musique ambiante douce et pleine d'écho.",
@@ -693,6 +702,19 @@ export const fr = {
     inkFull: "plus de place pour l'encre · enregistre ou annule",
     someoneDrawingInNotebook:
       "quelqu'un dessine dans le carnet · attends ton tour",
+    translate: "traduire",
+    translating: "traduction…",
+    showOriginal: "voir l'original",
+    readAll: "tout lire",
+    closeTranslation: "fermer",
+    translateFailed: "traduction impossible pour le moment · réessaie bientôt",
+    translateToggle: (o: { language: string }) =>
+      `traduire les mots en ${o.language}`,
+    showingTranslated: (o: { language: string }) =>
+      `mots affichés en ${o.language}`,
+    showingOriginal: "mots affichés tels qu'écrits",
+    translatingNotes: (o: { language: string }) =>
+      `traduction des mots en ${o.language}…`,
     padLabel: "Espace de dessin dans le carnet",
     drawingNow: "dessin en cours…",
     someoneDrawingNow: "quelqu'un dessine…",

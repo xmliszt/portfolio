@@ -89,6 +89,11 @@ export const en = {
     qualityLiteHint: "lighter on memory and battery",
     close: "close",
     closeHint: "esc to close",
+    notebook: "notebook",
+    translateTo: "translate to",
+    translateAuto: (o: { language: string }) => `auto · ${o.language}`,
+    autoTranslate: "auto-translate",
+    autoTranslateStates: { on: "on", off: "off" },
     temperature: "temperature",
     weather: "weather",
     placeLabel: "weather location",
@@ -422,6 +427,10 @@ export const en = {
       board: "board",
     } satisfies { [tag in BoardTag]: string },
     updates: {
+      "notebook-translation": {
+        title: "read notes in your language",
+        body: "Notes in the notebook now appear in your language. Tap the back arrow on a note to see it as written, or turn translation off in settings.",
+      },
       "dreamcore-station": {
         title: "a dreamcore station on the tv",
         body: "Turn the tuner past deep space for a dreamcore radio of soft, echoing ambient music.",
@@ -689,6 +698,19 @@ export const en = {
     inkFull: "no more room for ink · save it or undo",
     someoneDrawingInNotebook:
       "someone is drawing in the notebook · wait your turn",
+    translate: "translate",
+    translating: "translating…",
+    showOriginal: "show original",
+    readAll: "read all",
+    closeTranslation: "close",
+    translateFailed: "couldn't translate right now · try again soon",
+    translateToggle: (o: { language: string }) =>
+      `translate notes into ${o.language}`,
+    showingTranslated: (o: { language: string }) =>
+      `showing notes in ${o.language}`,
+    showingOriginal: "showing notes as written",
+    translatingNotes: (o: { language: string }) =>
+      `translating notes into ${o.language}…`,
     padLabel: "Drawing space in the notebook",
     drawingNow: "drawing…",
     someoneDrawingNow: "someone is drawing…",

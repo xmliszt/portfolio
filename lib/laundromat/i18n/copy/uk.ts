@@ -86,6 +86,11 @@ export const uk = {
     qualityLiteHint: "легше для пам'яті та батареї",
     close: "закрити",
     closeHint: "esc — закрити",
+    notebook: "блокнот",
+    translateTo: "перекладати на",
+    translateAuto: (o: { language: string }) => `авто · ${o.language}`,
+    autoTranslate: "автопереклад",
+    autoTranslateStates: { on: "увімк", off: "вимк" },
     temperature: "температура",
     weather: "погода",
     placeLabel: "місце для погоди",
@@ -396,6 +401,10 @@ export const uk = {
       board: "стенд",
     },
     updates: {
+      "notebook-translation": {
+        title: "читай записки своєю мовою",
+        body: "Записки в блокноті тепер показуються твоєю мовою. Натисни стрілку назад біля записки, щоб побачити оригінал, або вимкни переклад у налаштуваннях.",
+      },
       "dreamcore-station": {
         title: "дрімкор-канал на тб",
         body: "Поверніть шкалу далі глибокого космосу — там дрімкор-радіо з м’якою, гулкою ембієнт-музикою.",
@@ -655,6 +664,18 @@ export const uk = {
       "у цьому блокноті немає місця для малюнка · краще напиши записку",
     inkFull: "для чорнила більше немає місця · збережи або скасуй",
     someoneDrawingInNotebook: "хтось малює в блокноті · зачекай своєї черги",
+    translate: "перекласти",
+    translating: "переклад…",
+    showOriginal: "показати оригінал",
+    readAll: "читати повністю",
+    closeTranslation: "закрити",
+    translateFailed: "зараз не вдається перекласти · спробуй трохи згодом",
+    translateToggle: (o: { language: string }) =>
+      `перекладати записки: ${o.language}`,
+    showingTranslated: (o: { language: string }) => `записки: ${o.language}`,
+    showingOriginal: "записки в оригіналі",
+    translatingNotes: (o: { language: string }) =>
+      `переклад записок: ${o.language}…`,
     padLabel: "Місце для малюнка в блокноті",
     drawingNow: "малюєш…",
     someoneDrawingNow: "хтось малює…",

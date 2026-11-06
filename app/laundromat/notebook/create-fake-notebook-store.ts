@@ -256,5 +256,15 @@ export function createFakeNotebookStore() {
     return { kind: "placed", entry, notebookNumber: book.number };
   }
 
-  return { loadShelf, loadNotebook, leaveEntry, leaveDoodle };
+  function findTextEntries(ids: number[]) {
+    return books.flatMap((book) =>
+      book.entries.flatMap((entry) =>
+        entry.kind === "text" && entry.body !== "" && ids.includes(entry.id)
+          ? [{ id: entry.id, body: entry.body }]
+          : []
+      )
+    );
+  }
+
+  return { loadShelf, loadNotebook, leaveEntry, leaveDoodle, findTextEntries };
 }

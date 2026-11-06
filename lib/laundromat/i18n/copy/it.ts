@@ -73,6 +73,11 @@ export const it = {
     qualityLiteHint: "più leggera per memoria e batteria",
     close: "chiudi",
     closeHint: "esc per chiudere",
+    notebook: "quaderno",
+    translateTo: "traduci in",
+    translateAuto: (o: { language: string }) => `auto · ${o.language}`,
+    autoTranslate: "traduzione automatica",
+    autoTranslateStates: { on: "sì", off: "no" },
     temperature: "temperatura",
     weather: "meteo",
     placeLabel: "luogo del meteo",
@@ -423,6 +428,10 @@ export const it = {
       board: "bacheca",
     },
     updates: {
+      "notebook-translation": {
+        title: "leggi i biglietti nella tua lingua",
+        body: "I biglietti del quaderno ora appaiono nella tua lingua. Tocca la freccia indietro su un biglietto per vederlo come è stato scritto, o disattiva la traduzione nelle impostazioni.",
+      },
       "dreamcore-station": {
         title: "un canale dreamcore in tv",
         body: "Gira la manopola oltre lo spazio profondo per una radio dreamcore di musica ambient morbida ed echeggiante.",
@@ -691,6 +700,19 @@ export const it = {
     inkFull: "non c'è più spazio per l'inchiostro · salva o annulla",
     someoneDrawingInNotebook:
       "qualcuno sta disegnando nel quaderno · aspetta il tuo turno",
+    translate: "traduci",
+    translating: "traduzione…",
+    showOriginal: "mostra originale",
+    readAll: "leggi tutto",
+    closeTranslation: "chiudi",
+    translateFailed: "impossibile tradurre ora · riprova tra poco",
+    translateToggle: (o: { language: string }) =>
+      `traduci i biglietti in ${o.language}`,
+    showingTranslated: (o: { language: string }) =>
+      `biglietti in ${o.language}`,
+    showingOriginal: "biglietti come sono stati scritti",
+    translatingNotes: (o: { language: string }) =>
+      `traduzione dei biglietti in ${o.language}…`,
     padLabel: "Spazio per disegnare nel quaderno",
     drawingNow: "stai disegnando…",
     someoneDrawingNow: "qualcuno sta disegnando…",

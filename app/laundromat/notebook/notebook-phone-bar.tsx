@@ -6,6 +6,8 @@ import { createPortal } from "react-dom";
 
 import { cn } from "@/lib/utils";
 
+import { TranslateGlyph } from "./translate-glyph";
+
 type PenMode = "write" | "draw";
 
 type NotebookPhoneBarProps = {
@@ -20,6 +22,7 @@ type NotebookPhoneBarProps = {
       }
     | undefined;
   notify: { label: string; disabled: boolean; onPress: () => void } | undefined;
+  translate: { on: boolean; label: string; onPress: () => void } | undefined;
   undo: { label: string; disabled: boolean; onPress: () => void } | undefined;
   save:
     | { label: string; disabled: boolean; busy: boolean; onPress: () => void }
@@ -62,12 +65,30 @@ export function NotebookPhoneBar(props: NotebookPhoneBarProps) {
       data-notebook
       className="pointer-events-none fixed inset-x-0 bottom-0 z-50 flex flex-col gap-y-3 bg-gradient-to-t from-[var(--lm-bg)] via-[var(--lm-bg)]/90 to-transparent px-4 pt-8 pb-[max(1rem,env(safe-area-inset-bottom))] font-[family-name:var(--lm-font-mono)]"
     >
-      <p
-        role="status"
-        className="pointer-events-auto line-clamp-2 text-center text-[12px] text-[var(--lm-ink)] lowercase"
-      >
-        {props.status}
-      </p>
+      <div className="pointer-events-auto flex items-center justify-center gap-x-3">
+        <p
+          role="status"
+          className="line-clamp-2 min-w-0 text-center text-[12px] text-[var(--lm-ink)] lowercase"
+        >
+          {props.status}
+        </p>
+        {props.translate !== undefined && (
+          <button
+            type="button"
+            role="switch"
+            aria-checked={props.translate.on}
+            aria-label={props.translate.label}
+            onClick={props.translate.onPress}
+            className={cn(
+              "flex size-9 shrink-0 cursor-pointer items-center justify-center rounded-full border border-[var(--lm-edge)] bg-[var(--lm-panel)] text-[var(--lm-ink)] outline-none focus-visible:border-[var(--lm-accent)]",
+              props.translate.on &&
+                "border-[var(--lm-accent)] text-[var(--lm-accent)]"
+            )}
+          >
+            <TranslateGlyph className="size-4" />
+          </button>
+        )}
+      </div>
       <div className="pointer-events-auto flex items-center justify-between gap-x-3">
         <button
           type="button"

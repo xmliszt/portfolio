@@ -14,6 +14,7 @@ import { motion, useIsPresent, useTransform } from "motion/react";
 import { useLaundromatCopy } from "@/app/laundromat/i18n/use-laundromat-copy";
 import { useRenderQuality } from "@/app/laundromat/settings/use-render-quality";
 import { useSoundBoard } from "@/app/laundromat/sound/use-sound-board";
+import { getLaundromatCopy } from "@/lib/laundromat/i18n/get-laundromat-copy";
 import { decodeDoodle } from "@/lib/laundromat/notebook/decode-doodle";
 import { describeEntryMeta } from "@/lib/laundromat/notebook/describe-entry-meta";
 import type { LeaveEntryFailure } from "@/lib/laundromat/notebook/describe-leave-failure";
@@ -23,6 +24,7 @@ import { DOODLE_LIMITS } from "@/lib/laundromat/notebook/doodle-limits";
 import type { DoodleStroke } from "@/lib/laundromat/notebook/doodle-stroke";
 import { encodeDoodle } from "@/lib/laundromat/notebook/encode-doodle";
 import { fitEntry } from "@/lib/laundromat/notebook/fit-entry";
+import { fitTranslatedLines } from "@/lib/laundromat/notebook/fit-translated-lines";
 import { fitsNotebook } from "@/lib/laundromat/notebook/fits-notebook";
 import { formatEntryDay } from "@/lib/laundromat/notebook/format-entry-day";
 import { getDoodlePlacement } from "@/lib/laundromat/notebook/get-doodle-placement";
@@ -31,6 +33,7 @@ import { getDraftRowMarks } from "@/lib/laundromat/notebook/get-draft-row-marks"
 import { getEntryLineCount } from "@/lib/laundromat/notebook/get-entry-line-count";
 import { getEntrySpreads } from "@/lib/laundromat/notebook/get-entry-spreads";
 import { getLinesUsed } from "@/lib/laundromat/notebook/get-lines-used";
+import { getLocaleScript } from "@/lib/laundromat/notebook/get-locale-script";
 import { getRestingPlacedAt } from "@/lib/laundromat/notebook/get-resting-placed-at";
 import { getSpreadOfPage } from "@/lib/laundromat/notebook/get-spread-of-page";
 import { getWiggleKeyframes } from "@/lib/laundromat/notebook/get-wiggle-keyframes";
@@ -67,6 +70,7 @@ import {
 } from "./notebook-actions";
 import type {
   DoodleView,
+  EntryTranslationView,
   PadView,
   PageContent,
   RemoteCaret,
@@ -81,8 +85,11 @@ import { PageScrubber } from "./page-scrubber";
 import type { PageSpec } from "./paint-page-texture";
 import { ReportEntryDialog } from "./report-entry-dialog";
 import { ShortcutHint } from "./shortcut-hint";
+import { TranslateGlyph } from "./translate-glyph";
 import { useBookTurns } from "./use-book-turns";
+import { useEntryTranslations } from "./use-entry-translations";
 import { useIsNarrowScreen } from "./use-is-narrow-screen";
+import { useNotebookTranslation } from "./use-notebook-translation";
 import { usePageDrag } from "./use-page-drag";
 import { useTextMeasurers } from "./use-text-measurers";
 
@@ -94,6 +101,9 @@ const DRAFT_ID = "draft";
 const FADE_MS = 220;
 const WRITING_IDLE_RELEASE_MS = 90_000;
 const TAB_SPACES = "    ";
+const FLASH_MS = 2600;
+const MIN_TRANSLATION_SCALE = 0.8;
+const NO_TRANSLATION: EntryTranslationView = { kind: "none" };
 
 type BookPhase = "closed" | "opening" | "open";
 
@@ -107,6 +117,7 @@ type EntryStyle = {
   fontSizePx: number;
   isRtl: boolean;
   reportEntryId: number | undefined;
+  translation: EntryTranslationView;
 };
 
 type NotebookBookProps = {
@@ -222,6 +233,8 @@ export function NotebookBook(props: NotebookBookProps) {
   const doodle = config.notebook.doodle;
   const isWritable = props.bookNumber === undefined;
   const { quality } = useRenderQuality();
+  const notebookTranslation = useNotebookTranslation();
+  const [flash, setFlash] = useState<string>();
   const isNarrowScreen = useIsNarrowScreen();
   const [isReloading, setIsReloading] = useState(true);
   const [placedAt, setPlacedAt] = useState<number>();
@@ -359,7 +372,7 @@ export function NotebookBook(props: NotebookBookProps) {
     (options: {
       script: NotebookScript;
       reportEntryId: number | undefined;
-    }) => {
+    }): EntryStyle => {
       const fontSizePx = Math.round(
         pitch * config.notebook.fontSizeRatio[options.script]
       );
@@ -369,42 +382,149 @@ export function NotebookBook(props: NotebookBookProps) {
         fontSizePx,
         isRtl: isRtlScript(options.script),
         reportEntryId: options.reportEntryId,
+        translation: NO_TRANSLATION,
       };
     },
     [pitch, config.notebook.fontSizeRatio]
   );
 
-  const stored = useMemo(() => {
-    return notebook.entries.map((entry) => {
-      const isHidden = isEntryHidden(entry);
+  const translationScript = getLocaleScript(notebookTranslation.locale);
+  const loadTranslationFont = useCallback(
+    (text: string) => {
       const style = getEntryStyle({
-        script: entry.script,
-        reportEntryId: isHidden ? undefined : entry.id,
+        script: translationScript,
+        reportEntryId: undefined,
       });
-      const fitted: FittedEntry = {
-        id: String(entry.id),
-        page: entry.page,
-        lineStart: entry.lineStart,
-        lineCount: entry.lineCount,
-        lines:
-          isHidden || entry.kind === "doodle"
-            ? []
-            : wrapEntryText({
-                text: entry.body,
-                maxWidthPx,
-                measure: getMeasure(style),
+      return document.fonts.load(
+        `${style.fontSizePx}px ${style.fontFamily}`,
+        text
+      );
+    },
+    [getEntryStyle, translationScript]
+  );
+  const handleTranslationFailure = useCallback(
+    () => setFlash(copy.notebook.translateFailed),
+    [copy.notebook.translateFailed]
+  );
+  const inkEntryId = ink?.entryId;
+  const visibleEntryIds = notebook.entries.flatMap((entry) =>
+    entry.kind === "text" &&
+    !isEntryHidden(entry) &&
+    String(entry.id) !== inkEntryId &&
+    getEntrySpreads({
+      ...entry,
+      linesPerPage: notebook.linesPerPage,
+    }).includes(spread)
+      ? [entry.id]
+      : []
+  );
+  const entryTranslations = useEntryTranslations({
+    locale: notebookTranslation.locale,
+    isAuto: notebookTranslation.isAuto,
+    isActive:
+      result?.kind === "online" && phase === "open" && turn === undefined,
+    visibleEntryIds,
+    loadFont: loadTranslationFont,
+    onFailure: handleTranslationFailure,
+  });
+  const { getShown } = entryTranslations;
+
+  const originals = useMemo(
+    () =>
+      notebook.entries.map((entry) => {
+        const isHidden = isEntryHidden(entry);
+        const style = getEntryStyle({
+          script: entry.script,
+          reportEntryId: isHidden ? undefined : entry.id,
+        });
+        const fitted: FittedEntry = {
+          id: String(entry.id),
+          page: entry.page,
+          lineStart: entry.lineStart,
+          lineCount: entry.lineCount,
+          lines:
+            isHidden || entry.kind === "doodle"
+              ? []
+              : wrapEntryText({
+                  text: entry.body,
+                  maxWidthPx,
+                  measure: getMeasure(style),
+                }),
+          meta: isHidden
+            ? undefined
+            : describeEntryMeta({
+                signOff: entry.signOff,
+                createdAtMs: Date.parse(entry.createdAt),
+                locale: copy.locale,
               }),
-        meta: isHidden
-          ? undefined
-          : describeEntryMeta({
-              signOff: entry.signOff,
-              createdAtMs: Date.parse(entry.createdAt),
-              locale: copy.locale,
-            }),
-      };
-      return { fitted, style };
-    });
-  }, [notebook.entries, getEntryStyle, getMeasure, maxWidthPx, copy.locale]);
+        };
+        return {
+          fitted,
+          style,
+          isTranslatable: !isHidden && entry.kind === "text",
+          entryId: entry.id,
+        };
+      }),
+    [notebook.entries, getEntryStyle, getMeasure, maxWidthPx, copy.locale]
+  );
+
+  const stored = useMemo(
+    () =>
+      originals.map((original) => {
+        const { entryId, fitted } = original;
+        const shown =
+          original.isTranslatable && fitted.id !== inkEntryId
+            ? getShown(entryId)
+            : undefined;
+        if (shown?.kind === "translated") {
+          const base = getEntryStyle({
+            script: translationScript,
+            reportEntryId: entryId,
+          });
+          const fit = fitTranslatedLines({
+            text: shown.body,
+            rowCount: fitted.lineCount - 1,
+            maxWidthPx,
+            baseFontSizePx: base.fontSizePx,
+            minScale: MIN_TRANSLATION_SCALE,
+            measureAt: (fontSizePx) =>
+              getMeasure({ script: base.script, fontSizePx }),
+          });
+          return {
+            fitted: { ...fitted, lines: fit.lines },
+            style: {
+              ...base,
+              fontSizePx: fit.fontSizePx,
+              translation: {
+                kind: "translated",
+                entryId,
+                locale: notebookTranslation.locale,
+                isRevealing: shown.isRevealing,
+                fullText: fit.isTruncated ? shown.body : undefined,
+              },
+            } satisfies EntryStyle,
+          };
+        }
+        const translation = ((): EntryTranslationView => {
+          if (shown === undefined) return NO_TRANSLATION;
+          if (shown.kind === "pending") return { kind: "pending", entryId };
+          return shown.canTranslate
+            ? { kind: "offer", entryId }
+            : NO_TRANSLATION;
+        })();
+        return { fitted, style: { ...original.style, translation } };
+      }),
+    [
+      originals,
+      getShown,
+      inkEntryId,
+      getEntryStyle,
+      getMeasure,
+      maxWidthPx,
+      translationScript,
+      notebookTranslation.locale,
+    ]
+  );
 
   const storedDoodles = useMemo(
     () =>
@@ -718,6 +838,12 @@ export function NotebookBook(props: NotebookBookProps) {
     },
     [setSpread]
   );
+
+  useEffect(() => {
+    if (flash === undefined) return;
+    const timer = window.setTimeout(() => setFlash(undefined), FLASH_MS);
+    return () => window.clearTimeout(timer);
+  }, [flash]);
 
   useEffect(() => {
     void reloadNotebook(props.bookNumber);
@@ -1276,6 +1402,8 @@ export function NotebookBook(props: NotebookBookProps) {
     onNumber: isIdle ? () => setIsJumping(true) : undefined,
     onReport: (entryId: number) => setReportingEntryId(entryId),
     reportedIds,
+    onTranslate: entryTranslations.translate,
+    onShowOriginal: entryTranslations.showOriginal,
     onInkComplete: handleInkComplete,
     inkSpeed: details.inkSpeed,
     pad: {
@@ -1368,8 +1496,33 @@ export function NotebookBook(props: NotebookBookProps) {
     );
   }
 
+  const translationLanguage = getLaundromatCopy(
+    notebookTranslation.locale
+  ).languageName;
+  const isTranslatingSpread = visibleEntryIds.some(
+    (entryId) => getShown(entryId).kind === "pending"
+  );
+  const canTranslate = result?.kind === "online" && isContentReady;
+  const translateToggleLabel = copy.notebook.translateToggle({
+    language: translationLanguage,
+  });
+
+  function handleTranslateToggle() {
+    const isAuto = !notebookTranslation.isAuto;
+    notebookTranslation.setAuto(isAuto);
+    setFlash(
+      isAuto
+        ? copy.notebook.showingTranslated({ language: translationLanguage })
+        : copy.notebook.showingOriginal
+    );
+  }
+
   const statusMessage = (() => {
     if (failure !== undefined) return describeLeaveFailure({ failure, copy });
+    if (flash !== undefined) return flash;
+    if (isTranslatingSpread) {
+      return copy.notebook.translatingNotes({ language: translationLanguage });
+    }
     if (result === undefined || !isContentReady) return copy.notebook.opening;
     if (result.kind === "offline") {
       return copy.notebook.leaveFailures.offline;
@@ -1631,6 +1784,9 @@ export function NotebookBook(props: NotebookBookProps) {
 @keyframes lm-riffle-forward { from { transform: rotateY(0deg); } to { transform: rotateY(-180deg); } }
 @keyframes lm-riffle-back { from { transform: rotateY(-180deg); } to { transform: rotateY(0deg); } }
 @keyframes lm-caret { 50% { opacity: 0; } }
+@keyframes lm-translating { 50% { opacity: 0.25; } }
+@keyframes lm-trace { from { clip-path: inset(-40% 100% -40% -20%); } to { clip-path: inset(-40% -20% -40% -20%); } }
+@keyframes lm-fade-in { from { opacity: 0; } to { opacity: 1; } }
 @keyframes lm-doodle-ink { from { opacity: 1; } to { stroke-dashoffset: 0; opacity: 1; } }
 @keyframes lm-doodle-dot { to { opacity: 1; } }
 ${getWiggleKeyframes(doodle.wiggle.frameCount)}
@@ -1698,6 +1854,42 @@ ${getWiggleKeyframes(doodle.wiggle.frameCount)}
             </div>
             <div className="flex shrink-0 items-center gap-x-2">
               {jumpField}
+              {canTranslate && (
+                <button
+                  type="button"
+                  role="switch"
+                  aria-checked={notebookTranslation.isAuto}
+                  aria-label={translateToggleLabel}
+                  title={translateToggleLabel}
+                  onClick={handleTranslateToggle}
+                  className={cn(
+                    "flex cursor-pointer items-center gap-x-2 rounded-md border border-[var(--lm-edge)] bg-[var(--lm-panel)] py-1.5 pr-2 pl-2.5 outline-none hover:border-[var(--lm-accent)] focus-visible:border-[var(--lm-accent)]",
+                    notebookTranslation.isAuto
+                      ? "text-[var(--lm-ink-hi)]"
+                      : "text-[var(--lm-ink)]"
+                  )}
+                >
+                  <TranslateGlyph className="size-3.5" />
+                  <span
+                    aria-hidden
+                    className={cn(
+                      "relative h-3.5 w-6 rounded-full transition-colors duration-200 motion-reduce:transition-none",
+                      notebookTranslation.isAuto
+                        ? "bg-[var(--lm-accent)]"
+                        : "shadow-[inset_0_0_0_1px_var(--lm-line)]"
+                    )}
+                  >
+                    <span
+                      className={cn(
+                        "absolute top-[3px] left-[3px] size-2 rounded-full transition-transform duration-200 motion-reduce:transition-none",
+                        notebookTranslation.isAuto
+                          ? "translate-x-2.5 bg-[var(--lm-panel)]"
+                          : "bg-[var(--lm-ink)]"
+                      )}
+                    />
+                  </span>
+                </button>
+              )}
               {isWritable &&
                 props.lock.kind === "taken" &&
                 placedAt === undefined && (
@@ -1820,6 +2012,15 @@ ${getWiggleKeyframes(doodle.wiggle.frameCount)}
                   disabled: isSaveDisabled,
                   busy: isLeaving,
                   onPress: handleSave,
+                }
+              : undefined
+          }
+          translate={
+            canTranslate
+              ? {
+                  on: notebookTranslation.isAuto,
+                  label: translateToggleLabel,
+                  onPress: handleTranslateToggle,
                 }
               : undefined
           }

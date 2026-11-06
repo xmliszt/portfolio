@@ -72,6 +72,11 @@ export const nl = {
     qualityLiteHint: "lichter voor geheugen en batterij",
     close: "sluiten",
     closeHint: "esc om te sluiten",
+    notebook: "notitieboek",
+    translateTo: "vertalen naar",
+    translateAuto: (o: { language: string }) => `auto · ${o.language}`,
+    autoTranslate: "automatisch vertalen",
+    autoTranslateStates: { on: "aan", off: "uit" },
     temperature: "temperatuur",
     weather: "weer",
     placeLabel: "weerlocatie",
@@ -385,6 +390,10 @@ export const nl = {
       board: "bord",
     },
     updates: {
+      "notebook-translation": {
+        title: "lees berichtjes in je eigen taal",
+        body: "Berichtjes in het notitieboek verschijnen nu in jouw taal. Tik op de terugpijl bij een berichtje om het origineel te zien, of zet vertalen uit in de instellingen.",
+      },
       "dreamcore-station": {
         title: "een dreamcore-zender op de tv",
         body: "Draai de afstemknop voorbij diepe ruimte voor een dreamcore-radio met zachte, galmende ambient.",
@@ -646,6 +655,19 @@ export const nl = {
     inkFull: "geen ruimte meer voor inkt · sla het op of maak ongedaan",
     someoneDrawingInNotebook:
       "iemand tekent in het notitieboek · wacht je beurt af",
+    translate: "vertalen",
+    translating: "vertalen…",
+    showOriginal: "origineel tonen",
+    readAll: "alles lezen",
+    closeTranslation: "sluiten",
+    translateFailed: "vertalen lukt nu niet · probeer het zo nog eens",
+    translateToggle: (o: { language: string }) =>
+      `berichtjes vertalen naar ${o.language}`,
+    showingTranslated: (o: { language: string }) =>
+      `berichtjes in het ${o.language}`,
+    showingOriginal: "berichtjes zoals ze geschreven zijn",
+    translatingNotes: (o: { language: string }) =>
+      `berichtjes worden vertaald naar ${o.language}…`,
     padLabel: "Tekenruimte in het notitieboek",
     drawingNow: "aan het tekenen…",
     someoneDrawingNow: "iemand is aan het tekenen…",

@@ -76,6 +76,11 @@ export const vi = {
     qualityLiteHint: "nhẹ hơn cho bộ nhớ và pin",
     close: "đóng",
     closeHint: "esc để đóng",
+    notebook: "sổ",
+    translateTo: "dịch sang",
+    translateAuto: (o: { language: string }) => `tự động · ${o.language}`,
+    autoTranslate: "tự động dịch",
+    autoTranslateStates: { on: "bật", off: "tắt" },
     temperature: "nhiệt độ",
     weather: "thời tiết",
     placeLabel: "vị trí thời tiết",
@@ -405,6 +410,10 @@ export const vi = {
       board: "bảng tin",
     },
     updates: {
+      "notebook-translation": {
+        title: "đọc lời nhắn bằng ngôn ngữ của bạn",
+        body: "Lời nhắn trong sổ giờ hiện bằng ngôn ngữ của bạn. Chạm mũi tên quay lại trên một lời nhắn để xem bản gốc, hoặc tắt dịch trong phần cài đặt.",
+      },
       "dreamcore-station": {
         title: "kênh dreamcore trên tv",
         body: "Xoay nút dò kênh qua vũ trụ sâu thẳm để nghe đài dreamcore với nhạc ambient êm dịu, vang vọng.",
@@ -666,6 +675,19 @@ export const vi = {
     doodleBookFull: "sổ này không còn chỗ để vẽ · viết lời nhắn thay nhé",
     inkFull: "hết chỗ cho mực · lưu lại hoặc hoàn tác",
     someoneDrawingInNotebook: "có người đang vẽ vào sổ · chờ đến lượt bạn",
+    translate: "dịch",
+    translating: "đang dịch…",
+    showOriginal: "xem bản gốc",
+    readAll: "đọc hết",
+    closeTranslation: "đóng",
+    translateFailed: "chưa dịch được · lát nữa thử lại nhé",
+    translateToggle: (o: { language: string }) =>
+      `dịch lời nhắn sang ${o.language}`,
+    showingTranslated: (o: { language: string }) =>
+      `lời nhắn bằng ${o.language}`,
+    showingOriginal: "lời nhắn như bản gốc",
+    translatingNotes: (o: { language: string }) =>
+      `đang dịch lời nhắn sang ${o.language}…`,
     padLabel: "Chỗ vẽ trong sổ",
     drawingNow: "đang vẽ…",
     someoneDrawingNow: "có người đang vẽ…",

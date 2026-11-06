@@ -1,7 +1,8 @@
 "use client";
 
 import type { PointerEvent as ReactPointerEvent } from "react";
-import { useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { groupBy } from "lodash";
 
 import { useLaundromatCopy } from "@/app/laundromat/i18n/use-laundromat-copy";
 import type { DoodleStroke } from "@/lib/laundromat/notebook/doodle-stroke";
@@ -19,12 +20,25 @@ import { DoodlePad } from "./doodle-pad";
 import { getPageRadius } from "./get-page-radius";
 import { InkedLine } from "./inked-line";
 import { NOTEBOOK_PAGE_METRICS } from "./notebook-page-metrics";
+import { TranslateGlyph } from "./translate-glyph";
 
 export type PageContent =
   | { kind: "cover"; number: number }
   | { kind: "inside"; number: number; span: string }
   | { kind: "paper"; page: number }
   | { kind: "blank" };
+
+export type EntryTranslationView =
+  | { kind: "none" }
+  | { kind: "offer"; entryId: number }
+  | { kind: "pending"; entryId: number }
+  | {
+      kind: "translated";
+      entryId: number;
+      locale: string;
+      isRevealing: boolean;
+      fullText: string | undefined;
+    };
 
 export type RowView = PageRow & {
   script: NotebookScript;
@@ -36,6 +50,7 @@ export type RowView = PageRow & {
   caretAt: number | undefined;
   markTone: "own" | "remote";
   reportEntryId: number | undefined;
+  translation: EntryTranslationView;
 };
 
 export type DoodleView = {
@@ -70,6 +85,8 @@ type PageControls = {
     | undefined;
   onReport: (entryId: number) => void;
   reportedIds: number[];
+  onTranslate: (entryId: number) => void;
+  onShowOriginal: (entryId: number) => void;
   onInkComplete: (entryId: string) => void;
   inkSpeed: number;
   pad: PadControls | undefined;
@@ -103,6 +120,11 @@ export function NotebookPage(props: NotebookPageProps) {
   const { copy } = useLaundromatCopy();
   const { settings, content, pitch } = props;
   const [hoveredEntryId, setHoveredEntryId] = useState<string>();
+  const [openSlip, setOpenSlip] = useState<{
+    entryId: number;
+    opener: HTMLElement | undefined;
+  }>();
+  const closeSlip = useCallback(() => setOpenSlip(undefined), []);
   const { spineShadow } = NOTEBOOK_PAGE_METRICS;
   const borderRadius = getPageRadius(props.side);
   const shading = `inset ${props.side === "left" ? -spineShadow.offsetPx : spineShadow.offsetPx}px 0 ${spineShadow.blurPx}px ${spineShadow.spreadPx}px rgb(0 0 0 / ${spineShadow.alpha})`;
@@ -150,6 +172,52 @@ export function NotebookPage(props: NotebookPageProps) {
   const ruleCount = Math.round(
     (settings.height - settings.marginTop - settings.marginBottom) / pitch
   );
+  const revealFromLines = Object.fromEntries(
+    Object.entries(
+      groupBy(
+        props.rows.filter((row) => row.kind === "text"),
+        (row) => row.entryId
+      )
+    ).map(([entryId, rows]) => [
+      entryId,
+      Math.min(...rows.map((row) => row.lineInEntry)),
+    ])
+  );
+  const slip = (() => {
+    const row = props.rows.find(
+      (candidate) =>
+        candidate.kind === "meta" &&
+        candidate.translation.kind === "translated" &&
+        candidate.translation.entryId === openSlip?.entryId
+    );
+    if (row?.translation.kind !== "translated") return undefined;
+    const text = row.translation.fullText;
+    if (text === undefined) return undefined;
+    const firstRow = Math.min(
+      ...props.rows
+        .filter((candidate) => candidate.entryId === row.entryId)
+        .map((candidate) => candidate.row)
+    );
+    const topPx = settings.marginTop + firstRow * pitch;
+    const bottomPx = settings.marginTop + (row.row + 1) * pitch;
+    const roomAbovePx = topPx - settings.marginTop;
+    const roomBelowPx = settings.height - settings.marginBottom - bottomPx;
+    const placement = (() => {
+      if (Math.max(roomAbovePx, roomBelowPx) < MIN_SLIP_ROWS * pitch) {
+        return { top: settings.marginTop, bottom: settings.marginBottom };
+      }
+      return roomAbovePx > roomBelowPx
+        ? { bottom: settings.height - topPx, maxHeight: topPx - 8 }
+        : { top: bottomPx, maxHeight: settings.height - bottomPx - 8 };
+    })();
+    return {
+      row,
+      text,
+      locale: row.translation.locale,
+      opener: openSlip?.opener,
+      placement,
+    };
+  })();
   const { pad } = props;
   const isPadEditable = props.controls?.pad?.isEditable ?? false;
   const textWidthPx = settings.width - settings.marginX * 2;
@@ -300,6 +368,8 @@ export function NotebookPage(props: NotebookPageProps) {
           pitch={pitch}
           controls={props.controls}
           entryHovered={row.entryId === hoveredEntryId}
+          revealFromLine={revealFromLines[row.entryId] ?? row.lineInEntry}
+          onReadAll={(entryId, opener) => setOpenSlip({ entryId, opener })}
           onHoverChange={(hovered) =>
             setHoveredEntryId((current) =>
               hovered
@@ -311,6 +381,23 @@ export function NotebookPage(props: NotebookPageProps) {
           }
         />
       ))}
+      {slip !== undefined && (
+        <TranslationSlip
+          text={slip.text}
+          fontFamily={slip.row.fontFamily}
+          fontSizePx={slip.row.fontSizePx}
+          rtl={slip.row.isRtl}
+          lang={slip.locale}
+          opener={slip.opener}
+          closeLabel={copy.notebook.closeTranslation}
+          onClose={closeSlip}
+          style={{
+            left: settings.marginX - 12,
+            right: settings.marginX - 12,
+            ...slip.placement,
+          }}
+        />
+      )}
       {props.controls?.edge !== undefined && (
         <button
           type="button"
@@ -394,6 +481,8 @@ type PageRowLineProps = {
   controls: PageControls | undefined;
   entryHovered: boolean;
   onHoverChange: (hovered: boolean) => void;
+  revealFromLine: number;
+  onReadAll: (entryId: number, opener: HTMLElement) => void;
 };
 
 function PageRowLine(props: PageRowLineProps) {
@@ -431,43 +520,64 @@ function PageRowLine(props: PageRowLineProps) {
         onPointerLeave={() => props.onHoverChange(false)}
       >
         <span className="truncate">{row.text}</span>
-        {reportEntryId !== undefined && props.controls !== undefined && (
-          <button
-            type="button"
-            disabled={isReported}
-            aria-label={
-              isReported ? copy.notebook.reported : copy.notebook.report
-            }
-            onClick={() => props.controls?.onReport(reportEntryId)}
-            className={cn(
-              "absolute cursor-pointer px-1.5 py-1 opacity-0 transition-opacity duration-200 outline-none",
-              "focus-visible:opacity-100 focus-visible:outline-1 focus-visible:outline-dashed",
-              "[@media(pointer:coarse)]:h-full [@media(pointer:coarse)]:px-2.5 [@media(pointer:coarse)]:opacity-100",
-              (isReported || props.entryHovered) && "opacity-100"
-            )}
-            style={{
-              [row.isRtl ? "left" : "right"]:
-                NOTEBOOK_PAGE_METRICS.turnEdgePx - settings.marginX,
-            }}
-          >
-            <span className="[@media(pointer:coarse)]:hidden">
-              {isReported ? copy.notebook.reported : copy.notebook.report}
-            </span>
-            <svg
-              aria-hidden
-              viewBox="0 0 12 12"
+        {props.controls !== undefined &&
+          (reportEntryId !== undefined || row.translation.kind !== "none") && (
+            <span
               className={cn(
-                "hidden size-[1.1em] stroke-current [@media(pointer:coarse)]:block",
-                isReported ? "fill-current" : "fill-none"
+                "absolute flex items-center",
+                row.isRtl && "flex-row-reverse"
               )}
-              strokeWidth={1}
-              strokeLinecap="round"
-              strokeLinejoin="round"
+              style={{
+                [row.isRtl ? "left" : "right"]:
+                  NOTEBOOK_PAGE_METRICS.turnEdgePx - settings.marginX,
+              }}
             >
-              <path d="M2.5 11V1.5M2.5 2h7l-1.75 2.5L9.5 7h-7" />
-            </svg>
-          </button>
-        )}
+              <TranslationControl
+                translation={row.translation}
+                revealed={props.entryHovered}
+                labels={{
+                  translate: copy.notebook.translate,
+                  translating: copy.notebook.translating,
+                  showOriginal: copy.notebook.showOriginal,
+                  readAll: copy.notebook.readAll,
+                }}
+                onTranslate={props.controls.onTranslate}
+                onShowOriginal={props.controls.onShowOriginal}
+                onReadAll={props.onReadAll}
+              />
+              {reportEntryId !== undefined && (
+                <button
+                  type="button"
+                  disabled={isReported}
+                  aria-label={
+                    isReported ? copy.notebook.reported : copy.notebook.report
+                  }
+                  onClick={() => props.controls?.onReport(reportEntryId)}
+                  className={cn(
+                    META_BUTTON_CLASS,
+                    (isReported || props.entryHovered) && "opacity-100"
+                  )}
+                >
+                  <span className="[@media(pointer:coarse)]:hidden">
+                    {isReported ? copy.notebook.reported : copy.notebook.report}
+                  </span>
+                  <svg
+                    aria-hidden
+                    viewBox="0 0 12 12"
+                    className={cn(
+                      "hidden size-[1.1em] stroke-current [@media(pointer:coarse)]:block",
+                      isReported ? "fill-current" : "fill-none"
+                    )}
+                    strokeWidth={1}
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  >
+                    <path d="M2.5 11V1.5M2.5 2h7l-1.75 2.5L9.5 7h-7" />
+                  </svg>
+                </button>
+              )}
+            </span>
+          )}
       </div>
     );
   }
@@ -481,11 +591,31 @@ function PageRowLine(props: PageRowLineProps) {
     fontFamily: row.fontFamily,
     fontSize: row.fontSizePx,
   };
+  const isRevealing =
+    row.translation.kind === "translated" && row.translation.isRevealing;
   return (
     <div
       dir={row.isRtl ? "rtl" : "ltr"}
-      className="absolute overflow-visible"
-      style={{ ...box, ...textStyle }}
+      lang={
+        row.translation.kind === "translated"
+          ? row.translation.locale
+          : undefined
+      }
+      className={cn(
+        "absolute overflow-visible",
+        row.translation.kind === "pending" &&
+          "opacity-40 blur-[0.4px] motion-safe:animate-[lm-translating_1.1s_ease-in-out_infinite]",
+        isRevealing &&
+          "[animation-fill-mode:both] motion-safe:[animation-name:lm-trace] motion-safe:[animation-timing-function:linear] motion-reduce:[animation-name:lm-fade-in]"
+      )}
+      style={{
+        ...box,
+        ...textStyle,
+        ...(isRevealing && {
+          animationDuration: `${TRACE_LINE_MS}ms`,
+          animationDelay: `${(row.lineInEntry - props.revealFromLine) * TRACE_LINE_MS}ms`,
+        }),
+      }}
       onPointerEnter={() => props.onHoverChange(true)}
       onPointerLeave={() => props.onHoverChange(false)}
     >
@@ -541,6 +671,191 @@ function PageRowLine(props: PageRowLineProps) {
           })()}
         </span>
       )}
+    </div>
+  );
+}
+
+const TRACE_LINE_MS = 650;
+const MIN_SLIP_ROWS = 4;
+
+const META_BUTTON_CLASS = cn(
+  "relative cursor-pointer px-1.5 py-1 opacity-0 transition-opacity duration-200 outline-none",
+  "focus-visible:opacity-100 focus-visible:outline-1 focus-visible:outline-dashed",
+  "[@media(pointer:coarse)]:h-full [@media(pointer:coarse)]:px-2.5 [@media(pointer:coarse)]:opacity-100"
+);
+
+type TranslationControlProps = {
+  translation: EntryTranslationView;
+  revealed: boolean;
+  labels: {
+    translate: string;
+    translating: string;
+    showOriginal: string;
+    readAll: string;
+  };
+  onTranslate: (entryId: number) => void;
+  onShowOriginal: (entryId: number) => void;
+  onReadAll: (entryId: number, opener: HTMLElement) => void;
+};
+
+function TranslationControl(props: TranslationControlProps) {
+  const { translation, labels } = props;
+  switch (translation.kind) {
+    case "none":
+      return null;
+    case "offer":
+      return (
+        <button
+          type="button"
+          aria-label={labels.translate}
+          onClick={() => props.onTranslate(translation.entryId)}
+          className={cn(META_BUTTON_CLASS, props.revealed && "opacity-100")}
+        >
+          <span className="[@media(pointer:coarse)]:hidden">
+            {labels.translate}
+          </span>
+          <span className="hidden [@media(pointer:coarse)]:block">
+            <TranslateGlyph className="size-[1.2em]" />
+          </span>
+        </button>
+      );
+    case "pending":
+      return (
+        <span
+          role="status"
+          className="px-1.5 py-1 motion-safe:animate-[lm-translating_1.1s_ease-in-out_infinite]"
+        >
+          <span className="[@media(pointer:coarse)]:hidden">
+            {labels.translating}
+          </span>
+          <span className="hidden [@media(pointer:coarse)]:block">
+            <TranslateGlyph className="size-[1.2em]" />
+          </span>
+        </span>
+      );
+    case "translated":
+      return (
+        <>
+          {translation.fullText !== undefined && (
+            <button
+              type="button"
+              aria-label={labels.readAll}
+              onClick={(event) => {
+                event.stopPropagation();
+                props.onReadAll(translation.entryId, event.currentTarget);
+              }}
+              className={cn(META_BUTTON_CLASS, "opacity-100")}
+            >
+              <span className="[@media(pointer:coarse)]:hidden">
+                {labels.readAll}
+              </span>
+              <svg
+                aria-hidden
+                viewBox="0 0 14 14"
+                className="hidden size-[1.2em] fill-none stroke-current [@media(pointer:coarse)]:block"
+                strokeWidth={1}
+                strokeLinecap="round"
+              >
+                <path d="M2.5 3.5h9M2.5 7h9M2.5 10.5h5" />
+              </svg>
+            </button>
+          )}
+          <button
+            type="button"
+            aria-label={labels.showOriginal}
+            title={labels.showOriginal}
+            onClick={() => props.onShowOriginal(translation.entryId)}
+            className={cn(META_BUTTON_CLASS, "opacity-100")}
+          >
+            <svg
+              aria-hidden
+              viewBox="0 0 14 14"
+              className="size-[1.2em] fill-none stroke-current"
+              strokeWidth={1}
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <path d="M5 2.5 2 5.5l3 3M2.5 5.5H9a3 3 0 0 1 0 6H6" />
+            </svg>
+          </button>
+        </>
+      );
+    default: {
+      const unreachable: never = translation;
+      return unreachable;
+    }
+  }
+}
+
+type TranslationSlipProps = {
+  text: string;
+  fontFamily: string;
+  fontSizePx: number;
+  rtl: boolean;
+  lang: string;
+  opener: HTMLElement | undefined;
+  closeLabel: string;
+  onClose: () => void;
+  style: React.CSSProperties;
+};
+
+function TranslationSlip(props: TranslationSlipProps) {
+  const slipRef = useRef<HTMLDivElement>(null);
+  const { onClose, opener } = props;
+  const closeAndRefocus = useCallback(() => {
+    onClose();
+    opener?.focus({ preventScroll: true });
+  }, [onClose, opener]);
+
+  useEffect(() => {
+    function handleKeyDown(event: KeyboardEvent) {
+      if (event.key !== "Escape") return;
+      event.preventDefault();
+      event.stopPropagation();
+      closeAndRefocus();
+    }
+    function handlePointerDown(event: PointerEvent) {
+      if (
+        event.target instanceof Node &&
+        slipRef.current?.contains(event.target)
+      ) {
+        return;
+      }
+      onClose();
+    }
+    document.addEventListener("keydown", handleKeyDown, { capture: true });
+    document.addEventListener("pointerdown", handlePointerDown);
+    return () => {
+      document.removeEventListener("keydown", handleKeyDown, {
+        capture: true,
+      });
+      document.removeEventListener("pointerdown", handlePointerDown);
+    };
+  }, [onClose, closeAndRefocus]);
+
+  return (
+    <div
+      ref={slipRef}
+      role="dialog"
+      className="absolute z-10 flex min-h-0 -rotate-[0.6deg] flex-col gap-y-1.5 rounded-[4px] bg-[var(--lm-paper)] px-3.5 pt-3 pb-2 text-[var(--lm-ink-pen)] shadow-[0_1px_2px_rgb(0_0_0/0.25),0_12px_28px_rgb(0_0_0/0.28)]"
+      style={props.style}
+    >
+      <p
+        dir={props.rtl ? "rtl" : "ltr"}
+        lang={props.lang}
+        className="m-0 min-h-0 overflow-y-auto overscroll-contain leading-[1.3] whitespace-pre-wrap select-text"
+        style={{ fontFamily: props.fontFamily, fontSize: props.fontSizePx }}
+      >
+        {props.text}
+      </p>
+      <button
+        type="button"
+        autoFocus
+        onClick={closeAndRefocus}
+        className="cursor-pointer self-end px-1 py-0.5 text-[11px] lowercase opacity-60 outline-none hover:opacity-100 focus-visible:opacity-100 focus-visible:outline-1 focus-visible:outline-dashed"
+      >
+        {props.closeLabel}
+      </button>
     </div>
   );
 }
