@@ -74,6 +74,11 @@ export const ptBR = {
     qualityLiteHint: "mais leve para a memória e a bateria",
     close: "fechar",
     closeHint: "esc para fechar",
+    notebook: "caderno",
+    translateTo: "traduzir para",
+    translateAuto: (o: { language: string }) => `auto · ${o.language}`,
+    autoTranslate: "tradução automática",
+    autoTranslateStates: { on: "sim", off: "não" },
     temperature: "temperatura",
     weather: "tempo",
     placeLabel: "local do tempo",
@@ -415,6 +420,10 @@ export const ptBR = {
       board: "mural",
     },
     updates: {
+      "notebook-translation": {
+        title: "leia os recados no seu idioma",
+        body: "Toque em “traduzir” em um recado para lê-lo no seu idioma, ou ative a tradução automática nas configurações para traduzir cada recado que abrir.",
+      },
       "dreamcore-station": {
         title: "um canal dreamcore na tv",
         body: "Gire o dial além do espaço profundo para uma rádio dreamcore de música ambiente suave e ecoante.",
@@ -683,6 +692,18 @@ export const ptBR = {
     inkFull: "não há mais espaço para tinta · salve ou desfaça",
     someoneDrawingInNotebook:
       "alguém está desenhando no caderno · espere sua vez",
+    translate: "traduzir",
+    translating: "traduzindo…",
+    showOriginal: "ver original",
+    readAll: "ler tudo",
+    closeTranslation: "fechar",
+    translateFailed: "não dá para traduzir agora · tente de novo daqui a pouco",
+    translateToggle: (o: { language: string }) =>
+      `traduzir os recados para ${o.language}`,
+    showingTranslated: (o: { language: string }) => `recados em ${o.language}`,
+    showingOriginal: "recados como foram escritos",
+    translatingNotes: (o: { language: string }) =>
+      `traduzindo os recados para ${o.language}…`,
     padLabel: "Espaço para desenhar no caderno",
     drawingNow: "desenhando…",
     someoneDrawingNow: "alguém está desenhando…",

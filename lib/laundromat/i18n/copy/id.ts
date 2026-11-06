@@ -76,6 +76,11 @@ export const id = {
     qualityLiteHint: "lebih ringan untuk memori dan baterai",
     close: "tutup",
     closeHint: "esc untuk menutup",
+    notebook: "buku catatan",
+    translateTo: "terjemahkan ke",
+    translateAuto: (o: { language: string }) => `otomatis · ${o.language}`,
+    autoTranslate: "terjemahan otomatis",
+    autoTranslateStates: { on: "nyala", off: "mati" },
     temperature: "suhu",
     weather: "cuaca",
     placeLabel: "lokasi cuaca",
@@ -417,6 +422,10 @@ export const id = {
       board: "papan",
     },
     updates: {
+      "notebook-translation": {
+        title: "baca catatan dalam bahasamu",
+        body: "Ketuk “terjemahkan” di sebuah catatan untuk membacanya dalam bahasamu, atau nyalakan terjemahan otomatis di pengaturan untuk menerjemahkan setiap catatan yang kamu buka.",
+      },
       "dreamcore-station": {
         title: "saluran dreamcore di tv",
         body: "Putar tombol tuner melewati luar angkasa untuk radio dreamcore berisi musik ambient yang lembut dan bergema.",
@@ -685,6 +694,19 @@ export const id = {
     inkFull: "tinta sudah tidak muat · simpan atau urungkan",
     someoneDrawingInNotebook:
       "seseorang sedang menggambar di buku catatan · tunggu giliranmu",
+    translate: "terjemahkan",
+    translating: "menerjemahkan…",
+    showOriginal: "lihat aslinya",
+    readAll: "baca semua",
+    closeTranslation: "tutup",
+    translateFailed: "belum bisa menerjemahkan · coba lagi sebentar lagi",
+    translateToggle: (o: { language: string }) =>
+      `terjemahkan catatan ke ${o.language}`,
+    showingTranslated: (o: { language: string }) =>
+      `catatan dalam ${o.language}`,
+    showingOriginal: "catatan seperti aslinya",
+    translatingNotes: (o: { language: string }) =>
+      `menerjemahkan catatan ke ${o.language}…`,
     padLabel: "Ruang gambar di buku catatan",
     drawingNow: "menggambar…",
     someoneDrawingNow: "seseorang sedang menggambar…",

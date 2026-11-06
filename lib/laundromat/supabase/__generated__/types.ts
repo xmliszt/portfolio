@@ -46,6 +46,38 @@ export type Database = {
           },
         ];
       };
+      entry_translations: {
+        Row: {
+          body: string | null;
+          created_at: string;
+          entry_id: number;
+          locale: string;
+          source_language: string;
+        };
+        Insert: {
+          body?: string | null;
+          created_at?: string;
+          entry_id: number;
+          locale: string;
+          source_language: string;
+        };
+        Update: {
+          body?: string | null;
+          created_at?: string;
+          entry_id?: number;
+          locale?: string;
+          source_language?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "entry_translations_entry_id_fkey";
+            columns: ["entry_id"];
+            isOneToOne: false;
+            referencedRelation: "notebook_entries";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
       notebook_entries: {
         Row: {
           body: string;

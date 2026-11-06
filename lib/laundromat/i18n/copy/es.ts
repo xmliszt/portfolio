@@ -71,6 +71,11 @@ export const es = {
     qualityLiteHint: "más ligero para la memoria y la batería",
     close: "cerrar",
     closeHint: "esc para cerrar",
+    notebook: "cuaderno",
+    translateTo: "traducir a",
+    translateAuto: (o: { language: string }) => `auto · ${o.language}`,
+    autoTranslate: "traducción automática",
+    autoTranslateStates: { on: "sí", off: "no" },
     temperature: "temperatura",
     weather: "tiempo",
     placeLabel: "ubicación del tiempo",
@@ -414,6 +419,10 @@ export const es = {
       board: "tablón",
     },
     updates: {
+      "notebook-translation": {
+        title: "lee las notas en tu idioma",
+        body: "Toca «traducir» en una nota para leerla en tu idioma, o activa la traducción automática en los ajustes para traducir cada nota que abras.",
+      },
       "dreamcore-station": {
         title: "una emisora dreamcore en la tele",
         body: "Gira el dial más allá del espacio profundo para escuchar una radio dreamcore de música ambiental suave y resonante.",
@@ -685,6 +694,18 @@ export const es = {
     inkFull: "no queda espacio para más tinta · guárdalo o deshaz",
     someoneDrawingInNotebook:
       "alguien está dibujando en el cuaderno · espera tu turno",
+    translate: "traducir",
+    translating: "traduciendo…",
+    showOriginal: "ver original",
+    readAll: "leer todo",
+    closeTranslation: "cerrar",
+    translateFailed: "no se puede traducir ahora · inténtalo pronto",
+    translateToggle: (o: { language: string }) =>
+      `traducir las notas a ${o.language}`,
+    showingTranslated: (o: { language: string }) => `notas en ${o.language}`,
+    showingOriginal: "notas tal como se escribieron",
+    translatingNotes: (o: { language: string }) =>
+      `traduciendo las notas a ${o.language}…`,
     padLabel: "Espacio para dibujar en el cuaderno",
     drawingNow: "dibujando…",
     someoneDrawingNow: "alguien está dibujando…",

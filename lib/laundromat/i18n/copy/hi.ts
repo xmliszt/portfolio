@@ -78,6 +78,11 @@ export const hi = {
     qualityLiteHint: "मेमोरी और बैटरी पर हल्का",
     close: "बंद करें",
     closeHint: "बंद करने के लिए esc",
+    notebook: "नोटबुक",
+    translateTo: "इसमें अनुवाद करो",
+    translateAuto: (o: { language: string }) => `अपने-आप · ${o.language}`,
+    autoTranslate: "अपने-आप अनुवाद",
+    autoTranslateStates: { on: "चालू", off: "बंद" },
     temperature: "तापमान",
     weather: "मौसम",
     placeLabel: "मौसम की जगह",
@@ -416,6 +421,10 @@ export const hi = {
       board: "बोर्ड",
     },
     updates: {
+      "notebook-translation": {
+        title: "नोट्स अपनी भाषा में पढ़ो",
+        body: 'किसी नोट पर "अनुवाद करो" दबाकर उसे अपनी भाषा में पढ़ो, या सेटिंग्स में अपने-आप अनुवाद चालू करो ताकि खुलने वाला हर नोट अनुवाद हो।',
+      },
       "dreamcore-station": {
         title: "टीवी पर ड्रीमकोर स्टेशन",
         body: "ट्यूनर को गहरे अंतरिक्ष से आगे घुमाएँ और हल्के, गूँजते एम्बिएंट संगीत वाला ड्रीमकोर रेडियो सुनें।",
@@ -682,6 +691,18 @@ export const hi = {
     inkFull: "स्याही के लिए और जगह नहीं · सहेजो या वापस लो",
     someoneDrawingInNotebook:
       "कोई नोटबुक में ड्रॉइंग बना रहा है · अपनी बारी का इंतज़ार करो",
+    translate: "अनुवाद करो",
+    translating: "अनुवाद हो रहा है…",
+    showOriginal: "मूल दिखाओ",
+    readAll: "पूरा पढ़ो",
+    closeTranslation: "बंद करें",
+    translateFailed: "अभी अनुवाद नहीं हो पा रहा · थोड़ी देर में फिर कोशिश करो",
+    translateToggle: (o: { language: string }) =>
+      `नोट्स का ${o.language} में अनुवाद करो`,
+    showingTranslated: (o: { language: string }) => `नोट्स ${o.language} में`,
+    showingOriginal: "नोट्स जैसे लिखे गए थे",
+    translatingNotes: (o: { language: string }) =>
+      `नोट्स का ${o.language} में अनुवाद हो रहा है…`,
     padLabel: "नोटबुक में ड्रॉइंग की जगह",
     drawingNow: "बना रहे हैं…",
     someoneDrawingNow: "कोई ड्रॉइंग बना रहा है…",

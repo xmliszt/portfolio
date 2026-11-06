@@ -1,0 +1,1 @@
+export const MAX_TRANSLATED_ENTRIES = 24;

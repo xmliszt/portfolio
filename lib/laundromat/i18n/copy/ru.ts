@@ -86,6 +86,11 @@ export const ru = {
     qualityLiteHint: "бережнее к памяти и батарее",
     close: "закрыть",
     closeHint: "esc — закрыть",
+    notebook: "блокнот",
+    translateTo: "переводить на",
+    translateAuto: (o: { language: string }) => `авто · ${o.language}`,
+    autoTranslate: "автоперевод",
+    autoTranslateStates: { on: "вкл", off: "выкл" },
     temperature: "температура",
     weather: "погода",
     placeLabel: "место для погоды",
@@ -399,6 +404,10 @@ export const ru = {
       board: "стенд",
     },
     updates: {
+      "notebook-translation": {
+        title: "читай записки на своём языке",
+        body: "Нажми «перевести» у записки, чтобы прочитать её на своём языке, или включи автоперевод в настройках, чтобы переводить все открытые записки.",
+      },
       "dreamcore-station": {
         title: "дримкор-канал на тв",
         body: "Поверните шкалу дальше глубокого космоса — там дримкор-радио с мягкой, гулкой эмбиент-музыкой.",
@@ -659,6 +668,18 @@ export const ru = {
     inkFull: "чернилам больше нет места · сохрани или отмени",
     someoneDrawingInNotebook:
       "кто-то рисует в блокноте · подожди своей очереди",
+    translate: "перевести",
+    translating: "перевод…",
+    showOriginal: "показать оригинал",
+    readAll: "читать целиком",
+    closeTranslation: "закрыть",
+    translateFailed: "сейчас не получается перевести · попробуй чуть позже",
+    translateToggle: (o: { language: string }) =>
+      `переводить записки: ${o.language}`,
+    showingTranslated: (o: { language: string }) => `записки: ${o.language}`,
+    showingOriginal: "записки в оригинале",
+    translatingNotes: (o: { language: string }) =>
+      `перевод записок: ${o.language}…`,
     padLabel: "Место для рисунка в блокноте",
     drawingNow: "рисуешь…",
     someoneDrawingNow: "кто-то рисует…",

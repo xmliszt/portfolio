@@ -76,6 +76,11 @@ export const tr = {
     qualityLiteHint: "bellek ve pil için daha hafif",
     close: "kapat",
     closeHint: "kapatmak için esc",
+    notebook: "defter",
+    translateTo: "çeviri dili",
+    translateAuto: (o: { language: string }) => `otomatik · ${o.language}`,
+    autoTranslate: "otomatik çeviri",
+    autoTranslateStates: { on: "açık", off: "kapalı" },
     temperature: "sıcaklık",
     weather: "hava",
     placeLabel: "hava durumu konumu",
@@ -383,6 +388,10 @@ export const tr = {
       board: "pano",
     },
     updates: {
+      "notebook-translation": {
+        title: "notları kendi dilinde oku",
+        body: "Bir notu kendi dilinde okumak için “çevir”e dokun ya da açtığın her notun çevrilmesi için ayarlardan otomatik çeviriyi aç.",
+      },
       "dreamcore-station": {
         title: "televizyonda dreamcore kanalı",
         body: "Ayar düğmesini derin uzayın ötesine çevirin ve yumuşak, yankılanan ambient müzikli dreamcore radyosunu dinleyin.",
@@ -637,6 +646,18 @@ export const tr = {
     doodleBookFull: "bu defterde çizime yer yok · onun yerine bir not yaz",
     inkFull: "mürekkebe yer kalmadı · kaydet ya da geri al",
     someoneDrawingInNotebook: "biri deftere çiziyor · sıranı bekle",
+    translate: "çevir",
+    translating: "çevriliyor…",
+    showOriginal: "orijinali göster",
+    readAll: "tamamını oku",
+    closeTranslation: "kapat",
+    translateFailed: "şu an çevrilemiyor · birazdan tekrar dene",
+    translateToggle: (o: { language: string }) =>
+      `notları çevir: ${o.language}`,
+    showingTranslated: (o: { language: string }) => `notlar: ${o.language}`,
+    showingOriginal: "notlar yazıldığı gibi",
+    translatingNotes: (o: { language: string }) =>
+      `notlar çevriliyor: ${o.language}…`,
     padLabel: "Defterdeki çizim alanı",
     drawingNow: "çiziyorsun…",
     someoneDrawingNow: "biri çiziyor…",

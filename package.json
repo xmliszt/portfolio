@@ -48,6 +48,7 @@
     "@types/mdx": "^2.0.13",
     "@uidotdev/usehooks": "^2.4.1",
     "@vercel/analytics": "^1.2.2",
+    "ai": "^7.0.163",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
     "date-fns": "^3.3.1",
@@ -81,6 +82,7 @@
     "unist-util-visit": "^5.0.0",
     "vaul": "^1.1.2",
     "wiggle": "^0.0.17",
+    "zod": "^4.4.3",
     "zustand": "^5.0.2"
   },
   "devDependencies": {

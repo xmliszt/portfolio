@@ -6,6 +6,8 @@ import { createPortal } from "react-dom";
 
 import { cn } from "@/lib/utils";
 
+import { TranslateGlyph } from "./translate-glyph";
+
 type PenMode = "write" | "draw";
 
 type NotebookPhoneBarProps = {
@@ -20,12 +22,18 @@ type NotebookPhoneBarProps = {
       }
     | undefined;
   notify: { label: string; disabled: boolean; onPress: () => void } | undefined;
+  translate: { on: boolean; label: string; onPress: () => void } | undefined;
   undo: { label: string; disabled: boolean; onPress: () => void } | undefined;
   save:
     | { label: string; disabled: boolean; busy: boolean; onPress: () => void }
     | undefined;
   close: { label: string; onPress: () => void };
 };
+
+const PEN_MODE_ICONS = {
+  write: "M4.5 15.5l1-3.5 8-8 2.5 2.5-8 8-3.5 1zM12 5.5l2.5 2.5",
+  draw: "M3.5 12.5c1.5-3 3-3.5 4-1.5s2.5 2.5 4 0 3-3 5-1",
+} satisfies { [mode in PenMode]: string };
 
 const ROUND_BUTTON_CLASS =
   "flex size-12 shrink-0 cursor-pointer items-center justify-center rounded-full border border-[var(--lm-edge)] bg-[var(--lm-panel)] text-[var(--lm-ink-hi)] outline-none transition-opacity focus-visible:border-[var(--lm-accent)] disabled:cursor-default disabled:opacity-40";
@@ -62,12 +70,30 @@ export function NotebookPhoneBar(props: NotebookPhoneBarProps) {
       data-notebook
       className="pointer-events-none fixed inset-x-0 bottom-0 z-50 flex flex-col gap-y-3 bg-gradient-to-t from-[var(--lm-bg)] via-[var(--lm-bg)]/90 to-transparent px-4 pt-8 pb-[max(1rem,env(safe-area-inset-bottom))] font-[family-name:var(--lm-font-mono)]"
     >
-      <p
-        role="status"
-        className="pointer-events-auto line-clamp-2 text-center text-[12px] text-[var(--lm-ink)] lowercase"
-      >
-        {props.status}
-      </p>
+      <div className="pointer-events-auto flex items-center justify-center gap-x-3">
+        <p
+          role="status"
+          className="line-clamp-2 min-w-0 text-center text-[12px] text-[var(--lm-ink)] lowercase"
+        >
+          {props.status}
+        </p>
+        {props.translate !== undefined && (
+          <button
+            type="button"
+            role="switch"
+            aria-checked={props.translate.on}
+            aria-label={props.translate.label}
+            onClick={props.translate.onPress}
+            className={cn(
+              "flex size-9 shrink-0 cursor-pointer items-center justify-center rounded-full border border-[var(--lm-edge)] bg-[var(--lm-panel)] text-[var(--lm-ink)] outline-none focus-visible:border-[var(--lm-accent)]",
+              props.translate.on &&
+                "border-[var(--lm-accent)] text-[var(--lm-accent)]"
+            )}
+          >
+            <TranslateGlyph className="size-4" />
+          </button>
+        )}
+      </div>
       <div className="pointer-events-auto flex items-center justify-between gap-x-3">
         <button
           type="button"
@@ -81,23 +107,25 @@ export function NotebookPhoneBar(props: NotebookPhoneBarProps) {
           <div
             role="group"
             aria-label={props.pen.label}
-            className="flex h-12 items-center rounded-full border border-[var(--lm-edge)] bg-[var(--lm-panel)] p-1"
+            className="flex h-12 shrink-0 items-center rounded-full border border-[var(--lm-edge)] bg-[var(--lm-panel)] p-1"
           >
             {(["write", "draw"] satisfies PenMode[]).map((mode) => (
               <button
                 key={mode}
                 type="button"
                 aria-pressed={props.pen?.mode === mode}
+                aria-label={props.pen?.modeLabels[mode]}
+                title={props.pen?.modeLabels[mode]}
                 disabled={props.pen?.disabled}
                 onClick={() => props.pen?.onModeChange(mode)}
                 className={cn(
-                  "h-full cursor-pointer rounded-full px-5 text-[13px] lowercase outline-none focus-visible:text-[var(--lm-ink-hi)] disabled:cursor-default disabled:opacity-60",
+                  "flex size-10 cursor-pointer items-center justify-center rounded-full outline-none focus-visible:text-[var(--lm-ink-hi)] disabled:cursor-default disabled:opacity-60",
                   props.pen?.mode === mode
                     ? "bg-[var(--lm-edge)] text-[var(--lm-ink-hi)]"
                     : "text-[var(--lm-ink)]"
                 )}
               >
-                {props.pen?.modeLabels[mode]}
+                <LineIcon d={PEN_MODE_ICONS[mode]} />
               </button>
             ))}
           </div>

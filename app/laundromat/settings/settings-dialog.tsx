@@ -9,6 +9,7 @@ import type { RenderQualityPreference } from "@/lib/laundromat/render-quality/re
 import { RENDER_QUALITY_PREFERENCES } from "@/lib/laundromat/render-quality/render-quality";
 import { cn } from "@/lib/utils";
 
+import { NotebookFieldset } from "./notebook-fieldset";
 import { RoomSoundsFieldset } from "./room-sounds-fieldset";
 import { SETTINGS_META_CLASS } from "./settings-meta-class";
 import { SettingsTicketPrinter } from "./settings-ticket-printer";
@@ -139,6 +140,7 @@ export function SettingsDialog(props: SettingsDialogProps) {
         </fieldset>
         <WeatherFieldset />
         <RoomSoundsFieldset />
+        <NotebookFieldset />
         <SettingsTicketPrinter
           restoreCode={props.restoreCode}
           onRestoreRead={props.onRestoreRead}
