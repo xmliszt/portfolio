@@ -8,7 +8,7 @@ export type CampaignSummary = {
   name: string;
   code: string;
   color: string;
-  /** `post` and `repost` rows with `status` `scheduled` and `scheduled_at` after `now`. */
+  /** Rows with `status` `scheduled` and `scheduled_at` after `now`. */
   upcomingCount: number;
   nextPost: { platform: string; at: string } | undefined;
   /** `true` if any of the campaign's rows has `status` `scheduled` and `scheduled_at` after `now`; `false` when none has. */
@@ -35,17 +35,14 @@ export function summariseCampaigns(options: {
   );
   const summaries = options.campaigns.map((campaign) => {
     const upcoming = upcomingByCampaign[campaign.id] ?? [];
-    const campaignPosts = upcoming.filter(
-      (post) => post.kind === "post" || post.kind === "repost"
-    );
-    const next = campaignPosts.at(0);
+    const next = upcoming.at(0);
     return {
       summary: {
         id: campaign.id,
         name: campaign.name,
         code: campaign.code,
         color: campaign.color,
-        upcomingCount: campaignPosts.length,
+        upcomingCount: upcoming.length,
         nextPost:
           next?.scheduled_at === null || next === undefined
             ? undefined

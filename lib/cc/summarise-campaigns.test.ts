@@ -22,7 +22,7 @@ function buildCampaignRow(options: Partial<CampaignRow>): CampaignRow {
 
 const NOW = new Date("2026-11-07T06:00:00.000Z");
 
-test("counts upcoming top-level posts and picks the soonest", () => {
+test("counts upcoming scheduled rows and picks the soonest", () => {
   const [summary] = summariseCampaigns({
     campaigns: [buildCampaignRow({})],
     posts: [
@@ -49,10 +49,10 @@ test("counts upcoming top-level posts and picks the soonest", () => {
     ],
     now: NOW,
   });
-  assert.equal(summary?.upcomingCount, 2);
+  assert.equal(summary?.upcomingCount, 3);
   assert.deepEqual(summary?.nextPost, {
-    platform: "threads",
-    at: "2026-11-07T11:00:00.000Z",
+    platform: "x",
+    at: "2026-11-07T10:00:00.000Z",
   });
   assert.equal(summary?.isActive, true);
 });
@@ -69,8 +69,7 @@ test("counts a campaign with only a scheduled reply left as active", () => {
     now: NOW,
   });
   assert.equal(summary?.isActive, true);
-  assert.equal(summary?.upcomingCount, 0);
-  assert.equal(summary?.nextPost, undefined);
+  assert.equal(summary?.upcomingCount, 1);
 });
 
 test("lists active campaigns first, each group newest start first", () => {
