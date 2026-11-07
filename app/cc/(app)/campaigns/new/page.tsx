@@ -3,7 +3,7 @@ import Link from "next/link";
 
 import { PageHeader } from "@/app/cc/_ui/page-header";
 import { requireCcOwner } from "@/lib/cc/auth/require-cc-owner";
-import { getCurrentCampaign } from "@/lib/cc/data/get-current-campaign";
+import { getFocusedCampaign } from "@/lib/cc/data/get-focused-campaign";
 import { listCampaignHistory } from "@/lib/cc/data/list-campaign-history";
 import { formatSgt } from "@/lib/cc/format-sgt";
 import { PLATFORMS } from "@/lib/cc/platforms";
@@ -22,7 +22,7 @@ const CHINESE_FIRST = new Set([
 export default async function SmartCampaignPage() {
   await requireCcOwner();
   const [current, history] = await Promise.all([
-    getCurrentCampaign(),
+    getFocusedCampaign(),
     listCampaignHistory(),
   ]);
   const currentStartDate =

@@ -1,5 +1,9 @@
 import Link from "next/link";
 
+import { CampaignCodeChip } from "@/app/cc/_ui/campaign-code-chip";
+import { OtherChip } from "@/app/cc/_ui/other-chip";
+import { OTHER_HATCH_STYLE } from "@/app/cc/_ui/other-hatch";
+import { getCampaignColorVar } from "@/lib/cc/get-campaign-color-var";
 import type { getHourHeat } from "@/lib/cc/get-hour-heat";
 import { type PlatformId, PLATFORMS } from "@/lib/cc/platforms";
 import { cn } from "@/lib/utils";
@@ -12,7 +16,11 @@ export type GridPost = {
   timeLabel: string;
   label: string;
   status: string;
-  project: string | undefined;
+  group:
+    | { kind: "campaign"; code: string; color: string }
+    | { kind: "other"; project: string };
+  /** `true` if the card shows its campaign code or OTHER chip; `false` when only one SHOW filter is on. */
+  isChipShown: boolean;
   childNote: string | undefined;
   href: string;
   isSelected: boolean;
@@ -90,6 +98,23 @@ export function WeekGrid(props: WeekGridProps) {
                 >
                   {cellPosts.map((post) => {
                     const platform = PLATFORMS[post.platformId];
+                    const group = post.group;
+                    const groupStyle = (() => {
+                      switch (group.kind) {
+                        case "campaign": {
+                          const colorVar = getCampaignColorVar(group.color);
+                          return {
+                            backgroundImage: `linear-gradient(hsl(var(${colorVar}) / var(--cc-campaign-tint)), hsl(var(${colorVar}) / var(--cc-campaign-tint)))`,
+                          };
+                        }
+                        case "other":
+                          return OTHER_HATCH_STYLE;
+                        default: {
+                          const unhandled: never = group;
+                          return unhandled;
+                        }
+                      }
+                    })();
                     return (
                       <Link
                         key={post.id}
@@ -102,6 +127,7 @@ export function WeekGrid(props: WeekGridProps) {
                           post.status === "skipped" && "opacity-50"
                         )}
                         style={{
+                          ...groupStyle,
                           borderLeftColor: `hsl(var(${platform.colorVar}))`,
                         }}
                       >
@@ -113,11 +139,15 @@ export function WeekGrid(props: WeekGridProps) {
                             <span className="truncate">
                               {post.timeLabel} {platform.shortLabel}
                             </span>
-                            {post.project !== undefined && (
-                              <span className="border-cc-text-2 text-cc-text-2 shrink-0 border px-0.5 text-[9px] leading-[12px] font-semibold">
-                                CUSTOM
-                              </span>
-                            )}
+                            {post.isChipShown &&
+                              (group.kind === "campaign" ? (
+                                <CampaignCodeChip
+                                  code={group.code}
+                                  color={group.color}
+                                />
+                              ) : (
+                                <OtherChip />
+                              ))}
                           </span>
                           {post.status !== "scheduled" && (
                             <span
@@ -139,9 +169,9 @@ export function WeekGrid(props: WeekGridProps) {
                             post.status === "skipped" && "line-through"
                           )}
                         >
-                          {post.project !== undefined && (
+                          {group.kind === "other" && (
                             <span className="text-foreground font-semibold">
-                              {post.project} ·{" "}
+                              {group.project} ·{" "}
                             </span>
                           )}
                           {post.label}

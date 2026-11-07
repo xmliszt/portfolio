@@ -4,9 +4,8 @@ import { PageHeader } from "@/app/cc/_ui/page-header";
 import { Panel } from "@/app/cc/_ui/panel";
 import { buildScheduleContext } from "@/app/cc/(app)/calendar/build-schedule-context";
 import { requireCcOwner } from "@/lib/cc/auth/require-cc-owner";
-import { getCurrentCampaign } from "@/lib/cc/data/get-current-campaign";
-import { listCampaignPosts } from "@/lib/cc/data/list-campaign-posts";
-import { listCustomPosts } from "@/lib/cc/data/list-custom-posts";
+import { getFocusedCampaign } from "@/lib/cc/data/get-focused-campaign";
+import { listAllPosts } from "@/lib/cc/data/list-all-posts";
 import { formatSgt } from "@/lib/cc/format-sgt";
 import { isPlatformId } from "@/lib/cc/is-platform-id";
 import { parseCampaignPlan } from "@/lib/cc/parse-campaign-plan";
@@ -29,13 +28,8 @@ export default async function NewPage(props: NewPageProps) {
   const searchParams = await props.searchParams;
   const dateParam = searchParams.date;
   const platformParam = searchParams.platform;
-  const campaign = await getCurrentCampaign();
-  const [campaignPosts, customPosts] = await Promise.all([
-    campaign === undefined
-      ? []
-      : listCampaignPosts({ campaignId: campaign.id, variant: "mine" }),
-    listCustomPosts({ variant: "mine" }),
-  ]);
+  const campaign = await getFocusedCampaign();
+  const allPosts = await listAllPosts({ variant: "mine" });
   const plan = parseCampaignPlan(campaign?.plan ?? null);
 
   return (
@@ -71,7 +65,7 @@ export default async function NewPage(props: NewPageProps) {
               : "xiaohongshu"
           }
           schedule={buildScheduleContext({
-            posts: [...campaignPosts, ...customPosts],
+            posts: allPosts,
             plan,
           })}
         />

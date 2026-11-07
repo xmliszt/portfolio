@@ -6,7 +6,7 @@ import { formatSgt } from "@/lib/cc/format-sgt";
 import { isPlatformId } from "@/lib/cc/is-platform-id";
 import { suggestNextSlot } from "@/lib/cc/suggest-next-slot";
 
-/** Return the next good Singapore-time `date` and `time` for a `platformId` post in `campaignId` with the reason, counting the campaign's other scheduled and posted `kind = 'post'` posts (not `postId`) and its reposts and the custom posts (not `postId`) as taken; `undefined` when the next 14 days have no free slot. */
+/** Return the next good Singapore-time `date` and `time` for a `platformId` post in `campaignId` with the reason, counting the campaign's other scheduled and posted `kind = 'post'` posts (not `postId`) and its reposts and the other campaigns' and custom posts (not `postId`) as taken; `undefined` when the next 14 days have no free slot. */
 export async function suggestPostSlot(options: {
   campaignId: string;
   platformId: string;

@@ -5,6 +5,8 @@ create table "command_center"."campaigns" (
   "starts_at" timestamptz,
   "notes" text,
   "plan" jsonb not null default '{}',
+  "code" text not null check ("code" ~ '^[A-Z0-9]{2,4}$'),
+  "color" text not null check ("color" in ('violet', 'gold', 'teal', 'coral', 'orchid', 'lime', 'slate')),
   "created_at" timestamptz not null default now()
 );
 

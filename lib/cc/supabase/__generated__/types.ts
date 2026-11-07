@@ -16,6 +16,8 @@ export type Database = {
     Tables: {
       campaigns: {
         Row: {
+          code: string
+          color: string
           created_at: string
           id: string
           link: string | null
@@ -25,6 +27,8 @@ export type Database = {
           starts_at: string | null
         }
         Insert: {
+          code: string
+          color: string
           created_at?: string
           id?: string
           link?: string | null
@@ -34,6 +38,8 @@ export type Database = {
           starts_at?: string | null
         }
         Update: {
+          code?: string
+          color?: string
           created_at?: string
           id?: string
           link?: string | null

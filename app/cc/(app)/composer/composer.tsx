@@ -40,6 +40,7 @@ type ComposerProps = {
   rows: readonly ComposerPostRow[];
   focusPostId: string | undefined;
   sameDayTargets: readonly string[];
+  campaignSwitcher: React.ReactNode;
 };
 
 export function Composer(props: ComposerProps) {
@@ -167,7 +168,11 @@ export function Composer(props: ComposerProps) {
 
   return (
     <div className="grid grid-cols-1 items-start gap-x-3 gap-y-3 lg:grid-cols-[220px_minmax(0,1fr)] xl:grid-cols-[220px_minmax(0,1fr)_340px]">
-      <ComposerPostList rows={props.rows} selectedPostId={props.post.id} />
+      <ComposerPostList
+        rows={props.rows}
+        selectedPostId={props.post.id}
+        header={props.campaignSwitcher}
+      />
       <Panel
         title={`${props.post.kind === "post" ? "Post" : props.post.kind} · ${platform.label}`}
         aside={

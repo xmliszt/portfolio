@@ -4,14 +4,18 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 import { ThemeControl } from "@/app/cc/_ui/theme-control";
+import type { CampaignSummary } from "@/lib/cc/summarise-campaigns";
 import { cn } from "@/lib/utils";
 
+import { CampaignFocusList } from "./campaign-focus-list";
 import { signOut } from "./sign-out";
 
 type SectionRailProps = {
   dueLogCount: number;
   telegramLinked: boolean;
   settingsNeedAttention: boolean;
+  campaigns: readonly (CampaignSummary & { nextLabel: string | undefined })[];
+  focusedCampaignId: string | undefined;
 };
 
 const SECTIONS = [
@@ -30,7 +34,7 @@ export function SectionRail(props: SectionRailProps) {
   return (
     <nav
       aria-label="Sections"
-      className="bg-card flex w-full flex-col gap-y-1 border-b px-2 py-3 md:sticky md:top-0 md:h-dvh md:w-[160px] md:flex-none md:border-r md:border-b-0"
+      className="bg-card flex w-full flex-col gap-y-1 border-b px-2 py-3 md:sticky md:top-0 md:h-dvh md:w-[184px] md:flex-none md:overflow-y-auto md:border-r md:border-b-0"
     >
       <Link
         href="/"
@@ -38,6 +42,10 @@ export function SectionRail(props: SectionRailProps) {
       >
         CC//
       </Link>
+      <CampaignFocusList
+        campaigns={props.campaigns}
+        focusedId={props.focusedCampaignId}
+      />
       <div className="flex flex-wrap gap-x-1.5 gap-y-1.5 md:flex-col">
         {SECTIONS.map((section) => {
           const isCurrent =

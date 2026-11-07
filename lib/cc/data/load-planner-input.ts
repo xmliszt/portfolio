@@ -13,12 +13,11 @@ import type { PlannerPost } from "@/lib/cc/plan-campaign-schedule";
 import { PLATFORMS } from "@/lib/cc/platforms";
 import { createCcServiceClient } from "@/lib/cc/supabase/create-cc-service-client";
 
-import { listCampaignPosts } from "./list-campaign-posts";
-import { listCustomPosts } from "./list-custom-posts";
+import { listAllPosts } from "./list-all-posts";
 import { listPostMetrics } from "./list-post-metrics";
 import { toStatRows } from "./to-stat-rows";
 
-/** Return what scheduling needs for `campaignId`: its parsed plan settings, its own-variant posts, those posts' top-level `kind = 'post'` rows as planner posts, the times and platforms of its unskipped reposts and of the unskipped custom posts as `occupied` with their post ids, and slot scores per platform. */
+/** Return what scheduling needs for `campaignId`: its parsed plan settings, its own-variant posts, those posts' top-level `kind = 'post'` rows as planner posts, the times and platforms of its unskipped reposts and of the unskipped `post` and `repost` rows of other campaigns and custom posts as `occupied` with their post ids, and slot scores per platform. */
 export async function loadPlannerInput(options: { campaignId: string }) {
   const { data: campaign, error } = await createCcServiceClient()
     .from("campaigns")
@@ -26,10 +25,10 @@ export async function loadPlannerInput(options: { campaignId: string }) {
     .eq("id", options.campaignId)
     .single();
   if (error) throw error;
-  const [posts, customPosts] = await Promise.all([
-    listCampaignPosts({ campaignId: options.campaignId, variant: "mine" }),
-    listCustomPosts({ variant: "mine" }),
-  ]);
+  const allPosts = await listAllPosts({ variant: "mine" });
+  const posts = allPosts.filter(
+    (post) => post.campaign_id === options.campaignId
+  );
   const metrics = await listPostMetrics({
     postIds: posts.map((post) => post.id),
   });
@@ -58,8 +57,10 @@ export async function loadPlannerInput(options: { campaignId: string }) {
   });
   const occupied = [
     ...posts.filter((post) => post.kind === "repost"),
-    ...customPosts.filter(
-      (post) => post.kind === "post" || post.kind === "repost"
+    ...allPosts.filter(
+      (post) =>
+        post.campaign_id !== options.campaignId &&
+        (post.kind === "post" || post.kind === "repost")
     ),
   ].flatMap((post) =>
     post.status !== "skipped" &&

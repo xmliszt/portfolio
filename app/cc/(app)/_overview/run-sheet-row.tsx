@@ -4,6 +4,7 @@ import { useEffect, useState, useTransition } from "react";
 import Link from "next/link";
 
 import { CcButton } from "@/app/cc/_ui/cc-button";
+import { OtherChip } from "@/app/cc/_ui/other-chip";
 import { PlatformChip } from "@/app/cc/_ui/platform-chip";
 import { markPostPosted } from "@/app/cc/(app)/_actions/mark-post-posted";
 import type { PlatformId } from "@/lib/cc/platforms";
@@ -15,6 +16,8 @@ export type RunSheetItem = {
   platformId: PlatformId;
   kind: string;
   label: string;
+  /** The custom post's project, or `undefined` for a campaign post. */
+  project: string | undefined;
   status: "posted" | "skipped" | "next" | "due" | "queued" | "draft";
   copyText: string;
   open:
@@ -99,6 +102,14 @@ export function RunSheetRow(props: RunSheetRowProps) {
           title="Open in composer"
           className="text-cc-text-2 hover:text-primary min-w-[140px] flex-1 truncate underline-offset-4 hover:underline"
         >
+          {item.project !== undefined && (
+            <>
+              <OtherChip />{" "}
+              <span className="text-foreground font-semibold">
+                {item.project} ·{" "}
+              </span>
+            </>
+          )}
           {item.kind !== "post" && (
             <span className="text-muted-foreground">
               {item.kind === "repost" ? "↻ Repost · " : "↳ "}

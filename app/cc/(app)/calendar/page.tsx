@@ -1,13 +1,15 @@
 import countBy from "lodash/countBy.js";
+import keyBy from "lodash/keyBy.js";
 import maxBy from "lodash/maxBy.js";
 import sortBy from "lodash/sortBy.js";
 import Link from "next/link";
 
 import { PageHeader } from "@/app/cc/_ui/page-header";
 import { requireCcOwner } from "@/lib/cc/auth/require-cc-owner";
-import { getCurrentCampaign } from "@/lib/cc/data/get-current-campaign";
-import { listCampaignPosts } from "@/lib/cc/data/list-campaign-posts";
-import { listCustomPosts } from "@/lib/cc/data/list-custom-posts";
+import { getFocusedCampaign } from "@/lib/cc/data/get-focused-campaign";
+import { listAllPosts } from "@/lib/cc/data/list-all-posts";
+import { listCampaignSummaries } from "@/lib/cc/data/list-campaign-summaries";
+import { listCampaigns } from "@/lib/cc/data/list-campaigns";
 import { listPostMetrics } from "@/lib/cc/data/list-post-metrics";
 import { toStatRows } from "@/lib/cc/data/to-stat-rows";
 import { formatSgt } from "@/lib/cc/format-sgt";
@@ -16,12 +18,17 @@ import { getPostName } from "@/lib/cc/get-post-name";
 import { getSgtParts } from "@/lib/cc/get-sgt-parts";
 import { getSgtWeek } from "@/lib/cc/get-sgt-week";
 import { isPlatformId } from "@/lib/cc/is-platform-id";
+import { parseCalendarShow } from "@/lib/cc/parse-calendar-show";
 import { parseCampaignPlan } from "@/lib/cc/parse-campaign-plan";
 import { PLATFORM_IDS, type PlatformId, PLATFORMS } from "@/lib/cc/platforms";
 import { RESEARCHED_WINDOWS } from "@/lib/cc/researched-windows";
 import { sgtToUtc } from "@/lib/cc/sgt-to-utc";
 
 import { buildScheduleContext } from "./build-schedule-context";
+import {
+  CalendarShowFilter,
+  type CalendarShowOption,
+} from "./calendar-show-filter";
 import { FollowUpsPanel } from "./follow-ups-panel";
 import { HeatLegendPanel } from "./heat-legend-panel";
 import { HeatPicker } from "./heat-picker";
@@ -52,23 +59,23 @@ function isDateString(value: string | undefined): value is string {
 export default async function CalendarPage(props: CalendarPageProps) {
   await requireCcOwner();
   const searchParams = await props.searchParams;
-  const campaign = await getCurrentCampaign();
-  const [campaignPosts, customPosts] = await Promise.all([
-    campaign === undefined
-      ? []
-      : listCampaignPosts({ campaignId: campaign.id, variant: "mine" }),
-    listCustomPosts({ variant: "mine" }),
+  const now = new Date();
+  const [focused, campaigns, summaries, allPosts] = await Promise.all([
+    getFocusedCampaign(),
+    listCampaigns(),
+    listCampaignSummaries({ now }),
+    listAllPosts({ variant: "mine" }),
   ]);
-  if (campaign === undefined && customPosts.length === 0) {
-    return <PageHeader eyebrow="CALENDAR" title="No campaign yet" />;
+  if (allPosts.length === 0) {
+    return <PageHeader eyebrow="CALENDAR" title="No posts yet" />;
   }
 
-  const now = new Date();
   const posts = sortBy(
-    [...campaignPosts, ...customPosts],
+    allPosts,
     (post) => post.scheduled_at === null,
     (post) => post.scheduled_at
   );
+  const campaignPosts = posts.filter((post) => post.campaign_id !== null);
   const metrics = await listPostMetrics({
     postIds: campaignPosts.map((post) => post.id),
   });
@@ -103,6 +110,53 @@ export default async function CalendarPage(props: CalendarPageProps) {
       : [];
   });
 
+  const weekTopLevel = weekPosts.filter(
+    (entry) =>
+      !(
+        (entry.post.kind === "reply" || entry.post.kind === "comment") &&
+        entry.post.parent_post_id !== null
+      )
+  );
+  const weekCampaignIds = new Set(
+    weekTopLevel.flatMap((entry) =>
+      entry.post.campaign_id === null ? [] : [entry.post.campaign_id]
+    )
+  );
+  const campaignsById = keyBy(campaigns, (row) => row.id);
+  const showOptions = [
+    ...summaries.flatMap((summary): CalendarShowOption[] =>
+      summary.isActive || weekCampaignIds.has(summary.id)
+        ? [
+            {
+              kind: "campaign",
+              id: summary.id,
+              name: summary.name,
+              code: summary.code,
+              color: summary.color,
+              postCount: weekTopLevel.filter(
+                (entry) => entry.post.campaign_id === summary.id
+              ).length,
+            },
+          ]
+        : []
+    ),
+    {
+      kind: "other",
+      id: "other",
+      postCount: weekTopLevel.filter((entry) => entry.post.campaign_id === null)
+        .length,
+    } satisfies CalendarShowOption,
+  ];
+  const showIds = parseCalendarShow({
+    value: readParam(searchParams.show),
+    optionIds: showOptions.map((option) => option.id),
+  });
+  const isAllShown = showIds.length === showOptions.length;
+  const onlyShownId = showIds.length === 1 ? showIds.at(0) : undefined;
+  function isShown(post: { campaign_id: string | null }) {
+    return showIds.includes(post.campaign_id ?? "other");
+  }
+
   const heatParam = readParam(searchParams.heat);
   const postCounts = countBy(
     weekPosts.filter((entry) => entry.post.kind === "post"),
@@ -130,10 +184,13 @@ export default async function CalendarPage(props: CalendarPageProps) {
     week?: string;
     heat?: PlatformId;
     edit?: string;
+    show?: readonly string[];
   }) {
+    const show = options.show ?? showIds;
     const params = new URLSearchParams({
       week: options.week ?? weekStart,
       heat: options.heat ?? heatPlatformId,
+      ...(show.length === showOptions.length ? {} : { show: show.join(",") }),
       ...(options.edit === undefined ? {} : { edit: options.edit }),
     });
     return `/calendar?${params.toString()}`;
@@ -147,14 +204,11 @@ export default async function CalendarPage(props: CalendarPageProps) {
     ),
     (post) => post.parent_post_id
   );
-  const gridPosts = weekPosts.flatMap((entry): GridPost[] => {
+  const gridPosts = weekTopLevel.flatMap((entry): GridPost[] => {
     const post = entry.post;
-    if (
-      (post.kind === "reply" || post.kind === "comment") &&
-      post.parent_post_id !== null
-    ) {
-      return [];
-    }
+    if (!isShown(post)) return [];
+    const campaign =
+      post.campaign_id === null ? undefined : campaignsById[post.campaign_id];
     const childCount = childrenByParent[post.id] ?? 0;
     const isComment =
       posts.find((child) => child.parent_post_id === post.id)?.kind ===
@@ -177,7 +231,11 @@ export default async function CalendarPage(props: CalendarPageProps) {
           post.target ??
           (getPostName(post) || PLATFORMS[entry.platformId].label),
         status: post.status,
-        project: post.campaign_id === null ? (post.project ?? "") : undefined,
+        group:
+          campaign === undefined
+            ? { kind: "other", project: post.project ?? "" }
+            : { kind: "campaign", code: campaign.code, color: campaign.color },
+        isChipShown: onlyShownId === undefined,
         childNote:
           childCount === 0 ? undefined : `+ ${childCount} ${childWord}`,
         href: buildHref({ edit: post.id }),
@@ -198,12 +256,18 @@ export default async function CalendarPage(props: CalendarPageProps) {
       gridPosts.some((post) => post.hour === hour)
   );
 
+  const editPost = posts.find((post) => post.id === editId);
+  const editCampaign =
+    editPost?.campaign_id === null || editPost === undefined
+      ? focused
+      : campaignsById[editPost.campaign_id];
   const schedule = buildScheduleContext({
     posts,
-    plan: parseCampaignPlan(campaign?.plan ?? null),
+    plan: parseCampaignPlan(editCampaign?.plan ?? null),
   });
-
-  const editPost = posts.find((post) => post.id === editId);
+  const hiddenCount = weekTopLevel.filter(
+    (entry) => !isShown(entry.post)
+  ).length;
   const isHeatEmpty = heat.cells.flat().every((value) => !value);
   const weekLabel = formatSgt({
     date: weekMidday,
@@ -213,7 +277,16 @@ export default async function CalendarPage(props: CalendarPageProps) {
   return (
     <>
       <PageHeader
-        eyebrow={`CALENDAR // ${campaign === undefined ? "CUSTOM POSTS" : `${campaign.name.toUpperCase()} + CUSTOM`} · ALL TIMES SGT`}
+        eyebrow={`CALENDAR // ${
+          isAllShown
+            ? "ALL CAMPAIGNS + OTHER"
+            : showOptions
+                .filter((option) => showIds.includes(option.id))
+                .map((option) =>
+                  option.kind === "campaign" ? option.code : "OTHER"
+                )
+                .join(" + ")
+        } · ALL TIMES SGT`}
         title={`Week of ${weekLabel}`}
         aside={
           <nav
@@ -249,6 +322,26 @@ export default async function CalendarPage(props: CalendarPageProps) {
           </nav>
         }
       />
+      <CalendarShowFilter
+        options={showOptions}
+        selectedIds={showIds}
+        hrefs={{
+          all: buildHref({ show: showOptions.map((option) => option.id) }),
+          toggle: Object.fromEntries(
+            showOptions.map((option) => [
+              option.id,
+              buildHref({
+                show: showIds.includes(option.id)
+                  ? showIds.filter((id) => id !== option.id)
+                  : showOptions
+                      .map((entry) => entry.id)
+                      .filter((id) => id === option.id || showIds.includes(id)),
+              }),
+            ])
+          ),
+        }}
+        hiddenCount={hiddenCount}
+      />
       <HeatPicker
         selected={heatPlatformId}
         hrefs={PLATFORM_IDS.map((platformId) => ({
@@ -261,7 +354,7 @@ export default async function CalendarPage(props: CalendarPageProps) {
         isPlatformId(editPost.platform) && (
           <PostEditor
             key={`${editPost.id}-${editPost.scheduled_at}-${editPost.status}`}
-            campaignId={campaign?.id}
+            campaignId={editCampaign?.id}
             post={{
               id: editPost.id,
               platformId: editPost.platform,

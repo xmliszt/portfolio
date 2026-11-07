@@ -1,10 +1,13 @@
+import sortBy from "lodash/sortBy.js";
 import uniq from "lodash/uniq.js";
 
 import { PageHeader } from "@/app/cc/_ui/page-header";
 import { requireCcOwner } from "@/lib/cc/auth/require-cc-owner";
 import { checkVoice } from "@/lib/cc/check-voice";
-import { getCurrentCampaign } from "@/lib/cc/data/get-current-campaign";
+import { getFocusedCampaign } from "@/lib/cc/data/get-focused-campaign";
 import { listCampaignPosts } from "@/lib/cc/data/list-campaign-posts";
+import { listCampaignSummaries } from "@/lib/cc/data/list-campaign-summaries";
+import { listCustomPosts } from "@/lib/cc/data/list-custom-posts";
 import { listDueReminders } from "@/lib/cc/data/list-due-reminders";
 import { listPostMetrics } from "@/lib/cc/data/list-post-metrics";
 import { toStatRows } from "@/lib/cc/data/to-stat-rows";
@@ -17,6 +20,7 @@ import { getRepostSuggestions } from "@/lib/cc/get-repost-suggestions";
 import { isPlatformId } from "@/lib/cc/is-platform-id";
 import { PLATFORMS } from "@/lib/cc/platforms";
 
+import { AlsoRunningStrip } from "./_overview/also-running-strip";
 import { buildDueItems } from "./_overview/build-due-items";
 import { buildRunSheet } from "./_overview/build-run-sheet";
 import { CampaignClock } from "./_overview/campaign-clock";
@@ -30,7 +34,7 @@ import { CampaignPanel } from "./new/campaign-panel";
 
 export default async function OverviewPage() {
   await requireCcOwner();
-  const campaign = await getCurrentCampaign();
+  const campaign = await getFocusedCampaign();
   if (campaign === undefined) {
     return (
       <>
@@ -41,21 +45,28 @@ export default async function OverviewPage() {
   }
 
   const now = new Date();
-  const [posts, reminders] = await Promise.all([
+  const [posts, customPosts, reminders, summaries] = await Promise.all([
     listCampaignPosts({ campaignId: campaign.id, variant: "mine" }),
+    listCustomPosts({ variant: "mine" }),
     listDueReminders({ now }),
+    listCampaignSummaries({ now }),
   ]);
+  const timelinePosts = sortBy(
+    [...posts, ...customPosts],
+    (post) => post.scheduled_at === null,
+    (post) => post.scheduled_at
+  );
   const metrics = await listPostMetrics({
     postIds: posts.map((post) => post.id),
   });
   const stats = toStatRows({ posts, metrics });
   const totals = getCampaignTotals(stats);
-  const campaignPostIds = new Set(posts.map((post) => post.id));
+  const timelinePostIds = new Set(timelinePosts.map((post) => post.id));
 
   const mainPosts = posts.filter(
     (post) => post.kind === "post" && post.status !== "skipped"
   );
-  const upcoming = posts.flatMap((post) =>
+  const upcoming = timelinePosts.flatMap((post) =>
     post.status === "scheduled" &&
     post.scheduled_at !== null &&
     isPlatformId(post.platform) &&
@@ -68,15 +79,15 @@ export default async function OverviewPage() {
         ]
       : []
   );
-  const runSheet = buildRunSheet({ posts, now });
+  const runSheet = buildRunSheet({ posts: timelinePosts, now });
   const dueItems = buildDueItems({
     reminders: reminders.filter((reminder) =>
-      campaignPostIds.has(reminder.post_id)
+      timelinePostIds.has(reminder.post_id)
     ),
-    posts,
+    posts: timelinePosts,
     repostSuggestions: getRepostSuggestions(stats),
   });
-  const voiceResults = posts.flatMap((post) => {
+  const voiceResults = timelinePosts.flatMap((post) => {
     if (
       (post.status !== "scheduled" && post.status !== "draft") ||
       !isPlatformId(post.platform)
@@ -102,9 +113,27 @@ export default async function OverviewPage() {
   return (
     <>
       <PageHeader
-        eyebrow={`CAMPAIGN // ${campaign.name.toUpperCase()}`}
+        eyebrow={`CAMPAIGN // ${campaign.name.toUpperCase()} + OTHER`}
         title="Mission control"
         aside={<CampaignClock upcoming={upcoming} />}
+      />
+      <AlsoRunningStrip
+        campaigns={summaries.flatMap((summary) =>
+          summary.isActive && summary.id !== campaign.id
+            ? [
+                {
+                  id: summary.id,
+                  name: summary.name,
+                  code: summary.code,
+                  color: summary.color,
+                  nextLabel:
+                    summary.nextPost === undefined
+                      ? undefined
+                      : `${isPlatformId(summary.nextPost.platform) ? PLATFORMS[summary.nextPost.platform].shortLabel : summary.nextPost.platform} · ${formatSgt({ date: new Date(summary.nextPost.at), pattern: "EEE HH:mm" })}`,
+                },
+              ]
+            : []
+        )}
       />
       <TotalsStrip
         postedCount={

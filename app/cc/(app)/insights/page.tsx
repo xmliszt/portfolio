@@ -8,7 +8,7 @@ import { PageHeader } from "@/app/cc/_ui/page-header";
 import { Panel } from "@/app/cc/_ui/panel";
 import { getPostLabel } from "@/app/cc/(app)/log/get-post-label";
 import { requireCcOwner } from "@/lib/cc/auth/require-cc-owner";
-import { getCurrentCampaign } from "@/lib/cc/data/get-current-campaign";
+import { getFocusedCampaign } from "@/lib/cc/data/get-focused-campaign";
 import { listCampaignNotes } from "@/lib/cc/data/list-campaign-notes";
 import { listCampaignPosts } from "@/lib/cc/data/list-campaign-posts";
 import { listPostMetrics } from "@/lib/cc/data/list-post-metrics";
@@ -44,7 +44,7 @@ const ENGAGEMENT_FIELDS = [
 
 export default async function InsightsPage() {
   await requireCcOwner();
-  const campaign = await getCurrentCampaign();
+  const campaign = await getFocusedCampaign();
   if (campaign === undefined) {
     return (
       <>

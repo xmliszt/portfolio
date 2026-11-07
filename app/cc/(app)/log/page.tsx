@@ -4,7 +4,7 @@ import { CollapsibleSection } from "@/app/cc/_ui/collapsible-section";
 import { PageHeader } from "@/app/cc/_ui/page-header";
 import { Panel } from "@/app/cc/_ui/panel";
 import { requireCcOwner } from "@/lib/cc/auth/require-cc-owner";
-import { getCurrentCampaign } from "@/lib/cc/data/get-current-campaign";
+import { getFocusedCampaign } from "@/lib/cc/data/get-focused-campaign";
 import { listCampaignPosts } from "@/lib/cc/data/list-campaign-posts";
 import { listDueReminders } from "@/lib/cc/data/list-due-reminders";
 import { listPostMetrics } from "@/lib/cc/data/list-post-metrics";
@@ -27,7 +27,7 @@ const CHECKPOINTS = ["1h", "24h", "7d"] as const;
 export default async function LogPage() {
   await requireCcOwner();
   const now = new Date();
-  const campaign = await getCurrentCampaign();
+  const campaign = await getFocusedCampaign();
   const posts =
     campaign === undefined
       ? []

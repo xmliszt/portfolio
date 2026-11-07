@@ -1,6 +1,7 @@
 export type SgtPattern =
   | "HH:mm"
   | "HH:mm:ss"
+  | "EEE HH:mm"
   | "EEE dd MMM"
   | "EEE dd MMM HH:mm"
   | "yyyy-MM-dd";
@@ -44,6 +45,8 @@ export function formatSgt(options: { date: Date; pattern: SgtPattern }) {
       return time;
     case "HH:mm:ss":
       return `${time}:${parts.second}`;
+    case "EEE HH:mm":
+      return `${parts.weekday} ${time}`;
     case "EEE dd MMM":
       return dayLabel;
     case "EEE dd MMM HH:mm":

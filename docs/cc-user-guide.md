@@ -24,15 +24,22 @@ The left rail has seven sections:
 | LOG NUMBERS | `/log`      | Type in each post's numbers at +1 h, +24 h and +7 d                                  |
 | INSIGHTS    | `/insights` | Compare platforms, targets, hashtags, posting hours, keywords                        |
 | NEW         | `/new`      | Schedule a post, create a campaign, start a smart campaign, run the schedule planner |
-| SETTINGS    | `/settings` | Theme, integrations, edit the current campaign                                       |
+| SETTINGS    | `/settings` | Theme, integrations, edit the focused campaign                                       |
 
 The rail footer has the theme switch: **AUTO** (light 07:00–19:00 SGT, dark otherwise), **LIGHT** or **DARK**. An orange ● on SETTINGS means Threads needs connecting.
 
-CC always shows the **current campaign**: the one with the newest start date.
+Several campaigns can run at once. **FOCUS**, at the top of the rail, picks the campaign that OVERVIEW, COMPOSER, LOG NUMBERS, INSIGHTS, NEW and SETTINGS show. Click a campaign to focus it, or press `[` and `]` to step through them.
+
+- Each row shows the campaign's code, its name, how many posts are left and when the next one goes out.
+- Campaigns with no scheduled post left are under **PAST**.
+- Until you pick one, the focus is the campaign with the newest start date. A new campaign is focused when it is created.
+- Opening a post of another campaign in COMPOSER (`/composer?post=<id>`) focuses that campaign.
+
+Posts outside every campaign are **OTHER** posts. They show on every screen whatever the focus, with a dashed OTHER chip, a striped background and their project name.
 
 ## Concepts
 
-- **Campaign:** a launch or push with a name, product link, start date and notes. Every post belongs to one.
+- **Campaign:** a launch or push with a name, a code (2–4 letters, such as `JDL`), a colour, a product link, a start date and notes. A post belongs to one campaign, or to none (an OTHER post, with a project name instead).
 - **Post:** one item on one platform. Its `kind` is one of:
   - `post`: a main post.
   - `reply`: a reply under a main post, for example "Reply 1: the link" on X.
@@ -71,13 +78,18 @@ For platforms without auto-post, the owner posts by hand: CC copies the text and
 
 ## OVERVIEW
 
+OVERVIEW shows the focused campaign plus OTHER posts. The numbers (posted, views, hashtags) count the focused campaign only.
+
+- **ALSO RUNNING:** each other campaign with posts still to go, with its next post. Click one to focus it.
 - **DUE NOW:** reminders that are due, the same ones Telegram sends. These are posts to publish, replies to answer and numbers to log.
 - **Run sheet:** today's posts, one row each: time, platform, name (click it to open the Composer), status, **COPY**, **OPEN ↗** and **MARK POSTED**. The open posts' buttons are highlighted.
 - **VOICE CHECK · QUEUE:** flags text that breaks the owner's voice rules.
 
 ## CALENDAR
 
-- The week grid shows each post as `HH:MM PLATFORM` plus its name. Skipped posts are struck through.
+- The calendar shows every campaign at once. The week grid shows each post as `HH:MM PLATFORM` plus its name. Skipped posts are struck through.
+- The left edge colour is the platform. A campaign post has its campaign's colour as a tint and its code (`JDL`) as a filled chip. An OTHER post is striped, has a dashed OTHER chip and starts with its project name.
+- **SHOW** (above the grid) turns each campaign and OTHER on or off; any mix works. **ALL** turns them all on. The last one on cannot be turned off. With one on, the chips are hidden. The choice is kept in the URL (`?show=`). It lists campaigns with posts still to go, plus any other campaign with posts in the week on screen.
 - **+ SCHEDULE POST** (top right) opens the schedule form on NEW, set to the week and heat platform on screen.
 - Click a post to open **EDIT SLOT**:
   - DATE (SGT) and TIME (SGT), then **RESCHEDULE**. Its replies move by the same amount.
@@ -88,10 +100,10 @@ For platforms without auto-post, the owner posts by hand: CC copies the text and
 
 ## NEW
 
-- **SCHEDULE POST** (form): PLATFORM, SAVE AS (`Scheduled (reminders on)` or `Draft (no reminders)`), the target field if the platform has one, TITLE, DATE, TIME. **SUGGEST** fills the best open slot. A clash warning appears when the time is too close to another post. Then press **+ SCHEDULE POST** and follow "Write the text in the composer →".
-- **New campaign:** NAME, LINK, STARTS (SGT) and the maker's note, then **CREATE CAMPAIGN**. The new campaign becomes the current one.
+- **SCHEDULE POST** (form): PLATFORM, SAVE AS (`Scheduled (reminders on)` or `Draft (no reminders)`), the target field if the platform has one, TITLE, DATE, TIME. **SUGGEST** fills the best open slot. A clash warning appears when the time is too close to another post in any campaign. Then press **+ SCHEDULE POST** and follow "Write the text in the composer →".
+- **New campaign:** NAME, LINK, STARTS (SGT), CODE, COLOUR and the maker's note, then **CREATE CAMPAIGN**. An empty CODE takes the first three letters of the name; an empty COLOUR takes the least used one. The new campaign becomes the focused one.
 - **Smart campaign:** **START SMART CAMPAIGN →** opens `/campaigns/new` (see "Smart campaign").
-- **Schedule planner:** set MAX POSTS PER DAY and MIN GAP (MINUTES), then press **PLAN SCHEDULE**. It previews CURRENT → PROPOSED times; press **APPLY** to move the posts. Pinned platforms (Product Hunt, YouTube) never move.
+- **Schedule planner:** set MAX POSTS PER DAY and MIN GAP (MINUTES), then press **PLAN SCHEDULE**. It previews CURRENT → PROPOSED times; press **APPLY** to move the posts. Pinned platforms (Product Hunt, YouTube) never move. It plans the focused campaign and keeps clear of every other campaign's and OTHER post's times. SUGGEST does the same.
 
 ## SETTINGS
 
@@ -101,7 +113,7 @@ For platforms without auto-post, the owner posts by hand: CC copies the text and
   - X posting: on or off.
   - Bluesky posting: on or off.
     If a platform shows off, the owner has to add keys in Vercel. An agent cannot fix this.
-- **Current campaign:** edit the name, link, start date (SGT) and notes, then **SAVE CAMPAIGN**.
+- **Focused campaign:** edit the name, link, start date (SGT), code, colour and notes, then **SAVE CAMPAIGN**.
 
 ## COMPOSER
 
@@ -109,7 +121,7 @@ The Composer edits one main post at a time, with its replies and comments under 
 
 The page has three columns:
 
-1. **POSTS** (left): every main post in the campaign in time order, grouped by SGT day. Each row shows the time, the platform, a status (POSTED, AUTO, MANUAL, DRAFT, FAILED, SKIPPED) and the name. Click a row to open it.
+1. **POSTS** (left): every main post in the focused campaign and every OTHER post, in time order, grouped by SGT day. **POSTS FOR**, at the top, holds one code per campaign with posts still to go; click one to switch the focus and its list. Each row shows the time, the platform, a status (POSTED, AUTO, MANUAL, DRAFT, FAILED, SKIPPED) and the name. Click a row to open it.
 2. **The post** (middle): its fields, then its replies as a numbered thread, then the **action bar** pinned to the bottom.
 3. **Checks** (right): tabs for **PRE-FLIGHT**, **VOICE**, **CHATGPT** and, on X and Threads, **TAGS**. The PRE-FLIGHT tab shows how many checks need fixing.
 

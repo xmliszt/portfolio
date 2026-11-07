@@ -1,0 +1,62 @@
+import sortBy from "lodash/sortBy.js";
+
+import type { CampaignRow, PostRow } from "./data/cc-rows";
+
+export type CampaignSummary = {
+  id: string;
+  name: string;
+  code: string;
+  color: string;
+  /** Unskipped top-level posts scheduled after `now`. */
+  upcomingCount: number;
+  nextPost: { platform: string; at: string } | undefined;
+  /** `true` if the campaign has a top-level post scheduled after `now`; `false` when it has none. */
+  isActive: boolean;
+};
+
+/** Return a summary of each of `campaigns` from its `posts` as of `now`, active campaigns first, each group newest `starts_at` first. */
+export function summariseCampaigns(options: {
+  campaigns: readonly CampaignRow[];
+  posts: readonly PostRow[];
+  now: Date;
+}): CampaignSummary[] {
+  const upcoming = sortBy(
+    options.posts.filter(
+      (post) =>
+        (post.kind === "post" || post.kind === "repost") &&
+        post.status === "scheduled" &&
+        post.scheduled_at !== null &&
+        new Date(post.scheduled_at) > options.now
+    ),
+    (post) => post.scheduled_at
+  );
+  const summaries = options.campaigns.map((campaign) => {
+    const campaignPosts = upcoming.filter(
+      (post) => post.campaign_id === campaign.id
+    );
+    const next = campaignPosts.at(0);
+    return {
+      summary: {
+        id: campaign.id,
+        name: campaign.name,
+        code: campaign.code,
+        color: campaign.color,
+        upcomingCount: campaignPosts.length,
+        nextPost:
+          next?.scheduled_at === null || next === undefined
+            ? undefined
+            : { platform: next.platform, at: next.scheduled_at },
+        isActive: campaignPosts.length > 0,
+      },
+      startsAtMs:
+        campaign.starts_at === null
+          ? 0
+          : new Date(campaign.starts_at).getTime(),
+    };
+  });
+  return sortBy(
+    summaries,
+    (entry) => !entry.summary.isActive,
+    (entry) => -entry.startsAtMs
+  ).map((entry) => entry.summary);
+}
