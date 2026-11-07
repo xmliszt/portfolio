@@ -4,6 +4,7 @@ import mapValues from "lodash/mapValues.js";
 
 import { getDefaultWave } from "@/lib/cc/get-default-wave";
 import { getHourHeat } from "@/lib/cc/get-hour-heat";
+import { getOccupiedSlots } from "@/lib/cc/get-occupied-slots";
 import { getPostWindow } from "@/lib/cc/get-post-window";
 import { getSlotScores } from "@/lib/cc/get-slot-scores";
 import { isPlatformId } from "@/lib/cc/is-platform-id";
@@ -55,26 +56,10 @@ export async function loadPlannerInput(options: { campaignId: string }) {
       },
     ];
   });
-  const occupied = [
-    ...posts.filter((post) => post.kind === "repost"),
-    ...allPosts.filter(
-      (post) =>
-        post.campaign_id !== options.campaignId &&
-        (post.kind === "post" || post.kind === "repost")
-    ),
-  ].flatMap((post) =>
-    post.status !== "skipped" &&
-    post.scheduled_at !== null &&
-    isPlatformId(post.platform)
-      ? [
-          {
-            postId: post.id,
-            at: new Date(post.scheduled_at),
-            platformId: post.platform,
-          },
-        ]
-      : []
-  );
+  const occupied = getOccupiedSlots({
+    posts: allPosts,
+    campaignId: options.campaignId,
+  });
   return {
     plan,
     posts,

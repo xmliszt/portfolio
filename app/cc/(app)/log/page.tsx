@@ -139,6 +139,7 @@ export default async function LogPage() {
         aside="Tab to move · Enter saves the row · takes 1.2k, 1,240, 1.2万 · skipped fields stay empty"
       >
         <LogEntryList
+          key={campaign?.id ?? "none"}
           dueRows={dueRows}
           postedPosts={entryPosts.filter((post) => post.status === "posted")}
           emptyNote={emptyNote}

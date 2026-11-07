@@ -1,13 +1,16 @@
 import "server-only";
 
+import { cache } from "react";
+
 import { summariseCampaigns } from "@/lib/cc/summarise-campaigns";
 import { createCcServiceClient } from "@/lib/cc/supabase/create-cc-service-client";
 
 import { listCampaigns } from "./list-campaigns";
 
-/** Return a summary of every campaign as of `now`, active campaigns first. */
-export async function listCampaignSummaries(options: { now: Date }) {
-  const [campaigns, { data: posts, error }] = await Promise.all([
+/** Return a summary of every campaign as of the time of the call, active campaigns first. */
+export const listCampaignSummaries = cache(async () => {
+  const now = new Date();
+  const [campaigns, postsResult] = await Promise.all([
     listCampaigns(),
     createCcServiceClient()
       .from("posts")
@@ -15,12 +18,9 @@ export async function listCampaignSummaries(options: { now: Date }) {
       .not("campaign_id", "is", null)
       .eq("variant", "mine")
       .eq("status", "scheduled")
-      .gt("scheduled_at", options.now.toISOString()),
+      .gt("scheduled_at", now.toISOString()),
   ]);
+  const { data: posts, error } = postsResult;
   if (error) throw error;
-  return summariseCampaigns({
-    campaigns,
-    posts: posts ?? [],
-    now: options.now,
-  });
-}
+  return summariseCampaigns({ campaigns, posts, now });
+});

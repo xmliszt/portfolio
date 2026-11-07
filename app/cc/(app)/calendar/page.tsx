@@ -23,6 +23,7 @@ import { parseCampaignPlan } from "@/lib/cc/parse-campaign-plan";
 import { PLATFORM_IDS, type PlatformId, PLATFORMS } from "@/lib/cc/platforms";
 import { RESEARCHED_WINDOWS } from "@/lib/cc/researched-windows";
 import { sgtToUtc } from "@/lib/cc/sgt-to-utc";
+import { toggleCalendarShow } from "@/lib/cc/toggle-calendar-show";
 
 import { buildScheduleContext } from "./build-schedule-context";
 import {
@@ -63,7 +64,7 @@ export default async function CalendarPage(props: CalendarPageProps) {
   const [focused, campaigns, summaries, allPosts] = await Promise.all([
     getFocusedCampaign(),
     listCampaigns(),
-    listCampaignSummaries({ now }),
+    listCampaignSummaries(),
     listAllPosts({ variant: "mine" }),
   ]);
   if (allPosts.length === 0) {
@@ -123,9 +124,13 @@ export default async function CalendarPage(props: CalendarPageProps) {
     )
   );
   const campaignsById = keyBy(campaigns, (row) => row.id);
+  const showParam = readParam(searchParams.show);
+  const requestedShowIds = new Set(showParam?.split(",") ?? []);
   const showOptions = [
     ...summaries.flatMap((summary): CalendarShowOption[] =>
-      summary.isActive || weekCampaignIds.has(summary.id)
+      summary.isActive ||
+      weekCampaignIds.has(summary.id) ||
+      requestedShowIds.has(summary.id)
         ? [
             {
               kind: "campaign",
@@ -148,7 +153,7 @@ export default async function CalendarPage(props: CalendarPageProps) {
     } satisfies CalendarShowOption,
   ];
   const showIds = parseCalendarShow({
-    value: readParam(searchParams.show),
+    value: showParam,
     optionIds: showOptions.map((option) => option.id),
   });
   const isAllShown = showIds.length === showOptions.length;
@@ -331,11 +336,11 @@ export default async function CalendarPage(props: CalendarPageProps) {
             showOptions.map((option) => [
               option.id,
               buildHref({
-                show: showIds.includes(option.id)
-                  ? showIds.filter((id) => id !== option.id)
-                  : showOptions
-                      .map((entry) => entry.id)
-                      .filter((id) => id === option.id || showIds.includes(id)),
+                show: toggleCalendarShow({
+                  optionIds: showOptions.map((entry) => entry.id),
+                  selectedIds: showIds,
+                  optionId: option.id,
+                }),
               }),
             ])
           ),

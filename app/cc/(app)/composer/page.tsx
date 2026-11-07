@@ -67,7 +67,7 @@ export default async function ComposerPage(props: ComposerPageProps) {
     await Promise.all([
       getFocusedCampaign(),
       listCampaigns(),
-      listCampaignSummaries({ now }),
+      listCampaignSummaries(),
       getRequestedCampaignId(postParam),
     ]);
   const campaign =
@@ -85,12 +85,22 @@ export default async function ComposerPage(props: ComposerPageProps) {
     now,
   });
   const post = selected.post;
+  const campaignSwitcher =
+    campaign === undefined ? undefined : (
+      <ComposerCampaignSwitcher
+        shownId={campaign.id}
+        campaigns={summaries.filter(
+          (summary) => summary.isActive || summary.id === campaign.id
+        )}
+      />
+    );
 
   if (post === undefined || !isPlatformId(post.platform)) {
     return (
       <>
         {header}
-        <Panel title="No drafts">
+        <Panel title="No drafts" bodyClassName="flex flex-col">
+          {campaignSwitcher}
           <p className="text-muted-foreground px-3 py-2.5">
             {campaign === undefined
               ? "There are no posts yet. Schedule one from New."
@@ -140,16 +150,7 @@ export default async function ComposerPage(props: ComposerPageProps) {
       )}
       <Composer
         key={post.id}
-        campaignSwitcher={
-          campaign === undefined ? undefined : (
-            <ComposerCampaignSwitcher
-              shownId={campaign.id}
-              campaigns={summaries.filter(
-                (summary) => summary.isActive || summary.id === campaign.id
-              )}
-            />
-          )
-        }
+        campaignSwitcher={campaignSwitcher}
         campaign={
           post.campaign_id === null || campaign === undefined
             ? { id: undefined, name: post.project ?? "", notes: null }

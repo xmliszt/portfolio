@@ -42,7 +42,7 @@ export function CalendarShowFilter(props: CalendarShowFilterProps) {
       >
         <Link
           href={props.hrefs.all}
-          aria-pressed={isAll}
+          aria-current={isAll ? "true" : undefined}
           className={cn(
             BUTTON_CLASS,
             "bg-card",
@@ -100,7 +100,7 @@ export function CalendarShowFilter(props: CalendarShowFilterProps) {
           return isLastOn ? (
             <span
               key={option.id}
-              aria-pressed
+              aria-current="true"
               aria-disabled
               title="At least one filter stays on"
               className={className}
@@ -111,7 +111,7 @@ export function CalendarShowFilter(props: CalendarShowFilterProps) {
             <Link
               key={option.id}
               href={props.hrefs.toggle[option.id] ?? props.hrefs.all}
-              aria-pressed={isOn}
+              aria-current={isOn ? "true" : undefined}
               className={className}
             >
               {content}

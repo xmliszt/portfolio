@@ -49,7 +49,7 @@ export default async function OverviewPage() {
     listCampaignPosts({ campaignId: campaign.id, variant: "mine" }),
     listCustomPosts({ variant: "mine" }),
     listDueReminders({ now }),
-    listCampaignSummaries({ now }),
+    listCampaignSummaries(),
   ]);
   const timelinePosts = sortBy(
     [...posts, ...customPosts],
@@ -74,7 +74,7 @@ export default async function OverviewPage() {
       ? [
           {
             atIso: post.scheduled_at,
-            label: `${PLATFORMS[post.platform].label} · ${formatSgt({ date: new Date(post.scheduled_at), pattern: "EEE dd MMM HH:mm" })}`,
+            label: `${post.campaign_id === null ? `OTHER · ${post.project ?? ""} · ` : ""}${PLATFORMS[post.platform].label} · ${formatSgt({ date: new Date(post.scheduled_at), pattern: "EEE dd MMM HH:mm" })}`,
           },
         ]
       : []
@@ -102,7 +102,10 @@ export default async function OverviewPage() {
       {
         postId: post.id,
         platformId: post.platform,
-        name: getPostName(post) || PLATFORMS[post.platform].label,
+        name: [
+          ...(post.campaign_id === null ? [post.project ?? ""] : []),
+          getPostName(post) || PLATFORMS[post.platform].label,
+        ].join(" · "),
         flagCount: flags.length,
         labels: uniq(flags.map((flag) => flag.label)),
       },

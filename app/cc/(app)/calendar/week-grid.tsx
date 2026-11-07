@@ -19,7 +19,7 @@ export type GridPost = {
   group:
     | { kind: "campaign"; code: string; color: string }
     | { kind: "other"; project: string };
-  /** `true` if the card shows its campaign code or OTHER chip; `false` when only one SHOW filter is on. */
+  /** `true` if the card shows its code or OTHER chip; `false` when it hides it. */
   isChipShown: boolean;
   childNote: string | undefined;
   href: string;

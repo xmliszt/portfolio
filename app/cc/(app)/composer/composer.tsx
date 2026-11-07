@@ -5,6 +5,7 @@ import isEqual from "lodash/isEqual.js";
 
 import { Panel } from "@/app/cc/_ui/panel";
 import { savePost } from "@/app/cc/(app)/_actions/save-post";
+import { FOCUS_CHANGE_EVENT } from "@/app/cc/(app)/confirm-focus-change";
 import { isInternalNavigation } from "@/app/cc/(app)/is-internal-navigation";
 import { canTakeReplies } from "@/lib/cc/can-take-replies";
 import type { PostRow } from "@/lib/cc/data/cc-rows";
@@ -138,10 +139,17 @@ export function Composer(props: ComposerProps) {
         event.stopPropagation();
       }
     }
+    function handleFocusChange(event: Event) {
+      if (!window.confirm("Leave without saving this draft?")) {
+        event.preventDefault();
+      }
+    }
     window.addEventListener("beforeunload", handleBeforeUnload);
+    window.addEventListener(FOCUS_CHANGE_EVENT, handleFocusChange);
     document.addEventListener("click", handleClick, true);
     return () => {
       window.removeEventListener("beforeunload", handleBeforeUnload);
+      window.removeEventListener(FOCUS_CHANGE_EVENT, handleFocusChange);
       document.removeEventListener("click", handleClick, true);
     };
   }, [isDirty]);

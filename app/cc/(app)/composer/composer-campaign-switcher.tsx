@@ -5,6 +5,7 @@ import { useTransition } from "react";
 import { CampaignCodeChip } from "@/app/cc/_ui/campaign-code-chip";
 import { OtherChip } from "@/app/cc/_ui/other-chip";
 import { focusCampaign } from "@/app/cc/(app)/_actions/focus-campaign";
+import { confirmFocusChange } from "@/app/cc/(app)/confirm-focus-change";
 import { getCampaignColorVar } from "@/lib/cc/get-campaign-color-var";
 import { cn } from "@/lib/utils";
 
@@ -27,7 +28,7 @@ export function ComposerCampaignSwitcher(props: ComposerCampaignSwitcherProps) {
   );
 
   function show(campaignId: string) {
-    if (campaignId === props.shownId) return;
+    if (campaignId === props.shownId || !confirmFocusChange()) return;
     startTransition(() =>
       focusCampaign({ campaignId, redirectTo: "/composer" })
     );

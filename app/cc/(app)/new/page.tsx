@@ -44,6 +44,7 @@ export default async function NewPage(props: NewPageProps) {
       />
       <div className="grid grid-cols-1 gap-x-3 gap-y-3 xl:grid-cols-2">
         <SchedulePostForm
+          key={campaign?.id ?? "none"}
           campaign={
             campaign === undefined
               ? undefined
@@ -89,7 +90,11 @@ export default async function NewPage(props: NewPageProps) {
         </Panel>
         {campaign !== undefined && (
           <div className="flex flex-col xl:col-span-2">
-            <CampaignPlanPanel campaignId={campaign.id} plan={plan} />
+            <CampaignPlanPanel
+              key={campaign.id}
+              campaignId={campaign.id}
+              plan={plan}
+            />
           </div>
         )}
       </div>

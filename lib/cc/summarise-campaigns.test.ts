@@ -57,6 +57,22 @@ test("counts upcoming top-level posts and picks the soonest", () => {
   assert.equal(summary?.isActive, true);
 });
 
+test("counts a campaign with only a scheduled reply left as active", () => {
+  const [summary] = summariseCampaigns({
+    campaigns: [buildCampaignRow({})],
+    posts: [
+      buildPostRow({
+        kind: "reply",
+        scheduled_at: "2026-11-08T02:00:00.000Z",
+      }),
+    ],
+    now: NOW,
+  });
+  assert.equal(summary?.isActive, true);
+  assert.equal(summary?.upcomingCount, 0);
+  assert.equal(summary?.nextPost, undefined);
+});
+
 test("lists active campaigns first, each group newest start first", () => {
   const summaries = summariseCampaigns({
     campaigns: [

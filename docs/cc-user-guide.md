@@ -35,7 +35,7 @@ Several campaigns can run at once. **FOCUS**, at the top of the rail, picks the 
 - Until you pick one, the focus is the campaign with the newest start date. A new campaign is focused when it is created.
 - Opening a post of another campaign in COMPOSER (`/composer?post=<id>`) focuses that campaign.
 
-Posts outside every campaign are **OTHER** posts. They show on every screen whatever the focus, with a dashed OTHER chip, a striped background and their project name.
+Posts outside every campaign are **OTHER** posts. They show on OVERVIEW and in COMPOSER whatever the focus, with a dashed OTHER chip, a striped background and their project name. CALENDAR shows or hides them with SHOW. LOG NUMBERS and INSIGHTS cover the focused campaign only.
 
 ## Concepts
 
@@ -59,20 +59,20 @@ Posts outside every campaign are **OTHER** posts. They show on every screen what
 
 ## Platforms
 
-| Platform     | Auto-post      | Text limit                    | Logged numbers                                                                                      |
-| ------------ | -------------- | ----------------------------- | --------------------------------------------------------------------------------------------------- |
-| X            | Yes            | 280 (links count 23, emoji 2) | impressions, likes, replies, reposts, profile visits                                                |
-| Threads      | Yes            | 500                           | views, likes, replies, shares, reposts, quotes (synced daily)                                       |
-| Bluesky      | Yes            | 300                           | likes, replies, reposts, quotes                                                                     |
-| Instagram    | No, from phone | 2200                          | views, likes, comments, shares, saves, viewers, follows                                             |
-| TikTok       | No, from phone | 2200                          | views, likes, comments, shares, favorites, viewers, new followers                                   |
-| Reddit       | No             | title 300                     | views, upvotes, comments, shares                                                                    |
-| 小红书       | No, from phone | title 20, text 1000           | 观看, 点赞, 收藏, 评论, 分享, 涨粉                                                                  |
-| 视频号       | No, from phone | 1000                          | 播放, 点赞, 评论, 转发, 收藏                                                                        |
-| 朋友圈       | No, from phone | —                             | 点赞, 评论                                                                                          |
-| YouTube      | No             | title 100                     | views, likes, comments, shares, subscribers                                                         |
-| LinkedIn     | No             | 3000                          | impressions, likes as reactions, comments, shares as sends, saves, members reached, reposts         |
-| Product Hunt | No             | tagline 60, text 260          | upvotes, comments, rank                                                                             |
+| Platform     | Auto-post      | Text limit                    | Logged numbers                                                                              |
+| ------------ | -------------- | ----------------------------- | ------------------------------------------------------------------------------------------- |
+| X            | Yes            | 280 (links count 23, emoji 2) | impressions, likes, replies, reposts, profile visits                                        |
+| Threads      | Yes            | 500                           | views, likes, replies, shares, reposts, quotes (synced daily)                               |
+| Bluesky      | Yes            | 300                           | likes, replies, reposts, quotes                                                             |
+| Instagram    | No, from phone | 2200                          | views, likes, comments, shares, saves, viewers, follows                                     |
+| TikTok       | No, from phone | 2200                          | views, likes, comments, shares, favorites, viewers, new followers                           |
+| Reddit       | No             | title 300                     | views, upvotes, comments, shares                                                            |
+| 小红书       | No, from phone | title 20, text 1000           | 观看, 点赞, 收藏, 评论, 分享, 涨粉                                                          |
+| 视频号       | No, from phone | 1000                          | 播放, 点赞, 评论, 转发, 收藏                                                                |
+| 朋友圈       | No, from phone | —                             | 点赞, 评论                                                                                  |
+| YouTube      | No             | title 100                     | views, likes, comments, shares, subscribers                                                 |
+| LinkedIn     | No             | 3000                          | impressions, likes as reactions, comments, shares as sends, saves, members reached, reposts |
+| Product Hunt | No             | tagline 60, text 260          | upvotes, comments, rank                                                                     |
 
 For platforms without auto-post, the owner posts by hand: CC copies the text and opens the platform's composer. Then the post is marked posted with its live link.
 
@@ -81,7 +81,7 @@ For platforms without auto-post, the owner posts by hand: CC copies the text and
 OVERVIEW shows the focused campaign plus OTHER posts. The numbers (posted, views, hashtags) count the focused campaign only.
 
 - **ALSO RUNNING:** each other campaign with posts still to go, with its next post. Click one to focus it.
-- **DUE NOW:** reminders that are due, the same ones Telegram sends. These are posts to publish, replies to answer and numbers to log.
+- **DUE NOW:** due reminders for the focused campaign and OTHER posts: posts to publish, replies to answer and numbers to log. Telegram sends every campaign's reminders.
 - **Run sheet:** today's posts, one row each: time, platform, name (click it to open the Composer), status, **COPY**, **OPEN ↗** and **MARK POSTED**. The open posts' buttons are highlighted.
 - **VOICE CHECK · QUEUE:** flags text that breaks the owner's voice rules.
 

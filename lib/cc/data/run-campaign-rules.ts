@@ -10,6 +10,7 @@ import {
 } from "@/lib/cc/evaluate-campaign-rules";
 import { getPostName } from "@/lib/cc/get-post-name";
 import { isPlatformId } from "@/lib/cc/is-platform-id";
+import { pickRulesCampaignIds } from "@/lib/cc/pick-rules-campaign-ids";
 import { createCcServiceClient } from "@/lib/cc/supabase/create-cc-service-client";
 import { buildRuleMessage } from "@/lib/cc/telegram/build-rule-message";
 import { sendTelegramMessage } from "@/lib/cc/telegram/send-telegram-message";
@@ -209,28 +210,27 @@ async function runRulesForCampaign(options: { campaignId: string; now: Date }) {
   return { actions: results.filter((result) => result !== undefined) };
 }
 
-/** Run `runRulesForCampaign` for every active campaign and the newest one as of `now`, and return every campaign's actions; one failed campaign does not stop the others. */
+/** Run `runRulesForCampaign` at `now` for every active campaign and the newest one, and return every campaign's actions plus a `campaign-failed` entry for each campaign whose rules threw. */
 export async function runCampaignRules(options: { now: Date }) {
   const [summaries, newest] = await Promise.all([
-    listCampaignSummaries({ now: options.now }),
+    listCampaignSummaries(),
     getCurrentCampaign(),
   ]);
-  const campaignIds = new Set([
-    ...summaries
-      .filter((summary) => summary.isActive)
-      .map((summary) => summary.id),
-    ...(newest === undefined ? [] : [newest.id]),
-  ]);
   const results = [];
-  for (const campaignId of campaignIds) {
-    const { actions } = await runRulesForCampaign({
+  for (const campaignId of pickRulesCampaignIds({
+    summaries,
+    newestId: newest?.id,
+  })) {
+    const outcome = await runRulesForCampaign({
       campaignId,
       now: options.now,
     }).catch((error: unknown) => {
       console.error("CC rules failed for campaign", campaignId, error);
-      return { actions: [] };
+      return {
+        actions: [{ kind: "campaign-failed" as const, campaignId }],
+      };
     });
-    results.push(...actions);
+    results.push(...outcome.actions);
   }
   return { actions: results };
 }

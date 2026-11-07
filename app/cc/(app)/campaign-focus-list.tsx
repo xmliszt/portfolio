@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 
 import { CampaignCodeChip } from "@/app/cc/_ui/campaign-code-chip";
 import { focusCampaign } from "@/app/cc/(app)/_actions/focus-campaign";
+import { confirmFocusChange } from "@/app/cc/(app)/confirm-focus-change";
 import { getCampaignColorVar } from "@/lib/cc/get-campaign-color-var";
 import type { CampaignSummary } from "@/lib/cc/summarise-campaigns";
 import { cn } from "@/lib/utils";
@@ -21,7 +22,7 @@ export function CampaignFocusList(props: CampaignFocusListProps) {
   const past = props.campaigns.filter((campaign) => !campaign.isActive);
 
   function focus(campaignId: string) {
-    if (campaignId === props.focusedId) return;
+    if (campaignId === props.focusedId || !confirmFocusChange()) return;
     startTransition(() =>
       focusCampaign({
         campaignId,
