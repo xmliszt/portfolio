@@ -8,6 +8,7 @@ const date = new Date("2026-09-03T08:01:09Z");
 test("formats each pattern in Singapore time", () => {
   assert.equal(formatSgt({ date, pattern: "HH:mm" }), "16:01");
   assert.equal(formatSgt({ date, pattern: "HH:mm:ss" }), "16:01:09");
+  assert.equal(formatSgt({ date, pattern: "EEE HH:mm" }), "Thu 16:01");
   assert.equal(formatSgt({ date, pattern: "EEE dd MMM" }), "Thu 03 Sep");
   assert.equal(
     formatSgt({ date, pattern: "EEE dd MMM HH:mm" }),

@@ -10,12 +10,14 @@ import {
 } from "@/lib/cc/evaluate-campaign-rules";
 import { getPostName } from "@/lib/cc/get-post-name";
 import { isPlatformId } from "@/lib/cc/is-platform-id";
+import { pickRulesCampaignIds } from "@/lib/cc/pick-rules-campaign-ids";
 import { createCcServiceClient } from "@/lib/cc/supabase/create-cc-service-client";
 import { buildRuleMessage } from "@/lib/cc/telegram/build-rule-message";
 import { sendTelegramMessage } from "@/lib/cc/telegram/send-telegram-message";
 
 import type { PostRow } from "./cc-rows";
 import { getCurrentCampaign } from "./get-current-campaign";
+import { listCampaignSummaries } from "./list-campaign-summaries";
 import { listPostMetrics } from "./list-post-metrics";
 import { loadPlannerInput } from "./load-planner-input";
 import { syncPostReminders } from "./sync-post-reminders";
@@ -164,11 +166,9 @@ async function applyRuleAction(options: {
   }
 }
 
-/** Evaluate `CAMPAIGN_RULES` on the current campaign's own posts as of `now`: create each repost the rules schedule (status "scheduled" for a quote-post, a "draft" holding the slot for a re-cut), sync its reminders and announce it on Telegram with a Skip button, and send each suggestion once, recording it as a closed "repost" reminder on the original; one failed action does not stop the others; return what each action did. */
-export async function runCampaignRules(options: { now: Date }) {
-  const campaign = await getCurrentCampaign();
-  if (campaign === undefined) return { actions: [] };
-  const input = await loadPlannerInput({ campaignId: campaign.id });
+/** Evaluate `CAMPAIGN_RULES` on `campaignId`'s own posts as of `now`: create each repost the rules schedule (status "scheduled" for a quote-post, a "draft" holding the slot for a re-cut), sync its reminders and announce it on Telegram with a Skip button, and send each suggestion once, recording it as a closed "repost" reminder on the original; one failed action does not stop the others; return what each action did. */
+async function runRulesForCampaign(options: { campaignId: string; now: Date }) {
+  const input = await loadPlannerInput({ campaignId: options.campaignId });
   const metrics = await listPostMetrics({
     postIds: input.posts.map((post) => post.id),
   });
@@ -208,4 +208,29 @@ export async function runCampaignRules(options: { now: Date }) {
     );
   }
   return { actions: results.filter((result) => result !== undefined) };
+}
+
+/** Run `runRulesForCampaign` at `now` for every active campaign and the newest one, and return every campaign's actions plus a `campaign-failed` entry for each campaign whose rules threw. */
+export async function runCampaignRules(options: { now: Date }) {
+  const [summaries, newest] = await Promise.all([
+    listCampaignSummaries(),
+    getCurrentCampaign(),
+  ]);
+  const results = [];
+  for (const campaignId of pickRulesCampaignIds({
+    summaries,
+    newestId: newest?.id,
+  })) {
+    const outcome = await runRulesForCampaign({
+      campaignId,
+      now: options.now,
+    }).catch((error: unknown) => {
+      console.error("CC rules failed for campaign", campaignId, error);
+      return {
+        actions: [{ kind: "campaign-failed" as const, campaignId }],
+      };
+    });
+    results.push(...outcome.actions);
+  }
+  return { actions: results };
 }

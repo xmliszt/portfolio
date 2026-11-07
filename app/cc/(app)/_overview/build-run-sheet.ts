@@ -96,6 +96,7 @@ export function buildRunSheet(options: { posts: PostRow[]; now: Date }) {
         label:
           getPostName(post) ||
           (post.target === null ? PLATFORMS[platform].label : post.target),
+        project: post.campaign_id === null ? (post.project ?? "") : undefined,
         status,
         copyText,
         open: getOpen({

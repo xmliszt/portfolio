@@ -8,13 +8,16 @@ import {
   type CampaignKind,
   DEFAULT_CAMPAIGN_PLAN,
 } from "@/lib/cc/campaign-plan";
-import { getCurrentCampaign } from "@/lib/cc/data/get-current-campaign";
+import { getFocusedCampaign } from "@/lib/cc/data/get-focused-campaign";
 import { listCampaignPosts } from "@/lib/cc/data/list-campaign-posts";
+import { setFocusCookie } from "@/lib/cc/data/set-focus-cookie";
+import { deriveCampaignCode } from "@/lib/cc/derive-campaign-code";
 import { getLinkHost } from "@/lib/cc/get-link-host";
 import { isPlatformId } from "@/lib/cc/is-platform-id";
 import type { SmartCampaignDraft } from "@/lib/cc/match-smart-campaign-reply";
 import { parseCampaignPlan } from "@/lib/cc/parse-campaign-plan";
 import { parsePostAssets } from "@/lib/cc/parse-post-assets";
+import { pickCampaignColor } from "@/lib/cc/pick-campaign-color";
 import type { PlatformId } from "@/lib/cc/platforms";
 import { sgtToUtc } from "@/lib/cc/sgt-to-utc";
 import { createCcServiceClient } from "@/lib/cc/supabase/create-cc-service-client";
@@ -27,7 +30,7 @@ type KitSource =
   | { kind: "no-link" }
   | { kind: "no-current" };
 
-/** Create a campaign of `kind` starting on `startDate` (SGT) with the default planner settings (an event allows one post per platform a day) plus `kind`, `intent`, `eventDate` and `notBefore`, and `drafts` as its draft posts (replies and comments created a millisecond apart, in plan order), with media from the current campaign's kit when both campaigns link to the same site; return the new campaign's id, how many posts were saved, where media came from, and the refs left without media or without a parent. */
+/** Create a campaign of `kind` starting on `startDate` (SGT) with the default planner settings (an event allows one post per platform a day) plus `kind`, `intent`, `eventDate` and `notBefore`, and `drafts` as its draft posts (replies and comments created a millisecond apart, in plan order), with media from the focused campaign's kit when both campaigns link to the same site, a code from its name and the least used colour, and focus it; return the new campaign's id, how many posts were saved, where media came from, and the refs left without media or without a parent. */
 export async function createSmartCampaign(options: {
   name: string;
   link: string;
@@ -52,7 +55,7 @@ export async function createSmartCampaign(options: {
     throw new Error("A post has an unknown platform");
   }
 
-  const current = await getCurrentCampaign();
+  const current = await getFocusedCampaign();
   const host = getLinkHost(link);
   const kitSource: KitSource =
     current === undefined
@@ -83,10 +86,16 @@ export async function createSmartCampaign(options: {
         );
 
   const supabase = createCcServiceClient();
+  const { data: colorRows, error: colorError } = await supabase
+    .from("campaigns")
+    .select("color");
+  if (colorError) throw colorError;
   const { data: campaign, error } = await supabase
     .from("campaigns")
     .insert({
       name,
+      code: deriveCampaignCode(name),
+      color: pickCampaignColor(colorRows.map((row) => row.color)),
       link: link === "" ? null : link,
       notes: makersNote === "" ? null : makersNote,
       starts_at: sgtToUtc({
@@ -152,6 +161,7 @@ export async function createSmartCampaign(options: {
     throw postsError;
   }
 
+  await setFocusCookie(campaign.id);
   revalidatePath("/cc", "layout");
   return {
     campaignId: campaign.id,

@@ -161,7 +161,7 @@ export function SchedulePostForm(props: SchedulePostFormProps) {
                 )}
               >
                 {option === "custom" ? (
-                  "CUSTOM POST"
+                  "OTHER POST"
                 ) : (
                   <>
                     <span className="shrink-0">CAMPAIGN</span>
@@ -178,7 +178,7 @@ export function SchedulePostForm(props: SchedulePostFormProps) {
           <p className="text-muted-foreground text-[11px]">
             {owner === "campaign"
               ? "Part of the campaign: planner, reminders and insights."
-              : "A one-off post for another project. It shows on the calendar with a CUSTOM badge and gets a Telegram reminder to post; no follow-up reminders or insights."}
+              : "A one-off post for another project. It shows on every screen with an OTHER chip and gets a Telegram reminder to post; no follow-up reminders or insights."}
           </p>
         </div>
         {owner === "custom" && (

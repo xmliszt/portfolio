@@ -2,14 +2,19 @@ import Link from "next/link";
 
 import { PageHeader } from "@/app/cc/_ui/page-header";
 import { Panel } from "@/app/cc/_ui/panel";
+import { SyncCampaignFocus } from "@/app/cc/(app)/sync-campaign-focus";
 import { requireCcOwner } from "@/lib/cc/auth/require-cc-owner";
-import { getCurrentCampaign } from "@/lib/cc/data/get-current-campaign";
+import { getFocusedCampaign } from "@/lib/cc/data/get-focused-campaign";
 import { listCampaignPosts } from "@/lib/cc/data/list-campaign-posts";
+import { listCampaignSummaries } from "@/lib/cc/data/list-campaign-summaries";
+import { listCampaigns } from "@/lib/cc/data/list-campaigns";
 import { listCustomPosts } from "@/lib/cc/data/list-custom-posts";
 import { formatSgt } from "@/lib/cc/format-sgt";
 import { isPlatformId } from "@/lib/cc/is-platform-id";
+import { createCcServiceClient } from "@/lib/cc/supabase/create-cc-service-client";
 
 import { Composer } from "./composer";
+import { ComposerCampaignSwitcher } from "./composer-campaign-switcher";
 import { getComposerPostRows } from "./get-composer-post-rows";
 import { getSelectedPost } from "./get-selected-post";
 import { isComposerTopLevel } from "./is-composer-top-level";
@@ -28,6 +33,19 @@ function getSgtDay(scheduledAt: string | null) {
     : formatSgt({ date: new Date(scheduledAt), pattern: "yyyy-MM-dd" });
 }
 
+async function getRequestedCampaignId(postId: string | undefined) {
+  if (postId === undefined || !/^[0-9a-f-]{36}$/.test(postId)) {
+    return undefined;
+  }
+  const { data, error } = await createCcServiceClient()
+    .from("posts")
+    .select("campaign_id")
+    .eq("id", postId)
+    .maybeSingle();
+  if (error) throw error;
+  return data?.campaign_id ?? undefined;
+}
+
 export default async function ComposerPage(props: ComposerPageProps) {
   await requireCcOwner();
   const searchParams = await props.searchParams;
@@ -44,7 +62,16 @@ export default async function ComposerPage(props: ComposerPageProps) {
     />
   );
 
-  const campaign = await getCurrentCampaign();
+  const now = new Date();
+  const [focused, campaigns, summaries, requestedCampaignId] =
+    await Promise.all([
+      getFocusedCampaign(),
+      listCampaigns(),
+      listCampaignSummaries(),
+      getRequestedCampaignId(postParam),
+    ]);
+  const campaign =
+    campaigns.find((row) => row.id === requestedCampaignId) ?? focused;
   const [campaignPosts, customPosts] = await Promise.all([
     campaign === undefined
       ? []
@@ -55,15 +82,25 @@ export default async function ComposerPage(props: ComposerPageProps) {
   const selected = getSelectedPost({
     posts,
     postId: postParam,
-    now: new Date(),
+    now,
   });
   const post = selected.post;
+  const campaignSwitcher =
+    campaign === undefined ? undefined : (
+      <ComposerCampaignSwitcher
+        shownId={campaign.id}
+        campaigns={summaries.filter(
+          (summary) => summary.isActive || summary.id === campaign.id
+        )}
+      />
+    );
 
   if (post === undefined || !isPlatformId(post.platform)) {
     return (
       <>
         {header}
-        <Panel title="No drafts">
+        <Panel title="No drafts" bodyClassName="flex flex-col">
+          {campaignSwitcher}
           <p className="text-muted-foreground px-3 py-2.5">
             {campaign === undefined
               ? "There are no posts yet. Schedule one from New."
@@ -108,8 +145,12 @@ export default async function ComposerPage(props: ComposerPageProps) {
   return (
     <>
       {header}
+      {campaign !== undefined && campaign.id !== focused?.id && (
+        <SyncCampaignFocus campaignId={campaign.id} />
+      )}
       <Composer
         key={post.id}
+        campaignSwitcher={campaignSwitcher}
         campaign={
           post.campaign_id === null || campaign === undefined
             ? { id: undefined, name: post.project ?? "", notes: null }

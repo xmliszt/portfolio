@@ -5,6 +5,7 @@ import isEqual from "lodash/isEqual.js";
 
 import { Panel } from "@/app/cc/_ui/panel";
 import { savePost } from "@/app/cc/(app)/_actions/save-post";
+import { FOCUS_CHANGE_EVENT } from "@/app/cc/(app)/confirm-focus-change";
 import { isInternalNavigation } from "@/app/cc/(app)/is-internal-navigation";
 import { canTakeReplies } from "@/lib/cc/can-take-replies";
 import type { PostRow } from "@/lib/cc/data/cc-rows";
@@ -40,6 +41,7 @@ type ComposerProps = {
   rows: readonly ComposerPostRow[];
   focusPostId: string | undefined;
   sameDayTargets: readonly string[];
+  campaignSwitcher: React.ReactNode;
 };
 
 export function Composer(props: ComposerProps) {
@@ -137,10 +139,17 @@ export function Composer(props: ComposerProps) {
         event.stopPropagation();
       }
     }
+    function handleFocusChange(event: Event) {
+      if (!window.confirm("Leave without saving this draft?")) {
+        event.preventDefault();
+      }
+    }
     window.addEventListener("beforeunload", handleBeforeUnload);
+    window.addEventListener(FOCUS_CHANGE_EVENT, handleFocusChange);
     document.addEventListener("click", handleClick, true);
     return () => {
       window.removeEventListener("beforeunload", handleBeforeUnload);
+      window.removeEventListener(FOCUS_CHANGE_EVENT, handleFocusChange);
       document.removeEventListener("click", handleClick, true);
     };
   }, [isDirty]);
@@ -167,7 +176,11 @@ export function Composer(props: ComposerProps) {
 
   return (
     <div className="grid grid-cols-1 items-start gap-x-3 gap-y-3 lg:grid-cols-[220px_minmax(0,1fr)] xl:grid-cols-[220px_minmax(0,1fr)_340px]">
-      <ComposerPostList rows={props.rows} selectedPostId={props.post.id} />
+      <ComposerPostList
+        rows={props.rows}
+        selectedPostId={props.post.id}
+        header={props.campaignSwitcher}
+      />
       <Panel
         title={`${props.post.kind === "post" ? "Post" : props.post.kind} · ${platform.label}`}
         aside={

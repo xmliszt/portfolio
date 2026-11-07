@@ -4,6 +4,8 @@ import { useEffect, useRef } from "react";
 import groupBy from "lodash/groupBy.js";
 import Link from "next/link";
 
+import { OtherChip } from "@/app/cc/_ui/other-chip";
+import { OTHER_HATCH_STYLE } from "@/app/cc/_ui/other-hatch";
 import { PlatformChip } from "@/app/cc/_ui/platform-chip";
 import { StatusDot } from "@/app/cc/_ui/status-dot";
 import { cn } from "@/lib/utils";
@@ -13,6 +15,7 @@ import type { ComposerPostRow } from "./composer-post-row";
 type ComposerPostListProps = {
   rows: readonly ComposerPostRow[];
   selectedPostId: string;
+  header: React.ReactNode;
 };
 
 export function ComposerPostList(props: ComposerPostListProps) {
@@ -33,13 +36,16 @@ export function ComposerPostList(props: ComposerPostListProps) {
       aria-label="Posts"
       className="bg-card relative flex max-h-[calc(100dvh-88px)] min-w-0 flex-col overflow-y-auto border lg:sticky lg:top-3"
     >
-      <div className="text-muted-foreground bg-card sticky top-0 z-20 flex h-8 shrink-0 items-center justify-between border-b px-3 text-[10.5px] font-semibold tracking-[0.06em] uppercase">
-        <span>Posts</span>
-        <span className="tabular-nums">{props.rows.length}</span>
+      <div className="bg-card sticky top-0 z-20 flex shrink-0 flex-col">
+        <div className="text-muted-foreground flex h-8 items-center justify-between border-b px-3 text-[10.5px] font-semibold tracking-[0.06em] uppercase">
+          <span>Posts</span>
+          <span className="tabular-nums">{props.rows.length}</span>
+        </div>
+        {props.header}
       </div>
       {days.map(([day, tabs]) => (
         <div key={day} className="flex flex-col">
-          <div className="text-muted-foreground bg-cc-panel-2 sticky top-8 z-10 border-b px-3 py-1 text-[10px] tracking-[0.06em]">
+          <div className="text-muted-foreground bg-cc-panel-2 border-b px-3 py-1 text-[10px] tracking-[0.06em]">
             {day}
           </div>
           {tabs.map((tab) => {
@@ -50,6 +56,11 @@ export function ComposerPostList(props: ComposerPostListProps) {
                 ref={isSelected ? selectedRef : undefined}
                 href={`/composer?post=${tab.postId}`}
                 aria-current={isSelected ? "page" : undefined}
+                style={
+                  tab.project !== undefined && !isSelected
+                    ? OTHER_HATCH_STYLE
+                    : undefined
+                }
                 className={cn(
                   "border-cc-line-soft flex flex-col gap-y-0.5 border-b border-l-2 px-2.5 py-1.5",
                   isSelected
@@ -72,11 +83,7 @@ export function ComposerPostList(props: ComposerPostListProps) {
                     isSelected ? "text-foreground" : "text-cc-text-2"
                   )}
                 >
-                  {tab.project !== undefined && (
-                    <span className="text-cc-text-2 shrink-0 border px-0.5 text-[9px] font-semibold">
-                      CUSTOM
-                    </span>
-                  )}
+                  {tab.project !== undefined && <OtherChip />}
                   <span className="truncate">
                     {tab.project !== undefined && (
                       <span className="text-foreground font-semibold">

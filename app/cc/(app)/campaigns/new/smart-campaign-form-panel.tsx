@@ -230,17 +230,9 @@ export function SmartCampaignFormPanel(props: SmartCampaignFormPanelProps) {
       {form.startDate !== "" &&
         currentStartDate !== undefined &&
         props.current !== undefined && (
-          <p
-            role="status"
-            className={
-              form.startDate < currentStartDate
-                ? "text-cc-warn text-[12px]"
-                : "text-muted-foreground text-[12px]"
-            }
-          >
-            {form.startDate < currentStartDate
-              ? `This starts before ${props.current.name} (${currentStartDate}), so every screen keeps showing ${props.current.name}. Pick a later date to make this one current.`
-              : `Once created, this becomes the campaign every screen shows, in place of ${props.current.name}.`}
+          <p role="status" className="text-muted-foreground text-[12px]">
+            Once created, this becomes the focused campaign in place of{" "}
+            {props.current.name}. Switch back under FOCUS in the left rail.
           </p>
         )}
       <fieldset className="flex flex-col gap-y-2">

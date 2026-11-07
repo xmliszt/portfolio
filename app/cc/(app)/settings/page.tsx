@@ -4,7 +4,7 @@ import { ThemeControl } from "@/app/cc/_ui/theme-control";
 import { CampaignPanel } from "@/app/cc/(app)/new/campaign-panel";
 import { requireCcOwner } from "@/lib/cc/auth/require-cc-owner";
 import { getBlueskyCredentials } from "@/lib/cc/bluesky/get-bluesky-credentials";
-import { getCurrentCampaign } from "@/lib/cc/data/get-current-campaign";
+import { getFocusedCampaign } from "@/lib/cc/data/get-focused-campaign";
 import { getXUserCredentials } from "@/lib/cc/x/get-x-user-credentials";
 
 import { getThreadsStatus } from "./get-threads-status";
@@ -15,7 +15,7 @@ export const metadata = { title: "Settings" };
 export default async function SettingsPage() {
   await requireCcOwner();
   const [campaign, threadsStatus] = await Promise.all([
-    getCurrentCampaign(),
+    getFocusedCampaign(),
     getThreadsStatus(),
   ]);
 

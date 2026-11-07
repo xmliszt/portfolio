@@ -37,7 +37,10 @@ export function buildDueItems(options: {
     if (post === undefined || !isPlatformId(post.platform)) return [];
     const platform = PLATFORMS[post.platform];
     const whenLabel = `${platform.shortLabel} · ${formatSgt({ date: new Date(reminder.fire_at), pattern: "EEE dd MMM HH:mm" }).toUpperCase()}`;
-    const name = getPostName(post);
+    const name =
+      post.campaign_id === null
+        ? `${post.project ?? ""} · ${getPostName(post)}`
+        : getPostName(post);
     switch (reminder.kind) {
       case "post":
         return [

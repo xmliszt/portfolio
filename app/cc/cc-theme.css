@@ -78,6 +78,15 @@
   --cc-platform-youtube: 356 72% 46%;
   --cc-platform-linkedin: 214 70% 40%;
   --cc-platform-bluesky: 208 85% 42%;
+  --cc-campaign-violet: 258 60% 52%;
+  --cc-campaign-gold: 42 90% 40%;
+  --cc-campaign-teal: 168 60% 32%;
+  --cc-campaign-coral: 14 75% 46%;
+  --cc-campaign-orchid: 300 40% 46%;
+  --cc-campaign-lime: 90 50% 32%;
+  --cc-campaign-slate: 214 20% 42%;
+  --cc-campaign-chip-foreground: 0 0% 100%;
+  --cc-campaign-tint: 0.1;
   color-scheme: light;
 }
 
@@ -141,6 +150,18 @@
   --cc-platform-youtube: 352 65% 62%;
   --cc-platform-linkedin: 225 60% 66%;
   --cc-platform-bluesky: 205 85% 64%;
+}
+
+.cc-theme:not([data-theme="light"]) {
+  --cc-campaign-violet: 258 75% 72%;
+  --cc-campaign-gold: 46 88% 60%;
+  --cc-campaign-teal: 168 55% 55%;
+  --cc-campaign-coral: 14 80% 66%;
+  --cc-campaign-orchid: 300 45% 72%;
+  --cc-campaign-lime: 90 50% 58%;
+  --cc-campaign-slate: 210 18% 62%;
+  --cc-campaign-chip-foreground: 220 20% 6%;
+  --cc-campaign-tint: 0.13;
 }
 
 @layer components {
