@@ -589,6 +589,25 @@ export const zhHant = {
       `打開第 ${o.number} 本筆記本，${o.span}，${o.entries}`,
     entryCount: (o: { count: number }) => `${o.count} 則留言`,
   },
+  bookshelf: {
+    loadingLabel: "書櫃，正在查看推薦的書",
+    loadingTooltip: "正在看書櫃…",
+    offlineLabel: "書櫃，暫時離線",
+    offlineTooltip: "書櫃暫時離線",
+    emptyTooltip: "書櫃裡還沒有書",
+    readyLabel: "看看放著客人推薦好書的書櫃",
+    readyTooltip: "客人推薦的書",
+    rows: { loved: "最受喜愛", fresh: "新到的書" },
+    holder: (o: { row: string; page: number; pageCount: number }) =>
+      `${o.row} · ${o.page}/${o.pageCount}`,
+    previousPage: (o: { row: string }) => `${o.row}的上一頁`,
+    nextPage: (o: { row: string }) => `${o.row}的下一頁`,
+    bookLabel: (o: { title: string; authors: string; loves: string }) =>
+      `${o.title}，${o.authors}，${o.loves}`,
+    loves: (o: { count: number }) => `${o.count} 顆心`,
+    bookTooltip: (o: { title: string; authors: string }) =>
+      `${o.title} · ${o.authors}`,
+  },
   notebook: {
     objectLabel: "打開筆記本",
     objectTooltip: "陌生人的留言",

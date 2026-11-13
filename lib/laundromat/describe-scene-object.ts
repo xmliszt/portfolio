@@ -36,6 +36,11 @@ export function describeSceneObject(options: {
         label: copy.shelf.loadingLabel,
         tooltip: copy.shelf.loadingTooltip,
       };
+    case "bookshelf":
+      return {
+        label: copy.bookshelf.loadingLabel,
+        tooltip: copy.bookshelf.loadingTooltip,
+      };
     case "notebook":
       return {
         label: copy.notebook.objectLabel,
@@ -137,7 +142,6 @@ export function describeSceneObject(options: {
     case "pumpkin":
       return { label: copy.decorations[object.kind].label, tooltip: undefined };
     case "cobweb":
-    case "counter":
     case "window":
     case "clock":
     case "table":

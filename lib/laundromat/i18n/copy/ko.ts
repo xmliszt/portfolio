@@ -614,6 +614,25 @@ export const ko = {
       `노트 제${o.number}권 열기, ${o.span}, ${o.entries}`,
     entryCount: (o: { count: number }) => `메모 ${o.count}개`,
   },
+  bookshelf: {
+    loadingLabel: "책장, 추천 책을 확인하는 중",
+    loadingTooltip: "책장 확인 중…",
+    offlineLabel: "책장, 지금은 오프라인",
+    offlineTooltip: "책장이 지금은 오프라인이야",
+    emptyTooltip: "책장에 아직 책이 없어",
+    readyLabel: "손님들이 추천한 책이 꽂힌 책장 보기",
+    readyTooltip: "손님들이 추천한 책",
+    rows: { loved: "가장 사랑받는", fresh: "새로 들어온" },
+    holder: (o: { row: string; page: number; pageCount: number }) =>
+      `${o.row} · ${o.page}/${o.pageCount}`,
+    previousPage: (o: { row: string }) => `${o.row} 이전 페이지`,
+    nextPage: (o: { row: string }) => `${o.row} 다음 페이지`,
+    bookLabel: (o: { title: string; authors: string; loves: string }) =>
+      `${o.title}, ${o.authors}, ${o.loves}`,
+    loves: (o: { count: number }) => `하트 ${o.count}개`,
+    bookTooltip: (o: { title: string; authors: string }) =>
+      `${o.title} · ${o.authors}`,
+  },
   notebook: {
     objectLabel: "노트 열기",
     objectTooltip: "낯선 사람들의 메모",

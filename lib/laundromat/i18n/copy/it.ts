@@ -640,6 +640,26 @@ export const it = {
     entryCount: (o: { count: number }) =>
       `${o.count} ${o.count === 1 ? "biglietto" : "biglietti"}`,
   },
+  bookshelf: {
+    loadingLabel: "Libreria, cerca libri consigliati",
+    loadingTooltip: "guardo la libreria…",
+    offlineLabel: "Libreria, offline al momento",
+    offlineTooltip: "la libreria è offline al momento",
+    emptyTooltip: "ancora nessun libro nella libreria",
+    readyLabel: "Guarda la libreria dei libri consigliati dai visitatori",
+    readyTooltip: "libri consigliati dai visitatori",
+    rows: { loved: "i più amati", fresh: "nuovi arrivi" },
+    holder: (o: { row: string; page: number; pageCount: number }) =>
+      `${o.row} · ${o.page}/${o.pageCount}`,
+    previousPage: (o: { row: string }) => `Pagina precedente di ${o.row}`,
+    nextPage: (o: { row: string }) => `Pagina successiva di ${o.row}`,
+    bookLabel: (o: { title: string; authors: string; loves: string }) =>
+      `${o.title}, di ${o.authors}, ${o.loves}`,
+    loves: (o: { count: number }) =>
+      o.count === 1 ? "1 cuore" : `${o.count} cuori`,
+    bookTooltip: (o: { title: string; authors: string }) =>
+      `${o.title} · ${o.authors}`,
+  },
   notebook: {
     objectLabel: "Apri il quaderno",
     objectTooltip: "biglietti di sconosciuti",

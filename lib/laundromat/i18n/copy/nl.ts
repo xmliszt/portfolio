@@ -599,6 +599,26 @@ export const nl = {
     entryCount: (o) =>
       `${o.count} ${o.count === 1 ? "berichtje" : "berichtjes"}`,
   },
+  bookshelf: {
+    loadingLabel: "Boekenkast, zoekt naar boekentips",
+    loadingTooltip: "ik kijk in de boekenkast…",
+    offlineLabel: "Boekenkast, even offline",
+    offlineTooltip: "de boekenkast is even offline",
+    emptyTooltip: "nog geen boeken in de boekenkast",
+    readyLabel: "Bekijk de boekenkast met boeken die bezoekers aanraden",
+    readyTooltip: "boeken die bezoekers aanraden",
+    rows: { loved: "meest geliefd", fresh: "net binnen" },
+    holder: (o: { row: string; page: number; pageCount: number }) =>
+      `${o.row} · ${o.page}/${o.pageCount}`,
+    previousPage: (o: { row: string }) => `Vorige pagina van ${o.row}`,
+    nextPage: (o: { row: string }) => `Volgende pagina van ${o.row}`,
+    bookLabel: (o: { title: string; authors: string; loves: string }) =>
+      `${o.title}, door ${o.authors}, ${o.loves}`,
+    loves: (o: { count: number }) =>
+      o.count === 1 ? "1 hartje" : `${o.count} hartjes`,
+    bookTooltip: (o: { title: string; authors: string }) =>
+      `${o.title} · ${o.authors}`,
+  },
   notebook: {
     objectLabel: "Open het notitieboek",
     objectTooltip: "berichtjes van vreemden",

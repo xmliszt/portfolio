@@ -15,6 +15,7 @@ test("gives every machine, every focus target, the mat, the mug, the plant, the 
     "air-purifier",
     "basket",
     "board",
+    "bookshelf",
     "coffee-machine",
     "coin-machine",
     "dryer-1",

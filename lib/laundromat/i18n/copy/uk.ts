@@ -611,6 +611,31 @@ export const uk = {
     entryCount: (o) =>
       `${o.count} ${pluralize({ count: o.count, one: "запис", few: "записи", many: "записів" })}`,
   },
+  bookshelf: {
+    loadingLabel: "Книжкова шафа, шукає рекомендовані книжки",
+    loadingTooltip: "зазираю в книжкову шафу…",
+    offlineLabel: "Книжкова шафа, зараз не в мережі",
+    offlineTooltip: "книжкова шафа зараз не в мережі",
+    emptyTooltip: "у шафі ще немає книжок",
+    readyLabel: "Подивитися книжкову шафу з книжками, які радять гості",
+    readyTooltip: "книжки, які радять гості",
+    rows: { loved: "найулюбленіші", fresh: "нові надходження" },
+    holder: (o: { row: string; page: number; pageCount: number }) =>
+      `${o.row} · ${o.page}/${o.pageCount}`,
+    previousPage: (o: { row: string }) => `Попередня сторінка: ${o.row}`,
+    nextPage: (o: { row: string }) => `Наступна сторінка: ${o.row}`,
+    bookLabel: (o: { title: string; authors: string; loves: string }) =>
+      `${o.title}, ${o.authors}, ${o.loves}`,
+    loves: (o: { count: number }) =>
+      o.count % 10 === 1 && o.count % 100 !== 11
+        ? `${o.count} сердечко`
+        : [2, 3, 4].includes(o.count % 10) &&
+            ![12, 13, 14].includes(o.count % 100)
+          ? `${o.count} сердечка`
+          : `${o.count} сердечок`,
+    bookTooltip: (o: { title: string; authors: string }) =>
+      `${o.title} · ${o.authors}`,
+  },
   notebook: {
     objectLabel: "Відкрити блокнот",
     objectTooltip: "записки від незнайомців",

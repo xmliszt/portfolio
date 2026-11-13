@@ -4,7 +4,9 @@ import type {
   LaidOutObject,
   SceneLayout,
 } from "@/lib/laundromat/build-scene-layout";
+import { doBoundsOverlap } from "@/lib/laundromat/do-bounds-overlap";
 import { getDaylitTokenStyle } from "@/lib/laundromat/get-daylit-token-style";
+import { getObjectsRestingOn } from "@/lib/laundromat/get-objects-resting-on";
 import { getTimeOfDay } from "@/lib/laundromat/get-time-of-day";
 import { getWindowLights } from "@/lib/laundromat/get-window-lights";
 import { isFootprintInFront } from "@/lib/laundromat/is-footprint-in-front";
@@ -101,6 +103,19 @@ export function RoomDrawing(props: RoomDrawingProps) {
   const focused = layout.objects.find(
     ({ object }) => object.id === props.focusedObjectId
   );
+  const blockingIds = new Set(
+    focused === undefined
+      ? []
+      : stationaryObjects
+          .filter(
+            (laidOut) =>
+              isFootprintInFront({
+                front: laidOut.object,
+                back: focused.object,
+              }) && doBoundsOverlap(laidOut.bounds, focused.bounds)
+          )
+          .map(({ object }) => object.id)
+  );
   return (
     <svg
       aria-hidden
@@ -163,8 +178,13 @@ export function RoomDrawing(props: RoomDrawingProps) {
                 {...objectProps}
               />
             ))}
-          <SceneObjectDrawing laidOut={laidOut} {...objectProps} />
-          {renderFaceLight(laidOut)}
+          <g
+            className="transition-opacity duration-500"
+            opacity={blockingIds.has(laidOut.object.id) ? 0 : 1}
+          >
+            <SceneObjectDrawing laidOut={laidOut} {...objectProps} />
+            {renderFaceLight(laidOut)}
+          </g>
         </Fragment>
       ))}
       {movingObjects
@@ -211,6 +231,23 @@ export function RoomDrawing(props: RoomDrawingProps) {
         <>
           <SceneObjectDrawing laidOut={focused} {...objectProps} />
           {renderFaceLight(focused)}
+          {getObjectsRestingOn({
+            base: focused.object,
+            objects: stationaryObjects.map(({ object }) => object),
+          }).map((object) => {
+            const laidOut = stationaryObjects.find(
+              (candidate) => candidate.object === object
+            );
+            return (
+              laidOut !== undefined && (
+                <SceneObjectDrawing
+                  key={object.id}
+                  laidOut={laidOut}
+                  {...objectProps}
+                />
+              )
+            );
+          })}
         </>
       )}
     </svg>

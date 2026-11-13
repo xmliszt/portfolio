@@ -631,6 +631,25 @@ export const hi = {
       `नोटबुक नं. ${o.number} खोलो, ${o.span}, ${o.entries}`,
     entryCount: (o: { count: number }) => `${o.count} नोट`,
   },
+  bookshelf: {
+    loadingLabel: "किताबों की अलमारी, किताबों की सिफ़ारिशें देख रहे हैं",
+    loadingTooltip: "अलमारी देख रहे हैं…",
+    offlineLabel: "किताबों की अलमारी, अभी ऑफ़लाइन है",
+    offlineTooltip: "किताबों की अलमारी अभी ऑफ़लाइन है",
+    emptyTooltip: "अलमारी में अभी कोई किताब नहीं",
+    readyLabel: "मेहमानों की सुझाई किताबों की अलमारी देखें",
+    readyTooltip: "मेहमानों की सुझाई किताबें",
+    rows: { loved: "सबसे पसंदीदा", fresh: "नई आई किताबें" },
+    holder: (o: { row: string; page: number; pageCount: number }) =>
+      `${o.row} · ${o.page}/${o.pageCount}`,
+    previousPage: (o: { row: string }) => `${o.row} का पिछला पन्ना`,
+    nextPage: (o: { row: string }) => `${o.row} का अगला पन्ना`,
+    bookLabel: (o: { title: string; authors: string; loves: string }) =>
+      `${o.title}, ${o.authors}, ${o.loves}`,
+    loves: (o: { count: number }) => `${o.count} दिल`,
+    bookTooltip: (o: { title: string; authors: string }) =>
+      `${o.title} · ${o.authors}`,
+  },
   notebook: {
     objectLabel: "नोटबुक खोलो",
     objectTooltip: "अजनबियों के नोट",

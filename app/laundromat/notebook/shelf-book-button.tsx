@@ -7,6 +7,7 @@ type ShelfBookButtonProps = {
   outline: ScreenPoint[];
   bounds: ScreenBounds;
   label: string;
+  disabled?: boolean;
   onActivate: () => void;
   onPointerShowTooltip: () => void;
   onKeyboardShowTooltip: () => void;
@@ -35,7 +36,8 @@ export function ShelfBookButton(props: ShelfBookButtonProps) {
         height: bounds.height,
         clipPath: toClipPath({ outline: props.outline, bounds }),
       }}
-      onClick={props.onActivate}
+      aria-disabled={props.disabled}
+      onClick={props.disabled === true ? undefined : props.onActivate}
       onPointerEnter={props.onPointerShowTooltip}
       onPointerLeave={props.onHideTooltip}
       onFocus={handleFocus}

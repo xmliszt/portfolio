@@ -642,6 +642,27 @@ export const fr = {
     entryCount: (o: { count: number }) =>
       `${o.count} ${o.count === 1 ? "mot" : "mots"}`,
   },
+  bookshelf: {
+    loadingLabel: "Bibliothèque, cherche des livres recommandés",
+    loadingTooltip: "je regarde la bibliothèque…",
+    offlineLabel: "Bibliothèque, hors ligne pour le moment",
+    offlineTooltip: "la bibliothèque est hors ligne pour le moment",
+    emptyTooltip: "pas encore de livres dans la bibliothèque",
+    readyLabel:
+      "Regarder la bibliothèque des livres recommandés par les visiteurs",
+    readyTooltip: "les livres que les visiteurs recommandent",
+    rows: { loved: "les plus aimés", fresh: "nouveautés" },
+    holder: (o: { row: string; page: number; pageCount: number }) =>
+      `${o.row} · ${o.page}/${o.pageCount}`,
+    previousPage: (o: { row: string }) => `Page précédente de ${o.row}`,
+    nextPage: (o: { row: string }) => `Page suivante de ${o.row}`,
+    bookLabel: (o: { title: string; authors: string; loves: string }) =>
+      `${o.title}, de ${o.authors}, ${o.loves}`,
+    loves: (o: { count: number }) =>
+      o.count <= 1 ? `${o.count} cœur` : `${o.count} cœurs`,
+    bookTooltip: (o: { title: string; authors: string }) =>
+      `${o.title} · ${o.authors}`,
+  },
   notebook: {
     objectLabel: "Ouvrir le carnet",
     objectTooltip: "des mots d'inconnus",

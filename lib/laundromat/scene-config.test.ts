@@ -31,6 +31,7 @@ test("points each camera focus target at an existing object", () => {
   const ids = new Set(sceneConfig.objects.map((object) => object.id));
   assert.deepEqual(sceneConfig.camera.focusTargets, {
     shelf: { objectId: "shelf" },
+    bookshelf: { objectId: "bookshelf", minUnitPx: 185 },
     notebook: { objectId: "notebook" },
     board: { objectId: "board" },
     weather: { objectId: "weather-panel" },

@@ -632,6 +632,25 @@ export const id = {
       `Buka buku catatan No. ${o.number}, ${o.span}, ${o.entries}`,
     entryCount: (o: { count: number }) => `${o.count} catatan`,
   },
+  bookshelf: {
+    loadingLabel: "Rak buku, mencari rekomendasi buku",
+    loadingTooltip: "melihat rak buku…",
+    offlineLabel: "Rak buku, sedang offline",
+    offlineTooltip: "rak buku sedang offline",
+    emptyTooltip: "belum ada buku di rak",
+    readyLabel: "Lihat rak buku rekomendasi para pengunjung",
+    readyTooltip: "buku rekomendasi pengunjung",
+    rows: { loved: "paling disukai", fresh: "baru datang" },
+    holder: (o: { row: string; page: number; pageCount: number }) =>
+      `${o.row} · ${o.page}/${o.pageCount}`,
+    previousPage: (o: { row: string }) => `Halaman sebelumnya dari ${o.row}`,
+    nextPage: (o: { row: string }) => `Halaman berikutnya dari ${o.row}`,
+    bookLabel: (o: { title: string; authors: string; loves: string }) =>
+      `${o.title}, oleh ${o.authors}, ${o.loves}`,
+    loves: (o: { count: number }) => `${o.count} hati`,
+    bookTooltip: (o: { title: string; authors: string }) =>
+      `${o.title} · ${o.authors}`,
+  },
   notebook: {
     objectLabel: "Buka buku catatan",
     objectTooltip: "catatan dari orang asing",

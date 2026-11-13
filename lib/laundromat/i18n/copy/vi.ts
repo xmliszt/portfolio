@@ -619,6 +619,25 @@ export const vi = {
       `Mở sổ số ${o.number}, ${o.span}, ${o.entries}`,
     entryCount: (o: { count: number }) => `${o.count} lời nhắn`,
   },
+  bookshelf: {
+    loadingLabel: "Tủ sách, đang xem sách được giới thiệu",
+    loadingTooltip: "đang xem tủ sách…",
+    offlineLabel: "Tủ sách, đang ngoại tuyến",
+    offlineTooltip: "tủ sách đang ngoại tuyến",
+    emptyTooltip: "tủ sách chưa có cuốn nào",
+    readyLabel: "Xem tủ sách gồm những cuốn khách giới thiệu",
+    readyTooltip: "sách khách giới thiệu",
+    rows: { loved: "được yêu thích nhất", fresh: "mới về" },
+    holder: (o: { row: string; page: number; pageCount: number }) =>
+      `${o.row} · ${o.page}/${o.pageCount}`,
+    previousPage: (o: { row: string }) => `Trang trước của ${o.row}`,
+    nextPage: (o: { row: string }) => `Trang sau của ${o.row}`,
+    bookLabel: (o: { title: string; authors: string; loves: string }) =>
+      `${o.title}, ${o.authors}, ${o.loves}`,
+    loves: (o: { count: number }) => `${o.count} trái tim`,
+    bookTooltip: (o: { title: string; authors: string }) =>
+      `${o.title} · ${o.authors}`,
+  },
   notebook: {
     objectLabel: "Mở cuốn sổ",
     objectTooltip: "lời nhắn từ người lạ",

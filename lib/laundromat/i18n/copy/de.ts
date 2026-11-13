@@ -639,6 +639,26 @@ export const de = {
     entryCount: (o: { count: number }) =>
       `${o.count} ${o.count === 1 ? "Eintrag" : "Einträge"}`,
   },
+  bookshelf: {
+    loadingLabel: "Bücherregal, sucht nach Buchempfehlungen",
+    loadingTooltip: "schaue ins Bücherregal…",
+    offlineLabel: "Bücherregal, gerade offline",
+    offlineTooltip: "das Bücherregal ist gerade offline",
+    emptyTooltip: "noch keine Bücher im Bücherregal",
+    readyLabel: "Das Bücherregal mit Buchempfehlungen von Gästen ansehen",
+    readyTooltip: "Bücher, die Gäste empfehlen",
+    rows: { loved: "am beliebtesten", fresh: "neu eingetroffen" },
+    holder: (o: { row: string; page: number; pageCount: number }) =>
+      `${o.row} · ${o.page}/${o.pageCount}`,
+    previousPage: (o: { row: string }) => `Vorherige Seite von ${o.row}`,
+    nextPage: (o: { row: string }) => `Nächste Seite von ${o.row}`,
+    bookLabel: (o: { title: string; authors: string; loves: string }) =>
+      `${o.title}, von ${o.authors}, ${o.loves}`,
+    loves: (o: { count: number }) =>
+      o.count === 1 ? "1 Herz" : `${o.count} Herzen`,
+    bookTooltip: (o: { title: string; authors: string }) =>
+      `${o.title} · ${o.authors}`,
+  },
   notebook: {
     objectLabel: "Das Notizbuch öffnen",
     objectTooltip: "Notizen von Fremden",

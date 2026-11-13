@@ -25,9 +25,9 @@ export function isInteractiveSceneObject(object: SceneObject) {
     case "ghost":
     case "skeleton":
     case "pumpkin":
+    case "bookshelf":
       return true;
     case "cobweb":
-    case "counter":
     case "window":
     case "clock":
     case "table":
