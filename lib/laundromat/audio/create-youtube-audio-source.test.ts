@@ -8,11 +8,17 @@ import type {
 } from "./create-youtube-audio-source";
 import { createYouTubeAudioSource } from "./create-youtube-audio-source";
 
+function describeVideo(video: { videoId: string; startSeconds?: number }) {
+  return video.startSeconds === undefined
+    ? video.videoId
+    : `${video.videoId} at ${video.startSeconds}`;
+}
+
 function buildFakePlayer() {
   const calls: string[] = [];
   const player: YouTubePlayer = {
-    loadVideoById: (videoId) => calls.push(`load ${videoId}`),
-    cueVideoById: (videoId) => calls.push(`cue ${videoId}`),
+    loadVideoById: (video) => calls.push(`load ${describeVideo(video)}`),
+    cueVideoById: (video) => calls.push(`cue ${describeVideo(video)}`),
     playVideo: () => calls.push("play"),
     pauseVideo: () => calls.push("pause"),
     setVolume: (percent) => calls.push(`volume ${percent}`),
@@ -21,7 +27,7 @@ function buildFakePlayer() {
   return { player, calls };
 }
 
-function buildSource() {
+function buildSource(options: { randoms: number[] } = { randoms: [] }) {
   const { player, calls } = buildFakePlayer();
   const timers: {
     callback: () => void;
@@ -38,6 +44,7 @@ function buildSource() {
   };
   const source = createYouTubeAudioSource({
     stallMs: 8000,
+    random: () => options.randoms.shift() ?? 0,
     createPlayer: (events) => {
       captured.events = events;
       return () => {
@@ -77,7 +84,7 @@ function buildSource() {
 test("replays station, volume and play sent before the player is ready", () => {
   const { source, player, calls, events } = buildSource();
   source.setVolume(40);
-  source.setStation("abc");
+  source.setStation({ videoId: "abc" });
   source.play();
   assert.deepEqual(calls, []);
   events().onReady(player);
@@ -86,7 +93,7 @@ test("replays station, volume and play sent before the player is ready", () => {
 
 test("buffers and starts the stall timer before the player is ready", () => {
   const { source, states, timers } = buildSource();
-  source.setStation("abc");
+  source.setStation({ videoId: "abc" });
   source.play();
   assert.deepEqual(states, ["buffering"]);
   assert.equal(timers.filter((timer) => !timer.cancelled).length, 1);
@@ -94,7 +101,7 @@ test("buffers and starts the stall timer before the player is ready", () => {
 
 test("reports an error when the player never becomes ready", () => {
   const { source, states, fireStall } = buildSource();
-  source.setStation("abc");
+  source.setStation({ videoId: "abc" });
   source.play();
   fireStall();
   assert.deepEqual(states, ["buffering", "error"]);
@@ -102,7 +109,7 @@ test("reports an error when the player never becomes ready", () => {
 
 test("keeps one stall timer from play through the player becoming ready", () => {
   const { source, player, timers, events } = buildSource();
-  source.setStation("abc");
+  source.setStation({ videoId: "abc" });
   source.play();
   events().onReady(player);
   assert.equal(timers.filter((timer) => !timer.cancelled).length, 1);
@@ -110,9 +117,9 @@ test("keeps one stall timer from play through the player becoming ready", () => 
 
 test("restarts the stall timer when the station changes before the player is ready", () => {
   const { source, states, timers } = buildSource();
-  source.setStation("abc");
+  source.setStation({ videoId: "abc" });
   source.play();
-  source.setStation("def");
+  source.setStation({ videoId: "def" });
   assert.deepEqual(states, ["buffering"]);
   assert.equal(timers.filter((timer) => !timer.cancelled).length, 1);
 });
@@ -120,24 +127,24 @@ test("restarts the stall timer when the station changes before the player is rea
 test("cues the station without playing it while paused", () => {
   const { source, player, calls, events } = buildSource();
   events().onReady(player);
-  source.setStation("abc");
+  source.setStation({ videoId: "abc" });
   assert.deepEqual(calls, ["volume 100", "cue abc"]);
 });
 
 test("loads a new station while playing and ignores the same station twice", () => {
   const { source, player, calls, events } = buildSource();
   events().onReady(player);
-  source.setStation("abc");
+  source.setStation({ videoId: "abc" });
   source.play();
-  source.setStation("def");
-  source.setStation("def");
+  source.setStation({ videoId: "def" });
+  source.setStation({ videoId: "def" });
   assert.deepEqual(calls, ["volume 100", "cue abc", "play", "load def"]);
 });
 
 test("maps YouTube player states to audio states", () => {
   const { source, player, states, events } = buildSource();
   events().onReady(player);
-  source.setStation("abc");
+  source.setStation({ videoId: "abc" });
   source.play();
   events().onStateChange(3);
   events().onStateChange(1);
@@ -148,17 +155,46 @@ test("maps YouTube player states to audio states", () => {
 test("reports an error when a live stream ends", () => {
   const { source, player, states, events } = buildSource();
   events().onReady(player);
-  source.setStation("abc");
+  source.setStation({ videoId: "abc" });
   source.play();
   events().onStateChange(1);
   events().onStateChange(0);
   assert.equal(states.at(-1), "error");
 });
 
+test("starts a recorded video at a random time and picks a new time when it ends", () => {
+  const { source, player, calls, states, events } = buildSource({
+    randoms: [0.5, 0.25],
+  });
+  events().onReady(player);
+  source.setStation({ videoId: "abc", lengthSeconds: 1000 });
+  source.play();
+  events().onStateChange(1);
+  events().onStateChange(0);
+  assert.deepEqual(calls, [
+    "volume 100",
+    "cue abc at 500",
+    "play",
+    "load abc at 250",
+  ]);
+  assert.equal(states.includes("error"), false);
+});
+
+test("cues a new random time when a recorded video ends while paused", () => {
+  const { source, player, calls, states, events } = buildSource({
+    randoms: [0.5, 0.25],
+  });
+  events().onReady(player);
+  source.setStation({ videoId: "abc", lengthSeconds: 1000 });
+  events().onStateChange(0);
+  assert.deepEqual(calls, ["volume 100", "cue abc at 500", "cue abc at 250"]);
+  assert.deepEqual(states, []);
+});
+
 test("reports an error once when buffering outlasts the stall time", () => {
   const { source, player, states, timers, events, fireStall } = buildSource();
   events().onReady(player);
-  source.setStation("abc");
+  source.setStation({ videoId: "abc" });
   source.play();
   events().onStateChange(3);
   assert.equal(timers.filter((timer) => !timer.cancelled).length, 1);
@@ -170,7 +206,7 @@ test("reports an error once when buffering outlasts the stall time", () => {
 test("cancels the stall timer once the stream plays", () => {
   const { source, player, states, events, fireStall } = buildSource();
   events().onReady(player);
-  source.setStation("abc");
+  source.setStation({ videoId: "abc" });
   source.play();
   events().onStateChange(1);
   fireStall();

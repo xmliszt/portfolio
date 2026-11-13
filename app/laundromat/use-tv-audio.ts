@@ -21,7 +21,9 @@ export function useTvAudio(options: {
   const failedStreakRef = useRef(0);
   const onSkipStationRef = useRef(onSkipStation);
   const [audioState, setAudioState] = useState<AudioState>("idle");
-  const videoId = details.stations[tv.station]?.videoId;
+  const station = details.stations[tv.station];
+  const videoId = station?.videoId;
+  const lengthSeconds = station?.lengthSeconds;
   const stallMs = details.stallSeconds * 1000;
 
   useEffect(() => {
@@ -53,9 +55,17 @@ export function useTvAudio(options: {
       sourceRef.current = source;
     }
     source.setVolume(tv.volumePercent);
-    source.setStation(videoId);
+    source.setStation({ videoId, lengthSeconds });
     source.play();
-  }, [container, tv.on, tv.volumePercent, muted, videoId, stallMs]);
+  }, [
+    container,
+    tv.on,
+    tv.volumePercent,
+    muted,
+    videoId,
+    lengthSeconds,
+    stallMs,
+  ]);
 
   const isNoSignal = tv.on && audioState === "error";
   const stationCount = details.stations.length;
