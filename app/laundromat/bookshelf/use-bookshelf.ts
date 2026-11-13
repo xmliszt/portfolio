@@ -14,7 +14,11 @@ export function useBookshelf() {
   const [bookshelf, setBookshelf] = useState<BookshelfResult>();
 
   const refresh = useCallback(async () => {
-    setBookshelf(await loadOrOffline());
+    const next = await loadOrOffline();
+    setBookshelf((current) =>
+      next.kind === "offline" && current?.kind === "online" ? current : next
+    );
+    return next;
   }, []);
 
   useEffect(() => {

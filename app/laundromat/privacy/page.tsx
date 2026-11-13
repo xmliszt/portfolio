@@ -55,7 +55,8 @@ export default function LaundromatPrivacyPage() {
           <li>
             <code>laundromat_visitor</code> is set the first time you open the
             site. It holds a random id signed by the server, used to count your
-            visits, limit how often one visitor writes in the notebook and count
+            visits, limit how often one visitor writes in the notebook or
+            recommends a book, give each visitor one heart per book and count
             each report once. Scripts on the page cannot read it. It lasts one
             year.
           </li>
@@ -136,6 +137,28 @@ export default function LaundromatPrivacyPage() {
           Entries are kept as long as the notebook is. To have your entry
           removed, email me with the notebook number, the page and roughly when
           you wrote it.
+        </p>
+      </LegalSection>
+
+      <LegalSection heading="the bookshelf">
+        <p>
+          Book recommendations are public. When you recommend a book, the site
+          stores the book&apos;s title, author and catalogue reference, your
+          note and your sign-off in its Supabase database, with the time and
+          which visitor id recommended it. Hearts are stored with your visitor
+          id, so each visitor gives one heart per book. Visitor ids are never
+          shown to others.
+        </p>
+        <p>
+          When you search for a book, the site&apos;s server sends what you
+          typed to Open Library and Google Books. Your IP address is not sent to
+          them, and book covers are loaded through the site&apos;s server too.
+        </p>
+        <p>
+          When you report a note, the site stores which note, your visitor id
+          and the reason you give, if any. Reported notes may be hidden. To have
+          your note removed, email me with the book and roughly when you
+          recommended it.
         </p>
       </LegalSection>
 
@@ -234,7 +257,13 @@ export default function LaundromatPrivacyPage() {
         <ul>
           <li>Vercel: hosting, IP location, page view counts</li>
           <li>
-            Supabase: the notebook database, visit counts and the live room
+            Supabase: the notebook and bookshelf database, visit counts and the
+            live room
+          </li>
+          <li>Open Library and Google Books: book searches, from the server</li>
+          <li>
+            Vercel AI Gateway and OpenAI: the text of notebook entries and book
+            notes you choose to translate
           </li>
           <li>
             Open-Meteo: rounded coordinates and city searches, for weather

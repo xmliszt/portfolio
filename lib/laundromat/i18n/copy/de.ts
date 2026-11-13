@@ -426,6 +426,10 @@ export const de = {
       board: "aushang",
     },
     updates: {
+      "visitor-bookshelf": {
+        title: "ein Bücherregal voller Empfehlungen",
+        body: "Der Schrank unter der Kaffeemaschine ist jetzt ein Bücherregal. Empfiehl ein Lieblingsbuch mit einer Notiz und schenk den Büchern ein Herz, die du auch lesen würdest.",
+      },
       "notebook-translation": {
         title: "Notizen in deiner Sprache lesen",
         body: "Tippe bei einer Notiz auf „übersetzen“, um sie in deiner Sprache zu lesen, oder schalte in den Einstellungen die automatische Übersetzung ein.",
@@ -658,6 +662,88 @@ export const de = {
       o.count === 1 ? "1 Herz" : `${o.count} Herzen`,
     bookTooltip: (o: { title: string; authors: string }) =>
       `${o.title} · ${o.authors}`,
+    recommend: "ein Buch empfehlen",
+    recommendFirst: "das erste Buch empfehlen",
+    close: "schließen",
+    card: {
+      dialogLabel: (o: { title: string }) => `${o.title}, Buchkarte`,
+      previousBook: "Vorheriges Buch",
+      nextBook: "Nächstes Buch",
+      position: (o: { row: string; index: number; count: number }) =>
+        `${o.row} · ${o.index} von ${o.count}`,
+      love: "mag ich auch",
+      loved: "du magst das",
+      findOn: (o: { catalogue: string }) => `auf ${o.catalogue} finden`,
+      catalogues: { openlibrary: "Open Library", googlebooks: "Google Books" },
+      addedByHand: "von Hand eingetragen",
+      notesHeading: (o: { count: number }) =>
+        `warum Gäste es empfehlen (${o.count})`,
+      aVisitor: "ein Gast",
+      loadingNotes: "lese die Notizen…",
+      notesOffline: "die Notizen sind gerade offline",
+      translate: "übersetzen",
+      translating: "wird übersetzt…",
+      showOriginal: "Original zeigen",
+      showTranslation: "Übersetzung zeigen",
+      translateFailed:
+        "Übersetzen klappt gerade nicht · versuch es bald wieder",
+      report: "melden",
+      reported: "gemeldet",
+      loveFailed: "dein Herz wurde nicht gespeichert · versuch es bald wieder",
+    },
+    reportDialog: {
+      title: "Diese Notiz melden?",
+      body: "Meldungen helfen, das Bücherregal freundlich zu halten.",
+      reasonLabel: "Grund (optional)",
+      reasonPlaceholder: "was stimmt damit nicht?",
+      cancel: "abbrechen",
+      confirm: "melden",
+    },
+    form: {
+      dialogLabel: "Ein Buch empfehlen",
+      title: "ein Buch empfehlen",
+      searchIntro: "such das Buch · wir tragen Titel, Autor und Cover ein",
+      searchLabel: "Das Buch finden",
+      searchPlaceholder: "Titel, Autor oder ISBN",
+      searching: "suche…",
+      noResults: "kein Treffer in den Katalogen",
+      searchOffline: "die Kataloge sind gerade offline",
+      onShelf: (o: { loves: string }) => `im Regal · ${o.loves}`,
+      addByHand: "nicht gefunden? trag es von Hand ein",
+      manualTitle: "ein Buch von Hand eintragen",
+      titleLabel: "Titel",
+      subtitleLabel: "Untertitel (optional)",
+      authorsLabel: "Autor",
+      next: "weiter",
+      back: "zurück",
+      noteLabel: "warum sollte man es lesen?",
+      notePlaceholder: "ein, zwei Zeilen · was hat es dir gegeben?",
+      signOffLabel: "Unterschrift (optional)",
+      signOffPlaceholder: "Lena, Berlin",
+      merge: (o: { loves: string }) =>
+        `schon im Regal mit ${o.loves} · deine Notiz kommt zu den anderen und zählt als dein Herz`,
+      rules:
+        "keine Links · grobe Wörter werden verdeckt · andere Gäste können es in ihrer Sprache lesen",
+      submit: "ins Regal stellen",
+      submitMerge: "meine Notiz hinzufügen",
+      placing: "wird eingeräumt…",
+      placed: (o: { title: string }) =>
+        `${o.title} steht jetzt bei den Neueingängen`,
+      merged: (o: { title: string }) =>
+        `deine Notiz wurde zu ${o.title} hinzugefügt`,
+      failures: {
+        empty_body: "schreib eine Zeile, warum du es empfiehlst",
+        body_too_long: "zu lang · höchstens 140 Zeichen",
+        sign_off_too_long: "die Unterschrift ist zu lang",
+        contains_link: "keine Links · der Link zum Buch wird für dich ergänzt",
+        rate_limited:
+          "eine Empfehlung alle zwei Minuten · versuch es bald wieder",
+        invalid_book:
+          "dieses Buch kann nicht hinzugefügt werden · such noch einmal",
+        missing_visitor: "etwas ist schiefgelaufen · versuch es noch einmal",
+        offline: "das Bücherregal ist gerade offline · versuch es bald wieder",
+      },
+    },
   },
   notebook: {
     objectLabel: "Das Notizbuch öffnen",

@@ -6,7 +6,17 @@ import { useLaundromatCopy } from "@/app/laundromat/i18n/use-laundromat-copy";
 import { REPORT_HIDE_THRESHOLD } from "@/lib/laundromat/notebook/report-hide-threshold";
 import { REPORT_REASON_MAX_CHARS } from "@/lib/laundromat/notebook/report-reason-max-chars";
 
+type ReportEntryDialogText = {
+  title: string;
+  body: string;
+  reasonLabel: string;
+  reasonPlaceholder: string;
+  cancel: string;
+  confirm: string;
+};
+
 type ReportEntryDialogProps = {
+  text?: ReportEntryDialogText;
   onCancel: () => void;
   onConfirm: (reason: string | undefined) => void;
 };
@@ -14,7 +24,7 @@ type ReportEntryDialogProps = {
 /** Ask the visitor to confirm reporting a note, with an optional reason of up to `REPORT_REASON_MAX_CHARS` characters. */
 export function ReportEntryDialog(props: ReportEntryDialogProps) {
   const { copy } = useLaundromatCopy();
-  const text = copy.notebook.reportDialog;
+  const text = props.text ?? copy.notebook.reportDialog;
   const [reason, setReason] = useState("");
   const reasonRef = useRef<HTMLTextAreaElement>(null);
 
