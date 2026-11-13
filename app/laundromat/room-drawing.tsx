@@ -5,11 +5,11 @@ import type {
   SceneLayout,
 } from "@/lib/laundromat/build-scene-layout";
 import { getDaylitTokenStyle } from "@/lib/laundromat/get-daylit-token-style";
+import { getObjectsRestingOn } from "@/lib/laundromat/get-objects-resting-on";
 import { getTimeOfDay } from "@/lib/laundromat/get-time-of-day";
 import { getWindowLights } from "@/lib/laundromat/get-window-lights";
 import { isFootprintInFront } from "@/lib/laundromat/is-footprint-in-front";
 import type { SceneConfig } from "@/lib/laundromat/scene-config";
-import { getObjectsRestingOn } from "@/lib/laundromat/get-objects-resting-on";
 import { toSvgPoints } from "@/lib/laundromat/to-svg-points";
 import { getWindowWeather } from "@/lib/laundromat/weather/get-window-weather";
 
