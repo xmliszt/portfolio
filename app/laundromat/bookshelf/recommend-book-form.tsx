@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useId, useRef, useState } from "react";
 import { omit } from "lodash";
 
 import { useLaundromatCopy } from "@/app/laundromat/i18n/use-laundromat-copy";
@@ -78,6 +78,7 @@ export function RecommendBookForm(props: RecommendBookFormProps) {
   const searchRef = useRef<HTMLInputElement>(null);
   const titleRef = useRef<HTMLInputElement>(null);
   const noteRef = useRef<HTMLTextAreaElement>(null);
+  const noteErrorId = useId();
   const { onUnsavedChange } = props;
   const isUnsaved = step.kind === "note" && note.trim() !== "";
 
@@ -117,7 +118,10 @@ export function RecommendBookForm(props: RecommendBookFormProps) {
 
   async function place(chosen: Chosen) {
     const body = note.trim();
-    if (body === "") return setFailure("empty_body");
+    if (body === "") {
+      noteRef.current?.focus();
+      return setFailure("empty_body");
+    }
     if (LINK.test(`${body} ${signOff}`)) return setFailure("contains_link");
     setFailure(undefined);
     setIsPlacing(true);
@@ -331,6 +335,27 @@ export function RecommendBookForm(props: RecommendBookFormProps) {
           coverUrl: undefined,
           source: "manual" as const,
         };
+  const failureSlot = (() => {
+    if (failure === undefined) return undefined;
+    const message = text.failures[failure];
+    switch (failure) {
+      case "empty_body":
+      case "body_too_long":
+        return { field: "note" as const, message };
+      case "sign_off_too_long":
+        return { field: "signOff" as const, message };
+      case "contains_link":
+      case "rate_limited":
+      case "invalid_book":
+      case "missing_visitor":
+      case "offline":
+        return { field: "form" as const, message };
+      default: {
+        const unhandled: never = failure;
+        return unhandled;
+      }
+    }
+  })();
   return (
     <form
       className="flex min-h-0 flex-col font-[family-name:var(--lm-font-mono)] text-[12px]"
@@ -369,6 +394,8 @@ export function RecommendBookForm(props: RecommendBookFormProps) {
             value={note}
             rows={3}
             placeholder={text.notePlaceholder}
+            aria-invalid={failureSlot?.field === "note"}
+            aria-describedby={noteErrorId}
             className={`${BOOKSHELF_INPUT_CLASS} resize-none font-[family-name:var(--lm-font-display)] text-[15px] leading-relaxed`}
             onChange={(event) =>
               setNote(
@@ -389,8 +416,17 @@ export function RecommendBookForm(props: RecommendBookFormProps) {
               )
             }
           />
-          <span className="self-end text-[10px] tabular-nums opacity-60">
-            {[...note].length}/{BOOK_TEXT_LIMITS.note}
+          <span className="flex items-baseline justify-between gap-x-3">
+            <span
+              id={noteErrorId}
+              role="alert"
+              className="text-[11px] text-[var(--lm-danger)]"
+            >
+              {failureSlot?.field === "note" && failureSlot.message}
+            </span>
+            <span className="shrink-0 text-[10px] tabular-nums opacity-60">
+              {[...note].length}/{BOOK_TEXT_LIMITS.note}
+            </span>
           </span>
         </label>
         <label className="flex flex-col gap-y-1.5">
@@ -398,6 +434,7 @@ export function RecommendBookForm(props: RecommendBookFormProps) {
           <input
             value={signOff}
             placeholder={text.signOffPlaceholder}
+            aria-invalid={failureSlot?.field === "signOff"}
             className={BOOKSHELF_INPUT_CLASS}
             onChange={(event) =>
               setSignOff(
@@ -418,10 +455,15 @@ export function RecommendBookForm(props: RecommendBookFormProps) {
               )
             }
           />
+          {failureSlot?.field === "signOff" && (
+            <span role="alert" className="text-[11px] text-[var(--lm-danger)]">
+              {failureSlot.message}
+            </span>
+          )}
         </label>
-        {failure !== undefined && (
+        {failureSlot?.field === "form" && (
           <p role="alert" className="text-[11px] text-[var(--lm-danger)]">
-            {text.failures[failure]}
+            {failureSlot.message}
           </p>
         )}
         <p className="text-[11px] leading-relaxed opacity-65">{text.rules}</p>
