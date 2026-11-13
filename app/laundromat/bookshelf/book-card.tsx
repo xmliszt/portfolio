@@ -5,7 +5,6 @@ import { useEffect, useState } from "react";
 import { useLaundromatCopy } from "@/app/laundromat/i18n/use-laundromat-copy";
 import { ReportEntryDialog } from "@/app/laundromat/notebook/report-entry-dialog";
 import { MAX_TRANSLATED_ENTRIES } from "@/lib/laundromat/notebook/max-translated-entries";
-import { cn } from "@/lib/utils";
 
 import { BookCover } from "./book-cover";
 import type {
@@ -23,6 +22,7 @@ import {
   BOOKSHELF_ICON_BUTTON_CLASS,
   BOOKSHELF_TEXT_BUTTON_CLASS,
 } from "./bookshelf-classes";
+import { LoveButton } from "./love-button";
 
 type NotesState =
   | { kind: "loading" }
@@ -241,30 +241,22 @@ function BookCardDetails(props: BookCardDetailsProps) {
             {meta !== "" && <p className="text-[11px] opacity-70">{meta}</p>}
           </div>
         </div>
-        <div className="flex flex-wrap items-center gap-x-3 gap-y-2">
-          <button
-            type="button"
-            aria-pressed={love.loved}
-            onClick={toggleLove}
-            className={cn(
-              "flex cursor-pointer items-center gap-x-1.5 rounded-full border px-3 py-1.5 lowercase outline-none focus-visible:ring-1 focus-visible:ring-[var(--lm-edge)]",
-              love.loved
-                ? "border-[var(--lm-accent)] text-[var(--lm-accent)]"
-                : "border-[var(--lm-edge)] hover:text-[var(--lm-ink-hi)]"
-            )}
-          >
-            <span aria-hidden>{love.loved ? "♥" : "♡"}</span>
-            <span className="tabular-nums">{love.count}</span>
-            <span>{love.loved ? text.loved : text.love}</span>
-          </button>
+        <div className="flex flex-col items-start gap-y-1.5">
+          <LoveButton
+            loved={love.loved}
+            count={love.count}
+            label={love.loved ? text.loved : text.love}
+            onToggle={toggleLove}
+          />
           {catalogue !== undefined && props.book.infoUrl !== undefined && (
             <a
               href={props.book.infoUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="text-[var(--lm-accent)] underline underline-offset-2 outline-none focus-visible:ring-1 focus-visible:ring-[var(--lm-edge)]"
+              aria-label={text.findOn({ catalogue })}
+              className="rounded-sm text-[11px] text-[var(--lm-ink)] outline-none hover:text-[var(--lm-ink-hi)] focus-visible:ring-1 focus-visible:ring-[var(--lm-edge)]"
             >
-              {text.findOn({ catalogue })} ↗
+              {catalogue} ↗
             </a>
           )}
         </div>
