@@ -177,29 +177,42 @@ export function useRoomConnection(options: {
         },
       });
       if (useFakeRoom || client === undefined) return;
-      run.heartbeat = window.setInterval(async () => {
-        const token = tokenRef.current;
-        if (token === undefined || run.roomId === undefined) return;
-        const answer = await postRoomApi({
-          path: "heartbeat",
-          accessToken: token,
-          body: { roomId: run.roomId },
-        });
-        const kind =
-          typeof answer === "object" && answer !== null && "kind" in answer
-            ? answer.kind
-            : undefined;
-        const isMoving = kind === "move" && chosenRoomId === undefined;
-        if ((kind === "gone" || isMoving) && !run.isCancelled) {
-          if (isMoving) lastRoomIdRef.current = undefined;
-          setAttempt((value) => value + 1);
-        }
-      }, ROOM_TIMING.heartbeatMs);
+      run.heartbeat = window.setInterval(
+        () => void sendHeartbeat(),
+        ROOM_TIMING.heartbeatMs
+      );
     }
 
+    async function sendHeartbeat() {
+      const token = tokenRef.current;
+      if (token === undefined || run.roomId === undefined) return;
+      const answer = await postRoomApi({
+        path: "heartbeat",
+        accessToken: token,
+        body: { roomId: run.roomId },
+      });
+      const kind =
+        typeof answer === "object" && answer !== null && "kind" in answer
+          ? answer.kind
+          : undefined;
+      const isMoving = kind === "move" && chosenRoomId === undefined;
+      if ((kind === "gone" || isMoving) && !run.isCancelled) {
+        if (isMoving) lastRoomIdRef.current = undefined;
+        setAttempt((value) => value + 1);
+      }
+    }
+
+    // A hidden tab can sleep past `memberFreshMs`; checking on wake joins again before Realtime keeps retrying the lapsed channels.
+    function handleVisibilityChange() {
+      if (document.visibilityState === "visible" && run.heartbeat !== undefined)
+        void sendHeartbeat();
+    }
+
+    document.addEventListener("visibilitychange", handleVisibilityChange);
     void join();
     return () => {
       run.isCancelled = true;
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
       window.clearInterval(run.heartbeat);
       window.clearTimeout(run.retry);
       connectionRef.current?.leave();
