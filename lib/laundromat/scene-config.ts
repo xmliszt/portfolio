@@ -678,8 +678,9 @@ export const sceneConfig: SceneConfig = {
         },
         {
           id: "dreamcore",
-          videoId: "nfN6QDZtpUs",
-          channel: "Smiling Puddles",
+          videoId: "AF3VZHA83GM",
+          lengthSeconds: 36052,
+          channel: "Lofi Room",
           placeholder: false,
         },
       ],

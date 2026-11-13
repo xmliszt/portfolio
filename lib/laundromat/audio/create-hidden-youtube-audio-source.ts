@@ -11,6 +11,7 @@ export function createHiddenYouTubeAudioSource(options: {
 }) {
   return createYouTubeAudioSource({
     stallMs: options.stallMs,
+    random: Math.random,
     schedule: (callback, delayMs) => {
       const timeout = window.setTimeout(callback, delayMs);
       return () => window.clearTimeout(timeout);

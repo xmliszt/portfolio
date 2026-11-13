@@ -29,6 +29,8 @@ export type TvStationId = (typeof TV_STATION_IDS)[number];
 export type TvStation = {
   id: TvStationId;
   videoId: string;
+  /** Length of a recorded video; `undefined` for a live stream. */
+  lengthSeconds?: number;
   channel: string;
   placeholder: boolean;
 };

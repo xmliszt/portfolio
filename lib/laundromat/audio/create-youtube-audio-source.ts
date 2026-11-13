@@ -1,8 +1,10 @@
-import type { AudioSource, AudioState } from "./audio-source";
+import type { AudioSource, AudioState, AudioStation } from "./audio-source";
+
+type YouTubeVideo = { videoId: string; startSeconds?: number };
 
 export type YouTubePlayer = {
-  loadVideoById: (videoId: string) => void;
-  cueVideoById: (videoId: string) => void;
+  loadVideoById: (video: YouTubeVideo) => void;
+  cueVideoById: (video: YouTubeVideo) => void;
   playVideo: () => void;
   pauseVideo: () => void;
   setVolume: (percent: number) => void;
@@ -24,18 +26,21 @@ const YOUTUBE_STATE = {
   cued: 5,
 };
 
-/** Return an `AudioSource` that drives the YouTube player from `createPlayer`, replaying commands sent before it is ready, buffering from the moment it is asked to play even before the player is ready, reporting `error` when a stream fails, ends, or buffers longer than `stallMs`, and releasing the player through the function `createPlayer` returns when destroyed, whether or not it is ready. */
+/** Return an `AudioSource` that drives the YouTube player from `createPlayer`, replaying commands sent before it is ready, buffering from the moment it is asked to play even before the player is ready, starting a recorded video at a random time from `random` and again whenever it ends, reporting `error` when a stream fails, a live stream ends, or a stream buffers longer than `stallMs`, and releasing the player through the function `createPlayer` returns when destroyed, whether or not it is ready. */
 export function createYouTubeAudioSource(options: {
   createPlayer: (events: YouTubePlayerEvents) => () => void;
   stallMs: number;
   schedule: (callback: () => void, delayMs: number) => () => void;
+  random: () => number;
 }): AudioSource {
   const desired: {
-    videoId: string | undefined;
+    station: AudioStation | undefined;
+    video: YouTubeVideo | undefined;
     volumePercent: number;
     isPlaying: boolean;
   } = {
-    videoId: undefined,
+    station: undefined,
+    video: undefined,
     volumePercent: 100,
     isPlaying: false,
   };
@@ -65,13 +70,23 @@ export function createYouTubeAudioSource(options: {
     }, options.stallMs);
   }
 
+  function pickVideo(station: AudioStation): YouTubeVideo {
+    if (station.lengthSeconds === undefined) {
+      return { videoId: station.videoId };
+    }
+    return {
+      videoId: station.videoId,
+      startSeconds: Math.floor(options.random() * station.lengthSeconds),
+    };
+  }
+
   function loadDesiredVideo(target: YouTubePlayer) {
-    if (desired.videoId === undefined) return;
+    if (desired.video === undefined) return;
     if (desired.isPlaying) {
-      target.loadVideoById(desired.videoId);
+      target.loadVideoById(desired.video);
       enterBuffering();
     } else {
-      target.cueVideoById(desired.videoId);
+      target.cueVideoById(desired.video);
     }
   }
 
@@ -87,6 +102,14 @@ export function createYouTubeAudioSource(options: {
         return;
       case YOUTUBE_STATE.ended:
         stopStallTimer();
+        if (
+          desired.station?.lengthSeconds !== undefined &&
+          player !== undefined
+        ) {
+          desired.video = pickVideo(desired.station);
+          loadDesiredVideo(player);
+          return;
+        }
         emit("error");
         return;
       case YOUTUBE_STATE.buffering:
@@ -121,7 +144,7 @@ export function createYouTubeAudioSource(options: {
     play() {
       if (desired.isPlaying) return;
       desired.isPlaying = true;
-      if (desired.videoId === undefined) return;
+      if (desired.video === undefined) return;
       player?.playVideo();
       enterBuffering();
     },
@@ -135,9 +158,10 @@ export function createYouTubeAudioSource(options: {
       desired.volumePercent = Math.min(100, Math.max(0, percent));
       player?.setVolume(desired.volumePercent);
     },
-    setStation(videoId) {
-      if (videoId === desired.videoId) return;
-      desired.videoId = videoId;
+    setStation(station) {
+      if (station.videoId === desired.video?.videoId) return;
+      desired.station = station;
+      desired.video = pickVideo(station);
       stopStallTimer();
       if (player !== undefined) loadDesiredVideo(player);
       else if (desired.isPlaying) enterBuffering();
