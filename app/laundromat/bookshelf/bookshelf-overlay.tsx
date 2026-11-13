@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useRef, useState } from "react";
 import { AnimatePresence } from "motion/react";
 
 import { useLaundromatCopy } from "@/app/laundromat/i18n/use-laundromat-copy";
@@ -21,7 +21,6 @@ type BookshelfOverlayProps = {
   booksByRow: { [key in BookshelfRowKey]: ShelfBookView[] };
   narrow: boolean;
   reducedMotion: boolean;
-  unsaved: boolean;
   onPanelChange: (panel: BookshelfPanelState | undefined) => void;
   onUnsavedChange: (unsaved: boolean) => void;
   refresh: () => Promise<BookshelfResult>;
@@ -30,6 +29,14 @@ type BookshelfOverlayProps = {
 export function BookshelfOverlay(props: BookshelfOverlayProps) {
   const { copy } = useLaundromatCopy();
   const isEmpty = props.booksByRow.loved.length === 0;
+  const [shelfNotice, setShelfNotice] = useState<string>();
+  const isMountedRef = useRef(true);
+  useEffect(() => {
+    isMountedRef.current = true;
+    return () => {
+      isMountedRef.current = false;
+    };
+  }, []);
 
   const card = (() => {
     if (props.panel?.kind !== "book") return undefined;
@@ -53,7 +60,7 @@ export function BookshelfOverlay(props: BookshelfOverlayProps) {
   }, [isMissingBook, onPanelChange]);
 
   function close() {
-    if (props.unsaved) return;
+    props.onUnsavedChange(false);
     props.onPanelChange(undefined);
   }
 
@@ -62,8 +69,9 @@ export function BookshelfOverlay(props: BookshelfOverlayProps) {
     title: string;
     isNewBook: boolean;
   }) {
-    props.onUnsavedChange(false);
     const result = await props.refresh();
+    if (!isMountedRef.current) return;
+    props.onUnsavedChange(false);
     const preferred: BookshelfRowKey[] = placed.isNewBook
       ? ["fresh", "loved"]
       : ["loved", "fresh"];
@@ -75,29 +83,37 @@ export function BookshelfOverlay(props: BookshelfOverlayProps) {
             )
           )
         : undefined;
-    props.onPanelChange(
-      row === undefined
-        ? undefined
-        : {
-            kind: "book",
-            row,
-            bookId: placed.bookId,
-            notice: placed.isNewBook
-              ? copy.bookshelf.form.placed({ title: placed.title })
-              : copy.bookshelf.form.merged({ title: placed.title }),
-          }
-    );
+    const notice = placed.isNewBook
+      ? copy.bookshelf.form.placed({ title: placed.title })
+      : copy.bookshelf.form.merged({ title: placed.title });
+    if (row === undefined) {
+      setShelfNotice(notice);
+      props.onPanelChange(undefined);
+      return;
+    }
+    props.onPanelChange({ kind: "book", row, bookId: placed.bookId, notice });
   }
 
   return (
     <>
       {props.panel === undefined && (
-        <div className="pointer-events-none absolute inset-x-0 bottom-0 z-30 flex justify-center pb-[max(1.25rem,env(safe-area-inset-bottom))]">
+        <div className="pointer-events-none absolute inset-x-0 bottom-0 z-30 flex flex-col items-center gap-y-2 pb-[max(1.25rem,env(safe-area-inset-bottom))]">
+          {shelfNotice !== undefined && (
+            <p
+              role="status"
+              className="rounded-md bg-[var(--lm-panel)] px-2.5 py-1.5 font-[family-name:var(--lm-font-mono)] text-[11px] text-[var(--lm-ink-hi)] [box-shadow:var(--lm-panel-shadow)]"
+            >
+              {shelfNotice}
+            </p>
+          )}
           <button
             type="button"
             data-bookshelf-overlay
             className={`${BOOKSHELF_PRIMARY_BUTTON_CLASS} pointer-events-auto font-[family-name:var(--lm-font-mono)] [box-shadow:var(--lm-panel-shadow)]`}
-            onClick={() => props.onPanelChange({ kind: "recommend" })}
+            onClick={() => {
+              setShelfNotice(undefined);
+              props.onPanelChange({ kind: "recommend" });
+            }}
           >
             {isEmpty ? copy.bookshelf.recommendFirst : copy.bookshelf.recommend}
           </button>
@@ -110,6 +126,7 @@ export function BookshelfOverlay(props: BookshelfOverlayProps) {
             narrow={props.narrow}
             reducedMotion={props.reducedMotion}
             label={copy.bookshelf.form.dialogLabel}
+            focusCloseOnOpen={false}
             onClose={close}
           >
             <RecommendBookForm
@@ -125,6 +142,7 @@ export function BookshelfOverlay(props: BookshelfOverlayProps) {
             narrow={props.narrow}
             reducedMotion={props.reducedMotion}
             label={copy.bookshelf.card.dialogLabel({ title: card.book.title })}
+            focusCloseOnOpen
             onClose={close}
           >
             {card.notice !== undefined && (
@@ -136,7 +154,6 @@ export function BookshelfOverlay(props: BookshelfOverlayProps) {
               </p>
             )}
             <BookCard
-              key={`${card.book.id}:${copy.locale}`}
               book={card.book}
               rowLabel={copy.bookshelf.rows[card.row]}
               index={card.index + 1}

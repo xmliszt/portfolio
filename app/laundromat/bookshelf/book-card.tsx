@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 
 import { useLaundromatCopy } from "@/app/laundromat/i18n/use-laundromat-copy";
 import { ReportEntryDialog } from "@/app/laundromat/notebook/report-entry-dialog";
@@ -48,6 +48,61 @@ type BookCardProps = {
 export function BookCard(props: BookCardProps) {
   const { copy } = useLaundromatCopy();
   const text = copy.bookshelf.card;
+  return (
+    <div className="flex min-h-0 flex-col font-[family-name:var(--lm-font-mono)] text-[12px]">
+      <div className="flex items-center gap-x-2 border-b border-[var(--lm-edge)] px-2 pb-2">
+        <button
+          type="button"
+          aria-label={text.previousBook}
+          className={BOOKSHELF_ICON_BUTTON_CLASS}
+          disabled={props.index <= 1}
+          onClick={() => props.onStep(-1)}
+        >
+          ‹
+        </button>
+        <span className="min-w-0 flex-1 truncate text-center text-[11px] lowercase opacity-75">
+          {text.position({
+            row: props.rowLabel,
+            index: props.index,
+            count: props.count,
+          })}
+        </span>
+        <button
+          type="button"
+          aria-label={text.nextBook}
+          className={BOOKSHELF_ICON_BUTTON_CLASS}
+          disabled={props.index >= props.count}
+          onClick={() => props.onStep(1)}
+        >
+          ›
+        </button>
+        <button
+          type="button"
+          aria-label={copy.bookshelf.close}
+          aria-keyshortcuts="Escape"
+          className={BOOKSHELF_ICON_BUTTON_CLASS}
+          onClick={props.onClose}
+        >
+          ×
+        </button>
+      </div>
+      <BookCardDetails
+        key={`${props.book.id}:${copy.locale}`}
+        book={props.book}
+        onChanged={props.onChanged}
+      />
+    </div>
+  );
+}
+
+type BookCardDetailsProps = {
+  book: ShelfBookView;
+  onChanged: () => void;
+};
+
+function BookCardDetails(props: BookCardDetailsProps) {
+  const { copy } = useLaundromatCopy();
+  const text = copy.bookshelf.card;
   const [notes, setNotes] = useState<NotesState>({ kind: "loading" });
   const [translation, setTranslation] = useState<TranslationState>({
     kind: "original",
@@ -59,12 +114,7 @@ export function BookCard(props: BookCardProps) {
   const [isLoveFailed, setIsLoveFailed] = useState(false);
   const [reporting, setReporting] = useState<number>();
   const [reportedIds, setReportedIds] = useState<number[]>([]);
-  const closeRef = useRef<HTMLButtonElement>(null);
   const bookId = props.book.id;
-
-  useEffect(() => {
-    closeRef.current?.focus({ preventScroll: true });
-  }, []);
 
   useEffect(() => {
     let isCancelled = false;
@@ -168,44 +218,7 @@ export function BookCard(props: BookCardProps) {
   })();
 
   return (
-    <div className="flex min-h-0 flex-col font-[family-name:var(--lm-font-mono)] text-[12px]">
-      <div className="flex items-center gap-x-2 border-b border-[var(--lm-edge)] px-2 pb-2">
-        <button
-          type="button"
-          aria-label={text.previousBook}
-          className={BOOKSHELF_ICON_BUTTON_CLASS}
-          disabled={props.index <= 1}
-          onClick={() => props.onStep(-1)}
-        >
-          ‹
-        </button>
-        <span className="min-w-0 flex-1 truncate text-center text-[11px] lowercase opacity-75">
-          {text.position({
-            row: props.rowLabel,
-            index: props.index,
-            count: props.count,
-          })}
-        </span>
-        <button
-          type="button"
-          aria-label={text.nextBook}
-          className={BOOKSHELF_ICON_BUTTON_CLASS}
-          disabled={props.index >= props.count}
-          onClick={() => props.onStep(1)}
-        >
-          ›
-        </button>
-        <button
-          ref={closeRef}
-          type="button"
-          aria-label={copy.bookshelf.close}
-          aria-keyshortcuts="Escape"
-          className={BOOKSHELF_ICON_BUTTON_CLASS}
-          onClick={props.onClose}
-        >
-          ×
-        </button>
-      </div>
+    <>
       <div className="flex min-h-0 flex-col gap-y-4 overflow-y-auto px-3 pt-4 pb-3">
         <div className="flex gap-x-3.5">
           <BookCover book={props.book} widthPx={92} />
@@ -329,6 +342,6 @@ export function BookCard(props: BookCardProps) {
           onConfirm={confirmReport}
         />
       )}
-    </div>
+    </>
   );
 }

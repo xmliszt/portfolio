@@ -38,6 +38,14 @@ type Step =
 
 type Failure = RecommendBookRejection | "offline";
 
+function isComposing(event: Event) {
+  return "isComposing" in event && event.isComposing === true;
+}
+
+function clipToCodePoints(options: { text: string; maxChars: number }) {
+  return [...options.text].slice(0, options.maxChars).join("");
+}
+
 function toCatalogueBook(result: CatalogueResultView): CatalogueBook {
   return omit(result, ["token", "coverUrl", "shelfBook"]);
 }
@@ -364,9 +372,20 @@ export function RecommendBookForm(props: RecommendBookFormProps) {
             className={`${BOOKSHELF_INPUT_CLASS} resize-none font-[family-name:var(--lm-font-display)] text-[15px] leading-relaxed`}
             onChange={(event) =>
               setNote(
-                [...event.currentTarget.value]
-                  .slice(0, BOOK_TEXT_LIMITS.note)
-                  .join("")
+                isComposing(event.nativeEvent)
+                  ? event.currentTarget.value
+                  : clipToCodePoints({
+                      text: event.currentTarget.value,
+                      maxChars: BOOK_TEXT_LIMITS.note,
+                    })
+              )
+            }
+            onCompositionEnd={(event) =>
+              setNote(
+                clipToCodePoints({
+                  text: event.currentTarget.value,
+                  maxChars: BOOK_TEXT_LIMITS.note,
+                })
               )
             }
           />
@@ -382,9 +401,20 @@ export function RecommendBookForm(props: RecommendBookFormProps) {
             className={BOOKSHELF_INPUT_CLASS}
             onChange={(event) =>
               setSignOff(
-                [...event.currentTarget.value]
-                  .slice(0, BOOK_TEXT_LIMITS.signOff)
-                  .join("")
+                isComposing(event.nativeEvent)
+                  ? event.currentTarget.value
+                  : clipToCodePoints({
+                      text: event.currentTarget.value,
+                      maxChars: BOOK_TEXT_LIMITS.signOff,
+                    })
+              )
+            }
+            onCompositionEnd={(event) =>
+              setSignOff(
+                clipToCodePoints({
+                  text: event.currentTarget.value,
+                  maxChars: BOOK_TEXT_LIMITS.signOff,
+                })
               )
             }
           />

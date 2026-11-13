@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useRef } from "react";
 import { motion } from "motion/react";
 
 import {
@@ -17,12 +18,21 @@ type BookshelfPanelProps = {
   narrow: boolean;
   reducedMotion: boolean;
   label: string;
+  focusCloseOnOpen: boolean;
   onClose: () => void;
   children: React.ReactNode;
 };
 
 /** Show `children` in a dialog at the right edge on wide screens, or as a bottom sheet when `narrow`. */
 export function BookshelfPanel(props: BookshelfPanelProps) {
+  const panelRef = useRef<HTMLDivElement>(null);
+  const { focusCloseOnOpen } = props;
+  useEffect(() => {
+    if (!focusCloseOnOpen) return;
+    panelRef.current
+      ?.querySelector<HTMLButtonElement>('[aria-keyshortcuts="Escape"]')
+      ?.focus({ preventScroll: true });
+  }, [focusCloseOnOpen]);
   const offset = props.reducedMotion
     ? {}
     : props.narrow
@@ -35,6 +45,7 @@ export function BookshelfPanel(props: BookshelfPanelProps) {
   }
   const panel = (
     <motion.div
+      ref={panelRef}
       role="dialog"
       aria-label={props.label}
       data-bookshelf-panel

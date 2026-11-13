@@ -91,7 +91,6 @@ export function useBookshelfScene(options: {
   useEffect(() => {
     pagesRef.current = pages;
   });
-  // follow the selected book once when it changes, then leave the page tabs to the visitor
   useEffect(() => {
     if (selectedRow === undefined || selectedIndex === undefined) return;
     const shown = pagesRef.current[selectedRow];

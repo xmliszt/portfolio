@@ -957,6 +957,7 @@ export function LaundromatScene(props: LaundromatSceneProps) {
     }
     if (prefersReducedMotion) {
       jumpCameraTo({ scene, camera });
+      if (previous?.focus === cameraFocus) return;
       const fade = scene.animate([{ opacity: 0.5 }, { opacity: 1 }], {
         duration: 250,
       });
@@ -1160,7 +1161,8 @@ export function LaundromatScene(props: LaundromatSceneProps) {
       event.preventDefault();
       if (isCoinBusy) return;
       if (focus === "bookshelf" && bookshelfPanel !== undefined) {
-        if (!hasUnsavedRecommendation) setBookshelfPanel(undefined);
+        setHasUnsavedRecommendation(false);
+        setBookshelfPanel(undefined);
         return;
       }
       setFocus("room");
@@ -1967,7 +1969,6 @@ export function LaundromatScene(props: LaundromatSceneProps) {
           narrow={isNarrowScreen}
           reducedMotion={prefersReducedMotion}
           onPanelChange={setBookshelfPanel}
-          unsaved={hasUnsavedRecommendation}
           onUnsavedChange={setHasUnsavedRecommendation}
           refresh={bookshelfScene.refresh}
         />
