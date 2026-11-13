@@ -613,6 +613,31 @@ export const pl = {
     entryCount: (o) =>
       `${o.count} ${pluralize({ count: o.count, one: "wpis", few: "wpisy", many: "wpisów" })}`,
   },
+  bookshelf: {
+    loadingLabel: "Regał z książkami, sprawdza polecane książki",
+    loadingTooltip: "zaglądam na regał…",
+    offlineLabel: "Regał z książkami, chwilowo offline",
+    offlineTooltip: "regał z książkami jest chwilowo offline",
+    emptyTooltip: "na regale nie ma jeszcze książek",
+    readyLabel: "Zobacz regał z książkami polecanymi przez gości",
+    readyTooltip: "książki polecane przez gości",
+    rows: { loved: "najbardziej lubiane", fresh: "nowości" },
+    holder: (o: { row: string; page: number; pageCount: number }) =>
+      `${o.row} · ${o.page}/${o.pageCount}`,
+    previousPage: (o: { row: string }) => `Poprzednia strona: ${o.row}`,
+    nextPage: (o: { row: string }) => `Następna strona: ${o.row}`,
+    bookLabel: (o: { title: string; authors: string; loves: string }) =>
+      `${o.title}, ${o.authors}, ${o.loves}`,
+    loves: (o: { count: number }) =>
+      o.count === 1
+        ? "1 serce"
+        : [2, 3, 4].includes(o.count % 10) &&
+            ![12, 13, 14].includes(o.count % 100)
+          ? `${o.count} serca`
+          : `${o.count} serc`,
+    bookTooltip: (o: { title: string; authors: string }) =>
+      `${o.title} · ${o.authors}`,
+  },
   notebook: {
     objectLabel: "Otwórz notes",
     objectTooltip: "liściki od nieznajomych",

@@ -8,6 +8,7 @@ export function parseCameraFocus(
 ): CameraFocus {
   switch (value) {
     case "shelf":
+    case "bookshelf":
     case "notebook":
     case "board":
     case "weather":

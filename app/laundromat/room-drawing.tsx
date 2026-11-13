@@ -9,6 +9,7 @@ import { getTimeOfDay } from "@/lib/laundromat/get-time-of-day";
 import { getWindowLights } from "@/lib/laundromat/get-window-lights";
 import { isFootprintInFront } from "@/lib/laundromat/is-footprint-in-front";
 import type { SceneConfig } from "@/lib/laundromat/scene-config";
+import { getObjectsRestingOn } from "@/lib/laundromat/get-objects-resting-on";
 import { toSvgPoints } from "@/lib/laundromat/to-svg-points";
 import { getWindowWeather } from "@/lib/laundromat/weather/get-window-weather";
 
@@ -211,6 +212,23 @@ export function RoomDrawing(props: RoomDrawingProps) {
         <>
           <SceneObjectDrawing laidOut={focused} {...objectProps} />
           {renderFaceLight(focused)}
+          {getObjectsRestingOn({
+            base: focused.object,
+            objects: stationaryObjects.map(({ object }) => object),
+          }).map((object) => {
+            const laidOut = stationaryObjects.find(
+              (candidate) => candidate.object === object
+            );
+            return (
+              laidOut !== undefined && (
+                <SceneObjectDrawing
+                  key={object.id}
+                  laidOut={laidOut}
+                  {...objectProps}
+                />
+              )
+            );
+          })}
         </>
       )}
     </svg>

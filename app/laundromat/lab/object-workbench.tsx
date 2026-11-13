@@ -3,7 +3,10 @@ import { useMemo, useRef, useState } from "react";
 import { HitTargetButton } from "@/app/laundromat/hit-target-button";
 import { useLaundromatCopy } from "@/app/laundromat/i18n/use-laundromat-copy";
 import { useLocalWeather } from "@/app/laundromat/local-weather/use-local-weather";
-import type { SceneViews } from "@/app/laundromat/objects/scene-views";
+import type {
+  BookshelfView,
+  SceneViews,
+} from "@/app/laundromat/objects/scene-views";
 import { wigglePlant } from "@/app/laundromat/plant/wiggle-plant";
 import { RoomDrawing } from "@/app/laundromat/room-drawing";
 import { SceneControlButton } from "@/app/laundromat/scene-control-button";
@@ -32,6 +35,47 @@ const WORKBENCH_UNIT_PX = 40;
 const MS_PER_MINUTE = 60_000;
 const KNOB_CONTROLS: LaidOutControl["control"][] = ["dial", "tuner", "volume"];
 const WORKBENCH_SHELF_BOOKS = [1, 2, 3, 4, 5, 6, 7, 8, 9];
+const WORKBENCH_BOOKSHELF_TITLES = [
+  "Small Things Like These",
+  "아몬드",
+  "活着",
+  "Piranesi",
+  "Le Petit Prince",
+  "キッチン",
+  "Stoner",
+  "موسم الهجرة إلى الشمال",
+  "Pachinko",
+  "Foster",
+  "Klara and the Sun",
+  "The Memory Police",
+];
+const WORKBENCH_BOOKSHELF: BookshelfView = {
+  rows: {
+    loved: {
+      label: "MOST LOVED · 1/3",
+      page: 0,
+      pageCount: 3,
+      direction: 1,
+      spines: WORKBENCH_BOOKSHELF_TITLES.map((title, index) => ({
+        id: index + 1,
+        title,
+        manual: false,
+      })),
+    },
+    fresh: {
+      label: "NEW ARRIVALS · 1/3",
+      page: 0,
+      pageCount: 3,
+      direction: 1,
+      spines: WORKBENCH_BOOKSHELF_TITLES.toReversed().map((title, index) => ({
+        id: index + 101,
+        title,
+        manual: index === 2,
+      })),
+    },
+  },
+  pulled: undefined,
+};
 
 export type WorkbenchMachineState = "loadable" | "loaded" | "running" | "done";
 
@@ -132,6 +176,7 @@ export function ObjectWorkbench(props: ObjectWorkbenchProps) {
     },
     basket: props.basket,
     shelfBookNumbers: WORKBENCH_SHELF_BOOKS,
+    bookshelf: WORKBENCH_BOOKSHELF,
     notebookNumber: config.details.notebook.coverNumber,
     peopleHere: 3,
     tubeRollCount,

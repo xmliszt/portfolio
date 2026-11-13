@@ -73,6 +73,7 @@ import { isAirPurifierRunning } from "@/lib/laundromat/weather/is-air-purifier-r
 import { cn } from "@/lib/utils";
 
 import { BOARD_DIALOG_SIZE_PX, BoardDialog } from "./board/board-dialog";
+import { useBookshelfScene } from "./bookshelf/use-bookshelf-scene";
 import { useDecorationReactions } from "./decorations/use-decoration-reactions";
 import { useLaundromatCopy } from "./i18n/use-laundromat-copy";
 import { useLocalWeather } from "./local-weather/use-local-weather";
@@ -124,6 +125,7 @@ const TOOLTIP_DELAY_MS = 300;
 const TOUCH_TOOLTIP_HOLD_MS = 1500;
 const FOCUS_TARGETS = [
   "shelf",
+  "bookshelf",
   "notebook",
   "board",
   "weather",
@@ -336,6 +338,13 @@ export function LaundromatScene(props: LaundromatSceneProps) {
             },
           ];
         });
+  const bookshelfScene = useBookshelfScene({
+    layout,
+    config,
+    copy,
+    highlightedId,
+    onOpenBook: () => undefined,
+  });
   const tvSettings = appliances.tvDetails;
   const drawingConfig = useMemo(
     () => ({
@@ -729,7 +738,10 @@ export function LaundromatScene(props: LaundromatSceneProps) {
     copy,
   });
   const isShelfFocusBlocked =
-    focus === "shelf" && shelf !== undefined && !shelfDescription.ready;
+    (focus === "shelf" && shelf !== undefined && !shelfDescription.ready) ||
+    (focus === "bookshelf" &&
+      bookshelfScene.bookshelf !== undefined &&
+      !bookshelfScene.description.ready);
   useEffect(() => {
     if (!isShelfFocusBlocked) return;
     const params = new URLSearchParams(searchParams.toString());
@@ -748,6 +760,7 @@ export function LaundromatScene(props: LaundromatSceneProps) {
     },
     basket,
     shelfBookNumbers: filledBooks.map(({ number }) => number),
+    bookshelf: bookshelfScene.view,
     notebookNumber: coverNumber,
     peopleHere,
     tubeRollCount,
@@ -828,6 +841,8 @@ export function LaundromatScene(props: LaundromatSceneProps) {
         return describeLaundryBasket({ basket, copy });
       case "shelf":
         return shelfDescription;
+      case "bookshelf":
+        return bookshelfScene.description;
       case "tip-jar":
         return tip?.jar === undefined
           ? describeSceneObject({ object: laidOut.object, copy })
@@ -1265,7 +1280,10 @@ export function LaundromatScene(props: LaundromatSceneProps) {
       return;
     }
     const target = findFocusTarget({ objectId, config });
-    if (target === "shelf" && !shelfDescription.ready) {
+    if (
+      (target === "shelf" && !shelfDescription.ready) ||
+      (target === "bookshelf" && !bookshelfScene.description.ready)
+    ) {
       if (focus !== "room") setFocus("room");
       return;
     }
@@ -1509,6 +1527,11 @@ export function LaundromatScene(props: LaundromatSceneProps) {
           id: book.id,
           bounds: book.bounds,
           text: () => book.tooltip,
+        })),
+        bookshelfScene.hitTargets.map((target) => ({
+          id: target.id,
+          bounds: target.bounds,
+          text: () => target.tooltip,
         }))
       )
       .find(({ id }) => id === tooltipId);
@@ -1774,6 +1797,24 @@ export function LaundromatScene(props: LaundromatSceneProps) {
                 showTooltip({ objectId: book.id, source: "keyboard" })
               }
               onHideTooltip={() => hideTooltip(book.id)}
+            />
+          ))}
+        {focus === "bookshelf" &&
+          bookshelfScene.hitTargets.map((target) => (
+            <ShelfBookButton
+              key={target.id}
+              id={target.id}
+              outline={target.outline}
+              bounds={target.bounds}
+              label={target.label}
+              onActivate={target.onActivate}
+              onPointerShowTooltip={() =>
+                showTooltip({ objectId: target.id, source: "pointer" })
+              }
+              onKeyboardShowTooltip={() =>
+                showTooltip({ objectId: target.id, source: "keyboard" })
+              }
+              onHideTooltip={() => hideTooltip(target.id)}
             />
           ))}
       </div>

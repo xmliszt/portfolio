@@ -590,6 +590,25 @@ export const zhHans = {
       `打开第 ${o.number} 本笔记本，${o.span}，${o.entries}`,
     entryCount: (o: { count: number }) => `${o.count} 条留言`,
   },
+  bookshelf: {
+    loadingLabel: "书柜，正在查看推荐的书",
+    loadingTooltip: "正在看书柜…",
+    offlineLabel: "书柜，暂时离线",
+    offlineTooltip: "书柜暂时离线",
+    emptyTooltip: "书柜里还没有书",
+    readyLabel: "看看放着客人推荐好书的书柜",
+    readyTooltip: "客人推荐的书",
+    rows: { loved: "最受喜爱", fresh: "新到的书" },
+    holder: (o: { row: string; page: number; pageCount: number }) =>
+      `${o.row} · ${o.page}/${o.pageCount}`,
+    previousPage: (o: { row: string }) => `${o.row}的上一页`,
+    nextPage: (o: { row: string }) => `${o.row}的下一页`,
+    bookLabel: (o: { title: string; authors: string; loves: string }) =>
+      `${o.title}，${o.authors}，${o.loves}`,
+    loves: (o: { count: number }) => `${o.count} 颗心`,
+    bookTooltip: (o: { title: string; authors: string }) =>
+      `${o.title} · ${o.authors}`,
+  },
   notebook: {
     objectLabel: "打开笔记本",
     objectTooltip: "陌生人的留言",

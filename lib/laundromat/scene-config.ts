@@ -10,7 +10,7 @@ type Placement = { id: string; position: IsoPoint; size: IsoSize };
 export type MachineKind = "washer" | "dryer";
 
 export type FurnitureKind =
-  | "counter"
+  | "bookshelf"
   | "coffee-machine"
   | "tv"
   | "window"
@@ -47,6 +47,7 @@ export type SceneObject =
 
 type FocusTargets = {
   shelf: { objectId: string };
+  bookshelf: { objectId: string };
   notebook: { objectId: string };
   board: { objectId: string };
   weather: { objectId: string };
@@ -397,8 +398,8 @@ export const sceneConfig: SceneConfig = {
       size: { w: 2, d: 2, h: 2.8 },
     },
     {
-      id: "counter",
-      kind: "counter",
+      id: "bookshelf",
+      kind: "bookshelf",
       position: { x: 10.5, y: 0, z: 0 },
       size: { w: 3, d: 1.8, h: 2.8 },
     },
@@ -538,6 +539,7 @@ export const sceneConfig: SceneConfig = {
   camera: {
     focusTargets: {
       shelf: { objectId: "shelf" },
+      bookshelf: { objectId: "bookshelf" },
       notebook: { objectId: "notebook" },
       board: { objectId: "board" },
       weather: { objectId: "weather-panel" },

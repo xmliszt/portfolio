@@ -614,6 +614,31 @@ export const ru = {
     entryCount: (o) =>
       `${o.count} ${pluralize({ count: o.count, one: "запись", few: "записи", many: "записей" })}`,
   },
+  bookshelf: {
+    loadingLabel: "Книжный шкаф, ищет рекомендованные книги",
+    loadingTooltip: "заглядываю в книжный шкаф…",
+    offlineLabel: "Книжный шкаф, сейчас не в сети",
+    offlineTooltip: "книжный шкаф сейчас не в сети",
+    emptyTooltip: "в шкафу пока нет книг",
+    readyLabel: "Посмотреть книжный шкаф с книгами, которые советуют гости",
+    readyTooltip: "книги, которые советуют гости",
+    rows: { loved: "самые любимые", fresh: "новые поступления" },
+    holder: (o: { row: string; page: number; pageCount: number }) =>
+      `${o.row} · ${o.page}/${o.pageCount}`,
+    previousPage: (o: { row: string }) => `Предыдущая страница: ${o.row}`,
+    nextPage: (o: { row: string }) => `Следующая страница: ${o.row}`,
+    bookLabel: (o: { title: string; authors: string; loves: string }) =>
+      `${o.title}, ${o.authors}, ${o.loves}`,
+    loves: (o: { count: number }) =>
+      o.count % 10 === 1 && o.count % 100 !== 11
+        ? `${o.count} сердечко`
+        : [2, 3, 4].includes(o.count % 10) &&
+            ![12, 13, 14].includes(o.count % 100)
+          ? `${o.count} сердечка`
+          : `${o.count} сердечек`,
+    bookTooltip: (o: { title: string; authors: string }) =>
+      `${o.title} · ${o.authors}`,
+  },
   notebook: {
     objectLabel: "Открыть блокнот",
     objectTooltip: "записки от незнакомцев",

@@ -6,13 +6,13 @@ import type { IsoProjection } from "@/lib/laundromat/project-iso-point";
 import type { SceneConfig } from "@/lib/laundromat/scene-config";
 import { isAirPurifierRunning } from "@/lib/laundromat/weather/is-air-purifier-running";
 
+import { BookshelfDrawing } from "./bookshelf/bookshelf-drawing";
 import { AirPurifierDrawing } from "./air-purifier-drawing";
 import { BasketDrawing } from "./basket-drawing";
 import { BoardDrawing } from "./board-drawing";
 import { ClockDrawing } from "./clock-drawing";
 import { CoffeeMachineDrawing } from "./coffee-machine-drawing";
 import { CoinMachineDrawing } from "./coin-machine-drawing";
-import { CounterDrawing } from "./counter-drawing";
 import { InstantCameraDrawing } from "./instant-camera-drawing";
 import { MachineDrawing } from "./machine-drawing";
 import { MatDrawing } from "./mat-drawing";
@@ -148,8 +148,8 @@ export function SceneObjectDrawing(props: SceneObjectDrawingProps) {
       return <BasketDrawing {...shared} contents={views.basket} />;
     case "mat":
       return <MatDrawing {...shared} />;
-    case "counter":
-      return <CounterDrawing {...shared} />;
+    case "bookshelf":
+      return <BookshelfDrawing {...shared} view={views.bookshelf} />;
     case "board":
       return (
         <BoardDrawing

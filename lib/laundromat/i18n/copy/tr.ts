@@ -594,6 +594,25 @@ export const tr = {
     bookLabel: (o) => `Defteri aç: No. ${o.number}, ${o.span}, ${o.entries}`,
     entryCount: (o) => `${o.count} not`,
   },
+  bookshelf: {
+    loadingLabel: "Kitaplık, önerilen kitaplara bakıyor",
+    loadingTooltip: "kitaplığa bakılıyor…",
+    offlineLabel: "Kitaplık, şu an çevrimdışı",
+    offlineTooltip: "kitaplık şu an çevrimdışı",
+    emptyTooltip: "kitaplıkta henüz kitap yok",
+    readyLabel: "Ziyaretçilerin önerdiği kitapların olduğu kitaplığa bak",
+    readyTooltip: "ziyaretçilerin önerdiği kitaplar",
+    rows: { loved: "en sevilenler", fresh: "yeni gelenler" },
+    holder: (o: { row: string; page: number; pageCount: number }) =>
+      `${o.row} · ${o.page}/${o.pageCount}`,
+    previousPage: (o: { row: string }) => `${o.row} için önceki sayfa`,
+    nextPage: (o: { row: string }) => `${o.row} için sonraki sayfa`,
+    bookLabel: (o: { title: string; authors: string; loves: string }) =>
+      `${o.title}, ${o.authors}, ${o.loves}`,
+    loves: (o: { count: number }) => `${o.count} kalp`,
+    bookTooltip: (o: { title: string; authors: string }) =>
+      `${o.title} · ${o.authors}`,
+  },
   notebook: {
     objectLabel: "Defteri aç",
     objectTooltip: "yabancılardan notlar",

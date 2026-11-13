@@ -615,6 +615,25 @@ export const ja = {
       `ノート No. ${o.number} を開く、${o.span}、${o.entries}`,
     entryCount: (o: { count: number }) => `${o.count} 件のメモ`,
   },
+  bookshelf: {
+    loadingLabel: "本棚、おすすめの本を確認中",
+    loadingTooltip: "本棚を確認中…",
+    offlineLabel: "本棚、いまはオフライン",
+    offlineTooltip: "本棚はいまオフライン",
+    emptyTooltip: "本棚にはまだ本がない",
+    readyLabel: "お客さんがすすめる本の本棚を見る",
+    readyTooltip: "お客さんがすすめる本",
+    rows: { loved: "いちばん人気", fresh: "新しく入った本" },
+    holder: (o: { row: string; page: number; pageCount: number }) =>
+      `${o.row} · ${o.page}/${o.pageCount}`,
+    previousPage: (o: { row: string }) => `${o.row}の前のページ`,
+    nextPage: (o: { row: string }) => `${o.row}の次のページ`,
+    bookLabel: (o: { title: string; authors: string; loves: string }) =>
+      `${o.title}、${o.authors}、${o.loves}`,
+    loves: (o: { count: number }) => `ハート ${o.count}`,
+    bookTooltip: (o: { title: string; authors: string }) =>
+      `${o.title} · ${o.authors}`,
+  },
   notebook: {
     objectLabel: "ノートを開く",
     objectTooltip: "知らない誰かのメモ",

@@ -52,7 +52,7 @@ function getBlocker(object: SceneObject) {
       return topSlab(STOOL_SEAT_THICKNESS);
     case "washer":
     case "dryer":
-    case "counter":
+    case "bookshelf":
     case "coffee-machine":
     case "tv":
     case "clock":
