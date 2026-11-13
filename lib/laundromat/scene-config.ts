@@ -45,13 +45,19 @@ export type SceneObject =
   | (Placement & { kind: MachineKind; number: number })
   | (Placement & { kind: FurnitureKind });
 
+type FocusTargetConfig = {
+  objectId: string;
+  /** Smallest on-screen size of one iso unit while focused, above `maxFocusZoom`, kept only while the object's front face still fits the viewport. */
+  minUnitPx?: number;
+};
+
 type FocusTargets = {
-  shelf: { objectId: string };
-  bookshelf: { objectId: string };
-  notebook: { objectId: string };
-  board: { objectId: string };
-  weather: { objectId: string };
-  coin: { objectId: string };
+  shelf: FocusTargetConfig;
+  bookshelf: FocusTargetConfig;
+  notebook: FocusTargetConfig;
+  board: FocusTargetConfig;
+  weather: FocusTargetConfig;
+  coin: FocusTargetConfig;
 };
 
 export type FocusTarget = keyof FocusTargets;
@@ -539,7 +545,7 @@ export const sceneConfig: SceneConfig = {
   camera: {
     focusTargets: {
       shelf: { objectId: "shelf" },
-      bookshelf: { objectId: "bookshelf" },
+      bookshelf: { objectId: "bookshelf", minUnitPx: 185 },
       notebook: { objectId: "notebook" },
       board: { objectId: "board" },
       weather: { objectId: "weather-panel" },

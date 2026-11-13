@@ -24,8 +24,6 @@ import { RoomLampGlow } from "./room-lamp-glow";
 import { RoomLight } from "./room-light";
 import { WindowFaceLight } from "./window-face-light";
 
-const FRONT_OBJECT_OPACITY = 0.25;
-
 type RoomDrawingProps = {
   layout: SceneLayout;
   highlightedId: string | undefined;
@@ -105,6 +103,19 @@ export function RoomDrawing(props: RoomDrawingProps) {
   const focused = layout.objects.find(
     ({ object }) => object.id === props.focusedObjectId
   );
+  const blockingIds = new Set(
+    focused === undefined
+      ? []
+      : stationaryObjects
+          .filter(
+            (laidOut) =>
+              isFootprintInFront({
+                front: laidOut.object,
+                back: focused.object,
+              }) && doBoundsOverlap(laidOut.bounds, focused.bounds)
+          )
+          .map(({ object }) => object.id)
+  );
   return (
     <svg
       aria-hidden
@@ -167,8 +178,13 @@ export function RoomDrawing(props: RoomDrawingProps) {
                 {...objectProps}
               />
             ))}
-          <SceneObjectDrawing laidOut={laidOut} {...objectProps} />
-          {renderFaceLight(laidOut)}
+          <g
+            className="transition-opacity duration-500"
+            opacity={blockingIds.has(laidOut.object.id) ? 0 : 1}
+          >
+            <SceneObjectDrawing laidOut={laidOut} {...objectProps} />
+            {renderFaceLight(laidOut)}
+          </g>
         </Fragment>
       ))}
       {movingObjects
@@ -232,23 +248,6 @@ export function RoomDrawing(props: RoomDrawingProps) {
               )
             );
           })}
-          <g opacity={FRONT_OBJECT_OPACITY}>
-            {stationaryObjects
-              .filter(
-                (laidOut) =>
-                  isFootprintInFront({
-                    front: laidOut.object,
-                    back: focused.object,
-                  }) && doBoundsOverlap(laidOut.bounds, focused.bounds)
-              )
-              .map((laidOut) => (
-                <SceneObjectDrawing
-                  key={laidOut.object.id}
-                  laidOut={laidOut}
-                  {...objectProps}
-                />
-              ))}
-          </g>
         </>
       )}
     </svg>

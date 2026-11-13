@@ -1,7 +1,9 @@
-import type { SceneLayout } from "./build-scene-layout";
+import type { SceneLayout, ScreenBounds } from "./build-scene-layout";
 import { isInteractiveSceneObject } from "./is-interactive-scene-object";
 import type { CameraFocus } from "./parse-camera-focus";
-import type { SceneConfig } from "./scene-config";
+import type { IsoProjection } from "./project-iso-point";
+import { projectIsoPoint } from "./project-iso-point";
+import type { SceneConfig, SceneObject } from "./scene-config";
 
 export type Camera = { x: number; y: number; scale: number };
 
@@ -40,7 +42,40 @@ function getRoomScale(options: {
   );
 }
 
-/** Return the translate and scale that frame the room, or zoom onto the focused object leaving room around it. */
+/** Return the scene-pixel bounds of the front face (+y) of `object`. */
+function getFrontFaceBounds(options: {
+  object: SceneObject;
+  projection: IsoProjection;
+}) {
+  const { position: p, size } = options.object;
+  const corners = [
+    { x: p.x, z: p.z },
+    { x: p.x + size.w, z: p.z },
+    { x: p.x, z: p.z + size.h },
+    { x: p.x + size.w, z: p.z + size.h },
+  ].map(({ x, z }) =>
+    projectIsoPoint({
+      point: { x, y: p.y + size.d, z },
+      projection: options.projection,
+    })
+  );
+  const xs = corners.map((corner) => corner.x);
+  const ys = corners.map((corner) => corner.y);
+  return {
+    x: Math.min(...xs),
+    y: Math.min(...ys),
+    width: Math.max(...xs) - Math.min(...xs),
+    height: Math.max(...ys) - Math.min(...ys),
+  } satisfies ScreenBounds;
+}
+
+/** Return the scale at which `frame` fills `viewport` with no padding. */
+function getFullScale(options: { frame: ScreenBounds; viewport: Viewport }) {
+  const { frame, viewport } = options;
+  return Math.min(viewport.width / frame.width, viewport.height / frame.height);
+}
+
+/** Return the translate and scale that frame the room, or zoom onto the focused object leaving room around it, closer when the target sets `minUnitPx`. */
 export function computeCamera(options: {
   focus: CameraFocus;
   viewport: Viewport;
@@ -49,32 +84,47 @@ export function computeCamera(options: {
 }) {
   const { focus, viewport, layout, config } = options;
   const roomScale = getRoomScale({ viewport, layout, config });
+  const focusTarget =
+    focus === "room" ? undefined : config.camera.focusTargets[focus];
   const target =
-    focus === "room"
+    focusTarget === undefined
       ? undefined
-      : layout.objects.find(
-          ({ object }) =>
-            object.id === config.camera.focusTargets[focus].objectId
-        );
-  const frame = target?.bounds ?? {
-    x: 0,
-    y: 0,
-    ...layout.size,
-  };
-  const fill = 1 - 2 * config.camera.focusPaddingRatio;
-  const scale =
-    target === undefined
-      ? roomScale
-      : Math.min(
-          Math.max(
-            roomScale,
-            Math.min(
-              (viewport.width * fill) / frame.width,
-              (viewport.height * fill) / frame.height
-            )
-          ),
-          roomScale * config.camera.maxFocusZoom
-        );
+      : layout.objects.find(({ object }) => object.id === focusTarget.objectId);
+  const fitted = (() => {
+    if (target === undefined) {
+      return {
+        frame: { x: 0, y: 0, ...layout.size },
+        scale: roomScale,
+      };
+    }
+    const fill = 1 - 2 * config.camera.focusPaddingRatio;
+    return {
+      frame: target.bounds,
+      scale: Math.min(
+        Math.max(
+          roomScale,
+          getFullScale({ frame: target.bounds, viewport }) * fill
+        ),
+        roomScale * config.camera.maxFocusZoom
+      ),
+    };
+  })();
+  const { frame, scale } = (() => {
+    if (target === undefined || focusTarget?.minUnitPx === undefined) {
+      return fitted;
+    }
+    const front = getFrontFaceBounds({
+      object: target.object,
+      projection: layout.projection,
+    });
+    const legibleScale = Math.min(
+      focusTarget.minUnitPx / layout.projection.unit,
+      getFullScale({ frame: front, viewport })
+    );
+    return legibleScale > fitted.scale
+      ? { frame: front, scale: legibleScale }
+      : fitted;
+  })();
   return {
     x: viewport.width / 2 - (frame.x + frame.width / 2) * scale,
     y: viewport.height / 2 - (frame.y + frame.height / 2) * scale,

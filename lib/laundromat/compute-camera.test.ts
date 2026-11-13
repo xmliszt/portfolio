@@ -4,6 +4,7 @@ import { test } from "node:test";
 import { buildSceneLayout } from "./build-scene-layout";
 import { computeCamera, MIN_HIT_TARGET_PX } from "./compute-camera";
 import { isInteractiveSceneObject } from "./is-interactive-scene-object";
+import { projectIsoPoint } from "./project-iso-point";
 import { sceneConfig } from "./scene-config";
 
 const layout = buildSceneLayout({ config: sceneConfig, unit: 40 });
@@ -86,7 +87,7 @@ test("frames the whole room on a phone instead of zooming in on its centre", () 
   );
 });
 
-for (const focus of ["shelf", "bookshelf", "notebook", "weather"] as const) {
+for (const focus of ["shelf", "notebook", "weather"] as const) {
   test(`centres the ${focus} and leaves the room visible around it`, () => {
     const room = computeCamera({
       focus: "room",
@@ -112,3 +113,49 @@ for (const focus of ["shelf", "bookshelf", "notebook", "weather"] as const) {
     assert.ok(bounds.height * camera.scale <= laptop.height * 0.6 + 1e-6);
   });
 }
+
+test("zooms the bookshelf until one unit is `minUnitPx`, keeping its front face inside the viewport", () => {
+  const minUnitPx = sceneConfig.camera.focusTargets.bookshelf.minUnitPx;
+  assert.ok(minUnitPx !== undefined);
+  const object = sceneConfig.objects.find(({ id }) => id === "bookshelf");
+  assert.ok(object);
+  const { position: p, size } = object;
+  for (const viewport of [laptop, { width: 1190, height: 783 }]) {
+    const camera = computeCamera({
+      focus: "bookshelf",
+      viewport,
+      layout,
+      config: sceneConfig,
+    });
+    const frontCorners = [
+      { x: p.x, z: p.z },
+      { x: p.x + size.w, z: p.z },
+      { x: p.x, z: p.z + size.h },
+      { x: p.x + size.w, z: p.z + size.h },
+    ].map(({ x, z }) => {
+      const point = projectIsoPoint({
+        point: { x, y: p.y + size.d, z },
+        projection: layout.projection,
+      });
+      return {
+        x: point.x * camera.scale + camera.x,
+        y: point.y * camera.scale + camera.y,
+      };
+    });
+    for (const corner of frontCorners) {
+      assert.ok(corner.x >= -1e-6 && corner.x <= viewport.width + 1e-6);
+      assert.ok(corner.y >= -1e-6 && corner.y <= viewport.height + 1e-6);
+    }
+    const isFrontFull = frontCorners.some(
+      (corner) =>
+        Math.abs(corner.y) < 1e-6 ||
+        Math.abs(corner.y - viewport.height) < 1e-6 ||
+        Math.abs(corner.x) < 1e-6 ||
+        Math.abs(corner.x - viewport.width) < 1e-6
+    );
+    assert.ok(
+      layout.projection.unit * camera.scale >= minUnitPx - 1e-6 || isFrontFull,
+      `unit is ${layout.projection.unit * camera.scale}px`
+    );
+  }
+});
