@@ -420,6 +420,10 @@ export const ptBR = {
       board: "mural",
     },
     updates: {
+      "visitor-bookshelf": {
+        title: "uma estante de recomendações",
+        body: "O armário embaixo da máquina de café agora é uma estante. Recomende um livro que você ama com um recado e dê um coração aos que você também leria.",
+      },
       "notebook-translation": {
         title: "leia os recados no seu idioma",
         body: "Toque em “traduzir” em um recado para lê-lo no seu idioma, ou ative a tradução automática nas configurações para traduzir cada recado que abrir.",
@@ -651,6 +655,89 @@ export const ptBR = {
       o.count === 1 ? "1 coração" : `${o.count} corações`,
     bookTooltip: (o: { title: string; authors: string }) =>
       `${o.title} · ${o.authors}`,
+    recommend: "recomendar um livro",
+    recommendFirst: "recomendar o primeiro livro",
+    close: "fechar",
+    card: {
+      dialogLabel: (o: { title: string }) => `${o.title}, ficha do livro`,
+      previousBook: "Livro anterior",
+      nextBook: "Próximo livro",
+      position: (o: { row: string; index: number; count: number }) =>
+        `${o.row} · ${o.index} de ${o.count}`,
+      love: "também amei",
+      loved: "você amou este",
+      findOn: (o: { catalogue: string }) => `ver no ${o.catalogue}`,
+      catalogues: { openlibrary: "Open Library", googlebooks: "Google Books" },
+      addedByHand: "adicionado à mão",
+      notesHeading: (o: { count: number }) =>
+        `por que os visitantes recomendam (${o.count})`,
+      aVisitor: "um visitante",
+      loadingNotes: "lendo os recados…",
+      notesOffline: "os recados estão offline no momento",
+      translate: "traduzir",
+      translating: "traduzindo…",
+      showOriginal: "ver original",
+      showTranslation: "ver tradução",
+      translateFailed:
+        "não dá para traduzir agora · tente de novo daqui a pouco",
+      report: "denunciar",
+      reported: "denunciado",
+      loveFailed:
+        "não deu para salvar seu coração · tente de novo daqui a pouco",
+    },
+    reportDialog: {
+      title: "Denunciar este recado?",
+      body: "As denúncias ajudam a manter a estante um lugar gentil.",
+      reasonLabel: "motivo (opcional)",
+      reasonPlaceholder: "o que há de errado com ele?",
+      cancel: "cancelar",
+      confirm: "denunciar",
+    },
+    form: {
+      dialogLabel: "Recomendar um livro",
+      title: "recomendar um livro",
+      searchIntro: "busque o livro · a gente preenche título, autor e capa",
+      searchLabel: "Encontrar o livro",
+      searchPlaceholder: "título, autor ou ISBN",
+      searching: "buscando…",
+      noResults: "nada encontrado nos catálogos",
+      searchOffline: "os catálogos estão offline no momento",
+      onShelf: (o: { loves: string }) => `na estante · ${o.loves}`,
+      addByHand: "não achou? adicione à mão",
+      manualTitle: "adicionar um livro à mão",
+      titleLabel: "título",
+      subtitleLabel: "subtítulo (opcional)",
+      authorsLabel: "autor",
+      next: "próximo",
+      back: "voltar",
+      noteLabel: "por que alguém deveria ler?",
+      notePlaceholder: "uma ou duas linhas · o que ele te deu?",
+      signOffLabel: "assinatura (opcional)",
+      signOffPlaceholder: "Bia, Recife",
+      merge: (o: { loves: string }) =>
+        `já está na estante com ${o.loves} · seu recado se junta aos outros e conta como seu coração`,
+      rules:
+        "sem links · palavrões são ocultados · outros visitantes podem ler no idioma deles",
+      submit: "colocar na estante",
+      submitMerge: "adicionar meu recado",
+      placing: "colocando…",
+      placed: (o: { title: string }) =>
+        `${o.title} está na prateleira dos recém-chegados`,
+      merged: (o: { title: string }) =>
+        `seu recado foi adicionado a ${o.title}`,
+      failures: {
+        empty_body: "escreva uma linha sobre por que você recomenda",
+        body_too_long: "longo demais · no máximo 140 caracteres",
+        sign_off_too_long: "a assinatura está longa demais",
+        contains_link: "sem links · o link do livro é adicionado para você",
+        rate_limited:
+          "uma recomendação a cada dois minutos · tente de novo daqui a pouco",
+        invalid_book: "esse livro não pode ser adicionado · busque de novo",
+        missing_visitor: "algo deu errado · tente de novo",
+        offline:
+          "a estante está offline no momento · tente de novo daqui a pouco",
+      },
+    },
   },
   notebook: {
     objectLabel: "Abrir o caderno",

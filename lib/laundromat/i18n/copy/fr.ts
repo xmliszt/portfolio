@@ -428,6 +428,10 @@ export const fr = {
       board: "panneau",
     },
     updates: {
+      "visitor-bookshelf": {
+        title: "une bibliothèque de recommandations",
+        body: "Le meuble sous la machine à café est maintenant une bibliothèque. Recommande un livre que tu aimes avec un mot, et donne un cœur à ceux que tu lirais aussi.",
+      },
       "notebook-translation": {
         title: "lire les mots dans ta langue",
         body: "Touche « traduire » sur un mot pour le lire dans ta langue, ou active la traduction auto dans les réglages pour traduire chaque mot que tu ouvres.",
@@ -662,6 +666,88 @@ export const fr = {
       o.count <= 1 ? `${o.count} cœur` : `${o.count} cœurs`,
     bookTooltip: (o: { title: string; authors: string }) =>
       `${o.title} · ${o.authors}`,
+    recommend: "recommander un livre",
+    recommendFirst: "recommander le premier livre",
+    close: "fermer",
+    card: {
+      dialogLabel: (o: { title: string }) => `${o.title}, fiche du livre`,
+      previousBook: "Livre précédent",
+      nextBook: "Livre suivant",
+      position: (o: { row: string; index: number; count: number }) =>
+        `${o.row} · ${o.index} sur ${o.count}`,
+      love: "moi aussi je l'ai aimé",
+      loved: "tu l'as aimé",
+      findOn: (o: { catalogue: string }) => `le trouver sur ${o.catalogue}`,
+      catalogues: { openlibrary: "Open Library", googlebooks: "Google Books" },
+      addedByHand: "ajouté à la main",
+      notesHeading: (o: { count: number }) =>
+        `pourquoi les visiteurs le recommandent (${o.count})`,
+      aVisitor: "un visiteur",
+      loadingNotes: "je lis les mots…",
+      notesOffline: "les mots sont hors ligne pour le moment",
+      translate: "traduire",
+      translating: "traduction…",
+      showOriginal: "voir l'original",
+      showTranslation: "voir la traduction",
+      translateFailed:
+        "traduction impossible pour le moment · réessaie bientôt",
+      report: "signaler",
+      reported: "signalé",
+      loveFailed: "ton cœur n'a pas été enregistré · réessaie bientôt",
+    },
+    reportDialog: {
+      title: "Signaler ce mot ?",
+      body: "Les signalements aident à garder la bibliothèque bienveillante.",
+      reasonLabel: "motif (facultatif)",
+      reasonPlaceholder: "qu'est-ce qui ne va pas ?",
+      cancel: "annuler",
+      confirm: "signaler",
+    },
+    form: {
+      dialogLabel: "Recommander un livre",
+      title: "recommander un livre",
+      searchIntro:
+        "cherche le livre · on remplit le titre, l'auteur et la couverture",
+      searchLabel: "Trouver le livre",
+      searchPlaceholder: "titre, auteur ou ISBN",
+      searching: "recherche…",
+      noResults: "aucun résultat dans les catalogues",
+      searchOffline: "les catalogues sont hors ligne pour le moment",
+      onShelf: (o: { loves: string }) => `sur l'étagère · ${o.loves}`,
+      addByHand: "introuvable ? ajoute-le à la main",
+      manualTitle: "ajouter un livre à la main",
+      titleLabel: "titre",
+      subtitleLabel: "sous-titre (facultatif)",
+      authorsLabel: "auteur",
+      next: "suivant",
+      back: "retour",
+      noteLabel: "pourquoi le lire ?",
+      notePlaceholder: "une ou deux lignes · qu'est-ce qu'il t'a apporté ?",
+      signOffLabel: "signature (facultatif)",
+      signOffPlaceholder: "Camille, Lyon",
+      merge: (o: { loves: string }) =>
+        `déjà sur l'étagère avec ${o.loves} · ton mot rejoint les autres et compte comme ton cœur`,
+      rules:
+        "pas de liens · les gros mots sont masqués · les autres visiteurs peuvent le lire dans leur langue",
+      submit: "le poser sur l'étagère",
+      submitMerge: "ajouter mon mot",
+      placing: "rangement…",
+      placed: (o: { title: string }) =>
+        `${o.title} est sur l'étagère des nouveautés`,
+      merged: (o: { title: string }) => `ton mot a été ajouté à ${o.title}`,
+      failures: {
+        empty_body: "écris une ligne sur pourquoi tu le recommandes",
+        body_too_long: "trop long · 140 caractères au maximum",
+        sign_off_too_long: "la signature est trop longue",
+        contains_link: "pas de liens · le lien du livre est ajouté pour toi",
+        rate_limited:
+          "une recommandation toutes les deux minutes · réessaie bientôt",
+        invalid_book: "ce livre ne peut pas être ajouté · cherche à nouveau",
+        missing_visitor: "un problème est survenu · réessaie",
+        offline:
+          "la bibliothèque est hors ligne pour le moment · réessaie bientôt",
+      },
+    },
   },
   notebook: {
     objectLabel: "Ouvrir le carnet",

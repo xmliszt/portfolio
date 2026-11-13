@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { clamp, keyBy } from "lodash";
 
 import type { BookshelfView } from "@/app/laundromat/objects/scene-views";
@@ -45,6 +45,7 @@ export function useBookshelfScene(options: {
   config: SceneConfig;
   copy: LaundromatCopy;
   highlightedId: string | undefined;
+  selected: { row: BookshelfRowKey; bookId: number } | undefined;
   onOpenBook: (options: { row: BookshelfRowKey; book: ShelfBookView }) => void;
 }) {
   const { layout, copy } = options;
@@ -64,6 +65,34 @@ export function useBookshelfScene(options: {
     loved: bookshelf?.kind === "online" ? bookshelf.mostLoved : [],
     fresh: bookshelf?.kind === "online" ? bookshelf.newest : [],
   } satisfies { [key in BookshelfRowKey]: ShelfBookView[] };
+  const rowWidth =
+    object === undefined
+      ? 0
+      : (() => {
+          const rows = getBookshelfRows({
+            position: object.position,
+            size: object.size,
+          });
+          return rows.loved.x1 - rows.loved.x0;
+        })();
+  const selectedPage = (() => {
+    if (options.selected === undefined) return undefined;
+    const { row, bookId } = options.selected;
+    const page = paginateBookshelfRow({
+      bookIds: booksByRow[row].map((book) => book.id),
+      width: rowWidth,
+    }).findIndex((ids) => ids.includes(bookId));
+    return page === -1 ? undefined : { row, page };
+  })();
+  const selectedRow = selectedPage?.row;
+  const selectedIndex = selectedPage?.page;
+  useEffect(() => {
+    if (selectedRow === undefined || selectedIndex === undefined) return;
+    if (pages[selectedRow] === selectedIndex) return;
+    const step = selectedIndex > pages[selectedRow] ? 1 : -1;
+    setDirections((current) => ({ ...current, [selectedRow]: step }));
+    setPages((current) => ({ ...current, [selectedRow]: selectedIndex }));
+  }, [selectedRow, selectedIndex, pages]);
   const description = describeBookshelf({
     state: bookshelf === undefined ? "loading" : bookshelf.kind,
     bookCount: booksByRow.loved.length,
@@ -82,7 +111,14 @@ export function useBookshelfScene(options: {
       rows: { loved: emptyRow, fresh: emptyRow },
       pulled: undefined,
     };
-    return { bookshelf, refresh, description, view, hitTargets: [] };
+    return {
+      bookshelf,
+      refresh,
+      description,
+      view,
+      hitTargets: [],
+      booksByRow,
+    };
   }
   const rows = getBookshelfRows({
     position: object.position,
@@ -117,6 +153,7 @@ export function useBookshelfScene(options: {
     }));
   }
   const pulled = (() => {
+    if (options.selected !== undefined) return options.selected;
     for (const shelf of shelves) {
       const book = shelf.books.find(
         (candidate) =>
@@ -230,5 +267,5 @@ export function useBookshelfScene(options: {
     }));
   });
   const hitTargets = [...bookTargets, ...tabTargets];
-  return { bookshelf, refresh, description, view, hitTargets };
+  return { bookshelf, refresh, description, view, hitTargets, booksByRow };
 }

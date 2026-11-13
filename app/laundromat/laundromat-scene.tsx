@@ -13,6 +13,7 @@ import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { useSearchParams } from "next/navigation";
 
 import { getBoardFrame } from "@/lib/laundromat/board/get-board-frame";
+import type { BookshelfRowKey } from "@/lib/laundromat/bookshelf/bookshelf-row";
 import type { LaidOutControl } from "@/lib/laundromat/build-scene-layout";
 import { buildSceneLayout } from "@/lib/laundromat/build-scene-layout";
 import { describeCoffeeCup } from "@/lib/laundromat/coffee/describe-coffee-cup";
@@ -73,6 +74,7 @@ import { isAirPurifierRunning } from "@/lib/laundromat/weather/is-air-purifier-r
 import { cn } from "@/lib/utils";
 
 import { BOARD_DIALOG_SIZE_PX, BoardDialog } from "./board/board-dialog";
+import { BookshelfOverlay } from "./bookshelf/bookshelf-overlay";
 import { useBookshelfScene } from "./bookshelf/use-bookshelf-scene";
 import { useDecorationReactions } from "./decorations/use-decoration-reactions";
 import { useLaundromatCopy } from "./i18n/use-laundromat-copy";
@@ -151,12 +153,12 @@ function toCameraTransform(camera: Camera) {
 }
 
 function getViewportUncoveredByPanel(options: {
-  focus: CameraFocus;
+  hasPanel: boolean;
   viewport: Viewport;
   isNarrowScreen: boolean;
 }) {
   const { viewport } = options;
-  if (options.focus !== "coin") return viewport;
+  if (!options.hasPanel) return viewport;
   return options.isNarrowScreen
     ? { width: viewport.width, height: viewport.height * COIN_SHEET_ROOM_SHARE }
     : {
@@ -266,6 +268,10 @@ export function LaundromatScene(props: LaundromatSceneProps) {
   const [viewport, setViewport] = useState<Viewport>();
   const [isReady, setIsReady] = useState(false);
   const [highlightedId, setHighlightedId] = useState<string>();
+  const [bookshelfPanel, setBookshelfPanel] = useState<
+    | { kind: "book"; row: BookshelfRowKey; bookId: number }
+    | { kind: "recommend" }
+  >();
   const [tooltipId, setTooltipId] = useState<string>();
   const [openDoorId, setOpenDoorId] = useState<string>();
   const doorTimerRef = useRef<number>(undefined);
@@ -343,7 +349,12 @@ export function LaundromatScene(props: LaundromatSceneProps) {
     config,
     copy,
     highlightedId,
-    onOpenBook: () => undefined,
+    selected:
+      bookshelfPanel?.kind === "book"
+        ? { row: bookshelfPanel.row, bookId: bookshelfPanel.bookId }
+        : undefined,
+    onOpenBook: ({ row, book }) =>
+      setBookshelfPanel({ kind: "book", row, bookId: book.id }),
   });
   const tvSettings = appliances.tvDetails;
   const drawingConfig = useMemo(
@@ -907,7 +918,9 @@ export function LaundromatScene(props: LaundromatSceneProps) {
     const camera = computeCamera({
       focus: cameraFocus,
       viewport: getViewportUncoveredByPanel({
-        focus: cameraFocus,
+        hasPanel:
+          cameraFocus === "coin" ||
+          (cameraFocus === "bookshelf" && bookshelfPanel !== undefined),
         viewport,
         isNarrowScreen,
       }),
@@ -963,7 +976,12 @@ export function LaundromatScene(props: LaundromatSceneProps) {
     config,
     prefersReducedMotion,
     isNarrowScreen,
+    bookshelfPanel,
   ]);
+
+  useEffect(() => {
+    if (focus !== "bookshelf") setBookshelfPanel(undefined);
+  }, [focus]);
 
   useEffect(() => {
     const previousFocus = previousFocusRef.current;
@@ -1491,7 +1509,7 @@ export function LaundromatScene(props: LaundromatSceneProps) {
     const isOnHitTarget =
       event.target instanceof Element &&
       event.target.closest(
-        "[data-hit-target], [data-notebook], [data-board-dialog], [data-weather-dialog], [data-coin-panel]"
+        "[data-hit-target], [data-notebook], [data-board-dialog], [data-weather-dialog], [data-coin-panel], [data-bookshelf-overlay]"
       ) !== null;
     if (!isOnHitTarget) setFocus("room");
   }
@@ -1926,6 +1944,16 @@ export function LaundromatScene(props: LaundromatSceneProps) {
           </motion.div>
         )}
       </AnimatePresence>
+      {focus === "bookshelf" && bookshelfScene.description.ready && (
+        <BookshelfOverlay
+          panel={bookshelfPanel}
+          booksByRow={bookshelfScene.booksByRow}
+          narrow={isNarrowScreen}
+          reducedMotion={prefersReducedMotion}
+          onPanelChange={setBookshelfPanel}
+          refresh={bookshelfScene.refresh}
+        />
+      )}
       {tip !== undefined && (
         <AnimatePresence>
           {focus === "coin" && (
