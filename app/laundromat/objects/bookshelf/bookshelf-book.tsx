@@ -12,7 +12,6 @@ const SPINE_TONES = [
   "--lm-wall",
   "--lm-face-top",
 ] as const;
-const PULL_MS = 260;
 const CJK = /[぀-ヿ㐀-鿿가-힯]/;
 
 type BookshelfBookProps = {
@@ -20,9 +19,8 @@ type BookshelfBookProps = {
   title: string;
   manual: boolean;
   pulled: boolean;
-  pullPx: { x: number; y: number };
+  offsetPx: { x: number; y: number };
   projection: IsoProjection;
-  clipPathId?: string;
 };
 
 export function BookshelfBook(props: BookshelfBookProps) {
@@ -65,17 +63,10 @@ export function BookshelfBook(props: BookshelfBookProps) {
     <g
       data-lm-motion
       className={cn(props.pulled && "stroke-[var(--lm-ink-hi)]")}
-      style={{
-        transform: props.pulled
-          ? `translate(${props.pullPx.x}px, ${props.pullPx.y}px)`
-          : undefined,
-        transition: `transform ${PULL_MS}ms cubic-bezier(0.2, 0.9, 0.3, 1.2), stroke 200ms`,
-      }}
+      transform={`translate(${props.offsetPx.x} ${props.offsetPx.y})`}
+      style={{ transition: "stroke 200ms" }}
     >
-      <g
-        data-book-swap
-        clipPath={props.clipPathId && `url(#${props.clipPathId})`}
-      >
+      <g data-book-swap>
         <polygon
           fill={tint("--lm-face-top")}
           points={toSvgPoints([

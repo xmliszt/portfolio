@@ -4,6 +4,7 @@ import type {
   LaidOutObject,
   SceneLayout,
 } from "@/lib/laundromat/build-scene-layout";
+import { doBoundsOverlap } from "@/lib/laundromat/do-bounds-overlap";
 import { getDaylitTokenStyle } from "@/lib/laundromat/get-daylit-token-style";
 import { getObjectsRestingOn } from "@/lib/laundromat/get-objects-resting-on";
 import { getTimeOfDay } from "@/lib/laundromat/get-time-of-day";
@@ -22,6 +23,8 @@ import { RoomDaylightFill } from "./room-daylight-fill";
 import { RoomLampGlow } from "./room-lamp-glow";
 import { RoomLight } from "./room-light";
 import { WindowFaceLight } from "./window-face-light";
+
+const FRONT_OBJECT_OPACITY = 0.25;
 
 type RoomDrawingProps = {
   layout: SceneLayout;
@@ -229,6 +232,23 @@ export function RoomDrawing(props: RoomDrawingProps) {
               )
             );
           })}
+          <g opacity={FRONT_OBJECT_OPACITY}>
+            {stationaryObjects
+              .filter(
+                (laidOut) =>
+                  isFootprintInFront({
+                    front: laidOut.object,
+                    back: focused.object,
+                  }) && doBoundsOverlap(laidOut.bounds, focused.bounds)
+              )
+              .map((laidOut) => (
+                <SceneObjectDrawing
+                  key={laidOut.object.id}
+                  laidOut={laidOut}
+                  {...objectProps}
+                />
+              ))}
+          </g>
         </>
       )}
     </svg>

@@ -25,6 +25,7 @@ type BookshelfRowBooksProps = {
   spines: BookshelfSpine[];
   direction: 1 | -1;
   pulledBookId: number | undefined;
+  pullProgress: { [key: string]: number };
   pullPx: { x: number; y: number };
   projection: IsoProjection;
   openingLeftX: number;
@@ -169,17 +170,25 @@ export function BookshelfRowBooks(props: BookshelfRowBooksProps) {
         projection={projection}
       />
       <g ref={groupRef} clipPath={isSwapping ? `url(#${clipId})` : undefined}>
-        {placements.map((book, index) => (
-          <BookshelfBook
-            key={book.id}
-            book={book}
-            title={shown[index].title}
-            manual={shown[index].manual}
-            pulled={!isSwapping && props.pulledBookId === book.id}
-            pullPx={props.pullPx}
-            projection={projection}
-          />
-        ))}
+        {placements.map((book, index) => {
+          const progress = isSwapping
+            ? 0
+            : (props.pullProgress[`${row.key}:${book.id}`] ?? 0);
+          return (
+            <BookshelfBook
+              key={book.id}
+              book={book}
+              title={shown[index].title}
+              manual={shown[index].manual}
+              pulled={!isSwapping && props.pulledBookId === book.id}
+              offsetPx={{
+                x: props.pullPx.x * progress,
+                y: props.pullPx.y * progress,
+              }}
+              projection={projection}
+            />
+          );
+        })}
       </g>
       <BookshelfBookend
         row={row}

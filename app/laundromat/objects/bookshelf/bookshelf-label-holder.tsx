@@ -111,8 +111,7 @@ export function BookshelfLabelHolder(props: BookshelfLabelHolderProps) {
           width={width - 12 * k}
           height={height - 6 * k}
           rx={0.8 * k}
-          className="fill-[var(--lm-paper)] stroke-[var(--lm-detail)]"
-          fillOpacity={0.2}
+          className="fill-[var(--lm-face)] stroke-[var(--lm-detail)]"
           strokeWidth={0.5}
         />
         {screw(3 * k)}

@@ -1,8 +1,13 @@
+"use client";
+
 import { BoxBevel } from "@/app/laundromat/objects/box-bevel";
 import { partStroke } from "@/app/laundromat/objects/part-stroke";
 import type { BookshelfView } from "@/app/laundromat/objects/scene-views";
 import { BOOKSHELF_GEOMETRY as G } from "@/lib/laundromat/bookshelf/bookshelf-geometry";
-import type { BookshelfRowKey } from "@/lib/laundromat/bookshelf/bookshelf-row";
+import {
+  BOOKSHELF_ROW_KEYS,
+  type BookshelfRowKey,
+} from "@/lib/laundromat/bookshelf/bookshelf-row";
 import { getBookshelfBookOutline } from "@/lib/laundromat/bookshelf/get-bookshelf-book-outline";
 import { getBookshelfBookPlacements } from "@/lib/laundromat/bookshelf/get-bookshelf-book-placements";
 import { getBookshelfRows } from "@/lib/laundromat/bookshelf/get-bookshelf-rows";
@@ -12,15 +17,17 @@ import type { IsoProjection } from "@/lib/laundromat/project-iso-point";
 import { projectIsoPoint } from "@/lib/laundromat/project-iso-point";
 import { toSvgPoints } from "@/lib/laundromat/to-svg-points";
 
+import { BookshelfBook } from "./bookshelf-book";
 import { BookshelfLabelHolder } from "./bookshelf-label-holder";
-import { BookshelfLiftedBook } from "./bookshelf-lifted-book";
 import { BookshelfRowBooks } from "./bookshelf-row-books";
 import { ShadedBox } from "./shaded-box";
+import { useBookPull } from "./use-book-pull";
 
 const COS_30 = Math.cos(Math.PI / 6);
 const SIN_30 = Math.sin(Math.PI / 6);
 const PLANKS = 7;
 const PIN_STEP = 0.13;
+const LIFT_MARGIN = 0.03;
 
 type BookshelfDrawingProps = {
   laidOut: LaidOutObject;
@@ -86,6 +93,7 @@ export function BookshelfDrawing(props: BookshelfDrawingProps) {
         spines={rowView.spines}
         direction={rowView.direction}
         pulledBookId={view.pulled?.row === key ? view.pulled.bookId : undefined}
+        pullProgress={pullProgress}
         pullPx={pullPx}
         projection={projection}
         openingLeftX={inner.x0}
@@ -107,19 +115,22 @@ export function BookshelfDrawing(props: BookshelfDrawingProps) {
       />
     );
   }
-  const lifted = (() => {
-    if (view.pulled === undefined) return undefined;
-    const { row: key, bookId } = view.pulled;
-    const spines = view.rows[key].spines;
-    const index = spines.findIndex((spine) => spine.id === bookId);
+  const pullProgress = useBookPull(view.pulled);
+  const liftY = p.y + body + LIFT_MARGIN;
+  const lifted = Object.entries(pullProgress).flatMap(([key, progress]) => {
+    const [rowKey, id] = key.split(":");
+    const row = BOOKSHELF_ROW_KEYS.find((candidate) => candidate === rowKey);
+    if (row === undefined) return [];
+    const spines = view.rows[row].spines;
+    const index = spines.findIndex((spine) => spine.id === Number(id));
     const book = getBookshelfBookPlacements({
-      row: rows[key],
+      row: rows[row],
       bookIds: spines.map((spine) => spine.id),
     }).at(index);
-    if (index === -1 || book === undefined) return undefined;
-    return { book, spine: spines[index] };
-  })();
-  const liftClipId = `bookshelf-lift-${props.laidOut.object.id}`;
+    const frontY = (book?.frontY ?? 0) + progress * G.pull;
+    if (index === -1 || book === undefined || frontY <= liftY) return [];
+    return [{ key, row, book, spine: spines[index], progress, frontY }];
+  });
   const pinRows = [p.y + 0.32, p.y + body - 0.3];
   const pinZs = Array.from(
     { length: Math.floor((top - p.z - G.kick - 0.22) / PIN_STEP) },
@@ -262,35 +273,35 @@ export function BookshelfDrawing(props: BookshelfDrawingProps) {
         [p.x + size.w + G.overhang, p.y, top + 0.035],
         0.45
       )}
-      {lifted !== undefined && (
-        <g pointerEvents="none">
-          <defs>
-            <clipPath id={liftClipId}>
-              <polygon
-                points={toSvgPoints(
-                  getBookshelfBookOutline({
-                    book: lifted.book,
-                    projection,
-                    fromY: Math.min(
-                      lifted.book.frontY,
-                      p.y + body + 0.03 - G.pull
-                    ),
-                  }).outline
-                )}
+      {lifted.map(({ key, row, book, spine, progress, frontY }) => {
+        const clipId = `bookshelf-lift-${props.laidOut.object.id}-${key.replace(":", "-")}`;
+        const outline = getBookshelfBookOutline({
+          book: { ...book, frontY },
+          projection,
+          fromY: liftY,
+        }).outline;
+        return (
+          <g key={key} pointerEvents="none">
+            <defs>
+              <clipPath id={clipId}>
+                <polygon points={toSvgPoints(outline)} />
+              </clipPath>
+            </defs>
+            <g clipPath={`url(#${clipId})`}>
+              <BookshelfBook
+                book={book}
+                title={spine.title}
+                manual={spine.manual}
+                pulled={
+                  view.pulled?.row === row && view.pulled.bookId === book.id
+                }
+                offsetPx={{ x: pullPx.x * progress, y: pullPx.y * progress }}
+                projection={projection}
               />
-            </clipPath>
-          </defs>
-          <BookshelfLiftedBook
-            key={`${view.pulled?.row}-${lifted.book.id}`}
-            book={lifted.book}
-            title={lifted.spine.title}
-            manual={lifted.spine.manual}
-            pullPx={pullPx}
-            projection={projection}
-            clipPathId={liftClipId}
-          />
-        </g>
-      )}
+            </g>
+          </g>
+        );
+      })}
     </g>
   );
 }
