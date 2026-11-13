@@ -45,7 +45,7 @@ export function parseGoogleBooksResults(json: unknown): CatalogueBook[] {
       return [];
     }
     const year = /^(\d{4})/.exec(info.publishedDate ?? "")?.at(1);
-    const language = info.language?.toLowerCase();
+    const language = info.language?.toLowerCase().split("-").at(0);
     return [
       {
         source: "googlebooks",

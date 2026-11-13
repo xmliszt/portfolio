@@ -3,7 +3,7 @@ import { test } from "node:test";
 
 import { parseGoogleBooksResults } from "./parse-google-books-results";
 
-test("parseGoogleBooksResults reads a volume and uses its id as the cover reference when it has a thumbnail", () => {
+test("parseGoogleBooksResults reads a volume, keeps the language without its region, and uses the id as the cover reference when it has a thumbnail", () => {
   const [book] = parseGoogleBooksResults({
     items: [
       {
@@ -27,7 +27,7 @@ test("parseGoogleBooksResults reads a volume and uses its id as the cover refere
     subtitle: undefined,
     authors: "余华",
     year: 2012,
-    language: undefined,
+    language: "zh",
     coverRef: "abcDEF12_-",
   });
 });
