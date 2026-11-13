@@ -20,7 +20,7 @@ function buildBook(
   };
 }
 
-test("mergeCatalogueResults takes the two catalogues in turns and stops at the limit", () => {
+test("mergeCatalogueResults takes the two catalogues in turns, Google Books first, and stops at the limit", () => {
   const merged = mergeCatalogueResults({
     openLibrary: [
       buildBook({ sourceId: "OL1W", title: "A" }),
@@ -33,7 +33,34 @@ test("mergeCatalogueResults takes the two catalogues in turns and stops at the l
   });
   assert.deepEqual(
     merged.map((book) => book.sourceId),
-    ["OL1W", "gbgbgbgb01"]
+    ["gbgbgbgb01", "OL1W"]
+  );
+});
+
+test("mergeCatalogueResults keeps the Google Books result when both copies of a book have a cover", () => {
+  const merged = mergeCatalogueResults({
+    openLibrary: [
+      buildBook({
+        sourceId: "OL1W",
+        title: "活着",
+        authors: "余华",
+        coverRef: "1",
+      }),
+    ],
+    googleBooks: [
+      buildBook({
+        source: "googlebooks",
+        sourceId: "gbgbgbgb01",
+        title: "活着",
+        authors: "余华",
+        coverRef: "gbgbgbgb01",
+      }),
+    ],
+    limit: 8,
+  });
+  assert.deepEqual(
+    merged.map((book) => book.sourceId),
+    ["gbgbgbgb01"]
   );
 });
 

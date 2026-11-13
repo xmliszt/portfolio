@@ -1,7 +1,7 @@
 import type { CatalogueBook } from "./catalogue-book";
 import { getCatalogueMatchKey } from "./get-catalogue-match-key";
 
-/** Return up to `limit` results taking Open Library and Google Books in turns, keeping one result per `getCatalogueMatchKey` and preferring the one with a cover. */
+/** Return up to `limit` results taking Google Books and Open Library in turns, Google Books first, keeping one result per `getCatalogueMatchKey`: the one with a cover, or the Google Books one when both or neither have a cover. */
 export function mergeCatalogueResults(options: {
   openLibrary: CatalogueBook[];
   googleBooks: CatalogueBook[];
@@ -12,7 +12,7 @@ export function mergeCatalogueResults(options: {
     options.googleBooks.length
   );
   const interleaved = Array.from({ length: longest }, (_, i) =>
-    [options.openLibrary.at(i), options.googleBooks.at(i)].flatMap((book) =>
+    [options.googleBooks.at(i), options.openLibrary.at(i)].flatMap((book) =>
       book === undefined ? [] : [book]
     )
   ).flat();
