@@ -5,7 +5,8 @@ import { cookies } from "next/headers";
 import { readVisitorId } from "@/lib/laundromat/visitor/read-visitor-id";
 import { signVisitorId } from "@/lib/laundromat/visitor/sign-visitor-id";
 
-const VISITOR_COOKIE = "laundromat_visitor";
+import { VISITOR_COOKIE } from "./visitor-cookie";
+
 const VISITOR_COOKIE_MAX_AGE_S = 60 * 60 * 24 * 365;
 
 /** Return the visitor id from the signed `laundromat_visitor` cookie with `isNew: false`, or set a new random one signed with `secret` and return it with `isNew: true` when the cookie is missing or invalid. */

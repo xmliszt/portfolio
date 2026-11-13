@@ -14,6 +14,205 @@ export type Database = {
   };
   laundro_cafe: {
     Tables: {
+      book_note_authors: {
+        Row: {
+          created_at: string;
+          note_id: number;
+          visitor_id: string;
+        };
+        Insert: {
+          created_at?: string;
+          note_id: number;
+          visitor_id: string;
+        };
+        Update: {
+          created_at?: string;
+          note_id?: number;
+          visitor_id?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "book_note_authors_note_id_fkey";
+            columns: ["note_id"];
+            isOneToOne: true;
+            referencedRelation: "book_notes";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      book_note_reports: {
+        Row: {
+          created_at: string;
+          id: number;
+          note_id: number;
+          reason: string | null;
+          visitor_id: string;
+        };
+        Insert: {
+          created_at?: string;
+          id?: never;
+          note_id: number;
+          reason?: string | null;
+          visitor_id: string;
+        };
+        Update: {
+          created_at?: string;
+          id?: never;
+          note_id?: number;
+          reason?: string | null;
+          visitor_id?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "book_note_reports_note_id_fkey";
+            columns: ["note_id"];
+            isOneToOne: false;
+            referencedRelation: "book_notes";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      book_note_translations: {
+        Row: {
+          body: string | null;
+          created_at: string;
+          locale: string;
+          note_id: number;
+          source_language: string;
+        };
+        Insert: {
+          body?: string | null;
+          created_at?: string;
+          locale: string;
+          note_id: number;
+          source_language: string;
+        };
+        Update: {
+          body?: string | null;
+          created_at?: string;
+          locale?: string;
+          note_id?: number;
+          source_language?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "book_note_translations_note_id_fkey";
+            columns: ["note_id"];
+            isOneToOne: false;
+            referencedRelation: "book_notes";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      book_notes: {
+        Row: {
+          body: string;
+          book_id: number;
+          created_at: string;
+          hidden_at: string | null;
+          id: number;
+          report_count: number;
+          sign_off: string | null;
+        };
+        Insert: {
+          body: string;
+          book_id: number;
+          created_at?: string;
+          hidden_at?: string | null;
+          id?: never;
+          report_count?: number;
+          sign_off?: string | null;
+        };
+        Update: {
+          body?: string;
+          book_id?: number;
+          created_at?: string;
+          hidden_at?: string | null;
+          id?: never;
+          report_count?: number;
+          sign_off?: string | null;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "book_notes_book_id_fkey";
+            columns: ["book_id"];
+            isOneToOne: false;
+            referencedRelation: "books";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      book_votes: {
+        Row: {
+          book_id: number;
+          created_at: string;
+          visitor_id: string;
+        };
+        Insert: {
+          book_id: number;
+          created_at?: string;
+          visitor_id: string;
+        };
+        Update: {
+          book_id?: number;
+          created_at?: string;
+          visitor_id?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "book_votes_book_id_fkey";
+            columns: ["book_id"];
+            isOneToOne: false;
+            referencedRelation: "books";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      books: {
+        Row: {
+          authors: string;
+          cover_ref: string | null;
+          created_at: string;
+          id: number;
+          language: string | null;
+          published_year: number | null;
+          source: string;
+          source_id: string | null;
+          subtitle: string | null;
+          title: string;
+          visible_note_count: number;
+          vote_count: number;
+        };
+        Insert: {
+          authors: string;
+          cover_ref?: string | null;
+          created_at?: string;
+          id?: never;
+          language?: string | null;
+          published_year?: number | null;
+          source: string;
+          source_id?: string | null;
+          subtitle?: string | null;
+          title: string;
+          visible_note_count?: number;
+          vote_count?: number;
+        };
+        Update: {
+          authors?: string;
+          cover_ref?: string | null;
+          created_at?: string;
+          id?: never;
+          language?: string | null;
+          published_year?: number | null;
+          source?: string;
+          source_id?: string | null;
+          subtitle?: string | null;
+          title?: string;
+          visible_note_count?: number;
+          vote_count?: number;
+        };
+        Relationships: [];
+      };
       entry_reports: {
         Row: {
           created_at: string;
@@ -404,6 +603,44 @@ export type Database = {
           isOneToOne: true;
           isSetofReturn: false;
         };
+      };
+      latest_visible_book_notes: {
+        Args: { p_book_ids: number[] };
+        Returns: {
+          body: string;
+          book_id: number;
+          created_at: string;
+          hidden_at: string | null;
+          id: number;
+          report_count: number;
+          sign_off: string | null;
+        }[];
+        SetofOptions: {
+          from: "*";
+          to: "book_notes";
+          isOneToOne: false;
+          isSetofReturn: true;
+        };
+      };
+      recommend_book: {
+        Args: {
+          p_authors: string;
+          p_body: string;
+          p_cover_ref: string;
+          p_language: string;
+          p_published_year: number;
+          p_sign_off: string;
+          p_source: string;
+          p_source_id: string;
+          p_subtitle: string;
+          p_title: string;
+          p_visitor_id: string;
+        };
+        Returns: {
+          book_id: number;
+          is_new_book: boolean;
+          note_id: number;
+        }[];
       };
       record_visit: {
         Args: {
