@@ -13,7 +13,6 @@ import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { useSearchParams } from "next/navigation";
 
 import { getBoardFrame } from "@/lib/laundromat/board/get-board-frame";
-import type { BookshelfRowKey } from "@/lib/laundromat/bookshelf/bookshelf-row";
 import type { LaidOutControl } from "@/lib/laundromat/build-scene-layout";
 import { buildSceneLayout } from "@/lib/laundromat/build-scene-layout";
 import { describeCoffeeCup } from "@/lib/laundromat/coffee/describe-coffee-cup";
@@ -74,7 +73,10 @@ import { isAirPurifierRunning } from "@/lib/laundromat/weather/is-air-purifier-r
 import { cn } from "@/lib/utils";
 
 import { BOARD_DIALOG_SIZE_PX, BoardDialog } from "./board/board-dialog";
-import { BookshelfOverlay } from "./bookshelf/bookshelf-overlay";
+import {
+  BookshelfOverlay,
+  type BookshelfPanelState,
+} from "./bookshelf/bookshelf-overlay";
 import { useBookshelfScene } from "./bookshelf/use-bookshelf-scene";
 import { useDecorationReactions } from "./decorations/use-decoration-reactions";
 import { useLaundromatCopy } from "./i18n/use-laundromat-copy";
@@ -268,10 +270,9 @@ export function LaundromatScene(props: LaundromatSceneProps) {
   const [viewport, setViewport] = useState<Viewport>();
   const [isReady, setIsReady] = useState(false);
   const [highlightedId, setHighlightedId] = useState<string>();
-  const [bookshelfPanel, setBookshelfPanel] = useState<
-    | { kind: "book"; row: BookshelfRowKey; bookId: number }
-    | { kind: "recommend" }
-  >();
+  const [bookshelfPanel, setBookshelfPanel] = useState<BookshelfPanelState>();
+  const [hasUnsavedRecommendation, setHasUnsavedRecommendation] =
+    useState(false);
   const [tooltipId, setTooltipId] = useState<string>();
   const [openDoorId, setOpenDoorId] = useState<string>();
   const doorTimerRef = useRef<number>(undefined);
@@ -281,9 +282,11 @@ export function LaundromatScene(props: LaundromatSceneProps) {
   const isTooltipWarmRef = useRef(false);
 
   const sceneRef = useRef<HTMLDivElement>(null);
-  const previousCameraRef = useRef<{ camera: Camera; focus: CameraFocus }>(
-    undefined
-  );
+  const previousCameraRef = useRef<{
+    camera: Camera;
+    focus: CameraFocus;
+    hasPanel: boolean;
+  }>(undefined);
   const previousFocusRef = useRef(focus);
   const sound = useSoundBoard();
   const decorations = useDecorationReactions(config.details);
@@ -354,7 +357,9 @@ export function LaundromatScene(props: LaundromatSceneProps) {
         ? { row: bookshelfPanel.row, bookId: bookshelfPanel.bookId }
         : undefined,
     onOpenBook: ({ row, book }) =>
-      setBookshelfPanel({ kind: "book", row, bookId: book.id }),
+      hasUnsavedRecommendation
+        ? undefined
+        : setBookshelfPanel({ kind: "book", row, bookId: book.id }),
   });
   const tvSettings = appliances.tvDetails;
   const drawingConfig = useMemo(
@@ -912,15 +917,16 @@ export function LaundromatScene(props: LaundromatSceneProps) {
     return () => observer.disconnect();
   }, []);
 
+  const hasCameraPanel =
+    cameraFocus === "coin" ||
+    (cameraFocus === "bookshelf" && bookshelfPanel !== undefined);
   useEffect(() => {
     const scene = sceneRef.current;
     if (viewport === undefined || scene === null) return;
     const camera = computeCamera({
       focus: cameraFocus,
       viewport: getViewportUncoveredByPanel({
-        hasPanel:
-          cameraFocus === "coin" ||
-          (cameraFocus === "bookshelf" && bookshelfPanel !== undefined),
+        hasPanel: hasCameraPanel,
         viewport,
         isNarrowScreen,
       }),
@@ -928,7 +934,11 @@ export function LaundromatScene(props: LaundromatSceneProps) {
       config,
     });
     const previous = previousCameraRef.current;
-    previousCameraRef.current = { camera, focus: cameraFocus };
+    previousCameraRef.current = {
+      camera,
+      focus: cameraFocus,
+      hasPanel: hasCameraPanel,
+    };
 
     const from =
       previous?.camera ??
@@ -939,7 +949,8 @@ export function LaundromatScene(props: LaundromatSceneProps) {
       void scene.offsetWidth;
       setIsReady(true);
     }
-    const isResize = previous?.focus === cameraFocus;
+    const isResize =
+      previous?.focus === cameraFocus && previous.hasPanel === hasCameraPanel;
     if (isResize || (previous === undefined && cameraFocus === "room")) {
       jumpCameraTo({ scene, camera });
       return;
@@ -976,7 +987,7 @@ export function LaundromatScene(props: LaundromatSceneProps) {
     config,
     prefersReducedMotion,
     isNarrowScreen,
-    bookshelfPanel,
+    hasCameraPanel,
   ]);
 
   useEffect(() => {
@@ -1148,6 +1159,10 @@ export function LaundromatScene(props: LaundromatSceneProps) {
       if (event.key !== "Escape") return;
       event.preventDefault();
       if (isCoinBusy) return;
+      if (focus === "bookshelf" && bookshelfPanel !== undefined) {
+        if (!hasUnsavedRecommendation) setBookshelfPanel(undefined);
+        return;
+      }
       setFocus("room");
     }
     window.addEventListener("keydown", handleKeyDown);
@@ -1506,6 +1521,7 @@ export function LaundromatScene(props: LaundromatSceneProps) {
     if (focus === "room") return;
     if (isCoinBusy) return;
     if (focus === "notebook" && hasUnsavedNote) return;
+    if (focus === "bookshelf" && hasUnsavedRecommendation) return;
     const isOnHitTarget =
       event.target instanceof Element &&
       event.target.closest(
@@ -1951,6 +1967,8 @@ export function LaundromatScene(props: LaundromatSceneProps) {
           narrow={isNarrowScreen}
           reducedMotion={prefersReducedMotion}
           onPanelChange={setBookshelfPanel}
+          unsaved={hasUnsavedRecommendation}
+          onUnsavedChange={setHasUnsavedRecommendation}
           refresh={bookshelfScene.refresh}
         />
       )}

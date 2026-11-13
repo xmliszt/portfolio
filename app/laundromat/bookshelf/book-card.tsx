@@ -1,9 +1,10 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import { useLaundromatCopy } from "@/app/laundromat/i18n/use-laundromat-copy";
 import { ReportEntryDialog } from "@/app/laundromat/notebook/report-entry-dialog";
+import { MAX_TRANSLATED_ENTRIES } from "@/lib/laundromat/notebook/max-translated-entries";
 import { cn } from "@/lib/utils";
 
 import { BookCover } from "./book-cover";
@@ -47,29 +48,27 @@ type BookCardProps = {
 export function BookCard(props: BookCardProps) {
   const { copy } = useLaundromatCopy();
   const text = copy.bookshelf.card;
-  const { book } = props;
   const [notes, setNotes] = useState<NotesState>({ kind: "loading" });
   const [translation, setTranslation] = useState<TranslationState>({
     kind: "original",
   });
   const [love, setLove] = useState({
-    bookId: book.id,
-    loved: book.isLovedByMe,
-    count: book.voteCount,
+    loved: props.book.isLovedByMe,
+    count: props.book.voteCount,
   });
-  const [loveError, setLoveError] = useState(false);
+  const [isLoveFailed, setIsLoveFailed] = useState(false);
   const [reporting, setReporting] = useState<number>();
   const [reportedIds, setReportedIds] = useState<number[]>([]);
-  const current =
-    love.bookId === book.id
-      ? love
-      : { bookId: book.id, loved: book.isLovedByMe, count: book.voteCount };
+  const closeRef = useRef<HTMLButtonElement>(null);
+  const bookId = props.book.id;
+
+  useEffect(() => {
+    closeRef.current?.focus({ preventScroll: true });
+  }, []);
 
   useEffect(() => {
     let isCancelled = false;
-    setNotes({ kind: "loading" });
-    setTranslation({ kind: "original" });
-    loadBookNotes(book.id)
+    loadBookNotes(bookId)
       .catch(() => ({ kind: "offline" as const }))
       .then((result) => {
         if (!isCancelled) setNotes(result);
@@ -77,26 +76,23 @@ export function BookCard(props: BookCardProps) {
     return () => {
       isCancelled = true;
     };
-  }, [book.id]);
+  }, [bookId]);
 
   async function toggleLove() {
-    const loved = !current.loved;
-    setLoveError(false);
-    setLove({
-      bookId: book.id,
-      loved,
-      count: current.count + (loved ? 1 : -1),
-    });
-    const result = await setBookLoved({ bookId: book.id, loved }).catch(() => ({
+    const previous = love;
+    const loved = !previous.loved;
+    setIsLoveFailed(false);
+    setLove({ loved, count: previous.count + (loved ? 1 : -1) });
+    const result = await setBookLoved({ bookId, loved }).catch(() => ({
       kind: "offline" as const,
     }));
     if (result.kind === "saved") {
-      setLove({ bookId: book.id, loved, count: result.voteCount });
+      setLove({ loved, count: result.voteCount });
       props.onChanged();
-    } else {
-      setLove(current);
-      setLoveError(true);
+      return;
     }
+    setLove(previous);
+    setIsLoveFailed(true);
   }
 
   async function translate() {
@@ -107,7 +103,9 @@ export function BookCard(props: BookCardProps) {
     }
     setTranslation({ kind: "translating" });
     const result = await translateBookNotes({
-      noteIds: notes.notes.map((note) => note.id),
+      noteIds: notes.notes
+        .slice(0, MAX_TRANSLATED_ENTRIES)
+        .map((note) => note.id),
       locale: copy.locale,
     }).catch(() => ({ kind: "offline" as const }));
     setTranslation(
@@ -137,13 +135,19 @@ export function BookCard(props: BookCardProps) {
   }
 
   const catalogue =
-    book.source === "manual" ? undefined : text.catalogues[book.source];
+    props.book.source === "manual"
+      ? undefined
+      : text.catalogues[props.book.source];
+  const languageName =
+    props.book.language === undefined
+      ? undefined
+      : new Intl.DisplayNames([copy.locale], { type: "language" }).of(
+          props.book.language
+        );
   const meta = [
-    book.year,
-    book.language &&
-      new Intl.DisplayNames([copy.locale], { type: "language" }).of(
-        book.language
-      ),
+    props.book.year,
+    languageName,
+    props.book.source === "manual" ? text.addedByHand : undefined,
   ]
     .filter((part) => part !== undefined && part !== "")
     .join(" · ");
@@ -192,6 +196,7 @@ export function BookCard(props: BookCardProps) {
           ›
         </button>
         <button
+          ref={closeRef}
           type="button"
           aria-label={copy.bookshelf.close}
           aria-keyshortcuts="Escape"
@@ -203,58 +208,54 @@ export function BookCard(props: BookCardProps) {
       </div>
       <div className="flex min-h-0 flex-col gap-y-4 overflow-y-auto px-3 pt-4 pb-3">
         <div className="flex gap-x-3.5">
-          <BookCover book={book} widthPx={92} />
+          <BookCover book={props.book} widthPx={92} />
           <div className="flex min-w-0 flex-col gap-y-1">
             <h2
               dir="auto"
               className="font-[family-name:var(--lm-font-display)] text-[17px] leading-snug [text-wrap:balance] text-[var(--lm-ink-hi)]"
             >
-              {book.title}
+              {props.book.title}
             </h2>
-            {book.subtitle !== undefined && (
+            {props.book.subtitle !== undefined && (
               <p
                 dir="auto"
                 className="font-[family-name:var(--lm-font-display)] text-[13px] opacity-85"
               >
-                {book.subtitle}
+                {props.book.subtitle}
               </p>
             )}
-            <p dir="auto">{book.authors}</p>
-            <p className="text-[11px] opacity-70">
-              {[meta, book.source === "manual" ? text.addedByHand : undefined]
-                .filter(Boolean)
-                .join(" · ")}
-            </p>
+            <p dir="auto">{props.book.authors}</p>
+            {meta !== "" && <p className="text-[11px] opacity-70">{meta}</p>}
           </div>
         </div>
         <div className="flex flex-wrap items-center gap-x-3 gap-y-2">
           <button
             type="button"
-            aria-pressed={current.loved}
+            aria-pressed={love.loved}
             onClick={toggleLove}
             className={cn(
               "flex cursor-pointer items-center gap-x-1.5 rounded-full border px-3 py-1.5 lowercase outline-none focus-visible:ring-1 focus-visible:ring-[var(--lm-edge)]",
-              current.loved
+              love.loved
                 ? "border-[var(--lm-accent)] text-[var(--lm-accent)]"
                 : "border-[var(--lm-edge)] hover:text-[var(--lm-ink-hi)]"
             )}
           >
-            <span aria-hidden>{current.loved ? "♥" : "♡"}</span>
-            <span className="tabular-nums">{current.count}</span>
-            <span>{current.loved ? text.loved : text.love}</span>
+            <span aria-hidden>{love.loved ? "♥" : "♡"}</span>
+            <span className="tabular-nums">{love.count}</span>
+            <span>{love.loved ? text.loved : text.love}</span>
           </button>
-          {catalogue !== undefined && book.infoUrl !== undefined && (
+          {catalogue !== undefined && props.book.infoUrl !== undefined && (
             <a
-              href={book.infoUrl}
+              href={props.book.infoUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="text-[var(--lm-accent)] lowercase underline underline-offset-2 outline-none focus-visible:ring-1 focus-visible:ring-[var(--lm-edge)]"
+              className="text-[var(--lm-accent)] underline underline-offset-2 outline-none focus-visible:ring-1 focus-visible:ring-[var(--lm-edge)]"
             >
               {text.findOn({ catalogue })} ↗
             </a>
           )}
         </div>
-        {loveError && (
+        {isLoveFailed && (
           <p className="text-[11px] text-[var(--lm-danger)]">
             {text.loveFailed}
           </p>
@@ -263,7 +264,9 @@ export function BookCard(props: BookCardProps) {
           <h3 className="text-[10px] tracking-[0.08em] uppercase opacity-70">
             {text.notesHeading({
               count:
-                notes.kind === "online" ? notes.notes.length : book.noteCount,
+                notes.kind === "online"
+                  ? notes.notes.length
+                  : props.book.noteCount,
             })}
           </h3>
           {notes.kind === "online" && notes.notes.length > 0 && (

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { clamp, keyBy } from "lodash";
 
 import type { BookshelfView } from "@/app/laundromat/objects/scene-views";
@@ -86,13 +86,20 @@ export function useBookshelfScene(options: {
   })();
   const selectedRow = selectedPage?.row;
   const selectedIndex = selectedPage?.page;
+  const selectedBookId = options.selected?.bookId;
+  const pagesRef = useRef(pages);
+  useEffect(() => {
+    pagesRef.current = pages;
+  });
+  // follow the selected book once when it changes, then leave the page tabs to the visitor
   useEffect(() => {
     if (selectedRow === undefined || selectedIndex === undefined) return;
-    if (pages[selectedRow] === selectedIndex) return;
-    const step = selectedIndex > pages[selectedRow] ? 1 : -1;
+    const shown = pagesRef.current[selectedRow];
+    if (shown === selectedIndex) return;
+    const step = selectedIndex > shown ? 1 : -1;
     setDirections((current) => ({ ...current, [selectedRow]: step }));
     setPages((current) => ({ ...current, [selectedRow]: selectedIndex }));
-  }, [selectedRow, selectedIndex, pages]);
+  }, [selectedRow, selectedIndex, selectedBookId]);
   const description = describeBookshelf({
     state: bookshelf === undefined ? "loading" : bookshelf.kind,
     bookCount: booksByRow.loved.length,

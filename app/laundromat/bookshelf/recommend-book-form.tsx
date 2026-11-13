@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { omit } from "lodash";
 
 import { useLaundromatCopy } from "@/app/laundromat/i18n/use-laundromat-copy";
 import { BOOK_TEXT_LIMITS } from "@/lib/laundromat/bookshelf/book-text-limits";
@@ -38,20 +39,12 @@ type Step =
 type Failure = RecommendBookRejection | "offline";
 
 function toCatalogueBook(result: CatalogueResultView): CatalogueBook {
-  return {
-    source: result.source,
-    sourceId: result.sourceId,
-    title: result.title,
-    subtitle: result.subtitle,
-    authors: result.authors,
-    year: result.year,
-    language: result.language,
-    coverRef: result.coverRef,
-  };
+  return omit(result, ["token", "coverUrl", "shelfBook"]);
 }
 
 type RecommendBookFormProps = {
   onClose: () => void;
+  onUnsavedChange: (unsaved: boolean) => void;
   onPlaced: (options: {
     bookId: number;
     title: string;
@@ -74,11 +67,24 @@ export function RecommendBookForm(props: RecommendBookFormProps) {
   const [signOff, setSignOff] = useState("");
   const [failure, setFailure] = useState<Failure>();
   const [isPlacing, setIsPlacing] = useState(false);
-  const firstFieldRef = useRef<HTMLInputElement & HTMLTextAreaElement>(null);
+  const searchRef = useRef<HTMLInputElement>(null);
+  const titleRef = useRef<HTMLInputElement>(null);
+  const noteRef = useRef<HTMLTextAreaElement>(null);
+  const { onUnsavedChange } = props;
+  const isUnsaved = step.kind === "note" && note.trim() !== "";
 
   useEffect(() => {
-    firstFieldRef.current?.focus({ preventScroll: true });
+    const field = { find: searchRef, manual: titleRef, note: noteRef }[
+      step.kind
+    ];
+    field.current?.focus({ preventScroll: true });
   }, [step.kind]);
+
+  useEffect(() => {
+    onUnsavedChange(isUnsaved);
+  }, [isUnsaved, onUnsavedChange]);
+
+  useEffect(() => () => onUnsavedChange(false), [onUnsavedChange]);
 
   useEffect(() => {
     const trimmed = query.trim();
@@ -124,7 +130,6 @@ export function RecommendBookForm(props: RecommendBookFormProps) {
       body,
       signOff: signOff.trim() || undefined,
     }).catch(() => ({ kind: "offline" as const }));
-    setIsPlacing(false);
     if (result.kind === "placed") {
       props.onPlaced({
         bookId: result.bookId,
@@ -133,25 +138,28 @@ export function RecommendBookForm(props: RecommendBookFormProps) {
       });
       return;
     }
+    setIsPlacing(false);
     setFailure(result.kind === "rejected" ? result.reason : "offline");
   }
 
-  const header = (title: string) => (
-    <div className="flex items-start justify-between gap-x-3 px-2 pb-2">
-      <h2 className="pt-1 font-[family-name:var(--lm-font-display)] text-[17px] text-[var(--lm-ink-hi)]">
-        {title}
-      </h2>
-      <button
-        type="button"
-        aria-label={copy.bookshelf.close}
-        aria-keyshortcuts="Escape"
-        className={BOOKSHELF_ICON_BUTTON_CLASS}
-        onClick={props.onClose}
-      >
-        ×
-      </button>
-    </div>
-  );
+  function header(title: string) {
+    return (
+      <div className="flex items-start justify-between gap-x-3 px-2 pb-2">
+        <h2 className="pt-1 font-[family-name:var(--lm-font-display)] text-[17px] text-[var(--lm-ink-hi)]">
+          {title}
+        </h2>
+        <button
+          type="button"
+          aria-label={copy.bookshelf.close}
+          aria-keyshortcuts="Escape"
+          className={BOOKSHELF_ICON_BUTTON_CLASS}
+          onClick={props.onClose}
+        >
+          ×
+        </button>
+      </div>
+    );
+  }
 
   if (step.kind === "find") {
     return (
@@ -160,7 +168,7 @@ export function RecommendBookForm(props: RecommendBookFormProps) {
         <div className="flex min-h-0 flex-col gap-y-3 overflow-y-auto px-2 pb-2">
           <p className="opacity-75">{text.searchIntro}</p>
           <input
-            ref={firstFieldRef}
+            ref={searchRef}
             type="search"
             aria-label={text.searchLabel}
             placeholder={text.searchPlaceholder}
@@ -265,7 +273,7 @@ export function RecommendBookForm(props: RecommendBookFormProps) {
             <label key={field} className="flex flex-col gap-y-1.5">
               <span className="lowercase">{label}</span>
               <input
-                ref={index === 0 ? firstFieldRef : undefined}
+                ref={index === 0 ? titleRef : undefined}
                 value={manual[field]}
                 maxLength={maxLength}
                 required={field !== "subtitle"}
@@ -349,13 +357,18 @@ export function RecommendBookForm(props: RecommendBookFormProps) {
         <label className="flex flex-col gap-y-1.5">
           <span className="sr-only">{text.noteLabel}</span>
           <textarea
-            ref={firstFieldRef}
+            ref={noteRef}
             value={note}
             rows={3}
-            maxLength={BOOK_TEXT_LIMITS.note}
             placeholder={text.notePlaceholder}
             className={`${BOOKSHELF_INPUT_CLASS} resize-none font-[family-name:var(--lm-font-display)] text-[15px] leading-relaxed`}
-            onChange={(event) => setNote(event.currentTarget.value)}
+            onChange={(event) =>
+              setNote(
+                [...event.currentTarget.value]
+                  .slice(0, BOOK_TEXT_LIMITS.note)
+                  .join("")
+              )
+            }
           />
           <span className="self-end text-[10px] tabular-nums opacity-60">
             {[...note].length}/{BOOK_TEXT_LIMITS.note}
@@ -365,10 +378,15 @@ export function RecommendBookForm(props: RecommendBookFormProps) {
           <span className="lowercase">{text.signOffLabel}</span>
           <input
             value={signOff}
-            maxLength={BOOK_TEXT_LIMITS.signOff}
             placeholder={text.signOffPlaceholder}
             className={BOOKSHELF_INPUT_CLASS}
-            onChange={(event) => setSignOff(event.currentTarget.value)}
+            onChange={(event) =>
+              setSignOff(
+                [...event.currentTarget.value]
+                  .slice(0, BOOK_TEXT_LIMITS.signOff)
+                  .join("")
+              )
+            }
           />
         </label>
         {failure !== undefined && (

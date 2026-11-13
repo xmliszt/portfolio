@@ -21,7 +21,7 @@ type BookshelfPanelProps = {
   children: React.ReactNode;
 };
 
-/** Hold a bookshelf card or form beside the zoomed-in shelf: a panel at the right edge on wide screens, a bottom sheet on phones. */
+/** Show `children` in a dialog at the right edge on wide screens, or as a bottom sheet when `narrow`. */
 export function BookshelfPanel(props: BookshelfPanelProps) {
   const offset = props.reducedMotion
     ? {}

@@ -262,6 +262,10 @@ export default function LaundromatPrivacyPage() {
           </li>
           <li>Open Library and Google Books: book searches, from the server</li>
           <li>
+            Vercel AI Gateway and OpenAI: the text of notebook entries and book
+            notes you choose to translate
+          </li>
+          <li>
             Open-Meteo: rounded coordinates and city searches, for weather
           </li>
           <li>YouTube: station pictures, and the TV stream when it is on</li>
