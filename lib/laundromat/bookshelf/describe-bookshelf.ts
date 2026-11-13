@@ -1,6 +1,6 @@
 import type { LaundromatCopy } from "@/lib/laundromat/i18n/laundromat-copy";
 
-/** Return the bookshelf's `label` and `tooltip`, and `ready` once it has loaded, even with no books, so a visitor can open it to recommend the first one. */
+/** Return the bookshelf's `label`, `tooltip` and `ready`, which is `true` only when `state` is `online`, with or without books. */
 export function describeBookshelf(options: {
   state: "loading" | "offline" | "online";
   bookCount: number;

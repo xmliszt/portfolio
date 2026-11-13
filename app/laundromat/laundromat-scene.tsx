@@ -1807,6 +1807,7 @@ export function LaundromatScene(props: LaundromatSceneProps) {
               outline={target.outline}
               bounds={target.bounds}
               label={target.label}
+              disabled={target.disabled}
               onActivate={target.onActivate}
               onPointerShowTooltip={() =>
                 showTooltip({ objectId: target.id, source: "pointer" })

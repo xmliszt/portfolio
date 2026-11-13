@@ -7,8 +7,8 @@ import type { BookshelfSpine } from "@/app/laundromat/objects/scene-views";
 import { useRenderQuality } from "@/app/laundromat/settings/use-render-quality";
 import type { BookshelfRow } from "@/lib/laundromat/bookshelf/bookshelf-row";
 import { getBookshelfBookPlacements } from "@/lib/laundromat/bookshelf/get-bookshelf-book-placements";
+import { getBookshelfRowOpening } from "@/lib/laundromat/bookshelf/get-bookshelf-row-opening";
 import type { IsoProjection } from "@/lib/laundromat/project-iso-point";
-import { projectIsoPoint } from "@/lib/laundromat/project-iso-point";
 import { toSvgPoints } from "@/lib/laundromat/to-svg-points";
 
 import { BookshelfBook } from "./bookshelf-book";
@@ -27,6 +27,7 @@ type BookshelfRowBooksProps = {
   pulledBookId: number | undefined;
   pullProgress: { [key: string]: number };
   pullPx: { x: number; y: number };
+  onSwappingChange: (isSwapping: boolean) => void;
   projection: IsoProjection;
   openingLeftX: number;
   openingRightX: number;
@@ -48,12 +49,25 @@ export function BookshelfRowBooks(props: BookshelfRowBooksProps) {
   const enterPendingRef = useRef(false);
   const incomingKey = toKey(props.spines);
   const shownKey = toKey(shown);
+  const spinesRef = useRef(props.spines);
+  const { onSwappingChange } = props;
 
   useEffect(() => {
-    if (incomingKey === shownKey) return;
+    spinesRef.current = props.spines;
+  });
+
+  useEffect(() => {
+    onSwappingChange(isSwapping);
+  }, [isSwapping, onSwappingChange]);
+
+  useEffect(() => {
+    if (incomingKey === shownKey) {
+      setIsSwapping(false);
+      return;
+    }
     const group = groupRef.current;
     if (group === null) {
-      setShown(props.spines);
+      setShown(spinesRef.current);
       return;
     }
     let cancelled = false;
@@ -89,20 +103,13 @@ export function BookshelfRowBooks(props: BookshelfRowBooksProps) {
       .then(() => {
         if (cancelled) return;
         enterPendingRef.current = true;
-        setShown(props.spines);
+        setShown(spinesRef.current);
       });
     return () => {
       cancelled = true;
       for (const animation of exits) animation.cancel();
     };
-  }, [
-    incomingKey,
-    shownKey,
-    props.spines,
-    props.direction,
-    isCalm,
-    projection.unit,
-  ]);
+  }, [incomingKey, shownKey, props.direction, isCalm, projection.unit]);
 
   useLayoutEffect(() => {
     if (!enterPendingRef.current) return;
@@ -148,14 +155,12 @@ export function BookshelfRowBooks(props: BookshelfRowBooksProps) {
     bookIds: shown.map((spine) => spine.id),
   });
   const endX = (placements.at(-1)?.x1 ?? row.x0) + 0.012;
-  const opening = [
-    { x: props.openingLeftX, z: row.floorZ },
-    { x: props.openingRightX, z: row.floorZ },
-    { x: props.openingRightX, z: row.ceilingZ },
-    { x: props.openingLeftX, z: row.ceilingZ },
-  ].map(({ x, z }) =>
-    projectIsoPoint({ point: { x, y: row.frontY, z }, projection })
-  );
+  const opening = getBookshelfRowOpening({
+    row,
+    leftX: props.openingLeftX,
+    rightX: props.openingRightX,
+    projection,
+  });
   return (
     <g>
       <defs>

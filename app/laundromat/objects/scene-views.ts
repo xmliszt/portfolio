@@ -30,6 +30,7 @@ export type BookshelfRowView = {
   pageCount: number;
   direction: 1 | -1;
   spines: BookshelfSpine[];
+  litTab: "previous" | "next" | undefined;
 };
 
 export type BookshelfView = {

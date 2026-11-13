@@ -1,8 +1,7 @@
+import { IsoBox } from "@/app/laundromat/objects/iso-box";
 import type { BookshelfRow } from "@/lib/laundromat/bookshelf/bookshelf-row";
 import type { IsoProjection } from "@/lib/laundromat/project-iso-point";
 import { projectIsoPoint } from "@/lib/laundromat/project-iso-point";
-
-import { ShadedBox } from "./shaded-box";
 
 const DEPTH = 0.46;
 const BACK_FROM_FRONT = 0.62;
@@ -22,7 +21,8 @@ export function BookshelfBookend(props: BookshelfBookendProps) {
   const y0 = row.frontY - BACK_FROM_FRONT;
   if (props.part === "base") {
     return (
-      <ShadedBox
+      <IsoBox
+        bevel={false}
         position={{ x: x - BASE_REACH, y: y0, z: row.floorZ }}
         size={{ w: BASE_REACH + THICKNESS, d: DEPTH, h: 0.008 }}
         projection={projection}
@@ -43,7 +43,8 @@ export function BookshelfBookend(props: BookshelfBookendProps) {
   });
   return (
     <g>
-      <ShadedBox
+      <IsoBox
+        bevel={false}
         position={{ x, y: y0, z: row.floorZ }}
         size={{ w: THICKNESS, d: DEPTH, h: UPRIGHT_HEIGHT }}
         projection={projection}

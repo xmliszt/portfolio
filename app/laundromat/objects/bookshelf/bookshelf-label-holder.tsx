@@ -5,14 +5,20 @@ import type { IsoProjection } from "@/lib/laundromat/project-iso-point";
 import { projectIsoPoint } from "@/lib/laundromat/project-iso-point";
 import type { IsoPoint, IsoSize } from "@/lib/laundromat/scene-config";
 import { toSvgPoints } from "@/lib/laundromat/to-svg-points";
+import { cn } from "@/lib/utils";
+
+const FONT_SIZE = 6.8;
+const LETTER_SPACING_EM = 0.1;
+const CARD_PADDING = 2;
 
 type BookshelfLabelHolderProps = {
   row: BookshelfRow;
   position: IsoPoint;
   size: IsoSize;
   text: string;
-  hasPrevious: boolean;
-  hasNext: boolean;
+  previousEnabled: boolean;
+  nextEnabled: boolean;
+  litTab: "previous" | "next" | undefined;
   projection: IsoProjection;
 };
 
@@ -32,6 +38,13 @@ export function BookshelfLabelHolder(props: BookshelfLabelHolderProps) {
   });
   const width = (plate.x1 - plate.x0) * unit;
   const height = (plate.z1 - plate.z0) * unit;
+  const cardWidth = width - 12 * k - 2 * CARD_PADDING * k;
+  const charCount = [...props.text].length;
+  // a monospace glyph is about 0.6em wide, plus the letter spacing between glyphs
+  const fontSize = Math.min(
+    FONT_SIZE * k,
+    cardWidth / (charCount * (0.6 + LETTER_SPACING_EM))
+  );
   function screw(cx: number) {
     return (
       <g key={cx}>
@@ -63,7 +76,11 @@ export function BookshelfLabelHolder(props: BookshelfLabelHolderProps) {
     const tip = side === "previous" ? size * 0.32 : size * 0.68;
     const tail = side === "previous" ? size * 0.62 : size * 0.38;
     return (
-      <g transform={tabFace.transform} opacity={enabled ? 1 : 0.3}>
+      <g
+        transform={tabFace.transform}
+        opacity={enabled ? 1 : 0.3}
+        className={cn(props.litTab === side && "stroke-[var(--lm-ink-hi)]")}
+      >
         <rect
           width={size}
           height={size}
@@ -72,8 +89,12 @@ export function BookshelfLabelHolder(props: BookshelfLabelHolderProps) {
           strokeWidth={0.6}
         />
         <path
+          className={
+            props.litTab === side
+              ? "fill-[var(--lm-accent-hi)] stroke-none"
+              : "fill-[var(--lm-detail)] stroke-none"
+          }
           d={`M${tail},${size * 0.24} L${tip},${size / 2} L${tail},${size * 0.76} Z`}
-          className="fill-[var(--lm-detail)] stroke-none"
         />
       </g>
     );
@@ -121,15 +142,15 @@ export function BookshelfLabelHolder(props: BookshelfLabelHolderProps) {
           y={height / 2 + 0.4 * k}
           textAnchor="middle"
           dominantBaseline="central"
-          fontSize={6.8 * k}
-          letterSpacing={0.7 * k}
+          fontSize={fontSize}
+          letterSpacing={fontSize * LETTER_SPACING_EM}
           className="fill-[var(--lm-ink)] stroke-none font-[family-name:var(--lm-font-mono)]"
         >
           {props.text}
         </text>
       </g>
-      {arrow("previous", props.hasPrevious)}
-      {arrow("next", props.hasNext)}
+      {arrow("previous", props.previousEnabled)}
+      {arrow("next", props.nextEnabled)}
     </g>
   );
 }

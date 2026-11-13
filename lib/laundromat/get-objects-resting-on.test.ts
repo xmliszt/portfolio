@@ -1,11 +1,11 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
 
-import { getObjectsRestingOn } from "./get-objects-resting-on";
-import { sceneConfig } from "./scene-config";
 import { bedroomConfig } from "./first-visit/bedroom-config";
 import { applySceneTheme } from "./themes/apply-scene-theme";
 import { themes } from "./themes/themes";
+import { getObjectsRestingOn } from "./get-objects-resting-on";
+import { sceneConfig } from "./scene-config";
 
 function restingIds(objects: typeof sceneConfig.objects) {
   const base = objects.find((object) => object.id === "bookshelf");

@@ -10,6 +10,9 @@ type IsoBoxProps = {
   size: IsoSize;
   projection: IsoProjection;
   bevel?: boolean;
+  front?: string;
+  side?: string;
+  top?: string;
 };
 
 export function IsoBox(props: IsoBoxProps) {
@@ -21,15 +24,24 @@ export function IsoBox(props: IsoBoxProps) {
   return (
     <g>
       <polygon
-        className="fill-[var(--lm-face)]"
+        className={
+          props.front === undefined ? "fill-[var(--lm-face)]" : undefined
+        }
+        fill={props.front}
         points={toSvgPoints(faces.front)}
       />
       <polygon
-        className="fill-[var(--lm-wall)]"
+        className={
+          props.side === undefined ? "fill-[var(--lm-wall)]" : undefined
+        }
+        fill={props.side}
         points={toSvgPoints(faces.side)}
       />
       <polygon
-        className="fill-[var(--lm-face-top)]"
+        className={
+          props.top === undefined ? "fill-[var(--lm-face-top)]" : undefined
+        }
+        fill={props.top}
         points={toSvgPoints(faces.top)}
       />
       {props.bevel !== false && <BoxBevel points={faces.bevel} />}

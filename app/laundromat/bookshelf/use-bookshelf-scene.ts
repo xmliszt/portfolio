@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { clamp, keyBy } from "lodash";
 
 import type { BookshelfView } from "@/app/laundromat/objects/scene-views";
 import {
@@ -8,10 +9,11 @@ import {
   type BookshelfRowKey,
 } from "@/lib/laundromat/bookshelf/bookshelf-row";
 import { describeBookshelf } from "@/lib/laundromat/bookshelf/describe-bookshelf";
+import { getBookshelfBookHitOutline } from "@/lib/laundromat/bookshelf/get-bookshelf-book-hit-outline";
 import { getBookshelfBookId } from "@/lib/laundromat/bookshelf/get-bookshelf-book-id";
-import { getBookshelfBookOutline } from "@/lib/laundromat/bookshelf/get-bookshelf-book-outline";
 import { getBookshelfBookPlacements } from "@/lib/laundromat/bookshelf/get-bookshelf-book-placements";
 import { getBookshelfFaceOutline } from "@/lib/laundromat/bookshelf/get-bookshelf-face-outline";
+import { getBookshelfInnerX } from "@/lib/laundromat/bookshelf/get-bookshelf-inner-x";
 import { getBookshelfLabelHolder } from "@/lib/laundromat/bookshelf/get-bookshelf-label-holder";
 import { getBookshelfRows } from "@/lib/laundromat/bookshelf/get-bookshelf-rows";
 import { paginateBookshelfRow } from "@/lib/laundromat/bookshelf/paginate-bookshelf-row";
@@ -32,6 +34,7 @@ export type BookshelfHitTarget = {
   bounds: ScreenBounds;
   label: string;
   tooltip: string | undefined;
+  disabled: boolean;
   onActivate: () => void;
 };
 
@@ -67,6 +70,7 @@ export function useBookshelfScene(options: {
   });
   if (object === undefined) {
     const emptyRow = {
+      litTab: undefined,
       label: "",
       page: 0,
       pageCount: 1,
@@ -96,11 +100,19 @@ export function useBookshelfScene(options: {
     );
     return { key, row, books: pageBooks, page, pageCount: bookPages.length };
   });
-  function turnPage(key: BookshelfRowKey, step: 1 | -1) {
-    setDirections((current) => ({ ...current, [key]: step }));
+  function turnPage(turn: {
+    key: BookshelfRowKey;
+    step: 1 | -1;
+    pageCount: number;
+  }) {
+    setDirections((current) => ({ ...current, [turn.key]: turn.step }));
     setPages((current) => ({
       ...current,
-      [key]: Math.max(0, current[key] + step),
+      [turn.key]: clamp(
+        Math.min(current[turn.key], turn.pageCount - 1) + turn.step,
+        0,
+        turn.pageCount - 1
+      ),
     }));
   }
   const pulled = (() => {
@@ -114,10 +126,11 @@ export function useBookshelfScene(options: {
     }
     return undefined;
   })();
+  const shelfByKey = keyBy(shelves, (shelf) => shelf.key);
   const view: BookshelfView = {
     rows: {
-      loved: toRowView(shelves[0]),
-      fresh: toRowView(shelves[1]),
+      loved: toRowView(shelfByKey.loved),
+      fresh: toRowView(shelfByKey.fresh),
     },
     pulled,
   };
@@ -131,6 +144,9 @@ export function useBookshelfScene(options: {
       page: shelf.page,
       pageCount: shelf.pageCount,
       direction: directions[shelf.key],
+      litTab: (["previous", "next"] as const).find(
+        (side) => options.highlightedId === `bookshelf-${shelf.key}-${side}`
+      ),
       spines: shelf.books.map((book) => ({
         id: book.id,
         title: book.title,
@@ -138,15 +154,21 @@ export function useBookshelfScene(options: {
       })),
     };
   }
-  const hitTargets = shelves.flatMap((shelf): BookshelfHitTarget[] => {
+  const innerX = getBookshelfInnerX({
+    position: object.position,
+    size: object.size,
+  });
+  const bookTargets = shelves.flatMap((shelf): BookshelfHitTarget[] => {
     const placements = getBookshelfBookPlacements({
       row: shelf.row,
       bookIds: shelf.books.map((book) => book.id),
     });
-    const bookTargets = shelf.books.map((book, index) => ({
+    return shelf.books.map((book, index) => ({
       id: getBookshelfBookId({ row: shelf.key, bookId: book.id }),
-      ...getBookshelfBookOutline({
+      ...getBookshelfBookHitOutline({
         book: placements[index],
+        row: shelf.row,
+        innerX,
         projection: layout.projection,
       }),
       label: copy.bookshelf.bookLabel({
@@ -158,15 +180,19 @@ export function useBookshelfScene(options: {
         title: book.title,
         authors: book.authors,
       }),
+      disabled: false,
       onActivate: () => options.onOpenBook({ row: shelf.key, book }),
     }));
+  });
+  // the label holders hang in front of the shelf below, so their tabs come last and win the click
+  const tabTargets = shelves.flatMap((shelf): BookshelfHitTarget[] => {
     const holder = getBookshelfLabelHolder({
       row: shelf.row,
       position: object.position,
       size: object.size,
     });
     const rowName = copy.bookshelf.rows[shelf.key];
-    const tabs = [
+    return [
       {
         side: "previous" as const,
         step: -1 as const,
@@ -179,24 +205,24 @@ export function useBookshelfScene(options: {
         enabled: shelf.page < shelf.pageCount - 1,
         label: copy.bookshelf.nextPage({ row: rowName }),
       },
-    ].flatMap((tab) =>
-      tab.enabled
-        ? [
-            {
-              id: `bookshelf-${shelf.key}-${tab.side}`,
-              ...getBookshelfFaceOutline({
-                rect: holder[tab.side],
-                y: holder.y + 0.012,
-                projection: layout.projection,
-              }),
-              label: tab.label,
-              tooltip: undefined,
-              onActivate: () => turnPage(shelf.key, tab.step),
-            },
-          ]
-        : []
-    );
-    return [...bookTargets, ...tabs];
+    ].map((tab) => ({
+      id: `bookshelf-${shelf.key}-${tab.side}`,
+      ...getBookshelfFaceOutline({
+        rect: holder[tab.side],
+        y: holder.y + 0.012,
+        projection: layout.projection,
+      }),
+      label: tab.label,
+      tooltip: undefined,
+      disabled: !tab.enabled,
+      onActivate: () =>
+        turnPage({
+          key: shelf.key,
+          step: tab.step,
+          pageCount: shelf.pageCount,
+        }),
+    }));
   });
+  const hitTargets = [...bookTargets, ...tabTargets];
   return { bookshelf, refresh, description, view, hitTargets };
 }

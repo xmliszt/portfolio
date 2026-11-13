@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import omit from "lodash/omit";
+import { omit } from "lodash";
 import {
   animate,
   type AnimationPlaybackControls,

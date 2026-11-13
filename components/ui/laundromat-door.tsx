@@ -2,6 +2,7 @@
 
 import { useEffect, useId, useState } from "react";
 import { animate, motion, useReducedMotion } from "motion/react";
+import { getConvexHull } from "@/lib/laundromat/bookshelf/get-convex-hull";
 
 const COS_30 = Math.cos(Math.PI / 6);
 const SIN_30 = Math.sin(Math.PI / 6);
@@ -33,29 +34,6 @@ function formatPoints(points: ScreenPoint[]) {
 
 function toPoints(points: WallPoint[]) {
   return formatPoints(points.map(toScreen));
-}
-
-/** Return the convex hull of `points`, counter-clockwise, by Andrew's monotone chain. */
-function getHull(points: ScreenPoint[]) {
-  const sorted = points.toSorted((a, b) => a.x - b.x || a.y - b.y);
-  function cross(o: ScreenPoint, a: ScreenPoint, b: ScreenPoint) {
-    return (a.x - o.x) * (b.y - o.y) - (a.y - o.y) * (b.x - o.x);
-  }
-  function chain(input: ScreenPoint[]) {
-    return input.reduce<ScreenPoint[]>((hull, point) => {
-      const next = [...hull];
-      while (
-        next.length >= 2 &&
-        cross(next[next.length - 2], next[next.length - 1], point) <= 0
-      ) {
-        next.pop();
-      }
-      return [...next, point];
-    }, []);
-  }
-  const lower = chain(sorted);
-  const upper = chain(sorted.toReversed());
-  return [...lower.slice(0, -1), ...upper.slice(0, -1)];
 }
 
 /** Return where the ray from the centre of `LAMP` through `point` meets the floor. */
@@ -201,7 +179,7 @@ function getDoorShapes(angleDeg: number) {
   const farRight = castToFloor(aperture[2]);
   const farLeft = castToFloor(aperture[3]);
   const patch = [aperture[0], aperture[1], farRight, farLeft];
-  const beam = getHull([...aperture, farRight, farLeft].map(toScreen));
+  const beam = getConvexHull([...aperture, farRight, farLeft].map(toScreen));
   const castScale = LAMP.up / (LAMP.up - OPENING.height) - 1;
 
   return {

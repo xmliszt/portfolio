@@ -1,6 +1,10 @@
 "use client";
 
+import { useCallback, useId, useState } from "react";
+import { uniq } from "lodash";
+
 import { BoxBevel } from "@/app/laundromat/objects/box-bevel";
+import { IsoBox } from "@/app/laundromat/objects/iso-box";
 import { partStroke } from "@/app/laundromat/objects/part-stroke";
 import type { BookshelfView } from "@/app/laundromat/objects/scene-views";
 import { BOOKSHELF_GEOMETRY as G } from "@/lib/laundromat/bookshelf/bookshelf-geometry";
@@ -10,6 +14,7 @@ import {
 } from "@/lib/laundromat/bookshelf/bookshelf-row";
 import { getBookshelfBookOutline } from "@/lib/laundromat/bookshelf/get-bookshelf-book-outline";
 import { getBookshelfBookPlacements } from "@/lib/laundromat/bookshelf/get-bookshelf-book-placements";
+import { getBookshelfInnerX } from "@/lib/laundromat/bookshelf/get-bookshelf-inner-x";
 import { getBookshelfRows } from "@/lib/laundromat/bookshelf/get-bookshelf-rows";
 import type { LaidOutObject } from "@/lib/laundromat/build-scene-layout";
 import { getBoxFaces } from "@/lib/laundromat/get-box-faces";
@@ -20,7 +25,6 @@ import { toSvgPoints } from "@/lib/laundromat/to-svg-points";
 import { BookshelfBook } from "./bookshelf-book";
 import { BookshelfLabelHolder } from "./bookshelf-label-holder";
 import { BookshelfRowBooks } from "./bookshelf-row-books";
-import { ShadedBox } from "./shaded-box";
 import { useBookPull } from "./use-book-pull";
 
 const COS_30 = Math.cos(Math.PI / 6);
@@ -43,7 +47,28 @@ export function BookshelfDrawing(props: BookshelfDrawingProps) {
   const rows = getBookshelfRows({ position: p, size });
   const body = size.d - G.overhang;
   const top = rows.top;
-  const inner = { x0: p.x + G.side, x1: p.x + size.w - G.side };
+  const innerX = getBookshelfInnerX({ position: p, size });
+  const inner = { x0: innerX.left, x1: innerX.right };
+  const liftIdBase = useId();
+  const [swappingRows, setSwappingRows] = useState<BookshelfRowKey[]>([]);
+  const markLovedSwapping = useCallback(
+    (isSwapping: boolean) => setSwappingRow({ key: "loved", isSwapping }),
+    []
+  );
+  const markFreshSwapping = useCallback(
+    (isSwapping: boolean) => setSwappingRow({ key: "fresh", isSwapping }),
+    []
+  );
+  function setSwappingRow(change: {
+    key: BookshelfRowKey;
+    isSwapping: boolean;
+  }) {
+    setSwappingRows((current) =>
+      change.isSwapping
+        ? uniq([...current, change.key])
+        : current.filter((key) => key !== change.key)
+    );
+  }
   const pullPx = { x: -COS_30 * G.pull * unit, y: SIN_30 * G.pull * unit };
   function at(x: number, y: number, z: number) {
     return projectIsoPoint({ point: { x, y, z }, projection });
@@ -70,7 +95,8 @@ export function BookshelfDrawing(props: BookshelfDrawingProps) {
   function board(z: number) {
     return (
       <g>
-        <ShadedBox
+        <IsoBox
+          bevel={false}
           position={{ x: inner.x0, y: p.y + G.back, z }}
           size={{ w: inner.x1 - inner.x0, d: body - G.back, h: G.board }}
           projection={projection}
@@ -98,6 +124,9 @@ export function BookshelfDrawing(props: BookshelfDrawingProps) {
         projection={projection}
         openingLeftX={inner.x0}
         openingRightX={inner.x1}
+        onSwappingChange={
+          key === "loved" ? markLovedSwapping : markFreshSwapping
+        }
       />
     );
   }
@@ -109,8 +138,9 @@ export function BookshelfDrawing(props: BookshelfDrawingProps) {
         position={p}
         size={size}
         text={rowView.label}
-        hasPrevious={rowView.page > 0}
-        hasNext={rowView.page < rowView.pageCount - 1}
+        previousEnabled={rowView.page > 0}
+        nextEnabled={rowView.page < rowView.pageCount - 1}
+        litTab={rowView.litTab}
         projection={projection}
       />
     );
@@ -120,7 +150,7 @@ export function BookshelfDrawing(props: BookshelfDrawingProps) {
   const lifted = Object.entries(pullProgress).flatMap(([key, progress]) => {
     const [rowKey, id] = key.split(":");
     const row = BOOKSHELF_ROW_KEYS.find((candidate) => candidate === rowKey);
-    if (row === undefined) return [];
+    if (row === undefined || swappingRows.includes(row)) return [];
     const spines = view.rows[row].spines;
     const index = spines.findIndex((spine) => spine.id === Number(id));
     const book = getBookshelfBookPlacements({
@@ -148,7 +178,8 @@ export function BookshelfDrawing(props: BookshelfDrawingProps) {
       strokeWidth={0.75}
       strokeLinejoin="round"
     >
-      <ShadedBox
+      <IsoBox
+        bevel={false}
         position={{ x: p.x + G.kickInset, y: p.y + 0.02, z: p.z }}
         size={{ w: size.w - 2 * G.kickInset, d: body - 0.2, h: G.kick }}
         projection={projection}
@@ -172,7 +203,8 @@ export function BookshelfDrawing(props: BookshelfDrawingProps) {
           0.55
         );
       })}
-      <ShadedBox
+      <IsoBox
+        bevel={false}
         position={{ x: p.x, y: p.y, z: p.z + G.kick }}
         size={{ w: G.side, d: body, h: top - p.z - G.kick }}
         projection={projection}
@@ -204,13 +236,15 @@ export function BookshelfDrawing(props: BookshelfDrawingProps) {
       {labelHolder("fresh")}
       {labelHolder("loved")}
       {rowBooks("loved")}
-      <ShadedBox
+      <IsoBox
+        bevel={false}
         position={{ x: inner.x0, y: p.y + body - 0.05, z: rows.loved.ceilingZ }}
         size={{ w: inner.x1 - inner.x0, d: 0.05, h: top - rows.loved.ceilingZ }}
         projection={projection}
         side="var(--lm-shade-2)"
       />
-      <ShadedBox
+      <IsoBox
+        bevel={false}
         position={{ x: p.x + size.w - G.side, y: p.y, z: p.z + G.kick }}
         size={{ w: G.side, d: body, h: top - p.z - G.kick }}
         projection={projection}
@@ -274,7 +308,7 @@ export function BookshelfDrawing(props: BookshelfDrawingProps) {
         0.45
       )}
       {lifted.map(({ key, row, book, spine, progress, frontY }) => {
-        const clipId = `bookshelf-lift-${props.laidOut.object.id}-${key.replace(":", "-")}`;
+        const clipId = `${liftIdBase}-${key.replace(":", "-")}`;
         const outline = getBookshelfBookOutline({
           book: { ...book, frontY },
           projection,

@@ -56,6 +56,7 @@ const WORKBENCH_BOOKSHELF: BookshelfView = {
       page: 0,
       pageCount: 3,
       direction: 1,
+      litTab: undefined,
       spines: WORKBENCH_BOOKSHELF_TITLES.map((title, index) => ({
         id: index + 1,
         title,
@@ -67,6 +68,7 @@ const WORKBENCH_BOOKSHELF: BookshelfView = {
       page: 0,
       pageCount: 3,
       direction: 1,
+      litTab: undefined,
       spines: WORKBENCH_BOOKSHELF_TITLES.toReversed().map((title, index) => ({
         id: index + 101,
         title,
