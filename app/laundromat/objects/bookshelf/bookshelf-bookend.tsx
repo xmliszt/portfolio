@@ -1,4 +1,5 @@
 import { IsoBox } from "@/app/laundromat/objects/iso-box";
+import { BOOKSHELF_GEOMETRY } from "@/lib/laundromat/bookshelf/bookshelf-geometry";
 import type { BookshelfRow } from "@/lib/laundromat/bookshelf/bookshelf-row";
 import type { IsoProjection } from "@/lib/laundromat/project-iso-point";
 import { projectIsoPoint } from "@/lib/laundromat/project-iso-point";
@@ -20,11 +21,15 @@ export function BookshelfBookend(props: BookshelfBookendProps) {
   const { row, x, projection } = props;
   const y0 = row.frontY - BACK_FROM_FRONT;
   if (props.part === "base") {
+    const baseX = Math.max(
+      x - BASE_REACH,
+      row.x0 - BOOKSHELF_GEOMETRY.bookInsetStart
+    );
     return (
       <IsoBox
         bevel={false}
-        position={{ x: x - BASE_REACH, y: y0, z: row.floorZ }}
-        size={{ w: BASE_REACH + THICKNESS, d: DEPTH, h: 0.008 }}
+        position={{ x: baseX, y: y0, z: row.floorZ }}
+        size={{ w: x + THICKNESS - baseX, d: DEPTH, h: 0.008 }}
         projection={projection}
       />
     );
