@@ -1,17 +1,13 @@
 "use client";
 
 import { useCallback, useId, useState } from "react";
-import { uniq } from "lodash";
 
 import { BoxBevel } from "@/app/laundromat/objects/box-bevel";
 import { IsoBox } from "@/app/laundromat/objects/iso-box";
 import { partStroke } from "@/app/laundromat/objects/part-stroke";
 import type { BookshelfView } from "@/app/laundromat/objects/scene-views";
 import { BOOKSHELF_GEOMETRY as G } from "@/lib/laundromat/bookshelf/bookshelf-geometry";
-import {
-  BOOKSHELF_ROW_KEYS,
-  type BookshelfRowKey,
-} from "@/lib/laundromat/bookshelf/bookshelf-row";
+import type { BookshelfRowKey } from "@/lib/laundromat/bookshelf/bookshelf-row";
 import { getBookshelfBookOutline } from "@/lib/laundromat/bookshelf/get-bookshelf-book-outline";
 import { getBookshelfBookPlacements } from "@/lib/laundromat/bookshelf/get-bookshelf-book-placements";
 import { getBookshelfInnerX } from "@/lib/laundromat/bookshelf/get-bookshelf-inner-x";
@@ -50,25 +46,16 @@ export function BookshelfDrawing(props: BookshelfDrawingProps) {
   const innerX = getBookshelfInnerX({ position: p, size });
   const inner = { x0: innerX.left, x1: innerX.right };
   const liftIdBase = useId();
-  const [swappingRows, setSwappingRows] = useState<BookshelfRowKey[]>([]);
-  const markLovedSwapping = useCallback(
-    (isSwapping: boolean) => setSwappingRow({ key: "loved", isSwapping }),
+  const [swapping, setSwapping] = useState({ loved: false, fresh: false });
+  const handleSwappingChange = useCallback(
+    (change: { row: BookshelfRowKey; isSwapping: boolean }) =>
+      setSwapping((current) =>
+        current[change.row] === change.isSwapping
+          ? current
+          : { ...current, [change.row]: change.isSwapping }
+      ),
     []
   );
-  const markFreshSwapping = useCallback(
-    (isSwapping: boolean) => setSwappingRow({ key: "fresh", isSwapping }),
-    []
-  );
-  function setSwappingRow(change: {
-    key: BookshelfRowKey;
-    isSwapping: boolean;
-  }) {
-    setSwappingRows((current) =>
-      change.isSwapping
-        ? uniq([...current, change.key])
-        : current.filter((key) => key !== change.key)
-    );
-  }
   const pullPx = { x: -COS_30 * G.pull * unit, y: SIN_30 * G.pull * unit };
   function at(x: number, y: number, z: number) {
     return projectIsoPoint({ point: { x, y, z }, projection });
@@ -119,14 +106,12 @@ export function BookshelfDrawing(props: BookshelfDrawingProps) {
         spines={rowView.spines}
         direction={rowView.direction}
         pulledBookId={view.pulled?.row === key ? view.pulled.bookId : undefined}
-        pullProgress={pullProgress}
+        pulls={pulls.filter((pull) => pull.row === key)}
         pullPx={pullPx}
         projection={projection}
         openingLeftX={inner.x0}
         openingRightX={inner.x1}
-        onSwappingChange={
-          key === "loved" ? markLovedSwapping : markFreshSwapping
-        }
+        onSwappingChange={handleSwappingChange}
       />
     );
   }
@@ -145,21 +130,19 @@ export function BookshelfDrawing(props: BookshelfDrawingProps) {
       />
     );
   }
-  const pullProgress = useBookPull(view.pulled);
+  const pulls = useBookPull(view.pulled);
   const liftY = p.y + body + LIFT_MARGIN;
-  const lifted = Object.entries(pullProgress).flatMap(([key, progress]) => {
-    const [rowKey, id] = key.split(":");
-    const row = BOOKSHELF_ROW_KEYS.find((candidate) => candidate === rowKey);
-    if (row === undefined || swappingRows.includes(row)) return [];
-    const spines = view.rows[row].spines;
-    const index = spines.findIndex((spine) => spine.id === Number(id));
+  const lifted = pulls.flatMap((pull) => {
+    if (swapping[pull.row]) return [];
+    const spines = view.rows[pull.row].spines;
+    const index = spines.findIndex((spine) => spine.id === pull.bookId);
     const book = getBookshelfBookPlacements({
-      row: rows[row],
+      row: rows[pull.row],
       bookIds: spines.map((spine) => spine.id),
     }).at(index);
-    const frontY = (book?.frontY ?? 0) + progress * G.pull;
+    const frontY = (book?.frontY ?? 0) + pull.progress * G.pull;
     if (index === -1 || book === undefined || frontY <= liftY) return [];
-    return [{ key, row, book, spine: spines[index], progress, frontY }];
+    return [{ ...pull, book, spine: spines[index], frontY }];
   });
   const pinRows = [p.y + 0.32, p.y + body - 0.3];
   const pinZs = Array.from(
@@ -307,15 +290,15 @@ export function BookshelfDrawing(props: BookshelfDrawingProps) {
         [p.x + size.w + G.overhang, p.y, top + 0.035],
         0.45
       )}
-      {lifted.map(({ key, row, book, spine, progress, frontY }) => {
-        const clipId = `${liftIdBase}-${key.replace(":", "-")}`;
+      {lifted.map(({ row, bookId, book, spine, progress, frontY }) => {
+        const clipId = `${liftIdBase}-${row}-${bookId}`;
         const outline = getBookshelfBookOutline({
           book: { ...book, frontY },
           projection,
           fromY: liftY,
         }).outline;
         return (
-          <g key={key} pointerEvents="none">
+          <g key={`${row}-${bookId}`} pointerEvents="none">
             <defs>
               <clipPath id={clipId}>
                 <polygon points={toSvgPoints(outline)} />

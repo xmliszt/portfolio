@@ -1,7 +1,7 @@
+import { clipConvexPolygon } from "@/lib/laundromat/clip-convex-polygon";
 import type { IsoProjection } from "@/lib/laundromat/project-iso-point";
 
 import type { BookshelfRow } from "./bookshelf-row";
-import { clipConvexPolygon } from "./clip-convex-polygon";
 import { getBookshelfBookOutline } from "./get-bookshelf-book-outline";
 import type { BookshelfBookPlacement } from "./get-bookshelf-book-placements";
 import { getBookshelfRowOpening } from "./get-bookshelf-row-opening";

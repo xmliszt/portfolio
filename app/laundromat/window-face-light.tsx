@@ -21,7 +21,7 @@ type WindowFaceLightProps = {
   glideMs: number;
 };
 
-/** Draw the window's light where it lands on the front face of a washer, dryer or bookshelf, clipped to that face. */
+/** Draw the window's light where it lands on the front face of a washer, dryer or air purifier, clipped to that face. */
 export function WindowFaceLight(props: WindowFaceLightProps) {
   const id = useId();
   const { quality } = useRenderQuality();

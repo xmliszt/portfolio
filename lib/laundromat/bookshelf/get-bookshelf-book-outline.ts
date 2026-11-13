@@ -1,8 +1,8 @@
+import { getConvexHull } from "@/lib/laundromat/get-convex-hull";
 import type { IsoProjection } from "@/lib/laundromat/project-iso-point";
 import { projectIsoPoint } from "@/lib/laundromat/project-iso-point";
 
 import type { BookshelfBookPlacement } from "./get-bookshelf-book-placements";
-import { getConvexHull } from "./get-convex-hull";
 
 /** Return the scene-pixel outline of a book box between `fromY` and its front, and its `bounds`; by default the whole book as it rests on the shelf. */
 export function getBookshelfBookOutline(options: {

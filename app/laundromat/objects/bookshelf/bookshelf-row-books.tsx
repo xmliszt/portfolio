@@ -5,7 +5,10 @@ import { useReducedMotion } from "motion/react";
 
 import type { BookshelfSpine } from "@/app/laundromat/objects/scene-views";
 import { useRenderQuality } from "@/app/laundromat/settings/use-render-quality";
-import type { BookshelfRow } from "@/lib/laundromat/bookshelf/bookshelf-row";
+import type {
+  BookshelfRow,
+  BookshelfRowKey,
+} from "@/lib/laundromat/bookshelf/bookshelf-row";
 import { getBookshelfBookPlacements } from "@/lib/laundromat/bookshelf/get-bookshelf-book-placements";
 import { getBookshelfRowOpening } from "@/lib/laundromat/bookshelf/get-bookshelf-row-opening";
 import type { IsoProjection } from "@/lib/laundromat/project-iso-point";
@@ -13,6 +16,7 @@ import { toSvgPoints } from "@/lib/laundromat/to-svg-points";
 
 import { BookshelfBook } from "./bookshelf-book";
 import { BookshelfBookend } from "./bookshelf-bookend";
+import type { BookPull } from "./use-book-pull";
 
 const EXIT_MS = 210;
 const ENTER_MS = 340;
@@ -25,9 +29,12 @@ type BookshelfRowBooksProps = {
   spines: BookshelfSpine[];
   direction: 1 | -1;
   pulledBookId: number | undefined;
-  pullProgress: { [key: string]: number };
+  pulls: BookPull[];
   pullPx: { x: number; y: number };
-  onSwappingChange: (isSwapping: boolean) => void;
+  onSwappingChange: (change: {
+    row: BookshelfRowKey;
+    isSwapping: boolean;
+  }) => void;
   projection: IsoProjection;
   openingLeftX: number;
   openingRightX: number;
@@ -47,6 +54,7 @@ export function BookshelfRowBooks(props: BookshelfRowBooksProps) {
   const [shown, setShown] = useState(props.spines);
   const [isSwapping, setIsSwapping] = useState(false);
   const enterPendingRef = useRef(false);
+  const isEnteringRef = useRef(false);
   const incomingKey = toKey(props.spines);
   const shownKey = toKey(shown);
   const spinesRef = useRef(props.spines);
@@ -57,12 +65,12 @@ export function BookshelfRowBooks(props: BookshelfRowBooksProps) {
   });
 
   useEffect(() => {
-    onSwappingChange(isSwapping);
-  }, [isSwapping, onSwappingChange]);
+    onSwappingChange({ row: row.key, isSwapping });
+  }, [isSwapping, onSwappingChange, row.key]);
 
   useEffect(() => {
     if (incomingKey === shownKey) {
-      setIsSwapping(false);
+      if (!isEnteringRef.current) setIsSwapping(false);
       return;
     }
     const group = groupRef.current;
@@ -119,6 +127,7 @@ export function BookshelfRowBooks(props: BookshelfRowBooksProps) {
     for (const animation of group.getAnimations({ subtree: true })) {
       animation.cancel();
     }
+    isEnteringRef.current = true;
     const books = [...group.querySelectorAll<SVGGElement>("[data-book-swap]")];
     const ordered = props.direction > 0 ? books : books.toReversed();
     const enters = isCalm
@@ -147,7 +156,10 @@ export function BookshelfRowBooks(props: BookshelfRowBooksProps) {
         );
     Promise.all(enters.map((animation) => animation.finished))
       .catch(() => undefined)
-      .then(() => setIsSwapping(false));
+      .then(() => {
+        isEnteringRef.current = false;
+        setIsSwapping(false);
+      });
   }, [shownKey, props.direction, isCalm, projection.unit]);
 
   const placements = getBookshelfBookPlacements({
@@ -178,7 +190,8 @@ export function BookshelfRowBooks(props: BookshelfRowBooksProps) {
         {placements.map((book, index) => {
           const progress = isSwapping
             ? 0
-            : (props.pullProgress[`${row.key}:${book.id}`] ?? 0);
+            : (props.pulls.find((pull) => pull.bookId === book.id)?.progress ??
+              0);
           return (
             <BookshelfBook
               key={book.id}

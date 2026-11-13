@@ -16,6 +16,7 @@ import { getBookshelfFaceOutline } from "@/lib/laundromat/bookshelf/get-bookshel
 import { getBookshelfInnerX } from "@/lib/laundromat/bookshelf/get-bookshelf-inner-x";
 import { getBookshelfLabelHolder } from "@/lib/laundromat/bookshelf/get-bookshelf-label-holder";
 import { getBookshelfRows } from "@/lib/laundromat/bookshelf/get-bookshelf-rows";
+import { getBookshelfTabId } from "@/lib/laundromat/bookshelf/get-bookshelf-tab-id";
 import { paginateBookshelfRow } from "@/lib/laundromat/bookshelf/paginate-bookshelf-row";
 import type {
   SceneLayout,
@@ -145,7 +146,12 @@ export function useBookshelfScene(options: {
       pageCount: shelf.pageCount,
       direction: directions[shelf.key],
       litTab: (["previous", "next"] as const).find(
-        (side) => options.highlightedId === `bookshelf-${shelf.key}-${side}`
+        (side) =>
+          options.highlightedId ===
+            getBookshelfTabId({ row: shelf.key, side }) &&
+          (side === "previous"
+            ? shelf.page > 0
+            : shelf.page < shelf.pageCount - 1)
       ),
       spines: shelf.books.map((book) => ({
         id: book.id,
@@ -206,7 +212,7 @@ export function useBookshelfScene(options: {
         label: copy.bookshelf.nextPage({ row: rowName }),
       },
     ].map((tab) => ({
-      id: `bookshelf-${shelf.key}-${tab.side}`,
+      id: getBookshelfTabId({ row: shelf.key, side: tab.side }),
       ...getBookshelfFaceOutline({
         rect: holder[tab.side],
         y: holder.y + 0.012,

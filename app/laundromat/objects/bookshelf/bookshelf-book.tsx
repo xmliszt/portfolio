@@ -1,4 +1,5 @@
 import type { BookshelfBookPlacement } from "@/lib/laundromat/bookshelf/get-bookshelf-book-placements";
+import { WIDE_GLYPH_PATTERN } from "@/lib/laundromat/bookshelf/wide-glyph-pattern";
 import { getFacePlane } from "@/lib/laundromat/get-face-plane";
 import type { IsoProjection } from "@/lib/laundromat/project-iso-point";
 import { projectIsoPoint } from "@/lib/laundromat/project-iso-point";
@@ -43,7 +44,7 @@ export function BookshelfBook(props: BookshelfBookProps) {
   const width = (x1 - x0) * unit;
   const height = (z1 - z0) * unit;
   const fontSize = Math.min(width * 0.46, 9.5 * k);
-  const isCjk = CJK.test(props.title);
+  const isCjk = WIDE_GLYPH_PATTERN.test(props.title);
   const maxChars = Math.max(
     3,
     Math.floor((height - 26 * k) / (fontSize * (isCjk ? 1.04 : 0.6)))

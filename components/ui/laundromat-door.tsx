@@ -2,7 +2,7 @@
 
 import { useEffect, useId, useState } from "react";
 import { animate, motion, useReducedMotion } from "motion/react";
-import { getConvexHull } from "@/lib/laundromat/bookshelf/get-convex-hull";
+import { getConvexHull } from "@/lib/laundromat/get-convex-hull";
 
 const COS_30 = Math.cos(Math.PI / 6);
 const SIN_30 = Math.sin(Math.PI / 6);

@@ -1,5 +1,6 @@
 import type { BookshelfRow } from "@/lib/laundromat/bookshelf/bookshelf-row";
 import { getBookshelfLabelHolder } from "@/lib/laundromat/bookshelf/get-bookshelf-label-holder";
+import { WIDE_GLYPH_PATTERN } from "@/lib/laundromat/bookshelf/wide-glyph-pattern";
 import { getFacePlane } from "@/lib/laundromat/get-face-plane";
 import type { IsoProjection } from "@/lib/laundromat/project-iso-point";
 import { projectIsoPoint } from "@/lib/laundromat/project-iso-point";
@@ -39,12 +40,13 @@ export function BookshelfLabelHolder(props: BookshelfLabelHolderProps) {
   const width = (plate.x1 - plate.x0) * unit;
   const height = (plate.z1 - plate.z0) * unit;
   const cardWidth = width - 12 * k - 2 * CARD_PADDING * k;
-  const charCount = [...props.text].length;
-  // a monospace glyph is about 0.6em wide, plus the letter spacing between glyphs
-  const fontSize = Math.min(
-    FONT_SIZE * k,
-    cardWidth / (charCount * (0.6 + LETTER_SPACING_EM))
+  // a monospace Latin glyph is about 0.6 em wide and a CJK one about 1 em, plus the letter spacing
+  const widthEm = [...props.text].reduce(
+    (sum, char) =>
+      sum + (WIDE_GLYPH_PATTERN.test(char) ? 1 : 0.6) + LETTER_SPACING_EM,
+    0
   );
+  const fontSize = Math.min(FONT_SIZE * k, cardWidth / widthEm);
   function screw(cx: number) {
     return (
       <g key={cx}>
