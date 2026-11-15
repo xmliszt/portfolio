@@ -16,6 +16,7 @@ function buildCampaignRow(options: Partial<CampaignRow>): CampaignRow {
     plan: {},
     starts_at: "2026-11-04T00:00:00.000Z",
     created_at: "2026-11-01T00:00:00.000Z",
+    ended_at: null,
     ...options,
   };
 }
@@ -97,6 +98,33 @@ test("lists active campaigns first, each group newest start first", () => {
       ["new", true],
       ["old", true],
       ["done", false],
+    ]
+  );
+});
+
+test("lists ended campaigns last and never as active", () => {
+  const summaries = summariseCampaigns({
+    campaigns: [
+      buildCampaignRow({
+        id: "ended",
+        starts_at: "2026-11-06T00:00:00.000Z",
+        ended_at: "2026-11-07T00:00:00.000Z",
+      }),
+      buildCampaignRow({ id: "idle", starts_at: "2026-10-01T00:00:00.000Z" }),
+    ],
+    posts: [
+      buildPostRow({
+        campaign_id: "ended",
+        scheduled_at: "2026-11-09T00:00:00.000Z",
+      }),
+    ],
+    now: NOW,
+  });
+  assert.deepEqual(
+    summaries.map((summary) => [summary.id, summary.isActive, summary.isEnded]),
+    [
+      ["idle", false, false],
+      ["ended", false, true],
     ]
   );
 });

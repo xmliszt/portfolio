@@ -11,11 +11,13 @@ export type CampaignSummary = {
   /** Rows with `status` `scheduled` and `scheduled_at` after `now`. */
   upcomingCount: number;
   nextPost: { platform: string; at: string } | undefined;
-  /** `true` if any of the campaign's rows has `status` `scheduled` and `scheduled_at` after `now`; `false` when none has. */
+  /** `true` if the campaign's `ended_at` is null and any of its rows has `status` `scheduled` and `scheduled_at` after `now`; `false` otherwise. */
   isActive: boolean;
+  /** `true` if the campaign's `ended_at` is set; `false` when it is null. */
+  isEnded: boolean;
 };
 
-/** Return a summary of each of `campaigns` from its `posts` as of `now`, active campaigns first, each group newest `starts_at` first. */
+/** Return a summary of each of `campaigns` from its `posts` as of `now`: active campaigns first, then the others that have not ended, then the ended ones, each group newest `starts_at` first. */
 export function summariseCampaigns(options: {
   campaigns: readonly CampaignRow[];
   posts: readonly PostRow[];
@@ -35,6 +37,7 @@ export function summariseCampaigns(options: {
   );
   const summaries = options.campaigns.map((campaign) => {
     const upcoming = upcomingByCampaign[campaign.id] ?? [];
+    const isEnded = campaign.ended_at !== null;
     const next = upcoming.at(0);
     return {
       summary: {
@@ -47,7 +50,8 @@ export function summariseCampaigns(options: {
           next?.scheduled_at === null || next === undefined
             ? undefined
             : { platform: next.platform, at: next.scheduled_at },
-        isActive: upcoming.length > 0,
+        isActive: !isEnded && upcoming.length > 0,
+        isEnded,
       },
       startsAtMs:
         campaign.starts_at === null
@@ -58,6 +62,7 @@ export function summariseCampaigns(options: {
   return sortBy(
     summaries,
     (entry) => !entry.summary.isActive,
+    (entry) => entry.summary.isEnded,
     (entry) => -entry.startsAtMs
   ).map((entry) => entry.summary);
 }

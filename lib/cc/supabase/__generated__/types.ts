@@ -19,6 +19,7 @@ export type Database = {
           code: string
           color: string
           created_at: string
+          ended_at: string | null
           id: string
           link: string | null
           name: string
@@ -30,6 +31,7 @@ export type Database = {
           code: string
           color: string
           created_at?: string
+          ended_at?: string | null
           id?: string
           link?: string | null
           name: string
@@ -41,6 +43,7 @@ export type Database = {
           code?: string
           color?: string
           created_at?: string
+          ended_at?: string | null
           id?: string
           link?: string | null
           name?: string

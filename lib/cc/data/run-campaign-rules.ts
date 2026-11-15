@@ -166,7 +166,7 @@ async function applyRuleAction(options: {
   }
 }
 
-/** Evaluate `CAMPAIGN_RULES` on `campaignId`'s own posts as of `now`: create each repost the rules schedule (status "scheduled" for a quote-post, a "draft" holding the slot for a re-cut), sync its reminders and announce it on Telegram with a Skip button, and send each suggestion once, recording it as a closed "repost" reminder on the original; one failed action does not stop the others; return what each action did. */
+/** Evaluate `CAMPAIGN_RULES` on `campaignId`'s own posts as of `now`: create each repost the rules schedule (status "scheduled" for a quote-post, a "draft" holding the slot for a re-cut), sync its reminders and announce it on Telegram with a Skip button, and send each suggestion once, recording it as a closed "repost" reminder on the original; one failed action does not stop the others, and none runs once the campaign's `ended_at` is set; return what each action did. */
 async function runRulesForCampaign(options: { campaignId: string; now: Date }) {
   const input = await loadPlannerInput({ campaignId: options.campaignId });
   const metrics = await listPostMetrics({
@@ -198,6 +198,14 @@ async function runRulesForCampaign(options: { campaignId: string; now: Date }) {
   for (const action of actions) {
     const original = postsById[action.postId];
     if (original === undefined) continue;
+    const { data: campaign, error: campaignError } =
+      await createCcServiceClient()
+        .from("campaigns")
+        .select("ended_at")
+        .eq("id", options.campaignId)
+        .single();
+    if (campaignError) throw campaignError;
+    if (campaign.ended_at !== null) break;
     results.push(
       await applyRuleAction({ action, original, now: options.now }).catch(
         (error: unknown) => {

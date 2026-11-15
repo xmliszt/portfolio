@@ -31,8 +31,9 @@ The rail footer has the theme switch: **AUTO** (light 07:00–19:00 SGT, dark ot
 Several campaigns can run at once. **FOCUS**, at the top of the rail, picks the campaign that OVERVIEW, COMPOSER, LOG NUMBERS, INSIGHTS, NEW and SETTINGS show. Click a campaign to focus it, or press `[` and `]` to step through them.
 
 - Each row shows the campaign's code, its name, how many posts are left and when the next one goes out.
-- Campaigns with no scheduled post left are under **PAST**.
-- Until you pick one, the focus is the campaign with the newest start date. A new campaign is focused when it is created.
+- **ACTIVE** lists every campaign that has not ended. One with no scheduled post left is dimmed and reads "nothing scheduled".
+- **PAST** lists ended campaigns. The ACTIVE / PAST switch shows once a campaign has ended. `[` and `]` step through the list that is showing.
+- Until you pick one, the focus is the campaign with the newest start date that has not ended. A new campaign is focused when it is created.
 - Opening a post of another campaign in COMPOSER (`/composer?post=<id>`) focuses that campaign.
 
 Posts outside every campaign are **OTHER** posts. They show on OVERVIEW and in COMPOSER whatever the focus, with a dashed OTHER chip, a striped background and their project name. CALENDAR shows or hides them with SHOW. LOG NUMBERS and INSIGHTS cover the focused campaign only.
@@ -114,6 +115,7 @@ OVERVIEW shows the focused campaign plus OTHER posts. The numbers (posted, views
   - Bluesky posting: on or off.
     If a platform shows off, the owner has to add keys in Vercel. An agent cannot fix this.
 - **Focused campaign:** edit the name, link, start date (SGT), code, colour and notes, then **SAVE CAMPAIGN**.
+- **End campaign:** **END CAMPAIGN** skips every draft and scheduled post in the campaign, with their replies and reminders, and moves the campaign to PAST. The daily rules job stops making reposts for it. Reminders on posts already posted, such as logging numbers, still come. Skipped posts stay skipped. You can still schedule a post in an ended campaign by hand.
 
 ## COMPOSER
 
