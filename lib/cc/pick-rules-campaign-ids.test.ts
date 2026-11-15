@@ -7,9 +7,9 @@ test("runs every active campaign plus an inactive newest one", () => {
   assert.deepEqual(
     pickRulesCampaignIds({
       summaries: [
-        { id: "a", isActive: true },
-        { id: "b", isActive: false },
-        { id: "c", isActive: true },
+        { id: "a", isActive: true, isEnded: false },
+        { id: "b", isActive: false, isEnded: false },
+        { id: "c", isActive: true, isEnded: false },
       ],
       newestId: "b",
     }),
@@ -20,7 +20,7 @@ test("runs every active campaign plus an inactive newest one", () => {
 test("lists an active newest campaign once", () => {
   assert.deepEqual(
     pickRulesCampaignIds({
-      summaries: [{ id: "a", isActive: true }],
+      summaries: [{ id: "a", isActive: true, isEnded: false }],
       newestId: "a",
     }),
     ["a"]
@@ -31,5 +31,18 @@ test("runs nothing when no campaign exists", () => {
   assert.deepEqual(
     pickRulesCampaignIds({ summaries: [], newestId: undefined }),
     []
+  );
+});
+
+test("skips an ended newest campaign", () => {
+  assert.deepEqual(
+    pickRulesCampaignIds({
+      summaries: [
+        { id: "a", isActive: true, isEnded: false },
+        { id: "b", isActive: false, isEnded: true },
+      ],
+      newestId: "b",
+    }),
+    ["a"]
   );
 });
