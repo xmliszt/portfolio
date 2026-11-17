@@ -43,7 +43,7 @@ export const SOUND_SAMPLES = {
   "tree-lights": {
     kind: "generated",
     prompt:
-      "A short rising run of six soft glass chime notes, like tiny Christmas tree lights switching on one after another, delicate and warm, close-up, no music, no speech, no background noise",
+      "A bright, joyful rising sparkle of glockenspiel and sleigh bells, like Christmas tree lights twinkling on one after another, ending on a shimmering magical chime, festive and happy, clean, no speech, no background noise",
     durationSeconds: 1.6,
     promptInfluence: 0.6,
     gain: 0.45,
@@ -51,7 +51,7 @@ export const SOUND_SAMPLES = {
   "bedroom-tree-chime": {
     kind: "generated",
     prompt:
-      "Three quiet rising glass chime notes, a tiny tabletop Christmas tree lighting up, soft and gentle, close-up, no music, no speech, no background noise",
+      "A short cheerful twinkle of three rising celesta notes with a light sprinkle of tiny jingle bells, a little Christmas tree lighting up, sweet and festive, gentle, no speech, no background noise",
     durationSeconds: 1.2,
     promptInfluence: 0.6,
     gain: 0.35,
@@ -59,7 +59,7 @@ export const SOUND_SAMPLES = {
   "present-hop": {
     kind: "generated",
     prompt:
-      "A small wrapped gift box hopping up and dropping back down: a quick crinkle of wrapping paper, one soft cardboard thump after 0.4 seconds, then a smaller second thump from a little bounce, cosy foley, no music, no speech, no background noise",
+      "A playful bouncy gift box hop: a quick bright jingle of sleigh bells as it jumps, a soft boing-like cardboard thump on landing at 0.4 seconds, then a tiny second bounce with a last little bell jingle, cheerful cartoon Christmas foley, no speech, no background noise",
     durationSeconds: 1.0,
     promptInfluence: 0.6,
     gain: 0.6,
@@ -67,7 +67,7 @@ export const SOUND_SAMPLES = {
   "stocking-jingle": {
     kind: "generated",
     prompt:
-      "A small felt Christmas stocking swinging with a few tiny sleigh bells jingling softly, short and light, close-up foley, no music, no speech, no background noise",
+      "A merry shake of small sleigh bells on a swinging Christmas stocking, lively jingling that rings out bright and happy then settles, festive, close-up, no speech, no background noise",
     durationSeconds: 1.1,
     promptInfluence: 0.6,
     gain: 0.4,
@@ -75,7 +75,7 @@ export const SOUND_SAMPLES = {
   "snowflake-flutter": {
     kind: "generated",
     prompt:
-      "Light paper snowflake cutouts twirling on threads, a few soft airy paper flutters, very delicate, close-up foley, no music, no speech, no background noise",
+      "Magical twinkling wind chimes and a soft glittering shimmer, like paper snowflakes twirling and sparkling in the air, light, airy and festive, no speech, no background noise",
     durationSeconds: 1.0,
     promptInfluence: 0.6,
     gain: 0.5,
@@ -83,7 +83,7 @@ export const SOUND_SAMPLES = {
   "poinsettia-rustle": {
     kind: "generated",
     prompt:
-      "A potted poinsettia plant brushed by a hand, broad leaves rustling briefly, soft and close, foley, no music, no speech, no background noise",
+      "A quick leafy rustle followed by a bright cheerful two-note handbell ding, a happy Christmas plant greeting, festive and warm, close-up, no speech, no background noise",
     durationSeconds: 0.9,
     promptInfluence: 0.6,
     gain: 0.55,
@@ -91,7 +91,7 @@ export const SOUND_SAMPLES = {
   "snowman-wobble": {
     kind: "generated",
     prompt:
-      "A small ceramic snowman figurine rocking on a hard table top, three light hollow ceramic knocks getting quieter, cute and gentle, close-up foley, no music, no speech, no background noise",
+      "A cute playful snowman wobbling: three bouncy cartoon boing wobbles getting smaller, sprinkled with tiny jingle bells and a happy glockenspiel bloop at the end, festive and funny, no speech, no background noise",
     durationSeconds: 1.0,
     promptInfluence: 0.6,
     gain: 0.55,
