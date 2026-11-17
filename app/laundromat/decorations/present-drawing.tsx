@@ -1,4 +1,5 @@
 import { getColorShades } from "@/lib/laundromat/decorations/get-color-shades";
+import { getPresentHop } from "@/lib/laundromat/decorations/get-present-hop";
 import { getBoxFaces } from "@/lib/laundromat/get-box-faces";
 import { getFacePlane } from "@/lib/laundromat/get-face-plane";
 import {
@@ -60,14 +61,9 @@ export function PresentDrawing(props: PresentDrawingProps) {
     projection: props.projection,
   });
   const loop = Math.min(size.w, size.d) * unit * 0.3;
-  const hop =
-    Math.abs(Math.sin(progress * Math.PI * 2)) *
-    (1 - progress) *
-    props.reactionSettings.strength;
-  const tilt =
-    Math.sin(progress * Math.PI * 4) *
-    (1 - progress) *
-    props.reactionSettings.strength;
+  const hop = getPresentHop({
+    elapsedMs: progress * props.reactionSettings.durationMs,
+  });
   const base = projectIsoPoint({
     point: {
       x: position.x + size.w / 2,
@@ -87,7 +83,7 @@ export function PresentDrawing(props: PresentDrawingProps) {
           transformOrigin: `${base.x}px ${base.y}px`,
           transform: reducedMotion
             ? `translateY(${-pose * props.reactionSettings.strength * size.h * unit * 0.2}px) rotate(${pose * props.reactionSettings.strength * 4}deg)`
-            : `translateY(${-hop * size.h * unit * 0.45}px) rotate(${tilt * 6}deg)`,
+            : `translateY(${-hop.lift * props.reactionSettings.strength * size.h * unit * 0.6}px) rotate(${hop.tiltDeg * props.reactionSettings.strength}deg) scale(${1 + hop.squash * 0.5}, ${1 - hop.squash})`,
         }}
       >
         <g stroke="var(--lm-line)" strokeWidth={0.6}>

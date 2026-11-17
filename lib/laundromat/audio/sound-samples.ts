@@ -59,7 +59,7 @@ export const SOUND_SAMPLES = {
   "present-hop": {
     kind: "generated",
     prompt:
-      "A small wrapped gift box being lifted and set down: a quick crinkle of wrapping paper then one soft cardboard thump, cosy foley, no music, no speech, no background noise",
+      "A small wrapped gift box hopping up and dropping back down: a quick crinkle of wrapping paper, one soft cardboard thump after 0.4 seconds, then a smaller second thump from a little bounce, cosy foley, no music, no speech, no background noise",
     durationSeconds: 1.0,
     promptInfluence: 0.6,
     gain: 0.6,
