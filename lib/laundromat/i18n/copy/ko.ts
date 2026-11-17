@@ -5,6 +5,12 @@ import type { MachineKind } from "@/lib/laundromat/scene-config";
 export const ko = {
   locale: "ko",
   decorations: {
+    "christmas-tree": { label: "크리스마스트리: 불 켜기" },
+    present: { label: "선물: 살짝 흔들기" },
+    stockings: { label: "양말: 방울 울리기" },
+    snowflakes: { label: "종이 눈송이: 빙글 돌리기" },
+    poinsettia: { label: "포인세티아: 톡 두드리기" },
+    snowman: { label: "눈사람: 톡 두드리기" },
     skeleton: { label: "해골: 인사하기" },
     pumpkin: { label: "호박: 톡 두드리기" },
     ghost: { label: "유령: 부! 하고 인사하기" },
@@ -55,7 +61,12 @@ export const ko = {
     seasonalOn: "특별한 날에 맞춰 바뀌어요",
     seasonalOff: "선택한 테마를 유지해요",
     hint: "테마를 선택하세요",
-    names: { classic: "기본", light: "리넨", halloween: "할로윈" },
+    names: {
+      classic: "기본",
+      light: "리넨",
+      halloween: "할로윈",
+      christmas: "크리스마스",
+    },
   },
   settings: {
     heading: "설정",
@@ -405,6 +416,10 @@ export const ko = {
       board: "게시판",
     },
     updates: {
+      "christmas-theme": {
+        title: "방에 찾아온 크리스마스",
+        body: "테마 버튼에서 크리스마스를 고르거나 시즌 설정을 켜서 기념일에 맞는 테마를 즐겨 보세요. 크리스마스 테마에서 TV를 켜면 크리스마스 벽난로를 실시간으로 볼 수 있어요. 트리와 선물, 양말을 누르면 작은 깜짝 반응을 볼 수 있어요.",
+      },
       "visitor-bookshelf": {
         title: "손님들이 추천하는 책장",
         body: "커피 머신 아래 수납장이 이제 책장이 됐어. 좋아하는 책을 메모와 함께 추천하고, 너도 읽고 싶은 책에는 하트를 줘.",
@@ -572,6 +587,7 @@ export const ko = {
   tv: {
     stations: {
       halloween: "할로윈",
+      christmas: "크리스마스",
       "rainy-cafe": "비 오는 카페",
       "piano-night": "피아노의 밤",
       "late-wash": "늦은 빨래",

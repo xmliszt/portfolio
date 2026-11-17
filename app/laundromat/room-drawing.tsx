@@ -4,6 +4,7 @@ import type {
   LaidOutObject,
   SceneLayout,
 } from "@/lib/laundromat/build-scene-layout";
+import { isSceneDecoration } from "@/lib/laundromat/decorations/is-scene-decoration";
 import { doBoundsOverlap } from "@/lib/laundromat/do-bounds-overlap";
 import { getDaylitTokenStyle } from "@/lib/laundromat/get-daylit-token-style";
 import { getObjectsRestingOn } from "@/lib/laundromat/get-objects-resting-on";
@@ -83,13 +84,7 @@ export function RoomDrawing(props: RoomDrawingProps) {
     config,
   };
   function renderFaceLight(laidOut: LaidOutObject) {
-    if (
-      laidOut.object.kind === "pumpkin" ||
-      laidOut.object.kind === "cobweb" ||
-      laidOut.object.kind === "ghost" ||
-      laidOut.object.kind === "skeleton"
-    )
-      return null;
+    if (isSceneDecoration(laidOut.object)) return null;
     return windowLights.map((windowLight) => (
       <WindowFaceLight
         key={windowLight.key}

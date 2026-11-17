@@ -4,6 +4,12 @@ import type { LaundromatCopy } from "@/lib/laundromat/i18n/laundromat-copy";
 export const tr = {
   locale: "tr",
   decorations: {
+    "christmas-tree": { label: "Noel ağacı: ışıkları yak" },
+    present: { label: "Hediye: hafifçe salla" },
+    stockings: { label: "Çoraplar: zillerini çaldır" },
+    snowflakes: { label: "Kâğıt kar taneleri: döndür" },
+    poinsettia: { label: "Atatürk çiçeği: hafifçe dokun" },
+    snowman: { label: "Kardan adam: hafifçe dokun" },
     skeleton: { label: "İskelet: merhaba de" },
     pumpkin: {
       label: "Balkabağı: hafifçe dokun",
@@ -60,6 +66,7 @@ export const tr = {
       classic: "varsayılan",
       light: "keten",
       halloween: "cadılar bayramı",
+      christmas: "yılbaşı",
     },
   },
   settings: {
@@ -388,6 +395,10 @@ export const tr = {
       board: "pano",
     },
     updates: {
+      "christmas-theme": {
+        title: "odalarda yılbaşı",
+        body: "Tema düğmesinden Yılbaşı’nı seçin veya özel günleri takip etmek için Mevsimsel seçeneğini açın. Yılbaşı teması seçiliyken televizyonu açarak canlı yılbaşı şöminesini izleyin; küçük bir sürpriz için ağaca, hediyelere ve çoraplara dokunun.",
+      },
       "visitor-bookshelf": {
         title: "önerilerle dolu bir kitaplık",
         body: "Kahve makinesinin altındaki dolap artık bir kitaplık. Sevdiğin bir kitabı bir notla öner ve senin de okuyacağın kitaplara kalp ver.",
@@ -555,6 +566,7 @@ export const tr = {
   tv: {
     stations: {
       halloween: "cadılar bayramı",
+      christmas: "yılbaşı",
       "rainy-cafe": "yağmurlu kafe",
       "piano-night": "piyano gecesi",
       "late-wash": "gece yıkaması",

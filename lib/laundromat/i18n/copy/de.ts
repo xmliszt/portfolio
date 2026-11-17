@@ -5,6 +5,12 @@ import type { MachineKind } from "@/lib/laundromat/scene-config";
 export const de = {
   locale: "de",
   decorations: {
+    "christmas-tree": { label: "Weihnachtsbaum: Lichter an" },
+    present: { label: "Geschenk: kurz schütteln" },
+    stockings: { label: "Strümpfe: klingeln lassen" },
+    snowflakes: { label: "Papierschneeflocken: drehen lassen" },
+    poinsettia: { label: "Weihnachtsstern: Antippen" },
+    snowman: { label: "Schneemann: Antippen" },
     skeleton: { label: "Skelett: Sag Hallo" },
     pumpkin: {
       label: "Kürbis: Antippen",
@@ -57,7 +63,12 @@ export const de = {
     seasonalOn: "Wechselt zu besonderen Anlässen",
     seasonalOff: "Behält dein gewähltes Thema",
     hint: "Wähle ein Thema",
-    names: { classic: "standard", light: "leinen", halloween: "halloween" },
+    names: {
+      classic: "standard",
+      light: "leinen",
+      halloween: "halloween",
+      christmas: "weihnachten",
+    },
   },
   settings: {
     heading: "Einstellungen",
@@ -426,6 +437,10 @@ export const de = {
       board: "aushang",
     },
     updates: {
+      "christmas-theme": {
+        title: "weihnachten in den räumen",
+        body: "Wähle Weihnachten über die Themen-Schaltfläche oder aktiviere Saisonal für den passenden Anlass. Mit dem Weihnachts-Thema startet der Fernseher mit einem Live-Kaminsender zu Weihnachten; tippe auf Baum, Geschenke und Strümpfe für eine kleine Überraschung.",
+      },
       "visitor-bookshelf": {
         title: "ein Bücherregal voller Empfehlungen",
         body: "Der Schrank unter der Kaffeemaschine ist jetzt ein Bücherregal. Empfiehl ein Lieblingsbuch mit einer Notiz und schenk den Büchern ein Herz, die du auch lesen würdest.",
@@ -593,6 +608,7 @@ export const de = {
   tv: {
     stations: {
       halloween: "halloween",
+      christmas: "weihnachten",
       "rainy-cafe": "café im regen",
       "piano-night": "klaviernacht",
       "late-wash": "späte wäsche",

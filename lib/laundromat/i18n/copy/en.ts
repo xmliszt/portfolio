@@ -20,6 +20,12 @@ export const en = {
       label: "Pumpkin: give it a tap",
     },
     ghost: { label: "Ghost: say boo" },
+    "christmas-tree": { label: "Christmas tree: light it up" },
+    present: { label: "Present: give it a shake" },
+    stockings: { label: "Stockings: give them a jingle" },
+    snowflakes: { label: "Paper snowflakes: give them a twirl" },
+    poinsettia: { label: "Poinsettia: give it a tap" },
+    snowman: { label: "Snowman: give it a tap" },
   },
   languageName: "English",
   site: {
@@ -71,6 +77,7 @@ export const en = {
       classic: "default",
       light: "linen",
       halloween: "halloween",
+      christmas: "christmas",
     } satisfies {
       [id in ThemeId]: string;
     },
@@ -427,6 +434,10 @@ export const en = {
       board: "board",
     } satisfies { [tag in BoardTag]: string },
     updates: {
+      "christmas-theme": {
+        title: "christmas in the rooms",
+        body: "Choose Christmas from the theme button, or turn on Seasonal to follow the occasion. With Christmas selected, turn on the TV for a live Christmas fireplace station; tap the tree, presents and stockings for a little surprise.",
+      },
       "visitor-bookshelf": {
         title: "a bookshelf of recommendations",
         body: "The cabinet under the coffee machine is now a bookshelf. Recommend a book you love with a note, and give a heart to the ones you would read too.",
@@ -594,6 +605,7 @@ export const en = {
   tv: {
     stations: {
       halloween: "halloween",
+      christmas: "christmas",
       "rainy-cafe": "rainy café",
       "piano-night": "piano night",
       "late-wash": "late wash",

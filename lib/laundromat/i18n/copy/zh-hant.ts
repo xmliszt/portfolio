@@ -5,6 +5,12 @@ import type { MachineKind } from "@/lib/laundromat/scene-config";
 export const zhHant = {
   locale: "zh-Hant",
   decorations: {
+    "christmas-tree": { label: "聖誕樹：點亮彩燈" },
+    present: { label: "禮物：輕輕搖一搖" },
+    stockings: { label: "聖誕襪：搖響鈴鐺" },
+    snowflakes: { label: "紙雪花：轉一轉" },
+    poinsettia: { label: "聖誕紅：輕輕拍一下" },
+    snowman: { label: "雪人：輕輕拍一下" },
     skeleton: { label: "骷髏：打個招呼" },
     pumpkin: { label: "南瓜：輕輕拍一下" },
     ghost: { label: "小幽靈：嚇它一下" },
@@ -54,7 +60,12 @@ export const zhHant = {
     seasonalOn: "隨節日更換主題",
     seasonalOff: "保留你選擇的主題",
     hint: "選擇主題",
-    names: { classic: "預設", light: "亞麻", halloween: "萬聖節" },
+    names: {
+      classic: "預設",
+      light: "亞麻",
+      halloween: "萬聖節",
+      christmas: "聖誕節",
+    },
   },
   settings: {
     heading: "設定",
@@ -380,6 +391,10 @@ export const zhHant = {
       board: "告示板",
     },
     updates: {
+      "christmas-theme": {
+        title: "房間裡的聖誕節",
+        body: "點開主題按鈕選擇聖誕節，或開啟季節模式，讓主題隨節日變化。使用聖誕節主題時，打開電視就能看到聖誕壁爐直播，點一點聖誕樹、禮物和聖誕襪，發現小驚喜。",
+      },
       "visitor-bookshelf": {
         title: "擺滿推薦的書櫃",
         body: "咖啡機下面的櫃子變成了書櫃。附上一句留言推薦你喜歡的書，也給你想讀的書送一顆心。",
@@ -547,6 +562,7 @@ export const zhHant = {
   tv: {
     stations: {
       halloween: "萬聖節",
+      christmas: "聖誕節",
       "rainy-cafe": "雨天咖啡館",
       "piano-night": "鋼琴之夜",
       "late-wash": "深夜洗衣",

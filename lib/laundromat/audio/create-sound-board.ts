@@ -1,4 +1,5 @@
 import { createRoomTail } from "./sounds/create-room-tail";
+import { playBedroomTreeChime } from "./sounds/play-bedroom-tree-chime";
 import { playCameraEject } from "./sounds/play-camera-eject";
 import { playCameraShutter } from "./sounds/play-camera-shutter";
 import { playCoffeeBeep } from "./sounds/play-coffee-beep";
@@ -21,6 +22,8 @@ import { playLampOff } from "./sounds/play-lamp-off";
 import { playNotebookFree } from "./sounds/play-notebook-free";
 import { playNotebookOpen } from "./sounds/play-notebook-open";
 import { playPageFlip } from "./sounds/play-page-flip";
+import { playPoinsettiaRustle } from "./sounds/play-poinsettia-rustle";
+import { playPresentHop } from "./sounds/play-present-hop";
 import { playPrinterFeed } from "./sounds/play-printer-feed";
 import { playPumpkinTap } from "./sounds/play-pumpkin-tap";
 import { playRoomDoorOpen } from "./sounds/play-room-door-open";
@@ -28,7 +31,10 @@ import { playSample } from "./sounds/play-sample";
 import { playShopBell } from "./sounds/play-shop-bell";
 import { playSkeletonShy } from "./sounds/play-skeleton-shy";
 import { playSlidingDoor } from "./sounds/play-sliding-door";
+import { playSnowflakeFlutter } from "./sounds/play-snowflake-flutter";
+import { playSnowmanWobble } from "./sounds/play-snowman-wobble";
 import { playStartButton } from "./sounds/play-start-button";
+import { playStockingJingle } from "./sounds/play-stocking-jingle";
 import { playThunderRumble } from "./sounds/play-thunder-rumble";
 import { playTipChime } from "./sounds/play-tip-chime";
 import { playTokenDrop } from "./sounds/play-token-drop";
@@ -38,6 +44,7 @@ import { playToyBoxOpen } from "./sounds/play-toy-box-open";
 import { playToyCarLaunch } from "./sounds/play-toy-car-launch";
 import { playToyHoverJets } from "./sounds/play-toy-hover-jets";
 import { playToyThruster } from "./sounds/play-toy-thruster";
+import { playTreeLights } from "./sounds/play-tree-lights";
 import { playTvStatic } from "./sounds/play-tv-static";
 import { startCoffeeBrewing } from "./sounds/start-coffee-brewing";
 import { startDryerRunning } from "./sounds/start-dryer-running";
@@ -66,6 +73,13 @@ const ONE_SHOTS = {
   "ghost-boo": playGhostBoo,
   "pumpkin-tap": playPumpkinTap,
   "skeleton-shy": playSkeletonShy,
+  "tree-lights": playTreeLights,
+  "bedroom-tree-chime": playBedroomTreeChime,
+  "present-hop": playPresentHop,
+  "stocking-jingle": playStockingJingle,
+  "snowflake-flutter": playSnowflakeFlutter,
+  "poinsettia-rustle": playPoinsettiaRustle,
+  "snowman-wobble": playSnowmanWobble,
   "door-latch-open": playDoorLatchOpen,
   "door-latch-close": playDoorLatchClose,
   "start-button": playStartButton,

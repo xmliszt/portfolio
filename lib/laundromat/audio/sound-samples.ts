@@ -40,6 +40,63 @@ export const SOUND_SAMPLES = {
     gain: 0.2,
   },
 
+  "tree-lights": {
+    kind: "generated",
+    prompt:
+      "A short rising run of six soft glass chime notes, like tiny Christmas tree lights switching on one after another, delicate and warm, close-up, no music, no speech, no background noise",
+    durationSeconds: 1.6,
+    promptInfluence: 0.6,
+    gain: 0.45,
+  },
+  "bedroom-tree-chime": {
+    kind: "generated",
+    prompt:
+      "Three quiet rising glass chime notes, a tiny tabletop Christmas tree lighting up, soft and gentle, close-up, no music, no speech, no background noise",
+    durationSeconds: 1.2,
+    promptInfluence: 0.6,
+    gain: 0.35,
+  },
+  "present-hop": {
+    kind: "generated",
+    prompt:
+      "A small wrapped gift box being lifted and set down: a quick crinkle of wrapping paper then one soft cardboard thump, cosy foley, no music, no speech, no background noise",
+    durationSeconds: 1.0,
+    promptInfluence: 0.6,
+    gain: 0.6,
+  },
+  "stocking-jingle": {
+    kind: "generated",
+    prompt:
+      "A small felt Christmas stocking swinging with a few tiny sleigh bells jingling softly, short and light, close-up foley, no music, no speech, no background noise",
+    durationSeconds: 1.1,
+    promptInfluence: 0.6,
+    gain: 0.4,
+  },
+  "snowflake-flutter": {
+    kind: "generated",
+    prompt:
+      "Light paper snowflake cutouts twirling on threads, a few soft airy paper flutters, very delicate, close-up foley, no music, no speech, no background noise",
+    durationSeconds: 1.0,
+    promptInfluence: 0.6,
+    gain: 0.5,
+  },
+  "poinsettia-rustle": {
+    kind: "generated",
+    prompt:
+      "A potted poinsettia plant brushed by a hand, broad leaves rustling briefly, soft and close, foley, no music, no speech, no background noise",
+    durationSeconds: 0.9,
+    promptInfluence: 0.6,
+    gain: 0.55,
+  },
+  "snowman-wobble": {
+    kind: "generated",
+    prompt:
+      "A small ceramic snowman figurine rocking on a hard table top, three light hollow ceramic knocks getting quieter, cute and gentle, close-up foley, no music, no speech, no background noise",
+    durationSeconds: 1.0,
+    promptInfluence: 0.6,
+    gain: 0.55,
+  },
+
   "door-latch-open": {
     kind: "generated",
     prompt:

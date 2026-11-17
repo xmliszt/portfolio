@@ -38,6 +38,14 @@ export type SceneDecoration = Placement & { paintAfter?: string } & (
     | { kind: "ghost" }
     | { kind: "skeleton" }
     | { kind: "cobweb"; plane: "front" | "side" | "corner" }
+    | { kind: "christmas-tree"; potted: boolean }
+    | { kind: "present"; wrap: "red" | "green" | "cream" }
+    | { kind: "garland" }
+    | { kind: "stockings" }
+    | { kind: "snowflakes" }
+    | { kind: "poinsettia" }
+    | { kind: "snowman" }
+    | { kind: "holly" }
   );
 
 export type SceneObject =
@@ -169,6 +177,15 @@ export type SceneConfig = {
       flickerSeconds: number;
     };
     cobweb: { color: string; opacity: number; threadWidth: number };
+    christmas: {
+      needle: string;
+      bauble: string;
+      gold: string;
+      snow: string;
+      bulb: string;
+      bulbGlow: number;
+      twinkleSeconds: number;
+    };
     machine: {
       doorOpenDeg: number;
       doorSwingMs: number;
@@ -601,6 +618,15 @@ export const sceneConfig: SceneConfig = {
       flickerSeconds: 3.7,
     },
     cobweb: { color: "#c5b8cc", opacity: 0.55, threadWidth: 0.65 },
+    christmas: {
+      needle: "#2f5a3c",
+      bauble: "#b8333b",
+      gold: "#d9a646",
+      snow: "#ece6da",
+      bulb: "#ffd27a",
+      bulbGlow: 0.8,
+      twinkleSeconds: 2.8,
+    },
     machine: {
       doorOpenDeg: 100,
       doorSwingMs: 590,

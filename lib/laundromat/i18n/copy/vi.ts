@@ -10,6 +10,12 @@ type Machine = { kind: MachineKind; number: number };
 export const vi = {
   locale: "vi",
   decorations: {
+    "christmas-tree": { label: "Cây thông Noel: bật đèn" },
+    present: { label: "Hộp quà: lắc nhẹ" },
+    stockings: { label: "Tất Noel: rung chuông" },
+    snowflakes: { label: "Bông tuyết giấy: xoay một vòng" },
+    poinsettia: { label: "Trạng nguyên: chạm nhẹ" },
+    snowman: { label: "Người tuyết: chạm nhẹ" },
     skeleton: { label: "Bộ xương: chào một tiếng" },
     pumpkin: { label: "Bí ngô: chạm nhẹ" },
     ghost: { label: "Ma nhỏ: nói ù" },
@@ -60,7 +66,12 @@ export const vi = {
     seasonalOn: "Đổi vào các dịp đặc biệt",
     seasonalOff: "Giữ chủ đề bạn đã chọn",
     hint: "Chọn chủ đề",
-    names: { classic: "mặc định", light: "vải lanh", halloween: "halloween" },
+    names: {
+      classic: "mặc định",
+      light: "vải lanh",
+      halloween: "halloween",
+      christmas: "giáng sinh",
+    },
   },
   settings: {
     heading: "cài đặt",
@@ -410,6 +421,10 @@ export const vi = {
       board: "bảng tin",
     },
     updates: {
+      "christmas-theme": {
+        title: "giáng sinh trong hai căn phòng",
+        body: "Chọn Giáng sinh từ nút chủ đề hoặc bật Theo mùa để chủ đề thay đổi theo dịp lễ. Khi chọn chủ đề Giáng sinh, bật TV để xem lò sưởi Giáng sinh phát trực tiếp; chạm vào cây thông, hộp quà và tất để nhận bất ngờ nho nhỏ.",
+      },
       "visitor-bookshelf": {
         title: "tủ sách khách giới thiệu",
         body: "Chiếc tủ dưới máy pha cà phê giờ đã thành tủ sách. Giới thiệu một cuốn bạn yêu kèm lời nhắn, và thả tim cho những cuốn bạn cũng muốn đọc.",
@@ -577,6 +592,7 @@ export const vi = {
   tv: {
     stations: {
       halloween: "halloween",
+      christmas: "giáng sinh",
       "rainy-cafe": "quán cà phê ngày mưa",
       "piano-night": "đêm piano",
       "late-wash": "mẻ giặt khuya",

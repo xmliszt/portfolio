@@ -18,6 +18,12 @@ function minutesFor(count: number) {
 export const pl = {
   locale: "pl",
   decorations: {
+    "christmas-tree": { label: "Choinka: zapal lampki" },
+    present: { label: "Prezent: potrząśnij lekko" },
+    stockings: { label: "Skarpety: zadzwoń dzwoneczkami" },
+    snowflakes: { label: "Papierowe śnieżynki: zakręć nimi" },
+    poinsettia: { label: "Gwiazda betlejemska: lekko stuknij" },
+    snowman: { label: "Bałwan: lekko stuknij" },
     skeleton: {
       label: "Szkielet: przywitaj się",
     },
@@ -72,7 +78,12 @@ export const pl = {
     seasonalOn: "Zmienia się na specjalne okazje",
     seasonalOff: "Zachowuje wybrany motyw",
     hint: "Wybierz motyw",
-    names: { classic: "domyślny", light: "len", halloween: "halloween" },
+    names: {
+      classic: "domyślny",
+      light: "len",
+      halloween: "halloween",
+      christmas: "boże narodzenie",
+    },
   },
   settings: {
     heading: "ustawienia",
@@ -402,6 +413,10 @@ export const pl = {
       board: "tablica",
     },
     updates: {
+      "christmas-theme": {
+        title: "boże narodzenie w obu pokojach",
+        body: "Wybierz Boże Narodzenie przyciskiem motywów lub włącz tryb sezonowy, aby motyw zmieniał się na specjalne okazje. Z motywem Boże Narodzenie włącz telewizor, aby oglądać świąteczny kominek na żywo; dotknij choinki, prezentów i skarpet, by odkryć małą niespodziankę.",
+      },
       "visitor-bookshelf": {
         title: "regał z polecanymi książkami",
         body: "Szafka pod ekspresem do kawy jest teraz regałem z książkami. Poleć ulubioną książkę z liścikiem i daj serce tym, które też chcesz przeczytać.",
@@ -572,6 +587,7 @@ export const pl = {
   tv: {
     stations: {
       halloween: "halloween",
+      christmas: "boże narodzenie",
       "rainy-cafe": "deszczowa kawiarnia",
       "piano-night": "nocne pianino",
       "late-wash": "późne pranie",

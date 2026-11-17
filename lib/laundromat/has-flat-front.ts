@@ -14,6 +14,14 @@ export function hasFlatFront(kind: SceneObject["kind"]) {
     case "skeleton":
     case "pumpkin":
     case "cobweb":
+    case "christmas-tree":
+    case "present":
+    case "garland":
+    case "stockings":
+    case "snowflakes":
+    case "poinsettia":
+    case "snowman":
+    case "holly":
     case "window":
     case "clock":
     case "tube-display":

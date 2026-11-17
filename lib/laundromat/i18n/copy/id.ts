@@ -10,6 +10,12 @@ type Machine = { kind: MachineKind; number: number };
 export const id = {
   locale: "id",
   decorations: {
+    "christmas-tree": { label: "Pohon Natal: nyalakan lampunya" },
+    present: { label: "Kado: goyangkan sedikit" },
+    stockings: { label: "Kaus kaki Natal: bunyikan loncengnya" },
+    snowflakes: { label: "Kepingan salju kertas: putar" },
+    poinsettia: { label: "Poinsettia: ketuk pelan" },
+    snowman: { label: "Manusia salju: ketuk pelan" },
     skeleton: { label: "Kerangka: sapa dia" },
     pumpkin: { label: "Labu: ketuk pelan" },
     ghost: { label: "Hantu: bilang bu" },
@@ -60,7 +66,12 @@ export const id = {
     seasonalOn: "Berubah pada momen khusus",
     seasonalOff: "Mempertahankan tema pilihanmu",
     hint: "Pilih tema",
-    names: { classic: "bawaan", light: "linen", halloween: "halloween" },
+    names: {
+      classic: "bawaan",
+      light: "linen",
+      halloween: "halloween",
+      christmas: "natal",
+    },
   },
   settings: {
     heading: "pengaturan",
@@ -422,6 +433,10 @@ export const id = {
       board: "papan",
     },
     updates: {
+      "christmas-theme": {
+        title: "natal di kedua ruangan",
+        body: "Pilih Natal dari tombol tema, atau aktifkan Musiman untuk mengikuti perayaan. Saat tema Natal dipilih, nyalakan TV untuk siaran langsung perapian Natal; ketuk pohon, kado, dan kaus kakinya untuk kejutan kecil.",
+      },
       "visitor-bookshelf": {
         title: "rak buku penuh rekomendasi",
         body: "Lemari di bawah mesin kopi sekarang jadi rak buku. Rekomendasikan buku favoritmu dengan sebuah catatan, dan beri hati untuk buku yang ingin kamu baca juga.",
@@ -589,6 +604,7 @@ export const id = {
   tv: {
     stations: {
       halloween: "halloween",
+      christmas: "natal",
       "rainy-cafe": "kafe saat hujan",
       "piano-night": "malam piano",
       "late-wash": "cucian larut malam",

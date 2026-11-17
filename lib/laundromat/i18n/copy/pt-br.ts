@@ -5,6 +5,12 @@ import type { MachineKind } from "@/lib/laundromat/scene-config";
 export const ptBR = {
   locale: "pt-BR",
   decorations: {
+    "christmas-tree": { label: "Árvore de Natal: acenda as luzes" },
+    present: { label: "Presente: dê uma sacudida" },
+    stockings: { label: "Meias: faça os sininhos tocarem" },
+    snowflakes: { label: "Flocos de papel: faça girar" },
+    poinsettia: { label: "Bico-de-papagaio: dê um toque" },
+    snowman: { label: "Boneco de neve: dê um toque" },
     skeleton: { label: "Esqueleto: diga olá" },
     pumpkin: {
       label: "Abóbora: dê um toque",
@@ -58,7 +64,12 @@ export const ptBR = {
     seasonalOn: "Muda em ocasiões especiais",
     seasonalOff: "Mantém o tema escolhido",
     hint: "Escolha um tema",
-    names: { classic: "padrão", light: "linho", halloween: "halloween" },
+    names: {
+      classic: "padrão",
+      light: "linho",
+      halloween: "halloween",
+      christmas: "natal",
+    },
   },
   settings: {
     heading: "configurações",
@@ -420,6 +431,10 @@ export const ptBR = {
       board: "mural",
     },
     updates: {
+      "christmas-theme": {
+        title: "natal nos dois cômodos",
+        body: "Escolha Natal no botão de temas ou ative Sazonal para acompanhar as comemorações. Com o tema Natal, ligue a TV para ver uma lareira de Natal ao vivo; toque na árvore, nos presentes e nas meias para uma pequena surpresa.",
+      },
       "visitor-bookshelf": {
         title: "uma estante de recomendações",
         body: "O armário embaixo da máquina de café agora é uma estante. Recomende um livro que você ama com um recado e dê um coração aos que você também leria.",
@@ -587,6 +602,7 @@ export const ptBR = {
   tv: {
     stations: {
       halloween: "halloween",
+      christmas: "natal",
       "rainy-cafe": "café na chuva",
       "piano-night": "noite de piano",
       "late-wash": "lavagem tardia",

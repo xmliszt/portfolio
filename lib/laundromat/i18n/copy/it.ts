@@ -5,6 +5,12 @@ import type { MachineKind } from "@/lib/laundromat/scene-config";
 export const it = {
   locale: "it",
   decorations: {
+    "christmas-tree": { label: "Albero di Natale: accendilo" },
+    present: { label: "Regalo: scuotilo un po'" },
+    stockings: { label: "Calze: falle tintinnare" },
+    snowflakes: { label: "Fiocchi di carta: falli girare" },
+    poinsettia: { label: "Stella di Natale: dai un colpetto" },
+    snowman: { label: "Pupazzo di neve: dai un colpetto" },
     skeleton: { label: "Scheletro: saluta" },
     pumpkin: {
       label: "Zucca: dai un colpetto",
@@ -57,7 +63,12 @@ export const it = {
     seasonalOn: "Cambia per le occasioni speciali",
     seasonalOff: "Mantiene il tema scelto",
     hint: "Scegli un tema",
-    names: { classic: "predefinito", light: "lino", halloween: "halloween" },
+    names: {
+      classic: "predefinito",
+      light: "lino",
+      halloween: "halloween",
+      christmas: "natale",
+    },
   },
   settings: {
     heading: "impostazioni",
@@ -428,6 +439,10 @@ export const it = {
       board: "bacheca",
     },
     updates: {
+      "christmas-theme": {
+        title: "natale nelle stanze",
+        body: "Scegli Natale dal pulsante dei temi oppure attiva Stagionale per seguire le ricorrenze. Con il tema Natale, accendi la TV per un camino natalizio in diretta; tocca l'albero, i regali e le calze per una piccola sorpresa.",
+      },
       "visitor-bookshelf": {
         title: "una libreria di libri consigliati",
         body: "Il mobile sotto la macchina del caffè ora è una libreria. Consiglia un libro che ami con un biglietto e dai un cuore a quelli che leggeresti anche tu.",
@@ -595,6 +610,7 @@ export const it = {
   tv: {
     stations: {
       halloween: "halloween",
+      christmas: "natale",
       "rainy-cafe": "caffè sotto la pioggia",
       "piano-night": "notte al piano",
       "late-wash": "bucato a tarda ora",

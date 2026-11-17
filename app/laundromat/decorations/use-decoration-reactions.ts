@@ -1,13 +1,11 @@
 import { useRef, useState } from "react";
 
 import { useSoundBoard } from "@/app/laundromat/sound/use-sound-board";
-import type { SceneConfig } from "@/lib/laundromat/scene-config";
-
-const REACTION_SOUNDS = {
-  skeleton: "skeleton-shy",
-  pumpkin: "pumpkin-tap",
-  ghost: "ghost-boo",
-} as const;
+import { getDecorationSound } from "@/lib/laundromat/decorations/get-decoration-sound";
+import type {
+  SceneConfig,
+  SceneDecoration,
+} from "@/lib/laundromat/scene-config";
 
 export function useDecorationReactions(details: SceneConfig["details"]) {
   const sound = useSoundBoard();
@@ -15,24 +13,24 @@ export function useDecorationReactions(details: SceneConfig["details"]) {
   const [reactions, setReactions] = useState<{ [id: string]: number }>({});
   const busyUntilRef = useRef<{ [id: string]: number }>({});
 
-  function activate(options: {
-    id: string;
-    kind: keyof typeof REACTION_SOUNDS;
-  }) {
+  function activate(object: SceneDecoration) {
+    const soundName = getDecorationSound(object);
     const now = performance.now();
-    if (document.hidden || now < (busyUntilRef.current[options.id] ?? 0))
+    if (
+      soundName === undefined ||
+      document.hidden ||
+      now < (busyUntilRef.current[object.id] ?? 0)
+    )
       return;
-    busyUntilRef.current[options.id] =
+    busyUntilRef.current[object.id] =
       now +
-      (options.kind === "pumpkin"
+      (object.kind === "pumpkin"
         ? Math.max(1100, details.pumpkin.bounceMs)
         : Math.max(1500, settings.durationMs));
-    sound?.play(REACTION_SOUNDS[options.kind], {
-      volume: settings.soundVolume,
-    });
+    sound?.play(soundName, { volume: settings.soundVolume });
     setReactions((current) => ({
       ...current,
-      [options.id]: (current[options.id] ?? 0) + 1,
+      [object.id]: (current[object.id] ?? 0) + 1,
     }));
   }
 

@@ -37,6 +37,14 @@ function getBlocker(object: SceneObject) {
     case "skeleton":
     case "pumpkin":
     case "cobweb":
+    case "christmas-tree":
+    case "present":
+    case "garland":
+    case "stockings":
+    case "snowflakes":
+    case "poinsettia":
+    case "snowman":
+    case "holly":
     case "window":
     case "weather-panel":
     case "mat":

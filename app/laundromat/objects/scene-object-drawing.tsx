@@ -53,6 +53,14 @@ export function SceneObjectDrawing(props: SceneObjectDrawingProps) {
     case "skeleton":
     case "pumpkin":
     case "cobweb":
+    case "christmas-tree":
+    case "present":
+    case "garland":
+    case "stockings":
+    case "snowflakes":
+    case "poinsettia":
+    case "snowman":
+    case "holly":
       return (
         <SceneDecorationDrawing
           object={object}

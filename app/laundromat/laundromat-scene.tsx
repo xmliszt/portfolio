@@ -21,6 +21,7 @@ import { describeCoffeeMachine } from "@/lib/laundromat/coffee/describe-coffee-m
 import { describeCoffeeSwitch } from "@/lib/laundromat/coffee/describe-coffee-switch";
 import type { Camera, Viewport } from "@/lib/laundromat/compute-camera";
 import { computeCamera } from "@/lib/laundromat/compute-camera";
+import { isSceneDecoration } from "@/lib/laundromat/decorations/is-scene-decoration";
 import { describeSceneObject } from "@/lib/laundromat/describe-scene-object";
 import { getCameraMoveDurationMs } from "@/lib/laundromat/get-camera-move-duration-ms";
 import { getDaylitTokenStyle } from "@/lib/laundromat/get-daylit-token-style";
@@ -1242,16 +1243,18 @@ export function LaundromatScene(props: LaundromatSceneProps) {
       props.onHeadHome?.(homecoming);
       return;
     }
-    const kind = layout.objects.find(({ object }) => object.id === objectId)
-      ?.object.kind;
-    if (kind === "skeleton" || kind === "pumpkin" || kind === "ghost") {
+    const activated = layout.objects.find(
+      ({ object }) => object.id === objectId
+    )?.object;
+    const kind = activated?.kind;
+    if (activated !== undefined && isSceneDecoration(activated)) {
       if (focus !== "room") {
         setFocus("room");
         return;
       }
       window.clearTimeout(tooltipTimerRef.current);
       setTooltipId(undefined);
-      decorations.activate({ id: objectId, kind });
+      decorations.activate(activated);
       return;
     }
     if (kind === "instant-camera") {

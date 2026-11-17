@@ -7,6 +7,7 @@ import { IsoBox } from "@/app/laundromat/objects/iso-box";
 import { WindowDrawing } from "@/app/laundromat/objects/window-drawing";
 import { useRenderQuality } from "@/app/laundromat/settings/use-render-quality";
 import { WallClock } from "@/app/laundromat/wall-clock";
+import { getDecorationLayer } from "@/lib/laundromat/decorations/get-decoration-layer";
 import type { BedroomConfig } from "@/lib/laundromat/first-visit/bedroom-config";
 import type { BedroomWindowLight } from "@/lib/laundromat/first-visit/get-bedroom-window-light";
 import type { getCurtainLayout } from "@/lib/laundromat/first-visit/get-curtain-layout";
@@ -242,7 +243,7 @@ export function BedroomDrawing(props: BedroomDrawingProps) {
         style={{ opacity: lampIntensity * lamp.fillOpacity, ...glide }}
       />
       {bedroom.decorations
-        .filter((object) => object.kind === "cobweb")
+        .filter((object) => getDecorationLayer(object.kind) === "wall")
         .map((object) => (
           <SceneDecorationDrawing
             key={object.id}
@@ -286,9 +287,7 @@ export function BedroomDrawing(props: BedroomDrawingProps) {
       )}
       <PhotoFrameDrawing frame={bedroom.photoFrame} projection={projection} />
       {bedroom.decorations
-        .filter(
-          (object) => object.kind === "ghost" || object.kind === "skeleton"
-        )
+        .filter((object) => getDecorationLayer(object.kind) === "hanging")
         .map((object) => (
           <SceneDecorationDrawing
             key={object.id}
@@ -368,7 +367,7 @@ export function BedroomDrawing(props: BedroomDrawingProps) {
 
       <g className="stroke-[var(--lm-line)]">
         {bedroom.decorations
-          .filter((object) => object.kind === "pumpkin")
+          .filter((object) => getDecorationLayer(object.kind) === "floor")
           .map((object) => (
             <SceneDecorationDrawing
               key={object.id}

@@ -2,6 +2,13 @@ export const SOUND_NAMES = [
   "skeleton-shy",
   "pumpkin-tap",
   "ghost-boo",
+  "tree-lights",
+  "bedroom-tree-chime",
+  "present-hop",
+  "stocking-jingle",
+  "snowflake-flutter",
+  "poinsettia-rustle",
+  "snowman-wobble",
 
   "door-latch-open",
   "door-latch-close",

@@ -4,6 +4,12 @@ import type { LaundromatCopy } from "@/lib/laundromat/i18n/laundromat-copy";
 export const nl = {
   locale: "nl",
   decorations: {
+    "christmas-tree": { label: "Kerstboom: doe de lichtjes aan" },
+    present: { label: "Cadeau: schud er even aan" },
+    stockings: { label: "Kerstsokken: laat ze rinkelen" },
+    snowflakes: { label: "Papieren sneeuwvlokken: laat ze draaien" },
+    poinsettia: { label: "Kerstster: geef een tikje" },
+    snowman: { label: "Sneeuwpop: geef een tikje" },
     skeleton: { label: "Skelet: zeg hallo" },
     pumpkin: {
       label: "Pompoen: geef een tikje",
@@ -56,7 +62,12 @@ export const nl = {
     seasonalOn: "Wisselt bij bijzondere gelegenheden",
     seasonalOff: "Behoudt je gekozen thema",
     hint: "Kies een thema",
-    names: { classic: "standaard", light: "linnen", halloween: "halloween" },
+    names: {
+      classic: "standaard",
+      light: "linnen",
+      halloween: "halloween",
+      christmas: "kerst",
+    },
   },
   settings: {
     heading: "instellingen",
@@ -390,6 +401,10 @@ export const nl = {
       board: "bord",
     },
     updates: {
+      "christmas-theme": {
+        title: "kerst in beide kamers",
+        body: "Kies Kerst via de themaknop of zet Seizoensgebonden aan om speciale gelegenheden te volgen. Zet met het Kerst-thema de tv aan voor een live kerstopenhaard; tik op de boom, de cadeaus en de sokken voor een kleine verrassing.",
+      },
       "visitor-bookshelf": {
         title: "een boekenkast vol tips",
         body: "Het kastje onder het koffieapparaat is nu een boekenkast. Raad een boek aan dat je mooi vindt met een berichtje, en geef een hartje aan de boeken die jij ook zou lezen.",
@@ -557,6 +572,7 @@ export const nl = {
   tv: {
     stations: {
       halloween: "halloween",
+      christmas: "kerst",
       "rainy-cafe": "regenachtig café",
       "piano-night": "pianoavond",
       "late-wash": "late was",

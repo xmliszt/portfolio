@@ -25,9 +25,17 @@ export function isInteractiveSceneObject(object: SceneObject) {
     case "ghost":
     case "skeleton":
     case "pumpkin":
+    case "christmas-tree":
+    case "present":
+    case "stockings":
+    case "snowflakes":
+    case "poinsettia":
+    case "snowman":
     case "bookshelf":
       return true;
     case "cobweb":
+    case "garland":
+    case "holly":
     case "window":
     case "clock":
     case "table":

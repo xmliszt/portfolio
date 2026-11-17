@@ -5,6 +5,12 @@ import type { MachineKind } from "@/lib/laundromat/scene-config";
 export const zhHans = {
   locale: "zh-Hans",
   decorations: {
+    "christmas-tree": { label: "圣诞树：点亮彩灯" },
+    present: { label: "礼物：轻轻摇一摇" },
+    stockings: { label: "圣诞袜：摇响铃铛" },
+    snowflakes: { label: "纸雪花：转一转" },
+    poinsettia: { label: "一品红：轻轻拍一下" },
+    snowman: { label: "雪人：轻轻拍一下" },
     skeleton: { label: "骷髅：打个招呼" },
     pumpkin: { label: "南瓜：轻轻拍一下" },
     ghost: { label: "小幽灵：吓它一下" },
@@ -55,7 +61,12 @@ export const zhHans = {
     seasonalOn: "随节日更换主题",
     seasonalOff: "保留你选择的主题",
     hint: "选择主题",
-    names: { classic: "默认", light: "亚麻", halloween: "万圣节" },
+    names: {
+      classic: "默认",
+      light: "亚麻",
+      halloween: "万圣节",
+      christmas: "圣诞节",
+    },
   },
   settings: {
     heading: "设置",
@@ -381,6 +392,10 @@ export const zhHans = {
       board: "告示板",
     },
     updates: {
+      "christmas-theme": {
+        title: "房间里的圣诞节",
+        body: "点开主题按钮选择圣诞节，或开启季节模式，让主题随节日变化。使用圣诞节主题时，打开电视就能看到圣诞壁炉直播，点一点圣诞树、礼物和圣诞袜，发现小惊喜。",
+      },
       "visitor-bookshelf": {
         title: "放满推荐的书柜",
         body: "咖啡机下面的柜子变成了书柜。附上一句留言推荐你喜欢的书，也给你想读的书送一颗心。",
@@ -548,6 +563,7 @@ export const zhHans = {
   tv: {
     stations: {
       halloween: "万圣节",
+      christmas: "圣诞节",
       "rainy-cafe": "雨天咖啡馆",
       "piano-night": "钢琴之夜",
       "late-wash": "深夜洗衣",
