@@ -5,6 +5,12 @@ import type { MachineKind } from "@/lib/laundromat/scene-config";
 export const ja = {
   locale: "ja",
   decorations: {
+    "christmas-tree": { label: "クリスマスツリー：明かりをつける" },
+    present: { label: "プレゼント：軽く振る" },
+    stockings: { label: "靴下：鈴を鳴らす" },
+    snowflakes: { label: "紙の雪の結晶：くるりと回す" },
+    poinsettia: { label: "ポインセチア：軽くたたく" },
+    snowman: { label: "雪だるま：軽くたたく" },
     skeleton: { label: "骸骨：挨拶する" },
     pumpkin: { label: "かぼちゃ：軽くたたく" },
     ghost: { label: "おばけ：ばあ！と声をかける" },
@@ -55,7 +61,12 @@ export const ja = {
     seasonalOn: "行事に合わせて変わります",
     seasonalOff: "選んだテーマを維持します",
     hint: "テーマを選ぶ",
-    names: { classic: "標準", light: "リネン", halloween: "ハロウィン" },
+    names: {
+      classic: "標準",
+      light: "リネン",
+      halloween: "ハロウィン",
+      christmas: "クリスマス",
+    },
   },
   settings: {
     heading: "設定",
@@ -406,6 +417,10 @@ export const ja = {
       board: "掲示板",
     },
     updates: {
+      "christmas-theme": {
+        title: "お部屋もクリスマスに",
+        body: "テーマボタンからクリスマスを選ぶか、季節に合わせる設定をオンにして行事に合わせた部屋を楽しめます。クリスマスのテーマでテレビをつけると、クリスマスの暖炉のライブ配信が流れます。ツリーやプレゼント、靴下をタップすると、ちょっとしたお楽しみが。",
+      },
       "visitor-bookshelf": {
         title: "お客さんのおすすめの本棚",
         body: "コーヒーマシンの下の棚が本棚になった。好きな本をメモ付きですすめて、読みたい本にはハートを送って。",
@@ -573,6 +588,7 @@ export const ja = {
   tv: {
     stations: {
       halloween: "ハロウィン",
+      christmas: "クリスマス",
       "rainy-cafe": "雨のカフェ",
       "piano-night": "ピアノの夜",
       "late-wash": "夜更けの洗濯",

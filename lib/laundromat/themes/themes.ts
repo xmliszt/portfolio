@@ -1,5 +1,6 @@
 import { bedroomConfig } from "@/lib/laundromat/first-visit/bedroom-config";
 
+import { christmasTheme } from "./christmas-theme";
 import { halloweenTheme } from "./halloween-theme";
 import type { ThemeDefinition } from "./theme-definition";
 
@@ -92,6 +93,7 @@ export const themes = {
     backdrop: "rgb(48 39 26 / 0.24)",
   },
   halloween: halloweenTheme,
+  christmas: christmasTheme,
 } satisfies { [id: string]: ThemeDefinition };
 
 export type ThemeId = keyof typeof themes;

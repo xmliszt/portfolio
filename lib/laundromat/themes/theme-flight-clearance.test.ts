@@ -3,7 +3,7 @@ import { test } from "node:test";
 
 import { getBoxFaces } from "@/lib/laundromat/get-box-faces";
 import type { ScreenPoint } from "@/lib/laundromat/project-iso-point";
-import { sceneConfig } from "@/lib/laundromat/scene-config";
+import { sceneConfig, type SceneObject } from "@/lib/laundromat/scene-config";
 import { getToyFlightFrame } from "@/lib/laundromat/toy/get-toy-flight-frame";
 import { projectToyCar } from "@/lib/laundromat/toy/project-toy-car";
 import { TOY_FLIGHT } from "@/lib/laundromat/toy/toy-flight-timeline";
@@ -19,21 +19,23 @@ function bounds(points: ScreenPoint[]) {
   };
 }
 
-test("Halloween decorations leave the entire projected flying-car path clear", () => {
+test("theme decorations leave the entire projected flying-car path clear", () => {
   const toy = sceneConfig.objects.find((object) => object.kind === "toy-set");
   assert.ok(toy);
   const projection = { unit: 62, origin: { x: 0, y: 0 } };
-  const decorations = themes.halloween.objects.map((object) => {
-    const faces = getBoxFaces({
-      position: object.position,
-      size: object.size,
-      projection,
+  const decorations = Object.values(themes)
+    .flatMap((theme): SceneObject[] => theme.objects)
+    .map((object) => {
+      const faces = getBoxFaces({
+        position: object.position,
+        size: object.size,
+        projection,
+      });
+      return {
+        id: object.id,
+        bounds: bounds([...faces.top, ...faces.front, ...faces.side]),
+      };
     });
-    return {
-      id: object.id,
-      bounds: bounds([...faces.top, ...faces.front, ...faces.side]),
-    };
-  });
   for (const elapsedMs of Array.from(
     { length: Math.ceil(TOY_FLIGHT.totalMs / 25) + 1 },
     (_, index) => index * 25

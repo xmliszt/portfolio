@@ -1,4 +1,5 @@
 import { useLaundromatCopy } from "@/app/laundromat/i18n/use-laundromat-copy";
+import { describeSceneObject } from "@/lib/laundromat/describe-scene-object";
 import { getBoxFaces } from "@/lib/laundromat/get-box-faces";
 import type { IsoProjection } from "@/lib/laundromat/project-iso-point";
 import type { SceneDecoration } from "@/lib/laundromat/scene-config";
@@ -7,16 +8,14 @@ import { toClipPath } from "@/lib/laundromat/to-clip-path";
 type BedroomDecorationTargetsProps = {
   decorations: SceneDecoration[];
   projection: IsoProjection;
-  onActivate: (_object: {
-    id: string;
-    kind: "pumpkin" | "ghost" | "skeleton";
-  }) => void;
+  onActivate: (_object: SceneDecoration) => void;
 };
 
 export function BedroomDecorationTargets(props: BedroomDecorationTargetsProps) {
   const { copy } = useLaundromatCopy();
   return props.decorations.map((object) => {
-    if (object.kind === "cobweb") return undefined;
+    const label = describeSceneObject({ object, copy })?.label;
+    if (label === undefined) return undefined;
     const faces = getBoxFaces({
       position: object.position,
       size: object.size,
@@ -35,7 +34,7 @@ export function BedroomDecorationTargets(props: BedroomDecorationTargetsProps) {
         key={object.id}
         type="button"
         data-hit-target={object.id}
-        aria-label={copy.decorations[object.kind].label}
+        aria-label={label}
         className="absolute cursor-pointer bg-transparent outline-none focus-visible:bg-[var(--lm-shade-1)]/20"
         style={{
           left: x,

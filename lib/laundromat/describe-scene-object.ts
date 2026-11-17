@@ -140,8 +140,16 @@ export function describeSceneObject(options: {
     case "ghost":
     case "skeleton":
     case "pumpkin":
+    case "christmas-tree":
+    case "present":
+    case "stockings":
+    case "snowflakes":
+    case "poinsettia":
+    case "snowman":
       return { label: copy.decorations[object.kind].label, tooltip: undefined };
     case "cobweb":
+    case "garland":
+    case "holly":
     case "window":
     case "clock":
     case "table":

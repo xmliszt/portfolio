@@ -10,6 +10,12 @@ type Machine = { kind: MachineKind; number: number };
 export const hi = {
   locale: "hi",
   decorations: {
+    "christmas-tree": { label: "क्रिसमस ट्री: रोशनी जलाएँ" },
+    present: { label: "तोहफ़ा: हल्का हिलाएँ" },
+    stockings: { label: "मोज़े: घंटियाँ बजाएँ" },
+    snowflakes: { label: "काग़ज़ के हिमकण: घुमाएँ" },
+    poinsettia: { label: "पॉइन्सेटिया: हल्का थपथपाएँ" },
+    snowman: { label: "स्नोमैन: हल्का थपथपाएँ" },
     skeleton: { label: "कंकाल: नमस्ते कहें" },
     pumpkin: {
       label: "कद्दू: हल्का थपथपाएँ",
@@ -62,7 +68,12 @@ export const hi = {
     seasonalOn: "खास अवसरों पर बदलती है",
     seasonalOff: "चुनी हुई थीम बनी रहती है",
     hint: "थीम चुनें",
-    names: { classic: "डिफ़ॉल्ट", light: "लिनन", halloween: "हैलोवीन" },
+    names: {
+      classic: "डिफ़ॉल्ट",
+      light: "लिनन",
+      halloween: "हैलोवीन",
+      christmas: "क्रिसमस",
+    },
   },
   settings: {
     heading: "सेटिंग्स",
@@ -421,6 +432,10 @@ export const hi = {
       board: "बोर्ड",
     },
     updates: {
+      "christmas-theme": {
+        title: "कमरों में क्रिसमस",
+        body: "थीम बटन से क्रिसमस चुनें या त्योहारों के अनुसार थीम बदलने के लिए मौसमी विकल्प चालू करें। क्रिसमस थीम में टीवी चालू करने पर क्रिसमस अलाव का लाइव स्टेशन देखें। छोटे-से सरप्राइज़ के लिए पेड़, तोहफ़ों और मोज़ों पर टैप करें।",
+      },
       "visitor-bookshelf": {
         title: "सुझाई गई किताबों की अलमारी",
         body: "कॉफ़ी मशीन के नीचे वाली अलमारी अब किताबों की अलमारी है। अपनी पसंदीदा किताब एक नोट के साथ सुझाओ, और जो किताबें तुम भी पढ़ना चाहो उन्हें दिल दो।",
@@ -588,6 +603,7 @@ export const hi = {
   tv: {
     stations: {
       halloween: "हैलोवीन",
+      christmas: "क्रिसमस",
       "rainy-cafe": "बारिश वाला कैफ़े",
       "piano-night": "पियानो की रात",
       "late-wash": "देर रात की धुलाई",

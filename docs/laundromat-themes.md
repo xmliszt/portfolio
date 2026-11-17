@@ -1,6 +1,6 @@
 # Laundromat themes
 
-Themes live in `lib/laundromat/themes/themes.ts`. The registry supplies the picker, runtime configuration and lab choices. Default (`classic`), Linen (`light`) and Halloween (`halloween`) are shipped themes. Stored IDs are retained for existing preferences. Halloween is scheduled for October 15 through October 31, UTC.
+Themes live in `lib/laundromat/themes/themes.ts`. The registry supplies the picker, runtime configuration and lab choices. Default (`classic`), Linen (`light`), Halloween (`halloween`) and Christmas (`christmas`) are shipped themes. Stored IDs are retained for existing preferences. Halloween is scheduled for October 15 through November 2, UTC. Christmas is scheduled for December 1 through January 6, UTC.
 
 `ThemeDefinition` contains a thumbnail, color scheme, dialog shadows, token, lighting and object-detail overrides, additional scene objects and hamper-room overrides. `applySceneTheme` composes these with `sceneConfig` and `bedroomConfig`. Nested bedroom fields replace that whole field; spread the base field when changing just one property. Additional objects cannot replace existing object IDs, so a theme cannot replace a washer that is running.
 
@@ -18,7 +18,7 @@ Preferences synchronize across tabs. Unrecognized saved IDs use Seasonal. Storag
 
 Apply `supabase/migrations/20261025120000_laundromat_theme_schedules.sql` before configuring schedules. It creates `laundro_cafe.theme_schedules` with RLS and service-role access only. The application uses its existing Supabase server credentials. There is no public write endpoint.
 
-The following migration, `20261025130000_laundromat_halloween_schedule.sql`, seeds Halloween as enabled. Apply it with the Halloween release. It preserves any existing row with the same ID. Manage dates through Supabase SQL or an authenticated administrative script:
+The following migration, `20261025130000_laundromat_halloween_schedule.sql`, seeds Halloween as enabled. Apply it with the Halloween release. `20261117120000_laundromat_christmas_schedule.sql` seeds Christmas the same way; apply it with the Christmas release. It preserves any existing row with the same ID. Manage dates through Supabase SQL or an authenticated administrative script:
 
 ```sql
 update laundro_cafe.theme_schedules
@@ -41,7 +41,9 @@ To add a theme, register its definition, add names in all locale copy files and 
 
 Halloween adds a pumpkin family, pumpkins on the dryer and coffee machine, a cloth ghost, a jointed skeleton and a web spanning the laundromat’s wall corner. The hamper room has one lantern. The notice board announces Halloween in every language. The lab’s Objects panel controls pumpkin rind, stem, glow strength, flicker duration and each pumpkin’s facing angle, plus cobweb color, opacity and thread width, ghost cloth and sway duration, and skeleton bone colors. Placement moves shop decorations; Hamper room → Decorations moves and resizes bedroom decorations. Theme JSON includes these details and placements. Lantern flicker and ghost sway stop in Lite quality and with reduced motion. Seasonal decorations do not change measured weather.
 
-Decorations can specify `paintAfter` to render after their supporting object, while the remaining room retains its depth order. The ghost paints after the window frame. The shipped placements keep the flying-car corridor clear; a regression test samples its entire path.
+Christmas adds a tree with twinkling lights and three presents by the board, a light garland along the back wall, holly on the clock, a poinsettia on the dryer, a snowman on the coffee machine, stockings under the wall shelf and paper snowflakes inside the window. The hamper room has a small potted tree beside the bedside table. Tapping the tree runs a chase along its lights with a chime run; the potted tree plays a quieter chime. Presents hop, stockings swing and jingle, snowflakes twirl, the poinsettia rustles and the snowman rocks. The garland and holly are scenery. The lab's Objects → christmas panel controls needle, bauble, gold, snow and bulb colors, bulb glow and twinkle duration. Twinkling and snowflake sway stop in Lite quality and with reduced motion. The hamper room paints each decoration in the layer `getDecorationLayer` returns. Christmas adds Fireplace Warm's live Christmas fireplace station.
+
+Decorations can specify `paintAfter` to render after their supporting object, while the remaining room retains its depth order. The ghost paints after the window frame. The shipped placements keep the flying-car corridor clear; a regression test samples its entire path for every theme.
 
 Themes can add `tvStations` ahead of the regular lineup. The first added station is the starting selection when entering that theme with the TV off, including on a fresh page load. Halloween adds Fireplace Warm’s live Halloween station. A playing TV keeps its current lineup until it is turned off; it then adopts the selected theme’s lineup. Manual tuning within an unchanged theme remains selected across power cycles. Saved volume is preserved, and failed or ended streams advance to the next station.
 

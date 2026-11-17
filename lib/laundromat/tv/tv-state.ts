@@ -22,6 +22,7 @@ export const TV_STATION_IDS = [
   "deep-space",
   "dreamcore",
   "halloween",
+  "christmas",
 ] as const;
 
 export type TvStationId = (typeof TV_STATION_IDS)[number];

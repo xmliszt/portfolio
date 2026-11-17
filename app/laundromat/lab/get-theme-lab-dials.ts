@@ -156,6 +156,12 @@ export function getThemeLabDials(options: {
       threadWidth: [details.cobweb.threadWidth, 0.2, 2, 0.05],
       _collapsed: true,
     },
+    christmas: {
+      ...details.christmas,
+      bulbGlow: [details.christmas.bulbGlow, 0, 1, 0.01],
+      twinkleSeconds: [details.christmas.twinkleSeconds, 0.5, 8, 0.1],
+      _collapsed: true,
+    },
     machine: {
       doorOpenDeg: [details.machine.doorOpenDeg, 0, 160, 1],
       doorSwingMs: [details.machine.doorSwingMs, 0, 1200, 10],

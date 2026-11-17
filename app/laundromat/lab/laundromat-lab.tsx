@@ -427,6 +427,7 @@ function ThemeWorkbench(props: ThemeWorkbenchProps) {
         skeleton: objectValues.skeleton,
         pumpkin: objectValues.pumpkin,
         cobweb: objectValues.cobweb,
+        christmas: objectValues.christmas,
         machine: objectValues.machine,
         tv: { ...details.tv, ...objectValues.tv },
         coffee: objectValues.coffee,

@@ -40,6 +40,63 @@ export const SOUND_SAMPLES = {
     gain: 0.2,
   },
 
+  "tree-lights": {
+    kind: "generated",
+    prompt:
+      "A bright, joyful rising sparkle of glockenspiel and sleigh bells, like Christmas tree lights twinkling on one after another, ending on a shimmering magical chime, festive and happy, clean, no speech, no background noise",
+    durationSeconds: 1.6,
+    promptInfluence: 0.6,
+    gain: 0.45,
+  },
+  "bedroom-tree-chime": {
+    kind: "generated",
+    prompt:
+      "A short cheerful twinkle of three rising celesta notes with a light sprinkle of tiny jingle bells, a little Christmas tree lighting up, sweet and festive, gentle, no speech, no background noise",
+    durationSeconds: 1.2,
+    promptInfluence: 0.6,
+    gain: 0.35,
+  },
+  "present-hop": {
+    kind: "generated",
+    prompt:
+      "A playful bouncy gift box hop: a quick bright jingle of sleigh bells as it jumps, a soft boing-like cardboard thump on landing at 0.4 seconds, then a tiny second bounce with a last little bell jingle, cheerful cartoon Christmas foley, no speech, no background noise",
+    durationSeconds: 1.0,
+    promptInfluence: 0.6,
+    gain: 0.6,
+  },
+  "stocking-jingle": {
+    kind: "generated",
+    prompt:
+      "A merry shake of small sleigh bells on a swinging Christmas stocking, lively jingling that rings out bright and happy then settles, festive, close-up, no speech, no background noise",
+    durationSeconds: 1.1,
+    promptInfluence: 0.6,
+    gain: 0.4,
+  },
+  "snowflake-flutter": {
+    kind: "generated",
+    prompt:
+      "Magical twinkling wind chimes and a soft glittering shimmer, like paper snowflakes twirling and sparkling in the air, light, airy and festive, no speech, no background noise",
+    durationSeconds: 1.0,
+    promptInfluence: 0.6,
+    gain: 0.5,
+  },
+  "poinsettia-rustle": {
+    kind: "generated",
+    prompt:
+      "A quick leafy rustle followed by a bright cheerful two-note handbell ding, a happy Christmas plant greeting, festive and warm, close-up, no speech, no background noise",
+    durationSeconds: 0.9,
+    promptInfluence: 0.6,
+    gain: 0.55,
+  },
+  "snowman-wobble": {
+    kind: "generated",
+    prompt:
+      "A cute playful snowman wobbling: three bouncy cartoon boing wobbles getting smaller, sprinkled with tiny jingle bells and a happy glockenspiel bloop at the end, festive and funny, no speech, no background noise",
+    durationSeconds: 1.0,
+    promptInfluence: 0.6,
+    gain: 0.55,
+  },
+
   "door-latch-open": {
     kind: "generated",
     prompt:

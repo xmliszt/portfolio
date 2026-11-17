@@ -5,6 +5,12 @@ import type { MachineKind } from "@/lib/laundromat/scene-config";
 export const es = {
   locale: "es",
   decorations: {
+    "christmas-tree": { label: "Árbol de Navidad: enciéndelo" },
+    present: { label: "Regalo: agítalo un poco" },
+    stockings: { label: "Calcetines: hazlos sonar" },
+    snowflakes: { label: "Copos de papel: hazlos girar" },
+    poinsettia: { label: "Flor de Pascua: toca aquí" },
+    snowman: { label: "Muñeco de nieve: toca aquí" },
     skeleton: { label: "Esqueleto: saluda" },
     pumpkin: { label: "Calabaza: toca aquí" },
     ghost: { label: "Fantasma: di bu" },
@@ -55,7 +61,12 @@ export const es = {
     seasonalOn: "Cambia en ocasiones especiales",
     seasonalOff: "Conserva el tema elegido",
     hint: "Elige un tema",
-    names: { classic: "predeterminado", light: "lino", halloween: "halloween" },
+    names: {
+      classic: "predeterminado",
+      light: "lino",
+      halloween: "halloween",
+      christmas: "navidad",
+    },
   },
   settings: {
     heading: "ajustes",
@@ -419,6 +430,10 @@ export const es = {
       board: "tablón",
     },
     updates: {
+      "christmas-theme": {
+        title: "navidad en las habitaciones",
+        body: "Elige Navidad en el botón de temas o activa Temporada para seguir la celebración. Con Navidad seleccionado, enciende la tele para ver una chimenea navideña en directo; toca el árbol, los regalos y los calcetines para descubrir una pequeña sorpresa.",
+      },
       "visitor-bookshelf": {
         title: "una estantería de recomendaciones",
         body: "El mueble bajo la cafetera ahora es una estantería. Recomienda un libro que te encante con una nota y dales un corazón a los que tú también leerías.",
@@ -587,6 +602,7 @@ export const es = {
   tv: {
     stations: {
       halloween: "halloween",
+      christmas: "navidad",
       "rainy-cafe": "café con lluvia",
       "piano-night": "noche de piano",
       "late-wash": "colada tardía",
