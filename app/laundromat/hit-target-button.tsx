@@ -6,7 +6,7 @@ type HitTargetButtonProps = {
   label: string;
   pressed: boolean | undefined;
   onActivate: () => void;
-  onPointerShowTooltip: () => void;
+  onPointerShowTooltip: React.PointerEventHandler<HTMLButtonElement>;
   onKeyboardShowTooltip: () => void;
   onHideTooltip: () => void;
 };

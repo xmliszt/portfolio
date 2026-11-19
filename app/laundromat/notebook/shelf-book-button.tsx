@@ -9,7 +9,7 @@ type ShelfBookButtonProps = {
   label: string;
   disabled?: boolean;
   onActivate: () => void;
-  onPointerShowTooltip: () => void;
+  onPointerShowTooltip: React.PointerEventHandler<HTMLButtonElement>;
   onKeyboardShowTooltip: () => void;
   onHideTooltip: () => void;
 };

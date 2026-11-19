@@ -275,6 +275,12 @@ export function LaundromatScene(props: LaundromatSceneProps) {
   const [hasUnsavedRecommendation, setHasUnsavedRecommendation] =
     useState(false);
   const [tooltipId, setTooltipId] = useState<string>();
+  const [tooltipAnchor, setTooltipAnchor] = useState<{
+    objectId: string;
+    x: number;
+    y: number;
+  }>();
+  const hoverPointRef = useRef<{ clientX: number; clientY: number }>(undefined);
   const [openDoorId, setOpenDoorId] = useState<string>();
   const doorTimerRef = useRef<number>(undefined);
   const tooltipTimerRef = useRef<number>(undefined);
@@ -1172,21 +1178,54 @@ export function LaundromatScene(props: LaundromatSceneProps) {
     return () => window.removeEventListener("keydown", handleKeyDown);
   });
 
-  function showTooltip(options: {
-    objectId: string;
-    source: "pointer" | "keyboard";
-  }) {
+  function trackHoverPoint(event: React.PointerEvent) {
+    hoverPointRef.current =
+      event.pointerType === "mouse"
+        ? { clientX: event.clientX, clientY: event.clientY }
+        : undefined;
+  }
+
+  function revealTooltip(objectId: string) {
+    const point = hoverPointRef.current;
+    const root = rootRef.current?.getBoundingClientRect();
+    setTooltipAnchor(
+      point === undefined || root === undefined
+        ? undefined
+        : {
+            objectId,
+            x: point.clientX - root.left,
+            y: point.clientY - root.top,
+          }
+    );
+    setTooltipId(objectId);
+  }
+
+  function showTooltip(
+    options:
+      | { objectId: string; source: "keyboard" }
+      | {
+          objectId: string;
+          source: "pointer";
+          event: React.PointerEvent<HTMLButtonElement>;
+        }
+  ) {
     window.clearTimeout(tooltipTimerRef.current);
     window.clearTimeout(touchHoldTimerRef.current);
     setHighlightedId(options.objectId);
+    setTooltipAnchor(undefined);
+    if (options.source === "pointer") {
+      trackHoverPoint(options.event);
+    } else {
+      hoverPointRef.current = undefined;
+    }
     const isMovingBetweenTargets =
       tooltipId !== undefined || isTooltipWarmRef.current;
     if (options.source === "keyboard" || isMovingBetweenTargets) {
-      setTooltipId(options.objectId);
+      revealTooltip(options.objectId);
       return;
     }
     tooltipTimerRef.current = window.setTimeout(
-      () => setTooltipId(options.objectId),
+      () => revealTooltip(options.objectId),
       TOOLTIP_DELAY_MS
     );
   }
@@ -1349,6 +1388,7 @@ export function LaundromatScene(props: LaundromatSceneProps) {
     if (KNOB_CONTROLS.includes(control.control)) {
       sound?.play("knob-click");
       window.clearTimeout(tooltipTimerRef.current);
+      if (tooltipId !== control.id) setTooltipAnchor(undefined);
       setTooltipId(control.id);
       setHighlightedId(control.id);
     }
@@ -1575,6 +1615,12 @@ export function LaundromatScene(props: LaundromatSceneProps) {
       )
       .find(({ id }) => id === tooltipId);
     if (target === undefined) return undefined;
+    if (tooltipAnchor !== undefined && tooltipAnchor.objectId === target.id) {
+      return {
+        text: target.text(),
+        position: { x: tooltipAnchor.x, y: tooltipAnchor.y },
+      };
+    }
     const camera = computeCamera({ focus, viewport, layout, config });
     return {
       text: target.text(),
@@ -1733,6 +1779,7 @@ export function LaundromatScene(props: LaundromatSceneProps) {
       data-lm-daylit
       style={getDaylitTokenStyle({ config, hour })}
       onClick={handleBackdropClick}
+      onPointerMove={trackHoverPoint}
     >
       <div
         ref={sceneRef}
@@ -1776,8 +1823,8 @@ export function LaundromatScene(props: LaundromatSceneProps) {
                   focusTarget === undefined ? undefined : focusTarget === focus
                 }
                 onActivate={() => handleActivate(id)}
-                onPointerShowTooltip={() =>
-                  showTooltip({ objectId: id, source: "pointer" })
+                onPointerShowTooltip={(event) =>
+                  showTooltip({ objectId: id, source: "pointer", event })
                 }
                 onKeyboardShowTooltip={() =>
                   showTooltip({ objectId: id, source: "keyboard" })
@@ -1803,8 +1850,12 @@ export function LaundromatScene(props: LaundromatSceneProps) {
                     onStepBack={() =>
                       handleControlPress({ objectId: id, control, step: -1 })
                     }
-                    onPointerShowTooltip={() =>
-                      showTooltip({ objectId: control.id, source: "pointer" })
+                    onPointerShowTooltip={(event) =>
+                      showTooltip({
+                        objectId: control.id,
+                        source: "pointer",
+                        event,
+                      })
                     }
                     onKeyboardShowTooltip={() =>
                       showTooltip({
@@ -1829,8 +1880,8 @@ export function LaundromatScene(props: LaundromatSceneProps) {
               bounds={book.bounds}
               label={book.label}
               onActivate={() => setFocus("notebook", book.number)}
-              onPointerShowTooltip={() =>
-                showTooltip({ objectId: book.id, source: "pointer" })
+              onPointerShowTooltip={(event) =>
+                showTooltip({ objectId: book.id, source: "pointer", event })
               }
               onKeyboardShowTooltip={() =>
                 showTooltip({ objectId: book.id, source: "keyboard" })
@@ -1848,8 +1899,8 @@ export function LaundromatScene(props: LaundromatSceneProps) {
               label={target.label}
               disabled={target.disabled}
               onActivate={target.onActivate}
-              onPointerShowTooltip={() =>
-                showTooltip({ objectId: target.id, source: "pointer" })
+              onPointerShowTooltip={(event) =>
+                showTooltip({ objectId: target.id, source: "pointer", event })
               }
               onKeyboardShowTooltip={() =>
                 showTooltip({ objectId: target.id, source: "keyboard" })

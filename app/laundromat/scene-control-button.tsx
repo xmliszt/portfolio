@@ -9,7 +9,7 @@ type SceneControlButtonProps = {
   enabled: boolean;
   onPress: () => void;
   onStepBack: () => void;
-  onPointerShowTooltip: () => void;
+  onPointerShowTooltip: React.PointerEventHandler<HTMLButtonElement>;
   onKeyboardShowTooltip: () => void;
   onHideTooltip: () => void;
   onTouchLeave: () => void;
