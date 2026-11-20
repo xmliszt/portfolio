@@ -18,10 +18,7 @@ const BUBBLES = [
 /** Render a washer porthole whose drum spins five icons through half-full water, with an sr-only "Loading" label. */
 export function BrandLoader() {
   return (
-    <div
-      role="status"
-      className="brand-loader flex flex-col items-center gap-y-3.5"
-    >
+    <div role="status" className="brand-loader">
       <svg
         viewBox="0 0 100 100"
         aria-hidden
@@ -121,12 +118,6 @@ export function BrandLoader() {
         <circle className="bl-rim" cx="50" cy="50" r="33" />
         <circle className="bl-door" cx="50" cy="50" r="40" />
       </svg>
-      <span
-        aria-hidden
-        className="text-muted-foreground text-[11px] leading-none font-medium tracking-[0.06em]"
-      >
-        spin cycle
-      </span>
       <span className="sr-only">Loading</span>
     </div>
   );
