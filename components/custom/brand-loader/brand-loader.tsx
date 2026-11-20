@@ -15,10 +15,15 @@ const BUBBLES = [
   { className: "bl-bubble-4", cx: 66, cy: 76, r: 0.7 },
 ];
 
+type BrandLoaderProps = {
+  /** Color set to draw with; follows the site's `.dark` class when unset. */
+  tone?: "light" | "dark";
+};
+
 /** Render a washer porthole whose drum spins five icons through half-full water, with an sr-only "Loading" label. */
-export function BrandLoader() {
+export function BrandLoader(props: BrandLoaderProps) {
   return (
-    <div role="status" className="brand-loader">
+    <div role="status" data-tone={props.tone} className="brand-loader">
       <svg
         viewBox="0 0 100 100"
         aria-hidden

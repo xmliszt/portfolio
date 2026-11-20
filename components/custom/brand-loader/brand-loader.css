@@ -9,7 +9,8 @@
   --bl-bubble: 1;
 }
 
-.dark .brand-loader {
+.dark .brand-loader:not([data-tone="light"]),
+.brand-loader[data-tone="dark"] {
   --bl-accent: #ff9a5c;
   --bl-water: #7ba7d4;
   --bl-water-back: 0.16;
