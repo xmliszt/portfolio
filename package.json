@@ -31,7 +31,7 @@
     "@mdx-js/loader": "^3.1.0",
     "@mdx-js/react": "^3.1.0",
     "@napi-rs/canvas": "1.0.11",
-    "@next/mdx": "^16.2.5",
+    "@next/mdx": "^16.4.6",
     "@phosphor-icons/react": "^2.0.15",
     "@radix-ui/react-accordion": "^1.2.12",
     "@radix-ui/react-aspect-ratio": "^1.1.2",
@@ -59,10 +59,10 @@
     "hls.js": "^1.6.16",
     "howler": "^2.2.4",
     "jose": "^6.2.3",
-    "lodash": "^4.17.23",
+    "lodash": "^4.18.1",
     "lucide-react": "^0.469.0",
     "motion": "^12.23.26",
-    "next": "^16.2.5",
+    "next": "^16.4.6",
     "next-pwa": "^5.6.0",
     "next-themes": "^0.4.4",
     "obscenity": "^0.4.6",
@@ -82,7 +82,7 @@
     "unist-util-visit": "^5.0.0",
     "vaul": "^1.1.2",
     "wiggle": "^0.0.17",
-    "zod": "^4.4.3",
+    "zod": "^4.6.7",
     "zustand": "^5.0.2"
   },
   "devDependencies": {
@@ -96,11 +96,11 @@
     "@types/react": "19.0.10",
     "@types/react-dom": "19.0.4",
     "@types/three": "^0.174.0",
-    "@typescript-eslint/parser": "^8.59.2",
+    "@typescript-eslint/parser": "^8.73.0",
     "dialkit": "^2.0.0",
     "esbuild": "^0.25.0",
     "eslint": "^9.39.4",
-    "eslint-config-next": "^16.2.5",
+    "eslint-config-next": "^16.4.6",
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-no-relative-import-paths": "^1.6.1",
     "eslint-plugin-simple-import-sort": "^12.0.0",
@@ -112,8 +112,7 @@
     "stylelint-config-standard": "^36.0.0",
     "tailwindcss": "^4.1.16",
     "typescript": "^5",
-    "velite": "^0.2.2",
-    "vercel": "^41.6.0",
+    "velite": "^0.2.4",
     "webpack": "^5.98.0"
   },
   "optionalDependencies": {
@@ -122,7 +121,16 @@
   },
   "overrides": {
     "@types/react": "19.0.10",
-    "@types/react-dom": "19.0.4"
+    "@types/react-dom": "19.0.4",
+    "@tailwindcss/typography": {
+      "postcss-selector-parser": "^6.1.5"
+    },
+    "rollup-plugin-terser": {
+      "serialize-javascript": "^7.1.3"
+    },
+    "velite": {
+      "sharp": "^0.35.5"
+    }
   },
   "engines": {
     "node": "24.x"
