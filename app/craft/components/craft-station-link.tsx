@@ -1,5 +1,6 @@
 "use client";
 
+import { Maximize2 } from "lucide-react";
 import { motion } from "motion/react";
 import Link from "next/link";
 
@@ -13,17 +14,27 @@ type CraftStationLinkProps = {
 
 export function CraftStationLink(props: CraftStationLinkProps) {
   return (
-    <Link href={`/craft/${props.station.id}`} prefetch>
+    <Link
+      href={`/craft/${props.station.id}`}
+      prefetch
+      className="group block rounded-lg"
+    >
       <motion.div
         layoutId={`craft_station.container.${props.station.id}`}
+        whileHover={{ scale: 1.015, transition: { duration: 0.2 } }}
+        whileTap={{ scale: 0.99 }}
         className={cn(
-          "group bg-background flex h-20 w-full flex-col justify-center overflow-hidden rounded-lg border py-4 text-left",
-          "transition-shadow duration-300 hover:shadow-md"
+          "bg-background relative flex h-20 w-full flex-col justify-center overflow-hidden rounded-lg border py-4 text-left",
+          "transition-[box-shadow,border-color] duration-300 group-hover:border-foreground/20 group-hover:shadow-md group-focus-visible:border-foreground/20 group-focus-visible:shadow-md"
         )}
       >
+        <Maximize2
+          aria-hidden
+          className="text-muted-foreground absolute top-3 right-3 size-3.5 scale-75 opacity-0 transition-[opacity,scale] duration-200 group-hover:scale-100 group-hover:opacity-100 group-focus-visible:scale-100 group-focus-visible:opacity-100"
+        />
         <motion.div
           layoutId={`craft_station.title.${props.station.id}`}
-          className="shrink-0 truncate px-4 text-sm font-semibold"
+          className="shrink-0 truncate pr-9 pl-4 text-sm font-semibold"
         >
           {props.station.title}
         </motion.div>
