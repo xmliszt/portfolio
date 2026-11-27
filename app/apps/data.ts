@@ -212,6 +212,18 @@ export type AppsListEntry = {
   href: string;
 };
 
+const roomkitEntry: AppsListEntry = {
+  id: "roomkit",
+  name: "Roomkit",
+  subtitle: "Turn room photos into editable 3D layouts on Mac",
+  icon: {
+    light: "/apps/roomkit-icon.png",
+    dark: "/apps/roomkit-icon.png",
+    alt: "",
+  },
+  href: "https://www.roomkit.space/",
+};
+
 const pawsEntry: AppsListEntry = {
   id: "paws",
   name: "Paws",
@@ -260,17 +272,6 @@ const webApps: AppsListEntry[] = [
     href: "/moire",
   },
   {
-    id: "roomkit",
-    name: "Roomkit",
-    subtitle: "Turn room photos into editable 3D layouts on Mac",
-    icon: {
-      light: "/apps/roomkit-icon.png",
-      dark: "/apps/roomkit-icon.png",
-      alt: "",
-    },
-    href: "https://www.roomkit.space/",
-  },
-  {
     id: "lumon-industries",
     name: "Lumon Industries",
     subtitle: "Macro Data Refinement, from Severance",
@@ -302,7 +303,7 @@ export function getAppsListEntries(): AppsListEntry[] {
     icon: app.icon,
     href: `/apps/${app.id}`,
   }));
-  return [pawsEntry, laundromatEntry, ...iosApps, ...webApps];
+  return [roomkitEntry, pawsEntry, laundromatEntry, ...iosApps, ...webApps];
 }
 
 export function getAppById(id: string): AppData | undefined {
