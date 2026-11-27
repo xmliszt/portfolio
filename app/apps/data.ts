@@ -260,6 +260,17 @@ const webApps: AppsListEntry[] = [
     href: "/moire",
   },
   {
+    id: "roomkit",
+    name: "Roomkit",
+    subtitle: "Turn room photos into editable 3D layouts on Mac",
+    icon: {
+      light: "/apps/roomkit-icon.png",
+      dark: "/apps/roomkit-icon.png",
+      alt: "",
+    },
+    href: "https://www.roomkit.space/",
+  },
+  {
     id: "lumon-industries",
     name: "Lumon Industries",
     subtitle: "Macro Data Refinement, from Severance",
